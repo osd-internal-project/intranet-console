@@ -71,8 +71,7 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
   const [modalDetail, setModalDetail] = useState<ITypeInventory>();
   const [totalQty, setTotalQty] = useState<Number>(0);
   const [totalPrice, setTotalPrice] = useState<Number>(0);
-  const [venderOption, setVenderOption] = useState<ITypeOption[]>([]);
-  const [brandOption, setBrandOption] = useState<ITypeOption[]>([]);
+
   const [headerModalAdd, setHeaderModalAdd] = useState<{
     passNo: string;
     unitName: string;
@@ -103,7 +102,6 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    getApibrandandvender();
     if (loading === true) loaddata();
   }, [inventoryId, loading, search, getId, getswitch]);
   const loaddata = async () => {
@@ -134,30 +132,9 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
           reciepdate_last: reciepdate_last,
         };
         return mapData;
-      }),
+      })
     );
     setdataResult(data);
-    setloading(false);
-  };
-
-  const getApibrandandvender = async () => {
-    const getVender = await inventorystockservices.getVender();
-    if (getVender.length > 0) {
-      const vender = getVender.map((data: ITypeVender) => ({
-        value: data.id,
-        label: data.venderName,
-      }));
-      setVenderOption(vender);
-    }
-
-    const getBrand = await inventorystockservices.getBrand();
-    if (getVender.length > 0) {
-      const brand = getBrand.map((data: ITypeBrand) => ({
-        value: data.id,
-        label: data.name,
-      }));
-      setBrandOption(brand);
-    }
     setloading(false);
   };
 
@@ -187,7 +164,7 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
           } else {
             return null;
           }
-        }),
+        })
       );
       return data;
     } else {
@@ -431,14 +408,7 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
       };
       uploadfiles.push(mapuploads);
       let datacreateStock = { ...value, updateName: `${session?.user?.firstNameTh} ${session?.user?.lastNameTh}` };
-      if (value.venderId !== undefined) {
-        const vender = venderOption.filter((item) => item.value === value.venderId);
-        datacreateStock = { ...datacreateStock, venderName: vender[0].label };
-      }
-      if (value.brandId !== undefined) {
-        const brand = brandOption.filter((item) => item.value === value.brandId);
-        datacreateStock = { ...datacreateStock, brandName: brand[0].label };
-      }
+
       delete datacreateStock["uploadfile"];
       const mapdata = {
         ...datacreateStock,
@@ -588,13 +558,7 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
           <Input placeholder="Search Text" />
         </Form.Item>
         <Form.Item label="Minimum" name="minumumStock">
-          <Switch
-            checkedChildren="Low"
-            unCheckedChildren="All"
-            defaultChecked={false}
-            onChange={setSwitch}
-            className={getswitch === true ? "active-switch" : "inactive-switch"}
-          />
+          <Switch checkedChildren="Low" unCheckedChildren="All" defaultChecked={false} onChange={setSwitch} className={getswitch === true ? "active-switch" : "inactive-switch"} />
         </Form.Item>
         <div className=" md:col-span-4">
           <Form.Item style={{ justifyContent: "end", display: "flex", alignItems: "center" }}>
@@ -678,9 +642,7 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
                   </Form.Item>
                 </Col>
                 <Col span={8}>
-                  <Form.Item label={<div style={{ color: "#9E9E9E" }}>{`Category`}</div>}>
-                    {modalDetail?.masterProductGroup?.masterProductCategories?.categoryName}
-                  </Form.Item>
+                  <Form.Item label={<div style={{ color: "#9E9E9E" }}>{`Category`}</div>}>{modalDetail?.masterProductGroup?.masterProductCategories?.categoryName}</Form.Item>
                 </Col>
                 {/* <Col span={8}>
                   <Form.Item label={<div style={{ color: "#9E9E9E" }}>{`Brand`}</div>}>{modalDetail?.brandName}</Form.Item>
@@ -814,9 +776,7 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
                         <div>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`BRAND`}</span>}</div>
                         <div>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`VENDER`}</span>}</div>
                         <div>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`QTY`}</span>}</div>
-                        <div style={{ textAlign: "center", fontSize: "14px" }}>
-                          {<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`UNIT`}</span>}
-                        </div>
+                        <div style={{ textAlign: "center", fontSize: "14px" }}>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`UNIT`}</span>}</div>
                         <div>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`PRODUCTION DATE`}</span>}</div>
                         <div>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`EXPIRY DATE`}</span>}</div>
                         <div>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`TOTAL`}</span>}</div>
@@ -831,31 +791,13 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
                             <div key={name + 1}>
                               <div className=" grid  md:grid-cols-10  gap-1">
                                 <div>
-                                  <Form.Item
-                                    {...restField}
-                                    name={[name, "receiptDate"]}
-                                    rules={[{ required: true, message: "please select receipt date" }]}
-                                  >
+                                  <Form.Item {...restField} name={[name, "receiptDate"]} rules={[{ required: true, message: "please select receipt date" }]}>
                                     <DatePicker style={{ width: "100%" }} />
                                   </Form.Item>
                                 </div>
                                 <div>
                                   <Form.Item {...restField} name={[name, "detail"]} rules={[{ required: true, message: "please input detail" }]}>
                                     <Input placeholder="Detail" style={{ width: "100%", color: "#9E9E9E", fontSize: "14px" }} />
-                                  </Form.Item>
-                                </div>
-                                <div>
-                                  <Form.Item {...restField} name={[name, "brandId"]} rules={[{ required: true, message: "please select brand" }]}>
-                                    <Select placeholder="Brand" style={{ width: "100%", color: "#9E9E9E", fontSize: "14px" }} options={brandOption} />
-                                  </Form.Item>
-                                </div>
-                                <div>
-                                  <Form.Item {...restField} name={[name, "venderId"]} rules={[{ required: true, message: "please select vender" }]}>
-                                    <Select
-                                      placeholder="Vender"
-                                      style={{ width: "100%", color: "#9E9E9E", fontSize: "14px" }}
-                                      options={venderOption}
-                                    />
                                   </Form.Item>
                                 </div>
 
@@ -868,20 +810,12 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
                                   <Typography style={{ color: "#9E9E9E" }}>{headerModalAdd.unitName}</Typography>
                                 </div>
                                 <div>
-                                  <Form.Item
-                                    {...restField}
-                                    name={[name, "productionDate"]}
-                                    rules={[{ required: true, message: "please select production date" }]}
-                                  >
+                                  <Form.Item {...restField} name={[name, "productionDate"]} rules={[{ required: true, message: "please select production date" }]}>
                                     <DatePicker style={{ width: "100%", fontSize: "14px" }} />
                                   </Form.Item>
                                 </div>
                                 <div>
-                                  <Form.Item
-                                    {...restField}
-                                    name={[name, "expiryDate"]}
-                                    rules={[{ required: true, message: "please select expiry date" }]}
-                                  >
+                                  <Form.Item {...restField} name={[name, "expiryDate"]} rules={[{ required: true, message: "please select expiry date" }]}>
                                     <DatePicker style={{ width: "100%" }} />
                                   </Form.Item>
                                 </div>
@@ -906,9 +840,7 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
                                           <Tooltip
                                             placement="top"
                                             title={
-                                              addForm.getFieldValue(["data", name, "uploadfile"])
-                                                ? addForm.getFieldValue(["data", name, "uploadfile", "file", "name"])
-                                                : undefined
+                                              addForm.getFieldValue(["data", name, "uploadfile"]) ? addForm.getFieldValue(["data", name, "uploadfile", "file", "name"]) : undefined
                                             }
                                           >
                                             <Button

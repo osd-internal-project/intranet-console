@@ -13,6 +13,8 @@ import {
   ITypeMasterProductForm,
   ITypeUnit,
   ITypeMasterProduct,
+  ITypeBrand,
+  ITypeVender,
 } from "../common/index";
 import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
 import AddMasterProductService from "../services/add-master-product.service";
@@ -50,6 +52,8 @@ const AddMasterProduct: React.FC = () => {
   const [maximum, setMaximum] = useState<number>(0);
   const [expire, setExpire] = useState<number>(0);
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
+  const [venderOption, setVenderOption] = useState<ITypeOption[]>([]);
+  const [brandOption, setBrandOption] = useState<ITypeOption[]>([]);
 
   useEffect(() => {
     loaddata();
@@ -101,6 +105,23 @@ const AddMasterProduct: React.FC = () => {
         };
       });
       setUnitOption(unit);
+    }
+    const getVender = await addMasterProductService.getVender();
+    if (getVender.length > 0) {
+      const vender = getVender.map((data: ITypeVender) => ({
+        value: data.id,
+        label: data.venderName,
+      }));
+      setVenderOption(vender);
+    }
+
+    const getBrand = await addMasterProductService.getBrand();
+    if (getVender.length > 0) {
+      const brand = getBrand.map((data: ITypeBrand) => ({
+        value: data.id,
+        label: data.name,
+      }));
+      setBrandOption(brand);
     }
     setLoading(false);
   };
@@ -246,7 +267,7 @@ const AddMasterProduct: React.FC = () => {
     const productNameList = values.productNameList.map((data: string) => ({
       name: data,
     }));
-    const form: ITypeMasterProductForm = {
+    let form: ITypeMasterProductForm = {
       masterProductDetails: { createMany: { data: productNameList } },
       chemicalFormula: values.chemicalFormula,
       casNo: values.casNo,
@@ -281,7 +302,14 @@ const AddMasterProduct: React.FC = () => {
         },
       },
     };
-
+    if (values.venderId !== undefined) {
+      const vender = venderOption.findLast((item) => item.value === values.venderId);
+      form = { ...form, venderId: values.venderId, venderName: vender?.label };
+    }
+    if (values.brandId !== undefined) {
+      const brand = brandOption.findLast((item) => item.value === values.brandId);
+      form = { ...form, brandId: values.venderId, brandName: brand?.label };
+    }
     const result = await addMasterProductService.create(form);
     if (result) {
       if (imageList.length > 0) {
@@ -503,6 +531,16 @@ const AddMasterProduct: React.FC = () => {
                       <Input />
                     </Form.Item>
                   </div> */}
+                  <div className=" col-span-3 md:col-span-1 ml-5">
+                    <Form.Item className=" m-2" name={"brandId"} rules={[{ required: true, message: "please select brand" }]} label={<div className=" font-bold">Brand</div>}>
+                      <Select placeholder="กรุณาเลือก Brand" options={brandOption} />
+                    </Form.Item>
+                  </div>
+                  <div className=" col-span-3 md:col-span-1 ml-5">
+                    <Form.Item className=" m-2" name={"venderId"} rules={[{ required: true, message: "please select vender" }]} label={<div className=" font-bold">Vender</div>}>
+                      <Select placeholder="กรุณาเลือก Vender" options={venderOption} />
+                    </Form.Item>
+                  </div>
                   <div className=" col-span-3 md:col-span-3 ml-5">
                     <Form.Item className=" m-2" name={`description`} label={<div className=" font-bold">Description</div>}>
                       <Input />

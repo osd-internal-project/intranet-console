@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ConfigProvider
             theme={{
               token: {
-                fontSize: 16,
+                fontSize: 14,
                 colorPrimary: "#00a1df",
               },
             }}

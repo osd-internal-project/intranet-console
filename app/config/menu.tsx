@@ -121,10 +121,12 @@ export const MenuSider: MenuItem[] = [
   // }
   return {
     ...item,
-    label: (
+    label: !item.children ? (
       <>
         <Link href={`/page/${item.key}`}>{item.label}</Link>
       </>
+    ) : (
+      item.label
     ),
   };
 });

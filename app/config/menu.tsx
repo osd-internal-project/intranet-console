@@ -8,6 +8,7 @@ import {
   FallOutlined,
   FileExclamationOutlined,
   MailOutlined,
+  BankOutlined,
 } from "@ant-design/icons";
 import { Icon } from "@iconify/react";
 import { MenuProps } from "antd";
@@ -44,7 +45,7 @@ export default MenuNav;
 export const MenuSider: MenuItem[] = [
   {
     key: "1",
-    icon: <MailOutlined />,
+    icon: <BankOutlined />,
     label: "STOCK",
     children: [
       {
@@ -128,14 +129,22 @@ export const MenuSider: MenuItem[] = [
   };
 });
 
-export const MenuSiderWithModule = (modules: MenuItem[]) => {
+export const MenuSiderWithModule = (modules: string[]) => {
   if (modules) {
     const menuFilterChildren = MenuSider.map((menu: any) => ({
       ...menu,
       children: menu?.children
-        ? menu.children.filter((item: any) => {
-            return !item.rule || modules.includes(item.rule);
-          })
+        ? menu.children
+            .filter((item: any) => {
+              return !item.rule || modules.includes(item.rule);
+            })
+            .map((item: any) => ({
+              label: (
+                <>
+                  <Link href={`/page/${item.key}`}>{item.label}</Link>
+                </>
+              ),
+            }))
         : null,
     }));
     const menu = menuFilterChildren.filter((item: any) => {

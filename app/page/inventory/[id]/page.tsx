@@ -24,7 +24,7 @@ const page = () => {
           <Breadcrumb
             items={[
               {
-                href: "/page/dashboard",
+                href: "/page/inventory",
                 title: <span>Home</span>,
               },
               {

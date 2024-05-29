@@ -1,0 +1,202 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* @import "~antd/dist/antd.css"; */
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+
+.text-name-header {
+  font-size: 20px;
+  letter-spacing: 0.5px;
+  color: #111827;
+  font-weight: bold;
+}
+
+.text-name-menu {
+  font-size: 18px;
+  letter-spacing: 0.5px;
+  color: #000000 85%;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
+.button_setting {
+  width: 100%;
+  justify-content: space-between;
+  display: flex;
+  border-radius: 10px;
+  background-color: white;
+  border: none;
+  height: 50px;
+  border-color: #e5e7eb;
+  padding: 10px;
+}
+
+.button-blue {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 7px;
+}
+
+.button_setting:hover {
+  width: 100%;
+  justify-content: space-between;
+  display: flex;
+  border-radius: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  height: 50px;
+  border: none;
+  padding: 10px;
+}
+
+.button_setting:hover .text-name-menu {
+  color: white;
+  letter-spacing: 0.5px;
+}
+
+.text-blue {
+  color: #1677ff;
+  font-feature-settings: "clig" off, "liga" off;
+  text-overflow: ellipsis;
+  /* font-size: 15px;
+  font-style: normal; */
+  font-weight: 700;
+  /* line-height: 21px; 140% */
+}
+.text-grey {
+  color: #9E9E9E;
+  font-feature-settings: "clig" off, "liga" off;
+  text-overflow: ellipsis;
+  /* font-size: 15px;
+  font-style: normal; */
+  font-weight: 200;
+  /* line-height: 21px; 140% */
+}
+
+.active-switch {
+  background-color: #1eb564 !important;
+  border-color: #1eb564 !important;
+}
+
+.inactive-switch {
+  background-color: grey !important;
+  border-color: grey !important;
+}
+.active-expired-switch {
+  background-color: #d91515 !important;
+  border-color: #d91515 !important;
+}
+
+.inactive-expired-switch {
+  background-color: #1677ff !important;
+  border-color: #1677ff !important;  
+}
+
+.title-page-font {
+  margin-top: 10px;
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 38px;
+  letter-spacing: 0px;
+  margin-bottom: 10px;
+}
+.title-page-font-username {
+  margin-top: 10px;
+  font-size: 28px;
+  font-weight: 300;
+  line-height: 38px;
+  letter-spacing: 0px;
+  margin-bottom: 10px;
+  color: #9E9E9E;
+}
+
+.sub-title-page-font {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 32px;
+  letter-spacing: 0em;
+  text-align: left;
+}
+
+.divider {
+  display: inline-block;
+  width: 1px;
+  background-color: #f0f1f3;
+  height: 5em;
+  margin-top: -30px;
+}
+.divider2 {
+  display: inline-block;
+  /* width: 1px; */
+  background-color: #f0f1f3;
+  height: 5em;
+  margin-top: -30px;
+}
+
+
+
+.aligncenter {
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  /* align-items: center; */
+}
+
+.divider-right {
+  display: inline-block;
+  width: 1px;
+  background-color: #f0f1f3;
+  height: 5em;
+  margin-top: -45px;
+}
+.divider2-right {
+  display: inline-block;
+  /* width: 1px; */
+  background-color: #f0f1f3;
+  height: 5em;
+  margin-top: -45px;
+}
+
+.aligncenter-right {
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  /* align-items: center; */
+}
+
+.read-only-input-hide {
+  background-color: #fff !important;
+  color: #555 !important;
+  border: 0 !important;
+  font-weight: bold !important;
+}
+.read-only-input-disable {
+  background-color: rgb(246, 246, 246) !important;
+  color: #333 !important;
+  /* border: 0!important; */
+  /* font-weight: bold!important; */
+}
+/* .ant-table-thead .ant-table-cell {
+  background-color: #fff !important;
+  color: #8B909A!important;
+  width: 700 !important;
+} */
+.ant-menu-item-disabled {
+  pointer-events: none;
+}
+.ant-menu-item-disabled>span>a  {
+  pointer-events: none; /* Disable interactions on child elements */
+}

@@ -1,0 +1,291 @@
+import React, { useEffect, useState } from "react";
+import { Button, Card, Col, Descriptions, DescriptionsProps, Form, Input, Modal, Row, Skeleton, Tree, message } from "antd";
+import UserGroupServices from "../services/usergroup.service";
+import { GroupManageSkeleton } from "./Skeleton";
+import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { ExclamationCircleFilled, PlusOutlined } from "@ant-design/icons";
+import { checkRule } from "@/app/utils/rules";
+export interface props {
+  propDataManage: (res: { groupSelect: string | null; loading: boolean }) => void;
+  groupSelect: string | null;
+}
+type groupDetail = {
+  groupId: string;
+  groupName: string;
+  description: string;
+  parentGroupId: string;
+  // organizedGroupId: string;
+};
+
+const GroupManage: React.FC<props> = ({ propDataManage, groupSelect }): React.ReactElement => {
+  const userAuth = useAxiosUser();
+  const addRule = checkRule("user-group-add");
+  const editRule = checkRule("user-group-edit");
+  const deleteRule = checkRule("user-group-delete");
+  const [addform] = Form.useForm();
+  const [editform] = Form.useForm();
+  const userGroupServices = UserGroupServices(userAuth);
+  const [groupDetail, setGroupDetail] = useState<groupDetail | null>(null);
+  const [openAddModel, setOpenAddModel] = useState<boolean>(false);
+  const [editState, setEditState] = useState<boolean>(false);
+  const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
+  useEffect(() => {
+    loading();
+  }, [groupSelect]);
+  const loading = async () => {
+    setEditState(false);
+    setGroupDetail(null);
+    if (groupSelect) {
+      const groupDetail: any = await userGroupServices.getUserGroupByGroupId(groupSelect);
+      editform.setFieldsValue(groupDetail);
+      setGroupDetail(groupDetail);
+    }
+  };
+
+  const onCloseDetail = () => {
+    setGroupDetail(null);
+    propDataManage({ groupSelect: null, loading: true });
+  };
+
+  const onFinish = async (values: groupDetail) => {
+    setbuttonLoading(true);
+    const data = {
+      groupName: values.groupName,
+      description: values.description,
+    };
+    await userGroupServices
+      .updateUserGroup(values.groupId, data)
+      .then(() => {
+        message.success(`Edit success`);
+        setOpenAddModel(false);
+        propDataManage({
+          loading: true,
+          groupSelect: values.groupId,
+        });
+      })
+      .catch((err) => message.error(err));
+    setbuttonLoading(false);
+  };
+
+  const onFinishFailed = (errorInfo: any) => {
+    console.log("Failed:", errorInfo);
+  };
+  const handleDelete = async () => {
+    setbuttonLoading(true);
+    Modal.confirm({
+      title: "Delete this sub group",
+      icon: <ExclamationCircleFilled />,
+      content: "Are you sure you want to delete this ?",
+      okButtonProps: { danger: true },
+      okText: "Confirm",
+      async onOk() {
+        if (groupDetail) {
+          await userGroupServices.deleteUserGroup(groupDetail.groupId).then((res) => {
+            if (res.data.status === 401) {
+              message.error(res.data.message);
+            } else {
+              message.success("Delete Success");
+              propDataManage({
+                loading: true,
+                groupSelect: null,
+              });
+            }
+          });
+        } else {
+          message.error(`ผิดพลาด กรุณาลองใหม่`);
+        }
+        setbuttonLoading(false);
+      },
+      onCancel() {
+        setbuttonLoading(false);
+      },
+    });
+  };
+  const onFinishAdd = async (values: any) => {
+    setbuttonLoading(true);
+    const form = {
+      groupName: values.groupName,
+      description: values.description,
+      parentGroupId: groupDetail?.groupId,
+    };
+    await userGroupServices
+      .addUserGroup(form)
+      .then(() => {
+        message.success(`Add success`);
+        setOpenAddModel(false);
+      })
+      .catch((err) => message.error(err));
+    propDataManage({
+      loading: true,
+      groupSelect: null,
+    });
+    setbuttonLoading(false);
+  };
+
+  return groupDetail ? (
+    <>
+      <Card className="mx-2 my-2 md:my-0  " style={{ minHeight: " 500px" }}>
+        <div className="grid grid-cols-1 gap-0 space-y-5 ">
+          <Row>
+            <Col span={12}>
+              <div>
+                <div className=" text-2xl  font-semibold inline-block mb-3">Group Detail</div>
+                <div className=" text-slate-400">
+                  {!groupDetail.parentGroupId ? `*หากต้องการเพิ่มกลุ่มย่อยภายใต้ชื่อกลุ่มนี้ให้กด Add Sub Group` : ``}
+                </div>
+              </div>
+            </Col>
+            <Col span={12} style={{ justifyContent: "end", display: "flex" }}>
+              <div className=" inline-block space-x-2 ">
+                {!groupDetail.parentGroupId ? (
+                  <>
+                    <Button
+                      type="primary"
+                      onClick={() => {
+                        setOpenAddModel(true);
+                      }}
+                      icon={<PlusOutlined />}
+                    >
+                      Add Sub Group
+                    </Button>
+                  </>
+                ) : !editState ? (
+                  <>
+                    {editRule ? (
+                      <Button
+                        type="primary"
+                        onClick={() => setEditState(!editState)}
+                        disabled={!groupDetail.parentGroupId ? true : false}
+                        loading={buttonLoading}
+                      >
+                        Edit
+                      </Button>
+                    ) : (
+                      <></>
+                    )}
+                    {deleteRule ? (
+                      <Button
+                        type="primary"
+                        danger
+                        onClick={handleDelete}
+                        disabled={!groupDetail.parentGroupId ? true : false}
+                        loading={buttonLoading}
+                      >
+                        Delete
+                      </Button>
+                    ) : (
+                      <></>
+                    )}
+                  </>
+                ) : (
+                  ``
+                )}
+                <Button onClick={onCloseDetail}>Close</Button>
+              </div>
+            </Col>
+          </Row>
+          {/* </div> */}
+
+          <Form form={editform} onFinish={onFinish} onFinishFailed={onFinishFailed} name="editForm" layout="vertical" initialValues={groupDetail}>
+            <div>
+              <Form.Item name="groupId" label="Group Id :">
+                <Input className="read-only-input" disabled />
+              </Form.Item>
+            </div>
+            <div>
+              <Form.Item name="groupName" label="Name :" rules={[{ required: true, message: "Please enter sub group name" }]}>
+                <Input disabled={!groupDetail.parentGroupId || editState === false ? true : false} className={!editState ? "read-only-input" : ""} />
+              </Form.Item>
+            </div>
+            <div>
+              <Form.Item name="description" label="Description :">
+                <Input.TextArea
+                  disabled={!groupDetail.parentGroupId || editState === false ? true : false}
+                  className={!editState ? "read-only-input" : ""}
+                />
+              </Form.Item>
+            </div>
+            {editState ? (
+              <div className="flex justify-end space-x-4 ">
+                <Form.Item>
+                  <Button
+                    onClick={() => {
+                      setEditState(false);
+                      editform.resetFields();
+                    }}
+                    disabled={!groupDetail.parentGroupId ? true : false}
+                  >
+                    Back
+                  </Button>
+                </Form.Item>
+                <Button type="primary" htmlType="submit" disabled={!groupDetail.parentGroupId ? true : false} loading={buttonLoading}>
+                  Save Change
+                </Button>
+              </div>
+            ) : (
+              <></>
+            )}
+          </Form>
+        </div>
+      </Card>
+
+      <Modal
+        title="Add Sub Group"
+        open={openAddModel}
+        onCancel={() => {
+          console.log(addform.getFieldValue);
+          setOpenAddModel(false);
+          addform.resetFields();
+        }}
+        footer={[]}
+      >
+        <Form
+          form={addform}
+          initialValues={{ parentName: groupDetail.groupName }}
+          onFinish={onFinishAdd}
+          onFinishFailed={onFinishFailed}
+          labelCol={{ span: 7 }}
+          style={{ marginBottom: "-30px" }}
+        >
+          <Form.Item label="Group Parent" name="parentName" style={{ marginTop: "22px" }}>
+            <Input disabled />
+          </Form.Item>
+          <Form.Item label="Sub Group Name" name="groupName" rules={[{ required: true, message: "Please enter sub group name" }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="Description" name="description">
+            <Input.TextArea />
+          </Form.Item>
+          <Row gutter={[8, 8]} style={{ justifyContent: "end", display: "flex" }}>
+            <Col>
+              <Button
+                key="cancel"
+                onClick={() => {
+                  addform.resetFields();
+                  setOpenAddModel(false);
+                }}
+              >
+                Cancel
+              </Button>
+            </Col>
+            <Col>
+              {addRule ? (
+                <Form.Item>
+                  <Button key="submit" htmlType="submit" type="primary" loading={buttonLoading}>
+                    Add
+                  </Button>
+                </Form.Item>
+              ) : (
+                <></>
+              )}
+            </Col>
+          </Row>
+        </Form>
+      </Modal>
+    </>
+  ) : (
+    <GroupManageSkeleton />
+  );
+};
+
+export default GroupManage;

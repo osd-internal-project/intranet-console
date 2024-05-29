@@ -83,7 +83,7 @@ export const TableVender: React.FC<props> = ({
       dataIndex: "venderName",
       key: "venderName",
       render: (event: string, row: typeVender[], index: number) => (
-        <div style={{ color: "#4CAF50" }}>
+        <div style={{ color: "#00a1df" }}>
           <a key={index} className="text-blue" onClick={() => openDetailvender(row as any)}>
             {event}
           </a>

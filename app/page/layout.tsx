@@ -69,24 +69,37 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       }
     }
 
-    // .map((item: any) => ({ title: item.label }));
     return (
       <Layout className=" min-h-screen  overflow-auto ">
-        <Sider width={200} trigger={null} collapsible collapsed={collapsed} style={{ backgroundColor: "#ffff" }} className=" min-h-screen  hidden  md:block bg ">
+        <Sider
+          width={200}
+          trigger={null}
+          collapsible
+          collapsed={collapsed}
+          style={{ backgroundColor: "#ffff" }}
+          className=" min-h-screen  hidden  md:block bg "
+        >
           <div className="flex justify-center py-4 ">
             {!collapsed ? (
               <>
-                <img src="/images/logo-dss-v2.png" alt="logo-page" className={`${collapsed ? "w-14 " : " w-40"}`} />
+                <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : " w-40"}`} />
               </>
             ) : (
-              <img src="/images/logo-dss-v1.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
+              <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
             )}
           </div>
           <Menu mode="inline" defaultSelectedKeys={[currentPath]} items={menulist} />
         </Sider>
         <Layout>
           <div className="w-full">
-            <Navigation session={session} countNoti={countNoti} collapsed={collapsed} setCollapsed={setCollapsed} currentPath={currentPath} menulist={menulist} />
+            <Navigation
+              session={session}
+              countNoti={countNoti}
+              collapsed={collapsed}
+              setCollapsed={setCollapsed}
+              currentPath={currentPath}
+              menulist={menulist}
+            />
           </div>
 
           <Content

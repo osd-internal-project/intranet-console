@@ -87,8 +87,8 @@ const ShowOrder: React.FC<props> = ({ order, propData }): React.ReactElement => 
       okText: "ยืนยัน",
       okButtonProps: {
         style: {
-          backgroundColor: "#4CAF50",
-          borderColor: "#4CAF50",
+          backgroundColor: "#00a1df",
+          borderColor: "#00a1df",
         },
       },
       cancelText: "ยกเลิก",

@@ -4,7 +4,7 @@
 font-weight: 400!important;
 }
 .ant-tree-node-selected  {
-    background-color: #4CAF50!important;
+    background-color: #00a1df!important;
     color: #fff!important; 
 
 }
@@ -12,7 +12,7 @@ font-weight: 400!important;
     font-weight: 500!important;
 }  
 .user-group-tabs >.ant-tabs-nav>.ant-tabs-nav-wrap>.ant-tabs-nav-list>.ant-tabs-tab-active  {
-    background-color: #4CAF50!important; /* Change the background color */
+    background-color: #00a1df!important; /* Change the background color */
   }
 
   .user-group-tabs >.ant-tabs-nav>.ant-tabs-nav-wrap>.ant-tabs-nav-list>.ant-tabs-tab-active .ant-tabs-tab-btn{

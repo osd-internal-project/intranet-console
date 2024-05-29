@@ -99,8 +99,8 @@ export const CreateGhs: React.FC<props> = ({ propLoading, loading, handleOpenFil
       okText: "Confirm",
       okButtonProps: {
         style: {
-          backgroundColor: "#4CAF50",
-          borderColor: "#4CAF50",
+          backgroundColor: "#00a1df",
+          borderColor: "#00a1df",
         },
       },
       cancelText: "Cancel",

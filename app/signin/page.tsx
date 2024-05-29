@@ -37,8 +37,6 @@ export default function Login(props: Props) {
           createCookieLocal("rememberMe", values.username);
         }
         router.push("/page/");
-
-        // setLoading(false);
       } else {
         setLoading(false);
         message.error(`Invalid Login : username or password is incorrect`);
@@ -49,33 +47,29 @@ export default function Login(props: Props) {
     setLoading(false);
   }, []);
   const rememberMe = getCookieLocal("rememberMe");
-  // if (loading) {
-  //   return (
-  //     <div className="flex justify-center items-center h-screen">
-  //       <Spin />
-  //     </div>
-  //   );
-  // } else {
   return (
     <Spin spinning={loading}>
       <div className="grid grid-cols-1 md:grid-cols-2 " style={{ backgroundColor: "#f5f5f5" }}>
         <div className=" justify-center  items-center h-screen w-full hidden  md:flex">
           <div className="flex justify-center m-4">
-            <img src="/images/logo-dss-v2.png" alt="logo-page" className={` w-96 md:w-96 h-auto`} />
+            <img src="/images/osd-logo.png" alt="logo-page" className={` w-96 md:w-96 h-auto`} />
           </div>
         </div>
-        <div className="flex justify-center items-center h-screen ">
-          <div>
+        <div className="grid grid-cols-6 gap-4 grid-rows-4 h-screen">
+          <div className="col-start-2 col-span-4 row-start-2 row-span-2">
             <Form form={form} initialValues={{ remember: false }} onFinish={onFinish} autoComplete="off" layout="vertical">
-              <div className=" columns-1 m-4">
-                <div className="flex justify-center ">
-                  <img src="/images/logo-dss-v1.png" alt="logo-page" className={`w-20 md:w-20 h-auto  mb-5`} />
+              <div className="columns-1 m-4">
+                <div className="flex justify-center text-3xl font-extrabold mb-3 ">
+                  <p className="bg-gradient-to-r from-blue-800 via-cyan-500 to-cyan-300 text-transparent bg-clip-text">INTRANET</p>
                 </div>
-                <div className="flex justify-center text-3xl font-extrabold mb-3">ระบบการจัดการสารเคมี วศ.</div>
-                {/* <p className="flex justify-center">ระบบการจัดการสารเคมี วศ.</p> */}
               </div>
-              <Form.Item<FieldType> label="Username" name="username" initialValue={rememberMe} rules={[{ required: true, message: "กรุณากรอก Username" }]}>
-                <Input style={{ width: "100%" }} />
+              <Form.Item<FieldType>
+                label="Username"
+                name="username"
+                initialValue={rememberMe}
+                rules={[{ required: true, message: "กรุณากรอก Username" }]}
+              >
+                <Input className="w-full" />
               </Form.Item>
 
               <Form.Item<FieldType> label="Password" name="password" rules={[{ required: true, message: "กรุณากรอก Password!" }]}>

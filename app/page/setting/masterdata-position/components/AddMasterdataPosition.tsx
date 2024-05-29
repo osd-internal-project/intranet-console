@@ -29,8 +29,8 @@ export const AddMasterdataPosition: React.FC<props> = ({ setLoading }) => {
       cancelText: "Cancel",
       okButtonProps: {
         style: {
-          backgroundColor: "#4CAF50",
-          borderColor: "#4CAF50",
+          backgroundColor: "#00a1df",
+          borderColor: "#00a1df",
         },
       },
       onOk: async () => {

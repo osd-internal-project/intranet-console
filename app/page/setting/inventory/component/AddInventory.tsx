@@ -75,8 +75,8 @@ export const AddInventory: React.FC<props> = ({ setLoading, locationId, onFilter
       okText: "Confirm",
       okButtonProps: {
         style: {
-          backgroundColor: "#4CAF50", // Change this to your desired color
-          borderColor: "#4CAF50", // Change this to your desired color
+          backgroundColor: "#00a1df", // Change this to your desired color
+          borderColor: "#00a1df", // Change this to your desired color
         },
       },
       cancelText: "Cancel",

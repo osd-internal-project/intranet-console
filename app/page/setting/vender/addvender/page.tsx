@@ -227,7 +227,7 @@ export default function CreateVender() {
                         </Col>
                         <Col>
                           <Form.Item>
-                            <Button type="default" onClick={() => add()} style={{ width: "100%", color: "#4CAF50", borderColor: "#4CAF50" }}>
+                            <Button type="default" onClick={() => add()} style={{ width: "100%", color: "#00a1df", borderColor: "#00a1df" }}>
                               <Space>{`Add Contact`}</Space>
                             </Button>
                           </Form.Item>

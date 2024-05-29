@@ -175,8 +175,10 @@ export type ITypeMasterProductEdit = {
   chemicalFormula: string;
   casNo: string;
   undertaker: string;
-  brandName: string;
-  venderName: string;
+  brandId?: number;
+  brandName?: string;
+  venderId?: number;
+  venderName?: string;
   description: string;
   masterProductGroupId: number;
   masterProductHazardtypeMap?: {

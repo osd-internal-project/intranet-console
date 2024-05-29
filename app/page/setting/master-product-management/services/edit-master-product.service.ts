@@ -115,9 +115,9 @@ const AddMasterProductServices = (axiosInstance: AxiosInstance) => {
           return err;
         });
     },
-    update: async (casNo: string, form: ITypeMasterProductFormEdit) => {
+    update: async (pid: string, form: ITypeMasterProductFormEdit) => {
       return await axiosInstance
-        .patch(`${baseUrl}/${casNo}`, { data: form })
+        .patch(`${baseUrl}/${pid}`, { data: form })
         .then((res) => {
           return res.data;
         })

@@ -13,6 +13,8 @@ import {
   ITypeMasterProductFormEdit,
   ITypeUnit,
   ITypeMasterProductEdit,
+  ITypeVender,
+  ITypeBrand,
 } from "../common/index";
 import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
 import EditMasterProductService from "../services/edit-master-product.service";
@@ -20,9 +22,9 @@ import { useRouter } from "next/navigation";
 import MasterProductServices from "../services/master-product.service";
 import MasterHazardTypeService from "../../master-hazard-type/services/index.service";
 export interface props {
-  casNo: string;
+  pid: string;
 }
-const EditMasterProduct: React.FC<props> = ({ casNo }) => {
+const EditMasterProduct: React.FC<props> = ({ pid }) => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { data: session } = useSession();
@@ -50,14 +52,15 @@ const EditMasterProduct: React.FC<props> = ({ casNo }) => {
   const [maximum, setMaximum] = useState<number>(0);
   const [expire, setExpire] = useState<number>(0);
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
-
+  const [venderOption, setVenderOption] = useState<ITypeOption[]>([]);
+  const [brandOption, setBrandOption] = useState<ITypeOption[]>([]);
   useEffect(() => {
     if (loading) loaddata();
   }, []);
 
   useEffect(() => {}, []);
   const loaddata = async () => {
-    const data: ITypeMasterProductEdit = await masterProductService.getMasterProductByCasNo(casNo);
+    const data: ITypeMasterProductEdit = await masterProductService.getMasterProductById(pid);
     if (data) {
       const imagesMasterProduct = await dataImages(data?.masterProductImages as any);
       const gshSelected = data.masterProductGhsMap?.map((data) => data.masterGhsType.id);
@@ -80,6 +83,8 @@ const EditMasterProduct: React.FC<props> = ({ casNo }) => {
         notiExpiry: data.notiExpiry,
         department: data.masterProductLocationMap.map((d) => d.locationId),
         categoryCode: data.masterProductGroup.masterProductCategories.id,
+        venderId: data.venderId,
+        brandId: data.brandId,
       });
       setImagesMasterProduct(imagesMasterProduct);
       setMinimum(data.minimumStock);
@@ -130,6 +135,24 @@ const EditMasterProduct: React.FC<props> = ({ casNo }) => {
           };
         });
         setUnitOption(unit);
+      }
+
+      const getVender = await editMasterProductService.getVender();
+      if (getVender.length > 0) {
+        const vender = getVender.map((data: ITypeVender) => ({
+          value: data.id,
+          label: data.venderName,
+        }));
+        setVenderOption(vender);
+      }
+
+      const getBrand = await editMasterProductService.getBrand();
+      if (getVender.length > 0) {
+        const brand = getBrand.map((data: ITypeBrand) => ({
+          value: data.id,
+          label: data.name,
+        }));
+        setBrandOption(brand);
       }
       setLoading(false);
     } else {
@@ -289,7 +312,7 @@ const EditMasterProduct: React.FC<props> = ({ casNo }) => {
     const productNameList = values.productNameList.map((data: string) => ({
       name: data,
     }));
-    const form: ITypeMasterProductFormEdit = {
+    let form: ITypeMasterProductFormEdit = {
       masterProductDetails: { deleteMany: {}, createMany: { data: productNameList } },
       chemicalFormula: values.chemicalFormula,
       hyperlink: values.hyperlink,
@@ -324,7 +347,15 @@ const EditMasterProduct: React.FC<props> = ({ casNo }) => {
         },
       },
     };
-    const result = await editMasterProductService.update(casNo, form);
+    if (values.venderId !== undefined) {
+      const vender = venderOption.findLast((item) => item.value === values.venderId);
+      form = { ...form, venderId: values.venderId, venderName: vender?.label };
+    }
+    if (values.brandId !== undefined) {
+      const brand = brandOption.findLast((item) => item.value === values.brandId);
+      form = { ...form, brandId: values.venderId, brandName: brand?.label };
+    }
+    const result = await editMasterProductService.update(pid, form);
     if (result) {
       if (fileList.length > 0) {
         const formData: any = new FormData();
@@ -407,7 +438,7 @@ const EditMasterProduct: React.FC<props> = ({ casNo }) => {
               <div className="space-y-4 grid grid-cols-1">
                 <div className=" grid grid-cols-2 ">
                   <div>
-                    <span className="sub-title-page-font">{`${casNo}`}</span>
+                    {/* <span className="sub-title-page-font">{`${casNo}`}</span> */}
                     <br />
                     <div className=" text-slate-400">{`${dateToStringTh(new Date())} from ${session?.user.firstNameTh} ${session?.user.lastNameTh}`}</div>
                   </div>
@@ -529,7 +560,16 @@ const EditMasterProduct: React.FC<props> = ({ casNo }) => {
                       ))}
                     </Form.Item>
                   </div> */}
-
+                  <div className=" col-span-3 md:col-span-1 ml-5">
+                    <Form.Item className=" m-2" name={"brandId"} rules={[{ required: true, message: "please select brand" }]} label={<div className=" font-bold">Brand</div>}>
+                      <Select placeholder="กรุณาเลือก Brand" options={brandOption} />
+                    </Form.Item>
+                  </div>
+                  <div className=" col-span-3 md:col-span-1 ml-5">
+                    <Form.Item className=" m-2" name={"venderId"} rules={[{ required: true, message: "please select vender" }]} label={<div className=" font-bold">Vender</div>}>
+                      <Select placeholder="กรุณาเลือก Vender" options={venderOption} />
+                    </Form.Item>
+                  </div>
                   <div className=" col-span-3 md:col-span-3 ml-5">
                     <Form.Item name={`description`} label={<div className=" font-bold">Description</div>}>
                       <Input />

@@ -18,9 +18,9 @@ const MasterProductServices = (axiosInstance: AxiosInstance) => {
           return err;
         });
     },
-    getMasterProductByCasNo: async (casNo: string) => {
+    getMasterProductById: async (id: string) => {
       return await axiosInstance
-        .post(`${baseUrl}/find-by-casno`, { casno: casNo })
+        .post(`${baseUrl}/find-by-id`, { id: id })
         .then((res) => {
           return res.data;
         })

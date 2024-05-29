@@ -4,7 +4,7 @@ import EditMasterProduct from "../components/EditmasterProduct";
 import { useParams } from "next/navigation";
 export default function EditMasterProducts() {
   const params = useParams();
-  const casNo = params.casno as string;
+  const pid = params.pid as string;
   return (
     <Row>
       <Col span={24}>
@@ -32,7 +32,7 @@ export default function EditMasterProducts() {
         <div className="title-page-font">{`EDIT MASTER PRODUCT`}</div>
       </Col>
       <Col span={24}>
-        <EditMasterProduct casNo={casNo} />
+        <EditMasterProduct pid={pid} />
       </Col>
     </Row>
   );

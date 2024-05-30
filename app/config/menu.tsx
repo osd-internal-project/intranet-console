@@ -72,12 +72,17 @@ export const MenuSider: MenuItem[] = [
       //   icon: <Icon icon="lucide:truck" width="25" height="25" />,
       //   label: `Suppliers`,
       // },
-      {
-        key: `report`,
-        label: `REPORT`,
-        disabled: true,
-      },
-
+      // {
+      //   key: `report`,
+      //   label: `REPORT`,
+      //   disabled: true,
+      // },
+      // {
+      //   key: `dashboard`,
+      //   icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
+      //   label: `Dashboard`,
+      //   // rule: "dashboard",
+      // },
       {
         key: `report-withdraw-ranking`,
         icon: persentationChartLoneIcon,
@@ -87,13 +92,13 @@ export const MenuSider: MenuItem[] = [
       {
         key: `report-transaction`,
         icon: <Icon icon="bx:file" width="25" height="25" />,
-        label: `การรับเข้าเบิกจ่ายสารเคมี`,
+        label: `การรับเข้าเบิกจ่าย`,
         rule: "report-transaction-show",
       },
       {
         key: `report-expired`,
         icon: <Icon icon="bx:bell" width="25" height="25" />,
-        label: `รายงานการหมดอายุของสารเคมี`,
+        label: `รายงานการหมดอายุ`,
         rule: "report-expired",
       },
     ],
@@ -134,10 +139,12 @@ export const MenuSider: MenuItem[] = [
   // }
   return {
     ...item,
-    label: (
+    label: !item.children ? (
       <>
         <Link href={`/page/${item.key}`}>{item.label}</Link>
       </>
+    ) : (
+      item.label
     ),
   };
 });

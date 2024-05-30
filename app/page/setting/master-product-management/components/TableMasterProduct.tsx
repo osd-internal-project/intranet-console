@@ -44,7 +44,7 @@ const TableMasterProduct: React.FC = () => {
             imagesGhs: imagesGHS,
           };
           return mapData;
-        }),
+        })
       );
       setDataTable(tranfers);
     }
@@ -54,7 +54,7 @@ const TableMasterProduct: React.FC = () => {
   const dataImages = async (
     e: {
       idfile?: string;
-    }[],
+    }[]
   ) => {
     if (e?.length >= 1) {
       const getImages = await masterProductService.getImages(e[0]?.idfile);
@@ -75,7 +75,7 @@ const TableMasterProduct: React.FC = () => {
             };
             return mapData;
           }
-        }),
+        })
       );
       return data;
     } else {
@@ -139,16 +139,18 @@ const TableMasterProduct: React.FC = () => {
         </>
       ),
     },
-    { title: "DESCRIPTION", width: "250px", dataIndex: "description", key: "description" },
-    { title: "CHEMICAL FORMULA", width: "200px", dataIndex: "chemicalFormula", key: "chemicalFormula" },
+    { title: "DESCRIPTION", width: "200px", dataIndex: "description", key: "description" },
+    { title: "CHEMICAL FORMULA", width: "150px", dataIndex: "chemicalFormula", key: "chemicalFormula" },
 
     { title: "GROUP", dataIndex: ["masterProductGroup", "groupName"], key: "masterProductGroup" },
+    { title: "BRAND", dataIndex: "brandName", key: "brandName" },
+    { title: "VENDER", dataIndex: "venderName", key: "venderName" },
     { title: "CATEGORY", dataIndex: ["masterProductGroup", "masterProductCategories", "categoryName"], key: "categoryName" },
     {
       title: "GHS",
       dataIndex: "masterProductGhsMap",
       key: "masterProductGhsMap",
-      width: "10%",
+
       render: (data: string, row: ITypeMasterProduct, index: number) => (
         <div style={{ display: "flex", flexWrap: "wrap" }} className=" space-x-1">
           {row.imagesGhs?.map((value: { imagefile: Blob }, num: number) => {
@@ -162,7 +164,7 @@ const TableMasterProduct: React.FC = () => {
       ),
     },
     { title: "UNIT", dataIndex: ["unit", "unitName"], key: "unit" },
-    { title: "DATE OF RECEIPT", dataIndex: "createdAt", key: "createdAt",  width: "10%", render: (d: Date) => (d ? dateToStringTh(d) : "-") },
+    { title: "DATE OF RECEIPT", dataIndex: "createdAt", key: "createdAt", width: "10%", render: (d: Date) => (d ? dateToStringTh(d) : "-") },
     {
       title: "NOTI EXPIRY",
       dataIndex: "notiExpiry",
@@ -186,7 +188,7 @@ const TableMasterProduct: React.FC = () => {
       render: (d: number, r: ITypeMasterProduct) => (
         <div className="space-x-2">
           {editRule ? (
-            <Link href={`/page/setting/master-product-management/${r.casNo}`}>
+            <Link href={`/page/setting/master-product-management/${r.id}`}>
               <Button className="p-0" type="link" key={`group-edit-${d}`}>
                 {editIcon}
               </Button>
@@ -346,13 +348,7 @@ const TableMasterProduct: React.FC = () => {
       </div>
       <div>
         {openModal ? (
-          <Modal
-            title={<div className=" text-2xl">{"DETAIL"}</div>}
-            open={openModal}
-            onCancel={() => setOpenModal(false)}
-            footer={false}
-            width={1500}
-          >
+          <Modal title={<div className=" text-2xl">{"DETAIL"}</div>} open={openModal} onCancel={() => setOpenModal(false)} footer={false} width={1500}>
             <Row gutter={[8, 8]}>
               <Col span={24}>
                 <Form
@@ -447,7 +443,16 @@ const TableMasterProduct: React.FC = () => {
                         )}
                       </Form.Item>
                     </Col>
-
+                    <Col span={8}>
+                      <Form.Item className="mb-2" label={<div style={{ color: "#9E9E9E" }}>{`Brand :`}</div>}>
+                        {detail?.brandName}
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item className="mb-2" label={<div style={{ color: "#9E9E9E" }}>{`Vender :`}</div>}>
+                        {detail?.venderName}
+                      </Form.Item>
+                    </Col>
                     {/* <Col span={8}>
                       <Form.Item className="mb-2" label={<div style={{ color: "#9E9E9E" }}>{`Type :`}</div>}>
                         {detail?.masterProductGroup?.masterProductGroupMapType ? (

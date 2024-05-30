@@ -56,10 +56,10 @@ export const SearchStockTable: React.FC<props> = ({ openModal, inventoryId, difL
             totalPrice: Number((event.price * event.qty).toFixed(2)),
             unit: event.inventoryStock.masterProduct.unit,
             stockid: event.inventoryStock.id,
-            brand: event.brandName,
-            vender: event.venderName,
+            brand: event.inventoryStock.masterProduct.brandName,
+            vender: event.inventoryStock.masterProduct.venderName,
             chemicalFormula: event.inventoryStock.masterProduct.chemicalFormula,
-          })),
+          }))
       );
       setProductList(data);
     }

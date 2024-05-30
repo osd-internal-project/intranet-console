@@ -88,8 +88,8 @@ export const TableDetailLot: React.FC<props> = ({ getId, getUnit, getMinStock, f
     { key: "lotNo", title: "LOT NO.", dataIndex: "lotNo", width: "100px", align: "center" },
     { key: "receiptDate", dataIndex: "receiptDate", title: "RECEIPT DATE", render: (event: Date) => (event ? dateToStringThNoTime(event) : "-") },
     { key: "detail", dataIndex: "detail", title: "DETAIL" },
-    { key: "brandName", dataIndex: "brandName", title: "BRAND" },
-    { key: "venderName", dataIndex: "venderName", title: "VENDER" },
+    // { key: "brandName", dataIndex: "brandName", title: "BRAND" },
+    // { key: "venderName", dataIndex: "venderName", title: "VENDER" },
     {
       key: "qty",
       title: "QTY",
@@ -155,11 +155,11 @@ export const TableDetailLot: React.FC<props> = ({ getId, getUnit, getMinStock, f
               <Input placeholder="Search by Lot No." />
             </Form.Item>
           </Col>
-          <Col span={6}>
+          {/* <Col span={6}>
             <Form.Item name={"venderName"} label={"Vender Name :"}>
               <Input placeholder="Search by Vender Name" />
             </Form.Item>
-          </Col>
+          </Col> */}
           <Col span={4}>
             <Form.Item name={"date"} label={"Receipt Date :"}>
               <RangePicker />

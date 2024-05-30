@@ -89,6 +89,8 @@ export type ITypeMasterProduct = {
   details: { name: string[] };
   chemicalFormula: string;
   casNo: string;
+  brandName?: string;
+  venderName?: string;
   hyperlink: string;
   description: string;
   masterProductHazardtypeMap?: {

@@ -60,15 +60,10 @@ export default function Login(props: Props) {
             <Form form={form} initialValues={{ remember: false }} onFinish={onFinish} autoComplete="off" layout="vertical">
               <div className="columns-1 m-4">
                 <div className="flex justify-center text-3xl font-extrabold mb-3 ">
-                  <p className="bg-gradient-to-r from-blue-800 via-cyan-500 to-cyan-300 text-transparent bg-clip-text">INTRANET</p>
+                  <p className=" text-3xl tracking-wide bg-gradient-to-r from-blue-800 via-cyan-500 to-cyan-300 text-transparent bg-clip-text">INTRANET</p>
                 </div>
               </div>
-              <Form.Item<FieldType>
-                label="Username"
-                name="username"
-                initialValue={rememberMe}
-                rules={[{ required: true, message: "กรุณากรอก Username" }]}
-              >
+              <Form.Item<FieldType> label="Username" name="username" initialValue={rememberMe} rules={[{ required: true, message: "กรุณากรอก Username" }]}>
                 <Input className="w-full" />
               </Form.Item>
 

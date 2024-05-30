@@ -18,9 +18,7 @@ export const MostOrderOfProducts: React.FC<props> = ({ mostOrder }): React.React
       <Card style={{ width: "100%" }}>
         <Row gutter={[8, 8]} style={{ justifyContent: "space-between", display: "flex", alignItems: "center" }}>
           <Col>
-            <Typography
-              style={{ marginBottom: "20px", fontSize: "20px", fontWeight: "bold" }}
-            >{`อันดับสารเคมีที่ถูกเบิกจ่ายมากที่สุด 5 อันดับ`}</Typography>
+            <Typography style={{ marginBottom: "20px", fontSize: "20px", fontWeight: "bold" }}>{`อันดับสินค้าที่ถูกเบิกจ่ายมากที่สุด 5 อันดับ`}</Typography>
           </Col>
         </Row>
         <Row gutter={[20, 20]}>

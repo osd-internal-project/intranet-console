@@ -301,6 +301,18 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
       },
     },
     {
+      key: "brandName",
+      title: "BRAND",
+      width: "60px",
+      dataIndex: "brandName",
+    },
+    {
+      key: "venderName",
+      title: "VENDER",
+      width: "60px",
+      dataIndex: "venderName",
+    },
+    {
       key: "usableRemain",
       title: "QTY",
       width: "50px",
@@ -616,7 +628,17 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
                   <Form.Item label={<div style={{ color: "#9E9E9E" }}>{`Chemical Formula`}</div>}>{modalDetail?.chemicalFormula}</Form.Item>
                 </Col>
                 <Col span={8}>
+                  <Form.Item label={<div style={{ color: "#9E9E9E" }}>{`Category`}</div>}>{modalDetail?.masterProductGroup?.masterProductCategories?.categoryName}</Form.Item>
+                </Col>
+                <Col span={8}>
                   <Form.Item label={<div style={{ color: "#9E9E9E" }}>{`Group`}</div>}>{modalDetail?.masterProductGroup?.groupName}</Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item className="mb-2" label={<div style={{ color: "#9E9E9E" }}>{`Hazard Type `}</div>}>
+                    {modalDetail?.masterProductHazardtypeMap?.map((d) => (
+                      <Tag>{d.masterHazardtype.nameHazard}</Tag>
+                    ))}
+                  </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label={<div style={{ color: "#9E9E9E" }}>{`GHS`}</div>}>
@@ -641,16 +663,14 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
                     )}
                   </Form.Item>
                 </Col>
-                <Col span={8}>
-                  <Form.Item label={<div style={{ color: "#9E9E9E" }}>{`Category`}</div>}>{modalDetail?.masterProductGroup?.masterProductCategories?.categoryName}</Form.Item>
-                </Col>
+
                 {/* <Col span={8}>
                   <Form.Item label={<div style={{ color: "#9E9E9E" }}>{`Brand`}</div>}>{modalDetail?.brandName}</Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label={<div style={{ color: "#9E9E9E" }}>{`Vender`}</div>}>{modalDetail?.venderName}</Form.Item>
                 </Col> */}
-                <Col span={8}>
+                {/* <Col span={8}>
                   <Form.Item label={<div style={{ color: "#9E9E9E" }}>{`Type`}</div>}>
                     {modalDetail?.masterProductGroup?.masterProductGroupMapType ? (
                       <div style={{ display: "flex", flexWrap: "wrap" }}>
@@ -664,6 +684,12 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
                       </div>
                     ) : null}
                   </Form.Item>
+                </Col> */}
+                <Col span={8}>
+                  <Form.Item label={<div style={{ color: "#9E9E9E" }}>{`Brand`}</div>}>{modalDetail?.brandName}</Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label={<div style={{ color: "#9E9E9E" }}>{`Vender`}</div>}>{modalDetail?.venderName}</Form.Item>
                 </Col>
               </Row>
               <Divider />
@@ -769,12 +795,12 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
                     </Col>
 
                     <Col span={24}>
-                      <div className=" grid grid-cols-10 gap-0">
+                      <div className=" grid grid-cols-8 gap-0">
                         {/* <div>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`LOTS NO.`}</span>}</div> */}
                         <div>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`RECEIPT DATE`}</span>}</div>
                         <div>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`DETAIL`}</span>}</div>
-                        <div>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`BRAND`}</span>}</div>
-                        <div>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`VENDER`}</span>}</div>
+                        {/* <div>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`BRAND`}</span>}</div>
+                        <div>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`VENDER`}</span>}</div> */}
                         <div>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`QTY`}</span>}</div>
                         <div style={{ textAlign: "center", fontSize: "14px" }}>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`UNIT`}</span>}</div>
                         <div>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`PRODUCTION DATE`}</span>}</div>
@@ -789,7 +815,7 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
                         {fields?.map(({ key, name, ...restField }) => {
                           return (
                             <div key={name + 1}>
-                              <div className=" grid  md:grid-cols-10  gap-1">
+                              <div className=" grid  md:grid-cols-8  gap-1">
                                 <div>
                                   <Form.Item {...restField} name={[name, "receiptDate"]} rules={[{ required: true, message: "please select receipt date" }]}>
                                     <DatePicker style={{ width: "100%" }} />

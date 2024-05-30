@@ -28,8 +28,13 @@ export type ITypeInventory = {
   createdAt: Date;
   description: string;
   id: number;
+  masterProductHazardtypeMap?: {
+    masterHazardtype: { id: number; nameHazard: string };
+  }[];
   inventoryStock: { id: number; inventoryLot: [] }[];
   hyperlink?: string;
+  brandName?: string;
+  venderName?: string;
   masterProductDetails: [];
   masterProductGhsMap: [];
   masterProductGroup: {

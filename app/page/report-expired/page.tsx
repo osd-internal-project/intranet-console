@@ -212,13 +212,13 @@ export default function TransectionPage() {
                 title: <span>{`Setting`}</span>,
               },
               {
-                title: <span>{`รายงานการหมดอายุของสารเคมี`}</span>,
+                title: <span>{`รายงานการหมดอายุ`}</span>,
               },
             ]}
           />
         </Col>
         <Col span={24}>
-          <div className="title-page-font">{`รายงานการหมดอายุของสารเคมี`}</div>
+          <div className="title-page-font">{`รายงานการหมดอายุ`}</div>
         </Col>
         <Col span={24}>
           <div className=" grid grid-cols-1 gap-y-2">

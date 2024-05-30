@@ -98,7 +98,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           >
             {children}
           </Content>
-          <Footer style={{ textAlign: "center" }}>Chemistry System DSS ©{new Date().getFullYear()} Created by OSD</Footer>
+          <Footer style={{ textAlign: "center" }}>Intranet ©{new Date().getFullYear()} Created by OSD</Footer>
         </Layout>
       </Layout>
     );

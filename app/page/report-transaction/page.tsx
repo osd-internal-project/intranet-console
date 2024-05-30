@@ -272,13 +272,13 @@ export default function TransactionPage() {
                 title: <span>Setting</span>,
               },
               {
-                title: <span>การรับเข้าเบิกจ่ายสารเคมี</span>,
+                title: <span>การรับเข้าเบิกจ่าย</span>,
               },
             ]}
           />
         </Col>
         <Col span={24}>
-          <div className="title-page-font">{`การรับเข้าเบิกจ่ายสารเคมี`}</div>
+          <div className="title-page-font">{`การรับเข้าเบิกจ่าย`}</div>
         </Col>
         <Col span={24}>
           <div className=" grid grid-cols-1 gap-y-2">

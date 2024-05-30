@@ -333,7 +333,7 @@ const AddOrder: React.FC<props> = ({ department, inventory }): React.ReactElemen
                   }
                 }}
               >
-                {`ค้นหาเพื่อเลือกเบิกสารเคมี`}
+                {`ค้นหาเพื่อเลือกเบิก`}
               </Button>
             </div>
             <div className=" w-full overflow-x-auto">

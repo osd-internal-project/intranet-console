@@ -92,13 +92,13 @@ export const MenuSider: MenuItem[] = [
       {
         key: `report-transaction`,
         icon: <Icon icon="bx:file" width="25" height="25" />,
-        label: `การรับเข้าเบิกจ่ายสารเคมี`,
+        label: `การรับเข้าเบิกจ่าย`,
         rule: "report-transaction-show",
       },
       {
         key: `report-expired`,
         icon: <Icon icon="bx:bell" width="25" height="25" />,
-        label: `รายงานการหมดอายุของสารเคมี`,
+        label: `รายงานการหมดอายุ`,
         rule: "report-expired",
       },
     ],

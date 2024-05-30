@@ -11,6 +11,7 @@ export const authOptions = {
       credentials: {
         username: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" },
+        type: { label: "Type", type: "text" },
       },
 
       async authorize(credentials) {
@@ -24,6 +25,7 @@ export const authOptions = {
             .post(`${process.env.AUTH_BACKEND_URL}/auth/login`, {
               username: credentials?.username,
               password: credentials?.password,
+              type: credentials?.type,
             })
             .catch((e) => {
               // console.log(e);

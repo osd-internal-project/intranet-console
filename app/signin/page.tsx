@@ -14,6 +14,7 @@ type FieldType = {
   username?: string;
   password?: string;
   remember?: string;
+  type?: string;
 };
 export default function Login(props: Props) {
   const router = useRouter();
@@ -24,9 +25,11 @@ export default function Login(props: Props) {
     setLoading(true);
     form.validateFields().then(async (values) => {
       // values.remember
+      const type = values.type === true ? "local" : "ldap";
       const res = await signIn("username-login", {
         username: values.username,
         password: values.password,
+        type: type,
         // remember: values.remember,
         redirect: false,
         callbackUrl: "/page/",
@@ -73,6 +76,9 @@ export default function Login(props: Props) {
               <div className="flex justify-between ">
                 <Form.Item<FieldType> name="remember" valuePropName="checked">
                   <Checkbox>Remember for 30 day</Checkbox>
+                </Form.Item>
+                <Form.Item<FieldType> name="type" valuePropName="checked">
+                  <Checkbox>Login using local</Checkbox>
                 </Form.Item>
                 {/* <Button type="link">Forgot password</Button> */}
               </div>

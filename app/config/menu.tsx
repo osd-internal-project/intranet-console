@@ -72,12 +72,17 @@ export const MenuSider: MenuItem[] = [
       //   icon: <Icon icon="lucide:truck" width="25" height="25" />,
       //   label: `Suppliers`,
       // },
-      {
-        key: `report`,
-        label: `REPORT`,
-        disabled: true,
-      },
-
+      // {
+      //   key: `report`,
+      //   label: `REPORT`,
+      //   disabled: true,
+      // },
+      // {
+      //   key: `dashboard`,
+      //   icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
+      //   label: `Dashboard`,
+      //   // rule: "dashboard",
+      // },
       {
         key: `report-withdraw-ranking`,
         icon: persentationChartLoneIcon,

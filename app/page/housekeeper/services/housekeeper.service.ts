@@ -4,6 +4,8 @@ export const HouseKeeperStockServices = (axiosInstance: AxiosInstance) => {
   const baseUrlApiResultCleanlines = "/result-cleanlines";
   const baseUrlApiFloor = "/floor";
   const baseUrlApiHousekeeper = "/housekeeper";
+  const baseUrlApiHousekeeperReport = "/report-house-keeper";
+
   return {
     createEvent: async (body: any) => {
       return await axiosInstance
@@ -134,6 +136,29 @@ export const HouseKeeperStockServices = (axiosInstance: AxiosInstance) => {
     updateFloor: async (body: any) => {
       return await axiosInstance
         .patch(`${baseUrlApiFloor}/${body.floorId}`, body)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    getReport: async (param: any) => {
+      const params = param;
+      return await axiosInstance
+        .get(`${baseUrlApiHousekeeperReport}/query`, { params })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    exportReport: async (body: any) => {
+      return await axiosInstance
+        .post(`${baseUrlApiHousekeeperReport}/export`, { body }, { responseType: "arraybuffer" })
         .then((res) => {
           return res.data;
         })

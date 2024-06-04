@@ -1,10 +1,25 @@
 "use client";
-import { Breadcrumb, Button, Card, Checkbox, Col, Form, Input, Row, Tabs } from "antd";
+import { Breadcrumb, Button, Card, Checkbox, Col, Form, Input, Row, Tabs, TabsProps } from "antd";
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import CalendarComponenet from "./components/calendar";
+import CalendarComponent from "./components/calendar";
+import ReportComponent from "./components/report";
+
 export default function UserDetailPage() {
+  const items: TabsProps["items"] = [
+    {
+      key: "1",
+      label: "Calendar",
+      children: <CalendarComponent />,
+    },
+    {
+      key: "2",
+      label: "Report",
+      children: <ReportComponent />,
+    },
+  ];
+
   return (
     <Row>
       <Col span={24}>
@@ -27,7 +42,7 @@ export default function UserDetailPage() {
       <Col span={24}>
         <div className=" grid-span-1 space-y-2">
           <Card>
-            <CalendarComponenet />
+            <Tabs defaultActiveKey="1" items={items} />
           </Card>
         </div>
       </Col>

@@ -9,6 +9,7 @@ import {
   DatePicker,
   Form,
   Input,
+  InputNumber,
   message,
   Modal,
   Popover,
@@ -57,7 +58,13 @@ export default function Floor() {
 
   const columns = [
     {
-      title: "ชื่อ",
+      title: "หมายเลข-ชั้น",
+      dataIndex: "floorId",
+      key: "floorId",
+      width: "20%",
+    },
+    {
+      title: "ชื่อ-ชั้น",
       dataIndex: "floorName",
       key: "floorName",
       width: "20%",
@@ -98,6 +105,7 @@ export default function Floor() {
   const onClickEdit = (row: any) => {
     setTitleModal("แก้ใขชั้น");
     form.setFieldsValue(row);
+    form.setFieldValue("type", "update");
     setOpenModal(true);
   };
 
@@ -111,14 +119,12 @@ export default function Floor() {
   };
 
   const onFinish = async () => {
-    const { floorName, type, floorId } = form.getFieldsValue();
+    const value = form.getFieldsValue();
     let resultCreate;
-    if (type === "create") {
-      const body = { floorName: floorName };
-      resultCreate = await houseKeeperStockServices.createHousekeeper(body);
+    if (value.type === "create") {
+      resultCreate = await houseKeeperStockServices.createFloor(value);
     } else {
-      const body = { floorId: floorId, floorName: floorName };
-      resultCreate = await houseKeeperStockServices.updateHousekeeper(body);
+      resultCreate = await houseKeeperStockServices.updateFloor(value);
     }
     if (resultCreate === 200) {
       message.error("Fault !!");
@@ -190,18 +196,18 @@ export default function Floor() {
             form={form}
             name="basic"
             initialValues={{ remember: true }}
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 20 }}
+            labelCol={{ span: 6 }}
+            wrapperCol={{ span: 18 }}
             onFinish={onFinish}
             autoComplete="off"
           >
-            <Form.Item<FieldType> name="floorId" hidden>
-              <Input />
-            </Form.Item>
             <Form.Item<FieldType> name="type" hidden>
               <Input />
             </Form.Item>
-            <Form.Item<FieldType> label="ชื่อ" name="floorName" rules={[{ required: true, message: "กรุณากรอกข้อมูล ชืื่อ!" }]}>
+            <Form.Item<FieldType> label="หมายเลข-ชั้น" name="floorId" rules={[{ required: true, message: "กรุณากรอกข้อมูล หมายเลข-ชั้น!" }]}>
+              <InputNumber disabled={form.getFieldValue("type") === "update"} />
+            </Form.Item>
+            <Form.Item<FieldType> label="ชื่อ-ชั้น" name="floorName" rules={[{ required: true, message: "กรุณากรอกข้อมูล ชื่อ-ชั้น!" }]}>
               <Input />
             </Form.Item>
 

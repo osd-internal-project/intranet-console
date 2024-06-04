@@ -116,6 +116,12 @@ export const MenuSider: MenuItem[] = [
         label: `Housekeeper`,
         // rule: "housekeeper",
       },
+      {
+        key: `housekeeper-management`,
+        icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
+        label: `Housekeeper Management`,
+        // rule: "housekeeper",
+      },
     ],
   },
   {

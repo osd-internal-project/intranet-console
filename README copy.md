@@ -1,1 +1,0 @@
-# nextjs-tailwind-antd-template

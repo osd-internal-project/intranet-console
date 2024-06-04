@@ -47,6 +47,7 @@ export const MenuSider: MenuItem[] = [
     key: "1",
     icon: <BankOutlined />,
     label: "STOCK",
+    // rule: "menu-stock",
     children: [
       {
         key: `order-management`,
@@ -107,6 +108,7 @@ export const MenuSider: MenuItem[] = [
     key: "2",
     icon: <Icon icon="tabler:clipboard-list" width="20" height="20" />,
     label: "HOUSEKEEPER",
+    // rule:'menu-housekeeper',
     children: [
       {
         key: `housekeeper`,
@@ -119,6 +121,20 @@ export const MenuSider: MenuItem[] = [
         icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
         label: `Housekeeper Management`,
         // rule: "housekeeper",
+      },
+    ],
+  },
+  {
+    key: "3",
+    icon: <Icon icon="tabler:clipboard-list" width="20" height="20" />,
+    label: "MA",
+    // rule: "menu-ma",
+    children: [
+      {
+        key: `ma-management`,
+        icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
+        label: `MA Management`,
+        // rule: "ma-task-show",
       },
     ],
   },

@@ -60,22 +60,22 @@ const RuleTable: React.FC<props> = ({ propDataTable, propLoading, loading, handl
       render: (d: Date, r: any, i: number) => (d ? dateToStringTh(d) : ""),
     },
 
-    // {
-    //   title: "Action",
-    //   dataIndex: "ruleCode",
-    //   key: "ruleCode",
-    //   width: "20%",
-    //   render: (text: string, record: any) => (
-    //     <div className="space-x-2">
-    //       <Button type="primary" onClick={() => toManage("edit", text, record.ruleName, record.description)} ghost>
-    //         Edit
-    //       </Button>
-    //       <Button type="primary" onClick={() => toManage("delete", text, record.ruleName, record.description)} ghost danger>
-    //         Delete
-    //       </Button>
-    //     </div>
-    //   ),
-    // },
+    {
+      title: "Action",
+      dataIndex: "ruleCode",
+      key: "ruleCode",
+      width: "20%",
+      render: (text: string, record: any) => (
+        <div className="space-x-2">
+          <Button type="primary" onClick={() => toManage("edit", text, record.ruleName, record.description)} ghost>
+            Edit
+          </Button>
+          <Button type="primary" onClick={() => toManage("delete", text, record.ruleName, record.description)} ghost danger>
+            Delete
+          </Button>
+        </div>
+      ),
+    },
   ];
 
   useEffect(() => {
@@ -167,9 +167,9 @@ const RuleTable: React.FC<props> = ({ propDataTable, propLoading, loading, handl
           </Popover>
         </div>
         <div>
-          {/* <Button type="primary" className="button-blue" onClick={() => toManage("add", null, null, null)}>
+          <Button type="primary" className="button-blue" onClick={() => toManage("add", null, null, null)}>
             Add Rule
-          </Button> */}
+          </Button>
         </div>
       </div>
       <div>

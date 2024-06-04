@@ -27,7 +27,7 @@ export default function ProductListPage() {
 
       const options = locations.map((d: ITypeMasterLocation) => ({ value: d.id, label: d.locationName }));
       setOption(options);
-      setDepartment(options[0].value);
+      setDepartment(options.length > 0 ? options[0].value : undefined);
     }
   };
 

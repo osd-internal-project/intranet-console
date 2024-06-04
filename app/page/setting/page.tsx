@@ -45,6 +45,7 @@ export default function Setting() {
       { name_header: "Department", name_path: "setting/department", icon: buldingIcon, rule: "department-show" },
       { name_header: "Inventory Store", name_path: "setting/inventory", icon: cubeIcon, rule: "inventory-show" },
       { name_header: "Set Objective", name_path: "setting/objective", icon: colorSwatchIcon, rule: "objective-show" },
+      { name_header: "Set MA Type", name_path: "setting/ma-type", icon: colorSwatchIcon, rule: "objective-show" },
     ],
     [
       { name_header: "Master Product Management ", name_path: "setting/master-product-management", icon: cubeIcon, rule: "m-product-show" },

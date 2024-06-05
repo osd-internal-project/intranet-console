@@ -200,6 +200,7 @@ export const MenuSiderWithModule = (modules: string[]) => {
               return !item.rule || modules.includes(item.rule);
             })
             .map((item: any) => ({
+              ...item,
               label: (
                 <>
                   <Link href={`/page/${item.key}`}>{item.label}</Link>

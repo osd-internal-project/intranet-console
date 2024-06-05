@@ -6,9 +6,7 @@ import { useSession } from "next-auth/react";
 import Floor from "./components/floor";
 import Housekeeper from "./components/housekeeper";
 export default function Page() {
-  const onChange = (key: string) => {
-    console.log(key);
-  };
+  const onChange = (key: string) => {};
 
   const items: TabsProps["items"] = [
     {

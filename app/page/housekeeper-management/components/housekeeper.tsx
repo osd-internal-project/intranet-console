@@ -13,6 +13,7 @@ import {
   Popover,
   Row,
   Space,
+  Switch,
   Table,
   Tabs,
   TabsProps,
@@ -30,6 +31,7 @@ import { FilterOutlined } from "@ant-design/icons";
 type FieldType = {
   type: string;
   houseKeeperId?: number;
+  quitYourJob?: boolean;
   houseKeepName: string;
 };
 
@@ -69,7 +71,7 @@ export default function Housekeeper() {
       dataIndex: "quitYourJob",
       key: "quitYourJob",
       width: "20%",
-      render: (value: string) => (value ? <Tag color="red">ลาออก</Tag> : <Tag color="green">ยังอยู่</Tag>),
+      render: (value: boolean) => (!value ? <Tag color="red">ลาออก</Tag> : <Tag color="green">ยังอยู่</Tag>),
     },
     {
       title: "สร้างเมื่อ",
@@ -120,14 +122,12 @@ export default function Housekeeper() {
   };
 
   const onFinish = async () => {
-    const { houseKeepName, type, houseKeeperId } = form.getFieldsValue();
+    const value = form.getFieldsValue();
     let resultCreate;
-    if (type === "create") {
-      const body = { houseKeepName: houseKeepName };
-      resultCreate = await houseKeeperStockServices.createHousekeeper(body);
+    if (value.type === "create") {
+      resultCreate = await houseKeeperStockServices.createHousekeeper(value);
     } else {
-      const body = { houseKeeperId: houseKeeperId, houseKeepName: houseKeepName };
-      resultCreate = await houseKeeperStockServices.updateHousekeeper(body);
+      resultCreate = await houseKeeperStockServices.updateHousekeeper(value);
     }
     if (resultCreate === 200) {
       message.error("Fault !!");
@@ -212,6 +212,9 @@ export default function Housekeeper() {
             </Form.Item>
             <Form.Item<FieldType> label="ชื่อ" name="houseKeepName" rules={[{ required: true, message: "กรุณากรอกข้อมูล ชืื่อ!" }]}>
               <Input />
+            </Form.Item>
+            <Form.Item<FieldType> label="สถานะ" name="quitYourJob" hidden={form.getFieldValue("type") === "create"}>
+              <Switch />
             </Form.Item>
 
             <div className="flex justify-end">

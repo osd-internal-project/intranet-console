@@ -44,7 +44,7 @@ export default MenuNav;
 
 export const MenuSider: MenuItem[] = [
   {
-    key: "1",
+    key: "stock",
     icon: <BankOutlined />,
     label: "STOCK",
     // rule: "menu-stock",
@@ -105,7 +105,7 @@ export const MenuSider: MenuItem[] = [
     ],
   },
   {
-    key: "2",
+    key: "housekeeper-menu",
     icon: <Icon icon="tabler:clipboard-list" width="20" height="20" />,
     label: "HOUSEKEEPER",
     // rule:'menu-housekeeper',
@@ -126,6 +126,25 @@ export const MenuSider: MenuItem[] = [
   },
   {
     key: "3",
+    icon: <Icon icon="tabler:clipboard-list" width="20" height="20" />,
+    label: "BOOKING ROOM",
+    children: [
+      {
+        key: `booking-room`,
+        icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
+        label: `Booking room`,
+        // rule: "housekeeper",
+      },
+      {
+        key: `booking-room-management`,
+        icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
+        label: `Booking room Management`,
+        // rule: "housekeeper",
+      },
+    ],
+  },
+  {
+    key: "ma",
     icon: <Icon icon="tabler:clipboard-list" width="20" height="20" />,
     label: "MA",
     // rule: "menu-ma",

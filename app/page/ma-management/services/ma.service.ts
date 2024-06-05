@@ -1,10 +1,12 @@
 import { AxiosInstance } from "axios";
-import { ITMaDetail, ITMaType } from "../common";
+import { ITMaDetail, ITMaTask, ITMaType } from "../common";
 export interface TMaTaskServices {
-  findMaTypeAll: () => Promise<ITMaDetail[]>;
-  create: (form: any) => Promise<ITMaDetail>;
-  update: (id: number, form: any) => Promise<ITMaDetail>;
-  delete: (id: number) => Promise<ITMaDetail>;
+  // findMaTaskAll: () => Promise<ITMaTask[]>;
+  findMaTaskById: (id: number) => Promise<ITMaTask>;
+  findMaDataTable: (page: { take: number; skip: number }) => Promise<{ data: ITMaTask[]; count: number }>;
+  create: (form: any) => Promise<ITMaTask>;
+  update: (id: number, form: any) => Promise<ITMaTask>;
+  delete: (id: number) => Promise<ITMaTask>;
   findActiveType: () => Promise<ITMaType[]>;
 }
 const UserServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
@@ -12,9 +14,31 @@ const UserServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
   const typeUrl = "/ma-type";
 
   return {
-    findMaTypeAll: async () => {
+    //   findMaTaskAll: async () => {
+    //     return await axiosInstance
+    //       .get(`${taskUrl}/`)
+    //       .then((res) => {
+    //         return res.data;
+    //       })
+    //       .catch((err) => {
+    //         console.log(err);
+    //         return [];
+    //       });
+    //   },
+    findMaTaskById: async (id: number) => {
       return await axiosInstance
-        .get(`${taskUrl}/many`)
+        .get(`${taskUrl}/${id}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    findMaDataTable: async (page: { take: number; skip: number }) => {
+      return await axiosInstance
+        .get(`${taskUrl}/data-table?take=${page.take}&skip=${page.skip}`)
         .then((res) => {
           return res.data;
         })
@@ -36,7 +60,7 @@ const UserServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
     },
     update: async (id, form) => {
       return await axiosInstance
-        .patch(`${taskUrl}/${id}`, form)
+        .patch(`${taskUrl}/${id}`, { data: form })
         .then((res) => {
           return res.data;
         })
@@ -58,7 +82,7 @@ const UserServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
     },
     findActiveType: async () => {
       return await axiosInstance
-        .get(`${taskUrl}/many`)
+        .get(`${typeUrl}/active`)
         .then((res) => {
           return res.data;
         })

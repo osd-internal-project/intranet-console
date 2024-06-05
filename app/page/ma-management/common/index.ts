@@ -13,9 +13,43 @@ export interface ITMaDetail {
   refId?: number;
 }
 
+export interface ITMaTask {
+  id: number;
+  maName: string;
+  maTypeId: number;
+  maTypeName: string;
+  maDate: Date;
+  maStatus: string;
+  contact: string;
+  solution?: string;
+  actionDate?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  createdById: string;
+  createdByName: string;
+  updatedById: string;
+  updatedByName: string;
+  ownerGroup: string;
+  detail?: string;
+  refTask?: ITMaTask;
+  nextTask?: ITMaTask;
+}
+
+export type ITMaCreateForm = {
+  maTypeId: number;
+  maTypeName?: string;
+  maName: string;
+  maDate: Date;
+  contact?: string;
+  detail?: string;
+  maStatus?: string;
+  createdById?: string;
+  createdByName?: string;
+};
 export type ITPagination = {
   current: number;
   pageSize: number;
+  total: number;
 };
 export interface ITypeRequester {
   id: number;
@@ -32,3 +66,11 @@ export interface ITMaType {
   id: number;
   name: string;
 }
+export type ITMaUpdateForm = {
+  solution?: string;
+  actionDate: Date;
+  nextTask?: ITMaCreateForm;
+  maStatus?: string;
+  updatedById?: string;
+  updatedByName?: string;
+};

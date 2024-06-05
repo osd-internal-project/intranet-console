@@ -10,9 +10,10 @@ import { AxiosInstance } from "axios";
 import { checkRule } from "@/app/utils/rules";
 export default function MaTaskPage() {
   const stockAuth = useAxiosStock();
+  const maTypeServices = MaTypeServices(stockAuth);
   const addRule = checkRule("ma-type-add");
   const showRule = checkRule("ma-type-show");
-  const maTypeServices = MaTypeServices(stockAuth);
+
   const [loading, setloading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<ITPagination>({ current: 1, pageSize: 10 });
   const [dataTable, setDataTable] = useState<ITMaType[]>([]);
@@ -21,7 +22,6 @@ export default function MaTaskPage() {
   }, [loading]);
   const fetchData = async () => {
     const data = await maTypeServices.findMaTypeAll();
-    console.log(data);
     setDataTable(data);
     setloading(false);
   };

@@ -1,58 +1,38 @@
 "use client";
-import React, { useState } from "react";
-import { Breadcrumb, Card, Col, Row } from "antd";
+import React, { useEffect, useState } from "react";
+import { Breadcrumb, Button, Card, Col, Popover, Row, Spin, TablePaginationConfig } from "antd";
 import MaTableComponent from "./components/MaTable";
-import { ITMaDetail, ITPagination } from "./common";
+import { ITMaDetail, ITMaTask, ITPagination } from "./common";
+import { FilterOutlined } from "@ant-design/icons";
+import Link from "next/link";
+import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
+import MaServices from "./services/ma.service";
 
 export default function MaTaskPage() {
+  const stockAuth = useAxiosStock();
+  const maServices = MaServices(stockAuth);
   const [loading, setloading] = useState<boolean>(true);
-  const [pagination, setPagination] = useState<ITPagination>({ current: 1, pageSize: 10 });
-  const dataTable: ITMaDetail[] = [
-    {
-      id: 1,
-      maName: "task 1",
-      maStatus: "process",
-      maTypeId: 1,
-      maTypeName: "แจ้งซ้อม",
-      maDate: new Date(),
-      detail: "ทดสอบ",
-      contact: "บริษัท",
-      remake: "รอดำเนินการ",
-      updatedDate: new Date(),
-      createdDate: new Date(),
-    },
-    {
-      id: 2,
-      maName: "task 2",
-      maStatus: "success",
-      maTypeId: 2,
-      maTypeName: "ตรวจสภาพ",
-      maDate: new Date(),
-      detail: "ทดสอบ",
-      contact: "บริษัท",
-      remake: "สำเร็จ",
-      updatedDate: new Date(),
-      createdDate: new Date(),
-    },
-    {
-      id: 3,
-      maName: "task 3",
-      maStatus: "cancel",
-      maTypeId: 2,
-      maTypeName: "ตรวจสภาพ",
-      maDate: new Date(),
-      detail: "ทดสอบ",
-      contact: "บริษัท",
-      remake: "ยกเลิก",
-      updatedDate: new Date(),
-      createdDate: new Date(),
-    },
-  ];
-  const changePagination = (page: ITPagination) => {
-    console.log(page);
+  const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 20 });
+  const [dataTable, setDataTable] = useState<ITMaTask[]>([]);
+  useEffect(() => {
+    if (loading === true) fetchData();
+  }, [loading]);
+
+  const fetchData = async () => {
+    const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
+    const take: number = Number(pagination.pageSize);
+    const res = await maServices.findMaDataTable({ take: take, skip: skip });
+    setDataTable(res.data);
+    setPagination({ ...pagination, total: res.count });
+    setloading(false);
+  };
+
+  const changePagination = (page: TablePaginationConfig) => {
+    setPagination({ ...page });
+    setloading(true);
   };
   return (
-    <div>
+    <Spin spinning={loading}>
       <Row gutter={[8, 8]}>
         <Col span={24}>
           <Breadcrumb
@@ -62,7 +42,6 @@ export default function MaTaskPage() {
                 title: <span>Home</span>,
               },
               {
-                href: "/page/ma-management",
                 title: <span>MA Mangement</span>,
               },
             ]}
@@ -70,6 +49,24 @@ export default function MaTaskPage() {
         </Col>
         <Col span={24}>
           <div className="title-page-font">{`MA MANAGEMENT`}</div>
+        </Col>
+        <Col span={24} className=" flex justify-between">
+          <Popover
+            // onOpenChange={handleOpenFilter}
+            // open={openFilter}
+            // content={searchContent}
+            placement="bottomLeft"
+            title="Search"
+            trigger="click"
+            overlayStyle={{ width: "calc(100% - 240px)" }}
+          >
+            <Button type="primary" icon={<FilterOutlined />}>
+              Filters
+            </Button>
+          </Popover>
+          <Link href={"/page/ma-management/create"}>
+            <Button type="primary">เพิ่ม MA</Button>
+          </Link>
         </Col>
         <Col span={24}>
           <div className="grid grid-cols-1 ">
@@ -79,6 +76,6 @@ export default function MaTaskPage() {
           </div>
         </Col>
       </Row>
-    </div>
+    </Spin>
   );
 }

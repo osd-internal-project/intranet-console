@@ -132,7 +132,7 @@ export const useAxiosRefreshToken = (session: Session) => {
           message.error("หมดอายุการใช้งาน กรุณาเข้าสู่ระบบ");
           signOut();
         });
-      }, 5 * 60 * 1000);
+      }, 60 * 60 * 1000);
       return () => {
         clearInterval(renewTokenTask);
       };

@@ -15,14 +15,14 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={` m-0 `}>
+      <body className={`${notoSanThai.className} m-0 `}>
         <AuthProvider>
           <ConfigProvider
             theme={{
               token: {
                 fontSize: 14,
                 colorPrimary: "#00a1df",
-                fontFamily: `${prompt}`,
+                fontFamily: `${notoSanThai}`,
               },
             }}
           >

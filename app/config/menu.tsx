@@ -125,6 +125,25 @@ export const MenuSider: MenuItem[] = [
     ],
   },
   {
+    key: "3",
+    icon: <Icon icon="tabler:clipboard-list" width="20" height="20" />,
+    label: "BOOKING ROOM",
+    children: [
+      {
+        key: `booking-room`,
+        icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
+        label: `Booking room`,
+        // rule: "housekeeper",
+      },
+      {
+        key: `booking-room-management`,
+        icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
+        label: `Booking room Management`,
+        // rule: "housekeeper",
+      },
+    ],
+  },
+  {
     key: "ma",
     icon: <Icon icon="tabler:clipboard-list" width="20" height="20" />,
     label: "MA",

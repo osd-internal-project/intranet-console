@@ -130,47 +130,31 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect }): React.Re
             <Col span={12}>
               <div>
                 <div className=" text-2xl  font-semibold inline-block mb-3">Group Detail</div>
-                <div className=" text-slate-400">
-                  {!groupDetail.parentGroupId ? `*หากต้องการเพิ่มกลุ่มย่อยภายใต้ชื่อกลุ่มนี้ให้กด Add Sub Group` : ``}
-                </div>
+                <div className=" text-slate-400">{!groupDetail.parentGroupId ? `*หากต้องการเพิ่มกลุ่มย่อยภายใต้ชื่อกลุ่มนี้ให้กด Add Sub Group` : ``}</div>
               </div>
             </Col>
             <Col span={12} style={{ justifyContent: "end", display: "flex" }}>
               <div className=" inline-block space-x-2 ">
-                {!groupDetail.parentGroupId ? (
-                  <>
-                    <Button
-                      type="primary"
-                      onClick={() => {
-                        setOpenAddModel(true);
-                      }}
-                      icon={<PlusOutlined />}
-                    >
-                      Add Sub Group
-                    </Button>
-                  </>
-                ) : !editState ? (
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    setOpenAddModel(true);
+                  }}
+                  icon={<PlusOutlined />}
+                >
+                  Add Sub Group
+                </Button>
+                {!editState ? (
                   <>
                     {editRule ? (
-                      <Button
-                        type="primary"
-                        onClick={() => setEditState(!editState)}
-                        disabled={!groupDetail.parentGroupId ? true : false}
-                        loading={buttonLoading}
-                      >
+                      <Button type="primary" onClick={() => setEditState(!editState)} disabled={!groupDetail.parentGroupId ? true : false} loading={buttonLoading}>
                         Edit
                       </Button>
                     ) : (
                       <></>
                     )}
                     {deleteRule ? (
-                      <Button
-                        type="primary"
-                        danger
-                        onClick={handleDelete}
-                        disabled={!groupDetail.parentGroupId ? true : false}
-                        loading={buttonLoading}
-                      >
+                      <Button type="primary" danger onClick={handleDelete} disabled={!groupDetail.parentGroupId ? true : false} loading={buttonLoading}>
                         Delete
                       </Button>
                     ) : (
@@ -199,10 +183,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect }): React.Re
             </div>
             <div>
               <Form.Item name="description" label="Description :">
-                <Input.TextArea
-                  disabled={!groupDetail.parentGroupId || editState === false ? true : false}
-                  className={!editState ? "read-only-input" : ""}
-                />
+                <Input.TextArea disabled={!groupDetail.parentGroupId || editState === false ? true : false} className={!editState ? "read-only-input" : ""} />
               </Form.Item>
             </div>
             {editState ? (

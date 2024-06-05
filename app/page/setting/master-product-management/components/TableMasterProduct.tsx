@@ -125,7 +125,7 @@ const TableMasterProduct: React.FC = () => {
       title: "PRODUCT NAME",
       dataIndex: "masterProductDetails",
       key: "masterProductDetails",
-      width: "200px",
+      // width: "200px",
       render: (d: { name: string }[], r: ITypeMasterProduct, i: number) => (
         <>
           {d?.map((text, index: number) => (
@@ -139,8 +139,8 @@ const TableMasterProduct: React.FC = () => {
         </>
       ),
     },
-    { title: "DESCRIPTION", width: "200px", dataIndex: "description", key: "description" },
-    { title: "CHEMICAL FORMULA", width: "150px", dataIndex: "chemicalFormula", key: "chemicalFormula" },
+    { title: "DESCRIPTION", dataIndex: "description", key: "description" },
+    { title: "CHEMICAL FORMULA", dataIndex: "chemicalFormula", key: "chemicalFormula" },
 
     { title: "GROUP", dataIndex: ["masterProductGroup", "groupName"], key: "masterProductGroup" },
     { title: "BRAND", dataIndex: "brandName", key: "brandName" },

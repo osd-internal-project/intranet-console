@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import CalendarComponent from "./components/calendar";
 import ReportComponent from "./components/report";
 
-export default function UserDetailPage() {
+export default function Page() {
   const items: TabsProps["items"] = [
     {
       key: "1",

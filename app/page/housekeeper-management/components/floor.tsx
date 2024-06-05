@@ -190,7 +190,7 @@ export default function Floor() {
           </Space>
         </div>
         <div></div>
-        <Table columns={columns} dataSource={dataFloor} size="small" />
+        <Table columns={columns} dataSource={dataFloor} size="small" rowKey={"id"} />
         <Modal title={titleModal} open={openModal} onCancel={handleCancelModal} footer={[]}>
           <Form
             form={form}

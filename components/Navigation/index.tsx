@@ -35,7 +35,6 @@ const Navigation: React.FC<Prop> = ({ session, collapsed, setCollapsed, currentP
   const [open, setOpen] = useState(false);
   const navigate = useRouter();
   useAxiosRefreshToken(session);
-
   return (
     <>
       <Header className="flex justify-between w-full bg-white text-black shadow p-0">
@@ -81,6 +80,7 @@ const Navigation: React.FC<Prop> = ({ session, collapsed, setCollapsed, currentP
           </Link> */}
           <Dropdown menu={{ items: MenuNav }} className="text-black hover:text-zinc-300">
             <a onClick={(e) => e.preventDefault()}>
+              {`${session.user.firstNameTh} ${session.user.lastNameTh} `}
               <Space>
                 <UserOutlined />
                 {/* {`${profile?.firstNameTh} ${profile?.lastNameTh}`} */}
@@ -100,7 +100,7 @@ const Navigation: React.FC<Prop> = ({ session, collapsed, setCollapsed, currentP
         open={open}
         width={250}
       >
-        <Menu mode="inline" defaultSelectedKeys={[currentPath]} style={{ height: 100, borderRight: 0 }} items={menulist} onClick={() => setOpen(!open)} />
+        <Menu mode="inline" selectedKeys={[currentPath]} style={{ height: 100, borderRight: 0 }} items={menulist} onClick={() => setOpen(!open)} />
       </Drawer>
     </>
   );

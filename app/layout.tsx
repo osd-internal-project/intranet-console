@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${prompt.className} m-0 `}>
+      <body className={` m-0 `}>
         <AuthProvider>
           <ConfigProvider
             theme={{

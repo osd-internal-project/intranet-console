@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Table } from 'antd';
+import { Table, Tag, Button } from 'antd';
 import axios from '@/app/lib/axios/axios';
 import type { TableProps } from 'antd';
+import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { BookingRoomServices } from "../services/booking-room.service"
+import dayjs from 'dayjs';
 
 interface DataType {
     key: string;
     no: number;
     roomname: string;
     type: string;
-    date: string;
-    time: string;
+    startDate: string;
+    endDate: string;
     bookername: string;
-    status: string;
+    bookingStatus: string;
     details: string;
 }
 
@@ -20,57 +23,93 @@ const columns: TableProps<DataType>['columns'] = [
         title: 'ลำดับ',
         dataIndex: 'no',
         key: 'no',
+        width: "50px",
         render: (_, record, index) => <>{index + 1}</>,
     },
     {
         title: 'ชื่อห้องประชุม',
-        dataIndex: 'roomname',
-        key: 'roomname',
+        dataIndex: 'roomName',
+        key: 'roomName',
+        width: "200px",
     },
     {
         title: 'ประเภทการจอง',
-        dataIndex: 'type',
-        key: 'type',
+        dataIndex: 'roomType',
+        key: 'roomType',
+        width: "150px",
     },
     {
         title: 'วันที่จอง',
-        dataIndex: 'date',
-        key: 'date',
+        key: 'bookingDate',
+        width: "250px",
+        render: (_, record) => (
+            <span>
+                {dayjs(record.startDate).format('YYYY-MM-DD')} - {dayjs(record.endDate).format('YYYY-MM-DD')}
+            </span>
+        ),
     },
     {
         title: 'เวลาจอง',
-        dataIndex: 'time',
-        key: 'time',
+        key: 'bookingTime',
+        width: "150px",
+        render: (_, record) => (
+            <span>
+                {dayjs(record.startDate).format('HH:mm')} - {dayjs(record.endDate).format('HH:mm')}
+            </span>
+        ),
     },
     {
         title: 'ชื่อผู้จอง',
-        dataIndex: 'bookername',
-        key: 'bookername',
+        dataIndex: 'bookerName',
+        key: 'bookerName',
+        width: "150px",
     },
     {
         title: 'สถานะ',
-        key: 'status',
-        dataIndex: 'status',
+        key: 'bookingStatus',
+        dataIndex: 'bookingStatus',
+        width: "100px",
+        render: (data: string) =>
+            data ? (
+                data === "process" ? (
+                    <Tag color="blue">กำลังรออนุมัติ</Tag>
+                ) : data === "success" ? (
+                    <Tag color="green">อนุมัติสำเร็จ</Tag>
+                ) : data === "cancel" ? (
+                    <Tag color="red">ยกเลิกการจอง</Tag>
+                ) : (
+                    ""
+                )
+            ) : (
+                ""
+            ),
     },
     {
         title: 'รายละเอียด',
-        key: 'details',
-        dataIndex: 'details',
+        key: 'note',
+        dataIndex: 'note',
+        width: "100px",
+        render: (data: Date) => (
+            <Button type="link" ghost>
+                รายละเอียด
+            </Button>
+        ),
     },
 ];
 
 const BookingTable = () => {
+    const stockAuth = useAxiosStock();
+    const bookingRoomServices = BookingRoomServices(stockAuth);
     const [data, setData] = useState<DataType[]>([]);
 
     useEffect(() => {
-        axios.get('https://665edcf31e9017dc16f1c666.mockapi.io/roomname')
-            .then(response => {
-                setData(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
-    }, []);
+        fetchData();
+    }, [data]);
+
+    const fetchData = async () => {
+        const bookingRoom = await bookingRoomServices.getBookingRoomQuery();
+        setData(bookingRoom);
+    };
 
     return (
         <Table columns={columns} dataSource={data} />

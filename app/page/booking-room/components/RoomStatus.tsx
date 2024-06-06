@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Space, Table, Tag } from 'antd';
 import type { TableProps } from 'antd';
 import axios from '@/app/lib/axios/axios';
+import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { BookingRoomServices } from "../services/booking-room.service"
 
 interface DataType {
     key: string;
@@ -20,33 +22,39 @@ const columns: TableProps<DataType>['columns'] = [
     },
     {
         title: 'ชื่อห้องประชุม',
-        dataIndex: 'roomname',
-        key: 'roomname',
+        dataIndex: 'roomName',
+        key: 'roomName',
     },
     {
         title: 'สถานะ',
-        dataIndex: 'status',
-        key: 'status',
+        dataIndex: 'roomsStatus',
+        key: 'roomsStatus',
+        render: (status: boolean) => (
+            status ? <Tag color="green">ใช้งานได้ปกติ</Tag> : <Tag color="red">อนุมัติสำเร็จ</Tag>
+        ),
     },
     {
         title: 'หมายเหตุ',
-        dataIndex: 'note',
-        key: 'note',
+        dataIndex: 'roomDescription',
+        key: 'roomDescription',
     },
 ];
 
 const RoomStatus = () => {
+    const stockAuth = useAxiosStock();
+    const bookingRoomServices = BookingRoomServices(stockAuth);
     const [data, setData] = useState<DataType[]>([]);
 
     useEffect(() => {
-        axios.get('https://665edcf31e9017dc16f1c666.mockapi.io/roomstatus')
-            .then(response => {
-                setData(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
+        fetchData();
     }, []);
+
+    const fetchData = async () => {
+        const bookingRoom = await bookingRoomServices.getMasterRoomQuery();
+        console.log(bookingRoom);
+
+        setData(bookingRoom);
+    };
 
     return (
         <Table columns={columns} dataSource={data} />

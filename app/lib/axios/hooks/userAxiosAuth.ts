@@ -1,6 +1,6 @@
 "use client";
 
-import { axiosUser, axiosReport, axiosStock } from "../axios";
+import { axiosUser, axiosReport, axiosStock, axiosIntranet } from "../axios";
 import { useSession, signOut } from "next-auth/react";
 import { useEffect } from "react";
 import { useRefreshToken } from "./useRefreshToken";
@@ -123,6 +123,7 @@ export const useAxiosUser = () => {
 
   return axiosUser;
 };
+
 export const useAxiosRefreshToken = (session: Session) => {
   useEffect(() => {
     if (session) {
@@ -138,4 +139,44 @@ export const useAxiosRefreshToken = (session: Session) => {
       };
     }
   }, [session]);
+};
+
+export const useAxiosIntranet = () => {
+  let checkTokentime = "active";
+  const { data: session } = useSession();
+  useEffect(() => {
+    const requestIntercept = axiosIntranet.interceptors.request.use(
+      (config) => {
+        if (!config.headers["Authorization"]) {
+          config.headers["Authorization"] = `Bearer ${session?.accessToken}`;
+        }
+        return config;
+      },
+      (error) => {
+        Promise.reject(error);
+      }
+    );
+
+    const responseIntercept = axiosIntranet.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const prevRequest = error.config;
+        if (error.response.status === 403 && !prevRequest.sent) {
+          prevRequest.sent = true;
+          prevRequest.headers["Authorization"] = `Bearer ${session?.accessToken}`;
+          message.error("หมดอายุการใช้งาน กรุณาเข้าสู่ระบบ");
+          signOut();
+          return axiosIntranet(prevRequest);
+        }
+
+        Promise.reject(error);
+      }
+    );
+    return () => {
+      axiosIntranet.interceptors.request.eject(requestIntercept);
+      axiosIntranet.interceptors.response.eject(responseIntercept);
+    };
+  }, [session]);
+
+  return axiosIntranet;
 };

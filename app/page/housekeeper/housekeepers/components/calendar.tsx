@@ -23,9 +23,9 @@ import {
 } from "antd";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
-import { HouseKeeperStockServices } from "../services/housekeeper.service";
-import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet, useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useForm } from "antd/es/form/Form";
+import { HouseKeeperStockServices } from "../services/housekeeper.service";
 
 type FieldType = {
   wrapupDate: string;
@@ -39,8 +39,8 @@ type FieldType = {
 const { Text } = Typography;
 const { TextArea } = Input;
 const CalendarComponent: React.FC = () => {
-  const stockAuth = useAxiosStock();
-  const houseKeeperStockServices = HouseKeeperStockServices(stockAuth);
+  const intranetAuth = useAxiosIntranet();
+  const houseKeeperStockServices = HouseKeeperStockServices(intranetAuth);
   const [form] = useForm();
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [listEventDate, setListEventDate] = useState([]);

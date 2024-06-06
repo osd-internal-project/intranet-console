@@ -135,7 +135,7 @@ export const MenuSider: MenuItem[] = [
   {
     key: "stock",
     icon: <BankOutlined />,
-    label: "STOCK",
+    label: "Stock",
     // rule: "menu-stock",
     children: [
       {
@@ -194,19 +194,19 @@ export const MenuSider: MenuItem[] = [
     ],
   },
   {
-    key: "housekeeper-menu",
+    key: "housekeeper",
     icon: <Icon icon="tabler:clipboard-list" width="20" height="20" />,
-    label: "HOUSEKEEPER",
+    label: "Housekeeper",
     // rule:'menu-housekeeper',
     children: [
       {
-        key: `housekeeper`,
+        key: `housekeeper/housekeepers`,
         icon: carlendarIcon,
         label: `Housekeeper`,
         // rule: "housekeeper",
       },
       {
-        key: `housekeeper-management`,
+        key: `housekeeper/housekeeper-management`,
         icon: editTagIcon,
         label: `Housekeeper Management`,
         // rule: "housekeeper",
@@ -216,7 +216,7 @@ export const MenuSider: MenuItem[] = [
   {
     key: "3",
     icon: <Icon icon="tabler:clipboard-list" width="20" height="20" />,
-    label: "BOOKING ROOM",
+    label: "Booking Room",
     children: [
       {
         key: `booking-room`,
@@ -235,7 +235,7 @@ export const MenuSider: MenuItem[] = [
   {
     key: "ma",
     icon: <Icon icon="tabler:clipboard-list" width="20" height="20" />,
-    label: "MA",
+    label: "Ma",
     // rule: "menu-ma",
     children: [
       {
@@ -246,7 +246,7 @@ export const MenuSider: MenuItem[] = [
       },
     ],
   },
-  { key: `admin`, label: `ADMIN`, disabled: true },
+  { key: `admin`, label: `Admin`, disabled: true },
   {
     key: `setting`,
     icon: <Icon icon="uil:setting" width="15" height="15" />,
@@ -257,7 +257,11 @@ export const MenuSider: MenuItem[] = [
         key: `setting/ma-type`,
         icon: colorSwatchIcon,
         label: `Ma Type`,
-        rule: "objective-show",
+      },
+      {
+        key: `setting/department`,
+        icon: buldingIcon,
+        label: `Department`,
       },
     ],
   },

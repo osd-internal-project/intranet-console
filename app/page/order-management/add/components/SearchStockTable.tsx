@@ -7,7 +7,7 @@ import React, { useEffect, useState } from "react";
 import { ITypeOrderLotForm } from "../../common";
 import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { dateToStringThNoTime, numberWithCommas } from "@/app/utils/format";
-import masterProductGroupServices from "@/app/page/setting/cetagory-group-type/services/master-product-group.service";
+import masterProductGroupServices from "@/app/page/stock-management/cetagory-group-type/services/master-product-group.service";
 
 export interface props {
   openModal: boolean;

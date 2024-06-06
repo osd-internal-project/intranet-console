@@ -21,7 +21,7 @@ const MaDescriptionComponent: React.FC<props> = ({ maTypes, updateMa }): React.R
       <Form layout="vertical" onFinish={updateMa}>
         <div className=" grid grid-cols-3">
           <Form.Item name={"actionDate"} label={"วันที่ดำเนินการ"} rules={[{ required: true, message: "กรุณาเลือก วันที่ดำเนินการ" }]}>
-            <DatePicker className=" w-10/12" />
+            <DatePicker className=" w-10/12" showTime={true} format={"DD/MM/YYYY HH:mm"} />
           </Form.Item>
           <Form.Item name={"maStatus"} label={"สถานะการดำเนินการ"} rules={[{ required: true, message: "กรุณาเลือก สถานะการดำเนินการ" }]}>
             <Select
@@ -59,7 +59,7 @@ const MaDescriptionComponent: React.FC<props> = ({ maTypes, updateMa }): React.R
                 <Input />
               </Form.Item>
               <Form.Item name={["nextTask", "maDate"]} label={"วันนัดหมาย"} rules={[{ required: true, message: "กรุณาเลือกวันนัดหมาย" }]}>
-                <DatePicker showTime={true} className=" w-full" />
+                <DatePicker showTime={true} className=" w-full" format={"DD/MM/YYYY HH:mm"} />
               </Form.Item>
               <Form.Item name={["nextTask", "contact"]} label={"ผู้นัดหมาย"}>
                 <Input />
@@ -67,7 +67,7 @@ const MaDescriptionComponent: React.FC<props> = ({ maTypes, updateMa }): React.R
               <Form.Item labelCol={{}} name={["nextTask", "detail"]} label={"เนื้อหา"} className="md:col-span-3">
                 <TextArea placeholder="maxLength is 255" maxLength={255} showCount={true} />
               </Form.Item>
-            </div>{" "}
+            </div>
           </Card>
         ) : (
           ""

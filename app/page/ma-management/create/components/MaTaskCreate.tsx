@@ -27,7 +27,7 @@ const MaTaskCreateComponent: React.FC<props> = ({ maTypes, loading, setLoading, 
             <Input />
           </Form.Item>
           <Form.Item name={"maDate"} label={"วันนัดหมาย"} rules={[{ required: true, message: "กรุณาเลือกวันนัดหมาย" }]}>
-            <DatePicker showTime={true} className=" w-full" />
+            <DatePicker showTime={true} className=" w-full" format={"DD/MM/YYYY HH:mm"} />
           </Form.Item>
           <Form.Item name={"contact"} label={"ผู้นัดหมาย"}>
             <Input />

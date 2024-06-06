@@ -11,6 +11,7 @@ import MaServices from "./services/ma.service";
 export default function MaTaskPage() {
   const stockAuth = useAxiosStock();
   const maServices = MaServices(stockAuth);
+  const [search, setSearch] = useState<object>({});
   const [loading, setloading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 20 });
   const [dataTable, setDataTable] = useState<ITMaTask[]>([]);
@@ -19,9 +20,10 @@ export default function MaTaskPage() {
   }, [loading]);
 
   const fetchData = async () => {
+    const maTypes = await maServices.findActiveType();
     const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
     const take: number = Number(pagination.pageSize);
-    const res = await maServices.findMaDataTable({ take: take, skip: skip });
+    const res = await maServices.findMaDataTable({ take: take, skip: skip, search: search });
     setDataTable(res.data);
     setPagination({ ...pagination, total: res.count });
     setloading(false);
@@ -69,11 +71,11 @@ export default function MaTaskPage() {
           </Link>
         </Col>
         <Col span={24}>
-          <div className="grid grid-cols-1 ">
-            <Card>
+          <Card>
+            <div className=" grid grid-cols-3">
               <MaTableComponent dataTable={dataTable} loading={loading} setLoading={(e: boolean) => setloading(e)} pagination={pagination} changePagination={changePagination} />
-            </Card>
-          </div>
+            </div>
+          </Card>
         </Col>
       </Row>
     </Spin>

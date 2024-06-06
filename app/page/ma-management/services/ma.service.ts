@@ -3,7 +3,7 @@ import { ITMaDetail, ITMaTask, ITMaType } from "../common";
 export interface TMaTaskServices {
   // findMaTaskAll: () => Promise<ITMaTask[]>;
   findMaTaskById: (id: number) => Promise<ITMaTask>;
-  findMaDataTable: (page: { take: number; skip: number }) => Promise<{ data: ITMaTask[]; count: number }>;
+  findMaDataTable: (page: { take: number; skip: number; search: object }) => Promise<{ data: ITMaTask[]; count: number }>;
   create: (form: any) => Promise<ITMaTask>;
   update: (id: number, form: any) => Promise<ITMaTask>;
   delete: (id: number) => Promise<ITMaTask>;
@@ -36,9 +36,9 @@ const UserServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
           return [];
         });
     },
-    findMaDataTable: async (page: { take: number; skip: number }) => {
+    findMaDataTable: async (req: { take: number; skip: number; search: object }) => {
       return await axiosInstance
-        .get(`${taskUrl}/data-table?take=${page.take}&skip=${page.skip}`)
+        .get(`${taskUrl}/data-table?take=${req.take}&skip=${req.skip}`, req.search)
         .then((res) => {
           return res.data;
         })

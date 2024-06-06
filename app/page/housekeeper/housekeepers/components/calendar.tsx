@@ -23,9 +23,9 @@ import {
 } from "antd";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
-import { HouseKeeperStockServices } from "../services/housekeeper.service";
-import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet, useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useForm } from "antd/es/form/Form";
+import { HouseKeeperStockServices } from "../services/housekeeper.service";
 
 type FieldType = {
   wrapupDate: string;
@@ -33,12 +33,14 @@ type FieldType = {
   housekeeper: string;
   duration: string;
   result: string;
+  remark?: string;
 };
 
 const { Text } = Typography;
+const { TextArea } = Input;
 const CalendarComponent: React.FC = () => {
-  const stockAuth = useAxiosStock();
-  const houseKeeperStockServices = HouseKeeperStockServices(stockAuth);
+  const intranetAuth = useAxiosIntranet();
+  const houseKeeperStockServices = HouseKeeperStockServices(intranetAuth);
   const [form] = useForm();
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [listEventDate, setListEventDate] = useState([]);
@@ -84,6 +86,7 @@ const CalendarComponent: React.FC = () => {
                 result: number;
                 duration: string;
                 wrapupDate: string;
+                remark: string;
               },
               index
             ) => {
@@ -95,6 +98,7 @@ const CalendarComponent: React.FC = () => {
                     content={
                       <>
                         <div className="grid grid-cols-1 gap-4">คนรับผิดชอบ: {item.houseKeepers.houseKeepName}</div>
+                        <div className="grid grid-cols-1 gap-4 text-red-700">หมายเหตุ: {item.remark ? item.remark : `-`}</div>
                         <div className="grid grid-cols-1 gap-4">
                           <Rate allowHalf defaultValue={item.result} disabled />
                         </div>
@@ -293,6 +297,9 @@ const CalendarComponent: React.FC = () => {
                   { value: 1, label: "แย่มาก" },
                 ]}
               />
+            </Form.Item>
+            <Form.Item<FieldType> label="หมายเหตุ" name="remark">
+              <TextArea />
             </Form.Item>
             <div className="flex justify-end">
               <Form.Item>

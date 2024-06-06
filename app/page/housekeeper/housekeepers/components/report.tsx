@@ -3,8 +3,8 @@ import { Button, Card, DatePicker, Form, message, Rate, Row, Select, Space, Tabl
 import React, { useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import { useAxiosReport, useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { HouseKeeperStockServices } from "../services/housekeeper.service";
 import dayjs from "dayjs";
+import { HouseKeeperStockServices } from "../services/housekeeper.service";
 
 type FieldType = {
   duration: string;
@@ -26,7 +26,6 @@ interface ResultItem extends TReport {
 const { RangePicker } = DatePicker;
 
 export default function ReportComponent() {
-  const stockAuth = useAxiosStock();
   const reportAuth = useAxiosReport();
   const houseKeeperStockServices = HouseKeeperStockServices(reportAuth);
   const [form] = useForm();

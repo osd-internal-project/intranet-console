@@ -251,7 +251,7 @@ export const MenuSider: MenuItem[] = [
     key: `setting`,
     icon: <Icon icon="uil:setting" width="15" height="15" />,
     label: `Setting`,
-    rule: "setting-show",
+    // rule: "setting-show",
     children: [
       {
         key: `setting/ma-type`,
@@ -262,6 +262,11 @@ export const MenuSider: MenuItem[] = [
         key: `setting/department`,
         icon: buldingIcon,
         label: `Department`,
+      },
+      {
+        key: `setting/typeleave`,
+        icon: buldingIcon,
+        label: `Type Leave`,
       },
     ],
   },

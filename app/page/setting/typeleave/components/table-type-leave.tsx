@@ -12,6 +12,7 @@ export interface props {
   formedit: any;
   onFinishEdit: (e: ITypetypeleave) => void;
   onFinishDel: (e: number) => void;
+  loading: boolean;
 }
 
 export const TableTypeLeave: React.FC<props> = ({
@@ -21,6 +22,7 @@ export const TableTypeLeave: React.FC<props> = ({
   formedit,
   onFinishEdit,
   onFinishDel,
+  loading,
 }): React.ReactElement => {
   const { Paragraph } = Typography;
   const columns: any = [
@@ -109,7 +111,6 @@ export const TableTypeLeave: React.FC<props> = ({
       title: "Action",
       dataIndex: "id",
       align: "center",
-      // fixed: "right",
       width: "100px",
       render: (event: number, row: ITypetypeleave, index: number) => {
         const data = {
@@ -155,7 +156,6 @@ export const TableTypeLeave: React.FC<props> = ({
   ];
   return (
     <div>
-      <Table size="small" dataSource={getdata} columns={columns} rowKey={(e) => e.id} scroll={{ x: "calc(500px + 100%)" }} />
       <Modal title="Edit" open={openModalEdit} onCancel={() => setOpenModalEdit(false)} footer={false}>
         <Form layout="vertical" form={formedit} autoComplete="off" onFinish={onFinishEdit}>
           <Form.Item className=" mb-0" name="id" hidden>
@@ -247,6 +247,7 @@ export const TableTypeLeave: React.FC<props> = ({
           </Form.Item>
         </Form>
       </Modal>
+      <Table size="small" loading={loading} dataSource={getdata} columns={columns} rowKey={(e) => e.id} scroll={{ x: "calc(500px + 100%)" }} />
     </div>
   );
 };

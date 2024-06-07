@@ -268,6 +268,11 @@ export const MenuSider: MenuItem[] = [
         icon: buldingIcon,
         label: `Type Leave`,
       },
+      {
+        key: `setting/master-holidays`,
+        icon: buldingIcon,
+        label: `Master Holidays`,
+      },
     ],
   },
   {

@@ -3,14 +3,14 @@ import React, { useEffect, useState } from "react";
 import { Breadcrumb, Card, Col, message, Row } from "antd";
 import MaDescriptionComponent from "./components/MaDescription";
 import { ITMaTask, ITMaType, ITMaUpdateForm, ITPagination } from "../common";
-import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import MaServices from "../services/ma.service";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 export default function MaTaskPage() {
   const { data: session } = useSession();
-  const stockAuth = useAxiosStock();
-  const maServices = MaServices(stockAuth);
+  const intranetAuth = useAxiosIntranet();
+  const maServices = MaServices(intranetAuth);
   const params = useParams<{ maId: string }>();
   const [loading, setloading] = useState<boolean>(true);
   const [data, setData] = useState<ITMaTask>();

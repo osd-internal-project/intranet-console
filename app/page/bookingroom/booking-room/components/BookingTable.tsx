@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Tag, Button } from 'antd';
-import axios from '@/app/lib/axios/axios';
 import type { TableProps } from 'antd';
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { BookingRoomServices } from "../services/booking-room.service"
@@ -100,9 +99,9 @@ const columns: TableProps<DataType>['columns'] = [
 
 const BookingTable = () => {
     const {data:session} = useSession();
-    const stockAuth = useAxiosIntranet();
-    const bookingRoomServices = BookingRoomServices(stockAuth);
-    const [data, setData] = useState<DataType[]>([]);
+    const intraAuth = useAxiosIntranet();
+    const bookingRoomServices = BookingRoomServices(intraAuth);
+    const [bookingdData, setBookingData] = useState<DataType[]>([]);
 
     useEffect(() => {
         fetchData();
@@ -111,11 +110,11 @@ const BookingTable = () => {
     const fetchData = async () => {
         console.log(session);
         const bookingRoom = await bookingRoomServices.getBookingRoomQuery();
-        setData(bookingRoom);
+        setBookingData(bookingRoom);
     };
 
     return (
-        <Table columns={columns} dataSource={data} />
+        <Table columns={columns} dataSource={bookingdData} />
     );
 };
 

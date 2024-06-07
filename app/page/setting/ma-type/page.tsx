@@ -5,12 +5,12 @@ import MaTypeCreateComponent from "./components/MaTypeCreate";
 import MaTypeTableComponent from "./components/MaTypeTable";
 import { ITMaType, ITMaTypeForm, ITPagination } from "./common";
 import MaTypeServices from "./services/ma.service";
-import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { AxiosInstance } from "axios";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+
 import { checkRule } from "@/app/utils/rules";
 export default function MaTaskPage() {
-  const stockAuth = useAxiosStock();
-  const maTypeServices = MaTypeServices(stockAuth);
+  const intranetAuth = useAxiosIntranet();
+  const maTypeServices = MaTypeServices(intranetAuth);
   const addRule = checkRule("ma-type-add");
   const showRule = checkRule("ma-type-show");
 

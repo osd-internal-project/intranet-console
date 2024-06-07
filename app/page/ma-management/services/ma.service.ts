@@ -8,10 +8,12 @@ export interface TMaTaskServices {
   update: (id: number, form: any) => Promise<ITMaTask>;
   delete: (id: number) => Promise<ITMaTask>;
   findActiveType: () => Promise<ITMaType[]>;
+  exportMaReport: (page: { search: object }) => Promise<ArrayBuffer>;
 }
 const UserServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
   const taskUrl = "/ma-task";
   const typeUrl = "/ma-type";
+  const reportUrl = "/report-ma-task";
 
   return {
     //   findMaTaskAll: async () => {
@@ -38,7 +40,7 @@ const UserServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
     },
     findMaDataTable: async (req: { take: number; skip: number; search: object }) => {
       return await axiosInstance
-        .get(`${taskUrl}/data-table?take=${req.take}&skip=${req.skip}`, req.search)
+        .get(`${taskUrl}/data-table?take=${req.take}&skip=${req.skip}`, { params: req.search })
         .then((res) => {
           return res.data;
         })
@@ -83,6 +85,17 @@ const UserServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
     findActiveType: async () => {
       return await axiosInstance
         .get(`${typeUrl}/active`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    exportMaReport: async (req: { search: object }) => {
+      return await axiosInstance
+        .post(`${reportUrl}/export`, { body: req.search }, { responseType: "arraybuffer" })
         .then((res) => {
           return res.data;
         })

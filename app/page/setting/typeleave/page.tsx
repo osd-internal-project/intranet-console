@@ -1,0 +1,126 @@
+"use client";
+import React, { useEffect, useState } from "react";
+import { Breadcrumb, Card, Col, Form, Modal, Row, message } from "antd";
+import { CreateTypeLeave } from "./components/create-type-leave";
+import { TableTypeLeave } from "./components/table-type-leave";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import MasterTypeLeaveService from "./services/index.service";
+import { Filtertypeleave, ITypetypeleave } from "./common";
+import { ExclamationCircleFilled } from "@ant-design/icons";
+import { dateToEndofDay, dateToStartofDay } from "@/app/utils/format";
+
+export default function TypeLeave() {
+  const Auth = useAxiosIntranet();
+  const mastertypeleaveService = MasterTypeLeaveService(Auth);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [getswitch, setSwitch] = useState<boolean>(false);
+  const [openFilter, setOpenFilter] = useState<boolean>(false);
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [getdata, setData] = useState<ITypetypeleave[]>([]);
+  const [params, setParams] = useState<object>({});
+
+  const [formfilters] = Form.useForm();
+  const [formcreate] = Form.useForm();
+
+  useEffect(() => {
+    if (loading) loadData();
+  }, [loading]);
+
+  const loadData = async () => {
+    const res = await mastertypeleaveService.getdataAll(params);
+    setData(res);
+    setLoading(false);
+  };
+  const onFinishCreate = (event: ITypetypeleave) => {
+    Modal.confirm({
+      title: "Add ",
+      icon: <ExclamationCircleFilled />,
+      content: "Are you sure you want to add this ?",
+      okText: "Confirm",
+      cancelText: "Cancel",
+      okButtonProps: {
+        style: {
+          backgroundColor: "#00a1df",
+          borderColor: "#00a1df",
+        },
+      },
+      onOk: async () => {
+        const result = await mastertypeleaveService.createTypeleave(event);
+        if (result) {
+          message.success(`Add success`);
+          formcreate.resetFields();
+          setOpenModal(false);
+          setSwitch(false);
+          setLoading(true);
+        }
+      },
+      onCancel() {
+        setLoading(false);
+      },
+    });
+  };
+  const onSearch = (event: Filtertypeleave) => {
+    let search = {};
+    if (event.typeName) {
+      search = { ...search, typeName: { contains: event.typeName } };
+    }
+    if (event.createdAt) {
+      search = {
+        ...search,
+        createdAt: {
+          gte: dateToStartofDay(event.createdAt[0]),
+          lte: dateToEndofDay(event.createdAt[1]),
+        },
+      };
+    }
+    setParams(search);
+    setLoading(true);
+    setOpenFilter(false);
+  };
+
+  return (
+    <>
+      <Row gutter={[8, 8]}>
+        <Col span={24} style={{ marginBottom: "20px" }}>
+          <Breadcrumb
+            items={[
+              {
+                href: "/page",
+                title: <span>Home</span>,
+              },
+              {
+                href: "/page/setting",
+                title: <span>Setting</span>,
+              },
+              {
+                title: <span>Set Type Leave </span>,
+              },
+            ]}
+          />
+        </Col>
+        <Col span={24}>
+          <div className="title-page-font">{`SET TYPE LEAVE`}</div>
+        </Col>
+      </Row>
+      <Row gutter={[8, 8]}>
+        <Col span={24}>
+          <Card className="grid grid-cols-1 ">
+            <CreateTypeLeave
+              onFinishCreate={onFinishCreate}
+              setSwitch={(e: boolean) => setSwitch(e)}
+              getswitch={getswitch}
+              setOpenFilter={(e: boolean) => setOpenFilter(e)}
+              setOpenModal={(e: boolean) => setOpenModal(e)}
+              openFilter={openFilter}
+              openModal={openModal}
+              formfilters={formfilters}
+              formcreate={formcreate}
+              onSearch={(e: any) => onSearch(e)}
+            />
+            <TableTypeLeave getdata={getdata} />
+          </Card>
+        </Col>
+      </Row>
+    </>
+  );
+}

@@ -13,9 +13,27 @@ import {
 import { Icon } from "@iconify/react";
 import { MenuProps } from "antd";
 import Link from "next/link";
-import React from "react";
+import React, { Children } from "react";
 import { signOut } from "next-auth/react";
-import { persentationChartLoneIcon } from "@/components/icon";
+import {
+  buldingIcon,
+  carlendarIcon,
+  circleSqureIcon,
+  colorSwatchIcon,
+  cubeIcon,
+  editTagIcon,
+  gridIcon,
+  groupLineIcon,
+  IconPosition,
+  mindMappingIcon,
+  persentationChartLoneIcon,
+  shieldExclamationIcon,
+  starIcon,
+  stockSetting,
+  truckIcon,
+  userGroupIcon,
+  warningIcon,
+} from "@/components/icon";
 
 type MenuItem = Required<MenuProps>["items"][number];
 const MenuNav: MenuProps["items"] = [
@@ -44,9 +62,80 @@ export default MenuNav;
 
 export const MenuSider: MenuItem[] = [
   {
+    key: "internal-info",
+    label: `Internal Info`,
+    children: [
+      {
+        key: `internal-info/organization-chart`,
+        label: `Organization Chart`,
+        // rule: "housekeeper",
+      },
+      {
+        key: `internal-info/excutive-devision`,
+        label: `Excutive Devision`,
+        // rule: "housekeeper",
+      },
+      {
+        key: `internal-info/finance-and-accounting-department`,
+        label: `Finance and Accounting Department`,
+        // rule: "housekeeper",
+      },
+      {
+        key: `internal-info/business-support-department`,
+        label: `Business Support Department`,
+        // rule: "housekeeper",
+      },
+      {
+        key: `internal-info/customer-relationship-management-department`,
+        label: `Customer Relationship Management Department`,
+        // rule: "housekeeper",
+      },
+      {
+        key: `internal-info/business-solution-consulting-department`,
+        label: `Business Solution Consulting Department`,
+        // rule: "housekeeper",
+      },
+      {
+        key: `internal-info/business-consulting-department`,
+        label: `Business Consulting Department`,
+        // rule: "housekeeper",
+      },
+      {
+        key: `internal-info/marketing-department`,
+        label: `Marketing Department`,
+        // rule: "housekeeper",
+      },
+      {
+        key: `internal-info/new-installation-department`,
+        label: `New Installation Department`,
+        // rule: "housekeeper",
+      },
+      {
+        key: `internal-info/service-and-support-department`,
+        label: `New Installation Department`,
+        // rule: "housekeeper",
+      },
+      {
+        key: `internal-info/voice-collaboration-department`,
+        label: `Voice Collaboration Department`,
+        // rule: "housekeeper",
+      },
+      {
+        key: `internal-info/network-department`,
+        label: `Network Department`,
+        // rule: "housekeeper",
+      },
+      {
+        key: `internal-info/research-and-development-department`,
+        label: `Research and Development Department`,
+        // rule: "housekeeper",
+      },
+    ],
+  },
+  {
     key: "stock",
     icon: <BankOutlined />,
-    label: "STOCK",
+    label: "Stock",
     // rule: "menu-stock",
     children: [
       {
@@ -105,20 +194,20 @@ export const MenuSider: MenuItem[] = [
     ],
   },
   {
-    key: "housekeeper-menu",
+    key: "housekeeper",
     icon: <Icon icon="tabler:clipboard-list" width="20" height="20" />,
-    label: "HOUSEKEEPER",
+    label: "Housekeeper",
     // rule:'menu-housekeeper',
     children: [
       {
-        key: `housekeeper`,
-        icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
+        key: `housekeeper/housekeepers`,
+        icon: carlendarIcon,
         label: `Housekeeper`,
         // rule: "housekeeper",
       },
       {
-        key: `housekeeper-management`,
-        icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
+        key: `housekeeper/housekeeper-management`,
+        icon: editTagIcon,
         label: `Housekeeper Management`,
         // rule: "housekeeper",
       },
@@ -127,16 +216,16 @@ export const MenuSider: MenuItem[] = [
   {
     key: "3",
     icon: <Icon icon="tabler:clipboard-list" width="20" height="20" />,
-    label: "BOOKING ROOM",
+    label: "Booking Room",
     children: [
       {
-        key: `booking-room`,
+        key: `bookingroom/booking-room`,
         icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
         label: `Booking room`,
         // rule: "housekeeper",
       },
       {
-        key: `booking-room-management`,
+        key: `bookingroom/booking-room-management`,
         icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
         label: `Booking room Management`,
         // rule: "housekeeper",
@@ -146,7 +235,7 @@ export const MenuSider: MenuItem[] = [
   {
     key: "ma",
     icon: <Icon icon="tabler:clipboard-list" width="20" height="20" />,
-    label: "MA",
+    label: "Ma",
     // rule: "menu-ma",
     children: [
       {
@@ -157,12 +246,135 @@ export const MenuSider: MenuItem[] = [
       },
     ],
   },
-  { key: `admin`, label: `ADMIN`, disabled: true },
+  { key: `admin`, label: `Admin`, disabled: true },
   {
     key: `setting`,
-    icon: <Icon icon="uil:setting" width="25" height="25" />,
+    icon: <Icon icon="uil:setting" width="15" height="15" />,
     label: `Setting`,
-    rule: "setting-show",
+    // rule: "setting-show",
+    children: [
+      {
+        key: `setting/ma-type`,
+        icon: colorSwatchIcon,
+        label: `Ma Type`,
+      },
+      {
+        key: `setting/department`,
+        icon: buldingIcon,
+        label: `Department`,
+      },
+      {
+        key: `setting/typeleave`,
+        icon: buldingIcon,
+        label: `Type Leave`,
+      },
+    ],
+  },
+  {
+    key: `users-management`,
+    icon: gridIcon,
+    label: `User Management`,
+    // rule: "setting-show",
+    children: [
+      {
+        key: `users-management/users`,
+        icon: groupLineIcon,
+        label: `Users`,
+        rule: "user-management-show",
+      },
+      {
+        key: `users-management/user-group`,
+        icon: userGroupIcon,
+        label: `Users Group`,
+        rule: "user-group-show",
+      },
+      {
+        key: `users-management/user-role`,
+        icon: mindMappingIcon,
+        label: `Users Role`,
+        rule: "user-role-show",
+      },
+      {
+        key: `users-management/user-rule`,
+        icon: shieldExclamationIcon,
+        label: `Users Rule`,
+        rule: "user-rule-show",
+      },
+      {
+        key: `users-management/masterdata-position`,
+        icon: IconPosition,
+        label: `Position`,
+        rule: "user-position-show",
+      },
+    ],
+  },
+  {
+    key: `stock-management`,
+    icon: stockSetting,
+    label: `Stock Management`,
+    // rule: "setting-show",
+    children: [
+      {
+        key: `stock-management/department`,
+        icon: buldingIcon,
+        label: `Department`,
+        rule: "department-show",
+      },
+      {
+        key: `stock-management/inventory`,
+        icon: cubeIcon,
+        label: `Inventory`,
+        rule: "inventory-show",
+      },
+      {
+        key: `stock-management/objective`,
+        icon: colorSwatchIcon,
+        label: `Objective`,
+        rule: "objective-show",
+      },
+      {
+        key: `stock-management/master-product-management`,
+        icon: cubeIcon,
+        label: `Master Product Management`,
+        rule: "m-product-show",
+      },
+      {
+        key: `stock-management/cetagory-group-type`,
+        icon: circleSqureIcon,
+        label: `Set Category & Group`,
+        rule: "mp-category-show",
+      },
+      {
+        key: `stock-management/unit`,
+        icon: gridIcon,
+        label: `Set Unit`,
+        rule: "mp-unit-show",
+      },
+      {
+        key: `stock-management/master-hazard-type`,
+        icon: colorSwatchIcon,
+        label: `Set Hazard Type`,
+        rule: "mp-hazard-type-show",
+      },
+      {
+        key: `stock-management/ghs`,
+        icon: warningIcon,
+        label: `Set GHS`,
+        rule: "mp-ghs-show",
+      },
+      {
+        key: `stock-management/vender`,
+        icon: truckIcon,
+        label: `Vender`,
+        rule: "vender-show",
+      },
+      {
+        key: `stock-management/brand`,
+        icon: starIcon,
+        label: `Set Brand`,
+        rule: "brand-show",
+      },
+    ],
   },
 ].map((item) => {
   // if (item?.children) {

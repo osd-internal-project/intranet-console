@@ -7,7 +7,7 @@ import ProductList from "./components/TableProductList";
 import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
 import ProductListServices from "./services/product-list.service";
 import { ITypeMasterLocation, ITypeMasterProduct, ITypeMasterProductForm, ITypeOption, filterproductlist, typeImages, typeImagesGHS } from "./common";
-import GhsServices from "../setting/ghs/services/ghs.service";
+import GhsServices from "../stock-management/ghs/services/ghs.service";
 import { InventoryStockServices } from "../inventory/services/inventory-stock.service";
 
 export default function ProductListPage() {

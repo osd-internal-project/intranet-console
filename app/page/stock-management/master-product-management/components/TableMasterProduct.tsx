@@ -9,7 +9,7 @@ import { ITypeMasterProduct } from "../common";
 import { dateToStringTh, numberWithCommas } from "@/app/utils/format";
 import { deleteIcon, editIcon } from "@/components/icon";
 import { typeImagesGHS } from "@/app/page/product-list/common";
-import GhsServices from "../../ghs/services/ghs.service";
+import GhsServices from "../../../stock-management/ghs/services/ghs.service";
 import { checkRule } from "@/app/utils/rules";
 
 const TableMasterProduct: React.FC = () => {

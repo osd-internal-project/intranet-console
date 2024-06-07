@@ -31,22 +31,22 @@ type TypeButtonData = TypeButton[];
 
 export default function Setting() {
   const [submenu, setSubmenu] = useState<TypeButtonData[]>([]);
-  const categories: string[] = ["PERMISSION ACCESS CONTROL", "INVENTORY MANAGEMENT", "PRODUCT MANAGEMENT"];
+  const categories: string[] = ["PRODUCT MANAGEMENT"];
   const buttonsData: TypeButtonData[] = [
-    [
-      { name_header: "User Management", name_path: "setting/usermanagement", icon: groupLineIcon, rule: "user-management-show" },
-      { name_header: "User Group", name_path: "setting/user-group", icon: userGroupIcon, rule: "user-group-show" },
-      { name_header: "User Role", name_path: "setting/user-role", icon: mindMappingIcon, rule: "user-role-show" },
-      // { name_header: "Organization", name_path: "setting/user-organization", icon: vectorIcon },
-      { name_header: "Set Rule", name_path: "setting/user-rule", icon: shieldExclamationIcon, rule: "user-rule-show" },
-      { name_header: "Set Position", name_path: "setting/masterdata-position", icon: IconPosition, rule: "user-position-show" },
-    ],
-    [
-      { name_header: "Department", name_path: "setting/department", icon: buldingIcon, rule: "department-show" },
-      { name_header: "Inventory Store", name_path: "setting/inventory", icon: cubeIcon, rule: "inventory-show" },
-      { name_header: "Set Objective", name_path: "setting/objective", icon: colorSwatchIcon, rule: "objective-show" },
-      { name_header: "Set MA Type", name_path: "setting/ma-type", icon: colorSwatchIcon, rule: "objective-show" },
-    ],
+    // [
+    //   { name_header: "User Management", name_path: "setting/usermanagement", icon: groupLineIcon, rule: "user-management-show" },
+    //   { name_header: "User Group", name_path: "setting/user-group", icon: userGroupIcon, rule: "user-group-show" },
+    //   { name_header: "User Role", name_path: "setting/user-role", icon: mindMappingIcon, rule: "user-role-show" },
+    //   // { name_header: "Organization", name_path: "setting/user-organization", icon: vectorIcon },
+    //   { name_header: "Set Rule", name_path: "setting/user-rule", icon: shieldExclamationIcon, rule: "user-rule-show" },
+    //   { name_header: "Set Position", name_path: "setting/masterdata-position", icon: IconPosition, rule: "user-position-show" },
+    // ],
+    // [
+    //   { name_header: "Department", name_path: "setting/department", icon: buldingIcon, rule: "department-show" },
+    //   { name_header: "Inventory Store", name_path: "setting/inventory", icon: cubeIcon, rule: "inventory-show" },
+    //   { name_header: "Set Objective", name_path: "setting/objective", icon: colorSwatchIcon, rule: "objective-show" },
+    //   { name_header: "Set MA Type", name_path: "setting/ma-type", icon: colorSwatchIcon, rule: "objective-show" },
+    // ],
     [
       { name_header: "Master Product Management ", name_path: "setting/master-product-management", icon: cubeIcon, rule: "m-product-show" },
       { name_header: "Set Category & Group ", name_path: "setting/cetagory-group-type", icon: circleSqureIcon, rule: "mp-category-show" },
@@ -55,6 +55,7 @@ export default function Setting() {
       { name_header: "Set GHS", name_path: "setting/ghs", icon: warningIcon, rule: "mp-ghs-show" },
       { name_header: "Vender", name_path: "setting/vender", icon: truckIcon, rule: "vender-show" },
       { name_header: "Set Brand", name_path: "setting/brand", icon: starIcon, rule: "brand-show" },
+      { name_header: "Master Type Leave", name_path: "setting/type-leave", icon: starIcon, rule: "m-type-leave" },
     ],
   ];
 

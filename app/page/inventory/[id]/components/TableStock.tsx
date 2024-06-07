@@ -28,7 +28,7 @@ import {
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { InventoryStockServices } from "../../services/inventory-stock.service";
-import GhsServices from "@/app/page/setting/ghs/services/ghs.service";
+import GhsServices from "@/app/page/stock-management/ghs/services/ghs.service";
 import { TableDetailLot } from "./TableDetailLot";
 import { dateToStringTh, numberWithCommas } from "@/app/utils/format";
 import type { UploadFile } from "antd/es/upload/interface";

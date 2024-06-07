@@ -18,3 +18,7 @@ export const axiosUser = axios.create({
   baseURL: config.backendUserUrl,
   headers: { "Content-Type": "application/json" },
 });
+export const axiosIntranet = axios.create({
+  baseURL: config.backendIntranetUrl,
+  headers: { "Content-Type": "application/json" },
+});

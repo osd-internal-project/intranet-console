@@ -1,5 +1,4 @@
 "use client";
-import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
 import {
   Breadcrumb,
   Button,
@@ -9,12 +8,12 @@ import {
   DatePicker,
   Form,
   Input,
-  InputNumber,
   message,
   Modal,
   Popover,
   Row,
   Space,
+  Switch,
   Table,
   Tabs,
   TabsProps,
@@ -22,25 +21,29 @@ import {
 } from "antd";
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
-import { HouseKeeperStockServices } from "../../housekeeper/services/housekeeper.service";
+import { useSession } from "next-auth/react";
+import { useAxiosIntranet, useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { render } from "react-dom";
 import { useForm } from "antd/es/form/Form";
 import { FilterOutlined } from "@ant-design/icons";
+import { HouseKeeperStockServices } from "../../housekeepers/services/housekeeper.service";
 
 type FieldType = {
   type: string;
-  floorId?: number;
-  floorName: string;
+  houseKeeperId?: number;
+  quitYourJob?: boolean;
+  houseKeepName: string;
 };
 
 const { RangePicker } = DatePicker;
 
-export default function Floor() {
-  const stockAuth = useAxiosStock();
-  const houseKeeperStockServices = HouseKeeperStockServices(stockAuth);
+export default function Housekeeper() {
+  const intranetAuth = useAxiosIntranet();
+  const houseKeeperStockServices = HouseKeeperStockServices(intranetAuth);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [openModalFilter, setOpenModalFilter] = useState<boolean>(false);
-  const [dataFloor, setDataFloor] = useState([]);
-  const [dataFloorCount, setDataFloorCount] = useState();
+  const [dataHouseKeeper, setDataHouseKeeper] = useState([]);
+  const [dataHouseKeeperCount, setDataHouseKeeperCount] = useState();
   const [titleModal, setTitleModal] = useState<string>("");
   const [form] = useForm();
   const [formFilter] = useForm();
@@ -50,24 +53,25 @@ export default function Floor() {
   }, []);
 
   const featData = async () => {
-    const result = await houseKeeperStockServices.getFloorQuery({});
-    const resultCount = await houseKeeperStockServices.getFloorCount({});
-    setDataFloorCount(resultCount);
-    setDataFloor(result);
+    const result = await houseKeeperStockServices.getHousekeeperQuery({});
+    const resultCount = await houseKeeperStockServices.getHousekeeperCount({});
+    setDataHouseKeeperCount(resultCount);
+    setDataHouseKeeper(result);
   };
 
   const columns = [
     {
-      title: "หมายเลข-ชั้น",
-      dataIndex: "floorId",
-      key: "floorId",
+      title: "ชื่อ",
+      dataIndex: "houseKeepName",
+      key: "houseKeepName",
       width: "20%",
     },
     {
-      title: "ชื่อ-ชั้น",
-      dataIndex: "floorName",
-      key: "floorName",
+      title: "สถานะ",
+      dataIndex: "quitYourJob",
+      key: "quitYourJob",
       width: "20%",
+      render: (value: boolean) => (!value ? <Tag color="red">ลาออก</Tag> : <Tag color="green">ยังอยู่</Tag>),
     },
     {
       title: "สร้างเมื่อ",
@@ -97,15 +101,14 @@ export default function Floor() {
   ];
 
   const onClickCreate = async () => {
-    setTitleModal("เพิ่มชั้น");
+    setTitleModal("เพิ่มแม่บ้าน");
     form.setFieldValue("type", "create");
     setOpenModal(true);
   };
 
   const onClickEdit = (row: any) => {
-    setTitleModal("แก้ใขชั้น");
+    setTitleModal("แก้ใขข้อมูลแม่บ้าน");
     form.setFieldsValue(row);
-    form.setFieldValue("type", "update");
     setOpenModal(true);
   };
 
@@ -122,9 +125,9 @@ export default function Floor() {
     const value = form.getFieldsValue();
     let resultCreate;
     if (value.type === "create") {
-      resultCreate = await houseKeeperStockServices.createFloor(value);
+      resultCreate = await houseKeeperStockServices.createHousekeeper(value);
     } else {
-      resultCreate = await houseKeeperStockServices.updateFloor(value);
+      resultCreate = await houseKeeperStockServices.updateHousekeeper(value);
     }
     if (resultCreate === 200) {
       message.error("Fault !!");
@@ -139,19 +142,19 @@ export default function Floor() {
   };
 
   const onFinishFilter = async () => {
-    const { floorName, createdAt, updatedAt } = formFilter.getFieldsValue();
-    const param = { floorName: floorName, createdAt: createdAt, updatedAt: updatedAt };
-    const result = await houseKeeperStockServices.getFloorQuery(param);
-    const resultCount = await houseKeeperStockServices.getFloorCount(param);
-    setDataFloorCount(resultCount);
-    setDataFloor(result);
+    const { houseKeepName, createdAt, updatedAt } = formFilter.getFieldsValue();
+    const param = { houseKeepName: houseKeepName, createdAt: createdAt, updatedAt: updatedAt };
+    const result = await houseKeeperStockServices.getHousekeeperQuery(param);
+    const resultCount = await houseKeeperStockServices.getHousekeeperCount(param);
+    setDataHouseKeeperCount(resultCount);
+    setDataHouseKeeper(result);
     setOpenModalFilter(false);
   };
 
   const searchContent = (
     <Form form={formFilter} layout="vertical" onFinish={onFinishFilter} autoComplete="off">
       <div className="grid grid-cols-1 md:gap-4 md:grid-cols-4">
-        <Form.Item label="ชื่อ" name="floorName">
+        <Form.Item label="ชื่อ" name="houseKeepName">
           <Input placeholder="Search Text" />
         </Form.Item>
         <Form.Item label="สร้างเมื่อ" name="createdAt">
@@ -190,25 +193,28 @@ export default function Floor() {
           </Space>
         </div>
         <div></div>
-        <Table columns={columns} dataSource={dataFloor} size="small" rowKey={"id"} />
+        <Table columns={columns} dataSource={dataHouseKeeper} size="small" />
         <Modal title={titleModal} open={openModal} onCancel={handleCancelModal} footer={[]}>
           <Form
             form={form}
             name="basic"
             initialValues={{ remember: true }}
-            labelCol={{ span: 6 }}
-            wrapperCol={{ span: 18 }}
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 20 }}
             onFinish={onFinish}
             autoComplete="off"
           >
+            <Form.Item<FieldType> name="houseKeeperId" hidden>
+              <Input />
+            </Form.Item>
             <Form.Item<FieldType> name="type" hidden>
               <Input />
             </Form.Item>
-            <Form.Item<FieldType> label="หมายเลข-ชั้น" name="floorId" rules={[{ required: true, message: "กรุณากรอกข้อมูล หมายเลข-ชั้น!" }]}>
-              <InputNumber disabled={form.getFieldValue("type") === "update"} />
-            </Form.Item>
-            <Form.Item<FieldType> label="ชื่อ-ชั้น" name="floorName" rules={[{ required: true, message: "กรุณากรอกข้อมูล ชื่อ-ชั้น!" }]}>
+            <Form.Item<FieldType> label="ชื่อ" name="houseKeepName" rules={[{ required: true, message: "กรุณากรอกข้อมูล ชืื่อ!" }]}>
               <Input />
+            </Form.Item>
+            <Form.Item<FieldType> label="สถานะ" name="quitYourJob" hidden={form.getFieldValue("type") === "create"}>
+              <Switch />
             </Form.Item>
 
             <div className="flex justify-end">

@@ -126,7 +126,7 @@ export default function MasterdataHolidays() {
   const onSearch = (event: FilterMasterdataHolidys) => {
     let search = {};
     if (event.holidaysName) {
-      search = { ...search, typeName: { contains: event.holidaysName } };
+      search = { ...search, holidaysName: { contains: event.holidaysName } };
     }
     if (event.createdAt) {
       search = {

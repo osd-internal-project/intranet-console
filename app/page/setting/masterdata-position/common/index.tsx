@@ -1,6 +1,7 @@
-export interface addPosition {
+export interface TCreatePositionDto {
   nameTh: string;
   nameEn: string;
+  departMentId: number;
 }
 export interface ITypeGetdataAll {
   id: number;

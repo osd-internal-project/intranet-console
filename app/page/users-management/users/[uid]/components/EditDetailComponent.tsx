@@ -2,7 +2,7 @@
 import { Button, Card, Checkbox, Form, Input, Modal, Select, Switch, message } from "antd";
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
-import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useForm } from "antd/es/form/Form";
 import { Icon } from "@iconify/react";
 import "../../style.css";
@@ -10,6 +10,8 @@ import { useRouter } from "next/navigation";
 import UserServices from "../../services/user.service";
 import MasterPositionServices from "../../services/position.service";
 import { dateToStringTh } from "@/app/utils/format";
+import DepartmentServices from "@/app/page/setting/department/services/department.service";
+import { TdepartmentFindMany } from "@/app/page/setting/department/common";
 export interface props {
   userid: string;
 }
@@ -26,6 +28,8 @@ type detailType = {
   createdAt: Date | null;
   updatedAt: Date | null;
   masterPositionId: any | null;
+  department: any;
+  departMentId: number;
 };
 type option = {
   label: number;
@@ -34,8 +38,10 @@ type option = {
 const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement => {
   const router = useRouter();
   const userAuth = useAxiosUser();
+  const intranetAuth = useAxiosIntranet();
   const userServices = UserServices(userAuth);
   const masterPositionServices = MasterPositionServices(userAuth);
+  const departmentServices = DepartmentServices(intranetAuth);
   const [detailForm] = useForm();
   const [repasswordForm] = Form.useForm();
   const [loading, setLoading] = useState(true);
@@ -43,15 +49,19 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
   const [openChangePassword, setOpenChangePassword] = useState(false);
   const [checkedActiveStatus, setCheckedActiveStatus] = useState<boolean>(false);
   const [positionOption, setPositionOption] = useState<option[]>([]);
+  const [department, setDepartment] = useState<TdepartmentFindMany[]>([]);
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
+
   useEffect(() => {
     if (loading) {
       loadingDetail();
     }
   }, [loading]);
+
   const loadingDetail = async () => {
     if (userid) {
       const data = (await userServices.getUsersByUserId(userid)) as detailType;
+      const resDepartment = await departmentServices.findMany();
       const formdata = {
         userId: data.userId,
         username: data.username,
@@ -62,7 +72,9 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
         createdAt: data.createdAt ? dateToStringTh(data.createdAt) : "",
         updatedAt: data.updatedAt ? dateToStringTh(data.updatedAt) : "",
         masterPositionId: data.masterPositionId,
+        departMentId: data.departMentId,
       };
+      setDepartment(resDepartment);
       setCheckedActiveStatus(data.activeStatus);
       detailForm.setFieldsValue(formdata);
       const positions = await masterPositionServices.getMasterPositionAll();
@@ -91,6 +103,7 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
         phoneNumber: value.phoneNumber,
         email: value.email,
         masterPositionId: value.masterPositionId,
+        departMentId: value.departMentId,
       };
       await userServices
         .updateUser(userid, updatdata)
@@ -176,10 +189,10 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
   return (
     <>
       <Card>
-        <Form form={detailForm} name="basic" wrapperCol={{ span: 16 }} onFinish={onSubmitEdit} autoComplete="off" layout="vertical">
-          <div className="grid grid-cols-1 md:grid-cols-3 space-y-0 ">
+        <Form form={detailForm} name="basic" onFinish={onSubmitEdit} autoComplete="off" layout="vertical">
+          <div className="grid grid-cols-4 gap-2">
             <div>
-              <Form.Item label="User Id" name="userId" style={{ marginBottom: "2px" }}>
+              <Form.Item label="User Id" name="userId">
                 <Input disabled={true} className="read-only-input2" />
               </Form.Item>
             </div>
@@ -187,19 +200,18 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
               <Form.Item
                 label="Username"
                 name="username"
-                style={{ marginBottom: "2px" }}
                 rules={[{ required: true, message: "Please enter username" }, { validator: validateNoSpaces }]}
               >
                 <Input disabled={disabledEdit} className={disabledEdit ? "read-only-input" : ""} />
               </Form.Item>
             </div>
             <div>
-              <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please enter email" }]} style={{ marginBottom: "2px" }}>
+              <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please enter email" }]}>
                 <Input disabled={disabledEdit} className={disabledEdit ? "read-only-input" : ""} />
               </Form.Item>
             </div>
             <div>
-              <Form.Item label="Status" name="activeStatus" style={{ marginBottom: "2px" }}>
+              <Form.Item label="Status" name="activeStatus">
                 <Switch
                   disabled={disabledEdit}
                   checkedChildren="Active"
@@ -211,36 +223,29 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
               </Form.Item>
             </div>
             <div>
-              <Form.Item label="Change Password" style={{ marginBottom: "2px" }}>
-                <div className=" flex w-full space-x-2">
-                  <div className=" w-2/3">
-                    <Input.Password disabled value={"1234"} className="read-only-input2" />
-                  </div>
-                  <div>
-                    <Button
-                      onClick={() => {
-                        setOpenChangePassword(true);
-                        repasswordForm.resetFields();
-                      }}
-                    >
-                      Change Password
-                    </Button>
-                  </div>
+              <Form.Item label="Change Password">
+                <div className="w-full">
+                  <Input.Password disabled value={"1234"} className="read-only-input2" />
                 </div>
               </Form.Item>
             </div>
-            <div></div>
-            <div className=" col-span-3">
-              <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-200" />
-            </div>
-
+          </div>
+          <div className=" col-span-3">
+            <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-200" />
+          </div>
+          <div className="grid grid-cols-4 gap-2">
             <div>
               <Form.Item label="First Name" name="firstNameTh" rules={[{ required: true, message: "Please enter first name" }]}>
                 <Input disabled={disabledEdit} className={disabledEdit ? "read-only-input" : ""} />
               </Form.Item>
             </div>
             <div>
-              <Form.Item label="Last Name" name="lastNameTh" rules={[{ required: true, message: "Please enter last Name" }]} style={{ marginBottom: "2px" }}>
+              <Form.Item
+                label="Last Name"
+                name="lastNameTh"
+                rules={[{ required: true, message: "Please enter last Name" }]}
+                style={{ marginBottom: "2px" }}
+              >
                 <Input disabled={disabledEdit} className={disabledEdit ? "read-only-input" : ""} />
               </Form.Item>
             </div>
@@ -249,18 +254,28 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                 label="Phone Number"
                 name="phoneNumber"
                 rules={[{ required: true, message: "Please enter phone number" }, { validator: validateOnlyNumbers }]}
-                style={{ marginBottom: "2px" }}
               >
                 <Input disabled={disabledEdit} className={disabledEdit ? "read-only-input" : ""} maxLength={12} />
               </Form.Item>
             </div>
             <div>
-              <Form.Item label="Position" name="masterPositionId" required style={{ marginBottom: "2px" }}>
+              <Form.Item label="Position" name="masterPositionId" required>
                 <Select options={positionOption} disabled={disabledEdit} className={disabledEdit ? "read-only-input" : ""} />
               </Form.Item>
             </div>
             <div>
-              <Form.Item label="Created Date" name="createdAt" style={{ marginBottom: "2px" }}>
+              <Form.Item label="Department" name="departMentId" required>
+                <Select
+                  options={department.map((item: TdepartmentFindMany) => ({ value: item.departId, label: item.departName }))}
+                  disabled={disabledEdit}
+                  className={disabledEdit ? "read-only-input" : ""}
+                />
+              </Form.Item>
+            </div>
+          </div>
+          <div className="grid grid-cols-4 gap-2">
+            <div>
+              <Form.Item label="Created Date" name="createdAt">
                 <Input disabled className="read-only-input2" />
               </Form.Item>
             </div>
@@ -297,8 +312,19 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
         </div>
       </Card>
       <Modal open={openChangePassword} onCancel={() => setOpenChangePassword(false)} footer={null} title="Change Password">
-        <Form form={repasswordForm} wrapperCol={{ span: 16 }} labelCol={{ span: 8 }} onFinish={changeUserPassword} autoComplete="off" style={{ marginTop: "5%" }}>
-          <Form.Item label="New Password" name="newPassword" rules={[{ required: true, message: "Please enter new password" }, { validator: validatePassword }]}>
+        <Form
+          form={repasswordForm}
+          wrapperCol={{ span: 16 }}
+          labelCol={{ span: 8 }}
+          onFinish={changeUserPassword}
+          autoComplete="off"
+          style={{ marginTop: "5%" }}
+        >
+          <Form.Item
+            label="New Password"
+            name="newPassword"
+            rules={[{ required: true, message: "Please enter new password" }, { validator: validatePassword }]}
+          >
             <Input.Password type="password" />
           </Form.Item>
           <Form.Item

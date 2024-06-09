@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 // import { addUnit } from "../common";
-import { addPosition } from "../common";
+import { TCreatePositionDto } from "../common";
 
 export const PositionServices = (axiosInstance: AxiosInstance) => {
   const apiListMasterPosition = "/master-position";
@@ -23,15 +23,9 @@ export const PositionServices = (axiosInstance: AxiosInstance) => {
         .then((result) => result.data)
         .catch((err) => err);
     },
-    create: async (data: addPosition) => {
-      const condition = {
-        data: {
-          nameTh: data.nameTh,
-          nameEn: data.nameEn,
-        },
-      };
+    create: async (data: TCreatePositionDto) => {
       return await axiosInstance
-        .post(`${apiListMasterPosition}`, condition)
+        .post(`${apiListMasterPosition}`, data)
         .then((result) => result.data)
         .catch((err) => err);
     },

@@ -5,12 +5,12 @@ import MaTableComponent from "./components/MaTable";
 import { ITMaDetail, ITMaTask, ITPagination } from "./common";
 import { FilterOutlined } from "@ant-design/icons";
 import Link from "next/link";
-import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import MaServices from "./services/ma.service";
 
 export default function MaTaskPage() {
-  const stockAuth = useAxiosStock();
-  const maServices = MaServices(stockAuth);
+  const intranetAuth = useAxiosIntranet();
+  const maServices = MaServices(intranetAuth);
   const [loading, setloading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 20 });
   const [dataTable, setDataTable] = useState<ITMaTask[]>([]);
@@ -71,7 +71,13 @@ export default function MaTaskPage() {
         <Col span={24}>
           <div className="grid grid-cols-1 ">
             <Card>
-              <MaTableComponent dataTable={dataTable} loading={loading} setLoading={(e: boolean) => setloading(e)} pagination={pagination} changePagination={changePagination} />
+              <MaTableComponent
+                dataTable={dataTable}
+                loading={loading}
+                setLoading={(e: boolean) => setloading(e)}
+                pagination={pagination}
+                changePagination={changePagination}
+              />
             </Card>
           </div>
         </Col>

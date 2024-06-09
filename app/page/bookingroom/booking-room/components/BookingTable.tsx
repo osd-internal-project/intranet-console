@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Tag, Button } from 'antd';
-import axios from '@/app/lib/axios/axios';
 import type { TableProps } from 'antd';
-import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { BookingRoomServices } from "../services/booking-room.service"
 import dayjs from 'dayjs';
+import { useSession } from 'next-auth/react';
 
 interface DataType {
     key: string;
@@ -98,21 +98,23 @@ const columns: TableProps<DataType>['columns'] = [
 ];
 
 const BookingTable = () => {
-    const stockAuth = useAxiosStock();
-    const bookingRoomServices = BookingRoomServices(stockAuth);
-    const [data, setData] = useState<DataType[]>([]);
+    const {data:session} = useSession();
+    const intraAuth = useAxiosIntranet();
+    const bookingRoomServices = BookingRoomServices(intraAuth);
+    const [bookingdData, setBookingData] = useState<DataType[]>([]);
 
     useEffect(() => {
         fetchData();
-    }, [data]);
+    }, []);
 
     const fetchData = async () => {
+        console.log(session);
         const bookingRoom = await bookingRoomServices.getBookingRoomQuery();
-        setData(bookingRoom);
+        setBookingData(bookingRoom);
     };
 
     return (
-        <Table columns={columns} dataSource={data} />
+        <Table columns={columns} dataSource={bookingdData} />
     );
 };
 

@@ -221,13 +221,13 @@ export const MenuSider: MenuItem[] = [
     label: "Booking Room",
     children: [
       {
-        key: `booking-room`,
+        key: `bookingroom/booking-room`,
         icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
         label: `Booking room`,
         // rule: "housekeeper",
       },
       {
-        key: `booking-room-management`,
+        key: `bookingroom/booking-room-management`,
         icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
         label: `Booking room Management`,
         // rule: "housekeeper",
@@ -253,7 +253,7 @@ export const MenuSider: MenuItem[] = [
     key: `setting`,
     icon: <Icon icon="uil:setting" width="15" height="15" />,
     label: `Setting`,
-    rule: "setting-show",
+    // rule: "setting-show",
     children: [
       {
         key: `setting/ma-type`,
@@ -270,6 +270,16 @@ export const MenuSider: MenuItem[] = [
         key: `setting/department`,
         icon: buldingIcon,
         label: `Department`,
+      },
+      {
+        key: `setting/typeleave`,
+        icon: buldingIcon,
+        label: `Type Leave`,
+      },
+      {
+        key: `setting/master-holidays`,
+        icon: buldingIcon,
+        label: `Master Holidays`,
       },
     ],
   },

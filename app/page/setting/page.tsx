@@ -55,6 +55,7 @@ export default function Setting() {
       { name_header: "Set GHS", name_path: "setting/ghs", icon: warningIcon, rule: "mp-ghs-show" },
       { name_header: "Vender", name_path: "setting/vender", icon: truckIcon, rule: "vender-show" },
       { name_header: "Set Brand", name_path: "setting/brand", icon: starIcon, rule: "brand-show" },
+      { name_header: "Master Type Leave", name_path: "setting/type-leave", icon: starIcon, rule: "m-type-leave" },
     ],
   ];
 

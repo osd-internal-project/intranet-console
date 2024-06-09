@@ -6,7 +6,6 @@ import MaTypeTableComponent from "./components/MaTypeTable";
 import { ITMaType, ITMaTypeForm, ITPagination } from "./common";
 import MaTypeServices from "./services/ma.service";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { AxiosInstance } from "axios";
 import { checkRule } from "@/app/utils/rules";
 
 export default function MaTaskPage() {

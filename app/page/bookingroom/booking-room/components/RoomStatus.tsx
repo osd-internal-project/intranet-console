@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Space, Table, Tag } from 'antd';
 import type { TableProps } from 'antd';
 import axios from '@/app/lib/axios/axios';
-import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { BookingRoomServices } from "../services/booking-room.service"
 
 interface DataType {
@@ -41,9 +41,9 @@ const columns: TableProps<DataType>['columns'] = [
 ];
 
 const RoomStatus = () => {
-    const stockAuth = useAxiosStock();
+    const stockAuth = useAxiosIntranet();
     const bookingRoomServices = BookingRoomServices(stockAuth);
-    const [data, setData] = useState<DataType[]>([]);
+    const [bookingData, setBookingData] = useState<DataType[]>([]);
 
     useEffect(() => {
         fetchData();
@@ -51,13 +51,11 @@ const RoomStatus = () => {
 
     const fetchData = async () => {
         const bookingRoom = await bookingRoomServices.getMasterRoomQuery();
-        console.log(bookingRoom);
-
-        setData(bookingRoom);
+        setBookingData(bookingRoom);
     };
 
     return (
-        <Table columns={columns} dataSource={data} />
+        <Table columns={columns} dataSource={bookingData} />
     );
 };
 

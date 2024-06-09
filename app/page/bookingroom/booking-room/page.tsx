@@ -1,15 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { Breadcrumb, Card, Col, Row, TabsProps, Tabs, Button, Modal, message, Form, Input, FormProps, Divider, Select, DatePicker } from "antd";
 import CalendarComponent from "./components/BookingCalendar";
 import TableComponent from "./components/BookingTable";
 import RoomStatusComponent from "./components/RoomStatus";
 import { BookingRoomServices } from "./services/booking-room.service"
 import { useForm } from "antd/es/form/Form";
+import { useSession } from 'next-auth/react';
 
-type FieldType = {
+type BookingType = {
     roomName: String,
     roomType: String,
     bookerName: String,
@@ -24,10 +25,18 @@ type FieldType = {
     note: String
 };
 
+type MasterRoomType = {
+    roomName: String,
+    roomDescription: String,
+    masterRoomTypeId: Number
+}
+
 const BookingRoomPage: React.FC = () => {
-    const stockAuth = useAxiosStock();
+    const {data:session} = useSession();
+    const stockAuth = useAxiosIntranet();
     const bookingRoomServices = BookingRoomServices(stockAuth);
     const [isModalBooking, setIsModalBooking] = useState(false);
+    const [masterRoomData, setMasterRoomData] = useState<MasterRoomType[]>([]);
     const [form] = useForm();
 
     const items: TabsProps["items"] = [
@@ -49,6 +58,10 @@ const BookingRoomPage: React.FC = () => {
     ];
 
     const showModal = () => {
+        form.setFieldsValue({ 
+            bookerName: `${session?.user.firstNameTh || ""} ${session?.user.lastNameTh || ""}`,
+            bookerPhone: session?.user.phoneNumber ? session?.user.phoneNumber : ""
+        });
         setIsModalBooking(true);
     };
 
@@ -60,20 +73,20 @@ const BookingRoomPage: React.FC = () => {
         console.log(key);
     };
 
-    const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+    const onFinish: FormProps<BookingType>['onFinish'] = async (values) => {
         const data = {
             roomName: values.roomName,
             roomType: values.roomType,
-            bookerName: values.bookerName,
-            bookerPhone: values.bookerPhone,
+            bookerName: session?.user.firstNameTh && session?.user.lastNameTh ? session?.user.firstNameTh + " " +session?.user.lastNameTh : "",
+            bookerPhone: session?.user.phoneNumber ? session?.user.phoneNumber : "",
             title: values.title,
             bookerDepartment: values.bookerDepartment,
             bookingStatus: "process",
             startDate: values.startDate,
             endDate: values.endDate,
-            member: values.member,
+            member: values.member ? values.member : "",
             outSider: values.outSider,
-            note: values.note
+            note: values.note ? values.note : ""
         }
         try {
             const reponse = await bookingRoomServices.createBookingRoom(data);
@@ -90,11 +103,13 @@ const BookingRoomPage: React.FC = () => {
         }
     };
 
-    const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
+    const onFinishFailed: FormProps<BookingType>['onFinishFailed'] = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
 
     const fetchData = async () => {
+        const bookingRoom = await bookingRoomServices.getMasterRoomQuery();
+        setMasterRoomData(bookingRoom);
     };
 
     useEffect(() => {
@@ -112,9 +127,10 @@ const BookingRoomPage: React.FC = () => {
             >
                 <Form
                     form={form}
+                    layout="vertical"
                     name="create"
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 20 }}
+                    labelCol={{ span: 16 }}
+                    wrapperCol={{ span: 120 }}
                     initialValues={{ remember: true }}
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
@@ -123,25 +139,28 @@ const BookingRoomPage: React.FC = () => {
                     <Divider orientation="left">ข้อมูลผู้จอง</Divider>
                     <Row gutter={16}>
                         <Col span={8}>
-                            <Form.Item<FieldType>
+                            <Form.Item<BookingType>
+                                label="ชื่อผู้จอง"
                                 name="bookerName"
-                                rules={[{ required: true, message: 'Please input your booker name!' }]}
+                                rules={[{ required: true, message: 'กรุณากรอกชื่อผู้จอง!' }]}
                             >
-                                <Input placeholder="กรอกชื่อผู้จอง" />
+                                <Input disabled  placeholder="กรอกชื่อผู้จอง" />
                             </Form.Item>
                         </Col>
                         <Col span={8}>
-                            <Form.Item<FieldType>
+                            <Form.Item<BookingType>
+                                label="เบอร์โทรศัพท์ผู้จอง"
                                 name="bookerPhone"
-                                rules={[{ required: true, message: 'Please input your telephone number!' }]}
+                                rules={[{ required: true, message: 'กรุณากรอกเบอร์โทรศัพท์ผู้จอง!' }]}
                             >
-                                <Input placeholder="กรอกเบอร์โทรศัพท์ผู้จอง" />
+                                <Input disabled placeholder="กรอกเบอร์โทรศัพท์ผู้จอง" />
                             </Form.Item>
                         </Col>
                         <Col span={8}>
-                            <Form.Item<FieldType>
+                            <Form.Item<BookingType>
+                                label="ชื่อแผนก"
                                 name="bookerDepartment"
-                                rules={[{ required: true, message: 'Please select your department!' }]}
+                                rules={[{ required: true, message: 'กรุณากรอกกรอกชื่อแผนก!' }]}
                             >
                                 <Select
                                     placeholder="โปรดเลือกเเผนกผู้จอง"
@@ -159,25 +178,28 @@ const BookingRoomPage: React.FC = () => {
                     <Divider orientation="left">ข้อมูลการจอง</Divider>
                     <Row gutter={16}>
                         <Col span={8}>
-                            <Form.Item<FieldType>
+                            <Form.Item<BookingType>
+                                label="ชื่อห้อง"
                                 name="roomName"
-                                rules={[{ required: true, message: 'Please select your room name!' }]}
+                                rules={[{ required: true, message: 'กรุณากเลือกห้องประชุม' }]}
                             >
                                 <Select
                                     placeholder="โปรดเลือกห้องประชุม"
                                     style={{ width: '100%' }}
-                                    options={[
-                                        { value: 'Room A', label: 'Room A' },
-                                        { value: 'Room B', label: 'Room B' },
-                                        { value: 'Room C', label: 'Room C' },
-                                    ]}
-                                />
+                                >
+                                    {masterRoomData.map(room => (
+                                        <Select.Option value={room.roomName}>
+                                            {room.roomName}
+                                        </Select.Option>
+                                    ))}
+                                </Select>
                             </Form.Item>
                         </Col>
                         <Col span={8}>
-                            <Form.Item<FieldType>
+                            <Form.Item<BookingType>
+                                label="วันที่เริ่มการจอง"
                                 name="startDate"
-                                rules={[{ required: true, message: 'Please select start date!' }]}
+                                rules={[{ required: true, message: 'กรุณากรอกวันที่เริ่มการจอง!' }]}
                             >
                                 <DatePicker
                                     placeholder="กรอกวันที่เริ่มการจอง"
@@ -187,9 +209,10 @@ const BookingRoomPage: React.FC = () => {
                             </Form.Item>
                         </Col>
                         <Col span={8}>
-                            <Form.Item<FieldType>
+                            <Form.Item<BookingType>
+                                label="วันที่สิ้นสุดการจอง"
                                 name="endDate"
-                                rules={[{ required: true, message: 'Please select end date!' }]}
+                                rules={[{ required: true, message: 'กรุณากรอกวันที่สิ้นสุดการจอง!' }]}
                             >
                                 <DatePicker
                                     placeholder="กรอกวันที่สิ้นสุดการจอง"
@@ -199,54 +222,59 @@ const BookingRoomPage: React.FC = () => {
                             </Form.Item>
                         </Col>
                         <Col span={8}>
-                            <Form.Item<FieldType>
+                            <Form.Item<BookingType>
+                                label="หัวข้อการประชุม"
                                 name="title"
-                                rules={[{ required: true, message: 'Please enter title!' }]}
+                                rules={[{ required: true, message: 'กรุณากรอกหัวข้อการประชุม!' }]}
                             >
                                 <Input placeholder="กรอกหัวข้อการประชุม" />
                             </Form.Item>
                         </Col>
                         <Col span={8}>
-                            <Form.Item<FieldType>
+                            <Form.Item<BookingType>
+                                label="ประเทภการจอง"
                                 name="roomType"
-                                rules={[{ required: true, message: 'Please select type!' }]}
+                                rules={[{ required: true, message: 'กรุณาเลือกประภทการประชุม!' }]}
                             >
                                 <Select
                                     placeholder="โปรดเลือกประภทการประชุม"
                                     style={{ width: '100%' }}
                                     options={[
-                                        { value: 'Meeting', label: 'Meeting' },
-                                        { value: 'Conference', label: 'Conference' },
-                                        { value: 'Workshop', label: 'Workshop' },
+                                        { value: 'Meeting', label: 'ประชุม (Meeting)' },
+                                        { value: 'Train', label: 'อบรม (Train)' },
+                                        { value: 'seminar', label: 'สัมมนา (seminar)' },
                                     ]}
                                 />
                             </Form.Item>
                         </Col>
                         <Col span={8}>
-                            <Form.Item<FieldType>
+                            <Form.Item<BookingType>
+                                label="จำนวนสมาชิก"
                                 name="member"
-                                rules={[{ required: true, message: 'Please enter number of members!' }]}
+                                // rules={[{ required: true, message: 'กรุณาระบุจำนวนผู้เข้าใช้งาน!' }]}
                             >
                                 <Input placeholder="กรอกจำนวนผู้เข้าใช้งาน" />
                             </Form.Item>
                         </Col>
                         <Col span={8}>
-                            <Form.Item<FieldType>
+                            <Form.Item<BookingType>
+                                label="บุคคลภายนอก"
                                 name="outSider"
-                                rules={[{ required: true, message: 'Please select if outsider is allowed!' }]}
+                                // rules={[{ required: true, message: 'กรุณาระบุข้อมูลบุคคลภายนอก!' }]}
                             >
                                 <Select
                                     placeholder="บุคคลภายนอก"
                                     style={{ width: '100%' }}
                                     options={[
-                                        { value: 'Yes', label: 'Yes' },
-                                        { value: 'No', label: 'No' },
+                                        { value: 'มี', label: 'มี' },
+                                        { value: 'ไม่มี', label: 'ไม่มี' },
                                     ]}
                                 />
                             </Form.Item>
                         </Col>
                         <Col span={8}>
-                            <Form.Item<FieldType>
+                            <Form.Item<BookingType>
+                                label="หมายเหตุ"
                                 name="note"
                             >
                                 <Input placeholder="หมายเหตุ" />

@@ -2,10 +2,22 @@ import { AxiosInstance } from "axios";
 
 const OrganizeServices = (axiosInstance: AxiosInstance) => {
   const organizeUrl = `organize-chart`;
+  const userMapOrganizeUrl = `user-map-organize`;
   return {
     getOrganizeAll: async () => {
       return await axiosInstance
         .get(`${organizeUrl}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    getOrganizeByType: async (type: string) => {
+      return await axiosInstance
+        .get(`${organizeUrl}/type/${type}`)
         .then((res) => {
           return res.data;
         })
@@ -34,6 +46,17 @@ const OrganizeServices = (axiosInstance: AxiosInstance) => {
         .catch((err) => {
           console.log(err);
           return [];
+        });
+    },
+    findChildrenUserById: async (positionId: any) => {
+      return await axiosInstance
+        .get(`${organizeUrl}/findChildrenUserById/${positionId}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return 500;
         });
     },
     getOneOrganizeById: async (id: any) => {
@@ -72,6 +95,39 @@ const OrganizeServices = (axiosInstance: AxiosInstance) => {
     deleteOrganize: async (organizeId: string) => {
       return await axiosInstance
         .delete(`${organizeUrl}/${organizeId}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return 500;
+        });
+    },
+    createUserMapOrganizeUrl: async (data: any) => {
+      return await axiosInstance
+        .post(`${userMapOrganizeUrl}`, data)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return 500;
+        });
+    },
+    findUserMapOrganizeUrl: async (positionId: any) => {
+      return await axiosInstance
+        .get(`${userMapOrganizeUrl}/byposition/${positionId}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return 500;
+        });
+    },
+    deleteUserMapOrganizeByUserId: async (userId: any) => {
+      return await axiosInstance
+        .delete(`${userMapOrganizeUrl}/${userId}`)
         .then((res) => {
           return res.data;
         })

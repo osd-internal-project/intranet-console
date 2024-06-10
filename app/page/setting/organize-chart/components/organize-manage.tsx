@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Col, Descriptions, DescriptionsProps, Form, Input, Modal, Row, Skeleton, Tree, message } from "antd";
+import { Button, Card, Col, Descriptions, DescriptionsProps, Form, Input, Modal, Row, Select, Skeleton, Tree, message } from "antd";
 import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ExclamationCircleFilled, PlusOutlined } from "@ant-design/icons";
 import { checkRule } from "@/app/utils/rules";
@@ -193,6 +193,18 @@ const OrganizeManage: React.FC<props> = ({ propDataManage, organizeSelect }): Re
               </Form.Item>
             </div>
             <div>
+              <Form.Item label="Type" name="type" rules={[{ required: true, message: "Please enter Type" }]}>
+                <Select
+                  disabled={!organizeDetail.parentPositionId || editState === false ? true : false}
+                  className={!editState ? "read-only-input" : ""}
+                  options={[
+                    { value: "department", label: "Deparlment" },
+                    { value: "position", label: "Position" },
+                  ]}
+                />
+              </Form.Item>
+            </div>
+            <div>
               <Form.Item name="description" label="Description :">
                 <Input.TextArea
                   disabled={!organizeDetail.parentPositionId || editState === false ? true : false}
@@ -247,9 +259,18 @@ const OrganizeManage: React.FC<props> = ({ propDataManage, organizeSelect }): Re
           <Form.Item label="Sub Position Name" name="positionName" rules={[{ required: true, message: "Please enter sub position name" }]}>
             <Input />
           </Form.Item>
+          <Form.Item label="Type" name="type" rules={[{ required: true, message: "Please enter Type" }]}>
+            <Select
+              options={[
+                { value: "department", label: "Deparlment" },
+                { value: "position", label: "Position" },
+              ]}
+            />
+          </Form.Item>
           <Form.Item label="Description" name="description">
             <Input.TextArea />
           </Form.Item>
+
           <Row gutter={[8, 8]} style={{ justifyContent: "end", display: "flex" }}>
             <Col>
               <Button

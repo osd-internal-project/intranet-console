@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Badge, Calendar, Card, Modal } from 'antd';
+import { Badge, Calendar, Card, Modal, Divider, Typography } from 'antd';
+import { Icon } from "@iconify/react";
 import type { CalendarProps } from 'antd';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
@@ -11,6 +12,7 @@ interface Booking {
     id: string;
     title: string;
     roomName: string;
+    bookerName: string;
     description: string;
     startDate: string;
     endDate: string;
@@ -29,6 +31,8 @@ const BookingCalendar: React.FC = () => {
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const { Title } = Typography;
 
     const showModal = (booking: Booking) => {
         setSelectedBooking(booking);
@@ -118,19 +122,23 @@ const BookingCalendar: React.FC = () => {
     return (
         <>
             <Card>
-                <Calendar cellRender={cellRender} />
+                <Calendar cellRender={cellRender}/>
             </Card>
             {selectedBooking && (
                 <Modal
-                    title={selectedBooking.title}
                     visible={isModalVisible}
                     onOk={handleOk}
                     onCancel={handleCancel}
                 >
-                    <p>{selectedBooking.description}</p>
-                    <p>Start Time: {dayjs(selectedBooking.startDate).format('YYYY-MM-DD HH:mm')}</p>
-                    <p>End Time: {dayjs(selectedBooking.endDate).format('YYYY-MM-DD HH:mm')}</p>
-                </Modal>
+                    <Divider orientation="left" style={{ fontWeight: 'bold' }}><Title level={4}><Icon icon="cil:room" /> {selectedBooking.roomName}</Title></Divider>
+                    <Divider orientation="left" style={{ fontWeight: 'bold' }}>ข้อมูลการจอง</Divider>
+                    <Title level={5} style={{ marginLeft: '24px' }}><strong>หัวข้อประชุม :</strong> {selectedBooking.title}</Title>
+                    <Title level={5} style={{ marginLeft: '24px' }}><strong>วันที่จอง :</strong> {dayjs(selectedBooking.startDate).format('YYYY-MM-DD')} - {dayjs(selectedBooking.endDate).format('YYYY-MM-DD')}</Title>
+                    <Title level={5} style={{ marginLeft: '24px' }}><strong>เวลาที่จอง :</strong> {dayjs(selectedBooking.startDate).format('HH:mm')} - {dayjs(selectedBooking.endDate).format('HH:mm')}</Title>
+                    <Divider orientation="left" style={{ fontWeight: 'bold' }}>ข้อมูลผู้จอง</Divider>
+                    <Title level={5} style={{ marginLeft: '24px' }}><strong>ชื่อผู้จอง :</strong> {selectedBooking.bookerName}</Title>
+                    
+                </Modal >
             )}
         </>
     );

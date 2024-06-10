@@ -27,7 +27,7 @@ export default function HomePage() {
           <Card style={{ textAlign: "center" }}>
             <TeamOutlined style={{ fontSize: "30px", color: "#0693E3" }} />
             <br />
-            <a href="/page/booking-room">จองห้องประชุมออนไลน์</a>
+            <a href="/page/bookingroom/booking-room">จองห้องประชุมออนไลน์</a>
           </Card>
         </Col>
         <Col span={8}>

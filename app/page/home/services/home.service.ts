@@ -4,7 +4,7 @@ export interface TMaTaskServices {
   findMasterRoomAll: () => Promise<ITMaTask>;
 
 }
-const UserServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
+const HomeServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
   const taskUrl = "/ma-task";
   const typeUrl = "/ma-type";
 

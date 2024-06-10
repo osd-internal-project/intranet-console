@@ -6,7 +6,7 @@ export interface TMaServices {
   update: (id: number, form: ITMaTypeForm) => Promise<ITMaType>;
   delete: (id: number) => Promise<ITMaType>;
 }
-const UserServices = (axiosInstance: AxiosInstance): TMaServices => {
+const MaTypesServices = (axiosInstance: AxiosInstance): TMaServices => {
   const userUrl = "/ma-type";
   return {
     findMaTypeAll: async () => {
@@ -56,4 +56,4 @@ const UserServices = (axiosInstance: AxiosInstance): TMaServices => {
   };
 };
 
-export default UserServices;
+export default MaTypesServices;

@@ -11,7 +11,7 @@ export interface TMaTaskServices {
   findActiveType: () => Promise<ITMaType[]>;
   exportMaReport: (page: { search: object }) => Promise<ArrayBuffer>;
 }
-const UserServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
+const MaServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
   const taskUrl = "/ma-task";
   const typeUrl = "/ma-type";
   const reportUrl = "/report-ma-task";
@@ -120,4 +120,4 @@ const UserServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
   };
 };
 
-export default UserServices;
+export default MaServices;

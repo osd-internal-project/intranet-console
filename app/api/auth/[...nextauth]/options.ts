@@ -32,7 +32,6 @@ export const authOptions = {
               return null;
             });
           // console.log("login response");
-          // console.log(response);
           if (!response) {
             return null;
           }
@@ -56,7 +55,6 @@ export const authOptions = {
     async session({ session, token }: { session: any; token: any }) {
       // const authToken = await refreshAccessToken(session, token);
       const profile = jwt.decode(token.accessToken) as jwt.JwtPayload;
-
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
       session.user = { ...profile };

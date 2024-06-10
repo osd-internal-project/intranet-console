@@ -7,6 +7,7 @@ declare module "next-auth" {
       username: string;
       firstNameTh: string;
       lastNameTh: string;
+      phoneNumber: string;
       email: string;
       ownerGroup: string;
     };

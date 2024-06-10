@@ -24,8 +24,12 @@ import {
   editTagIcon,
   gridIcon,
   groupLineIcon,
+  IconDataLeave,
+  IconHolidays,
   IconPosition,
+  IconTypeLeave,
   mindMappingIcon,
+  organizeChart,
   persentationChartLoneIcon,
   shieldExclamationIcon,
   starIcon,
@@ -62,7 +66,13 @@ export default MenuNav;
 
 export const MenuSider: MenuItem[] = [
   {
+    key: "data-leave",
+    icon: IconDataLeave,
+    label: `Data Leave`,
+  },
+  {
     key: "internal-info",
+    icon: organizeChart,
     label: `Internal Info`,
     children: [
       {
@@ -134,7 +144,7 @@ export const MenuSider: MenuItem[] = [
   },
   {
     key: "stock",
-    icon: <BankOutlined />,
+    icon: <BankOutlined width={15} height={15} />,
     label: "Stock",
     // rule: "menu-stock",
     children: [
@@ -195,7 +205,7 @@ export const MenuSider: MenuItem[] = [
   },
   {
     key: "housekeeper",
-    icon: <Icon icon="tabler:clipboard-list" width="20" height="20" />,
+    icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
     label: "Housekeeper",
     // rule:'menu-housekeeper',
     children: [
@@ -233,15 +243,15 @@ export const MenuSider: MenuItem[] = [
     ],
   },
   {
-    key: "ma",
-    icon: <Icon icon="tabler:clipboard-list" width="20" height="20" />,
-    label: "Ma",
+    key: "maintenance",
+    icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
+    label: "Maintenance",
     // rule: "menu-ma",
     children: [
       {
-        key: `ma-management`,
-        icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
-        label: `MA Management`,
+        key: `maintenance-management`,
+        icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
+        label: `Maintenance Management`,
         // rule: "ma-task-show",
       },
     ],
@@ -259,14 +269,30 @@ export const MenuSider: MenuItem[] = [
         label: `Ma Type`,
       },
       {
+        key: `setting/organize-chart`,
+        icon: organizeChart,
+        label: `Organize Chart`,
+        // rule: "user-position-show",
+      },
+      {
         key: `setting/department`,
         icon: buldingIcon,
         label: `Department`,
       },
       {
         key: `setting/typeleave`,
-        icon: buldingIcon,
+        icon: IconTypeLeave,
         label: `Type Leave`,
+      },
+      {
+        key: `setting/master-holidays`,
+        icon: IconHolidays,
+        label: `Master Holidays`,
+      },
+      {
+        key: `setting/masterdata-position`,
+        icon: IconPosition,
+        label: `Master Position`,
       },
     ],
   },
@@ -299,12 +325,6 @@ export const MenuSider: MenuItem[] = [
         icon: shieldExclamationIcon,
         label: `Users Rule`,
         rule: "user-rule-show",
-      },
-      {
-        key: `users-management/masterdata-position`,
-        icon: IconPosition,
-        label: `Position`,
-        rule: "user-position-show",
       },
     ],
   },

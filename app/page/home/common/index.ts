@@ -1,0 +1,1 @@
+//export interface ITMasterRoom = { id: number};

@@ -6,8 +6,8 @@ import MaTypeTableComponent from "./components/MaTypeTable";
 import { ITMaType, ITMaTypeForm, ITPagination } from "./common";
 import MaTypeServices from "./services/ma.service";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-
 import { checkRule } from "@/app/utils/rules";
+
 export default function MaTaskPage() {
   const intranetAuth = useAxiosIntranet();
   const maTypeServices = MaTypeServices(intranetAuth);
@@ -17,17 +17,21 @@ export default function MaTaskPage() {
   const [loading, setloading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<ITPagination>({ current: 1, pageSize: 10 });
   const [dataTable, setDataTable] = useState<ITMaType[]>([]);
+  
   useEffect(() => {
     if (loading === true) fetchData();
   }, [loading]);
+
   const fetchData = async () => {
     const data = await maTypeServices.findMaTypeAll();
     setDataTable(data);
     setloading(false);
   };
+
   const changePagination = (page: ITPagination) => {
     console.log(page);
   };
+
   async function createMaType(form: ITMaTypeForm): Promise<void> {
     await maTypeServices.create(form);
     setloading(true);

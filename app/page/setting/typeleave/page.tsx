@@ -16,11 +16,13 @@ export default function TypeLeave() {
   const [getswitch, setSwitch] = useState<boolean>(false);
   const [openFilter, setOpenFilter] = useState<boolean>(false);
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
   const [getdata, setData] = useState<ITypetypeleave[]>([]);
   const [params, setParams] = useState<object>({});
 
   const [formfilters] = Form.useForm();
   const [formcreate] = Form.useForm();
+  const [formedit] = Form.useForm();
 
   useEffect(() => {
     if (loading) loadData();
@@ -59,6 +61,75 @@ export default function TypeLeave() {
       },
     });
   };
+
+  const onFinishEdit = (event: ITypetypeleave) => {
+    const condition = {
+      where: {
+        id: event.id,
+      },
+      data: {
+        descriptionLeave: event.descriptionLeave,
+        forwardLeave: event.forwardLeave,
+        limitLeaveFour: event.limitLeaveFour,
+        limitLeaveOne: event.limitLeaveOne,
+        limitLeaveThree: event.limitLeaveThree,
+        limitLeaveTwo: event.limitLeaveTwo,
+        typeEveryDay: event.typeEveryDay,
+        typeId: event.typeId,
+        typeName: event.typeName,
+        typeNameEn: event.typeNameEn,
+        typeNameTh: event.typeNameTh,
+        updatedAt: event.updatedAt,
+      },
+    };
+    Modal.confirm({
+      title: "Edit ",
+      icon: <ExclamationCircleFilled />,
+      content: "Are you sure you want to Edit this ?",
+      okText: "Confirm",
+      cancelText: "Cancel",
+      okButtonProps: {
+        style: {
+          backgroundColor: "#00a1df",
+          borderColor: "#00a1df",
+        },
+      },
+      onOk: async () => {
+        const result = await mastertypeleaveService.updateTypeleave(condition);
+        if (result) {
+          message.success(`Edit success`);
+          formedit.resetFields();
+          setOpenModalEdit(false);
+          setLoading(true);
+        }
+      },
+      onCancel() {
+        setLoading(false);
+      },
+    });
+  };
+
+  const onFinishDel = (event: number) => {
+    Modal.confirm({
+      title: "Delete this unit",
+      icon: <ExclamationCircleFilled />,
+      content: "Are you sure you want to delete this ?",
+      okText: "Confirm",
+      okButtonProps: { type: "primary", danger: true },
+      cancelText: "Cancel",
+      onOk: async () => {
+        const dataResult = await mastertypeleaveService.deleteTypeleave(event);
+        if (dataResult) {
+          message.success(`Delete success`);
+          setLoading(true);
+        }
+      },
+      onCancel() {
+        setLoading(false);
+      },
+    });
+  };
+
   const onSearch = (event: Filtertypeleave) => {
     let search = {};
     if (event.typeName) {
@@ -117,7 +188,15 @@ export default function TypeLeave() {
               formcreate={formcreate}
               onSearch={(e: any) => onSearch(e)}
             />
-            <TableTypeLeave getdata={getdata} />
+            <TableTypeLeave
+              getdata={getdata}
+              setOpenModalEdit={(e: boolean) => setOpenModalEdit(e)}
+              openModalEdit={openModalEdit}
+              formedit={formedit}
+              onFinishEdit={(e: ITypetypeleave) => onFinishEdit(e)}
+              onFinishDel={(e: number) => onFinishDel(e)}
+              loading={loading}
+            />
           </Card>
         </Col>
       </Row>

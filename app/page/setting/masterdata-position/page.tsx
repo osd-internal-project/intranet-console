@@ -4,15 +4,20 @@ import { Breadcrumb, Col, Row } from "antd";
 import { useEffect, useState } from "react";
 import { AddMasterdataPosition } from "./components/AddMasterdataPosition";
 import { TableMasterdataPosition } from "./components/TableMasterdataPosition";
-import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { PositionServices } from "./services/position.service";
 import { ITypeGetdataAll } from "./common";
+import DepartmentServices from "../department/services/department.service";
+import { TdepartmentFindMany } from "../department/common";
 
-export default function UnitPage() {
+export default function MasterDataPositionPage() {
   const userAuth = useAxiosUser();
+  const intranetAuth = useAxiosIntranet();
   const positionServices = PositionServices(userAuth);
+  const departmentServices = DepartmentServices(intranetAuth);
   const [getloading, setLoading] = useState<boolean>(true);
   const [getdataAll, setdataAll] = useState<ITypeGetdataAll[]>([]);
+  const [departMent, setDepartMent] = useState<TdepartmentFindMany[]>([]);
   const [openFilter, setOpenFilter] = useState<boolean>(false);
   const [search, setSearch] = useState<object>({});
 
@@ -48,11 +53,14 @@ export default function UnitPage() {
 
   const fecthData = async () => {
     const result = await positionServices.findMany(search);
+    const resDepartment = await departmentServices.findMany();
+    setDepartMent(resDepartment);
     if (result) {
       setdataAll(result);
       setLoading(false);
     }
   };
+
   return (
     <>
       <Row gutter={[8, 8]}>
@@ -80,7 +88,7 @@ export default function UnitPage() {
       <Row gutter={[8, 8]}>
         <Col span={24}>
           <div className="title-page-font">
-            <AddMasterdataPosition setLoading={(e: boolean) => setLoading(e)} />
+            <AddMasterdataPosition departMent={departMent} setLoading={(e: boolean) => setLoading(e)} />
           </div>
         </Col>
       </Row>

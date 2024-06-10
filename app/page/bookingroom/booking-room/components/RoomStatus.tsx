@@ -51,7 +51,6 @@ const RoomStatus = () => {
 
     const fetchData = async () => {
         const bookingRoom = await bookingRoomServices.getMasterRoomQuery();
-
         setBookingData(bookingRoom);
     };
 

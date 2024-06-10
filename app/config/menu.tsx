@@ -28,6 +28,7 @@ import {
   IconHolidays,
   IconPosition,
   IconTypeLeave,
+  maintenanceIcon,
   mindMappingIcon,
   organizeChart,
   persentationChartLoneIcon,
@@ -254,13 +255,13 @@ export const MenuSider: MenuItem[] = [
   },
   {
     key: "maintenance",
-    icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
+    icon: maintenanceIcon,
     label: "Maintenance",
     // rule: "menu-ma",
     children: [
       {
         key: `maintenance-management`,
-        icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
+        // icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
         label: `Maintenance Management`,
         // rule: "ma-task-show",
       },
@@ -274,7 +275,7 @@ export const MenuSider: MenuItem[] = [
     // rule: "setting-show",
     children: [
       {
-        key: `setting/ma-type`,
+        key: `setting/maintenance-type`,
         icon: colorSwatchIcon,
         label: `Ma Type`,
       },

@@ -36,7 +36,7 @@ const MaTypeTableComponent: React.FC<props> = ({ dataTable, loading, setLoading,
 
   function showModalDelete(id: number): void {
     Modal.confirm({
-      title: "Delete this MA Type",
+      title: "Delete this Maintenance Type",
       icon: <ExclamationCircleFilled />,
       content: "Are you sure you want to delete this ?",
       okText: "Confirm",
@@ -96,7 +96,7 @@ const MaTypeTableComponent: React.FC<props> = ({ dataTable, loading, setLoading,
     <>
       <Table columns={maColumns} dataSource={dataTable} size="small" rowKey={(data: ITMaType) => data.id} />
       <Modal
-        title="Edit MA Type"
+        title="Edit Maintenance Type"
         open={editId ? true : false}
         footer={[]}
         onCancel={() => {

@@ -40,7 +40,7 @@ export default function MaTaskCreatePage() {
       .create(form)
       .then((res) => {
         message.success("สร้าง MA สำเร็จ");
-        router.push("/page/ma-management");
+        router.push("/page/maintenance-management");
       })
       .catch((err) => {
         message.error("ไม่สามารถสร้าง MA ได้");
@@ -59,11 +59,11 @@ export default function MaTaskCreatePage() {
                 title: <span>Home</span>,
               },
               {
-                href: "/page/ma-management",
-                title: <span>MA Mangement</span>,
+                href: "/page/maintenance-management",
+                title: <span>Maintenance Mangement</span>,
               },
               {
-                title: <span>Create MA Task</span>,
+                title: <span>Create Maintenance Task</span>,
               },
             ]}
           />

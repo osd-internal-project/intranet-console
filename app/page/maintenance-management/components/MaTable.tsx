@@ -63,7 +63,7 @@ const MaTableComponent: React.FC<props> = ({ dataTable, loading, setLoading, pag
       title: "ดำเนินการ",
       width: "200px",
       render: (data: number) => (
-        <Link href={`/page/ma-management/${data}`}>
+        <Link href={`/page/maintenance-management/${data}`}>
           <Button type="link">รายละเอียด</Button>
         </Link>
       ),

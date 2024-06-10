@@ -70,14 +70,14 @@ export default function MaTaskPage() {
                 title: <span>Home</span>,
               },
               {
-                href: "/page/ma-management",
-                title: <span>MA Mangement</span>,
+                href: "/page/maintenance-management",
+                title: <span>Maintenance Mangement</span>,
               },
             ]}
           />
         </Col>
         <Col span={24}>
-          <div className="title-page-font">{`MA DESCRIPTION`}</div>
+          <div className="title-page-font">{`MAINTENANCE DESCRIPTION`}</div>
         </Col>
         <Col span={24}>
           <div className="grid grid-cols-1 ">

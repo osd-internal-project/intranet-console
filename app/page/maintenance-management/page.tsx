@@ -93,20 +93,20 @@ export default function MaTaskPage() {
                 title: <span>Home</span>,
               },
               {
-                title: <span>MA Mangement</span>,
+                title: <span>Maintenance Mangement</span>,
               },
             ]}
           />
         </Col>
         <Col span={24}>
-          <div className="title-page-font">{`MA MANAGEMENT`}</div>
+          <div className="title-page-font">{`MAINTENANCE MANAGEMENT`}</div>
         </Col>
 
         <Col span={24}>
           <Card>
             <Tabs
               tabBarExtraContent={
-                <Link href={"/page/ma-management/create"}>
+                <Link href={"/page/maintenance-management/create"}>
                   <Button type="primary">เพิ่ม MA</Button>
                 </Link>
               }
@@ -115,7 +115,7 @@ export default function MaTaskPage() {
               size={"small"}
               items={[
                 {
-                  label: `ข้อมูล MA รายเดือน`,
+                  label: `ข้อมูล Maintenance รายเดือน`,
                   key: "1",
                   children: (
                     <div>
@@ -124,7 +124,7 @@ export default function MaTaskPage() {
                   ),
                 },
                 {
-                  label: `การจัดการ MA`,
+                  label: `การจัดการ Maintenance`,
                   key: "2",
                   children: (
                     <Tabs

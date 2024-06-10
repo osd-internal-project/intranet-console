@@ -62,14 +62,14 @@ export default function MaTaskPage() {
                 title: <span>Setting</span>,
               },
               {
-                href: "/page/ma-type",
-                title: <span>Set MA Type</span>,
+                // href: "/page/mantenance-type",
+                title: <span>Set Maintenance Type</span>,
               },
             ]}
           />
         </Col>
         <Col span={24}>
-          <div className="title-page-font">{`SET MA TYPE`}</div>
+          <div className="title-page-font">{`SET MAINTENANCE TYPE`}</div>
         </Col>
         <Col span={24}>
           <div className="grid grid-cols-1 ">

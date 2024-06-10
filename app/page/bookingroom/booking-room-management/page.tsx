@@ -1,16 +1,20 @@
 "use client";
 import { Breadcrumb, Button, Card, Checkbox, Col, Form, Input, Row, Tabs, TabsProps } from "antd";
 import React from 'react'
+import ManageRoomComponent from "./components/manageRoom";
+import ManageRoomStatusComponent from "./components/manageRoomStatus";
 
 const page = () => {
     const items: TabsProps["items"] = [
         {
             key: "1",
-            label: "ชั้น",
+            label: "จัดการห้องประชุม",
+            children: <ManageRoomComponent />,
         },
         {
             key: "2",
-            label: "แม่บ้าน",
+            label: "จัดการสถานะห้องประชุม",
+            children: <ManageRoomStatusComponent />,
         },
     ];
     return (

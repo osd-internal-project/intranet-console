@@ -1,5 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Col, Descriptions, DescriptionsProps, Form, Input, Modal, Row, Skeleton, Table, Tree, message } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Descriptions,
+  DescriptionsProps,
+  Form,
+  Input,
+  Modal,
+  Popconfirm,
+  PopconfirmProps,
+  Row,
+  Select,
+  Skeleton,
+  Table,
+  Tree,
+  message,
+} from "antd";
 import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ExclamationCircleFilled, PlusOutlined } from "@ant-design/icons";
 import { checkRule } from "@/app/utils/rules";
@@ -8,53 +25,98 @@ import Link from "next/link";
 import { editIcon } from "@/components/icon";
 import { TcreateOrganizeDto, TfindAllOrganizeDto, TupdateOrganizeDto } from "../../common";
 import OrganizeServices from "../../services/organize-chart.service";
+import UserServices from "@/app/page/users-management/users/services/user.service";
+import { render } from "react-dom";
 
 export interface props {
   propDataManage: (res: { organizeSelect: string | null; loading: boolean }) => void;
   organizeSelect: string | null;
 }
 
+type TUserFindDto = {
+  userId: string;
+  username: string;
+  firstNameTh: string | null;
+  lastNameTh: string | null;
+  firstNameEn: string | null;
+  lastNameEn: string | null;
+  email: string | null;
+  phoneNumber: string | null;
+  activeStatus: boolean;
+  clientId: string | null;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+  masterPosition: string | null;
+};
+
+type TUserFindListDto = {
+  users: {
+    userId: string;
+    username: string;
+    email: string | null;
+  };
+};
+
 const OrganizeTeamManage: React.FC<props> = ({ propDataManage, organizeSelect }): React.ReactElement => {
   const intranetAuth = useAxiosIntranet();
+  const userAuth = useAxiosUser();
   const organizeServices = OrganizeServices(intranetAuth);
+  const userServices = UserServices(userAuth);
   const addRule = checkRule("user-group-add");
   const editRule = checkRule("user-group-edit");
   const deleteRule = checkRule("user-group-delete");
   const [addform] = Form.useForm();
   const [editform] = Form.useForm();
+  const [searchUser] = Form.useForm();
+  const [addUser] = Form.useForm();
   const [organizeDetail, setOrganizeDetail] = useState<TfindAllOrganizeDto | null>(null);
   const [openAddModel, setOpenAddModel] = useState<boolean>(false);
   const [editState, setEditState] = useState<boolean>(false);
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
+  const [statusModalAddUser, setStatusModalAddUser] = useState<boolean>(false);
+  const [selectUsers, setSelectUsers] = useState<TUserFindDto[]>([]);
+  const [dataUserAll, setDataUserAll] = useState<TUserFindListDto[]>([]);
   const columns = [
     {
       title: "username",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: ["users", "username"],
+      key: "username",
     },
     {
       title: "email",
-      dataIndex: "age",
-      key: "age",
+      dataIndex: ["users", "email"],
+      key: "email",
     },
     {
       title: "ลบ",
-      dataIndex: "address",
-      key: "address",
-    },
-  ];
-  const dataSource = [
-    {
-      key: "1",
-      name: "Mike",
-      age: 32,
-      address: "10 Downing Street",
-    },
-    {
-      key: "2",
-      name: "John",
-      age: 42,
-      address: "10 Downing Street",
+      dataIndex: ["users", "userId"],
+      key: "userId",
+      render: (value: string) => {
+        return (
+          <Popconfirm
+            title="ยืนยันที่จะลบ"
+            description="ยืนยันที่จะลบ บุคคลนี้ออกจากตำแหน่ง?"
+            onConfirm={async () => {
+              const resDelete = await organizeServices.deleteUserMapOrganizeByUserId(value);
+              if (resDelete.status === 500) {
+                message.error("Fail!!");
+              } else {
+                message.success("success!!");
+                propDataManage({
+                  loading: true,
+                  organizeSelect: null,
+                });
+              }
+            }}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button size="small" danger>
+              ลบ
+            </Button>
+          </Popconfirm>
+        );
+      },
     },
   ];
 
@@ -67,6 +129,8 @@ const OrganizeTeamManage: React.FC<props> = ({ propDataManage, organizeSelect })
     setOrganizeDetail(null);
     if (organizeSelect) {
       const organizeDetail = await organizeServices.getOneOrganizeById(organizeSelect);
+      const resUserInposition = await organizeServices.findUserMapOrganizeUrl(organizeSelect);
+      setDataUserAll(resUserInposition);
       editform.setFieldsValue(organizeDetail);
       setOrganizeDetail(organizeDetail);
     }
@@ -142,6 +206,31 @@ const OrganizeTeamManage: React.FC<props> = ({ propDataManage, organizeSelect })
       organizeSelect: null,
     });
     setbuttonLoading(false);
+  };
+
+  const onCancelModalAddUser = () => {
+    addUser.resetFields();
+    setStatusModalAddUser(false);
+  };
+
+  const finishSearchUser = async (value: { username: string; email: string }) => {
+    const resSearchUser = await userServices.getUsersAll(value);
+    setSelectUsers(resSearchUser.map((item: TUserFindDto) => ({ label: item.email, value: item.userId })));
+  };
+
+  const finishAddUser = async (value: { userId: string }) => {
+    const resCreateUserMapOrganize = await organizeServices.createUserMapOrganizeUrl({ ...value, positionId: organizeSelect });
+    if (resCreateUserMapOrganize === 500) {
+      message.error("Fail");
+    } else {
+      message.success("success");
+      propDataManage({
+        loading: true,
+        organizeSelect: null,
+      });
+    }
+    addUser.resetFields();
+    setStatusModalAddUser(false);
   };
 
   return organizeDetail ? (
@@ -232,13 +321,13 @@ const OrganizeTeamManage: React.FC<props> = ({ propDataManage, organizeSelect })
                 <div>User :</div>
                 <div></div>
                 <div>
-                  <Button size="small" type="primary">
+                  <Button size="small" type="primary" onClick={() => setStatusModalAddUser(true)}>
                     Add
                   </Button>
                 </div>
               </div>
               <Form.Item name="users">
-                <Table columns={columns} dataSource={dataSource} size="small" />
+                <Table columns={columns} dataSource={dataUserAll} rowKey={(record) => record.users.userId} size="small" />
               </Form.Item>
             </div>
             {editState ? (
@@ -315,6 +404,41 @@ const OrganizeTeamManage: React.FC<props> = ({ propDataManage, organizeSelect })
               )}
             </Col>
           </Row>
+        </Form>
+      </Modal>
+      <Modal title="Add User :" open={statusModalAddUser} onCancel={onCancelModalAddUser} footer={[]} width={650}>
+        <Form form={searchUser} onFinish={finishSearchUser}>
+          <div className="flex justify-between gap-1">
+            <div>
+              <Form.Item name={`username`} label={`username`} rules={[{ required: true, message: "Please enter username" }]}>
+                <Input />
+              </Form.Item>
+            </div>
+            <div>
+              <Form.Item name={`email`} label={`email`}>
+                <Input />
+              </Form.Item>
+            </div>
+            <div>
+              <Form.Item>
+                <Button htmlType="submit">search</Button>
+              </Form.Item>
+            </div>
+          </div>
+        </Form>
+        <Form form={addUser} name="addUser" onFinish={finishAddUser}>
+          <div>
+            <Form.Item name={`userId`} label={`User :`} rules={[{ required: true, message: "Please select User" }]}>
+              <Select className="w-full" options={selectUsers} />
+            </Form.Item>
+          </div>
+          <div className=" flex justify-end">
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                submit
+              </Button>
+            </Form.Item>
+          </div>
         </Form>
       </Modal>
     </>

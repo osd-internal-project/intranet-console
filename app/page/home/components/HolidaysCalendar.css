@@ -1,0 +1,17 @@
+.custom-calendar-container {
+    width: 100%;
+  }
+  
+  .custom-calendar-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  
+  .custom-calendar-cell .ant-badge-status-text {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  

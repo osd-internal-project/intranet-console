@@ -29,8 +29,8 @@ export const TableMasterdataPosition: React.FC<props> = ({
 }): React.ReactElement => {
   const userAuth = useAxiosUser();
 
-  const editRule = checkRule("user-position-edit");
-  const deleteRule = checkRule("user-position-delete");
+  // const editRule = checkRule("user-position-edit");
+  // const deleteRule = checkRule("user-position-delete");
   const positionServices = PositionServices(userAuth);
 
   const { RangePicker } = DatePicker;
@@ -125,24 +125,24 @@ export const TableMasterdataPosition: React.FC<props> = ({
         return (
           <>
             <Row gutter={[8, 8]} className="card-filter" style={{ justifyContent: "center", display: "flex" }}>
-              {editRule ? (
-                <Col>
-                  <Button type="link" onClick={() => showModal(row)}>
-                    {editIcon}
-                  </Button>
-                </Col>
-              ) : (
+              {/* {editRule ? ( */}
+              <Col>
+                <Button type="link" onClick={() => showModal(row)}>
+                  {editIcon}
+                </Button>
+              </Col>
+              {/* ) : (
                 <></>
-              )}
-              {deleteRule ? (
-                <Col>
-                  <Button type="link" danger onClick={() => onfinishDel(Number(event))} disabled={buttonLoading}>
-                    {deleteIcon}
-                  </Button>
-                </Col>
-              ) : (
+              )} */}
+              {/* {deleteRule ? ( */}
+              <Col>
+                <Button type="link" danger onClick={() => onfinishDel(Number(event))} disabled={buttonLoading}>
+                  {deleteIcon}
+                </Button>
+              </Col>
+              {/* ) : (
                 <></>
-              )}
+              )} */}
             </Row>
           </>
         );

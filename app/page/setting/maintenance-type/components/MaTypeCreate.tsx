@@ -25,7 +25,7 @@ const MaTypeCreateComponent: React.FC<props> = ({ createMaType }): React.ReactEl
 
           <Form.Item className=" md:text-right">
             <Button type="primary" htmlType="submit">
-              Add MA Type
+              Add Maintenance Type
             </Button>
           </Form.Item>
         </div>

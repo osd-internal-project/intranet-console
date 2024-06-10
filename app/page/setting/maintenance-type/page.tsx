@@ -4,7 +4,7 @@ import { Breadcrumb, Card, Col, Row, Spin } from "antd";
 import MaTypeCreateComponent from "./components/MaTypeCreate";
 import MaTypeTableComponent from "./components/MaTypeTable";
 import { ITMaType, ITMaTypeForm, ITPagination } from "./common";
-import MaTypeServices from "./services/ma.service";
+import MaTypeServices from "./services/index.service";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { checkRule } from "@/app/utils/rules";
 
@@ -17,7 +17,7 @@ export default function MaTaskPage() {
   const [loading, setloading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<ITPagination>({ current: 1, pageSize: 10 });
   const [dataTable, setDataTable] = useState<ITMaType[]>([]);
-  
+
   useEffect(() => {
     if (loading === true) fetchData();
   }, [loading]);
@@ -62,14 +62,14 @@ export default function MaTaskPage() {
                 title: <span>Setting</span>,
               },
               {
-                href: "/page/ma-type",
-                title: <span>Set MA Type</span>,
+                // href: "/page/mantenance-type",
+                title: <span>Set Maintenance Type</span>,
               },
             ]}
           />
         </Col>
         <Col span={24}>
-          <div className="title-page-font">{`SET MA TYPE`}</div>
+          <div className="title-page-font">{`SET MAINTENANCE TYPE`}</div>
         </Col>
         <Col span={24}>
           <div className="grid grid-cols-1 ">

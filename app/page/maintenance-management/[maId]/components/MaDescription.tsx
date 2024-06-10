@@ -51,14 +51,14 @@ const MaDescriptionComponent: React.FC<props> = ({ data, loading, setLoading, ma
         </div>
         <div className=" col-span-2 flex justify-end">
           {data?.refTask ? (
-            <Link href={`/page/ma-management/${data.refTask.id}`}>
+            <Link href={`/page/maintenance-management/${data.refTask.id}`}>
               <Button type="link">งานก่อนหน้า</Button>
             </Link>
           ) : (
             ""
           )}
           {data?.nextTask ? (
-            <Link href={`/page/ma-management/${data.nextTask.id}`}>
+            <Link href={`/page/maintenance-management/${data.nextTask.id}`}>
               <Button type="link">งานถัดไป</Button>
             </Link>
           ) : (

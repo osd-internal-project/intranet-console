@@ -10,7 +10,7 @@ import { ITypeGetdataAll } from "./common";
 import DepartmentServices from "../department/services/department.service";
 import { TdepartmentFindMany } from "../department/common";
 
-export default function UnitPage() {
+export default function MasterDataPositionPage() {
   const userAuth = useAxiosUser();
   const intranetAuth = useAxiosIntranet();
   const positionServices = PositionServices(userAuth);
@@ -81,9 +81,9 @@ export default function UnitPage() {
             ]}
           />
         </Col>
-        <Col span={24}>
+        {/* <Col span={24}>
           <div className="title-page-font">{`SET POSITION`}</div>
-        </Col>
+        </Col> */}
       </Row>
       <Row gutter={[8, 8]}>
         <Col span={24}>

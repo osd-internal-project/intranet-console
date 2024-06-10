@@ -33,8 +33,9 @@ export interface IUserServices {
   create: (data: any) => Promise<any>;
 }
 
-const UserServices = (axiosInstance: AxiosInstance) => {
+const ProfileServices = (axiosInstance: AxiosInstance) => {
   const baseUrl = "/user";
+  const positionUrl = "master-position";
   return {
     getUsersAll: async (where: object) => {
       const condition = {
@@ -184,6 +185,17 @@ const UserServices = (axiosInstance: AxiosInstance) => {
     remove: async (id: string) => {
       return await axiosInstance.delete(`${baseUrl}/${id}`);
     },
+    getMasterPositionAll: async () => {
+      return await axiosInstance
+        .get(`${positionUrl}/`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
   };
 };
-export default UserServices;
+export default ProfileServices;

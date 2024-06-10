@@ -2,7 +2,7 @@
 import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { Breadcrumb, Card, Col, Row, Tabs, TreeDataNode } from "antd";
 import React, { useEffect, useState } from "react";
-import UserGroupServices from "../../user-profile/services/usergroup.service";
+import UserGroupServices from "../../users-management/user-group/services/usergroup.service";
 import { CarryOutOutlined } from "@ant-design/icons";
 import { Tree, TreeNode } from "react-organizational-chart";
 import HumanTiles from "./organizationTiles";

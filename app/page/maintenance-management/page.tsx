@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Breadcrumb, Button, Card, Col, message, Row, Spin, TablePaginationConfig, Tabs } from "antd";
+import MaCalendarComponent from "./components/MaCalendar";
 import MaFilterComponent from "./components/MaFilter";
 import MaTableComponent from "./components/MaTable";
 import { ITMaTask, ITMaType } from "./common";
@@ -18,15 +19,29 @@ export default function MaTaskPage() {
   const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 20 });
   const [dataTable, setDataTable] = useState<ITMaTask[]>([]);
   const [maTabs, setMamaTabs] = useState<ITMaType[]>([]);
+  const startDayOfMonth = dayjs().startOf("month").toDate();
+  const lastDayOfMonth = dayjs().endOf("month").toDate();
+  const [rangeCalendar, setRangeCalendar] = useState<{ start: Date; end: Date }>({ start: startDayOfMonth, end: lastDayOfMonth });
+  const [calendarEvents, setCalendarEvents] = useState<ITMaTask[]>([]);
   useEffect(() => {
     defaultData();
   }, []);
   useEffect(() => {
     if (loading === true) fetchData();
   }, [loading]);
+
+  useEffect(() => {
+    getEventData();
+  }, [rangeCalendar]);
   const defaultData = async () => {
     const type = await maServices.findActiveType();
     setMamaTabs([{ id: 0, name: "ทั้งหมด" }, ...type]);
+  };
+  const getEventData = async () => {
+    if (rangeCalendar?.start && rangeCalendar?.end) {
+      const event = await maServices.findMaTaskByRange([rangeCalendar.start, rangeCalendar.end]);
+      setCalendarEvents(event);
+    }
   };
   const fetchData = async () => {
     const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
@@ -63,6 +78,10 @@ export default function MaTaskPage() {
     setSearch({ ...search, ...filter });
     setloading(true);
   }
+  function handleCalendarChange(range: any): void {
+    setRangeCalendar(range);
+  }
+
   return (
     <Spin spinning={loading}>
       <Row gutter={[8, 8]}>
@@ -74,44 +93,66 @@ export default function MaTaskPage() {
                 title: <span>Home</span>,
               },
               {
-                title: <span>MA Mangement</span>,
+                title: <span>Maintenance Mangement</span>,
               },
             ]}
           />
         </Col>
         <Col span={24}>
-          <div className="title-page-font">{`MA MANAGEMENT`}</div>
-        </Col>
-        <Col span={24} className=" flex justify-end">
-          <Link href={"/page/ma-management/create"}>
-            <Button type="primary">เพิ่ม MA</Button>
-          </Link>
+          <div className="title-page-font">{`MAINTENANCE MANAGEMENT`}</div>
         </Col>
 
         <Col span={24}>
           <Card>
             <Tabs
-              tabPosition={"left"}
-              onChange={handdleChangeTab}
-              destroyInactiveTabPane={true}
-              items={maTabs.map((type, i) => {
-                return {
-                  label: `${type.name}`,
-                  key: String(type.id),
+              tabBarExtraContent={
+                <Link href={"/page/maintenance-management/create"}>
+                  <Button type="primary">เพิ่ม MA</Button>
+                </Link>
+              }
+              defaultActiveKey="1"
+              // type="card"
+              size={"small"}
+              items={[
+                {
+                  label: `ข้อมูล Maintenance รายเดือน`,
+                  key: "1",
                   children: (
-                    <div className=" space-y-3">
-                      <MaFilterComponent exportMa={exportMa} searchMa={searchMa} />
-                      <MaTableComponent
-                        dataTable={dataTable}
-                        loading={loading}
-                        setLoading={(e: boolean) => setloading(e)}
-                        pagination={pagination}
-                        changePagination={changePagination}
-                      />
+                    <div>
+                      <MaCalendarComponent calendarEvents={calendarEvents} handleCalendarChange={handleCalendarChange} />
                     </div>
                   ),
-                };
-              })}
+                },
+                {
+                  label: `การจัดการ Maintenance`,
+                  key: "2",
+                  children: (
+                    <Tabs
+                      tabPosition={"left"}
+                      onChange={handdleChangeTab}
+                      destroyInactiveTabPane={true}
+                      items={maTabs.map((type, i) => {
+                        return {
+                          label: `${type.name}`,
+                          key: String(type.id),
+                          children: (
+                            <div className=" space-y-3">
+                              <MaFilterComponent exportMa={exportMa} searchMa={searchMa} />
+                              <MaTableComponent
+                                dataTable={dataTable}
+                                loading={loading}
+                                setLoading={(e: boolean) => setloading(e)}
+                                pagination={pagination}
+                                changePagination={changePagination}
+                              />
+                            </div>
+                          ),
+                        };
+                      })}
+                    />
+                  ),
+                },
+              ]}
             />
           </Card>
         </Col>

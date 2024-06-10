@@ -2,6 +2,7 @@ import { AxiosInstance } from "axios";
 import { ITMaDetail, ITMaTask, ITMaType } from "../common";
 export interface TMaTaskServices {
   // findMaTaskAll: () => Promise<ITMaTask[]>;
+  findMaTaskByRange: (maDate: Date[]) => Promise<ITMaTask[]>;
   findMaTaskById: (id: number) => Promise<ITMaTask>;
   findMaDataTable: (page: { take: number; skip: number; search: object }) => Promise<{ data: ITMaTask[]; count: number }>;
   create: (form: any) => Promise<ITMaTask>;
@@ -10,7 +11,7 @@ export interface TMaTaskServices {
   findActiveType: () => Promise<ITMaType[]>;
   exportMaReport: (page: { search: object }) => Promise<ArrayBuffer>;
 }
-const UserServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
+const MaServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
   const taskUrl = "/ma-task";
   const typeUrl = "/ma-type";
   const reportUrl = "/report-ma-task";
@@ -27,6 +28,7 @@ const UserServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
     //         return [];
     //       });
     //   },
+
     findMaTaskById: async (id: number) => {
       return await axiosInstance
         .get(`${taskUrl}/${id}`)
@@ -41,6 +43,17 @@ const UserServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
     findMaDataTable: async (req: { take: number; skip: number; search: object }) => {
       return await axiosInstance
         .get(`${taskUrl}/data-table?take=${req.take}&skip=${req.skip}`, { params: req.search })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    findMaTaskByRange: async (maDate) => {
+      return await axiosInstance
+        .get(`${taskUrl}/range-event`, { params: { maDate: maDate } })
         .then((res) => {
           return res.data;
         })
@@ -107,4 +120,4 @@ const UserServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
   };
 };
 
-export default UserServices;
+export default MaServices;

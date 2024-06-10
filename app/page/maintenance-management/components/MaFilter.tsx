@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, Card, DatePicker, Form, Input } from "antd";
+import { Button, Card, DatePicker, Form, Input, Select } from "antd";
 import { exportIcon } from "@/components/icon";
 import { useForm } from "antd/es/form/Form";
 const { RangePicker } = DatePicker;
@@ -40,6 +40,16 @@ const MaFilterComponent: React.FC<props> = ({ exportMa, searchMa }): React.React
             </Form.Item>
             <Form.Item name={"contact"} label={"ผู้นัดหมาย"}>
               <Input />
+            </Form.Item>
+            <Form.Item name={"maStatus"} label={"สถานะ"}>
+              <Select
+                allowClear
+                options={[
+                  { label: "รอดำเนินการ", value: "process" },
+                  { label: "สำเร็จ", value: "success" },
+                  { label: "ยกเลิก", value: "cancel" },
+                ]}
+              />
             </Form.Item>
           </div>
           <div className=" flex justify-end space-x-2">

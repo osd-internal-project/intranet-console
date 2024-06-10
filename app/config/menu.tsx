@@ -24,7 +24,11 @@ import {
   editTagIcon,
   gridIcon,
   groupLineIcon,
+  IconDataLeave,
+  IconHolidays,
   IconPosition,
+  IconTypeLeave,
+  maintenanceIcon,
   mindMappingIcon,
   organizeChart,
   persentationChartLoneIcon,
@@ -62,6 +66,21 @@ const MenuNav: MenuProps["items"] = [
 export default MenuNav;
 
 export const MenuSider: MenuItem[] = [
+  {
+    key: "data-leave",
+    icon: IconDataLeave,
+    label: `Data Leave`,
+    children: [
+      {
+        key: `data-leave/online-leave`,
+        label: `Create Data Leave`,
+      },
+      {
+        key: `data-leave/detail-online-leave`,
+        label: `Detail Data Leave`,
+      },
+    ],
+  },
   {
     key: "internal-info",
     icon: organizeChart,
@@ -162,18 +181,18 @@ export const MenuSider: MenuItem[] = [
   },
   {
     key: "3",
-    icon: <Icon icon="tabler:clipboard-list" width="20" height="20" />,
+    icon: <Icon icon="material-symbols:book-outline" width="20" height="20" />,
     label: "Booking Room",
     children: [
       {
         key: `bookingroom/booking-room`,
-        icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
+        icon: <Icon icon="mdi:book-sync-outline" width="20" height="20"/>,
         label: `Booking room`,
         // rule: "housekeeper",
       },
       {
         key: `bookingroom/booking-room-management`,
-        icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
+        icon: <Icon icon="mdi:book-plus-outline" width="20" height="20"/>,
         label: `Booking room Management`,
         // rule: "housekeeper",
       },
@@ -181,13 +200,13 @@ export const MenuSider: MenuItem[] = [
   },
   {
     key: "maintenance",
-    icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
+    icon: maintenanceIcon,
     label: "Maintenance",
     // rule: "menu-ma",
     children: [
       {
         key: `maintenance-management`,
-        icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
+        // icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
         label: `Maintenance Management`,
         // rule: "ma-task-show",
       },
@@ -201,7 +220,7 @@ export const MenuSider: MenuItem[] = [
     // rule: "setting-show",
     children: [
       {
-        key: `setting/ma-type`,
+        key: `setting/maintenance-type`,
         icon: colorSwatchIcon,
         label: `Ma Type`,
       },
@@ -218,13 +237,18 @@ export const MenuSider: MenuItem[] = [
       },
       {
         key: `setting/typeleave`,
-        icon: buldingIcon,
+        icon: IconTypeLeave,
         label: `Type Leave`,
       },
       {
         key: `setting/master-holidays`,
-        icon: buldingIcon,
+        icon: IconHolidays,
         label: `Master Holidays`,
+      },
+      {
+        key: `setting/masterdata-position`,
+        icon: IconPosition,
+        label: `Master Position`,
       },
     ],
   },

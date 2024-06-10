@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-const UserServices = (axiosInstance: AxiosInstance) => {
+const OrderUserServices = (axiosInstance: AxiosInstance) => {
   const userUrl = "/user";
   return {
     getRequestUsers: async () => {
@@ -27,4 +27,4 @@ const UserServices = (axiosInstance: AxiosInstance) => {
   };
 };
 
-export default UserServices;
+export default OrderUserServices;

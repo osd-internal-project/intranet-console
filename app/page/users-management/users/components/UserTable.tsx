@@ -126,7 +126,7 @@ const UserTable: React.FC<props> = ({ propLoading, loading, search }): React.Rea
       render: (d: string) => (
         <div className=" space-x-2">
           {userEditRules ? (
-            <Link href={`/page/setting/usermanagement/${d}`}>
+            <Link href={`/page/users-management/users/${d}`}>
               <Button type="link" className="p-1">
                 {editIcon}
               </Button>

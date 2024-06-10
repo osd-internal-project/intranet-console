@@ -3,11 +3,10 @@ import { Button, Card, Checkbox, Form, Input, Modal, Select, Switch, message } f
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
-import UserServices from "../services/user.service";
+import UserServices from "../services/index.service";
 import { useForm } from "antd/es/form/Form";
 import { Icon } from "@iconify/react";
 import { useRouter } from "next/navigation";
-import MasterPositionServices from "../services/position.service";
 import "../style.css";
 import { dateToStringTh } from "@/app/utils/format";
 export interface props {
@@ -35,7 +34,6 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
   const router = useRouter();
   const userAuth = useAxiosUser();
   const userServices = UserServices(userAuth);
-  const masterPositionServices = MasterPositionServices(userAuth);
   const [detailForm] = useForm();
   const [repasswordForm] = Form.useForm();
   const [loading, setLoading] = useState(true);
@@ -64,7 +62,7 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
       };
       setCheckedActiveStatus(data.activeStatus);
       detailForm.setFieldsValue(formdata);
-      const positions = await masterPositionServices.getMasterPositionAll();
+      const positions = await userServices.getMasterPositionAll();
       const positionOption: option[] = positions.map((d: any) => ({ label: d.nameTh, value: d.id }));
       setPositionOption(positionOption);
     }

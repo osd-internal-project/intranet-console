@@ -1,8 +1,9 @@
 import { AxiosInstance } from "axios";
+import { Filtertypeleave, ITypetypeleave, ITypetypeleaveUpadte } from "../common";
 const MasterTypeLeaveService = (axiosInstance: AxiosInstance) => {
   const baseUrl = "/master-type-leave";
   return {
-    getdataAll: async (search: any) => {
+    getdataAll: async (search: Filtertypeleave) => {
       const condition = {
         where: search,
         orderBy: { id: "asc" },
@@ -19,7 +20,7 @@ const MasterTypeLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    createTypeleave: async (event: any) => {
+    createTypeleave: async (event: ITypetypeleave) => {
       const condition = {
         ...event,
       };
@@ -27,6 +28,30 @@ const MasterTypeLeaveService = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrl}`, {
           condition: condition,
         })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    updateTypeleave: async (event: ITypetypeleaveUpadte) => {
+      return await axiosInstance
+        .patch(`${baseUrl}`, {
+          condition: event,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    deleteTypeleave: async (event: number) => {
+      return await axiosInstance
+        .delete(`${baseUrl}/${event}`)
         .then((res) => {
           return res.data;
         })

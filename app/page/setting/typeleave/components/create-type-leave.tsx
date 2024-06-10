@@ -3,12 +3,11 @@ import React, { useState } from "react";
 import { FilterOutlined } from "@ant-design/icons";
 import { Button, Col, DatePicker, Form, Input, Modal, Popover, Row, Switch } from "antd";
 import TextArea from "antd/es/input/TextArea";
-import { ITypetypeleave } from "../common";
+import { Filtertypeleave, ITypetypeleave } from "../common";
 
 export interface props {
   onFinishCreate: (event: ITypetypeleave) => void;
-  onSearch: (event: any) => void;
-
+  onSearch: (event: Filtertypeleave) => void;
   setSwitch: (event: boolean) => void;
   getswitch: boolean;
   setOpenFilter: (e: boolean) => void;

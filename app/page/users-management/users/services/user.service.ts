@@ -28,7 +28,7 @@ type detailType = {
 
 export interface IUserServices {
   getUsersAll: () => Promise<any>;
-  getUsersByUserId: (data: any) => Promise<any>;
+  getUsersByUserId: (data: any) => Promise<detailType>;
   getUsersByCondition: (data: any) => Promise<any>;
   create: (data: any) => Promise<any>;
 }
@@ -94,6 +94,7 @@ const UserServices = (axiosInstance: AxiosInstance) => {
               nameEn: true,
             },
           },
+          departMentId: true,
           ownerGroupId: true,
         },
       };

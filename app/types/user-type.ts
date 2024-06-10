@@ -5,3 +5,8 @@ export type UserProfile = {
   email: string;
   levelId: number;
 };
+
+export type TPagination = {
+  current: number;
+  pageSize: number;
+};

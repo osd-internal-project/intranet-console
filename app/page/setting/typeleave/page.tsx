@@ -195,6 +195,7 @@ export default function TypeLeave() {
               formedit={formedit}
               onFinishEdit={(e: ITypetypeleave) => onFinishEdit(e)}
               onFinishDel={(e: number) => onFinishDel(e)}
+              loading={loading}
             />
           </Card>
         </Col>

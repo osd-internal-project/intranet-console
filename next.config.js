@@ -9,7 +9,6 @@ const nextConfig = {
     BACKEND_REPORT_URL: "http://localhost:4002/api",
     BACKEND_USER_URL: "http://localhost:4000/api",
     AUTH_BACKEND_URL: "http://localhost:4000/api",
-
     NEXTAUTH_URL: "http://localhost:3000/",
   },
   reactStrictMode: false,

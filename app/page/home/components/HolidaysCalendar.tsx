@@ -42,14 +42,9 @@ const holidayEvents = getHolidaysForYear(year).map((holiday) => ({
 //New Events
 const events = [
   {
-    title: "Meeting",
-    start: new Date(2024, 5, 5, 10, 0),
-    end: new Date(2024, 5, 5, 12, 0),
-  },
-  {
-    title: "Lunch",
-    start: new Date(2024, 5, 6, 13, 0),
-    end: new Date(2024, 5, 6, 14, 0),
+    title: "End of Internship",
+    start: new Date(2024, 5, 14, 0, 0),
+    end: new Date(2024, 5, 14, 23, 59),
   },
 ];
 

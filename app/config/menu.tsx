@@ -215,18 +215,18 @@ export const MenuSider: MenuItem[] = [
   },
   {
     key: "3",
-    icon: <Icon icon="tabler:clipboard-list" width="20" height="20" />,
+    icon: <Icon icon="material-symbols:book-outline" width="20" height="20" />,
     label: "Booking Room",
     children: [
       {
         key: `bookingroom/booking-room`,
-        icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
+        icon: <Icon icon="mdi:book-sync-outline" width="20" height="20"/>,
         label: `Booking room`,
         // rule: "housekeeper",
       },
       {
         key: `bookingroom/booking-room-management`,
-        icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
+        icon: <Icon icon="mdi:book-plus-outline" width="20" height="20"/>,
         label: `Booking room Management`,
         // rule: "housekeeper",
       },

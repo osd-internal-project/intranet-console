@@ -81,9 +81,9 @@ export default function MasterDataPositionPage() {
             ]}
           />
         </Col>
-        <Col span={24}>
+        {/* <Col span={24}>
           <div className="title-page-font">{`SET POSITION`}</div>
-        </Col>
+        </Col> */}
       </Row>
       <Row gutter={[8, 8]}>
         <Col span={24}>

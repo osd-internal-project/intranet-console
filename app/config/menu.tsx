@@ -69,6 +69,16 @@ export const MenuSider: MenuItem[] = [
     key: "data-leave",
     icon: IconDataLeave,
     label: `Data Leave`,
+    children: [
+      {
+        key: `data-leave/online-leave`,
+        label: `Create Data Leave`,
+      },
+      {
+        key: `data-leave/detail-online-leave`,
+        label: `Detail Data Leave`,
+      },
+    ],
   },
   {
     key: "internal-info",

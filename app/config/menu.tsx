@@ -24,7 +24,10 @@ import {
   editTagIcon,
   gridIcon,
   groupLineIcon,
+  IconDataLeave,
+  IconHolidays,
   IconPosition,
+  IconTypeLeave,
   mindMappingIcon,
   organizeChart,
   persentationChartLoneIcon,
@@ -62,6 +65,11 @@ const MenuNav: MenuProps["items"] = [
 export default MenuNav;
 
 export const MenuSider: MenuItem[] = [
+  {
+    key: "data-leave",
+    icon: IconDataLeave,
+    label: `Data Leave`,
+  },
   {
     key: "internal-info",
     icon: organizeChart,
@@ -273,13 +281,18 @@ export const MenuSider: MenuItem[] = [
       },
       {
         key: `setting/typeleave`,
-        icon: buldingIcon,
+        icon: IconTypeLeave,
         label: `Type Leave`,
       },
       {
         key: `setting/master-holidays`,
-        icon: buldingIcon,
+        icon: IconHolidays,
         label: `Master Holidays`,
+      },
+      {
+        key: `setting/masterdata-position`,
+        icon: IconPosition,
+        label: `Master Position`,
       },
     ],
   },

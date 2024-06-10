@@ -55,34 +55,34 @@ export const AddMasterdataPosition: React.FC<props> = ({ departMent, setLoading 
     <div>
       <Card className=" grid grid-cols-1 gap-y-2">
         <Typography className="title-page-font">{`Set Position`}</Typography>
-        {addRule ? (
-          <Form form={FORM} layout="horizontal" name={`add-position`} onFinish={onfinish} labelAlign="left">
-            <div className="grid grid-cols-3 gap-2">
-              <div>
-                <Form.Item name={`departMentId`} label={`Department :`} rules={[{ required: true, message: "Please enter Department" }]}>
-                  <Select options={departMent.map((item: TdepartmentFindMany) => ({ value: item.departId, label: item.departName }))} />
-                </Form.Item>
-              </div>
-              <div>
-                <Form.Item name={`nameTh`} label={`Name TH :`} rules={[{ required: true, message: "Please enter name TH" }]}>
-                  <Input placeholder="Text" />
-                </Form.Item>
-              </div>
-              <div>
-                <Form.Item name={`nameEn`} label={`Name EN :`} rules={[{ required: true, message: "Please enter name EN" }]}>
-                  <Input placeholder="Text" />
-                </Form.Item>
-              </div>
-            </div>
-            <div className="flex justify-end">
-              <Form.Item>
-                <Button htmlType="submit" type="primary" className="button-blue" loading={buttonLoading}>{`Add Position`}</Button>
+        {/* {addRule ? ( */}
+        <Form form={FORM} layout="horizontal" name={`add-position`} onFinish={onfinish} labelAlign="left">
+          <div className="grid grid-cols-3 gap-2">
+            {/* <div>
+              <Form.Item name={`departMentId`} label={`Department :`} rules={[{ required: true, message: "Please enter Department" }]}>
+                <Select options={departMent.map((item: TdepartmentFindMany) => ({ value: item.departId, label: item.departName }))} />
+              </Form.Item>
+            </div> */}
+            <div>
+              <Form.Item name={`nameTh`} label={`Name TH :`} rules={[{ required: true, message: "Please enter name TH" }]}>
+                <Input placeholder="Text" />
               </Form.Item>
             </div>
-          </Form>
-        ) : (
+            <div>
+              <Form.Item name={`nameEn`} label={`Name EN :`} rules={[{ required: true, message: "Please enter name EN" }]}>
+                <Input placeholder="Text" />
+              </Form.Item>
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <Form.Item>
+              <Button htmlType="submit" type="primary" className="button-blue" loading={buttonLoading}>{`Add Position`}</Button>
+            </Form.Item>
+          </div>
+        </Form>
+        {/* ) : (
           <></>
-        )}
+        )} */}
       </Card>
     </div>
   );

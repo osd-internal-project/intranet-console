@@ -10,7 +10,7 @@ import { ITypeGetdataAll } from "./common";
 import DepartmentServices from "../department/services/department.service";
 import { TdepartmentFindMany } from "../department/common";
 
-export default function UnitPage() {
+export default function MasterDataPositionPage() {
   const userAuth = useAxiosUser();
   const intranetAuth = useAxiosIntranet();
   const positionServices = PositionServices(userAuth);

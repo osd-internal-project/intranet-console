@@ -73,63 +73,8 @@ export const MenuSider: MenuItem[] = [
         // rule: "housekeeper",
       },
       {
-        key: `internal-info/excutive-devision`,
-        label: `Excutive Devision`,
-        // rule: "housekeeper",
-      },
-      {
-        key: `internal-info/finance-and-accounting-department`,
-        label: `Finance and Accounting Department`,
-        // rule: "housekeeper",
-      },
-      {
-        key: `internal-info/business-support-department`,
-        label: `Business Support Department`,
-        // rule: "housekeeper",
-      },
-      {
-        key: `internal-info/customer-relationship-management-department`,
-        label: `Customer Relationship Management Department`,
-        // rule: "housekeeper",
-      },
-      {
-        key: `internal-info/business-solution-consulting-department`,
-        label: `Business Solution Consulting Department`,
-        // rule: "housekeeper",
-      },
-      {
-        key: `internal-info/business-consulting-department`,
-        label: `Business Consulting Department`,
-        // rule: "housekeeper",
-      },
-      {
-        key: `internal-info/marketing-department`,
-        label: `Marketing Department`,
-        // rule: "housekeeper",
-      },
-      {
-        key: `internal-info/new-installation-department`,
-        label: `New Installation Department`,
-        // rule: "housekeeper",
-      },
-      {
-        key: `internal-info/service-and-support-department`,
-        label: `New Installation Department`,
-        // rule: "housekeeper",
-      },
-      {
-        key: `internal-info/voice-collaboration-department`,
-        label: `Voice Collaboration Department`,
-        // rule: "housekeeper",
-      },
-      {
-        key: `internal-info/network-department`,
-        label: `Network Department`,
-        // rule: "housekeeper",
-      },
-      {
-        key: `internal-info/research-and-development-department`,
-        label: `Research and Development Department`,
+        key: `internal-info/organization-chart-team`,
+        label: `Team Chart `,
         // rule: "housekeeper",
       },
     ],

@@ -31,7 +31,7 @@ const OrganizeTree: React.FC<props> = ({ propDataTree, loading }): React.ReactEl
   }, [loading]);
 
   const loaddata = async () => {
-    const resOrganize = await organizeServices.getOrganizeAll();
+    const resOrganize = await organizeServices.getOrganizeByType('department');
     const tree = createTree(resOrganize, null);
     setTreeList(tree);
     propDataTree({ organizeSelect: null, loading: false });

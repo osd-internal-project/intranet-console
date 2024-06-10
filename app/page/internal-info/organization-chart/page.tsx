@@ -38,7 +38,7 @@ export default function Page() {
   }, []);
 
   const loaddata = async () => {
-    const resOrganize = await organizeServices.getOrganizeAll();
+    const resOrganize = await organizeServices.getOrganizeByType('department');
     const tree = createTree(resOrganize, null);
     setTreeList(tree);
   };

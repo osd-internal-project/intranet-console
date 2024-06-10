@@ -50,10 +50,10 @@ export default function MaTaskPage() {
     }
     await maServices
       .update(Number(params.maId), form)
-      .then((res) => {
+      .then(() => {
         message.success("อัพเดท MA สำเร็จ");
       })
-      .catch((err) => {
+      .catch(() => {
         message.error("ไม่สามารถสร้าง MA ได้");
       });
     setloading(true);

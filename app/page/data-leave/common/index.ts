@@ -97,5 +97,5 @@ export interface ITpyeUser {
   updatedAt: Date;
   userId: string;
   username: string;
+  typeid?: number;
 }
-

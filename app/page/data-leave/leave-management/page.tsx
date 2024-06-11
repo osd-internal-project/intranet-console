@@ -43,12 +43,10 @@ const page = () => {
 
   useEffect(() => {
     if (getSearch) loadDataUser();
-  }, [getSearch]);
+  }, [getSearch, getLoading]);
 
   const loadDataUser = async () => {
     const res = await dataleaveserviceIntra.getdataUserByTypeLeaveId(getSearch);
-    console.log(res);
-
     const lasresult = res.typeLeaveDisabledMap.map((event: { user: ITpyeUser }) => {
       return event.user;
     });
@@ -64,7 +62,7 @@ const page = () => {
     }
     setLoading(true);
   }
-  const onFinishCreate = (event: any) => {
+  const onFinishCreate = (event: ITpyeUser) => {
     Modal.confirm({
       title: "Add ",
       icon: <ExclamationCircleFilled />,
@@ -83,6 +81,27 @@ const page = () => {
           message.success(`Add success`);
           formcreate.resetFields();
           setOpenModal(false);
+          setLoading(true);
+        }
+      },
+      onCancel() {
+        setLoading(false);
+      },
+    });
+  };
+
+  const onFinishDel = (event: number) => {
+    Modal.confirm({
+      title: "Delete this unit",
+      icon: <ExclamationCircleFilled />,
+      content: "Are you sure you want to delete this ?",
+      okText: "Confirm",
+      okButtonProps: { type: "primary", danger: true },
+      cancelText: "Cancel",
+      onOk: async () => {
+        const dataResult = await dataleaveserviceIntra.deleteTypeLeaveDisabled(event);
+        if (dataResult) {
+          message.success(`Delete success`);
           setLoading(true);
         }
       },
@@ -112,7 +131,7 @@ const page = () => {
                     openModal={openModal}
                     formcreate={formcreate}
                   />
-                  <TabeLeavManagement getdataUserByTypeId={getdataUserByTypeId} />
+                  <TabeLeavManagement getdataUserByTypeId={getdataUserByTypeId} onFinishDel={(e: number) => onFinishDel(e)} />
                 </div>
               ),
             };

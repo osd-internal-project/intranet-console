@@ -9,6 +9,7 @@ import {
   FileExclamationOutlined,
   MailOutlined,
   BankOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
 import { Icon } from "@iconify/react";
 import { MenuProps } from "antd";
@@ -34,6 +35,7 @@ import {
   persentationChartLoneIcon,
   shieldExclamationIcon,
   starIcon,
+  stockIcon,
   stockSetting,
   truckIcon,
   userGroupIcon,
@@ -66,6 +68,11 @@ const MenuNav: MenuProps["items"] = [
 export default MenuNav;
 
 export const MenuSider: MenuItem[] = [
+  // {
+  //   key: "home",
+  //   label: <Link href={`/page/home`}>Home</Link>,
+  //   icon: <HomeOutlined />,
+  // },
   {
     key: "internal-info",
     icon: organizeChart,
@@ -85,7 +92,7 @@ export const MenuSider: MenuItem[] = [
   },
   {
     key: "stock",
-    icon: <BankOutlined width={15} height={15} />,
+    icon: stockIcon,
     label: "Stock",
     // rule: "menu-stock",
     children: [
@@ -186,13 +193,13 @@ export const MenuSider: MenuItem[] = [
     children: [
       {
         key: `bookingroom/booking-room`,
-        icon: <Icon icon="mdi:book-sync-outline" width="20" height="20"/>,
+        icon: <Icon icon="mdi:book-sync-outline" width="20" height="20" />,
         label: `Booking room`,
         // rule: "housekeeper",
       },
       {
         key: `bookingroom/booking-room-management`,
-        icon: <Icon icon="mdi:book-plus-outline" width="20" height="20"/>,
+        icon: <Icon icon="mdi:book-plus-outline" width="20" height="20" />,
         label: `Booking room Management`,
         // rule: "housekeeper",
       },
@@ -212,7 +219,7 @@ export const MenuSider: MenuItem[] = [
       },
     ],
   },
-  { key: `admin`, label: `Admin`, disabled: true },
+  // { key: `admin`, label: `Admin`, disabled: true },
   {
     key: `setting`,
     icon: <Icon icon="uil:setting" width="15" height="15" />,

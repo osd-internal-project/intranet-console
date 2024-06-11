@@ -21,14 +21,15 @@ const MaDescriptionComponent: React.FC<props> = ({ data, downloadFile, getImageB
   }, [data]);
 
   async function previewImage() {
-    const preview = data.imageList.map(async (image) => {
-      const fileData = await getImageBlob(image.id, image.fileName);
-      console.log(fileData);
-      return { ...image, fileData: fileData ? URL.createObjectURL(fileData) : "" };
-    });
+    const preview = await Promise.all(
+      data.imageList.map(async (image) => {
+        const fileData = await getImageBlob(image.id, image.fileName);
+        return { ...image, fileData: fileData };
+      })
+    );
     setImagePreview(preview);
   }
-  console.log(imagePreview);
+
   return (
     <>
       <h2>ผลการดำเนินการ</h2>
@@ -55,7 +56,7 @@ const MaDescriptionComponent: React.FC<props> = ({ data, downloadFile, getImageB
         <div>
           {imagePreview.map((image, index) => (
             <div key={index} className=" m-1">
-              <Image width={30} height={30} preview={true} src={image.fileData ? image.fileData : ""} />
+              <Image height={30} preview={true} src={image.fileData ? URL.createObjectURL(image.fileData) : ""} />
             </div>
           ))}
         </div>

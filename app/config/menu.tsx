@@ -177,6 +177,10 @@ export const MenuSider: MenuItem[] = [
         key: `data-leave/detail-online-leave`,
         label: `Detail Data Leave`,
       },
+      {
+        key: `data-leave/leave-management`,
+        label: `Leave Management`,
+      },
     ],
   },
   {
@@ -186,13 +190,13 @@ export const MenuSider: MenuItem[] = [
     children: [
       {
         key: `bookingroom/booking-room`,
-        icon: <Icon icon="mdi:book-sync-outline" width="20" height="20"/>,
+        icon: <Icon icon="mdi:book-sync-outline" width="20" height="20" />,
         label: `Booking room`,
         // rule: "housekeeper",
       },
       {
         key: `bookingroom/booking-room-management`,
-        icon: <Icon icon="mdi:book-plus-outline" width="20" height="20"/>,
+        icon: <Icon icon="mdi:book-plus-outline" width="20" height="20" />,
         label: `Booking room Management`,
         // rule: "housekeeper",
       },

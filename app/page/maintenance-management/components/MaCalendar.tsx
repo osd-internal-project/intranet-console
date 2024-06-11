@@ -26,7 +26,7 @@ const MaCalendarComponent: React.FC<props> = ({ calendarEvents, handleCalendarCh
     <div>
       <Calendar
         localizer={localizer}
-        events={calendarEvents.map((ma) => ({ id: ma.id, title: ma.maName, start: ma.maDate, end: ma.maDate, status: ma.maStatus }))}
+        events={calendarEvents.map((ma) => ({ id: ma.id, title: ma.maName, start: new Date(ma.maDate), end: new Date(ma.maDate), status: ma.maStatus }))}
         style={{ height: 500 }}
         onSelectEvent={(event) => router.push(`/page/maintenance-management/${event.id}`)}
         eventPropGetter={(event) => {

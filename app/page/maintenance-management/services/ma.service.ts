@@ -2,7 +2,7 @@ import { AxiosInstance } from "axios";
 import { ITMaDetail, ITMaTask, ITMaType } from "../common";
 export interface TMaTaskServices {
   // findMaTaskAll: () => Promise<ITMaTask[]>;
-  findMaTaskByRange: (maDate: Date[]) => Promise<ITMaTask[]>;
+  findMaTaskByRange: (start: Date, end: Date) => Promise<ITMaTask[]>;
   findMaTaskById: (id: number) => Promise<ITMaTask>;
   findMaDataTable: (page: { take: number; skip: number; search: object }) => Promise<{ data: ITMaTask[]; count: number }>;
   create: (form: any) => Promise<ITMaTask>;
@@ -54,9 +54,9 @@ const MaServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
           return [];
         });
     },
-    findMaTaskByRange: async (maDate) => {
+    findMaTaskByRange: async (start, end) => {
       return await axiosInstance
-        .get(`${taskUrl}/range-event`, { params: { maDate: maDate } })
+        .get(`${taskUrl}/range-event`, { params: { start: start, end: end } })
         .then((res) => {
           return res.data;
         })

@@ -39,7 +39,7 @@ export default function MaTaskPage() {
   };
   const getEventData = async () => {
     if (rangeCalendar?.start && rangeCalendar?.end) {
-      const event = await maServices.findMaTaskByRange([rangeCalendar.start, rangeCalendar.end]);
+      const event = await maServices.findMaTaskByRange(rangeCalendar.start, rangeCalendar.end);
       setCalendarEvents(event);
     }
   };

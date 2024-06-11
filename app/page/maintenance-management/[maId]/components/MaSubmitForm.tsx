@@ -1,24 +1,52 @@
 import React, { useState } from "react";
-import type { BadgeProps, CalendarProps, TableColumnsType, TableColumnType } from "antd";
-import { Badge, Button, Calendar, Card, DatePicker, Divider, Form, Input, Modal, Select, Switch, Table, Tag } from "antd";
+import type { BadgeProps, CalendarProps, TableColumnsType, TableColumnType, UploadFile, UploadProps } from "antd";
+import { Badge, Button, Calendar, Card, DatePicker, Divider, Form, Input, message, Modal, Select, Switch, Table, Tag, Upload } from "antd";
 import type { Dayjs } from "dayjs";
 import { ColumnType } from "antd/es/table";
 import { dateToStringTh, dateToStringThNoTime } from "@/app/utils/format";
 import { ITMaDetail, ITMaTask, ITMaType, ITMaUpdateForm } from "../../common";
 import TextArea from "antd/es/input/TextArea";
+import { UploadOutlined } from "@ant-design/icons";
+import { RcFile } from "antd/es/upload";
 
 export interface props {
-  updateMa: (data: ITMaUpdateForm) => void;
+  updateMa: (data: ITMaUpdateForm, attendFiles: UploadFile[], imageFiles: UploadFile[]) => void;
   maTypes: ITMaType[];
 }
 
 const MaDescriptionComponent: React.FC<props> = ({ maTypes, updateMa }): React.ReactElement => {
   const [checkNextTask, setCheckNextTask] = useState<boolean>(false);
+  const [imageFiles, setImageFiles] = useState<UploadFile[]>([]);
+  const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
+
+  const beforeUploadImageFiles = (file: RcFile) => {
+    if (imageFiles.find((oneFile) => oneFile.name === file.name)) {
+      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
+      return false;
+    }
+    return false;
+  };
+  const handleChangeImageFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
+    return await setImageFiles(newFileList);
+  };
+  const beforeUploadAttendFiles = (file: RcFile) => {
+    if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
+      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
+      return false;
+    }
+    return false;
+  };
+  const handleChangeAttendFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
+    return await setAttendFiles(newFileList);
+  };
+  function handleUpdateMa(values: ITMaUpdateForm): void {
+    updateMa(values, attendFiles, imageFiles);
+  }
 
   return (
     <>
       <h2>ผลการดำเนินการ</h2>
-      <Form layout="vertical" onFinish={updateMa}>
+      <Form layout="vertical" onFinish={handleUpdateMa}>
         <div className=" grid grid-cols-3">
           <Form.Item name={"actionDate"} label={"วันที่ดำเนินการ"} rules={[{ required: true, message: "กรุณาเลือก วันที่ดำเนินการ" }]}>
             <DatePicker className=" w-10/12" showTime={true} format={"DD/MM/YYYY HH:mm"} />
@@ -34,6 +62,25 @@ const MaDescriptionComponent: React.FC<props> = ({ maTypes, updateMa }): React.R
           </Form.Item>
           <Form.Item name={"solution"} label={"สรุปผลการดำเนินการ"} className=" col-span-3">
             <TextArea rows={4} placeholder="maxLength is 255" maxLength={255} showCount={true} />
+          </Form.Item>
+
+          <Form.Item className="md:col-span-3" label="Upload Images" valuePropName="fileList" extra="เฉพาะ PNG และ JPEG ">
+            <Upload
+              accept="image/png, image/jpeg"
+              fileList={imageFiles}
+              onChange={handleChangeImageFiles}
+              beforeUpload={beforeUploadImageFiles}
+              multiple={true}
+              maxCount={10}
+              listType="picture"
+            >
+              <Button icon={<UploadOutlined />}>Click to upload</Button>
+            </Upload>
+          </Form.Item>
+          <Form.Item className="md:col-span-3" label="Upload Attend Files" valuePropName="fileList">
+            <Upload fileList={attendFiles} onChange={handleChangeAttendFiles} beforeUpload={beforeUploadAttendFiles} multiple={true} maxCount={10}>
+              <Button icon={<UploadOutlined />}>Click to upload</Button>
+            </Upload>
           </Form.Item>
         </div>
         {/* <Button type="primary">Save</Button> */}

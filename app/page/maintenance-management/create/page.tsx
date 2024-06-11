@@ -27,6 +27,7 @@ export default function MaTaskCreatePage() {
   const changePagination = (page: ITPagination) => {
     console.log(page);
   };
+
   async function createMa(data: ITMaCreateForm): Promise<void> {
     const maTypeSelected = maTypes.findLast((type) => type.id === data.maTypeId);
     const form = {
@@ -69,7 +70,7 @@ export default function MaTaskCreatePage() {
           />
         </Col>
         <Col span={24}>
-          <div className="title-page-font">{`CREATE MA TASK`}</div>
+          <div className="title-page-font">{`CREATE MAINTENANCE TASK`}</div>
         </Col>
         <Col span={24}>
           <div className="grid grid-cols-1 ">

@@ -37,7 +37,6 @@ const EditTreeComponent: React.FC<props> = ({ userid }): React.ReactElement => {
       const data = await userServices.getUsersByUserId(userid);
 
       treeform.setFieldValue("ownerGroup", data.ownerGroupId);
-      console.log(treeform.getFieldValue("ownerGroup"));
     }
     // const orgs = await organizedServices.getOrganizedAll();
     // const optins = orgs.map((org: any) => ({

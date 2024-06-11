@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import type { BadgeProps, CalendarProps, TableColumnsType, TableColumnType } from "antd";
-import { Badge, Button, Calendar, Card, DatePicker, Divider, Form, Input, Modal, Select, Table, Tag } from "antd";
+import { Badge, Button, Calendar, Card, DatePicker, Divider, Form, Input, Modal, Select, Table, Tag, Upload } from "antd";
 import type { Dayjs } from "dayjs";
 import { ColumnType } from "antd/es/table";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { ITMaDetail, ITMaType, ITMaCreateForm } from "../../common";
 import TextArea from "antd/es/input/TextArea";
 import { Label } from "recharts";
+import { RcFile } from "antd/es/upload";
 
 export interface props {
   maTypes: ITMaType[];
@@ -35,6 +36,7 @@ const MaTaskCreateComponent: React.FC<props> = ({ maTypes, loading, setLoading, 
           <Form.Item labelCol={{}} name={"detail"} label={"เนื้อหา"} className="md:col-span-3">
             <TextArea maxLength={255} showCount={true} />
           </Form.Item>
+
           <div className="  md:col-span-3 text-right">
             <Button type="primary" htmlType="submit">
               เพิ่ม MA

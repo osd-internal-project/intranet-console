@@ -184,6 +184,10 @@ export const MenuSider: MenuItem[] = [
         key: `data-leave/detail-online-leave`,
         label: `Detail Data Leave`,
       },
+      {
+        key: `data-leave/leave-management`,
+        label: `Leave Management`,
+      },
     ],
   },
   {

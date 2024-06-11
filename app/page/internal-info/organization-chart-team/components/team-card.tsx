@@ -2,11 +2,12 @@ import { Avatar, Card, Tag } from "antd";
 import { TOrganizeDto } from "../page";
 import { useEffect, useState } from "react";
 import OrganizeServices from "@/app/page/setting/organize-chart/services/organize-chart.service";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { TfindAllOrganizeDto, TfindChildrenOrganizeById } from "@/app/page/setting/organize-chart/common";
 import { CarryOutOutlined } from "@ant-design/icons";
 import { TreeNode, Tree } from "react-organizational-chart";
 import HumanTiles from "./organizationTiles";
+import UserServices from "@/app/page/users-management/users/services/user.service";
 
 type Props = {
   data: TOrganizeDto;
@@ -23,6 +24,7 @@ type TUserDetailDefaultDto = {
   last_name_en: string;
   email: string;
   type: string;
+  image_id: string;
 };
 
 export type TUserDetailDto = {
@@ -38,6 +40,7 @@ export type TUserDetailDto = {
   email: string;
   icon: any;
   children: any;
+  imageId: string;
 };
 
 type TTreeData = {
@@ -49,26 +52,35 @@ type TTreeData = {
 const TeamCard: React.FC<Props> = ({ data }) => {
   const intranetAuth = useAxiosIntranet();
   const organizeServices = OrganizeServices(intranetAuth);
+  const userAuth = useAxiosUser();
+  const userServices = UserServices(userAuth);
   const [treeList, setTreeList] = useState<TTreeData[]>([]);
 
   useEffect(() => {
     loaddata();
   }, []);
 
+  const getImage = async (userId: string) => {
+    return await userServices.getImage(userId);
+  };
+
   const loaddata = async () => {
     const resUserInposition = await organizeServices.findChildrenUserById(data.positionId);
-    const filterOrganize = resUserInposition.map((item: TUserDetailDefaultDto) => ({
-      id: item.id,
-      positionId: item.position_id,
-      positionName: item.position_name,
-      parentPositionId: item.position_id === data.positionId ? null : item.parent_position_id,
-      userId: item.userId,
-      username: item.username,
-      firstNameEn: item.first_name_en,
-      lastNameEn: item.last_name_en,
-      email: item.userId,
-      type: item.type,
-    }));
+    const filterOrganize = await Promise.all(
+      resUserInposition.map(async (item: TUserDetailDefaultDto) => ({
+        id: item.id,
+        positionId: item.position_id,
+        positionName: item.position_name,
+        parentPositionId: item.position_id === data.positionId ? null : item.parent_position_id,
+        userId: item.userId,
+        username: item.username,
+        firstNameEn: item.first_name_en,
+        lastNameEn: item.last_name_en,
+        email: item.userId,
+        type: item.type,
+        imageId: item.image_id ? await getImage(item.userId) : null,
+      }))
+    );
     const tree = createTree(filterOrganize, null);
     setTreeList(tree);
   };
@@ -91,6 +103,7 @@ const TeamCard: React.FC<Props> = ({ data }) => {
           lastNameEn: item.lastNameEn,
           email: item.userId,
           type: item.type,
+          imageId: item.imageId,
         });
       }
     });
@@ -115,6 +128,7 @@ const TeamCard: React.FC<Props> = ({ data }) => {
                 lastNameEn: obj.lastNameEn,
                 email: obj.userId,
                 type: obj.type,
+                imageId: obj.imageId,
               }}
             />
           }
@@ -139,6 +153,7 @@ const TeamCard: React.FC<Props> = ({ data }) => {
               lastNameEn: obj.lastNameEn,
               email: obj.userId,
               type: obj.type,
+              imageId: obj.imageId,
             }}
           />
         }

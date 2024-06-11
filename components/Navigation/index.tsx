@@ -112,10 +112,14 @@ const Navigation: React.FC<Prop> = ({
                 {`คุณ ${session.user.firstNameTh} ${session.user.lastNameTh} `}
                 {/* <UserOutlined />
                  */}
-                <Avatar
-                  size={40}
-                  src={avatar ? URL.createObjectURL(avatar) : ""}
-                />
+                {avatar ? (
+                  <Avatar
+                    size={40}
+                    src={avatar ? URL.createObjectURL(avatar) : ""}
+                  />
+                ) : (
+                  <UserOutlined />
+                )}
                 {/* {`${profile?.firstNameTh} ${profile?.lastNameTh}`} */}
               </Space>
             </a>

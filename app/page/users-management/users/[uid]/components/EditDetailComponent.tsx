@@ -1,5 +1,5 @@
 "use client";
-import { Button, Card, Image, Form, Input, Modal, Select, Switch, message, Avatar } from "antd";
+import { Button, Card, Image, Form, Input, Modal, Select, Switch, message, Avatar, Upload, UploadFile } from "antd";
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -12,11 +12,13 @@ import MasterPositionServices from "../../services/position.service";
 import { dateToStringTh } from "@/app/utils/format";
 import DepartmentServices from "@/app/page/setting/department/services/department.service";
 import { TdepartmentFindMany } from "@/app/page/setting/department/common";
+import { UploadOutlined } from "@ant-design/icons";
+import { RcFile, UploadProps } from "antd/es/upload";
 export interface props {
   userid: string;
 }
 type detailType = {
-  userId: string | null;
+  userId: string;
   username: string | null;
   firstNameTh: string | null;
   lastNameTh: string | null;
@@ -28,6 +30,7 @@ type detailType = {
   createdAt: Date | null;
   updatedAt: Date | null;
   positionId: any | null;
+  imageId: null | string;
 };
 type option = {
   label: number;
@@ -46,6 +49,8 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
   const [checkedActiveStatus, setCheckedActiveStatus] = useState<boolean>(false);
   const [positionOption, setPositionOption] = useState<option[]>([]);
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
+  const [imageFiles, setImageFiles] = useState<UploadFile[]>([]);
+  const [image, setImage] = useState<any>();
 
   useEffect(() => {
     if (loading) {
@@ -56,6 +61,10 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
   const loadingDetail = async () => {
     if (userid) {
       const data = (await userServices.getUsersByUserId(userid)) as detailType;
+      if (data.imageId !== null) {
+        const image = await userServices.getImage(userid);
+        setImage(image);
+      }
       const formdata = {
         userId: data.userId,
         username: data.username,
@@ -86,7 +95,6 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
         setbuttonLoading(false);
         return false;
       }
-
       const updatdata = {
         activeStatus: checkedActiveStatus,
         username: value.username,
@@ -96,6 +104,11 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
         email: value.email,
         positionId: value.positionId,
       };
+      let formData: any = new FormData();
+      if (imageFiles.length > 0) {
+        formData.append("files", imageFiles[0].originFileObj);
+        await userServices.uploadImage(value.userId, formData);
+      }
       await userServices
         .updateUser(userid, updatdata)
         .then(() => {
@@ -104,6 +117,7 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
           setDisabledEdit(false);
           setbuttonLoading(false);
           setDisabledEdit(true);
+          setImageFiles([]);
         })
         .catch((err: any) => {
           console.log(err);
@@ -177,12 +191,42 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
     }
     setOpenChangePassword(false);
   };
+
+  const beforeUploadImageFiles = (file: RcFile) => {
+    if (imageFiles.find((oneFile) => oneFile.name === file.name)) {
+      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
+      return false;
+    }
+    return false;
+  };
+
+  const handleChangeImageFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
+    return setImageFiles(newFileList);
+  };
+
   return (
     <>
       <Card>
         <Form form={detailForm} name="basic" onFinish={onSubmitEdit} autoComplete="off" layout="vertical">
+          <div className=" flex justify-center p-1">
+            <Avatar size={128} src={image ? URL.createObjectURL(image) : ""} />
+          </div>
           <div className=" flex justify-center">
-            <Avatar size={128} src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
+            <Form.Item name="image">
+              <Upload
+                accept="image/png, image/jpeg"
+                fileList={imageFiles}
+                onChange={handleChangeImageFiles}
+                beforeUpload={beforeUploadImageFiles}
+                multiple={false}
+                maxCount={1}
+                listType="picture"
+              >
+                <Button icon={<UploadOutlined />} disabled={disabledEdit} className={disabledEdit ? "read-only-input" : ""}>
+                  Click to upload
+                </Button>
+              </Upload>
+            </Form.Item>
           </div>
           <div className=" col-span-3">
             <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-200" />
@@ -194,7 +238,11 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
               </Form.Item>
             </div>
             <div>
-              <Form.Item label="Username" name="username" rules={[{ required: true, message: "Please enter username" }, { validator: validateNoSpaces }]}>
+              <Form.Item
+                label="Username"
+                name="username"
+                rules={[{ required: true, message: "Please enter username" }, { validator: validateNoSpaces }]}
+              >
                 <Input disabled={disabledEdit} className={disabledEdit ? "read-only-input" : ""} />
               </Form.Item>
             </div>
@@ -233,12 +281,21 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
               </Form.Item>
             </div>
             <div>
-              <Form.Item label="Last Name" name="lastNameTh" rules={[{ required: true, message: "Please enter last Name" }]} style={{ marginBottom: "2px" }}>
+              <Form.Item
+                label="Last Name"
+                name="lastNameTh"
+                rules={[{ required: true, message: "Please enter last Name" }]}
+                style={{ marginBottom: "2px" }}
+              >
                 <Input disabled={disabledEdit} className={disabledEdit ? "read-only-input" : ""} />
               </Form.Item>
             </div>
             <div>
-              <Form.Item label="Phone Number" name="phoneNumber" rules={[{ required: true, message: "Please enter phone number" }, { validator: validateOnlyNumbers }]}>
+              <Form.Item
+                label="Phone Number"
+                name="phoneNumber"
+                rules={[{ required: true, message: "Please enter phone number" }, { validator: validateOnlyNumbers }]}
+              >
                 <Input disabled={disabledEdit} className={disabledEdit ? "read-only-input" : ""} maxLength={12} />
               </Form.Item>
             </div>
@@ -287,8 +344,19 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
         </div>
       </Card>
       <Modal open={openChangePassword} onCancel={() => setOpenChangePassword(false)} footer={null} title="Change Password">
-        <Form form={repasswordForm} wrapperCol={{ span: 16 }} labelCol={{ span: 8 }} onFinish={changeUserPassword} autoComplete="off" style={{ marginTop: "5%" }}>
-          <Form.Item label="New Password" name="newPassword" rules={[{ required: true, message: "Please enter new password" }, { validator: validatePassword }]}>
+        <Form
+          form={repasswordForm}
+          wrapperCol={{ span: 16 }}
+          labelCol={{ span: 8 }}
+          onFinish={changeUserPassword}
+          autoComplete="off"
+          style={{ marginTop: "5%" }}
+        >
+          <Form.Item
+            label="New Password"
+            name="newPassword"
+            rules={[{ required: true, message: "Please enter new password" }, { validator: validatePassword }]}
+          >
             <Input.Password type="password" />
           </Form.Item>
           <Form.Item

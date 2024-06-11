@@ -87,6 +87,7 @@ const UserServices = (axiosInstance: AxiosInstance) => {
           clientId: true,
           createdAt: true,
           updatedAt: true,
+          imageId: true,
           // masterPositionId: true,
           // masterPosition: {
           //   select: {
@@ -94,7 +95,7 @@ const UserServices = (axiosInstance: AxiosInstance) => {
           //     nameEn: true,
           //   },
           // },
-          departMentId: true,
+          positionId: true,
           ownerGroupId: true,
         },
       };
@@ -185,6 +186,32 @@ const UserServices = (axiosInstance: AxiosInstance) => {
     },
     remove: async (id: string) => {
       return await axiosInstance.delete(`${baseUrl}/${id}`);
+    },
+    uploadImage: async (userId: string, image: any) => {
+      return await axiosInstance
+        .post(`${baseUrl}/upload-image/${userId}`, image, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    getImage: async (userId: string) => {
+      return await axiosInstance
+        .get(`${baseUrl}/upload-image/${userId}`, { responseType: "blob" })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
     },
   };
 };

@@ -68,11 +68,11 @@ const MenuNav: MenuProps["items"] = [
 export default MenuNav;
 
 export const MenuSider: MenuItem[] = [
-  // {
-  //   key: "home",
-  //   label: <Link href={`/page/home`}>Home</Link>,
-  //   icon: <HomeOutlined />,
-  // },
+  {
+    key: "home",
+    label: <Link href={`/page/home`}>Home</Link>,
+    icon: <HomeOutlined />,
+  },
   {
     key: "internal-info",
     icon: organizeChart,

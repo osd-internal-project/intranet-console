@@ -92,7 +92,7 @@ const Navigation: React.FC<Prop> = ({ session, collapsed, setCollapsed, currentP
       <Drawer
         title={
           <div className="flex justify-center bg-white ">
-            <img src="/images/logo-dss-v1.png" alt="logo-page" className={`w-16 h-auto`} />
+            <img src="/images/logo-osd-mini-v2.png" alt="logo-page" className={`w-20 h-auto`} />
           </div>
         }
         placement="left"

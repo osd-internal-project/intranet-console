@@ -73,7 +73,7 @@ const columns: TableProps<DataType>['columns'] = [
             data ? (
                 data === "process" ? (
                     <Tag color="blue">กำลังรออนุมัติ</Tag>
-                ) : data === "success" ? (
+                ) : data === "Approve" ? (
                     <Tag color="green">อนุมัติสำเร็จ</Tag>
                 ) : data === "cancel" ? (
                     <Tag color="red">ยกเลิกการจอง</Tag>
@@ -108,7 +108,6 @@ const BookingTable = () => {
     }, []);
 
     const fetchData = async () => {
-        console.log(session);
         const bookingRoom = await bookingRoomServices.getBookingRoomQuery();
         setBookingData(bookingRoom);
     };

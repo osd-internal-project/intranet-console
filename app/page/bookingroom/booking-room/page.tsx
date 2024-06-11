@@ -36,6 +36,7 @@ const BookingRoomPage: React.FC = () => {
     const stockAuth = useAxiosIntranet();
     const bookingRoomServices = BookingRoomServices(stockAuth);
     const [isModalBooking, setIsModalBooking] = useState(false);
+    const [submitLoading, setSubmitLoading] = useState(false);
     const [masterRoomData, setMasterRoomData] = useState<MasterRoomType[]>([]);
     const [form] = useForm();
 
@@ -74,6 +75,7 @@ const BookingRoomPage: React.FC = () => {
     };
 
     const onFinish: FormProps<BookingType>['onFinish'] = async (values) => {
+        setSubmitLoading(true)
         const data = {
             roomName: values.roomName,
             roomType: values.roomType,
@@ -97,6 +99,8 @@ const BookingRoomPage: React.FC = () => {
             } else {
                 message.error("Add Booking failed");
             }
+            setSubmitLoading(false);
+            fetchData();
         } catch (error) {
             console.error("Error creating user", error);
             message.error("Add Booking failed");
@@ -286,7 +290,7 @@ const BookingRoomPage: React.FC = () => {
                             <Button type="default" onClick={handleCancel} style={{ marginRight: 8 }}>
                                 Cancel
                             </Button>
-                            <Button type="primary" htmlType="submit">
+                            <Button type="primary" htmlType="submit" loading={submitLoading}>
                                 Submit
                             </Button>
                         </Row>

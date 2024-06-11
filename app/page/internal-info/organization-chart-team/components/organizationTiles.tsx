@@ -33,7 +33,7 @@ const HumanTiles: React.FC<Props> = ({ data }) => {
         ""
       )}
       <div>{data.type === "position" ? `${data.firstNameEn} ${data.lastNameEn}` : ""}</div>
-      <Text style={true ? { width: 300, color: "#00a1df" } : { color: "#00a1df" }} ellipsis={true ? { tooltip: data.title } : false} strong>
+      <Text style={true ? { width: 300, } : undefined} ellipsis={true ? { tooltip: data.title } : false} strong>
         {data.title}
       </Text>
     </Card>

@@ -1,5 +1,5 @@
 "use client";
-import { Button, Card, Checkbox, Form, Input, Modal, Select, Switch, message } from "antd";
+import { Button, Card, Image, Form, Input, Modal, Select, Switch, message, Avatar } from "antd";
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -27,9 +27,7 @@ type detailType = {
   activeStatus: boolean;
   createdAt: Date | null;
   updatedAt: Date | null;
-  masterPositionId: any | null;
-  department: any;
-  departMentId: number;
+  positionId: any | null;
 };
 type option = {
   label: number;
@@ -38,10 +36,8 @@ type option = {
 const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement => {
   const router = useRouter();
   const userAuth = useAxiosUser();
-  const intranetAuth = useAxiosIntranet();
   const userServices = UserServices(userAuth);
   const masterPositionServices = MasterPositionServices(userAuth);
-  const departmentServices = DepartmentServices(intranetAuth);
   const [detailForm] = useForm();
   const [repasswordForm] = Form.useForm();
   const [loading, setLoading] = useState(true);
@@ -49,7 +45,6 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
   const [openChangePassword, setOpenChangePassword] = useState(false);
   const [checkedActiveStatus, setCheckedActiveStatus] = useState<boolean>(false);
   const [positionOption, setPositionOption] = useState<option[]>([]);
-  const [department, setDepartment] = useState<TdepartmentFindMany[]>([]);
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -61,7 +56,6 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
   const loadingDetail = async () => {
     if (userid) {
       const data = (await userServices.getUsersByUserId(userid)) as detailType;
-      const resDepartment = await departmentServices.findMany();
       const formdata = {
         userId: data.userId,
         username: data.username,
@@ -71,14 +65,12 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
         phoneNumber: data.phoneNumber,
         createdAt: data.createdAt ? dateToStringTh(data.createdAt) : "",
         updatedAt: data.updatedAt ? dateToStringTh(data.updatedAt) : "",
-        masterPositionId: data.masterPositionId,
-        departMentId: data.departMentId,
+        positionId: data.positionId,
       };
-      setDepartment(resDepartment);
       setCheckedActiveStatus(data.activeStatus);
       detailForm.setFieldsValue(formdata);
       const positions = await masterPositionServices.getMasterPositionAll();
-      const positionOption: option[] = positions.map((d: any) => ({ label: d.nameTh, value: d.id }));
+      const positionOption: option[] = positions.map((d: any) => ({ label: d.nameEn, value: d.posId }));
       setPositionOption(positionOption);
     }
     setLoading(false);
@@ -102,8 +94,7 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
         lastNameTh: value.lastNameTh,
         phoneNumber: value.phoneNumber,
         email: value.email,
-        masterPositionId: value.masterPositionId,
-        departMentId: value.departMentId,
+        positionId: value.positionId,
       };
       await userServices
         .updateUser(userid, updatdata)
@@ -190,6 +181,12 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
     <>
       <Card>
         <Form form={detailForm} name="basic" onFinish={onSubmitEdit} autoComplete="off" layout="vertical">
+          <div className=" flex justify-center">
+            <Avatar size={128} src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
+          </div>
+          <div className=" col-span-3">
+            <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-200" />
+          </div>
           <div className="grid grid-cols-4 gap-2">
             <div>
               <Form.Item label="User Id" name="userId">
@@ -246,17 +243,8 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
               </Form.Item>
             </div>
             <div>
-              <Form.Item label="Position" name="masterPositionId" required>
+              <Form.Item label="Position" name="positionId" required>
                 <Select options={positionOption} disabled={disabledEdit} className={disabledEdit ? "read-only-input" : ""} />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item label="Department" name="departMentId" required>
-                <Select
-                  options={department.map((item: TdepartmentFindMany) => ({ value: item.departId, label: item.departName }))}
-                  disabled={disabledEdit}
-                  className={disabledEdit ? "read-only-input" : ""}
-                />
               </Form.Item>
             </div>
           </div>

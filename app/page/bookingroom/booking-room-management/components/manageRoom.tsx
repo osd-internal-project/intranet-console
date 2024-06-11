@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Tag, Button, Row, Col, Space, Modal, Form, Input, Divider, message, Select, DatePicker } from 'antd';
+import { Table, Tag, Button, Row, Col, Space, Modal, Form, Input, Divider, message, Select, DatePicker, Popconfirm } from 'antd';
 import type { TableProps, FormProps } from 'antd';
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageRoomServices } from "../services/manage-room.service";
@@ -37,6 +37,7 @@ const ManageRoom: React.FC = () => {
     const manageRoomServices = ManageRoomServices(intraAuth);
     const [isModalBooking, setIsModalBooking] = useState(false);
     const [modalEditBooking, setModalEditBooking] = useState(false);
+    const [modalApproveBooking, setModalApproveBooking] = useState(false);
     const [bookingData, setBookingData] = useState<BookingType[]>([]);
     const [masterRoomData, setMasterRoomData] = useState<MasterRoomType[]>([]);
     const [currentBookingId, setCurrentBookingId] = useState<string | null>(null);  // State to store the current booking ID
@@ -93,8 +94,8 @@ const ManageRoom: React.FC = () => {
             dataIndex: 'bookingStatus',
             width: "100px",
             render: (status: string) => (
-                <Tag color={status === "process" ? "blue" : status === "success" ? "green" : status === "cancel" ? "red" : undefined}>
-                    {status === "process" ? "กำลังรออนุมัติ" : status === "success" ? "อนุมัติสำเร็จ" : status === "cancel" ? "ยกเลิกการจอง" : ""}
+                <Tag color={status === "process" ? "blue" : status === "Approve" ? "green" : status === "cancel" ? "red" : undefined}>
+                    {status === "process" ? "กำลังรออนุมัติ" : status === "Approve" ? "อนุมัติสำเร็จ" : status === "cancel" ? "ยกเลิกการจอง" : ""}
                 </Tag>
             ),
         },
@@ -106,7 +107,15 @@ const ManageRoom: React.FC = () => {
             render: (_, record) => (
                 <Space size="middle">
                     <a onClick={() => showModalEditBooking(record)}>แก้ไข</a>
-                    <a onClick={() => handleDeleteBooking(record.id)}>ลบ</a>  {/* Use record.id */}
+                    <Popconfirm
+                        title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
+                        onConfirm={() => handleDeleteBooking(record.id)}
+                        okText="ใช่"
+                        cancelText="ไม่"
+                    >
+                        <a>ลบ</a>
+                    </Popconfirm>
+                    <a onClick={() => showModalApproveBooking(record)}>อนุมัติ</a>
                 </Space>
             ),
         },
@@ -126,9 +135,19 @@ const ManageRoom: React.FC = () => {
         setModalEditBooking(false);
     };
 
+    const showModalApproveBooking = (record: BookingType) => {
+        setCurrentBookingId(record.id);  // Set the current booking ID
+        setModalApproveBooking(true);
+    };
+
+    const handleApproveBookingCancel = () => {
+        setModalApproveBooking(false);
+    };
+
     const handleDeleteBooking = async (id: string) => {
+        console.log(id);
         try {
-            // await manageRoomServices.deleteBooking(id);
+            await manageRoomServices.deleteBooking(id);
             setBookingData(bookingData.filter(item => item.id !== id));
             message.success('Booking deleted successfully');
         } catch (error) {
@@ -141,7 +160,6 @@ const ManageRoom: React.FC = () => {
             message.error('No booking selected for update');
             return;
         }
-
         try {
             const { startDate, endDate, ...restValues } = values;
             const updatedBooking = {
@@ -153,6 +171,21 @@ const ManageRoom: React.FC = () => {
             console.log(updatedBooking);
             await manageRoomServices.updateBooking(updatedBooking);
             setModalEditBooking(false);
+            fetchData();
+            message.success('Booking updated successfully');
+        } catch (error) {
+            message.error('Failed to update booking');
+        }
+    };
+
+    const onFinishApprove: FormProps<BookingType>['onFinish'] = async () => {
+        try {
+            const updatedApproveBooking = {
+                id: currentBookingId,
+                bookingStatus: "Approve"
+            };
+            await manageRoomServices.updateBooking(updatedApproveBooking);
+            setModalApproveBooking(false);
             fetchData();
             message.success('Booking updated successfully');
         } catch (error) {
@@ -333,6 +366,29 @@ const ManageRoom: React.FC = () => {
                     <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                         <Row justify="end">
                             <Button type="default" onClick={handleEditBookingCancel} style={{ marginRight: 8 }}>
+                                Cancel
+                            </Button>
+                            <Button type="primary" htmlType="submit">
+                                Submit
+                            </Button>
+                        </Row>
+                    </Form.Item>
+                </Form>
+            </Modal>
+            <Modal width={400} title="อนุมัติจองห้อง" open={modalApproveBooking} onCancel={handleApproveBookingCancel} footer={null}>
+                <p>ยืนยันอนุมัติจองห้อง</p>
+                <Form
+                    form={form}
+                    layout="vertical"
+                    name="edit_booking"
+                    initialValues={{ remember: true }}
+                    onFinish={onFinishApprove}
+                    onFinishFailed={onFinishFailed}
+                    autoComplete="off"
+                >
+                    <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                        <Row justify="end">
+                            <Button type="default" onClick={handleApproveBookingCancel} style={{ marginRight: 8 }}>
                                 Cancel
                             </Button>
                             <Button type="primary" htmlType="submit">

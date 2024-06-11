@@ -30,7 +30,7 @@ const columns: TableProps<DataType>['columns'] = [
         dataIndex: 'roomsStatus',
         key: 'roomsStatus',
         render: (status: boolean) => (
-            status ? <Tag color="green">ใช้งานได้ปกติ</Tag> : <Tag color="red">อนุมัติสำเร็จ</Tag>
+            status ? <Tag color="green">ใช้งานได้ปกติ</Tag> : <Tag color="red">ไม่สามารถใช้งานได้</Tag>
         ),
     },
     {

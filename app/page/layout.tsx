@@ -63,7 +63,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       if (!pageWithoutMenu.includes(currentPath)) {
         const checkAuth = MenuSiderWithModule(session?.rulelist).some((menu: any) => menu.key === currentPath);
         if (!checkAuth) {
-          console.log(checkAuth);
           // redirect("/404");
         }
       }
@@ -71,7 +70,14 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
     return (
       <Layout className=" min-h-screen  overflow-auto ">
-        <Sider width={200} trigger={null} collapsible collapsed={collapsed} style={{ backgroundColor: "#ffff" }} className=" min-h-screen  hidden  md:block bg ">
+        <Sider
+          width={200}
+          trigger={null}
+          collapsible
+          collapsed={collapsed}
+          style={{ backgroundColor: "#ffff" }}
+          className=" min-h-screen  hidden  md:block bg "
+        >
           <div className="flex justify-center py-4 ">
             {!collapsed ? (
               <>
@@ -85,7 +91,14 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         </Sider>
         <Layout>
           <div className="w-full">
-            <Navigation session={session} countNoti={countNoti} collapsed={collapsed} setCollapsed={setCollapsed} currentPath={currentPath} menulist={menulist} />
+            <Navigation
+              session={session}
+              countNoti={countNoti}
+              collapsed={collapsed}
+              setCollapsed={setCollapsed}
+              currentPath={currentPath}
+              menulist={menulist}
+            />
           </div>
 
           <Content

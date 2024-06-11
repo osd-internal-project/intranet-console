@@ -59,3 +59,43 @@ export interface ISelect {
   value: string | number;
   label: string;
 }
+
+export interface ITypetypeleave {
+  createdAt: Date;
+  descriptionLeave: string;
+  forwardLeave: string;
+  id: number;
+  limitLeaveFour: string;
+  limitLeaveOne: string;
+  limitLeaveThree: string;
+  limitLeaveTwo: string;
+  typeEveryDay: boolean;
+  typeId: number;
+  typeName: string;
+  typeNameEn: string;
+  typeNameTh: string;
+  updatedAt: Date;
+}
+
+export interface ITpyeUser {
+  activeStatus: boolean;
+  clientId: string;
+  createdAt: Date;
+  email: string;
+  firstNameEn: string;
+  firstNameTh: string;
+  id: number;
+  lastNameEn: string;
+  lastNameTh: string;
+  organizedGroupId: number;
+  ownerGroupId: number;
+  password: string;
+  phoneNumber: string;
+  positionId: number;
+  refreshToken: string;
+  startWork: Date;
+  updatedAt: Date;
+  userId: string;
+  username: string;
+}
+

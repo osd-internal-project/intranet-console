@@ -1,10 +1,10 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Roboto, Noto_Sans_Thai, Kanit, Prompt, Kodchasan } from "next/font/google";
+import { Roboto, Noto_Sans_Thai, Kanit, Prompt, Kodchasan, Sriracha } from "next/font/google";
 const kodchasan = Kodchasan({ weight: "400", subsets: ["latin"] });
-const notoSanThai = Noto_Sans_Thai({ weight: "400", subsets: ["latin"] });
+const notoSanThai = Noto_Sans_Thai({ subsets: ["latin"] });
 const kanit = Kanit({ weight: "400", subsets: ["latin"] });
-const prompt = Prompt({ weight: "400", subsets: ["latin"] });
+const sriracha = Sriracha({ weight: "400", subsets: ["latin"] });
 import AuthProvider from "@/app/provider/AuthProvider";
 import { ConfigProvider } from "antd";
 import { signIn, useSession } from "next-auth/react";

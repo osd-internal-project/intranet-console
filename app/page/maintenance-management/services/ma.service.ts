@@ -7,8 +7,9 @@ export interface TMaTaskServices {
   findMaDataTable: (page: { take: number; skip: number; search: object }) => Promise<{ data: ITMaTask[]; count: number }>;
   create: (form: any) => Promise<ITMaTask>;
   update: (id: number, form: any) => Promise<ITMaTask>;
-  uploadFiles: (id: number, form: any) => Promise<any>;
   delete: (id: number) => Promise<ITMaTask>;
+  uploadFiles: (id: number, form: any) => Promise<any>;
+  downloadFile: (id: number) => Promise<Blob>;
   findActiveType: () => Promise<ITMaType[]>;
   exportMaReport: (page: { search: object }) => Promise<ArrayBuffer>;
 }
@@ -86,16 +87,7 @@ const MaServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
           return [];
         });
     },
-    uploadFiles: async (id: number, form: any) => {
-      return await axiosInstance
-        .post(`${filesUrl}/${id}`, form, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((result) => result.data)
-        .catch((err) => err);
-    },
+
     delete: async (id) => {
       return await axiosInstance
         .delete(`${taskUrl}/${id}`)
@@ -106,6 +98,24 @@ const MaServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
           console.log(err);
           return [];
         });
+    },
+    uploadFiles: async (id: number, form: any) => {
+      return await axiosInstance
+        .post(`${filesUrl}/${id}`, form, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((result) => result.data)
+        .catch((err) => err);
+    },
+    downloadFile: async (id: number) => {
+      return await axiosInstance
+        .get(`${filesUrl}/get-file/${id}`, { responseType: "blob" })
+        .then((result) => {
+          return result.data;
+        })
+        .catch((err) => console.log(err));
     },
     findActiveType: async () => {
       return await axiosInstance

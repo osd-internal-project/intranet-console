@@ -53,17 +53,17 @@ const MaDescriptionComponent: React.FC<props> = ({ data, downloadFile, getImageB
       </div>
       <div>
         <div className="font-bold">Images :</div>
-        <div>
+        <div className=" flex gap-2">
           {imagePreview.map((image, index) => (
             <div key={index} className=" m-1">
-              <Image height={30} preview={true} src={image.fileData ? URL.createObjectURL(image.fileData) : ""} />
+              <Image height={50} preview={true} src={image.fileData ? URL.createObjectURL(image.fileData) : ""} />
             </div>
           ))}
         </div>
       </div>
       <div>
-        <div className="font-bold">Files :</div>
-        <div className=" ">
+        <div className=" font-extrabold">Files :</div>
+        <div className="  ">
           {data.fileList.map((file, index) => (
             <div key={index}>
               <Button type="link" onClick={() => downloadFile(file.id, file.fileName)}>

@@ -279,8 +279,6 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
   };
 
   const handleExpireIncrease = async () => {
-    console.log(Number.isNaN(expire));
-
     if (Number.isNaN(expire)) {
       setExpire(0);
       formadmasterproduct.setFieldValue("beforeExpiry", expire + 1);

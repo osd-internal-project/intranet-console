@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { BadgeProps, CalendarProps, TableColumnsType, TableColumnType } from "antd";
+import type { BadgeProps, CalendarProps, TableColumnsType, TableColumnType, UploadFile } from "antd";
 import { Badge, Button, Calendar, Card, DatePicker, Divider, Form, Input, Modal, Select, Switch, Table, Tag } from "antd";
 import type { Dayjs } from "dayjs";
 import { ColumnType } from "antd/es/table";
@@ -14,20 +14,20 @@ export interface props {
   data: ITMaTask;
   loading: boolean;
   setLoading: (loading: boolean) => void;
-  updateMa: (data: ITMaUpdateForm) => void;
+  updateMa: (data: ITMaUpdateForm, attendFiles: UploadFile[], imageFiles: UploadFile[]) => void;
   maTypes: ITMaType[];
 }
 
 const MaDescriptionComponent: React.FC<props> = ({ data, loading, setLoading, maTypes, updateMa }): React.ReactElement => {
+  console.log(data);
   const [checkNextTask, setCheckNextTask] = useState<boolean>(false);
 
   return (
     <Card>
-      <div className="grid  grid-cols-1 md:grid-cols-3">
+      <div className="grid grid-cols-1 md:grid-cols-3">
         <div className="  grid  grid-cols-3 mb-2">
           <div className=" col-span-1 font-bold">สถานะ :</div>
           <div className=" col-span-2">
-            {" "}
             {data.maStatus ? (
               data.maStatus === "process" ? (
                 <Tag key={data.maStatus} color="blue" bordered={true}>
@@ -49,7 +49,7 @@ const MaDescriptionComponent: React.FC<props> = ({ data, loading, setLoading, ma
             )}
           </div>
         </div>
-        <div className=" col-span-2 flex justify-end">
+        <div className=" md:col-span-2 flex justify-end">
           {data?.refTask ? (
             <Link href={`/page/maintenance-management/${data.refTask.id}`}>
               <Button type="link">งานก่อนหน้า</Button>
@@ -65,7 +65,7 @@ const MaDescriptionComponent: React.FC<props> = ({ data, loading, setLoading, ma
             ""
           )}
         </div>
-        <div className="grid  grid-cols-3 mb-2">
+        <div className="grid grid-cols-3 mb-2">
           <div className=" col-span-1 font-bold">ประเภท MA :</div>
           <div className=" col-span-2">{data.maTypeName}</div>
         </div>
@@ -91,8 +91,16 @@ const MaDescriptionComponent: React.FC<props> = ({ data, loading, setLoading, ma
         </div>
       </div>
       <div>
-        <div className=" col-span-1 font-bold">เนื้อหา :</div>
-        <div className=" col-span-2">{data.detail}</div>
+        <div className="font-bold">เนื้อหา :</div>
+        <div className=" ">{data.detail}</div>
+      </div>
+      <div>
+        <div className="font-bold">Images :</div>
+        <div className=" ">{data.detail}</div>
+      </div>
+      <div>
+        <div className="font-bold">Files :</div>
+        <div className=" ">{data.detail}</div>
       </div>
 
       <Divider />

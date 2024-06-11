@@ -64,8 +64,7 @@ export const authOptions = {
           return res.data;
         })
         .catch((e) => {
-          console.log(" error permission");
-
+          // console.log(" error permission");
           return null;
         });
 

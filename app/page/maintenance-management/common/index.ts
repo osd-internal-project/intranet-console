@@ -1,3 +1,5 @@
+import { UploadFile } from "antd/lib";
+
 export interface ITMaDetail {
   id: number;
   maName: string;
@@ -33,8 +35,14 @@ export interface ITMaTask {
   detail?: string;
   refTask?: ITMaTask;
   nextTask?: ITMaTask;
+  imageList: ITMaTaskFiles[];
+  fileList: ITMaTaskFiles[];
 }
-
+export interface ITMaTaskFiles {
+  id: number;
+  fileCode: string;
+  fileName: string;
+}
 export type ITMaCreateForm = {
   maTypeId: number;
   maTypeName?: string;

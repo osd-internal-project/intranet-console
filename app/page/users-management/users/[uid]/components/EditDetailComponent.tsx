@@ -170,7 +170,7 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
             setOpenChangePassword(false);
           })
           .catch((err) => {
-            message.error("error");
+            message.error("ผิดพลาด");
             console.log(err);
           });
       }
@@ -194,11 +194,7 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
               </Form.Item>
             </div>
             <div>
-              <Form.Item
-                label="Username"
-                name="username"
-                rules={[{ required: true, message: "Please enter username" }, { validator: validateNoSpaces }]}
-              >
+              <Form.Item label="Username" name="username" rules={[{ required: true, message: "Please enter username" }, { validator: validateNoSpaces }]}>
                 <Input disabled={disabledEdit} className={disabledEdit ? "read-only-input" : ""} />
               </Form.Item>
             </div>
@@ -237,21 +233,12 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
               </Form.Item>
             </div>
             <div>
-              <Form.Item
-                label="Last Name"
-                name="lastNameTh"
-                rules={[{ required: true, message: "Please enter last Name" }]}
-                style={{ marginBottom: "2px" }}
-              >
+              <Form.Item label="Last Name" name="lastNameTh" rules={[{ required: true, message: "Please enter last Name" }]} style={{ marginBottom: "2px" }}>
                 <Input disabled={disabledEdit} className={disabledEdit ? "read-only-input" : ""} />
               </Form.Item>
             </div>
             <div>
-              <Form.Item
-                label="Phone Number"
-                name="phoneNumber"
-                rules={[{ required: true, message: "Please enter phone number" }, { validator: validateOnlyNumbers }]}
-              >
+              <Form.Item label="Phone Number" name="phoneNumber" rules={[{ required: true, message: "Please enter phone number" }, { validator: validateOnlyNumbers }]}>
                 <Input disabled={disabledEdit} className={disabledEdit ? "read-only-input" : ""} maxLength={12} />
               </Form.Item>
             </div>
@@ -300,19 +287,8 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
         </div>
       </Card>
       <Modal open={openChangePassword} onCancel={() => setOpenChangePassword(false)} footer={null} title="Change Password">
-        <Form
-          form={repasswordForm}
-          wrapperCol={{ span: 16 }}
-          labelCol={{ span: 8 }}
-          onFinish={changeUserPassword}
-          autoComplete="off"
-          style={{ marginTop: "5%" }}
-        >
-          <Form.Item
-            label="New Password"
-            name="newPassword"
-            rules={[{ required: true, message: "Please enter new password" }, { validator: validatePassword }]}
-          >
+        <Form form={repasswordForm} wrapperCol={{ span: 16 }} labelCol={{ span: 8 }} onFinish={changeUserPassword} autoComplete="off" style={{ marginTop: "5%" }}>
+          <Form.Item label="New Password" name="newPassword" rules={[{ required: true, message: "Please enter new password" }, { validator: validatePassword }]}>
             <Input.Password type="password" />
           </Form.Item>
           <Form.Item

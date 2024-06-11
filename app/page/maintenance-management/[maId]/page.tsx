@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, message, Row } from "antd";
+import { Breadcrumb, Card, Col, message, Row, UploadFile } from "antd";
 import MaDescriptionComponent from "./components/MaDescription";
 import { ITMaTask, ITMaType, ITMaUpdateForm, ITPagination } from "../common";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -41,8 +41,9 @@ export default function MaTaskPage() {
   //   createdDate: new Date(),
   // };
 
-  async function updateMa(data: ITMaUpdateForm): Promise<void> {
+  async function updateMa(data: ITMaUpdateForm, attendFiles: UploadFile[], imageFiles: UploadFile[]): Promise<void> {
     let form = { ...data, updatedById: session?.user.userId, updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}` };
+
     if (data.nextTask) {
       const typeSelected = maTypes.findLast((type) => type.id === data.nextTask?.maTypeId);
       const submaStatus = "process";
@@ -50,7 +51,24 @@ export default function MaTaskPage() {
     }
     await maServices
       .update(Number(params.maId), form)
-      .then(() => {
+      .then((response) => {
+        if (response.id && imageFiles.length > 0) {
+          imageFiles.forEach(async (file) => {
+            const formData: any = new FormData();
+            formData.append("type", "image");
+            formData.append("files", file.originFileObj);
+            await maServices.uploadFiles(response.id, formData);
+          });
+        }
+        if (response.id && attendFiles.length > 0) {
+          attendFiles.forEach(async (file) => {
+            const formData: any = new FormData();
+            formData.append("type", "attend");
+            formData.append("files", file.originFileObj);
+            await maServices.uploadFiles(response.id, formData);
+          });
+        }
+
         message.success("อัพเดท MA สำเร็จ");
       })
       .catch(() => {

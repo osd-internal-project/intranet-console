@@ -87,13 +87,14 @@ const UserServices = (axiosInstance: AxiosInstance) => {
           clientId: true,
           createdAt: true,
           updatedAt: true,
-          positionId: true,
-          masterPosition: {
-            select: {
-              nameTh: true,
-              nameEn: true,
-            },
-          },
+          // masterPositionId: true,
+          // masterPosition: {
+          //   select: {
+          //     nameTh: true,
+          //     nameEn: true,
+          //   },
+          // },
+          departMentId: true,
           ownerGroupId: true,
         },
       };

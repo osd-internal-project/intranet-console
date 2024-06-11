@@ -77,6 +77,27 @@ export default function MaTaskPage() {
     setloading(true);
   }
 
+  async function downloadFile(id: number, name: string): Promise<void> {
+    if (id) {
+      const response = await maServices.downloadFile(id);
+      const url = URL.createObjectURL(response);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  }
+
+  async function getImageBlob(id: number, name: string) {
+    if (id) {
+      const response = await maServices.downloadFile(id);
+      if (response) return response;
+      else return undefined;
+    }
+  }
+
   return data ? (
     <div>
       <Row gutter={[8, 8]}>
@@ -99,7 +120,15 @@ export default function MaTaskPage() {
         </Col>
         <Col span={24}>
           <div className="grid grid-cols-1 ">
-            <MaDescriptionComponent data={data} loading={loading} setLoading={(e: boolean) => setloading(e)} maTypes={maTypes} updateMa={updateMa} />
+            <MaDescriptionComponent
+              data={data}
+              loading={loading}
+              setLoading={(e: boolean) => setloading(e)}
+              maTypes={maTypes}
+              updateMa={updateMa}
+              downloadFile={downloadFile}
+              getImageBlob={getImageBlob}
+            />
           </div>
         </Col>
       </Row>

@@ -16,9 +16,11 @@ export interface props {
   setLoading: (loading: boolean) => void;
   updateMa: (data: ITMaUpdateForm, attendFiles: UploadFile[], imageFiles: UploadFile[]) => void;
   maTypes: ITMaType[];
+  downloadFile: (id: number, name: string) => void;
+  getImageBlob: (id: number, name: string) => Promise<Blob | undefined>;
 }
 
-const MaDescriptionComponent: React.FC<props> = ({ data, loading, setLoading, maTypes, updateMa }): React.ReactElement => {
+const MaDescriptionComponent: React.FC<props> = ({ data, loading, setLoading, maTypes, updateMa, downloadFile, getImageBlob }): React.ReactElement => {
   console.log(data);
   const [checkNextTask, setCheckNextTask] = useState<boolean>(false);
 
@@ -94,17 +96,9 @@ const MaDescriptionComponent: React.FC<props> = ({ data, loading, setLoading, ma
         <div className="font-bold">เนื้อหา :</div>
         <div className=" ">{data.detail}</div>
       </div>
-      <div>
-        <div className="font-bold">Images :</div>
-        <div className=" ">{data.detail}</div>
-      </div>
-      <div>
-        <div className="font-bold">Files :</div>
-        <div className=" ">{data.detail}</div>
-      </div>
 
       <Divider />
-      {data.maStatus === "process" ? <MaSubmitForm updateMa={updateMa} maTypes={maTypes} /> : <MaSolution data={data} />}
+      {data.maStatus === "process" ? <MaSubmitForm updateMa={updateMa} maTypes={maTypes} /> : <MaSolution data={data} downloadFile={downloadFile} getImageBlob={getImageBlob} />}
     </Card>
   );
 };

@@ -1,19 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { BadgeProps, CalendarProps, TableColumnsType, TableColumnType } from "antd";
-import { Badge, Button, Calendar, Card, DatePicker, Divider, Form, Input, Modal, Select, Switch, Table, Tag } from "antd";
+import { Badge, Button, Calendar, Card, DatePicker, Divider, Form, Input, Modal, Select, Space, Switch, Table, Tag, Image } from "antd";
 import type { Dayjs } from "dayjs";
 import { ColumnType } from "antd/es/table";
 import { dateToStringTh, dateToStringThNoTime } from "@/app/utils/format";
-import { ITMaDetail, ITMaTask, ITMaType, ITMaUpdateForm } from "../../common";
+import { ITMaDetail, ITMaTask, ITMaType, ITMaUpdateForm, ITMaTaskFiles } from "../../common";
 import TextArea from "antd/es/input/TextArea";
+import { PaperClipOutlined } from "@ant-design/icons";
 
 export interface props {
   data: ITMaTask;
+  downloadFile: (id: number, name: string) => void;
+  getImageBlob: (id: number, name: string) => Promise<Blob | undefined>;
 }
 
-const MaDescriptionComponent: React.FC<props> = ({ data }): React.ReactElement => {
-  const [checkNextTask, setCheckNextTask] = useState<boolean>(false);
+const MaDescriptionComponent: React.FC<props> = ({ data, downloadFile, getImageBlob }): React.ReactElement => {
+  const [imagePreview, setImagePreview] = useState<any[]>([]);
+  useEffect(() => {
+    previewImage();
+  }, [data]);
 
+  async function previewImage() {
+    const preview = data.imageList.map(async (image) => {
+      const fileData = await getImageBlob(image.id, image.fileName);
+      console.log(fileData);
+      return { ...image, fileData: fileData ? URL.createObjectURL(fileData) : "" };
+    });
+    setImagePreview(preview);
+  }
+  console.log(imagePreview);
   return (
     <>
       <h2>ผลการดำเนินการ</h2>
@@ -33,6 +48,31 @@ const MaDescriptionComponent: React.FC<props> = ({ data }): React.ReactElement =
         <div>
           <div className=" col-span-1 font-bold">สรุปผลการดำเนินการ :</div>
           <div className=" col-span-2">{data.solution}</div>
+        </div>
+      </div>
+      <div>
+        <div className="font-bold">Images :</div>
+        <div>
+          {imagePreview.map((image, index) => (
+            <div key={index} className=" m-1">
+              <Image width={30} height={30} preview={true} src={image.fileData ? image.fileData : ""} />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div>
+        <div className="font-bold">Files :</div>
+        <div className=" ">
+          {data.fileList.map((file, index) => (
+            <div key={index}>
+              <Button type="link" onClick={() => downloadFile(file.id, file.fileName)}>
+                <Space>
+                  <PaperClipOutlined />
+                  {file.fileName}
+                </Space>
+              </Button>
+            </div>
+          ))}
         </div>
       </div>
     </>

@@ -27,7 +27,7 @@ const MaDescriptionComponent: React.FC<props> = ({ maTypes, updateMa }): React.R
     return false;
   };
   const handleChangeImageFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
-    return await setImageFiles(newFileList);
+    return setImageFiles(newFileList);
   };
   const beforeUploadAttendFiles = (file: RcFile) => {
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
@@ -37,7 +37,7 @@ const MaDescriptionComponent: React.FC<props> = ({ maTypes, updateMa }): React.R
     return false;
   };
   const handleChangeAttendFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
-    return await setAttendFiles(newFileList);
+    return setAttendFiles(newFileList);
   };
   function handleUpdateMa(values: ITMaUpdateForm): void {
     updateMa(values, attendFiles, imageFiles);

@@ -22,8 +22,6 @@ type Props = {
 const { Text } = Typography;
 
 const HumanTiles: React.FC<Props> = ({ data }) => {
-  console.log(data);
-
   return (
     <Card
       hoverable

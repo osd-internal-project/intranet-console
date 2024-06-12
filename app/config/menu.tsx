@@ -70,7 +70,7 @@ export default MenuNav;
 export const MenuSider: MenuItem[] = [
   {
     key: "home",
-    label: <Link href={`/page/home`}>Home</Link>,
+    label: "Home",
     icon: <HomeOutlined />,
   },
   {

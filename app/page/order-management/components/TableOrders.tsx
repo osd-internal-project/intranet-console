@@ -1,5 +1,25 @@
-import { DownOutlined, ExclamationCircleFilled, FilterOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { Button, Card, Popover, Table, Image, Tag, Form, Input, Modal, message, TableColumnsType, Badge, Dropdown, Space } from "antd";
+import {
+  DownOutlined,
+  ExclamationCircleFilled,
+  FilterOutlined,
+  PlusCircleOutlined,
+} from "@ant-design/icons";
+import {
+  Button,
+  Card,
+  Popover,
+  Table,
+  Image,
+  Tag,
+  Form,
+  Input,
+  Modal,
+  message,
+  TableColumnsType,
+  Badge,
+  Dropdown,
+  Space,
+} from "antd";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import OrderManagementServices from "../services/order-management.service";
@@ -8,7 +28,7 @@ import { ITypeOrder } from "../common";
 import { dateToStringTh, numberWithCommas } from "@/app/utils/format";
 import { checkRule } from "@/app/utils/rules";
 export interface props {
-  department?: number;
+  location?: number;
   grouplist?: string[];
 }
 
@@ -32,7 +52,10 @@ interface SubTableDataType {
   total: number;
 }
 
-const TableOrders: React.FC<props> = ({ department, grouplist }): React.ReactElement => {
+const TableOrders: React.FC<props> = ({
+  location,
+  grouplist,
+}): React.ReactElement => {
   const stockAuth = useAxiosStock();
   const addOrderRule = checkRule("order-add");
   const orderManagementServices = OrderManagementServices(stockAuth);
@@ -44,16 +67,22 @@ const TableOrders: React.FC<props> = ({ department, grouplist }): React.ReactEle
 
   useEffect(() => {
     loadData();
-  }, [department, search]);
+  }, [location, search]);
 
   const loadData = async () => {
     setLoading(true);
-    if (department) {
-      const data = await orderManagementServices.findOrdersByDepartment(Number(department), search);
+    if (location) {
+      const data = await orderManagementServices.findOrdersByLocation(
+        Number(location),
+        search
+      );
       setDataTable(data);
     } else {
       if (grouplist) {
-        const data = await orderManagementServices.findOrdersAllByOwnerGroup(grouplist, search);
+        const data = await orderManagementServices.findOrdersAllByOwnerGroup(
+          grouplist,
+          search
+        );
         setDataTable(data);
       }
     }
@@ -82,16 +111,40 @@ const TableOrders: React.FC<props> = ({ department, grouplist }): React.ReactEle
       key: "createdAt",
       render: (d: Date) => dateToStringTh(d),
     },
-    { title: "RESPONSIBLE PERSON", dataIndex: "createdByName", key: "createdByName" },
+    {
+      title: "RESPONSIBLE PERSON",
+      dataIndex: "createdByName",
+      key: "createdByName",
+    },
     {
       title: "STATUS",
       dataIndex: "status",
       key: "status",
       render: (d: string) =>
-        d === "new" ? <Tag color="blue">{d}</Tag> : d === "done" ? <Tag color="green">{d}</Tag> : d === "cancel" ? <Tag color="red">{d}</Tag> : "",
+        d === "new" ? (
+          <Tag color="blue">{d}</Tag>
+        ) : d === "done" ? (
+          <Tag color="green">{d}</Tag>
+        ) : d === "cancel" ? (
+          <Tag color="red">{d}</Tag>
+        ) : (
+          ""
+        ),
     },
-    { title: "QTY", dataIndex: "totalQty", key: "totalQty", align: "right", render: (d: number) => numberWithCommas(d) },
-    { title: "TOTAL", dataIndex: "totalPrice", key: "totalPrice", align: "right", render: (d: number) => numberWithCommas(d) },
+    {
+      title: "QTY",
+      dataIndex: "totalQty",
+      key: "totalQty",
+      align: "right",
+      render: (d: number) => numberWithCommas(d),
+    },
+    {
+      title: "TOTAL",
+      dataIndex: "totalPrice",
+      key: "totalPrice",
+      align: "right",
+      render: (d: number) => numberWithCommas(d),
+    },
     Table.EXPAND_COLUMN,
   ];
   const getSubTableData = async (orderId: number) => {
@@ -113,14 +166,37 @@ const TableOrders: React.FC<props> = ({ department, grouplist }): React.ReactEle
         render: (d: string) => <div className=" font-bold">{d}</div>,
       },
 
-      { title: "GROUP", dataIndex: "groupName", width: "15%", key: "groupName" },
-      { title: "BALANCE", dataIndex: "qty", key: "qty", width: "15%", render: (d: number) => numberWithCommas(d) },
+      {
+        title: "GROUP",
+        dataIndex: "groupName",
+        width: "15%",
+        key: "groupName",
+      },
+      {
+        title: "BALANCE",
+        dataIndex: "qty",
+        key: "qty",
+        width: "15%",
+        render: (d: number) => numberWithCommas(d),
+      },
       { title: "UNIT", dataIndex: "unit", width: "15%", key: "unit" },
-      { title: "TOTAL", dataIndex: "totalPrice", width: "15%", key: "totalPrice", render: (d: number) => numberWithCommas(d) },
+      {
+        title: "TOTAL",
+        dataIndex: "totalPrice",
+        width: "15%",
+        key: "totalPrice",
+        render: (d: number) => numberWithCommas(d),
+      },
     ];
     return (
       <div key={e.id}>
-        <Table rowClassName=" bg-neutral-50" rowKey={(r: SubTableDataType) => r.casNo} dataSource={e.orderLot} columns={columns} pagination={false} />
+        <Table
+          rowClassName=" bg-neutral-50"
+          rowKey={(r: SubTableDataType) => r.casNo}
+          dataSource={e.orderLot}
+          columns={columns}
+          pagination={false}
+        />
       </div>
     );
   };
@@ -131,7 +207,10 @@ const TableOrders: React.FC<props> = ({ department, grouplist }): React.ReactEle
       search = { ...search, productName: { contains: value.productName } };
     }
     if (value.chemicalFormula) {
-      search = { ...search, chemicalFormula: { contains: value.chemicalFormula } };
+      search = {
+        ...search,
+        chemicalFormula: { contains: value.chemicalFormula },
+      };
     }
     if (value.casNo) {
       search = { ...search, casNo: { contains: value.casNo } };
@@ -178,15 +257,27 @@ const TableOrders: React.FC<props> = ({ department, grouplist }): React.ReactEle
               trigger="click"
               overlayStyle={{ width: "calc(100% - 240px)" }}
             >
-              <Button type="primary" className="button-blue" icon={<FilterOutlined />}>
+              <Button
+                type="primary"
+                className="button-blue"
+                icon={<FilterOutlined />}
+              >
                 Filters
               </Button>
             </Popover>
           </div>
           <div className=" space-x-2">
             {addOrderRule ? (
-              <Link href={`/page/order-management/add${department ? `?locationId=${department}` : ``}`}>
-                <Button icon={<PlusCircleOutlined />} type="primary" className="button-blue">
+              <Link
+                href={`/page/order-management/add${
+                  location ? `?locationId=${location}` : ``
+                }`}
+              >
+                <Button
+                  icon={<PlusCircleOutlined />}
+                  type="primary"
+                  className="button-blue"
+                >
                   Request Order
                 </Button>
               </Link>
@@ -205,7 +296,10 @@ const TableOrders: React.FC<props> = ({ department, grouplist }): React.ReactEle
             columns={columns}
             dataSource={dataTable}
             scroll={{ x: true }}
-            expandable={{ expandedRowRender, rowExpandable: (record) => record.orderId !== "Not Expandable" }}
+            expandable={{
+              expandedRowRender,
+              rowExpandable: (record) => record.orderId !== "Not Expandable",
+            }}
           />
         </Card>
       </div>

@@ -5,7 +5,11 @@ import React, { useEffect, useState } from "react";
 import MasterProductServices from "../services/product-list.service";
 import { dateToStringThNoTime, numberWithCommas } from "@/app/utils/format";
 import { ColumnsType } from "antd/lib/table";
-import { ITypeMasterProduct, inventoryStockByProduct, masterProductInSubTable } from "../common";
+import {
+  ITypeMasterProduct,
+  inventoryStockByProduct,
+  masterProductInSubTable,
+} from "../common";
 
 export interface props {
   record: ITypeMasterProduct;
@@ -24,7 +28,10 @@ export const TableProductLot: React.FC<props> = ({ record }) => {
 
   const loaddatalot = async () => {
     setLoading(true);
-    const result: masterProductInSubTable = await productListService.getProductQtyOfDepartmentByInventorystockId(record.id);
+    const result: masterProductInSubTable =
+      await productListService.getProductQtyOfLocationByInventorystockId(
+        record.id
+      );
 
     if (result.inventoryStock) {
       const data = await Promise.all(
@@ -40,7 +47,7 @@ export const TableProductLot: React.FC<props> = ({ record }) => {
             remainQty: usable ? Number(usable) : 0,
             expiryQty: expired ? Number(expired) : 0,
           };
-        }),
+        })
       );
       setDataTable(data);
     }
@@ -49,9 +56,14 @@ export const TableProductLot: React.FC<props> = ({ record }) => {
   };
 
   const columns: ColumnsType<inventoryStockByProduct> = [
-    { key: "id", title: "NO.", dataIndex: "id", render: (data: number, r, index: number) => index + 1 },
+    {
+      key: "id",
+      title: "NO.",
+      dataIndex: "id",
+      render: (data: number, r, index: number) => index + 1,
+    },
     { key: "inventory", title: "INVENTORY", dataIndex: "inventoryName" },
-    { key: "department", title: "DEPARTMENT", dataIndex: "locationName" },
+    { key: "location", title: "LOCATION", dataIndex: "locationName" },
     { key: "locationPlace", title: "LOCATION", dataIndex: "locationPlace" },
     {
       key: "qty",

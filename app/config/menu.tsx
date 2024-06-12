@@ -242,9 +242,9 @@ export const MenuSider: MenuItem[] = [
         // rule: "user-position-show",
       },
       {
-        key: `setting/department`,
+        key: `setting/location`,
         // icon: buldingIcon,
-        label: `Department`,
+        label: `Location`,
       },
       {
         key: `setting/typeleave`,
@@ -302,10 +302,10 @@ export const MenuSider: MenuItem[] = [
     // rule: "setting-show",
     children: [
       {
-        key: `stock-management/department`,
+        key: `stock-management/location`,
         // icon: buldingIcon,
-        label: `Department`,
-        rule: "department-show",
+        label: `Location`,
+        rule: "location-show",
       },
       {
         key: `stock-management/inventory`,

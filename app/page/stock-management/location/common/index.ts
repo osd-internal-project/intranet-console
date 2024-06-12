@@ -1,4 +1,4 @@
-export interface typeDepartment {
+export interface typeLocation {
   id: number;
   locationId: string;
   numberOfInventory: number;
@@ -8,7 +8,7 @@ export interface typeDepartment {
   locationPlace: string;
   createdAt: Date;
   updatedAt: Date;
-  imagesLocation: typeImagesdepartment[];
+  imagesLocation: typeImageslocation[];
   inventory: typeInventory[];
   masterProductLocationMap: typeMasterProductLocationMap[];
   locationUserGroupMap: typeLocationUserGroupMap[];
@@ -22,7 +22,7 @@ export interface TreeNode {
   children?: TreeNode[]; // type for a known property.
 }
 
-export interface typeDepartmentFilter {
+export interface typeLocationFilter {
   id: number;
   locationId: string;
   numberOfInventory: number;
@@ -32,20 +32,20 @@ export interface typeDepartmentFilter {
   locationPlace: string;
   createdAt: Date[];
   updatedAt: Date;
-  imagesLocation: typeImagesdepartment[];
+  imagesLocation: typeImageslocation[];
   inventory: typeInventory[];
   masterProductLocationMap: typeMasterProductLocationMap[];
   locationUserGroupMap: typeLocationUserGroupMap[];
 }
 
-export interface typeImagesdepartment {
+export interface typeImageslocation {
   id: number;
   idfile: string;
   path: string;
   namefile: string;
   createdAt: Date;
   updatedAt: Date;
-  location: typeDepartment[];
+  location: typeLocation[];
   images_location: string;
 }
 
@@ -59,7 +59,7 @@ export interface typeInventory {
   phoneNumber: string;
   createdAt: Date;
   updatedAt: Date;
-  location: typeDepartment[];
+  location: typeLocation[];
   locationId: number;
   //   inventoryStock  inventoryStock[]
   //   order           order[]

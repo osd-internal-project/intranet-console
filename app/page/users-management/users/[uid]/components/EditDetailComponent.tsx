@@ -1,8 +1,24 @@
 "use client";
-import { Button, Card, Image, Form, Input, Modal, Select, Switch, message, Avatar, Upload, UploadFile } from "antd";
+import {
+  Button,
+  Card,
+  Image,
+  Form,
+  Input,
+  Modal,
+  Select,
+  Switch,
+  message,
+  Avatar,
+  Upload,
+  UploadFile,
+} from "antd";
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
-import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
+import {
+  useAxiosIntranet,
+  useAxiosUser,
+} from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useForm } from "antd/es/form/Form";
 import { Icon } from "@iconify/react";
 import "../../style.css";
@@ -10,8 +26,6 @@ import { useRouter } from "next/navigation";
 import UserServices from "../../services/user.service";
 import MasterPositionServices from "../../services/position.service";
 import { dateToStringTh } from "@/app/utils/format";
-import DepartmentServices from "@/app/page/setting/department/services/department.service";
-import { TdepartmentFindMany } from "@/app/page/setting/department/common";
 import { UploadOutlined } from "@ant-design/icons";
 import { RcFile, UploadProps } from "antd/es/upload";
 export interface props {
@@ -36,7 +50,9 @@ type option = {
   label: number;
   value: string;
 };
-const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement => {
+const EditDetailComponent: React.FC<props> = ({
+  userid,
+}): React.ReactElement => {
   const router = useRouter();
   const userAuth = useAxiosUser();
   const userServices = UserServices(userAuth);
@@ -46,7 +62,8 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
   const [loading, setLoading] = useState(true);
   const [disabledEdit, setDisabledEdit] = useState(true);
   const [openChangePassword, setOpenChangePassword] = useState(false);
-  const [checkedActiveStatus, setCheckedActiveStatus] = useState<boolean>(false);
+  const [checkedActiveStatus, setCheckedActiveStatus] =
+    useState<boolean>(false);
   const [positionOption, setPositionOption] = useState<option[]>([]);
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
   const [imageFiles, setImageFiles] = useState<UploadFile[]>([]);
@@ -79,7 +96,10 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
       setCheckedActiveStatus(data.activeStatus);
       detailForm.setFieldsValue(formdata);
       const positions = await masterPositionServices.getMasterPositionAll();
-      const positionOption: option[] = positions.map((d: any) => ({ label: d.nameEn, value: d.posId }));
+      const positionOption: option[] = positions.map((d: any) => ({
+        label: d.nameEn,
+        value: d.posId,
+      }));
       setPositionOption(positionOption);
     }
     setLoading(false);
@@ -89,7 +109,10 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
     setbuttonLoading(true);
     const username = value.username;
     if (username) {
-      const dupilcateUser = await userServices.getDuplicateUsername(userid, username);
+      const dupilcateUser = await userServices.getDuplicateUsername(
+        userid,
+        username
+      );
       if (dupilcateUser) {
         message.error("A user with that username already exists");
         setbuttonLoading(false);
@@ -153,7 +176,9 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
   const validateConfirmPassword = (_: any, value: any) => {
     const firstPassword = repasswordForm.getFieldValue("newPassword");
     if (value && value !== firstPassword) {
-      return Promise.reject(new Error("Your password and confirm password must match"));
+      return Promise.reject(
+        new Error("Your password and confirm password must match")
+      );
     }
     return Promise.resolve();
   };
@@ -200,14 +225,22 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
     return false;
   };
 
-  const handleChangeImageFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
+  const handleChangeImageFiles: UploadProps["onChange"] = async ({
+    fileList: newFileList,
+  }) => {
     return setImageFiles(newFileList);
   };
 
   return (
     <>
       <Card>
-        <Form form={detailForm} name="basic" onFinish={onSubmitEdit} autoComplete="off" layout="vertical">
+        <Form
+          form={detailForm}
+          name="basic"
+          onFinish={onSubmitEdit}
+          autoComplete="off"
+          layout="vertical"
+        >
           <div className=" flex justify-center p-1">
             <Avatar size={128} src={image ? URL.createObjectURL(image) : ""} />
           </div>
@@ -222,7 +255,11 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                 maxCount={1}
                 listType="picture"
               >
-                <Button icon={<UploadOutlined />} disabled={disabledEdit} className={disabledEdit ? "read-only-input" : ""}>
+                <Button
+                  icon={<UploadOutlined />}
+                  disabled={disabledEdit}
+                  className={disabledEdit ? "read-only-input" : ""}
+                >
                   Click to upload
                 </Button>
               </Upload>
@@ -241,14 +278,27 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
               <Form.Item
                 label="Username"
                 name="username"
-                rules={[{ required: true, message: "Please enter username" }, { validator: validateNoSpaces }]}
+                rules={[
+                  { required: true, message: "Please enter username" },
+                  { validator: validateNoSpaces },
+                ]}
               >
-                <Input disabled={disabledEdit} className={disabledEdit ? "read-only-input" : ""} />
+                <Input
+                  disabled={disabledEdit}
+                  className={disabledEdit ? "read-only-input" : ""}
+                />
               </Form.Item>
             </div>
             <div>
-              <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please enter email" }]}>
-                <Input disabled={disabledEdit} className={disabledEdit ? "read-only-input" : ""} />
+              <Form.Item
+                label="Email"
+                name="email"
+                rules={[{ required: true, message: "Please enter email" }]}
+              >
+                <Input
+                  disabled={disabledEdit}
+                  className={disabledEdit ? "read-only-input" : ""}
+                />
               </Form.Item>
             </div>
             <div>
@@ -259,14 +309,22 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                   unCheckedChildren="Inactive"
                   checked={checkedActiveStatus}
                   onChange={() => setCheckedActiveStatus(!checkedActiveStatus)}
-                  className={checkedActiveStatus === true ? "active-switch" : "inactive-switch"}
+                  className={
+                    checkedActiveStatus === true
+                      ? "active-switch"
+                      : "inactive-switch"
+                  }
                 />
               </Form.Item>
             </div>
             <div>
               <Form.Item label="Change Password">
                 <div className="w-full">
-                  <Input.Password disabled value={"1234"} className="read-only-input2" />
+                  <Input.Password
+                    disabled
+                    value={"1234"}
+                    className="read-only-input2"
+                  />
                 </div>
               </Form.Item>
             </div>
@@ -276,8 +334,15 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
           </div>
           <div className="grid grid-cols-4 gap-2">
             <div>
-              <Form.Item label="First Name" name="firstNameTh" rules={[{ required: true, message: "Please enter first name" }]}>
-                <Input disabled={disabledEdit} className={disabledEdit ? "read-only-input" : ""} />
+              <Form.Item
+                label="First Name"
+                name="firstNameTh"
+                rules={[{ required: true, message: "Please enter first name" }]}
+              >
+                <Input
+                  disabled={disabledEdit}
+                  className={disabledEdit ? "read-only-input" : ""}
+                />
               </Form.Item>
             </div>
             <div>
@@ -287,21 +352,35 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                 rules={[{ required: true, message: "Please enter last Name" }]}
                 style={{ marginBottom: "2px" }}
               >
-                <Input disabled={disabledEdit} className={disabledEdit ? "read-only-input" : ""} />
+                <Input
+                  disabled={disabledEdit}
+                  className={disabledEdit ? "read-only-input" : ""}
+                />
               </Form.Item>
             </div>
             <div>
               <Form.Item
                 label="Phone Number"
                 name="phoneNumber"
-                rules={[{ required: true, message: "Please enter phone number" }, { validator: validateOnlyNumbers }]}
+                rules={[
+                  { required: true, message: "Please enter phone number" },
+                  { validator: validateOnlyNumbers },
+                ]}
               >
-                <Input disabled={disabledEdit} className={disabledEdit ? "read-only-input" : ""} maxLength={12} />
+                <Input
+                  disabled={disabledEdit}
+                  className={disabledEdit ? "read-only-input" : ""}
+                  maxLength={12}
+                />
               </Form.Item>
             </div>
             <div>
               <Form.Item label="Position" name="positionId" required>
-                <Select options={positionOption} disabled={disabledEdit} className={disabledEdit ? "read-only-input" : ""} />
+                <Select
+                  options={positionOption}
+                  disabled={disabledEdit}
+                  className={disabledEdit ? "read-only-input" : ""}
+                />
               </Form.Item>
             </div>
           </div>
@@ -327,7 +406,12 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                   setDisabledEdit(true);
                 }}
               >{`Cancel`}</Button>
-              <Button type={"primary"} onClick={() => detailForm.submit()} className="button-blue" loading={buttonLoading}>{`Save Change`}</Button>
+              <Button
+                type={"primary"}
+                onClick={() => detailForm.submit()}
+                className="button-blue"
+                loading={buttonLoading}
+              >{`Save Change`}</Button>
             </div>
           ) : (
             <div className=" flex  space-x-4">
@@ -336,14 +420,23 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                   router.push(`/page/setting/usermanagement/`);
                 }}
               >{`Back`}</Button>
-              <Button type={"primary"} onClick={() => setDisabledEdit(!disabledEdit)} className="button-blue">
+              <Button
+                type={"primary"}
+                onClick={() => setDisabledEdit(!disabledEdit)}
+                className="button-blue"
+              >
                 Edit
               </Button>
             </div>
           )}
         </div>
       </Card>
-      <Modal open={openChangePassword} onCancel={() => setOpenChangePassword(false)} footer={null} title="Change Password">
+      <Modal
+        open={openChangePassword}
+        onCancel={() => setOpenChangePassword(false)}
+        footer={null}
+        title="Change Password"
+      >
         <Form
           form={repasswordForm}
           wrapperCol={{ span: 16 }}
@@ -355,7 +448,10 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
           <Form.Item
             label="New Password"
             name="newPassword"
-            rules={[{ required: true, message: "Please enter new password" }, { validator: validatePassword }]}
+            rules={[
+              { required: true, message: "Please enter new password" },
+              { validator: validatePassword },
+            ]}
           >
             <Input.Password type="password" />
           </Form.Item>

@@ -1,7 +1,22 @@
-import { Badge, Button, Card, Col, Input, Row, Table, TableColumnsType, Tag, Typography } from "antd";
+import {
+  Badge,
+  Button,
+  Card,
+  Col,
+  Input,
+  Row,
+  Table,
+  TableColumnsType,
+  Tag,
+  Typography,
+} from "antd";
 import React from "react";
 // import { dataReport } from "../test/data";
-import { countWithCommas, dateToStringThNoTime, numberWithCommas } from "@/app/utils/format";
+import {
+  countWithCommas,
+  dateToStringThNoTime,
+  numberWithCommas,
+} from "@/app/utils/format";
 
 export interface props {
   gatdataAll: any[];
@@ -11,7 +26,13 @@ export interface props {
   getloading: boolean;
 }
 
-export const ReportTable: React.FC<props> = ({ gatdataAll, paginationConfig, handlerPaginationTable, filter, getloading }): React.ReactElement => {
+export const ReportTable: React.FC<props> = ({
+  gatdataAll,
+  paginationConfig,
+  handlerPaginationTable,
+  filter,
+  getloading,
+}): React.ReactElement => {
   const columns: TableColumnsType<any> = [
     {
       title: "LOT NO.",
@@ -28,13 +49,17 @@ export const ReportTable: React.FC<props> = ({ gatdataAll, paginationConfig, han
       title: "PRODUCT NAME",
       dataIndex: "productName",
       key: "productName",
-      render: (_, row: any) => row?.inventoryStock?.masterProduct?.masterProductDetails.map((obj: { name: string }) => obj.name).join(", "),
+      render: (_, row: any) =>
+        row?.inventoryStock?.masterProduct?.masterProductDetails
+          .map((obj: { name: string }) => obj.name)
+          .join(", "),
     },
     {
-      title: "DEPARTMENT",
+      title: "LOCATION",
       dataIndex: "location",
       key: "location",
-      render: (_, row: any) => row?.inventoryStock?.inventory?.location?.locationName,
+      render: (_, row: any) =>
+        row?.inventoryStock?.inventory?.location?.locationName,
     },
     {
       title: "INVENTORY",
@@ -46,13 +71,15 @@ export const ReportTable: React.FC<props> = ({ gatdataAll, paginationConfig, han
       title: "CHEMICAL FORMULA",
       dataIndex: "chemicalFormula",
       key: "chemicalFormula",
-      render: (_, row: any) => row?.inventoryStock?.masterProduct?.chemicalFormula,
+      render: (_, row: any) =>
+        row?.inventoryStock?.masterProduct?.chemicalFormula,
     },
     {
       title: "GROUP",
       dataIndex: "groupName",
       key: "groupName",
-      render: (_, row: any) => row?.inventoryStock?.masterProduct?.masterProductGroup?.groupName,
+      render: (_, row: any) =>
+        row?.inventoryStock?.masterProduct?.masterProductGroup?.groupName,
     },
     {
       title: "VENDER",
@@ -86,7 +113,8 @@ export const ReportTable: React.FC<props> = ({ gatdataAll, paginationConfig, han
       title: "UNIT",
       dataIndex: "unit",
       key: "unit",
-      render: (_, row: any) => row?.inventoryStock?.masterProduct?.unit?.unitName,
+      render: (_, row: any) =>
+        row?.inventoryStock?.masterProduct?.unit?.unitName,
     },
   ];
   return (
@@ -97,7 +125,11 @@ export const ReportTable: React.FC<props> = ({ gatdataAll, paginationConfig, han
         columns={columns}
         rowKey={(e: any) => e.id}
         scroll={{ x: "calc(800px + 100%)" }}
-        pagination={{ total: paginationConfig, current: filter?.current, showSizeChanger: false }}
+        pagination={{
+          total: paginationConfig,
+          current: filter?.current,
+          showSizeChanger: false,
+        }}
         onChange={handlerPaginationTable}
       />
     </div>

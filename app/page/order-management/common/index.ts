@@ -88,7 +88,7 @@ export type ITypeVender = {
   id: number;
   venderName: string;
 };
-export type ITypeDepartment = {
+export type ITypeLocation = {
   id: number;
   locationName: string;
 };
@@ -128,7 +128,14 @@ export type ITypeMasterProduct = {
   chemicalFormula: string;
   casNo: string;
   description: string;
-  masterProductGhsMap?: { masterGhsType: { id: number; nameGhs: string; ghsId: string; imagesGhs: { idfile: string }[] } }[];
+  masterProductGhsMap?: {
+    masterGhsType: {
+      id: number;
+      nameGhs: string;
+      ghsId: string;
+      imagesGhs: { idfile: string }[];
+    };
+  }[];
   unit?: { unitName: string };
   masterProductGroup: {
     groupName: string;

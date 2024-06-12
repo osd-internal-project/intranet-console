@@ -10,7 +10,9 @@ const MasterProductServices = (axiosInstance: AxiosInstance) => {
   return {
     getLocation: async () => {
       return await axiosInstance
-        .post(`${locationUrl}/condition`, { condition: { where: { status: true } } })
+        .post(`${locationUrl}/condition`, {
+          condition: { where: { status: true } },
+        })
         .then((result) => result.data)
         .catch((err) => console.log(err));
     },
@@ -26,8 +28,16 @@ const MasterProductServices = (axiosInstance: AxiosInstance) => {
         });
     },
 
-    getMasterProductsByLocationId: async (locationId: number | undefined, values: any, getswitch: boolean) => {
-      const condition = { locationId: locationId, condition: values?.length === 0 ? {} : values, minimumStatus: getswitch };
+    getMasterProductsByLocationId: async (
+      locationId: number | undefined,
+      values: any,
+      getswitch: boolean
+    ) => {
+      const condition = {
+        locationId: locationId,
+        condition: values?.length === 0 ? {} : values,
+        minimumStatus: getswitch,
+      };
       return await axiosInstance
         .post(`${baseUrl}/location`, condition)
         .then((res) => {
@@ -39,7 +49,10 @@ const MasterProductServices = (axiosInstance: AxiosInstance) => {
         });
     },
 
-    getInventorylotByInventorystockId: async (InventorystockId: string, search: object) => {
+    getInventorylotByInventorystockId: async (
+      InventorystockId: string,
+      search: object
+    ) => {
       const condition = {
         condition: {
           where: {
@@ -71,7 +84,7 @@ const MasterProductServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getProductQtyOfDepartmentByInventorystockId: async (productId: number) => {
+    getProductQtyOfLocationByInventorystockId: async (productId: number) => {
       return await axiosInstance
         .post(`${baseUrl}/inventory-find-by-product`, { productId: productId })
         .then((res) => {
@@ -84,13 +97,17 @@ const MasterProductServices = (axiosInstance: AxiosInstance) => {
     },
     getImages: async (condition: any) => {
       return await axiosInstance
-        .get(`${imageUrl}/get_image?image=${condition}`, { responseType: "blob" })
+        .get(`${imageUrl}/get_image?image=${condition}`, {
+          responseType: "blob",
+        })
         .then((result) => result.data)
         .catch((err) => console.log(err));
     },
     dataImagesGhs: async (condition: any) => {
       return await axiosInstance
-        .get(`${imageGhsUrl}/get_image/ghs?image=${condition}`, { responseType: "blob" })
+        .get(`${imageGhsUrl}/get_image/ghs?image=${condition}`, {
+          responseType: "blob",
+        })
         .then((result) => result.data)
         .catch((err) => console.log(err));
     },
@@ -102,13 +119,17 @@ const MasterProductServices = (axiosInstance: AxiosInstance) => {
     },
     getUsableRemain: async (inventorystockId: number) => {
       return await axiosInstance
-        .get(`${masterdataApiInventoryLot}/find-usable-remain-by-inventorystock?stockid=${inventorystockId}`)
+        .get(
+          `${masterdataApiInventoryLot}/find-usable-remain-by-inventorystock?stockid=${inventorystockId}`
+        )
         .then((result) => result.data)
         .catch((err) => console.log(err));
     },
     getExpiredRemain: async (inventorystockId: number) => {
       return await axiosInstance
-        .get(`${masterdataApiInventoryLot}/find-expired-remain-by-inventorystock?stockid=${inventorystockId}`)
+        .get(
+          `${masterdataApiInventoryLot}/find-expired-remain-by-inventorystock?stockid=${inventorystockId}`
+        )
         .then((result) => result.data)
         .catch((err) => console.log(err));
     },
@@ -120,7 +141,9 @@ const MasterProductServices = (axiosInstance: AxiosInstance) => {
     },
     downloadfileRecieve: async (id: number) => {
       return await axiosInstance
-        .get(`${masterdataApiInventoryLot}/download/${id}`, { responseType: "blob" })
+        .get(`${masterdataApiInventoryLot}/download/${id}`, {
+          responseType: "blob",
+        })
         .then((result) => result.data)
         .catch((err) => console.log(err));
     },

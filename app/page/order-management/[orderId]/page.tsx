@@ -22,7 +22,9 @@ export default function AddOrder() {
   }, [loading]);
   const fetchData = async () => {
     if (orderId) {
-      const order = await orderManagementService.findDetailByid(Number(orderId));
+      const order = await orderManagementService.findDetailByid(
+        Number(orderId)
+      );
       setOrder(order);
       setLoading(false);
     }
@@ -53,11 +55,18 @@ export default function AddOrder() {
       <Col span={24} className=" flex space-x-4">
         <div className="title-page-font  ">{`ORDER MANAGEMENT`}</div>
         <div className="flex space-x-3  items-center">
-          <div className=" text-lg">Department :</div>
-          <Input style={{ width: "200px" }} className=" read-only-input-disable font-bold" value={order?.locationName} disabled />
+          <div className=" text-lg">Location :</div>
+          <Input
+            style={{ width: "200px" }}
+            className=" read-only-input-disable font-bold"
+            value={order?.locationName}
+            disabled
+          />
         </div>
       </Col>
-      <Col span={24}>{order ? <ShowOrder order={order} propData={propData} /> : <></>}</Col>
+      <Col span={24}>
+        {order ? <ShowOrder order={order} propData={propData} /> : <></>}
+      </Col>
     </Row>
   );
 }

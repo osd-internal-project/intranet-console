@@ -16,10 +16,10 @@ const NotificationBeforeExpiredServices = (axiosInstance: AxiosInstance) => {
         });
     },
 
-    findLotBeforeExpiredByDepartment: async (department: number[]) => {
+    findLotBeforeExpiredByLocation: async (location: number[]) => {
       return await axiosInstance
         .post(`${inventoryLotUrl}/find-before-expired`, {
-          department: department,
+          location: location,
         })
         .then((result) => result.data)
         .catch((err) => err);

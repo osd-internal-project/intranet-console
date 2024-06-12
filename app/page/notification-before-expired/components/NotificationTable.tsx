@@ -8,18 +8,24 @@ import { ColumnsType } from "antd/es/table";
 import { numberWithCommas, dateToStringThNoTime } from "@/app/utils/format";
 import { diffDayDate } from "@/app/utils";
 export interface props {
-  department: number[];
+  location: number[];
 }
-export const NotificationTable: React.FC<props> = ({ department }): React.ReactElement => {
+export const NotificationTable: React.FC<props> = ({
+  location,
+}): React.ReactElement => {
   const stockAuth = useAxiosStock();
-  const notificationBeforeExpiredServices = NotificationBeforeExpiredServices(stockAuth);
+  const notificationBeforeExpiredServices =
+    NotificationBeforeExpiredServices(stockAuth);
   const [dataTable, setDataTable] = useState<ITypeDataTable[]>([]);
   useEffect(() => {
     fetchData();
-  }, [department]);
+  }, [location]);
   const fetchData = async () => {
-    if (department.length > 0) {
-      const data: ITypeDataTable[] = await notificationBeforeExpiredServices.findLotBeforeExpiredByDepartment(department);
+    if (location.length > 0) {
+      const data: ITypeDataTable[] =
+        await notificationBeforeExpiredServices.findLotBeforeExpiredByLocation(
+          location
+        );
 
       setDataTable(data);
     } else {
@@ -27,11 +33,28 @@ export const NotificationTable: React.FC<props> = ({ department }): React.ReactE
     }
   };
   const columns: ColumnsType<ITypeDataTable> = [
-    { key: "notiExpiryDate", title: "SENT DATE", dataIndex: "notiExpiryDate", render: (d: Date) => dateToStringThNoTime(d) },
-    { key: "locationName", title: "DEPARTMENT", dataIndex: ["inventoryStock", "inventory", "location", "locationName"] },
-    { key: "inventoryName", title: "INVENTORY", dataIndex: ["inventoryStock", "inventory", "inventoryName"] },
+    {
+      key: "notiExpiryDate",
+      title: "SENT DATE",
+      dataIndex: "notiExpiryDate",
+      render: (d: Date) => dateToStringThNoTime(d),
+    },
+    {
+      key: "locationName",
+      title: "LOCATION",
+      dataIndex: ["inventoryStock", "inventory", "location", "locationName"],
+    },
+    {
+      key: "inventoryName",
+      title: "INVENTORY",
+      dataIndex: ["inventoryStock", "inventory", "inventoryName"],
+    },
     { key: "lotNo", title: "LOT NO.", dataIndex: "lotNo" },
-    { key: "casNo", title: "CAS NO.", dataIndex: ["inventoryStock", "masterProduct", "casNo"] },
+    {
+      key: "casNo",
+      title: "CAS NO.",
+      dataIndex: ["inventoryStock", "masterProduct", "casNo"],
+    },
     {
       key: "masterProductDetails",
       title: "PRODUCT NAME",
@@ -48,7 +71,10 @@ export const NotificationTable: React.FC<props> = ({ department }): React.ReactE
       title: "REMAIN",
       dataIndex: "remain",
       align: "right",
-      render: (d: number, r: ITypeDataTable) => `${numberWithCommas(d)} ${r.inventoryStock.masterProduct.unit.unitName}`,
+      render: (d: number, r: ITypeDataTable) =>
+        `${numberWithCommas(d)} ${
+          r.inventoryStock.masterProduct.unit.unitName
+        }`,
     },
     {
       key: "id",
@@ -64,14 +90,24 @@ export const NotificationTable: React.FC<props> = ({ department }): React.ReactE
           </Tag>
         ),
     },
-    { key: "expiryDate", title: "EXPIRED DATE", dataIndex: "expiryDate", render: (d: Date) => dateToStringThNoTime(d) },
+    {
+      key: "expiryDate",
+      title: "EXPIRED DATE",
+      dataIndex: "expiryDate",
+      render: (d: Date) => dateToStringThNoTime(d),
+    },
   ];
   return (
     <div>
       <Card style={{ width: "100%", height: "250px", overflowY: "scroll" }}>
         <Row>
           <Col span={24}>
-            <Table size="small" columns={columns} dataSource={dataTable} rowKey={"lotNo"} />
+            <Table
+              size="small"
+              columns={columns}
+              dataSource={dataTable}
+              rowKey={"lotNo"}
+            />
           </Col>
         </Row>
       </Card>

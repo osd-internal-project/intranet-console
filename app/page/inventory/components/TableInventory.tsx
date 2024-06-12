@@ -14,7 +14,10 @@ export interface props {
   search: object;
 }
 
-export const TableInventory: React.FC<props> = ({ groupID, search }): React.ReactElement => {
+export const TableInventory: React.FC<props> = ({
+  groupID,
+  search,
+}): React.ReactElement => {
   const stockAuth = useAxiosStock();
 
   const inventorystockservices = InventoryStockServices(stockAuth);
@@ -24,7 +27,10 @@ export const TableInventory: React.FC<props> = ({ groupID, search }): React.Reac
     if (loading === true) loaddata();
   }, [groupID?.grouplist, loading]);
   const loaddata = async () => {
-    const result = await inventorystockservices.getInventoryByGroup(groupID?.grouplist, search);
+    const result = await inventorystockservices.getInventoryByGroup(
+      groupID?.grouplist,
+      search
+    );
     if (result) setdataResult(result);
     setLoading(false);
   };
@@ -39,7 +45,7 @@ export const TableInventory: React.FC<props> = ({ groupID, search }): React.Reac
     },
     {
       key: "locationId",
-      title: "DEPARTMENT",
+      title: "LOCATION",
       dataIndex: "locationId",
       render: (event: string, row: any, index: number) => {
         return row.location.locationName;
@@ -104,8 +110,25 @@ export const TableInventory: React.FC<props> = ({ groupID, search }): React.Reac
             >
               <Button type="link">
                 <Space>
-                  <div style={{ justifyContent: "center", alignItems: "center", display: "flex", fontWeight: "bold" }}> {IconEye}</div>
-                  <div style={{ justifyContent: "center", alignItems: "center", display: "flex", fontWeight: "bold" }}>{`check stock`}</div>
+                  <div
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      display: "flex",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {" "}
+                    {IconEye}
+                  </div>
+                  <div
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      display: "flex",
+                      fontWeight: "bold",
+                    }}
+                  >{`check stock`}</div>
                 </Space>
               </Button>
             </Link>

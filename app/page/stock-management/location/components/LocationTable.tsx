@@ -20,15 +20,28 @@ import {
   Upload,
   TreeSelect,
 } from "antd";
-import { ExclamationCircleFilled, FilterOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
-import { useAxiosStock, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
+import {
+  ExclamationCircleFilled,
+  FilterOutlined,
+  PlusOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
+import {
+  useAxiosStock,
+  useAxiosUser,
+} from "@/app/lib/axios/hooks/userAxiosAuth";
 import { LocationServices } from "../services/location.service";
 import Link from "next/link";
 import { deleteIcon, editIcon } from "@/components/icon";
 // import ImgCrop from "antd-img-crop";
 import type { RcFile, UploadProps } from "antd/es/upload";
 import { UploadFile } from "antd/lib/upload/interface";
-import { typeDepartment, typeInventory, typeuserGroup, TreeNode } from "../common";
+import {
+  typeLocation,
+  typeInventory,
+  typeuserGroup,
+  TreeNode,
+} from "../common";
 import { StringDecoder } from "string_decoder";
 import { ColumnsType } from "antd/es/table";
 import { checkRule } from "@/app/utils/rules";
@@ -38,14 +51,18 @@ import { validatesUploadfileImage } from "@/app/utils/validatefield";
 
 export interface props {
   loading: boolean;
-  getdataAll: typeDepartment[];
+  getdataAll: typeLocation[];
   setLoading: (value: boolean) => void;
 }
-const locationTable: React.FC<props> = ({ loading, getdataAll, setLoading }): React.ReactElement => {
+const locationTable: React.FC<props> = ({
+  loading,
+  getdataAll,
+  setLoading,
+}): React.ReactElement => {
   const stockAuth = useAxiosStock();
   const userAuth = useAxiosUser();
-  const editRule = checkRule("department-edit");
-  const deleteRule = checkRule("department-delete");
+  const editRule = checkRule("location-edit");
+  const deleteRule = checkRule("location-delete");
   const locationServices = LocationServices(stockAuth);
   const userServices = UserServices(userAuth);
   const [form] = Form.useForm();
@@ -67,7 +84,9 @@ const locationTable: React.FC<props> = ({ loading, getdataAll, setLoading }): Re
   }, [locationId, getdataAll]);
 
   const fecthData = async () => {
-    const dataresult = await locationServices.findinventoryNoOwner(Number(locationId));
+    const dataresult = await locationServices.findinventoryNoOwner(
+      Number(locationId)
+    );
     if (dataresult) {
       setInventory(dataresult);
     }
@@ -97,7 +116,7 @@ const locationTable: React.FC<props> = ({ loading, getdataAll, setLoading }): Re
 
     return tree;
   };
-  const showModal = (row: typeDepartment) => {
+  const showModal = (row: typeLocation) => {
     setFileList([]);
     let dataInventoryId: number[] = [];
     row.inventory.map((event: typeInventory, row: number) => {
@@ -128,24 +147,34 @@ const locationTable: React.FC<props> = ({ loading, getdataAll, setLoading }): Re
     form.resetFields();
     setbuttonLoading(false);
   };
-  const columns: ColumnsType<typeDepartment> = [
+  const columns: ColumnsType<typeLocation> = [
     {
-      title: "DEPARTMENT",
+      title: "LOCATION",
       dataIndex: "locationName",
       key: "locationName",
-      render: (event: string, row: typeDepartment, index: number) => {
+      render: (event: string, row: typeLocation, index: number) => {
         return (
           <>
             <Row gutter={[8, 8]}>
               <Space>
                 <Col>
                   <Image
-                    src={row.imagefile ? URL.createObjectURL(row.imagefile) : "error"}
+                    src={
+                      row.imagefile
+                        ? URL.createObjectURL(row.imagefile)
+                        : "error"
+                    }
                     width={80}
                     fallback="data:image/png;base64,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"
                   />
                 </Col>
-                <Col style={{ display: "flex", alignItems: "center", justifyContent: "start" }}>
+                <Col
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "start",
+                  }}
+                >
                   <Row gutter={[8, 8]}>
                     <Col span={24} style={{ fontWeight: "bold" }}>
                       {row.locationName}
@@ -175,21 +204,26 @@ const locationTable: React.FC<props> = ({ loading, getdataAll, setLoading }): Re
       title: "CREATED",
       dataIndex: "createdAt",
       key: "createdAt",
-      render: (value: Date, row: typeDepartment, index: number) => dateToStringTh(value),
+      render: (value: Date, row: typeLocation, index: number) =>
+        dateToStringTh(value),
     },
     {
       title: "STATUS",
       dataIndex: "status",
       key: "status",
-      render: (event: boolean, row: typeDepartment, index: number) =>
-        event === true ? <Tag color="green">{`Active`}</Tag> : <Tag color="volcano">{`Inactive`}</Tag>,
+      render: (event: boolean, row: typeLocation, index: number) =>
+        event === true ? (
+          <Tag color="green">{`Active`}</Tag>
+        ) : (
+          <Tag color="volcano">{`Inactive`}</Tag>
+        ),
     },
     {
       title: "ACTIVE",
       dataIndex: "id",
       key: "id",
       align: "center",
-      render: (event: number, row: typeDepartment, index: number) => (
+      render: (event: number, row: typeLocation, index: number) => (
         <Space>
           <Link href={`/page/setting/inventory?locationId=${row.id}`}>
             <Button type="link">{`View Inventory`}</Button>
@@ -202,7 +236,12 @@ const locationTable: React.FC<props> = ({ loading, getdataAll, setLoading }): Re
             <></>
           )}
           {deleteRule ? (
-            <Button type="link" danger onClick={() => onfinishDel(Number(event))} disabled={buttonLoading}>
+            <Button
+              type="link"
+              danger
+              onClick={() => onfinishDel(Number(event))}
+              disabled={buttonLoading}
+            >
               {deleteIcon}
             </Button>
           ) : (
@@ -216,7 +255,7 @@ const locationTable: React.FC<props> = ({ loading, getdataAll, setLoading }): Re
   const onfinishDel = (event: number) => {
     setbuttonLoading(true);
     Modal.confirm({
-      title: "Delete this department",
+      title: "Delete this location",
       icon: <ExclamationCircleFilled />,
       content: "Are you sure you want to delete this ?",
       okText: "Confirm",
@@ -240,7 +279,7 @@ const locationTable: React.FC<props> = ({ loading, getdataAll, setLoading }): Re
     });
   };
 
-  const onfinishEdit = async (event: typeDepartment) => {
+  const onfinishEdit = async (event: typeLocation) => {
     if (!getImage) {
       if (fileList.length === 0) {
         message.warning("Please upload image");
@@ -250,7 +289,9 @@ const locationTable: React.FC<props> = ({ loading, getdataAll, setLoading }): Re
     setbuttonLoading(true);
     let inventory: any[] = [];
     if (event?.inventory?.length > 0) {
-      inventory = event?.inventory?.map((inventory: any) => ({ id: inventory }));
+      inventory = event?.inventory?.map((inventory: any) => ({
+        id: inventory,
+      }));
     }
 
     const dataUpdate = {
@@ -311,10 +352,14 @@ const locationTable: React.FC<props> = ({ loading, getdataAll, setLoading }): Re
   const handlePreview = async (file: UploadFile) => {
     setPreviewImage(file.thumbUrl || (file.preview as string));
     setPreviewOpen(true);
-    setPreviewTitle(file.name || file.thumbUrl!.substring(file.url!.lastIndexOf("/") + 1));
+    setPreviewTitle(
+      file.name || file.thumbUrl!.substring(file.url!.lastIndexOf("/") + 1)
+    );
   };
 
-  const handleChangePic: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
+  const handleChangePic: UploadProps["onChange"] = async ({
+    fileList: newFileList,
+  }) => {
     return await setFileList(newFileList);
   };
 
@@ -338,20 +383,44 @@ const locationTable: React.FC<props> = ({ loading, getdataAll, setLoading }): Re
   };
   return (
     <>
-      <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={() => setPreviewOpen(false)}>
+      <Modal
+        open={previewOpen}
+        title={previewTitle}
+        footer={null}
+        onCancel={() => setPreviewOpen(false)}
+      >
         <img style={{ width: "100%" }} src={previewImage} />
       </Modal>
       <Card>
         <div className=" col-span-1 space-y-5">
           <div className=" overflow-auto md:overflow-hidden">
-            <Table size="small" columns={columns} dataSource={getdataAll} loading={loading} rowKey="id" scroll={{ x: 1000 }} />
+            <Table
+              size="small"
+              columns={columns}
+              dataSource={getdataAll}
+              loading={loading}
+              rowKey="id"
+              scroll={{ x: 1000 }}
+            />
           </div>
         </div>
       </Card>
 
       {openEdit ? (
-        <Modal title="Edit Department" open={openEdit} onCancel={handleCancel} footer={false}>
-          <Form style={{ width: "100%" }} name="edit" autoComplete="off" layout="vertical" form={form} onFinish={onfinishEdit}>
+        <Modal
+          title="Edit Location"
+          open={openEdit}
+          onCancel={handleCancel}
+          footer={false}
+        >
+          <Form
+            style={{ width: "100%" }}
+            name="edit"
+            autoComplete="off"
+            layout="vertical"
+            form={form}
+            onFinish={onfinishEdit}
+          >
             <Form.Item name={`id`} hidden />
             <Row gutter={[8, 8]}>
               <Col span={24}>
@@ -362,7 +431,10 @@ const locationTable: React.FC<props> = ({ loading, getdataAll, setLoading }): Re
                         <></>
                       ) : fileList.length >= 1 ? null : (
                         <Col>
-                          <Image src={getImage ? URL.createObjectURL(getImage) : ""} width={100} />
+                          <Image
+                            src={getImage ? URL.createObjectURL(getImage) : ""}
+                            width={100}
+                          />
                         </Col>
                       )}
                       <Col>
@@ -380,7 +452,13 @@ const locationTable: React.FC<props> = ({ loading, getdataAll, setLoading }): Re
                         </Upload>
                       </Col>
                       <Col style={{ justifyContent: "start", display: "flex" }}>
-                        <Row style={{ textAlign: "center", alignItems: "center", display: "flex" }}>
+                        <Row
+                          style={{
+                            textAlign: "center",
+                            alignItems: "center",
+                            display: "flex",
+                          }}
+                        >
                           {fileList.length >= 0 || getImage ? null : (
                             <>
                               <Col span={24}>{`Drag image here`}</Col>
@@ -410,17 +488,35 @@ const locationTable: React.FC<props> = ({ loading, getdataAll, setLoading }): Re
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item name={"locationName"} label={`Department Name :`} rules={[{ required: true, message: "Please enter department name" }]}>
+                <Form.Item
+                  name={"locationName"}
+                  label={`Location Name :`}
+                  rules={[
+                    { required: true, message: "Please enter location name" },
+                  ]}
+                >
                   <Input />
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item name={"description"} label={`Company Detail :`} rules={[{ required: true, message: "Please enter company detail" }]}>
+                <Form.Item
+                  name={"description"}
+                  label={`Company Detail :`}
+                  rules={[
+                    { required: true, message: "Please enter company detail" },
+                  ]}
+                >
                   <Input />
                 </Form.Item>
               </Col>
               <Col span={24}>
-                <Form.Item name="userGroup" label={`User Group :`} rules={[{ required: true, message: "Please enter user group" }]}>
+                <Form.Item
+                  name="userGroup"
+                  label={`User Group :`}
+                  rules={[
+                    { required: true, message: "Please enter user group" },
+                  ]}
+                >
                   <TreeSelect
                     showSearch={false}
                     style={{ width: "100%" }}
@@ -433,7 +529,11 @@ const locationTable: React.FC<props> = ({ loading, getdataAll, setLoading }): Re
                 </Form.Item>
               </Col>
               <Col span={24}>
-                <Form.Item name={"locationPlace"} label={`Location :`} rules={[{ required: true, message: "Please enter location" }]}>
+                <Form.Item
+                  name={"locationPlace"}
+                  label={`Location :`}
+                  rules={[{ required: true, message: "Please enter location" }]}
+                >
                   <Input />
                 </Form.Item>
               </Col>
@@ -463,12 +563,19 @@ const locationTable: React.FC<props> = ({ loading, getdataAll, setLoading }): Re
                     unCheckedChildren="Inactive"
                     checked={switchChecked}
                     onChange={handleChange}
-                    className={switchChecked === true ? "active-switch" : "inactive-switch"}
+                    className={
+                      switchChecked === true
+                        ? "active-switch"
+                        : "inactive-switch"
+                    }
                   />
                 </Form.Item>
               </Col>
               <Col span={24}>
-                <Row gutter={[8, 8]} style={{ justifyContent: "end", display: "flex" }}>
+                <Row
+                  gutter={[8, 8]}
+                  style={{ justifyContent: "end", display: "flex" }}
+                >
                   <Col>
                     <Button
                       type="default"
@@ -480,7 +587,12 @@ const locationTable: React.FC<props> = ({ loading, getdataAll, setLoading }): Re
                     >{`Cancel`}</Button>
                   </Col>
                   <Col>
-                    <Button htmlType="submit" type="default" className="button-blue" loading={buttonLoading}>{`Save Change`}</Button>
+                    <Button
+                      htmlType="submit"
+                      type="default"
+                      className="button-blue"
+                      loading={buttonLoading}
+                    >{`Save Change`}</Button>
                   </Col>
                 </Row>
               </Col>

@@ -39,7 +39,7 @@ export default function MainLayout({
   }, [session]);
   async function fatchData() {
     if (session) {
-      const count = await indexServices.countLotBeforeExpiredByDepartment(
+      const count = await indexServices.countLotBeforeExpiredByLocation(
         session.grouplist
       );
 

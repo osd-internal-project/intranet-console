@@ -4,7 +4,12 @@ import AddComponent from "./components/AddOrder";
 import { Row, Col, Breadcrumb, Select, Form } from "antd";
 import OrderManagementServices from "../services/order-management.service";
 import { useEffect, useState } from "react";
-import { ITypeMasterLocation, ITypeOption, ITypeMasterLocationByGroup, ITypeOrderLotForm } from "../common";
+import {
+  ITypeMasterLocation,
+  ITypeOption,
+  ITypeMasterLocationByGroup,
+  ITypeOrderLotForm,
+} from "../common";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 export default function AddOrder() {
@@ -14,9 +19,9 @@ export default function AddOrder() {
   const locationId = searchParams.get("locationId") as string;
   const stockAuth = useAxiosStock();
   const orderManagementService = OrderManagementServices(stockAuth);
-  const [department, setDepartment] = useState<ITypeMasterLocationByGroup[]>();
-  const [departmentSelected, setDepartmentSelected] = useState<ITypeOption>();
-  const [departmentOption, setDepartmentOption] = useState<ITypeOption[]>([]);
+  const [location, setLocation] = useState<ITypeMasterLocationByGroup[]>();
+  const [locationSelected, setLocationSelected] = useState<ITypeOption>();
+  const [locationOption, setLocationOption] = useState<ITypeOption[]>([]);
   const [inventoryOption, setInventoryOption] = useState<ITypeOption[]>([]);
 
   useEffect(() => {
@@ -25,9 +30,11 @@ export default function AddOrder() {
 
   useEffect(() => {
     const ioption: ITypeOption[] = [];
-    if (departmentSelected) {
-      department
-        ?.filter((d: ITypeMasterLocationByGroup) => d.id === departmentSelected.value)
+    if (locationSelected) {
+      location
+        ?.filter(
+          (d: ITypeMasterLocationByGroup) => d.id === locationSelected.value
+        )
         .map((d: ITypeMasterLocationByGroup) => {
           d.inventory
             ?.filter((d: any) => d.status == true)
@@ -37,17 +44,23 @@ export default function AddOrder() {
         });
       setInventoryOption(ioption);
     }
-  }, [departmentSelected]);
+  }, [locationSelected]);
 
   const fetchData = async () => {
     if (session?.grouplist) {
-      const locations: ITypeMasterLocationByGroup[] = await orderManagementService.getLocationByGroup(session?.grouplist);
-      const doptions = locations.map((d: ITypeMasterLocation) => ({ value: d.id, label: d.locationName }));
-      setDepartment(locations);
-      setDepartmentOption(doptions);
+      const locations: ITypeMasterLocationByGroup[] =
+        await orderManagementService.getLocationByGroup(session?.grouplist);
+      const doptions = locations.map((d: ITypeMasterLocation) => ({
+        value: d.id,
+        label: d.locationName,
+      }));
+      setLocation(locations);
+      setLocationOption(doptions);
       if (locationId) {
-        const selectedInventory = doptions.find((option) => option.value === Number(locationId));
-        setDepartmentSelected(selectedInventory);
+        const selectedInventory = doptions.find(
+          (option) => option.value === Number(locationId)
+        );
+        setLocationSelected(selectedInventory);
       }
     }
   };
@@ -74,21 +87,23 @@ export default function AddOrder() {
       <Col span={24} className=" flex space-x-4">
         <div className="title-page-font  ">{`ORDER MANAGEMENT`}</div>
         <div className="flex space-x-3  items-center">
-          <div className="text-lg">Department :</div>
+          <div className="text-lg">Location :</div>
           <Select
-            options={departmentOption}
-            placeholder={"Please Select Department"}
-            value={departmentSelected?.value}
+            options={locationOption}
+            placeholder={"Please Select Location"}
+            value={locationSelected?.value}
             onChange={(e) => {
-              const selectedInventory = departmentOption.find((option) => option.value === e);
-              setDepartmentSelected(selectedInventory);
+              const selectedInventory = locationOption.find(
+                (option) => option.value === e
+              );
+              setLocationSelected(selectedInventory);
             }}
             // style={{ width: "200px" }}
           />
         </div>
       </Col>
       <Col span={24}>
-        <AddComponent department={departmentSelected} inventory={inventoryOption} />
+        <AddComponent location={locationSelected} inventory={inventoryOption} />
       </Col>
     </Row>
   );

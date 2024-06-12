@@ -4,7 +4,7 @@ const IndexServices = (axiosInstance: AxiosInstance) => {
   const inventoryLotUrl = "/inventory-lot";
   const userurl = "/user";
   return {
-    countLotBeforeExpiredByDepartment: async (group: string[]) => {
+    countLotBeforeExpiredByLocation: async (group: string[]) => {
       return await axiosInstance
         .post(`${inventoryLotUrl}/count-before-expired`, {
           group: group,

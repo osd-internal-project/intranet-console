@@ -5,3 +5,9 @@ export const validatesUploadfileImage = (rule: any, value: string, callback: any
     callback();
   }
 };
+
+export const validateCheckData = (rule: any, value: string, callback: any) => {
+  if (value !== null || value !== undefined || value !== "") {
+    callback("Please Select Start Date");
+  }
+};

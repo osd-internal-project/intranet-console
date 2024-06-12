@@ -1,6 +1,10 @@
 import { Card, Col, Row, Table, TableColumnsType, Typography } from "antd";
 import React from "react";
-import { countWithCommas, numberWithCommas, dateToStringTh } from "@/app/utils/format";
+import {
+  countWithCommas,
+  numberWithCommas,
+  dateToStringTh,
+} from "@/app/utils/format";
 export interface props {
   getdataresult: any;
   loading: boolean;
@@ -16,10 +20,12 @@ export const ReportTable: React.FC<props> = ({ getdataresult, loading }) => {
       title: "PRODUCT NAME",
       dataIndex: "productname",
       key: "productname",
-      render: (value, record, index) => <div className="flex items-center ">{value}</div>,
+      render: (value, record, index) => (
+        <div className="flex items-center ">{value}</div>
+      ),
     },
     {
-      title: "DEPARTMENT",
+      title: "LOCATION",
       dataIndex: "location",
       key: "location",
     },
@@ -68,12 +74,20 @@ export const ReportTable: React.FC<props> = ({ getdataresult, loading }) => {
       key: "price",
       align: "right",
       defaultSortOrder: "descend",
-      render: (value, record, index) => <div className=" font-bold">{numberWithCommas(value)}</div>,
+      render: (value, record, index) => (
+        <div className=" font-bold">{numberWithCommas(value)}</div>
+      ),
     },
   ];
   return (
     <div>
-      <Table rowKey="id" dataSource={getdataresult} loading={loading} columns={columns} pagination={false} />
+      <Table
+        rowKey="id"
+        dataSource={getdataresult}
+        loading={loading}
+        columns={columns}
+        pagination={false}
+      />
     </div>
   );
 };

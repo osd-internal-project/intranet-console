@@ -6,7 +6,7 @@ const AddMasterProductServices = (axiosInstance: AxiosInstance) => {
   const imageUrl = "/master-product-image";
   const filesUrl = "/master-product-files";
   const brandUrl = "/brand";
-  const departmentUrl = "/location";
+  const locationUrl = "/location";
   const masterGhsTypeUrl = "/master-ghs-type";
   const masterProductCategoriesUrl = "/master-product-categories";
   const masterProductGroupUrl = "/master-product-group";
@@ -15,7 +15,9 @@ const AddMasterProductServices = (axiosInstance: AxiosInstance) => {
   return {
     getMasterGhs: async () => {
       return await axiosInstance
-        .post(`${masterGhsTypeUrl}/condition`, { condition: { where: { status: true } } })
+        .post(`${masterGhsTypeUrl}/condition`, {
+          condition: { where: { status: true } },
+        })
         .then((res) => {
           return res.data;
         })
@@ -26,7 +28,9 @@ const AddMasterProductServices = (axiosInstance: AxiosInstance) => {
     },
     getBrand: async () => {
       return await axiosInstance
-        .post(`${brandUrl}/condition`, { condition: { where: { status: true } } })
+        .post(`${brandUrl}/condition`, {
+          condition: { where: { status: true } },
+        })
         .then((res) => {
           return res.data;
         })
@@ -35,9 +39,11 @@ const AddMasterProductServices = (axiosInstance: AxiosInstance) => {
           return err;
         });
     },
-    getDepartment: async () => {
+    getLocation: async () => {
       return await axiosInstance
-        .post(`${departmentUrl}/condition`, { condition: { where: { status: true } } })
+        .post(`${locationUrl}/condition`, {
+          condition: { where: { status: true } },
+        })
         .then((res) => {
           return res.data;
         })

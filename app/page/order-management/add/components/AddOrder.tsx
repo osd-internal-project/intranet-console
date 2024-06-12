@@ -1,18 +1,38 @@
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { Button, Card, Table, Tag, Form, Input, message, Badge, Select, DatePicker, InputNumber, Popconfirm } from "antd";
+import {
+  Button,
+  Card,
+  Table,
+  Tag,
+  Form,
+  Input,
+  message,
+  Badge,
+  Select,
+  DatePicker,
+  InputNumber,
+  Popconfirm,
+} from "antd";
 import React, { useEffect, useState } from "react";
 import OrderManagementServices from "../../services/order-management.service";
-import { useAxiosStock, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
+import {
+  useAxiosStock,
+  useAxiosUser,
+} from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ColumnsType } from "antd/lib/table";
 import { ITypeOption, ITypeOrderLotForm } from "../../common";
-import { dateToStringTh, dateToStringThNoTime, numberWithCommas } from "@/app/utils/format";
+import {
+  dateToStringTh,
+  dateToStringThNoTime,
+  numberWithCommas,
+} from "@/app/utils/format";
 import { deleteIcon } from "@/components/icon";
 import { useSession } from "next-auth/react";
 import { SearchStockTable } from "./SearchStockTable";
 import { useRouter } from "next/navigation";
 import UserServices from "../../services/user.service";
 export interface props {
-  department?: { value: number; label: string };
+  location?: { value: number; label: string };
   inventory?: ITypeOption[];
 }
 
@@ -30,7 +50,10 @@ interface ITypeRequester {
     groupName: string;
   };
 }
-const AddOrder: React.FC<props> = ({ department, inventory }): React.ReactElement => {
+const AddOrder: React.FC<props> = ({
+  location,
+  inventory,
+}): React.ReactElement => {
   const router = useRouter();
   const { data: session } = useSession();
   const stockAuth = useAxiosStock();
@@ -44,7 +67,9 @@ const AddOrder: React.FC<props> = ({ department, inventory }): React.ReactElemen
   const [objectiveOption, setObjectiveOption] = useState<ITypeOption[]>([]);
   const [requester, setRequester] = useState<ITypeRequester[]>([]);
   const [objectiveSelected, setObjectiveSelected] = useState<ITypeObjective>();
-  const [selectedProduct, setSelectedProduct] = useState<ITypeOrderLotForm[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<ITypeOrderLotForm[]>(
+    []
+  );
   const [totalQty, setTotalQty] = useState<number>(0);
   const [difLotId, setDifLotId] = useState<number[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
@@ -59,7 +84,7 @@ const AddOrder: React.FC<props> = ({ department, inventory }): React.ReactElemen
     form.resetFields();
     setTotalQty(0);
     setTotalPrice(0);
-  }, [department]);
+  }, [location]);
   useEffect(() => {
     setSelectedProduct([]);
     setDifLotId([]);
@@ -69,12 +94,18 @@ const AddOrder: React.FC<props> = ({ department, inventory }): React.ReactElemen
     setLoading(true);
     const req = await userServices.getRequestUsers();
     const objectives = await orderManagementServices.getMasterObjectiveAll();
-    const objoption = objectives.map((objective: ITypeObjective) => ({ value: objective.id, label: objective.name }));
+    const objoption = objectives.map((objective: ITypeObjective) => ({
+      value: objective.id,
+      label: objective.name,
+    }));
     setObjectiveOption(objoption);
     setRequester(req);
     setLoading(false);
   };
-  const propDataManage = (e: { openModal: boolean; selectedProduct?: ITypeOrderLotForm }) => {
+  const propDataManage = (e: {
+    openModal: boolean;
+    selectedProduct?: ITypeOrderLotForm;
+  }) => {
     setOpenModal(e.openModal);
     if (e.selectedProduct) {
       const selected = [...selectedProduct, e.selectedProduct];
@@ -90,9 +121,13 @@ const AddOrder: React.FC<props> = ({ department, inventory }): React.ReactElemen
     setbuttonLoading(true);
     let requestForm = null as ITypeRequester | null;
     if (value.requester) {
-      requestForm = requester.filter((req: ITypeRequester) => req.userId === value.requester)[0];
+      requestForm = requester.filter(
+        (req: ITypeRequester) => req.userId === value.requester
+      )[0];
     }
-    const requestName = requestForm?.userId ? `${requestForm?.firstNameTh} ${requestForm?.lastNameTh}` : "";
+    const requestName = requestForm?.userId
+      ? `${requestForm?.firstNameTh} ${requestForm?.lastNameTh}`
+      : "";
 
     const form = {
       createdById: session?.user.userId,
@@ -107,8 +142,8 @@ const AddOrder: React.FC<props> = ({ department, inventory }): React.ReactElemen
       remark: value.remark,
       inventory: { connect: { id: value.inventoryId } },
       inventoryName: inventorySelected?.label,
-      locationId: department?.value,
-      locationName: department?.label,
+      locationId: location?.value,
+      locationName: location?.label,
       totalPrice: totalPrice,
       totalQty: totalQty,
       ownerGroup: session?.user?.ownerGroup,
@@ -129,7 +164,9 @@ const AddOrder: React.FC<props> = ({ department, inventory }): React.ReactElemen
 
   const onChangeInventory = (value: number) => {
     if (inventory) {
-      const selectedInventory = inventory.find((option) => option.value === value);
+      const selectedInventory = inventory.find(
+        (option) => option.value === value
+      );
       setInventorySelected(selectedInventory);
     }
   };
@@ -172,9 +209,18 @@ const AddOrder: React.FC<props> = ({ department, inventory }): React.ReactElemen
       title: "IS EXPIRED",
       dataIndex: "expiredStatus",
       key: "id",
-      render: (status: boolean) => <Tag color={status ? "red" : "blue"}>{status ? "Expired" : "Not Expried"}</Tag>,
+      render: (status: boolean) => (
+        <Tag color={status ? "red" : "blue"}>
+          {status ? "Expired" : "Not Expried"}
+        </Tag>
+      ),
     },
-    { title: "EXPIRY DATE", dataIndex: "expiryDate", key: "expiryDate", render: (date: Date) => dateToStringThNoTime(date) },
+    {
+      title: "EXPIRY DATE",
+      dataIndex: "expiryDate",
+      key: "expiryDate",
+      render: (date: Date) => dateToStringThNoTime(date),
+    },
     {
       title: "QTY",
       dataIndex: "id",
@@ -187,7 +233,9 @@ const AddOrder: React.FC<props> = ({ department, inventory }): React.ReactElemen
             max={row.balance ? row.balance : 0}
             min={0}
             onChange={(value) => {
-              value !== 0 ? onChangeQty(index, value, row.balance) : onChangeQty(index, 0, row.balance);
+              value !== 0
+                ? onChangeQty(index, value, row.balance)
+                : onChangeQty(index, 0, row.balance);
             }}
           />
         );
@@ -197,7 +245,8 @@ const AddOrder: React.FC<props> = ({ department, inventory }): React.ReactElemen
       title: "BALANCE",
       dataIndex: "balance",
       key: "id",
-      render: (data: number, row: any, i: number) => (data ? numberWithCommas(data) : numberWithCommas(0)),
+      render: (data: number, row: any, i: number) =>
+        data ? numberWithCommas(data) : numberWithCommas(0),
     },
     {
       title: "UNIT",
@@ -208,7 +257,8 @@ const AddOrder: React.FC<props> = ({ department, inventory }): React.ReactElemen
       title: "TOTAL",
       dataIndex: "orderPrice",
       key: "id",
-      render: (data: number, row: any, i: number) => (data ? numberWithCommas(data) : numberWithCommas(0)),
+      render: (data: number, row: any, i: number) =>
+        data ? numberWithCommas(data) : numberWithCommas(0),
     },
     {
       title: "",
@@ -216,7 +266,10 @@ const AddOrder: React.FC<props> = ({ department, inventory }): React.ReactElemen
       key: "id",
       align: "center",
       render: (id: number, row: any, index: number) => (
-        <Popconfirm title="ยืนยันการลบ ?" onConfirm={() => handleDeleteRow(index)}>
+        <Popconfirm
+          title="ยืนยันการลบ ?"
+          onConfirm={() => handleDeleteRow(index)}
+        >
           <Button danger type="link">
             {deleteIcon}
           </Button>
@@ -229,10 +282,14 @@ const AddOrder: React.FC<props> = ({ department, inventory }): React.ReactElemen
       const newItems = [...prevItems];
       if (qty) {
         newItems[index].qty = Number(qty);
-        newItems[index].orderPrice = Number(Number(qty.toFixed(2)) * Number(newItems[index].price.toFixed(2)));
+        newItems[index].orderPrice = Number(
+          Number(qty.toFixed(2)) * Number(newItems[index].price.toFixed(2))
+        );
       } else {
         newItems[index].qty = Number(0);
-        newItems[index].orderPrice = Number(Number(0.0) * Number(newItems[index].price.toFixed(2)));
+        newItems[index].orderPrice = Number(
+          Number(0.0) * Number(newItems[index].price.toFixed(2))
+        );
       }
       return newItems;
     });
@@ -271,7 +328,9 @@ const AddOrder: React.FC<props> = ({ department, inventory }): React.ReactElemen
           <div className=" grid grid-cols-3">
             <div className=" col-span-2">
               <div className="sub-title-page-font ">{`Order`}</div>
-              <div className=" text-gray-500">{`${dateToStringTh(new Date())} `}</div>
+              <div className=" text-gray-500">{`${dateToStringTh(
+                new Date()
+              )} `}</div>
             </div>
             <div className=" space-x-2 text-right">
               <Button>
@@ -279,9 +338,21 @@ const AddOrder: React.FC<props> = ({ department, inventory }): React.ReactElemen
               </Button>
             </div>
           </div>
-          <Form className=" w-full" form={form} onFinish={onFinish} layout="horizontal" wrapperCol={{ span: 24 }} labelCol={{ flex: "120px" }} labelAlign="left">
+          <Form
+            className=" w-full"
+            form={form}
+            onFinish={onFinish}
+            layout="horizontal"
+            wrapperCol={{ span: 24 }}
+            labelCol={{ flex: "120px" }}
+            labelAlign="left"
+          >
             <div className=" grid grid-cols-3 gap-2">
-              <Form.Item label={"Product Form"} name={"inventoryId"} rules={[{ required: true, message: "กรุณาเลือกคลัง" }]}>
+              <Form.Item
+                label={"Product Form"}
+                name={"inventoryId"}
+                rules={[{ required: true, message: "กรุณาเลือกคลัง" }]}
+              >
                 <Select
                   placeholder="Please Select"
                   options={inventory}
@@ -290,13 +361,29 @@ const AddOrder: React.FC<props> = ({ department, inventory }): React.ReactElemen
                   }}
                 />
               </Form.Item>
-              <Form.Item label={"ผู้สร้างใบเบิก"} name={"createdByName"} initialValue={`${session?.user?.firstNameTh} ${session?.user?.lastNameTh}`}>
+              <Form.Item
+                label={"ผู้สร้างใบเบิก"}
+                name={"createdByName"}
+                initialValue={`${session?.user?.firstNameTh} ${session?.user?.lastNameTh}`}
+              >
                 <Input disabled className="read-only-input-disable " />
               </Form.Item>
-              <Form.Item label={"Objective"} name={"objectiveId"} rules={[{ required: true, message: "กรุณาเลือกเหตุผลการเบิก" }]}>
-                <Select options={objectiveOption} onChange={selectObejectiveOption} placeholder="Please Select" />
+              <Form.Item
+                label={"Objective"}
+                name={"objectiveId"}
+                rules={[{ required: true, message: "กรุณาเลือกเหตุผลการเบิก" }]}
+              >
+                <Select
+                  options={objectiveOption}
+                  onChange={selectObejectiveOption}
+                  placeholder="Please Select"
+                />
               </Form.Item>
-              <Form.Item label={"วันที่ต้องการ"} name={"requestDate"} rules={[{ required: true, message: "กรุณาเลือกวันที่ต้องการ" }]}>
+              <Form.Item
+                label={"วันที่ต้องการ"}
+                name={"requestDate"}
+                rules={[{ required: true, message: "กรุณาเลือกวันที่ต้องการ" }]}
+              >
                 <DatePicker className=" w-full" placeholder="Please Select" />
               </Form.Item>
               <Form.Item label={"ผู้ขอเบิก (ถ้ามี)"} name={"requester"}>
@@ -350,15 +437,24 @@ const AddOrder: React.FC<props> = ({ department, inventory }): React.ReactElemen
                       <Table.Summary.Cell index={0} className=" font-bold">
                         Total
                       </Table.Summary.Cell>
-                      <Table.Summary.Cell index={1} colSpan={6}></Table.Summary.Cell>
+                      <Table.Summary.Cell
+                        index={1}
+                        colSpan={6}
+                      ></Table.Summary.Cell>
                       <Table.Summary.Cell index={2} className=" font-bold">
                         {numberWithCommas(totalQty)}
                       </Table.Summary.Cell>
-                      <Table.Summary.Cell index={1} colSpan={2}></Table.Summary.Cell>
+                      <Table.Summary.Cell
+                        index={1}
+                        colSpan={2}
+                      ></Table.Summary.Cell>
                       <Table.Summary.Cell index={1} className=" font-bold">
                         {numberWithCommas(totalPrice)}
                       </Table.Summary.Cell>
-                      <Table.Summary.Cell index={1} colSpan={1}></Table.Summary.Cell>
+                      <Table.Summary.Cell
+                        index={1}
+                        colSpan={1}
+                      ></Table.Summary.Cell>
                     </Table.Summary.Row>
                   </Table.Summary>
                 )}
@@ -373,19 +469,35 @@ const AddOrder: React.FC<props> = ({ department, inventory }): React.ReactElemen
             <div className=" mb-2">
               <div className=" flex justify-between">
                 <div className=" font-bold">New Request</div>
-                <div className=" text-gray-500">{dateToStringTh(new Date())}</div>
+                <div className=" text-gray-500">
+                  {dateToStringTh(new Date())}
+                </div>
               </div>
               <div className=" text-gray-500">{`${session?.user.firstNameTh} ${session?.user.lastNameTh}`}</div>
             </div>
-            <Button className=" w-full mb-2 button-blue" type="primary" loading={buttonLoading} onClick={submitForm}>
+            <Button
+              className=" w-full mb-2 button-blue"
+              type="primary"
+              loading={buttonLoading}
+              onClick={submitForm}
+            >
               {`Send Request`}
             </Button>
-            <Button className=" w-full" onClick={() => router.back()}>{`Cancel`}</Button>
+            <Button
+              className=" w-full"
+              onClick={() => router.back()}
+            >{`Cancel`}</Button>
           </Card>
         </div>
       </div>
       {inventorySelected && openModal === true ? (
-        <SearchStockTable difLotId={difLotId} openModal={openModal} inventoryId={inventorySelected.value} propDataManage={propDataManage} selectedProduct={selectedProduct} />
+        <SearchStockTable
+          difLotId={difLotId}
+          openModal={openModal}
+          inventoryId={inventorySelected.value}
+          propDataManage={propDataManage}
+          selectedProduct={selectedProduct}
+        />
       ) : (
         <></>
       )}

@@ -1,5 +1,11 @@
 import { AxiosInstance } from "axios";
-import { ITypeMasterProduct, ITypeOrder, ITypeOrderForm, ITypeOrderLot, ITypeOrderLotForm } from "../common";
+import {
+  ITypeMasterProduct,
+  ITypeOrder,
+  ITypeOrderForm,
+  ITypeOrderLot,
+  ITypeOrderLotForm,
+} from "../common";
 const OrderManagementServices = (axiosInstance: AxiosInstance) => {
   const baseUrl = "/order";
   const masterdataApiOrderLot = "/order-lot";
@@ -21,7 +27,9 @@ const OrderManagementServices = (axiosInstance: AxiosInstance) => {
 
     getMasterObjectiveAll: async () => {
       return await axiosInstance
-        .post(`${masterObjectiveUrl}/condition`, { condition: { where: { status: true } } })
+        .post(`${masterObjectiveUrl}/condition`, {
+          condition: { where: { status: true } },
+        })
         .then((res) => {
           return res.data;
         })
@@ -36,9 +44,9 @@ const OrderManagementServices = (axiosInstance: AxiosInstance) => {
         .then((result) => result.data)
         .catch((err) => err);
     },
-    findByCondition: async (department: Number, filters: any) => {
+    findByCondition: async (location: Number, filters: any) => {
       const condition = {
-        where: { locationId: department, ...filters },
+        where: { locationId: location, ...filters },
       };
       return await axiosInstance
         .post(`${baseUrl}/condition`, {
@@ -56,9 +64,9 @@ const OrderManagementServices = (axiosInstance: AxiosInstance) => {
         .then((result) => result.data)
         .catch((err) => err);
     },
-    findOrdersByDepartment: async (department: Number, filters: any) => {
+    findOrdersByLocation: async (location: Number, filters: any) => {
       const condition = {
-        where: { locationId: department, orderLot: { some: { ...filters } } },
+        where: { locationId: location, orderLot: { some: { ...filters } } },
         include: { orderLot: true },
       };
       return await axiosInstance
@@ -70,7 +78,10 @@ const OrderManagementServices = (axiosInstance: AxiosInstance) => {
     },
     findOrdersAllByOwnerGroup: async (grouplist: string[], filters: any) => {
       const condition = {
-        where: { ownerGroup: { in: grouplist }, orderLot: { some: { ...filters } } },
+        where: {
+          ownerGroup: { in: grouplist },
+          orderLot: { some: { ...filters } },
+        },
         include: { orderLot: true },
       };
       return await axiosInstance
@@ -94,7 +105,9 @@ const OrderManagementServices = (axiosInstance: AxiosInstance) => {
     },
     getLocation: async () => {
       return await axiosInstance
-        .post(`${locationUrl}/condition`, { condition: { where: { status: true } } })
+        .post(`${locationUrl}/condition`, {
+          condition: { where: { status: true } },
+        })
         .then((result) => result.data)
         .catch((err) => console.log(err));
     },
@@ -104,7 +117,12 @@ const OrderManagementServices = (axiosInstance: AxiosInstance) => {
         .then((result) => result.data)
         .catch((err) => console.log(err));
     },
-    getOrderLotsByInventoryID: async (inventoryID: number, expiredStatus: boolean, difLotId: number[], search: object) => {
+    getOrderLotsByInventoryID: async (
+      inventoryID: number,
+      expiredStatus: boolean,
+      difLotId: number[],
+      search: object
+    ) => {
       const condition = {
         inventoryId: Number(inventoryID),
         condition: search,
@@ -123,13 +141,17 @@ const OrderManagementServices = (axiosInstance: AxiosInstance) => {
     },
     getUsableRemain: async (inventorystockId: number) => {
       return await axiosInstance
-        .get(`${masterdataApiInventoryLot}/find-usable-remain-by-inventorystock?stockid=${inventorystockId}`)
+        .get(
+          `${masterdataApiInventoryLot}/find-usable-remain-by-inventorystock?stockid=${inventorystockId}`
+        )
         .then((result) => result.data)
         .catch((err) => console.log(err));
     },
     getExpiredRemain: async (inventorystockId: number) => {
       return await axiosInstance
-        .get(`${masterdataApiInventoryLot}/find-expired-remain-by-inventorystock?stockid=${inventorystockId}`)
+        .get(
+          `${masterdataApiInventoryLot}/find-expired-remain-by-inventorystock?stockid=${inventorystockId}`
+        )
         .then((result) => result.data)
         .catch((err) => console.log(err));
     },

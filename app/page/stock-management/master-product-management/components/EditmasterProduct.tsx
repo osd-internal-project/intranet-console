@@ -1,12 +1,29 @@
 import { dateToStringTh } from "@/app/utils/format";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
-import { Button, Card, Col, Form, Input, Modal, Row, Select, Spin, Switch, Tag, Upload, UploadFile, UploadProps, message, Image } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  Modal,
+  Row,
+  Select,
+  Spin,
+  Switch,
+  Tag,
+  Upload,
+  UploadFile,
+  UploadProps,
+  message,
+  Image,
+} from "antd";
 import { RcFile } from "antd/es/upload";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import {
   ITypeOption,
-  ITypeDepartment,
+  ITypeLocation,
   ITypeMasterGhsType,
   ITypeMasterProductCategory,
   ITypeMasterProductGroup,
@@ -46,7 +63,7 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
   // const [typeSelected, setTypeSelected] = useState<string[]>([]);
   const [ghsOption, setGhsOption] = useState<ITypeOption[]>([]);
   const [hazardOption, setHazardOption] = useState<ITypeOption[]>([]);
-  const [departmentOption, setDepartmentOption] = useState<ITypeOption[]>([]);
+  const [locationOption, setLocationOption] = useState<ITypeOption[]>([]);
   const [unitOption, setUnitOption] = useState<ITypeOption[]>([]);
   const [minimum, setMinimum] = useState<number>(0);
   const [maximum, setMaximum] = useState<number>(0);
@@ -60,11 +77,18 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
 
   useEffect(() => {}, []);
   const loaddata = async () => {
-    const data: ITypeMasterProductEdit = await masterProductService.getMasterProductById(pid);
+    const data: ITypeMasterProductEdit =
+      await masterProductService.getMasterProductById(pid);
     if (data) {
-      const imagesMasterProduct = await dataImages(data?.masterProductImages as any);
-      const gshSelected = data.masterProductGhsMap?.map((data) => data.masterGhsType.id);
-      const hazardSelected = data.masterProductHazardtypeMap?.map((data) => data.masterHazardtype.id);
+      const imagesMasterProduct = await dataImages(
+        data?.masterProductImages as any
+      );
+      const gshSelected = data.masterProductGhsMap?.map(
+        (data) => data.masterGhsType.id
+      );
+      const hazardSelected = data.masterProductHazardtypeMap?.map(
+        (data) => data.masterHazardtype.id
+      );
       formadmasterproduct.setFieldsValue({
         id: data.id,
         productNameList: data.masterProductDetails.map((d) => d.name),
@@ -81,7 +105,7 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
         minimumStock: data.minimumStock,
         beforeExpiry: data.beforeExpiry,
         notiExpiry: data.notiExpiry,
-        department: data.masterProductLocationMap.map((d) => d.locationId),
+        location: data.masterProductLocationMap.map((d) => d.locationId),
         categoryCode: data.masterProductGroup.masterProductCategories.id,
         venderId: data.venderId,
         brandId: data.brandId,
@@ -89,14 +113,20 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
       setImagesMasterProduct(imagesMasterProduct);
       setMinimum(data.minimumStock);
       setMaximum(data.maximumStock);
-      await selectGroupOptionReady(data.masterProductGroup.masterProductCategories.id, data.masterProductGroupId);
+      await selectGroupOptionReady(
+        data.masterProductGroup.masterProductCategories.id,
+        data.masterProductGroupId
+      );
 
-      const getcategories = await editMasterProductService.getMasterProductCategoryAll();
+      const getcategories =
+        await editMasterProductService.getMasterProductCategoryAll();
       if (getcategories.length > 0) {
-        const categories = getcategories.map((data: ITypeMasterProductCategory) => ({
-          value: data.id,
-          label: data.categoryName,
-        }));
+        const categories = getcategories.map(
+          (data: ITypeMasterProductCategory) => ({
+            value: data.id,
+            label: data.categoryName,
+          })
+        );
         setCategoriesOption(categories);
       }
 
@@ -117,13 +147,13 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
         }));
         setGhsOption(ghs);
       }
-      const getDepartment = await editMasterProductService.getDepartment();
-      if (getDepartment.length > 0) {
-        const department = getDepartment.map((data: ITypeDepartment) => ({
+      const getLocation = await editMasterProductService.getLocation();
+      if (getLocation.length > 0) {
+        const location = getLocation.map((data: ITypeLocation) => ({
           value: data.id,
           label: data.locationName,
         }));
-        setDepartmentOption(department);
+        setLocationOption(location);
       }
 
       const getUnit = await editMasterProductService.getUnit();
@@ -171,7 +201,10 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
   };
 
   const selectGroupOption = async (value: number) => {
-    const getgroup = await editMasterProductService.getActiveMasterProductGroupByCategoryId(value);
+    const getgroup =
+      await editMasterProductService.getActiveMasterProductGroupByCategoryId(
+        value
+      );
     if (groupOfCategory.length !== getgroup.length) {
       formadmasterproduct.resetFields(["groupCode"]);
       // setTypeSelected([]);
@@ -188,7 +221,10 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
   };
 
   const selectGroupOptionReady = async (catId: number, groupId: number) => {
-    const getgroup = await editMasterProductService.getActiveMasterProductGroupByCategoryId(catId);
+    const getgroup =
+      await editMasterProductService.getActiveMasterProductGroupByCategoryId(
+        catId
+      );
 
     if (getgroup.length > 0) {
       const data = getgroup.map((data: ITypeMasterProductGroup) => ({
@@ -208,7 +244,9 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
   };
 
   //Imange
-  const handleChangePic: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
+  const handleChangePic: UploadProps["onChange"] = async ({
+    fileList: newFileList,
+  }) => {
     return await setFileList(newFileList);
   };
 
@@ -224,7 +262,9 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
   const handlePreview = async (file: UploadFile) => {
     setPreviewImage(file.thumbUrl || (file.preview as string));
     setPreviewOpen(true);
-    setPreviewTitle(file.name || file.thumbUrl!.substring(file.url!.lastIndexOf("/") + 1));
+    setPreviewTitle(
+      file.name || file.thumbUrl!.substring(file.url!.lastIndexOf("/") + 1)
+    );
   };
 
   // const uploadProps: UploadProps = {
@@ -304,14 +344,26 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
   const onFinish = async (values: any) => {
     setLoading(true);
     setbuttonLoading(true);
-    const departments = values.department.length > 0 ? values.department.map((id: number) => ({ locationId: id })) : [];
-    const ghs = values.ghs.length > 0 ? values.ghs.map((id: number) => ({ ghsId: id })) : [];
-    const hazard = values.hazard.length > 0 ? values.hazard.map((id: number) => ({ hazardId: id })) : [];
+    const locations =
+      values.location.length > 0
+        ? values.location.map((id: number) => ({ locationId: id }))
+        : [];
+    const ghs =
+      values.ghs.length > 0
+        ? values.ghs.map((id: number) => ({ ghsId: id }))
+        : [];
+    const hazard =
+      values.hazard.length > 0
+        ? values.hazard.map((id: number) => ({ hazardId: id }))
+        : [];
     const productNameList = values.productNameList.map((data: string) => ({
       name: data,
     }));
     let form: ITypeMasterProductFormEdit = {
-      masterProductDetails: { deleteMany: {}, createMany: { data: productNameList } },
+      masterProductDetails: {
+        deleteMany: {},
+        createMany: { data: productNameList },
+      },
       chemicalFormula: values.chemicalFormula,
       hyperlink: values.hyperlink,
       undertaker: values.undertaker,
@@ -341,16 +393,20 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
       masterProductLocationMap: {
         deleteMany: {},
         createMany: {
-          data: departments,
+          data: locations,
         },
       },
     };
     if (values.venderId !== undefined) {
-      const vender = venderOption.findLast((item) => item.value === values.venderId);
+      const vender = venderOption.findLast(
+        (item) => item.value === values.venderId
+      );
       form = { ...form, venderId: values.venderId, venderName: vender?.label };
     }
     if (values.brandId !== undefined) {
-      const brand = brandOption.findLast((item) => item.value === values.brandId);
+      const brand = brandOption.findLast(
+        (item) => item.value === values.brandId
+      );
       form = { ...form, brandId: values.venderId, brandName: brand?.label };
     }
     const result = await editMasterProductService.update(pid, form);
@@ -358,7 +414,9 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
       if (fileList.length > 0) {
         const formData: any = new FormData();
         formData.append("images", fileList[0].originFileObj);
-        const dataDeleteImage = await editMasterProductService.deleteImage(values.id);
+        const dataDeleteImage = await editMasterProductService.deleteImage(
+          values.id
+        );
         if (dataDeleteImage) {
           await editMasterProductService
             .uploadNewImages(values.id, formData)
@@ -416,17 +474,25 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
     }
     callback();
   };
-  const handleSelectAllDepartmeny = (values: string[]) => {
+  const handleSelectAllLocation = (values: string[]) => {
     if (values && values.length && values.includes("all")) {
-      if (departmentOption.length > 0) {
-        const data = departmentOption.map((dep) => dep.value);
-        formadmasterproduct.setFieldValue("department", data);
+      if (locationOption.length > 0) {
+        const data = locationOption.map((dep) => dep.value);
+        formadmasterproduct.setFieldValue("location", data);
       }
     }
   };
   return (
     <Spin spinning={loading}>
-      <Form form={formadmasterproduct} layout="horizontal" wrapperCol={{ span: 24 }} labelCol={{ flex: "150px" }} labelAlign="left" onFinish={onFinish} autoComplete="off">
+      <Form
+        form={formadmasterproduct}
+        layout="horizontal"
+        wrapperCol={{ span: 24 }}
+        labelCol={{ flex: "150px" }}
+        labelAlign="left"
+        onFinish={onFinish}
+        autoComplete="off"
+      >
         <Form.Item name={"id"} hidden>
           <Input />
         </Form.Item>
@@ -438,16 +504,29 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
                   <div>
                     {/* <span className="sub-title-page-font">{`${casNo}`}</span> */}
                     <br />
-                    <div className=" text-slate-400">{`${dateToStringTh(new Date())} from ${session?.user.firstNameTh} ${session?.user.lastNameTh}`}</div>
+                    <div className=" text-slate-400">{`${dateToStringTh(
+                      new Date()
+                    )} from ${session?.user.firstNameTh} ${
+                      session?.user.lastNameTh
+                    }`}</div>
                   </div>
                   <div>
-                    <Form.Item name={`department`} label={<div className=" font-bold">Department</div>} rules={[{ required: true, message: "กรุณากรอก Department" }]}>
+                    <Form.Item
+                      name={`location`}
+                      label={<div className=" font-bold">Location</div>}
+                      rules={[
+                        { required: true, message: "กรุณากรอก Location" },
+                      ]}
+                    >
                       <Select
-                        options={[{ label: "Select all Department", value: "all" }, ...departmentOption]}
+                        options={[
+                          { label: "Select all Location", value: "all" },
+                          ...locationOption,
+                        ]}
                         mode="multiple"
                         showSearch={false}
                         allowClear
-                        onChange={handleSelectAllDepartmeny}
+                        onChange={handleSelectAllLocation}
                       />
                     </Form.Item>
                   </div>
@@ -458,7 +537,14 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
                       <Row gutter={[8, 8]}>
                         {fileList.length > 0 ? null : (
                           <Col>
-                            <Image src={imagesMasterProduct ? URL.createObjectURL(imagesMasterProduct) : ""} width={100} />
+                            <Image
+                              src={
+                                imagesMasterProduct
+                                  ? URL.createObjectURL(imagesMasterProduct)
+                                  : ""
+                              }
+                              width={100}
+                            />
                           </Col>
                         )}
                         <Col>
@@ -474,8 +560,17 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
                             {fileList.length >= 1 ? null : uploadButton}
                           </Upload>
                         </Col>
-                        <Col span={12} style={{ justifyContent: "start", display: "flex" }}>
-                          <Row style={{ textAlign: "center", alignItems: "center", display: "flex" }}>
+                        <Col
+                          span={12}
+                          style={{ justifyContent: "start", display: "flex" }}
+                        >
+                          <Row
+                            style={{
+                              textAlign: "center",
+                              alignItems: "center",
+                              display: "flex",
+                            }}
+                          >
                             {fileList.length >= 1 ? null : (
                               <>
                                 <Col span={24}>{`Drag image here`}</Col>
@@ -483,7 +578,13 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
                               </>
                             )}
                             <Col span={24}>
-                              <Upload fileList={fileList} onChange={handleChangePic} beforeUpload={beforeUpload} accept=".jpg,.png,.gif" maxCount={1}>
+                              <Upload
+                                fileList={fileList}
+                                onChange={handleChangePic}
+                                beforeUpload={beforeUpload}
+                                accept=".jpg,.png,.gif"
+                                maxCount={1}
+                              >
                                 {fileList.length >= 1 ? null : (
                                   <Button type="link" icon={<UploadOutlined />}>
                                     Browse image
@@ -499,7 +600,13 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
 
                   <div className=" col-span-3"></div>
                   <div className=" col-span-3 md:col-span-1 ml-5">
-                    <Form.Item name={`productNameList`} label={<div className=" font-bold">Product Name</div>} rules={[{ required: true, message: "กรุณากรอก Product Name" }]}>
+                    <Form.Item
+                      name={`productNameList`}
+                      label={<div className=" font-bold">Product Name</div>}
+                      rules={[
+                        { required: true, message: "กรุณากรอก Product Name" },
+                      ]}
+                    >
                       <Select
                         suffixIcon={null}
                         filterOption={false}
@@ -514,34 +621,80 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
                     <Form.Item
                       name={`chemicalFormula`}
                       label={<div className=" font-bold">Chemical Formula</div>}
-                      rules={[{ required: true, message: "กรุณากรอก Chemical Formula" }]}
+                      rules={[
+                        {
+                          required: true,
+                          message: "กรุณากรอก Chemical Formula",
+                        },
+                      ]}
                     >
                       <Input />
                     </Form.Item>
                   </div>
                   <div className=" col-span-3 md:col-span-1 ml-5">
-                    <Form.Item name={`casNo`} label={<div className=" font-bold">CAS No.</div>} rules={[{ required: true, message: "กรุณากรอก CAS No." }]}>
+                    <Form.Item
+                      name={`casNo`}
+                      label={<div className=" font-bold">CAS No.</div>}
+                      rules={[{ required: true, message: "กรุณากรอก CAS No." }]}
+                    >
                       <Input disabled />
                     </Form.Item>
                   </div>
                   <div className=" col-span-3 md:col-span-1 ml-5">
-                    <Form.Item className=" m-1 " name={`hazard`} label={<div className=" font-bold">Hazard Type</div>} rules={[{ required: true, message: "กรุณากรอก GHS" }]}>
-                      <Select showSearch={false} options={hazardOption} placeholder="กรุณาเลือก Hazard Type" mode="multiple" allowClear />
+                    <Form.Item
+                      className=" m-1 "
+                      name={`hazard`}
+                      label={<div className=" font-bold">Hazard Type</div>}
+                      rules={[{ required: true, message: "กรุณากรอก GHS" }]}
+                    >
+                      <Select
+                        showSearch={false}
+                        options={hazardOption}
+                        placeholder="กรุณาเลือก Hazard Type"
+                        mode="multiple"
+                        allowClear
+                      />
                     </Form.Item>
                   </div>
                   <div className=" col-span-3 md:col-span-1 ml-5">
-                    <Form.Item className=" m-1 " name={`ghs`} label={<div className=" font-bold">GHS</div>} rules={[{ required: true, message: "กรุณากรอก GHS" }]}>
-                      <Select showSearch={false} options={ghsOption} placeholder="กรุณาเลือก GHS" mode="multiple" allowClear />
+                    <Form.Item
+                      className=" m-1 "
+                      name={`ghs`}
+                      label={<div className=" font-bold">GHS</div>}
+                      rules={[{ required: true, message: "กรุณากรอก GHS" }]}
+                    >
+                      <Select
+                        showSearch={false}
+                        options={ghsOption}
+                        placeholder="กรุณาเลือก GHS"
+                        mode="multiple"
+                        allowClear
+                      />
                     </Form.Item>
                   </div>
 
                   <div className=" col-span-3 md:col-span-1  ml-5">
-                    <Form.Item name={`categoryCode`} label={<div className=" font-bold">Category</div>} rules={[{ required: true, message: "กรุณากรอก Category" }]}>
-                      <Select options={categoriesOption} onSelect={selectGroupOption} placeholder="กรุณาเลือก Category" allowClear />
+                    <Form.Item
+                      name={`categoryCode`}
+                      label={<div className=" font-bold">Category</div>}
+                      rules={[
+                        { required: true, message: "กรุณากรอก Category" },
+                      ]}
+                    >
+                      <Select
+                        options={categoriesOption}
+                        onSelect={selectGroupOption}
+                        placeholder="กรุณาเลือก Category"
+                        allowClear
+                      />
                     </Form.Item>
                   </div>
                   <div className=" col-span-3 md:col-span-1  ml-5">
-                    <Form.Item name={`groupCode`} label={<div className=" font-bold">Group</div>} rules={[{ required: true, message: "กรุณากรอก Group" }]}>
+                    <Form.Item
+                      name={`groupCode`}
+                      label={<div className=" font-bold">Group</div>}
+                      rules={[{ required: true, message: "กรุณากรอก Group" }]}
+                    >
                       <Select
                         options={groupOption}
                         disabled={disableGroup}
@@ -559,22 +712,48 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
                     </Form.Item>
                   </div> */}
                   <div className=" col-span-3 md:col-span-1 ml-5">
-                    <Form.Item className=" m-2" name={"brandId"} rules={[{ required: true, message: "please select brand" }]} label={<div className=" font-bold">Brand</div>}>
-                      <Select placeholder="กรุณาเลือก Brand" options={brandOption} />
+                    <Form.Item
+                      className=" m-2"
+                      name={"brandId"}
+                      rules={[
+                        { required: true, message: "please select brand" },
+                      ]}
+                      label={<div className=" font-bold">Brand</div>}
+                    >
+                      <Select
+                        placeholder="กรุณาเลือก Brand"
+                        options={brandOption}
+                      />
                     </Form.Item>
                   </div>
                   <div className=" col-span-3 md:col-span-1 ml-5">
-                    <Form.Item className=" m-2" name={"venderId"} rules={[{ required: true, message: "please select vender" }]} label={<div className=" font-bold">Vender</div>}>
-                      <Select placeholder="กรุณาเลือก Vender" options={venderOption} />
+                    <Form.Item
+                      className=" m-2"
+                      name={"venderId"}
+                      rules={[
+                        { required: true, message: "please select vender" },
+                      ]}
+                      label={<div className=" font-bold">Vender</div>}
+                    >
+                      <Select
+                        placeholder="กรุณาเลือก Vender"
+                        options={venderOption}
+                      />
                     </Form.Item>
                   </div>
                   <div className=" col-span-3 md:col-span-3 ml-5">
-                    <Form.Item name={`description`} label={<div className=" font-bold">Description</div>}>
+                    <Form.Item
+                      name={`description`}
+                      label={<div className=" font-bold">Description</div>}
+                    >
                       <Input />
                     </Form.Item>
                   </div>
                   <div className=" col-span-3 md:col-span-1 ml-5">
-                    <Form.Item name={`hyperlink`} label={<div className=" font-bold">Hyperlink</div>}>
+                    <Form.Item
+                      name={`hyperlink`}
+                      label={<div className=" font-bold">Hyperlink</div>}
+                    >
                       <Input />
                     </Form.Item>
                   </div>
@@ -597,8 +776,16 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
                 </div>
                 <div className=" grid grid-cols-3 gap-2">
                   <div className=" col-span-3 md:col-span-1 ml-5">
-                    <Form.Item className="m-1" name={`unit`} label={<div className=" font-bold">Unit</div>} rules={[{ required: true, message: "กรุณากรอก Unit" }]}>
-                      <Select options={unitOption} placeholder=" กรุณาเลือก Unit" />
+                    <Form.Item
+                      className="m-1"
+                      name={`unit`}
+                      label={<div className=" font-bold">Unit</div>}
+                      rules={[{ required: true, message: "กรุณากรอก Unit" }]}
+                    >
+                      <Select
+                        options={unitOption}
+                        placeholder=" กรุณาเลือก Unit"
+                      />
                     </Form.Item>
                   </div>
                   <div className=" col-span-3 md:col-span-1 ml-5">
@@ -606,7 +793,10 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
                       className="m-1"
                       name={`minimumStock`}
                       label={<div className=" font-bold">Minimum Stock</div>}
-                      rules={[{ required: true, message: "กรุณากรอก Minimum Stock" }, { validator: validateMinMaxStock }]}
+                      rules={[
+                        { required: true, message: "กรุณากรอก Minimum Stock" },
+                        { validator: validateMinMaxStock },
+                      ]}
                     >
                       <Input
                         min={0}
@@ -617,8 +807,22 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
                             setMinimum(parseInt(value) || 0);
                           }
                         }}
-                        addonAfter={<Button size="small" type="link" style={{ color: "black" }} onClick={handleMinIncrease}>{`+`}</Button>}
-                        addonBefore={<Button size="small" type="link" style={{ color: "black" }} onClick={handleMinDecrement}>{`-`}</Button>}
+                        addonAfter={
+                          <Button
+                            size="small"
+                            type="link"
+                            style={{ color: "black" }}
+                            onClick={handleMinIncrease}
+                          >{`+`}</Button>
+                        }
+                        addonBefore={
+                          <Button
+                            size="small"
+                            type="link"
+                            style={{ color: "black" }}
+                            onClick={handleMinDecrement}
+                          >{`-`}</Button>
+                        }
                       />
                     </Form.Item>
                   </div>
@@ -626,7 +830,10 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
                     <Form.Item
                       name={`maximumStock`}
                       label={<div className=" font-bold">Maximum Stock </div>}
-                      rules={[{ required: true, message: "กรุณากรอก Maximum Stock" }, { validator: validateMinMaxStock }]}
+                      rules={[
+                        { required: true, message: "กรุณากรอก Maximum Stock" },
+                        { validator: validateMinMaxStock },
+                      ]}
                     >
                       <Input
                         min={0}
@@ -637,8 +844,22 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
                             setMaximum(parseInt(value) || 0);
                           }
                         }}
-                        addonAfter={<Button size="small" type="link" style={{ color: "black" }} onClick={handleMaxIncrease}>{`+`}</Button>}
-                        addonBefore={<Button size="small" type="link" style={{ color: "black" }} onClick={handleMaxDecrement}>{`-`}</Button>}
+                        addonAfter={
+                          <Button
+                            size="small"
+                            type="link"
+                            style={{ color: "black" }}
+                            onClick={handleMaxIncrease}
+                          >{`+`}</Button>
+                        }
+                        addonBefore={
+                          <Button
+                            size="small"
+                            type="link"
+                            style={{ color: "black" }}
+                            onClick={handleMaxDecrement}
+                          >{`-`}</Button>
+                        }
                       />
                     </Form.Item>
                   </div>
@@ -692,7 +913,13 @@ const EditMasterProduct: React.FC<props> = ({ pid }) => {
             </Card>
           </Col>
           <Col span={24} className="  flex justify-end space-x-2">
-            <Button onClick={() => router.push("/page/setting/master-product-management")}>Cancel</Button>
+            <Button
+              onClick={() =>
+                router.push("/page/setting/master-product-management")
+              }
+            >
+              Cancel
+            </Button>
             <Form.Item>
               <Button htmlType="submit" loading={buttonLoading} type="primary">
                 Save Change

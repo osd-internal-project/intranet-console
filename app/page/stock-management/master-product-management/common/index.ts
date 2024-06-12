@@ -24,7 +24,7 @@ export type ITypeVender = {
   id: number;
   venderName: string;
 };
-export type ITypeDepartment = {
+export type ITypeLocation = {
   id: number;
   locationName: string;
 };
@@ -76,7 +76,10 @@ export type ITypeMasterProductForm = {
 };
 
 export type ITypeMasterProductFormEdit = {
-  masterProductDetails: { deleteMany: {}; createMany: { data: { name: string }[] } };
+  masterProductDetails: {
+    deleteMany: {};
+    createMany: { data: { name: string }[] };
+  };
   chemicalFormula?: string;
   undertaker?: string;
   description?: string;
@@ -146,7 +149,14 @@ export type ITypeMasterProduct = {
   venderName: string;
   description: string;
   masterProductGroupId: number;
-  masterProductGhsMap?: { masterGhsType: { id: number; nameGhs: string; ghsId: string; imagesGhs: { idfile: string }[] } }[];
+  masterProductGhsMap?: {
+    masterGhsType: {
+      id: number;
+      nameGhs: string;
+      ghsId: string;
+      imagesGhs: { idfile: string }[];
+    };
+  }[];
   masterProductHazardtypeMap?: {
     masterHazardtype: { id: number; nameHazard: string };
   }[];
@@ -184,7 +194,14 @@ export type ITypeMasterProductEdit = {
   masterProductHazardtypeMap?: {
     masterHazardtype: { id: number; nameHazard: string };
   }[];
-  masterProductGhsMap?: { masterGhsType: { id: number; nameGhs: string; ghsId: string; imagesGhs: { idfile: string }[] } }[];
+  masterProductGhsMap?: {
+    masterGhsType: {
+      id: number;
+      nameGhs: string;
+      ghsId: string;
+      imagesGhs: { idfile: string }[];
+    };
+  }[];
   unitId: true;
   unit?: { unitName: string };
   masterProductGroup: {

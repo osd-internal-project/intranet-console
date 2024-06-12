@@ -6,9 +6,10 @@ import { deleteIcon } from "@/components/icon";
 
 export interface props {
   getdataUserByTypeId: ITpyeUser[];
+  onFinishDel: (event: number) => void;
 }
 
-export const TabeLeavManagement: React.FC<props> = ({ getdataUserByTypeId }): React.ReactElement => {
+export const TabeLeavManagement: React.FC<props> = ({ getdataUserByTypeId, onFinishDel }): React.ReactElement => {
   const columns: any = [
     { key: "id", title: "ID", dataIndex: "id" },
     {
@@ -29,7 +30,13 @@ export const TabeLeavManagement: React.FC<props> = ({ getdataUserByTypeId }): Re
         return (
           <>
             <div>
-              <Button type="link" danger>
+              <Button
+                type="link"
+                danger
+                onClick={() => {
+                  onFinishDel(row.id);
+                }}
+              >
                 {deleteIcon}
               </Button>
             </div>

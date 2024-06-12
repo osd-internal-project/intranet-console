@@ -1,6 +1,20 @@
-import { Badge, Card, Col, Row, Table, TableColumnsType, Tag, Typography } from "antd";
+import {
+  Badge,
+  Card,
+  Col,
+  Row,
+  Table,
+  TableColumnsType,
+  Tag,
+  Typography,
+} from "antd";
 import React from "react";
-import { countWithCommas, dateToStringTh, dateToStringThNoTime, numberWithCommas } from "@/app/utils/format";
+import {
+  countWithCommas,
+  dateToStringTh,
+  dateToStringThNoTime,
+  numberWithCommas,
+} from "@/app/utils/format";
 
 export interface props {
   getdataresult: any;
@@ -33,7 +47,7 @@ export const ReportTable: React.FC<props> = ({
       key: "productName",
     },
     {
-      title: "DEPARTMENT",
+      title: "LOCATION",
       dataIndex: "location",
       key: "location",
     },
@@ -78,7 +92,9 @@ export const ReportTable: React.FC<props> = ({
       dataIndex: "orderStatus",
       key: "orderStatus",
       align: "center",
-      render: (value, record, index) => <div>{value ? <Tag>{value}</Tag> : ""}</div>,
+      render: (value, record, index) => (
+        <div>{value ? <Tag>{value}</Tag> : ""}</div>
+      ),
     },
     {
       title: "OBJECTIVE",
@@ -133,7 +149,7 @@ export const ReportTable: React.FC<props> = ({
       key: "productName",
     },
     {
-      title: "DEPARTMENT",
+      title: "LOCATION",
       dataIndex: "location",
       key: "location",
     },
@@ -203,7 +219,11 @@ export const ReportTable: React.FC<props> = ({
         columns={checkvaluestatus === "pay" ? columnsPay : columnsRecieve}
         rowKey={(e) => e.id}
         scroll={{ x: "calc(800px + 100%)" }}
-        pagination={{ total: paginationConfig, current: filter?.current, showSizeChanger: false }}
+        pagination={{
+          total: paginationConfig,
+          current: filter?.current,
+          showSizeChanger: false,
+        }}
         onChange={handlerPaginationTable}
         loading={loading}
       />

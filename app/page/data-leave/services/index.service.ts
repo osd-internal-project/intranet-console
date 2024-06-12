@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { Filtertypeleave, ITypetypeleave, ITypetypeleaveUpadte } from "../common";
+import { Filtertypeleave, ITpyeUser, ITypetypeleave, ITypetypeleaveUpadte } from "../common";
 const DataLeaveService = (axiosInstance: AxiosInstance) => {
   const baseUrl = "/master-type-leave";
   const baseUrlTypeleave = "/master-type-leave";
@@ -39,7 +39,7 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getdataUserByTypeLeaveId: async (id: any) => {
+    getdataUserByTypeLeaveId: async (id: ITpyeUser) => {
       const condition = {
         where: {
           id: Number(id.typeid),
@@ -82,7 +82,7 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    createTypeLeaveDisabled: async (event: any) => {
+    createTypeLeaveDisabled: async (event: ITpyeUser) => {
       const condition = {
         data: {
           ...event,
@@ -92,6 +92,17 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrlTypeleaveMap}`, {
           condition: condition,
         })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    deleteTypeLeaveDisabled: async (event: number) => {
+      return await axiosInstance
+        .delete(`${baseUrlTypeleaveMap}/${event}`)
         .then((res) => {
           return res.data;
         })

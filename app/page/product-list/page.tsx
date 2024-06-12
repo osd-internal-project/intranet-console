@@ -6,7 +6,15 @@ import ProductList from "./components/TableProductList";
 
 import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
 import ProductListServices from "./services/product-list.service";
-import { ITypeMasterLocation, ITypeMasterProduct, ITypeMasterProductForm, ITypeOption, filterproductlist, typeImages, typeImagesGHS } from "./common";
+import {
+  ITypeMasterLocation,
+  ITypeMasterProduct,
+  ITypeMasterProductForm,
+  ITypeOption,
+  filterproductlist,
+  typeImages,
+  typeImagesGHS,
+} from "./common";
 import GhsServices from "../stock-management/ghs/services/ghs.service";
 import { InventoryStockServices } from "../inventory/services/inventory-stock.service";
 
@@ -19,21 +27,29 @@ export default function ProductListPage() {
   const [search, setSearch] = useState<object>({});
   const [loading, setLoading] = useState(true);
   const [openFilter, setOpenFilter] = useState(false);
-  const [department, setDepartment] = useState<number>();
+  const [location, setLocation] = useState<number>();
   const [option, setOption] = useState<ITypeOption[]>([]);
   const [getswitch, setSwitch] = useState<boolean>(false);
   useEffect(() => {
     if (loading === true) loadData();
     fetchData();
-  }, [loading, department]);
+  }, [loading, location]);
 
   const onFilter = async (value: filterproductlist) => {
     let search = {};
     if (value.productName) {
-      search = { ...search, masterProductDetails: { some: { name: { contains: value.productName } } } };
+      search = {
+        ...search,
+        masterProductDetails: {
+          some: { name: { contains: value.productName } },
+        },
+      };
     }
     if (value.chemicalFormula) {
-      search = { ...search, chemicalFormula: { contains: value.chemicalFormula } };
+      search = {
+        ...search,
+        chemicalFormula: { contains: value.chemicalFormula },
+      };
     }
     if (value.casNo) {
       search = { ...search, casNo: { contains: value.casNo } };
@@ -48,26 +64,38 @@ export default function ProductListPage() {
   };
 
   const fetchData = async () => {
-    const locations: ITypeMasterLocation[] = await productListService.getLocation();
-    const options = locations.map((d: ITypeMasterLocation) => ({ value: d.id, label: d.locationName }));
+    const locations: ITypeMasterLocation[] =
+      await productListService.getLocation();
+    const options = locations.map((d: ITypeMasterLocation) => ({
+      value: d.id,
+      label: d.locationName,
+    }));
     setOption(options);
   };
 
   const loadData = async () => {
-    const data = await productListService.getMasterProductsByLocationId(department, search, getswitch);
+    const data = await productListService.getMasterProductsByLocationId(
+      location,
+      search,
+      getswitch
+    );
     const tranfers: ITypeMasterProduct[] = await Promise.all(
       data.map(async (event: ITypeMasterProduct) => {
         let expiredRemain = 0;
         if (event?.inventoryStock.length > 0) {
           await Promise.all(
             event?.inventoryStock.map(async (e: any) => {
-              const expired = await inventorystockservices.getExpiredRemain(e.id);
+              const expired = await inventorystockservices.getExpiredRemain(
+                e.id
+              );
               expiredRemain += expired ? expired : 0;
             })
           );
         }
         const images = await dataImages(event?.masterProductImages as any);
-        const imagesGHS = await await dataImagesGHS(event?.masterProductGhsMap as any);
+        const imagesGHS = await await dataImagesGHS(
+          event?.masterProductGhsMap as any
+        );
         const mapData = {
           ...event,
           images: images,
@@ -86,7 +114,9 @@ export default function ProductListPage() {
       const data = await Promise.all(
         event.map(async (r: typeImagesGHS, i: number) => {
           if (r?.masterGhsType?.imagesGhs.length !== 0) {
-            const getImages = await ghsServices.getImages(r.masterGhsType.imagesGhs[0]?.idfile);
+            const getImages = await ghsServices.getImages(
+              r.masterGhsType.imagesGhs[0]?.idfile
+            );
             const mapData = {
               imagefile: getImages,
             };
@@ -115,8 +145,8 @@ export default function ProductListPage() {
     setOpenFilter(state);
   };
 
-  const onChangeDepartment = async (value: number) => {
-    await setDepartment(value);
+  const onChangeLocation = async (value: number) => {
+    await setLocation(value);
     setLoading(true);
   };
 
@@ -138,10 +168,20 @@ export default function ProductListPage() {
       <Col span={6}>
         <div className="title-page-font">{`PRODUCT LIST`}</div>
       </Col>
-      <Col span={18} className="flex items-center" style={{ justifyContent: "end", display: "flex" }}>
+      <Col
+        span={18}
+        className="flex items-center"
+        style={{ justifyContent: "end", display: "flex" }}
+      >
         <Space>
-          <div className=" text-base">{`Department :`}</div>
-          <Select allowClear options={option} placeholder={"Please Select Department"} style={{ width: "350px" }} onChange={(value: number) => onChangeDepartment(value)} />
+          <div className=" text-base">{`Location :`}</div>
+          <Select
+            allowClear
+            options={option}
+            placeholder={"Please Select Location"}
+            style={{ width: "350px" }}
+            onChange={(value: number) => onChangeLocation(value)}
+          />
         </Space>
       </Col>
       <Col span={24}>

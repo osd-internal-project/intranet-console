@@ -9,14 +9,21 @@ import { pageWithoutMenu } from "@/app/config/data";
 import { Footer } from "antd/es/layout/layout";
 
 import axios from "axios";
-import { useAxiosStock } from "../lib/axios/hooks/userAxiosAuth";
+import { useAxiosStock, useAxiosUser } from "../lib/axios/hooks/userAxiosAuth";
 import IndexServices from "./services/index.service";
 
-export default function MainLayout({ children }: { children: React.ReactNode }) {
+export default function MainLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const stockAuth = useAxiosStock();
+  const userAuth = useAxiosUser();
   const indexServices = IndexServices(stockAuth);
+  const userServices = IndexServices(userAuth);
   const [collapsed, setCollapsed] = useState(false);
   const [countNoti, setCountNoti] = useState(0);
+  const [avatar, setAvatar] = useState<any>();
   const pathname = usePathname();
   const { data: session, status } = useSession({
     required: true,
@@ -32,12 +39,17 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   }, [session]);
   async function fatchData() {
     if (session) {
-      const count = await indexServices.countLotBeforeExpiredByDepartment(session.grouplist);
+      const count = await indexServices.countLotBeforeExpiredByLocation(
+        session.grouplist
+      );
+
       if (count === undefined || count === null || !count) {
         setCountNoti(0);
       } else {
         setCountNoti(count);
       }
+      const image = await userServices.getImage(session.user.userId);
+      setAvatar(image);
     }
   }
   if (status === "loading") {
@@ -61,7 +73,9 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
     if (currentPath) {
       if (!pageWithoutMenu.includes(currentPath)) {
-        const checkAuth = MenuSiderWithModule(session?.rulelist).some((menu: any) => menu.key === currentPath);
+        const checkAuth = MenuSiderWithModule(session?.rulelist).some(
+          (menu: any) => menu.key === currentPath
+        );
         if (!checkAuth) {
           // redirect("/404");
         }
@@ -81,13 +95,25 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <div className="flex justify-center py-4 ">
             {!collapsed ? (
               <>
-                <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : " w-40"}`} />
+                <img
+                  src="/images/osd-logo.png"
+                  alt="logo-page"
+                  className={`${collapsed ? "w-14 " : " w-40"}`}
+                />
               </>
             ) : (
-              <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
+              <img
+                src="/images/osd-logo.png"
+                alt="logo-page"
+                className={`${collapsed ? "w-14 " : "w-28 "}`}
+              />
             )}
           </div>
-          <Menu mode="inline" defaultSelectedKeys={[currentPath]} items={menulist} />
+          <Menu
+            mode="inline"
+            defaultSelectedKeys={[currentPath]}
+            items={menulist}
+          />
         </Sider>
         <Layout>
           <div className="w-full">
@@ -98,6 +124,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
               setCollapsed={setCollapsed}
               currentPath={currentPath}
               menulist={menulist}
+              avatar={avatar}
             />
           </div>
 
@@ -111,7 +138,9 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           >
             {children}
           </Content>
-          <Footer style={{ textAlign: "center" }}>Intranet ©{new Date().getFullYear()} Created by OSD</Footer>
+          <Footer style={{ textAlign: "center" }}>
+            Intranet ©{new Date().getFullYear()} Created by OSD
+          </Footer>
         </Layout>
       </Layout>
     );

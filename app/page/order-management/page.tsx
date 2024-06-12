@@ -15,7 +15,7 @@ export default function ProductListPage() {
   const stockAuth = useAxiosStock();
   const [searchForm] = useForm();
   const orderManagementService = OrderManagementServices(stockAuth);
-  const [department, setDepartment] = useState<number>();
+  const [location, setLocation] = useState<number>();
   const [option, setOption] = useState<ITypeOption[]>([]);
 
   useEffect(() => {
@@ -23,11 +23,15 @@ export default function ProductListPage() {
   }, []);
   const fetchData = async () => {
     if (session?.grouplist) {
-      const locations: ITypeMasterLocation[] = await orderManagementService.getLocationByGroup(session?.grouplist);
+      const locations: ITypeMasterLocation[] =
+        await orderManagementService.getLocationByGroup(session?.grouplist);
 
-      const options = locations.map((d: ITypeMasterLocation) => ({ value: d.id, label: d.locationName }));
+      const options = locations.map((d: ITypeMasterLocation) => ({
+        value: d.id,
+        label: d.locationName,
+      }));
       setOption(options);
-      setDepartment(options.length > 0 ? options[0].value : undefined);
+      setLocation(options.length > 0 ? options[0].value : undefined);
     }
   };
 
@@ -49,19 +53,19 @@ export default function ProductListPage() {
       <Col span={24} className=" md:flex md:space-x-4 ">
         <div className="title-page-font  ">{`ORDER MANAGEMENT`}</div>
         <div className="flex space-x-3  items-center ">
-          <div className=" text-lg">Department :</div>
+          <div className=" text-lg">Location :</div>
           <Select
-            value={department}
+            value={location}
             options={option}
-            placeholder={"Please Select Department"}
+            placeholder={"Please Select Location"}
             onChange={(e) => {
-              setDepartment(e);
+              setLocation(e);
             }}
           />
         </div>
       </Col>
       <Col span={24}>
-        <TableOrders department={department} grouplist={session?.grouplist} />
+        <TableOrders location={location} grouplist={session?.grouplist} />
       </Col>
     </Row>
   );

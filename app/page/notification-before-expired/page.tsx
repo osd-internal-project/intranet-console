@@ -14,7 +14,7 @@ export default function Notification() {
   const { data: session } = useSession();
   const stockAuth = useAxiosStock();
   const orderManagementService = OrderManagementServices(stockAuth);
-  const [department, setDepartment] = useState<number[]>([]);
+  const [location, setLocation] = useState<number[]>([]);
   const [option, setOption] = useState<ITypeOption[]>([]);
 
   useEffect(() => {
@@ -22,12 +22,16 @@ export default function Notification() {
   }, []);
   const fetchData = async () => {
     if (session?.grouplist) {
-      const locations: ITypeMasterLocation[] = await orderManagementService.getLocationByGroup(session?.grouplist);
+      const locations: ITypeMasterLocation[] =
+        await orderManagementService.getLocationByGroup(session?.grouplist);
 
-      const options = locations.map((d: ITypeMasterLocation) => ({ value: d.id, label: d.locationName }));
+      const options = locations.map((d: ITypeMasterLocation) => ({
+        value: d.id,
+        label: d.locationName,
+      }));
       setOption(options);
-      setDepartment(options.map((d) => d.value));
-      // setDepartment(options.map((d) => d.value));
+      setLocation(options.map((d) => d.value));
+      // setLocation(options.map((d) => d.value));
     }
   };
   return (
@@ -51,17 +55,17 @@ export default function Notification() {
             <div className="title-page-font">{`EXPIRY DATE NOTIFICATION`}</div>
             <div className="flex space-x-3  items-center">
               {/* <Form form={searchForm} className="flex  items-center">
-            <Form.Item name="departmentId" label={<div className=" text-lg">Department</div>}> */}
+            <Form.Item name="locationId" label={<div className=" text-lg">Location</div>}> */}
 
-              <div className=" text-lg">Department :</div>
+              <div className=" text-lg">Location :</div>
               <Select
                 options={option}
                 placeholder={"All"}
                 onChange={(e) => {
                   if (e) {
-                    setDepartment([e]);
+                    setLocation([e]);
                   } else {
-                    setDepartment(option.map((d) => d.value));
+                    setLocation(option.map((d) => d.value));
                   }
                 }}
                 allowClear
@@ -76,7 +80,7 @@ export default function Notification() {
         <Col span={24}>
           <div className=" grid grid-cols-1 gap-y-2">
             <div>
-              <NotificationTable department={department} />
+              <NotificationTable location={location} />
             </div>
           </div>
         </Col>

@@ -29,7 +29,7 @@ const HumanTiles: React.FC<Props> = ({ data }) => {
       // cover={<img alt="profile pic" src={`https://api.dicebear.com/7.x/miniavs/svg?seed=1`} width={70} height={70} />}
     >
       {data.type === "position" ? (
-        <Avatar size={128} style={{ backgroundColor: "#00a1df" }} src={data.imageId ? URL.createObjectURL(data.imageId) : ""} />
+        <Avatar size={128} style={{ backgroundColor: "#00a1df" }} src={data.imageId? URL.createObjectURL(data.imageId ? data.imageId:"") : ""} />
       ) : (
         ""
       )}

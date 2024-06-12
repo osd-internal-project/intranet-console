@@ -8,6 +8,7 @@ import { CarryOutOutlined } from "@ant-design/icons";
 import { TreeNode, Tree } from "react-organizational-chart";
 import HumanTiles from "./organizationTiles";
 import UserServices from "@/app/page/users-management/users/services/user.service";
+import Loading from "@/components/Loading";
 
 type Props = {
   data: TOrganizeDto;
@@ -55,6 +56,7 @@ const TeamCard: React.FC<Props> = ({ data }) => {
   const userAuth = useAxiosUser();
   const userServices = UserServices(userAuth);
   const [treeList, setTreeList] = useState<TTreeData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     loaddata();
@@ -83,6 +85,7 @@ const TeamCard: React.FC<Props> = ({ data }) => {
     );
     const tree = createTree(filterOrganize, null);
     setTreeList(tree);
+    setLoading(false)
   };
 
   const createTree = (obj: TUserDetailDto[], parentId: string | null) => {
@@ -164,13 +167,17 @@ const TeamCard: React.FC<Props> = ({ data }) => {
   }
   return (
     <>
-      <Card>
-        <div className="w-full overflow-x-auto">
-          <Tree lineWidth={"3px"} lineColor={"#00a1df"} lineBorderRadius={"10px"} label={<HumanTiles data={{ title: treeList[0]?.title }} />}>
-            {traverse(treeList[0], true)}
-          </Tree>
-        </div>
-      </Card>
+      {loading ? (
+        <Loading />
+      ) : (
+        <Card>
+          <div className="w-full overflow-x-auto">
+            <Tree lineWidth={"3px"} lineColor={"#00a1df"} lineBorderRadius={"10px"} label={<HumanTiles data={{ title: treeList[0]?.title }} />}>
+              {traverse(treeList[0], true)}
+            </Tree>
+          </div>
+        </Card>
+      )}
     </>
   );
 };

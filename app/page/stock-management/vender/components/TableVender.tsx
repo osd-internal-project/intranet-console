@@ -1,5 +1,15 @@
 "use client";
-import { Button, Col, Modal, Row, Space, Table, Tag, Typography, message } from "antd";
+import {
+  Button,
+  Col,
+  Modal,
+  Row,
+  Space,
+  Table,
+  Tag,
+  Typography,
+  message,
+} from "antd";
 import { ColumnsType } from "antd/lib/table";
 import React, { useState } from "react";
 // import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
@@ -84,7 +94,11 @@ export const TableVender: React.FC<props> = ({
       key: "venderName",
       render: (event: string, row: typeVender[], index: number) => (
         <div style={{ color: "#00a1df" }}>
-          <a key={index} className="text-blue" onClick={() => openDetailvender(row as any)}>
+          <a
+            key={index}
+            className="text-blue"
+            onClick={() => openDetailvender(row as any)}
+          >
             {event}
           </a>
         </div>
@@ -107,7 +121,13 @@ export const TableVender: React.FC<props> = ({
       key: "status",
       align: "center",
       render: (event: boolean, row: typeVender[], index: number) => (
-        <>{event === true ? <Tag color="green">{`Active`}</Tag> : <Tag>{`Inactive`}</Tag>}</>
+        <>
+          {event === true ? (
+            <Tag color="green">{`Active`}</Tag>
+          ) : (
+            <Tag>{`Inactive`}</Tag>
+          )}
+        </>
       ),
     },
     {
@@ -120,7 +140,7 @@ export const TableVender: React.FC<props> = ({
           <>
             <Space key={index}>
               {editVenderRule ? (
-                <Link href={`/page/setting/vender/${event}`}>
+                <Link href={`/page/stock-management/vender/${event}`}>
                   <Button type="link" style={{ border: "none" }}>
                     {editIcon}
                   </Button>
@@ -129,7 +149,13 @@ export const TableVender: React.FC<props> = ({
                 <></>
               )}
               {deleteVenderRule ? (
-                <Button type="link" style={{ border: "none" }} onClick={() => showDeleteConfirm(event)} disabled={buttonLoading} danger>
+                <Button
+                  type="link"
+                  style={{ border: "none" }}
+                  onClick={() => showDeleteConfirm(event)}
+                  disabled={buttonLoading}
+                  danger
+                >
                   {deleteIcon}
                 </Button>
               ) : (
@@ -150,12 +176,32 @@ export const TableVender: React.FC<props> = ({
         title={
           <Row gutter={[8, 8]}>
             <Col span={24}>
-              <Typography style={{ fontSize: "24px", color: "black 85%" }}>{getdatavender?.venderName}</Typography>
+              <Typography style={{ fontSize: "24px", color: "black 85%" }}>
+                {getdatavender?.venderName}
+              </Typography>
             </Col>
             <Col span={24}>
               <Space>
-                <span style={{ fontWeight: "200", fontSize: "12px", color: "#9E9E9E" }}> {`รายละเอียด : `}</span>
-                <span style={{ fontWeight: "bold", fontSize: "12px", color: "black 45%" }}> {`${getdatavender?.description}`}</span>
+                <span
+                  style={{
+                    fontWeight: "200",
+                    fontSize: "12px",
+                    color: "#9E9E9E",
+                  }}
+                >
+                  {" "}
+                  {`รายละเอียด : `}
+                </span>
+                <span
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: "12px",
+                    color: "black 45%",
+                  }}
+                >
+                  {" "}
+                  {`${getdatavender?.description}`}
+                </span>
               </Space>
             </Col>
           </Row>
@@ -172,7 +218,11 @@ export const TableVender: React.FC<props> = ({
         size="small"
         dataSource={getdataallvender}
         rowKey={(e: any) => e.id}
-        pagination={{ total: paginationConfig, current: pagination?.current, showSizeChanger: false }}
+        pagination={{
+          total: paginationConfig,
+          current: pagination?.current,
+          showSizeChanger: false,
+        }}
         onChange={handlerPaginationTable}
       />
     </div>

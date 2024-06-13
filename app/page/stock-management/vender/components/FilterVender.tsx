@@ -1,7 +1,16 @@
 "use client";
 
 import { FilterOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { Button, Col, DatePicker, Form, Input, Popover, Row, Space } from "antd";
+import {
+  Button,
+  Col,
+  DatePicker,
+  Form,
+  Input,
+  Popover,
+  Row,
+  Space,
+} from "antd";
 import Link from "next/link";
 import { typeVenderFilter } from "../common";
 import { checkRule } from "@/app/utils/rules";
@@ -13,7 +22,12 @@ export interface props {
   openFilter: boolean;
 }
 
-export const FilterVender: React.FC<props> = ({ setLoading, onFilter, handleOpenFilter, openFilter }): React.ReactElement => {
+export const FilterVender: React.FC<props> = ({
+  setLoading,
+  onFilter,
+  handleOpenFilter,
+  openFilter,
+}): React.ReactElement => {
   const { RangePicker } = DatePicker;
   const searchContent = (
     <Form layout="vertical" onFinish={onFilter} autoComplete="off">
@@ -43,7 +57,10 @@ export const FilterVender: React.FC<props> = ({ setLoading, onFilter, handleOpen
   );
   return (
     <>
-      <Row gutter={[8, 8]} style={{ justifyContent: "space-between", display: "flex" }}>
+      <Row
+        gutter={[8, 8]}
+        style={{ justifyContent: "space-between", display: "flex" }}
+      >
         <Col>
           <Space>
             <Popover
@@ -55,7 +72,11 @@ export const FilterVender: React.FC<props> = ({ setLoading, onFilter, handleOpen
               trigger="click"
               overlayStyle={{ width: "calc(100% - 240px)" }}
             >
-              <Button className="button-blue" type="primary" icon={<FilterOutlined />}>
+              <Button
+                className="button-blue"
+                type="primary"
+                icon={<FilterOutlined />}
+              >
                 {`Filters`}
               </Button>
             </Popover>
@@ -64,7 +85,7 @@ export const FilterVender: React.FC<props> = ({ setLoading, onFilter, handleOpen
         <Col>
           {checkRule("vender-add") ? (
             <Space>
-              <Link href={`/page/setting/vender/addvender`}>
+              <Link href={`/page/stock-management/vender/addvender`}>
                 <Button type="primary" icon={<PlusCircleOutlined />}>
                   <Space>{`Add Vender`}</Space>
                 </Button>

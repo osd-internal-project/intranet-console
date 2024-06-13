@@ -39,15 +39,15 @@ export default function MainLayout({
   }, [session]);
   async function fatchData() {
     if (session) {
-      const count = await indexServices.countLotBeforeExpiredByLocation(
-        session.grouplist
-      );
+      // const count = await indexServices.countLotBeforeExpiredByLocation(
+      //   session.grouplist
+      // );
 
-      if (count === undefined || count === null || !count) {
-        setCountNoti(0);
-      } else {
-        setCountNoti(count);
-      }
+      // if (count === undefined || count === null || !count) {
+      //   setCountNoti(0);
+      // } else {
+      //   setCountNoti(count);
+      // }
       const image = await userServices.getImage(session.user.userId);
       setAvatar(image);
     }

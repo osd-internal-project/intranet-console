@@ -26,6 +26,7 @@ import {
   gridIcon,
   groupLineIcon,
   IconDataLeave,
+  bookingIcon,
   IconHolidays,
   IconPosition,
   IconTypeLeave,
@@ -192,7 +193,7 @@ export const MenuSider: MenuItem[] = [
   },
   {
     key: "3",
-    icon: <Icon icon="material-symbols:book-outline" width="20" height="20" />,
+    icon: bookingIcon,
     label: "Booking Room",
     children: [
       {

@@ -191,8 +191,8 @@ const BookingRoomPage: React.FC = () => {
                                     placeholder="โปรดเลือกห้องประชุม"
                                     style={{ width: '100%' }}
                                 >
-                                    {masterRoomData.map(room => (
-                                        <Select.Option value={room.roomName}>
+                                    {masterRoomData.map((room, index) => (
+                                        <Select.Option key={index} value={room.roomName}>
                                             {room.roomName}
                                         </Select.Option>
                                     ))}

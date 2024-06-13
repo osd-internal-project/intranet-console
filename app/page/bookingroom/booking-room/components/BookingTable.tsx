@@ -2,45 +2,45 @@ import React, { useState, useEffect } from 'react';
 import { Table, Tag, Button } from 'antd';
 import type { TableProps } from 'antd';
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { BookingRoomServices } from "../services/booking-room.service"
+import { BookingRoomServices } from "../services/booking-room.service";
 import dayjs from 'dayjs';
 import { useSession } from 'next-auth/react';
 
 interface DataType {
     key: string;
     no: number;
-    roomname: string;
-    type: string;
+    roomName: string;
+    roomType: string;
     startDate: string;
     endDate: string;
-    bookername: string;
+    bookerName: string;
     bookingStatus: string;
     details: string;
 }
 
 const columns: TableProps<DataType>['columns'] = [
     {
+        key: 'no',
         title: 'ลำดับ',
         dataIndex: 'no',
-        key: 'no',
         width: "50px",
         render: (_, record, index) => <>{index + 1}</>,
     },
     {
+        key: 'roomName',
         title: 'ชื่อห้องประชุม',
         dataIndex: 'roomName',
-        key: 'roomName',
         width: "200px",
     },
     {
+        key: 'roomType',
         title: 'ประเภทการจอง',
         dataIndex: 'roomType',
-        key: 'roomType',
         width: "150px",
     },
     {
-        title: 'วันที่จอง',
         key: 'bookingDate',
+        title: 'วันที่จอง',
         width: "250px",
         render: (_, record) => (
             <span>
@@ -49,8 +49,8 @@ const columns: TableProps<DataType>['columns'] = [
         ),
     },
     {
-        title: 'เวลาจอง',
         key: 'bookingTime',
+        title: 'เวลาจอง',
         width: "150px",
         render: (_, record) => (
             <span>
@@ -59,14 +59,14 @@ const columns: TableProps<DataType>['columns'] = [
         ),
     },
     {
+        key: 'bookerName',
         title: 'ชื่อผู้จอง',
         dataIndex: 'bookerName',
-        key: 'bookerName',
         width: "150px",
     },
     {
-        title: 'สถานะ',
         key: 'bookingStatus',
+        title: 'สถานะ',
         dataIndex: 'bookingStatus',
         width: "100px",
         render: (data: string) =>
@@ -78,19 +78,19 @@ const columns: TableProps<DataType>['columns'] = [
                 ) : data === "cancel" ? (
                     <Tag color="red">ยกเลิกการจอง</Tag>
                 ) : (
-                    ""
+                    <Tag>Unknown Status</Tag> // Example of handling unknown status
                 )
             ) : (
-                ""
+                <Tag>ไม่มีสถานะ</Tag> // Example of handling undefined/null case
             ),
     },
     {
+        key: 'details',
         title: 'รายละเอียด',
-        key: 'note',
-        dataIndex: 'note',
+        dataIndex: 'details',
         width: "100px",
-        render: (data: Date) => (
-            <Button type="link" ghost>
+        render: (_, record) => (
+            <Button type="link">
                 รายละเอียด
             </Button>
         ),
@@ -98,10 +98,10 @@ const columns: TableProps<DataType>['columns'] = [
 ];
 
 const BookingTable = () => {
-    const {data:session} = useSession();
+    const { data: session } = useSession();
     const intraAuth = useAxiosIntranet();
     const bookingRoomServices = BookingRoomServices(intraAuth);
-    const [bookingdData, setBookingData] = useState<DataType[]>([]);
+    const [bookingData, setBookingData] = useState<DataType[]>([]);
 
     useEffect(() => {
         fetchData();
@@ -111,9 +111,8 @@ const BookingTable = () => {
         const bookingRoom = await bookingRoomServices.getBookingRoomQuery();
         setBookingData(bookingRoom);
     };
-
     return (
-        <Table columns={columns} dataSource={bookingdData} />
+        <Table columns={columns} dataSource={bookingData} />
     );
 };
 

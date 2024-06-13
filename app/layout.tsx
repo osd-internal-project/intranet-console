@@ -1,6 +1,13 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Roboto, Noto_Sans_Thai, Kanit, Prompt, Kodchasan, Sriracha } from "next/font/google";
+import {
+  Roboto,
+  Noto_Sans_Thai,
+  Kanit,
+  Prompt,
+  Kodchasan,
+  Sriracha,
+} from "next/font/google";
 const kodchasan = Kodchasan({ weight: "400", subsets: ["latin"] });
 const notoSanThai = Noto_Sans_Thai({ subsets: ["latin"] });
 const kanit = Kanit({ weight: "400", subsets: ["latin"] });
@@ -12,7 +19,11 @@ export const metadata: Metadata = {
   title: "Intranet",
   description: "Intranet",
 };
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <body className={`${notoSanThai.className} m-0 `}>

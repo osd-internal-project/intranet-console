@@ -225,7 +225,7 @@ const locationTable: React.FC<props> = ({
       align: "center",
       render: (event: number, row: typeLocation, index: number) => (
         <Space>
-          <Link href={`/page/setting/inventory?locationId=${row.id}`}>
+          <Link href={`/page/stock-management/inventory?locationId=${row.id}`}>
             <Button type="link">{`View Inventory`}</Button>
           </Link>
           {editRule ? (

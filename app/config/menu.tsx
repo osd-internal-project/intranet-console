@@ -149,6 +149,12 @@ export const MenuSider: MenuItem[] = [
         label: `รายงานการหมดอายุ`,
         rule: "report-expired",
       },
+      {
+        key: `stock-management`,
+        // icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
+        label: `Stock Management`,
+        // rule: "setting",
+      },
     ],
   },
   {
@@ -295,74 +301,74 @@ export const MenuSider: MenuItem[] = [
       },
     ],
   },
-  {
-    key: `stock-management`,
-    icon: stockSetting,
-    label: `Stock Management`,
-    // rule: "setting-show",
-    children: [
-      {
-        key: `stock-management/location`,
-        // icon: buldingIcon,
-        label: `Location`,
-        rule: "location-show",
-      },
-      {
-        key: `stock-management/inventory`,
-        // icon: cubeIcon,
-        label: `Inventory`,
-        rule: "inventory-show",
-      },
-      {
-        key: `stock-management/objective`,
-        // icon: colorSwatchIcon,
-        label: `Objective`,
-        rule: "objective-show",
-      },
-      {
-        key: `stock-management/master-product-management`,
-        // icon: cubeIcon,
-        label: `Master Product Management`,
-        rule: "m-product-show",
-      },
-      {
-        key: `stock-management/cetagory-group-type`,
-        // icon: circleSqureIcon,
-        label: `Set Category & Group`,
-        rule: "mp-category-show",
-      },
-      {
-        key: `stock-management/unit`,
-        // icon: gridIcon,
-        label: `Set Unit`,
-        rule: "mp-unit-show",
-      },
-      {
-        key: `stock-management/master-hazard-type`,
-        // icon: colorSwatchIcon,
-        label: `Set Hazard Type`,
-        rule: "mp-hazard-type-show",
-      },
-      {
-        key: `stock-management/ghs`,
-        // icon: warningIcon,
-        label: `Set GHS`,
-        rule: "mp-ghs-show",
-      },
-      {
-        key: `stock-management/vender`,
-        // icon: truckIcon,
-        label: `Vender`,
-        rule: "vender-show",
-      },
-      {
-        key: `stock-management/brand`,
-        // icon: starIcon,
-        label: `Set Brand`,
-        rule: "brand-show",
-      },
-    ],
-  },
+  // {
+  //   key: `stock-management`,
+  //   icon: stockSetting,
+  //   label: `Stock Management`,
+  //   // rule: "setting-show",
+  //   children: [
+  //     {
+  //       key: `stock-management/location`,
+  //       // icon: buldingIcon,
+  //       label: `Location`,
+  //       rule: "location-show",
+  //     },
+  //     {
+  //       key: `stock-management/inventory`,
+  //       // icon: cubeIcon,
+  //       label: `Inventory`,
+  //       rule: "inventory-show",
+  //     },
+  //     {
+  //       key: `stock-management/objective`,
+  //       // icon: colorSwatchIcon,
+  //       label: `Objective`,
+  //       rule: "objective-show",
+  //     },
+  //     {
+  //       key: `stock-management/master-product-management`,
+  //       // icon: cubeIcon,
+  //       label: `Master Product Management`,
+  //       rule: "m-product-show",
+  //     },
+  //     {
+  //       key: `stock-management/cetagory-group-type`,
+  //       // icon: circleSqureIcon,
+  //       label: `Set Category & Group`,
+  //       rule: "mp-category-show",
+  //     },
+  //     {
+  //       key: `stock-management/unit`,
+  //       // icon: gridIcon,
+  //       label: `Set Unit`,
+  //       rule: "mp-unit-show",
+  //     },
+  //     {
+  //       key: `stock-management/master-hazard-type`,
+  //       // icon: colorSwatchIcon,
+  //       label: `Set Hazard Type`,
+  //       rule: "mp-hazard-type-show",
+  //     },
+  //     {
+  //       key: `stock-management/ghs`,
+  //       // icon: warningIcon,
+  //       label: `Set GHS`,
+  //       rule: "mp-ghs-show",
+  //     },
+  //     {
+  //       key: `stock-management/vender`,
+  //       // icon: truckIcon,
+  //       label: `Vender`,
+  //       rule: "vender-show",
+  //     },
+  //     {
+  //       key: `stock-management/brand`,
+  //       // icon: starIcon,
+  //       label: `Set Brand`,
+  //       rule: "brand-show",
+  //     },
+  //   ],
+  // },
 ].map((item) => {
   // if (item?.children) {
   //   return {

@@ -1,14 +1,38 @@
 "use client";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { Button, Card, DatePicker, Form, Input, Modal, Popover, Select, Table, Tag, message } from "antd";
+import {
+  Button,
+  Card,
+  DatePicker,
+  Form,
+  Input,
+  Modal,
+  Popover,
+  Select,
+  Table,
+  Tag,
+  message,
+} from "antd";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import UserServices from "../services/user.service";
 import { Dayjs } from "dayjs";
 import { deleteIcon, editIcon } from "@/components/icon";
-import { ExclamationCircleFilled, FilterOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import {
+  ExclamationCircleFilled,
+  FilterOutlined,
+  PlusCircleOutlined,
+} from "@ant-design/icons";
 type RangeValue = [Dayjs | null, Dayjs | null] | null;
-type dataType = { userId: string; username: string; position: string; phoneNumber: string; status: string; created: string; createdDate: Date };
+type dataType = {
+  userId: string;
+  username: string;
+  position: string;
+  phoneNumber: string;
+  status: string;
+  created: string;
+  createdDate: Date;
+};
 const { RangePicker } = DatePicker;
 const dateFormat = "DD/MM/YYYY";
 import MasterPositionServices from "../services/position.service";
@@ -21,7 +45,11 @@ export interface props {
   search: object;
 }
 
-const UserTable: React.FC<props> = ({ propLoading, loading, search }): React.ReactElement => {
+const UserTable: React.FC<props> = ({
+  propLoading,
+  loading,
+  search,
+}): React.ReactElement => {
   const userAuth = useAxiosUser();
   const userServices = UserServices(userAuth);
   const masterPositionService = MasterPositionServices(userAuth);
@@ -40,7 +68,10 @@ const UserTable: React.FC<props> = ({ propLoading, loading, search }): React.Rea
 
   const loadingData = async () => {
     const positions = await masterPositionService.getMasterPositionAll();
-    const positionOption: ITypeOption[] = positions.map((d: any) => ({ label: d.nameTh, value: d.id }));
+    const positionOption: ITypeOption[] = positions.map((d: any) => ({
+      label: d.nameTh,
+      value: d.id,
+    }));
     setPositionOption(positionOption);
     const data = await userServices.getUsersAll(search);
     if (data) {
@@ -106,7 +137,12 @@ const UserTable: React.FC<props> = ({ propLoading, loading, search }): React.Rea
       dataIndex: "status",
       key: "status",
       width: 100,
-      render: (d: string, r: any, i: number) => (d === "Active" ? <Tag color="green">{d}</Tag> : <Tag color="volcano">{d}</Tag>),
+      render: (d: string, r: any, i: number) =>
+        d === "Active" ? (
+          <Tag color="green">{d}</Tag>
+        ) : (
+          <Tag color="volcano">{d}</Tag>
+        ),
     },
     {
       title: "CREATED",
@@ -135,7 +171,13 @@ const UserTable: React.FC<props> = ({ propLoading, loading, search }): React.Rea
             <></>
           )}
           {userDeleteRules ? (
-            <Button className="p-1" danger type="link" onClick={() => onfinishDel(d)} disabled={buttonLoading}>
+            <Button
+              className="p-1"
+              danger
+              type="link"
+              onClick={() => onfinishDel(d)}
+              disabled={buttonLoading}
+            >
               {deleteIcon}
             </Button>
           ) : (
@@ -151,7 +193,12 @@ const UserTable: React.FC<props> = ({ propLoading, loading, search }): React.Rea
   };
 
   const searchContent = (
-    <Form layout="vertical" form={filterForm} onFinish={onSearch} autoComplete="off">
+    <Form
+      layout="vertical"
+      form={filterForm}
+      onFinish={onSearch}
+      autoComplete="off"
+    >
       <div className="grid grid-cols-1 md:gap-4 md:grid-cols-4">
         <Form.Item label="User Id" name="userId">
           <Input placeholder="Search Text" />
@@ -163,7 +210,11 @@ const UserTable: React.FC<props> = ({ propLoading, loading, search }): React.Rea
           <Input placeholder="Search Text" />
         </Form.Item>
         <Form.Item label="Position" name="positionId">
-          <Select placeholder="Please Select" options={positionOption} allowClear />
+          <Select
+            placeholder="Please Select"
+            options={positionOption}
+            allowClear
+          />
         </Form.Item>
         <Form.Item label="First Name" name="firstNameTh">
           <Input placeholder="Search Text" />
@@ -236,7 +287,7 @@ const UserTable: React.FC<props> = ({ propLoading, loading, search }): React.Rea
               trigger="click"
               overlayStyle={{ width: "calc(100% - 240px)" }}
             >
-              <Button type="primary" icon={<FilterOutlined />} className="button-blue">
+              <Button type="primary" icon={<FilterOutlined />}>
                 Filters
               </Button>
             </Popover>
@@ -251,7 +302,7 @@ const UserTable: React.FC<props> = ({ propLoading, loading, search }): React.Rea
             /> */}
             {checkRule("user-management-add") ? (
               <Link href="/page/setting/usermanagement/add">
-                <Button icon={<PlusCircleOutlined />} type="primary" className="button-blue">
+                <Button icon={<PlusCircleOutlined />} className="button-blue">
                   Add User
                 </Button>
               </Link>

@@ -3,8 +3,26 @@ import React, { useEffect, useState } from "react";
 import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useParams, useRouter } from "next/navigation";
 import { VenderServices } from "../service/vender.service";
-import { Breadcrumb, Button, Card, Col, Divider, Form, Input, Row, Space, Spin, Switch, Typography, message } from "antd";
-import { MinusCircleOutlined } from "@ant-design/icons";
+import {
+  Breadcrumb,
+  Button,
+  Card,
+  Col,
+  Divider,
+  Form,
+  Input,
+  Row,
+  Space,
+  Spin,
+  Switch,
+  Typography,
+  message,
+} from "antd";
+import {
+  CloseOutlined,
+  CloseSquareOutlined,
+  MinusCircleOutlined,
+} from "@ant-design/icons";
 import dayjs from "dayjs";
 import { typeVender } from "../common";
 
@@ -59,10 +77,13 @@ const EditVender: React.FC<{}> = (): React.ReactElement => {
 
   const onfinish = async (event: typeVender) => {
     setbuttonLoading(true);
-    const res = await venderServices.updatedata({ ...event, status: switchChecked }, venderID);
+    const res = await venderServices.updatedata(
+      { ...event, status: switchChecked },
+      venderID
+    );
     if (res) {
       message.success(`Edit success`);
-      router.push("/page/setting/vender");
+      router.push("/page/stock-management/vender");
       FORM.resetFields();
       setSwitchChecked(false);
       setbuttonLoading(false);
@@ -82,11 +103,11 @@ const EditVender: React.FC<{}> = (): React.ReactElement => {
                 title: <span>Home</span>,
               },
               {
-                href: "/page/setting",
+                href: "/page/stock-management",
                 title: <span>Setting</span>,
               },
               {
-                href: "/page/setting/vender",
+                href: "/page/stock-management/vender",
                 title: <span>Vender </span>,
               },
               {
@@ -96,16 +117,32 @@ const EditVender: React.FC<{}> = (): React.ReactElement => {
           />
         </Col>
         <Col span={24}>
-          <Form form={FORM} name={`create-vender`} style={{ width: "100%" }} layout="horizontal" labelAlign="right" onFinish={onfinish}>
+          <Form
+            form={FORM}
+            name={`create-vender`}
+            style={{ width: "100%" }}
+            layout="horizontal"
+            labelAlign="right"
+            onFinish={onfinish}
+          >
             <Card style={{ width: "100%", marginBottom: "20px" }}>
               <Row gutter={[8, 8]}>
                 <Col span={24}>
                   <Typography className="title-page-font">{`Edit Vender`}</Typography>
                 </Col>
                 <Col span={24}>
-                  <Row gutter={[8, 8]} style={{ justifyContent: "space-between", display: "flex", width: "100%" }}>
+                  <Row
+                    gutter={[8, 8]}
+                    style={{
+                      justifyContent: "space-between",
+                      display: "flex",
+                      width: "100%",
+                    }}
+                  >
                     <Col>
-                      <Typography.Text>{`${dayjs(new Date()).format("DD/MM/YYYY HH:mm ")}`}</Typography.Text>
+                      <Typography.Text>{`${dayjs(new Date()).format(
+                        "DD/MM/YYYY HH:mm "
+                      )}`}</Typography.Text>
                     </Col>
                     <Col>
                       <Form.Item name={"status"}>
@@ -114,7 +151,11 @@ const EditVender: React.FC<{}> = (): React.ReactElement => {
                           unCheckedChildren="Inactive"
                           checked={switchChecked}
                           onChange={handleChange}
-                          className={switchChecked === true ? "active-switch" : "inactive-switch"}
+                          className={
+                            switchChecked === true
+                              ? "active-switch"
+                              : "inactive-switch"
+                          }
                         />
                       </Form.Item>
                     </Col>
@@ -125,7 +166,12 @@ const EditVender: React.FC<{}> = (): React.ReactElement => {
                     name={`venderName`}
                     label={`Vender Company :`}
                     wrapperCol={{ offset: 1 }}
-                    rules={[{ required: true, message: "Please enter vender company" }]}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please enter vender company",
+                      },
+                    ]}
                   >
                     <Input />
                   </Form.Item>
@@ -136,7 +182,9 @@ const EditVender: React.FC<{}> = (): React.ReactElement => {
                     label={`รายละเอียด :`}
                     labelCol={{ span: 5 }}
                     // wrapperCol={{ offset: 1 }}
-                    rules={[{ required: true, message: "Please enter description" }]}
+                    rules={[
+                      { required: true, message: "Please enter description" },
+                    ]}
                   >
                     <Input />
                   </Form.Item>
@@ -145,7 +193,9 @@ const EditVender: React.FC<{}> = (): React.ReactElement => {
             </Card>
             <Card style={{ width: "100%", marginBottom: "20px" }}>
               <Col span={24}>
-                <Typography.Text style={{ fontSize: "18px", fontWeight: "bold" }}>{`Address`}</Typography.Text>
+                <Typography.Text
+                  style={{ fontSize: "18px", fontWeight: "bold" }}
+                >{`Address`}</Typography.Text>
               </Col>
               <Row gutter={[8, 8]}>
                 <Col span={8} style={{ marginTop: "10px" }}>
@@ -153,13 +203,20 @@ const EditVender: React.FC<{}> = (): React.ReactElement => {
                     name={`house_number`}
                     label={`เลขที่ :`}
                     labelCol={{ span: 10 }}
-                    rules={[{ required: true, message: "Please enter house number" }]}
+                    rules={[
+                      { required: true, message: "Please enter house number" },
+                    ]}
                   >
                     <Input />
                   </Form.Item>
                 </Col>
                 <Col span={8} style={{ marginTop: "10px" }}>
-                  <Form.Item name={`group`} label={`หมู่ :`} labelCol={{ span: 10 }} rules={[{ required: true, message: "Please enter group" }]}>
+                  <Form.Item
+                    name={`group`}
+                    label={`หมู่ :`}
+                    labelCol={{ span: 10 }}
+                    rules={[{ required: true, message: "Please enter group" }]}
+                  >
                     <Input />
                   </Form.Item>
                 </Col>
@@ -168,18 +225,30 @@ const EditVender: React.FC<{}> = (): React.ReactElement => {
                     name={`village`}
                     label={`อาคาร/หมู่บ้าน :`}
                     labelCol={{ span: 10 }}
-                    rules={[{ required: true, message: "Please enter village" }]}
+                    rules={[
+                      { required: true, message: "Please enter village" },
+                    ]}
                   >
                     <Input />
                   </Form.Item>
                 </Col>
                 <Col span={8} style={{ marginTop: "10px" }}>
-                  <Form.Item name={`alley`} label={`ซอย :`} labelCol={{ span: 10 }} rules={[{ required: true, message: "Please enter alley" }]}>
+                  <Form.Item
+                    name={`alley`}
+                    label={`ซอย :`}
+                    labelCol={{ span: 10 }}
+                    rules={[{ required: true, message: "Please enter alley" }]}
+                  >
                     <Input />
                   </Form.Item>
                 </Col>
                 <Col span={8} style={{ marginTop: "10px" }}>
-                  <Form.Item name={`road`} label={`ถนน :`} labelCol={{ span: 10 }} rules={[{ required: true, message: "Please enter road" }]}>
+                  <Form.Item
+                    name={`road`}
+                    label={`ถนน :`}
+                    labelCol={{ span: 10 }}
+                    rules={[{ required: true, message: "Please enter road" }]}
+                  >
                     <Input />
                   </Form.Item>
                 </Col>
@@ -188,7 +257,9 @@ const EditVender: React.FC<{}> = (): React.ReactElement => {
                     name={`sub_district`}
                     label={`ตำบล/แขวง :`}
                     labelCol={{ span: 10 }}
-                    rules={[{ required: true, message: "Please enter sub district" }]}
+                    rules={[
+                      { required: true, message: "Please enter sub district" },
+                    ]}
                   >
                     <Input />
                   </Form.Item>
@@ -198,7 +269,9 @@ const EditVender: React.FC<{}> = (): React.ReactElement => {
                     name={`district`}
                     label={`อำเภอ/เขต :`}
                     labelCol={{ span: 10 }}
-                    rules={[{ required: true, message: "Please enter district" }]}
+                    rules={[
+                      { required: true, message: "Please enter district" },
+                    ]}
                   >
                     <Input />
                   </Form.Item>
@@ -208,7 +281,9 @@ const EditVender: React.FC<{}> = (): React.ReactElement => {
                     name={`province`}
                     label={`จังหวัด :`}
                     labelCol={{ span: 10 }}
-                    rules={[{ required: true, message: "Please enter province" }]}
+                    rules={[
+                      { required: true, message: "Please enter province" },
+                    ]}
                   >
                     <Input />
                   </Form.Item>
@@ -218,7 +293,9 @@ const EditVender: React.FC<{}> = (): React.ReactElement => {
                     name={`post_code`}
                     label={`รหัสไปษณีย์ :`}
                     labelCol={{ span: 10 }}
-                    rules={[{ required: true, message: "Please enter postcode" }]}
+                    rules={[
+                      { required: true, message: "Please enter postcode" },
+                    ]}
                   >
                     <Input />
                   </Form.Item>
@@ -228,7 +305,9 @@ const EditVender: React.FC<{}> = (): React.ReactElement => {
                     name={`phoneNumber`}
                     label={`เบอร์โทรศัพท์ :`}
                     labelCol={{ span: 10 }}
-                    rules={[{ required: true, message: "Please enter phone number" }]}
+                    rules={[
+                      { required: true, message: "Please enter phone number" },
+                    ]}
                   >
                     <Input />
                   </Form.Item>
@@ -238,13 +317,20 @@ const EditVender: React.FC<{}> = (): React.ReactElement => {
                     name={`fax_number`}
                     label={`เบอร์ FAX :`}
                     labelCol={{ span: 10 }}
-                    rules={[{ required: true, message: "Please enter fax number" }]}
+                    rules={[
+                      { required: true, message: "Please enter fax number" },
+                    ]}
                   >
                     <Input />
                   </Form.Item>
                 </Col>
                 <Col span={8} style={{ marginTop: "10px" }}>
-                  <Form.Item name={`email`} label={`E-mail :`} labelCol={{ span: 10 }} rules={[{ required: true, message: "Please enter email" }]}>
+                  <Form.Item
+                    name={`email`}
+                    label={`E-mail :`}
+                    labelCol={{ span: 10 }}
+                    rules={[{ required: true, message: "Please enter email" }]}
+                  >
                     <Input />
                   </Form.Item>
                 </Col>
@@ -253,7 +339,9 @@ const EditVender: React.FC<{}> = (): React.ReactElement => {
                     name={`IDcard`}
                     label={`เลขประจำตัวผู้เสียภาษี :`}
                     labelCol={{ span: 10 }}
-                    rules={[{ required: true, message: "Please enter ID card" }]}
+                    rules={[
+                      { required: true, message: "Please enter ID card" },
+                    ]}
                   >
                     <Input />
                   </Form.Item>
@@ -265,13 +353,35 @@ const EditVender: React.FC<{}> = (): React.ReactElement => {
                 <Form.List name="contact">
                   {(fields, { add, remove }) => (
                     <>
-                      <div style={{ width: "100%", justifyContent: "space-between", display: "flex" }}>
-                        <Col style={{ width: "100%", display: "flex", height: "100%" }}>
-                          <Typography.Text style={{ fontSize: "18px", fontWeight: "bold" }}>{`Contact`}</Typography.Text>
+                      <div
+                        style={{
+                          width: "100%",
+                          justifyContent: "space-between",
+                          display: "flex",
+                        }}
+                      >
+                        <Col
+                          style={{
+                            width: "100%",
+                            display: "flex",
+                            height: "100%",
+                          }}
+                        >
+                          <Typography.Text
+                            style={{ fontSize: "18px", fontWeight: "bold" }}
+                          >{`Contact`}</Typography.Text>
                         </Col>
                         <Col>
                           <Form.Item>
-                            <Button type="default" onClick={() => add()} style={{ width: "100%", color: "#00a1df", borderColor: "#00a1df" }}>
+                            <Button
+                              type="default"
+                              onClick={() => add()}
+                              style={{
+                                width: "100%",
+                                color: "#00a1df",
+                                borderColor: "#00a1df",
+                              }}
+                            >
                               <Space>{`Add Contact`}</Space>
                             </Button>
                           </Form.Item>
@@ -280,72 +390,109 @@ const EditVender: React.FC<{}> = (): React.ReactElement => {
                       {fields?.map(({ name, key, ...restField }, index) => {
                         return (
                           <div key={index}>
-                            <Row gutter={[8, 8]}>
-                              <Col span={8} style={{ marginTop: "10px" }}>
-                                <Form.Item
-                                  key={index}
-                                  name={[index, "contact_name"]}
-                                  label={`ชื่อผู้ติดต่อ ${index + 1} :`}
-                                  labelCol={{ span: 10 }}
-                                  rules={[{ required: true, message: "Please enter name" }]}
-                                  {...restField}
-                                >
-                                  <Input />
-                                </Form.Item>
-                              </Col>
-                              <Col span={8} style={{ marginTop: "10px" }}>
-                                <Form.Item
-                                  name={[index, "phoneNumber"]}
-                                  label={`เบอร์โทรศัพท์ :`}
-                                  labelCol={{ span: 10 }}
-                                  rules={[{ required: true, message: "Please enter phone number" }]}
-                                  {...restField}
-                                >
-                                  <Input />
-                                </Form.Item>
-                              </Col>
-                              <Col span={8} style={{ marginTop: "10px" }}>
-                                <Form.Item
-                                  {...restField}
-                                  name={[index, "fax_number"]}
-                                  label={`เบอร์ FAX :`}
-                                  labelCol={{ span: 10 }}
-                                  rules={[{ required: true, message: "Please enter fax number" }]}
-                                >
-                                  <Input />
-                                </Form.Item>
-                              </Col>
-                              <Col span={8} style={{ marginTop: "10px" }}>
-                                <Form.Item
-                                  {...restField}
-                                  name={[index, "email"]}
-                                  label={`E-mail :`}
-                                  labelCol={{ span: 10 }}
-                                  rules={[{ required: true, message: "Please enter email" }]}
-                                >
-                                  <Input />
-                                </Form.Item>
-                              </Col>
-                              <Col span={16} style={{ marginTop: "10px" }}>
-                                <Form.Item
-                                  {...restField}
-                                  name={[index, "description"]}
-                                  label={`หมายเหตุ :`}
-                                  labelCol={{ span: 5 }}
-                                  rules={[{ required: true, message: "Please enter description" }]}
-                                >
-                                  <Input />
-                                </Form.Item>
-                              </Col>
-                              {fields.length >= 1 ? (
-                                <MinusCircleOutlined
-                                  style={{ width: "100%", color: "red", borderColor: "red" }}
-                                  className="dynamic-delete-button"
-                                  onClick={() => remove(index)}
-                                />
-                              ) : null}
-                              <Divider />
-                            </Row>
+                            <div className=" flex">
+                              <div className="w-5/6 ">
+                                <Row gutter={[8, 8]}>
+                                  <Col span={8} style={{ marginTop: "10px" }}>
+                                    <Form.Item
+                                      key={index}
+                                      name={[index, "contact_name"]}
+                                      label={`ชื่อผู้ติดต่อ ${index + 1} :`}
+                                      labelCol={{ span: 10 }}
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please enter name",
+                                        },
+                                      ]}
+                                      {...restField}
+                                    >
+                                      <Input />
+                                    </Form.Item>
+                                  </Col>
+                                  <Col span={8} style={{ marginTop: "10px" }}>
+                                    <Form.Item
+                                      name={[index, "phoneNumber"]}
+                                      label={`เบอร์โทรศัพท์ :`}
+                                      labelCol={{ span: 10 }}
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please enter phone number",
+                                        },
+                                      ]}
+                                      {...restField}
+                                    >
+                                      <Input />
+                                    </Form.Item>
+                                  </Col>
+                                  <Col span={8} style={{ marginTop: "10px" }}>
+                                    <Form.Item
+                                      {...restField}
+                                      name={[index, "fax_number"]}
+                                      label={`เบอร์ FAX :`}
+                                      labelCol={{ span: 10 }}
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please enter fax number",
+                                        },
+                                      ]}
+                                    >
+                                      <Input />
+                                    </Form.Item>
+                                  </Col>
+                                  <Col span={8} style={{ marginTop: "10px" }}>
+                                    <Form.Item
+                                      {...restField}
+                                      name={[index, "email"]}
+                                      label={`E-mail :`}
+                                      labelCol={{ span: 10 }}
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please enter email",
+                                        },
+                                      ]}
+                                    >
+                                      <Input />
+                                    </Form.Item>
+                                  </Col>
+                                  <Col span={16} style={{ marginTop: "10px" }}>
+                                    <Form.Item
+                                      {...restField}
+                                      name={[index, "description"]}
+                                      label={`หมายเหตุ :`}
+                                      labelCol={{ span: 5 }}
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: "Please enter description",
+                                        },
+                                      ]}
+                                    >
+                                      <Input />
+                                    </Form.Item>
+                                  </Col>
+                                </Row>
+                              </div>
+                              <div
+                                className="w-1/6  flex justify-center"
+                                style={{ alignItems: "center" }}
+                              >
+                                {fields.length >= 1 ? (
+                                  <Button
+                                    icon={<CloseOutlined />}
+                                    danger
+                                    type="link"
+                                    onClick={() => remove(index)}
+                                  >
+                                    Remove
+                                  </Button>
+                                ) : null}
+                              </div>
+                            </div>
+                            <Divider />
                           </div>
                         );
                       })}
@@ -354,7 +501,9 @@ const EditVender: React.FC<{}> = (): React.ReactElement => {
                 </Form.List>
               </Row>
             </Card>
-            <div style={{ width: "100%", justifyContent: "end", display: "flex" }}>
+            <div
+              style={{ width: "100%", justifyContent: "end", display: "flex" }}
+            >
               <Space>
                 <Form.Item>
                   <Button
@@ -363,13 +512,17 @@ const EditVender: React.FC<{}> = (): React.ReactElement => {
                     onClick={() => {
                       FORM.resetFields();
                       setSwitchChecked(false);
-                      router.push("/page/setting/vender");
+                      router.push("/page/stock-management/vender");
                     }}
                     ghost
                   >{`Cancel`}</Button>
                 </Form.Item>
                 <Form.Item>
-                  <Button htmlType="submit" type="primary" loading={buttonLoading}>{`Save Change`}</Button>
+                  <Button
+                    htmlType="submit"
+                    type="primary"
+                    loading={buttonLoading}
+                  >{`Save Change`}</Button>
                 </Form.Item>
               </Space>
             </div>

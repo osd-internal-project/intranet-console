@@ -42,20 +42,60 @@ export default function Setting() {
     //   { name_header: "Set Position", name_path: "setting/masterdata-position", icon: IconPosition, rule: "user-position-show" },
     // ],
     // [
-    //   { name_header: "Department", name_path: "setting/department", icon: buldingIcon, rule: "department-show" },
-    //   { name_header: "Inventory Store", name_path: "setting/inventory", icon: cubeIcon, rule: "inventory-show" },
+    //   { name_header: "Department", name_path: "stock-management/location", icon: buldingIcon, rule: "department-show" },
+    //   { name_header: "Inventory Store", name_path: "stock-management/inventory", icon: cubeIcon, rule: "inventory-show" },
     //   { name_header: "Set Objective", name_path: "setting/objective", icon: colorSwatchIcon, rule: "objective-show" },
     //   { name_header: "Set MA Type", name_path: "setting/ma-type", icon: colorSwatchIcon, rule: "objective-show" },
     // ],
     [
-      { name_header: "Master Product Management ", name_path: "setting/master-product-management", icon: cubeIcon, rule: "m-product-show" },
-      { name_header: "Set Category & Group ", name_path: "setting/cetagory-group-type", icon: circleSqureIcon, rule: "mp-category-show" },
-      { name_header: "Set Unit", name_path: "setting/unit", icon: gridIcon, rule: "mp-unit-show" },
-      { name_header: "Set Hazard Type", name_path: "setting/master-hazard-type", icon: colorSwatchIcon, rule: "mp-hazard-type-show" },
-      { name_header: "Set GHS", name_path: "setting/ghs", icon: warningIcon, rule: "mp-ghs-show" },
-      { name_header: "Vender", name_path: "setting/vender", icon: truckIcon, rule: "vender-show" },
-      { name_header: "Set Brand", name_path: "setting/brand", icon: starIcon, rule: "brand-show" },
-      { name_header: "Master Type Leave", name_path: "setting/type-leave", icon: starIcon, rule: "m-type-leave" },
+      {
+        name_header: "Master Product Management ",
+        name_path: "setting/master-product-management",
+        icon: cubeIcon,
+        rule: "m-product-show",
+      },
+      {
+        name_header: "Set Category & Group ",
+        name_path: "setting/cetagory-group-type",
+        icon: circleSqureIcon,
+        rule: "mp-category-show",
+      },
+      {
+        name_header: "Set Unit",
+        name_path: "setting/unit",
+        icon: gridIcon,
+        rule: "mp-unit-show",
+      },
+      {
+        name_header: "Set Hazard Type",
+        name_path: "setting/master-hazard-type",
+        icon: colorSwatchIcon,
+        rule: "mp-hazard-type-show",
+      },
+      {
+        name_header: "Set GHS",
+        name_path: "setting/ghs",
+        icon: warningIcon,
+        rule: "mp-ghs-show",
+      },
+      {
+        name_header: "Vender",
+        name_path: "stock-management/vender",
+        icon: truckIcon,
+        rule: "vender-show",
+      },
+      {
+        name_header: "Set Brand",
+        name_path: "setting/brand",
+        icon: starIcon,
+        rule: "brand-show",
+      },
+      {
+        name_header: "Master Type Leave",
+        name_path: "setting/type-leave",
+        icon: starIcon,
+        rule: "m-type-leave",
+      },
     ],
   ];
 
@@ -85,30 +125,60 @@ export default function Setting() {
       <div className=" grid grid-cols-3 gap-4">
         {categories?.map((category: string, index: number) => {
           return (
-            <div key={index} className=" col-span-3 md:col-span-1" style={{ width: "100%" }}>
+            <div
+              key={index}
+              className=" col-span-3 md:col-span-1"
+              style={{ width: "100%" }}
+            >
               <Col span={24}>
                 <Typography className="text-name-header">{category}</Typography>
               </Col>
               <br />
-              {buttonsData[index].map((buttonText: TypeButton, buttonIndex: number) => {
-                return checkRule(buttonText.rule) ? (
-                  <Col key={buttonIndex} span={24} style={{ marginBottom: "10px" }}>
-                    <Link href={`/page/${buttonText.name_path}`}>
-                      <Button className="button_setting">
-                        <div style={{ height: "100%", justifyContent: "start", display: "flex", alignItems: "center" }}>
-                          <Space>
-                            <Typography className="text-name-menu">{buttonText.icon}</Typography>
-                            <Typography className="text-name-menu">{buttonText.name_header} </Typography>
-                          </Space>
-                        </div>
-                        <div style={{ alignItems: "center", justifyContent: "center", display: "flex", height: "100%" }}>{moveRightIcon}</div>
-                      </Button>
-                    </Link>
-                  </Col>
-                ) : (
-                  <></>
-                );
-              })}
+              {buttonsData[index].map(
+                (buttonText: TypeButton, buttonIndex: number) => {
+                  return checkRule(buttonText.rule) ? (
+                    <Col
+                      key={buttonIndex}
+                      span={24}
+                      style={{ marginBottom: "10px" }}
+                    >
+                      <Link href={`/page/${buttonText.name_path}`}>
+                        <Button className="button_setting">
+                          <div
+                            style={{
+                              height: "100%",
+                              justifyContent: "start",
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Space>
+                              <Typography className="text-name-menu">
+                                {buttonText.icon}
+                              </Typography>
+                              <Typography className="text-name-menu">
+                                {buttonText.name_header}{" "}
+                              </Typography>
+                            </Space>
+                          </div>
+                          <div
+                            style={{
+                              alignItems: "center",
+                              justifyContent: "center",
+                              display: "flex",
+                              height: "100%",
+                            }}
+                          >
+                            {moveRightIcon}
+                          </div>
+                        </Button>
+                      </Link>
+                    </Col>
+                  ) : (
+                    <></>
+                  );
+                }
+              )}
             </div>
           );
         })}

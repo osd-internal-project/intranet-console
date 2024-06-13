@@ -3,7 +3,11 @@ import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { Breadcrumb, Card, Col, Row, Tabs, Typography } from "antd";
 import React, { useEffect, useState } from "react";
 import OrganizeServices from "../../setting/organize-chart/services/organize-chart.service";
-import TeamCard from "./components/team-card";
+import dynamic from "next/dynamic";
+
+const OrganizationalTeam = dynamic(() => import("./components/organizational-team"), {
+  ssr: false,
+});
 
 export type TOrganizeDto = {
   id: number;
@@ -36,7 +40,7 @@ export default function Page() {
             {item.positionName}
           </Text>
         ),
-        children: <TeamCard data={item} />,
+        children: <OrganizationalTeam data={item} />,
       }))
     );
   };

@@ -1,35 +1,16 @@
-"use client";
-import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
-import UserServices from "@/app/page/users-management/users/services/user.service";
-import { Avatar, Card, Tag, Typography } from "antd";
-
-import Meta from "antd/es/card/Meta";
+import { Avatar, Card, Typography } from "antd";
 
 type Props = {
   data: any;
 };
-// {
-//   key: number;
-//   title: any;
-//   children: string;
-//   userId: string;
-//   username: string;
-//   firstNameEn: string;
-//   lastNameEn: string;
-//   email: string;
-// };
 
 const { Text } = Typography;
 
 const HumanTiles: React.FC<Props> = ({ data }) => {
   return (
-    <Card
-      hoverable
-      style={{ width: 300, margin: "auto" }}
-      // cover={<img alt="profile pic" src={`https://api.dicebear.com/7.x/miniavs/svg?seed=1`} width={70} height={70} />}
-    >
+    <Card hoverable style={{ width: 300, margin: "auto" }}>
       {data.type === "position" ? (
-        <Avatar size={128} style={{ backgroundColor: "#00a1df" }} src={data.imageId ? URL.createObjectURL(data.imageId) : ""} />
+        <Avatar size={128} style={{ backgroundColor: "#00a1df" }} src={data.imageId ? URL.createObjectURL(data.imageId ? data.imageId : "") : ""} />
       ) : (
         ""
       )}

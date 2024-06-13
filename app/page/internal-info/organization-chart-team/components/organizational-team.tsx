@@ -1,9 +1,7 @@
 import { Avatar, Card, Tag } from "antd";
-import { TOrganizeDto } from "../page";
 import { useEffect, useState } from "react";
 import OrganizeServices from "@/app/page/setting/organize-chart/services/organize-chart.service";
 import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { TfindAllOrganizeDto, TfindChildrenOrganizeById } from "@/app/page/setting/organize-chart/common";
 import { CarryOutOutlined } from "@ant-design/icons";
 import { TreeNode, Tree } from "react-organizational-chart";
 import HumanTiles from "./organizationTiles";
@@ -12,6 +10,16 @@ import Loading from "@/components/Loading";
 
 type Props = {
   data: TOrganizeDto;
+};
+
+export type TOrganizeDto = {
+  id: number;
+  positionId: string;
+  description: string;
+  positionName: string;
+  parentPositionId: string | null;
+  createdAt: string | Date;
+  updatedAt: string | Date;
 };
 
 type TUserDetailDefaultDto = {
@@ -50,7 +58,7 @@ type TTreeData = {
   children: any;
 };
 
-const TeamCard: React.FC<Props> = ({ data }) => {
+const OrganizationalTeam: React.FC<Props> = ({ data }) => {
   const intranetAuth = useAxiosIntranet();
   const organizeServices = OrganizeServices(intranetAuth);
   const userAuth = useAxiosUser();
@@ -85,7 +93,7 @@ const TeamCard: React.FC<Props> = ({ data }) => {
     );
     const tree = createTree(filterOrganize, null);
     setTreeList(tree);
-    setLoading(false)
+    setLoading(false);
   };
 
   const createTree = (obj: TUserDetailDto[], parentId: string | null) => {
@@ -182,4 +190,4 @@ const TeamCard: React.FC<Props> = ({ data }) => {
   );
 };
 
-export default TeamCard;
+export default OrganizationalTeam;

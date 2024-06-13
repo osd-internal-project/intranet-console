@@ -49,6 +49,7 @@ export default function MainLayout({
       //   setCountNoti(count);
       // }
       const image = await userServices.getImage(session.user.userId);
+      console.log(image);
       setAvatar(image);
     }
   }
@@ -70,7 +71,7 @@ export default function MainLayout({
 
     const menulist = MenuSiderWithModule(session?.rulelist);
     const currentPath = pathname.split("/")[2];
-
+    const currentPathSub = pathname.split("/")[3];
     if (currentPath) {
       if (!pageWithoutMenu.includes(currentPath)) {
         const checkAuth = MenuSiderWithModule(session?.rulelist).some(
@@ -111,7 +112,10 @@ export default function MainLayout({
           </div>
           <Menu
             mode="inline"
-            defaultSelectedKeys={[currentPath]}
+            defaultSelectedKeys={[
+              currentPath,
+              `${currentPath}/${currentPathSub}`,
+            ]}
             items={menulist}
           />
         </Sider>

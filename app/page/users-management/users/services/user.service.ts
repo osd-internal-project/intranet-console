@@ -213,6 +213,30 @@ const UserServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    assignGroups: async (userId: string, organizeId: string, groups: string[]) => {
+      return await axiosInstance
+        .post(`${baseUrl}/assign-groups/${userId}`, { organizeId: organizeId, groups: groups })
+        .then((result) => result.data)
+        .catch((err) => err);
+    },
+    assignOwnerGroups: async (userId: string, organizeId: string, groupOwnerId: string) => {
+      return await axiosInstance
+        .post(`${baseUrl}/assign_owner_groups/${userId}`, { organizeId: organizeId, groupOwnerId: groupOwnerId })
+        .then((result) => result.data)
+        .catch((err) => err);
+    },
+    findAssignGroup: async (userId: string, organizeId: string) => {
+      return await axiosInstance
+        .get(`${baseUrl}/assign-groups/${userId}/${organizeId}`)
+        .then((result) => result.data)
+        .catch((err) => err);
+    },
+    findOwnerGroupByOrganizeId: async (userId: string, organizeId: string) => {
+      return await axiosInstance
+        .get(`${baseUrl}/assign-owner-groups/${userId}/${organizeId}`)
+        .then((result) => result.data)
+        .catch((err) => err);
+    },
   };
 };
 export default UserServices;

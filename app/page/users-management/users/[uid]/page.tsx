@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import EditDetailComponent from "./components/EditDetailComponent";
 import EditTreeComponent from "./components/EditTreeComponent";
 import EditRoleComponent from "./components/EditRoleComponent";
+import EditAssignGroupComponent from "./components/EditAssignGroupComponent";
 export default function UserDetailPage() {
   const params = useParams();
   const userid = params.uid as string;
@@ -50,31 +51,21 @@ export default function UserDetailPage() {
                 {
                   label: "Set Roles & Group",
                   key: "2",
-                  children: (
-                    <div className="grid grid-cols-2">
-                      <div className="mb-5">
-                        <EditRoleComponent userid={userid} />
-                      </div>
-                      <div className="mb-5">
-                        <EditTreeComponent userid={userid} />
-                      </div>
-                    </div>
-                  ),
+                  children: <EditAssignGroupComponent userid={userid} />,
+                  // (
+                  //   <div className="grid grid-cols-2">
+                  //     <div className="mb-5">
+                  //       <EditRoleComponent userid={userid} />
+                  //     </div>
+                  //     <div className="mb-5">
+                  //       <EditTreeComponent userid={userid} />
+                  //     </div>
+                  //   </div>
+                  // ),
                 },
               ]}
             />
           </div>
-          {/* <div>
-        <EditDetailComponent userid={userid} />
-      </div>
-      <div className=" grid grid-cols-1 md:space-x-2 md:grid-cols-2">
-        <div>
-          <EditTreeComponent userid={userid} />
-        </div>
-        <div>
-          <EditRoleComponent userid={userid} />
-        </div> */}
-          {/* </div> */}
         </div>
       </Col>
     </Row>

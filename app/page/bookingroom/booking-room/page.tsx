@@ -175,10 +175,25 @@ const BookingRoomPage: React.FC = () => {
                                     placeholder="โปรดเลือกเเผนกผู้จอง"
                                     style={{ width: '100%' }}
                                     options={[
-                                        { value: 'HR', label: 'HR' },
-                                        { value: 'IT', label: 'IT' },
-                                        { value: 'Marketing', label: 'Marketing' },
-                                        { value: 'Finance', label: 'Finance' },
+                                        { value: 'Business Consulting Department', label: 'Business Consulting Department' },
+                                        { value: 'Business Solution Consulting Department', label: 'Business Solution Consulting Department' },
+                                        { value: 'Business Support Department', label: 'Business Support Department' },
+                                        { value: 'Customer Relationship Management Department', label: 'Customer Relationship Management Department' },
+                                        { value: 'Executive Division', label: 'Executive Division' },
+                                        { value: 'Executive Secretary Department', label: 'Executive Secretary Department' },
+                                        { value: 'Finance and Accounting Department', label: 'Finance and Accounting Department' },
+                                        { value: 'Human Resources Department', label: 'Human Resources Department' },
+                                        { value: 'IT Support Department', label: 'IT Support Department' },
+                                        { value: 'Legal & Compliance Department', label: 'Legal & Compliance Department' },
+                                        { value: 'Marketing Department ', label: 'Marketing Department ' },
+                                        { value: 'Mbiz & Exam', label: 'Mbiz & Exam' },
+                                        { value: 'Network Department', label: 'Network Department' },
+                                        { value: 'New Installation Department', label: 'New Installation Department' },
+                                        { value: 'New Network Department', label: 'New Network Department' },
+                                        { value: 'Procurement Department', label: 'Procurement Department' },
+                                        { value: 'Research and Development Department', label: 'Research and Development Department' },
+                                        { value: 'Service and Support Department', label: 'Service and Support Department' },
+                                        { value: 'Voice Collaboration Department', label: 'Voice Collaboration Department' },
                                     ]}
                                 />
                             </Form.Item>

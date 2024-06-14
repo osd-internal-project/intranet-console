@@ -1,15 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Col, Descriptions, DescriptionsProps, Form, Input, Modal, Row, Skeleton, Tree, message } from "antd";
+import { Button, Card, Col, Descriptions, DescriptionsProps, Form, Input, Modal, Row, Select, Skeleton, Tree, message } from "antd";
 import UserGroupServices from "../services/usergroup.service";
 import { GroupManageSkeleton } from "./Skeleton";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ExclamationCircleFilled, PlusOutlined } from "@ant-design/icons";
 import { checkRule } from "@/app/utils/rules";
+import RolesServices from "../../user-role/services/role.service";
 export interface props {
   propDataManage: (res: { selectOrganize: string | null; groupSelect: string | null; loading: boolean }) => void;
   groupSelect: string | null;
   selectOrganize: string | null;
 }
+
+type TSelectRoleDto = {
+  roleId: string;
+  roleName: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+};
 
 type groupDetail = {
   groupId: string;
@@ -27,20 +36,32 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
   const [addform] = Form.useForm();
   const [editform] = Form.useForm();
   const userGroupServices = UserGroupServices(userAuth);
+  const userRolesServices = RolesServices(userAuth);
   const [groupDetail, setGroupDetail] = useState<groupDetail | null>(null);
   const [openAddModel, setOpenAddModel] = useState<boolean>(false);
   const [editState, setEditState] = useState<boolean>(false);
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
+  const [selectRole, setSeleceRole] = useState<TSelectRoleDto[]>([]);
+
   useEffect(() => {
     loading();
   }, [groupSelect]);
+
   const loading = async () => {
     setEditState(false);
     setGroupDetail(null);
     if (groupSelect) {
       const groupDetail: any = await userGroupServices.getUserGroupByGroupId(groupSelect);
+      const resRole = await userRolesServices.getUserRoleAll();
       editform.setFieldsValue(groupDetail);
+      editform.setFieldValue(
+        "userRole",
+        groupDetail.userGroupUserRoleMap.length > 0
+          ? groupDetail.userGroupUserRoleMap.map((item: { id: number; roleId: string; userGroupId: string }) => item.roleId)
+          : []
+      );
       setGroupDetail(groupDetail);
+      setSeleceRole(resRole);
     }
   };
 
@@ -49,18 +70,14 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
     propDataManage({ selectOrganize: selectOrganize, groupSelect: null, loading: true });
   };
 
-  const onFinish = async (values: groupDetail) => {
+  const onFinishEdit = async (values: groupDetail) => {
     setbuttonLoading(true);
-    const data = {
-      groupName: values.groupName,
-      description: values.description,
-    };
     await userGroupServices
-      .updateUserGroup(values.groupId, data)
+      .updateUserGroup(values.groupId, values)
       .then(() => {
         message.success(`Edit success`);
         setOpenAddModel(false);
-        propDataManage({ selectOrganize: selectOrganize, loading: true, groupSelect: values.groupId });
+        // propDataManage({ selectOrganize: selectOrganize, loading: true, groupSelect: values.groupId });
       })
       .catch((err) => message.error(err));
     setbuttonLoading(false);
@@ -118,6 +135,10 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
     setbuttonLoading(false);
   };
 
+  const onClickEdit = async () => {
+    setEditState(!editState);
+  };
+
   return groupDetail ? (
     <>
       <Card className="mx-2 my-2 md:my-0  " style={{ minHeight: " 500px" }}>
@@ -145,12 +166,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
                 {!editState ? (
                   <>
                     {editRule ? (
-                      <Button
-                        type="primary"
-                        onClick={() => setEditState(!editState)}
-                        disabled={!groupDetail.parentGroupId ? true : false}
-                        loading={buttonLoading}
-                      >
+                      <Button type="primary" onClick={onClickEdit} disabled={!groupDetail.parentGroupId ? true : false} loading={buttonLoading}>
                         Edit
                       </Button>
                     ) : (
@@ -179,7 +195,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
           </Row>
           {/* </div> */}
 
-          <Form form={editform} onFinish={onFinish} onFinishFailed={onFinishFailed} name="editForm" layout="vertical" initialValues={groupDetail}>
+          <Form form={editform} onFinish={onFinishEdit} onFinishFailed={onFinishFailed} name="editForm" layout="vertical" initialValues={groupDetail}>
             <div>
               <Form.Item name="groupId" label="Group Id :">
                 <Input className="read-only-input" disabled />
@@ -196,6 +212,16 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
             <div>
               <Form.Item name="description" label="Description :">
                 <Input.TextArea
+                  disabled={!groupDetail.parentGroupId || editState === false ? true : false}
+                  className={!editState ? "read-only-input" : ""}
+                />
+              </Form.Item>
+            </div>
+            <div>
+              <Form.Item name="userRole" label="user role :">
+                <Select
+                  mode="multiple"
+                  options={selectRole.map((item: TSelectRoleDto) => ({ value: item.roleId, label: item.roleName }))}
                   disabled={!groupDetail.parentGroupId || editState === false ? true : false}
                   className={!editState ? "read-only-input" : ""}
                 />

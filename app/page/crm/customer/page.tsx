@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Breadcrumb, Card, Col, Row, Spin } from "antd";
-import MaTypeCreateComponent from "./components/MaTypeCreate";
+import CustomerCreateComponent from "./components/CustomerCreate";
 import CustomerTableComponent from "./components/CustomerTable";
 import { ITMaType, ITMaTypeForm, ITPagination } from "./common";
 import CrmServices from "./services/index.service";
@@ -68,7 +68,7 @@ export default function MaTaskPage() {
           />
         </Col>
         <Col span={24}>
-          <div className="title-page-font">{`CUSTOMER INFO`}</div>
+          <div className="title-page-font">{`CUSTOMER`}</div>
         </Col>
         <Col span={24}>
           <div className="grid grid-cols-1 ">

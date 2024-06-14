@@ -41,9 +41,24 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
     },
     getdataLeaveByuserID: async (userId: string) => {
       const condition = {
-        where: {
-          userId: userId,
+        include: {
+          dataLeaveFiles: true,
         },
+        orderBy: { id: "asc" },
+      };
+      return await axiosInstance
+        .post(`${baseUrlDataLeave}/condition`, {
+          condition: condition,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
+    getdataLeaveAll: async () => {
+      const condition = {
         include: {
           dataLeaveFiles: true,
         },

@@ -161,7 +161,7 @@ export const MenuSider: MenuItem[] = [
     key: "housekeeper",
     icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
     label: "Housekeeper",
-    rule:'housekeeper',
+    rule: "housekeeper",
     children: [
       {
         key: `housekeeper/housekeepers`,
@@ -188,7 +188,11 @@ export const MenuSider: MenuItem[] = [
       },
       {
         key: `data-leave/detail-online-leave`,
-        label: `Detail Data Leave`,
+        label: `Detail Data Leave User`,
+      },
+      {
+        key: `data-leave/detail-online-leave-admin`,
+        label: `Detail Data Leave Admin`,
       },
       {
         key: `data-leave/leave-management`,

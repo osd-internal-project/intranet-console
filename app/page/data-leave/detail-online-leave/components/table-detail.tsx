@@ -84,7 +84,7 @@ export const TableDetail: React.FC<props> = ({
         return (
           <>
             <Row gutter={[8, 8]} className="flex justify-center">
-              <Col>
+              {/* <Col>
                 <Button
                   type="primary"
                   onClick={() => {
@@ -94,7 +94,7 @@ export const TableDetail: React.FC<props> = ({
                 >
                   {editIcon} {`Approved`}
                 </Button>
-              </Col>
+              </Col> */}
               <Col>
                 <Button
                   type="primary"

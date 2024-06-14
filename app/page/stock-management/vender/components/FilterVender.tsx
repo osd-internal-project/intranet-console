@@ -83,7 +83,7 @@ export const FilterVender: React.FC<props> = ({
           </Space>
         </Col>
         <Col>
-          {checkRule("vender-add") ? (
+          {checkRule("sm-vender-a") ? (
             <Space>
               <Link href={`/page/stock-management/vender/addvender`}>
                 <Button type="primary" icon={<PlusCircleOutlined />}>

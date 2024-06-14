@@ -19,9 +19,9 @@ type ProfileList = {
 const { RangePicker } = DatePicker;
 const RoleComponent: React.FC = (): React.ReactElement => {
   const userAuth = useAxiosUser();
-  const addRule = checkRule("user-role-add");
-  const editRule = checkRule("user-role-edit");
-  const deleteRule = checkRule("user-role-delete");
+  const addRule = checkRule("um-ro-a");
+  const editRule = checkRule("um-ro-e");
+  const deleteRule = checkRule("um-ro-d");
   const userRolesServices = RolesServices(userAuth);
   const profileRuleServices = ProfileRuleServices(userAuth);
 

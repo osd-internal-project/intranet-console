@@ -24,7 +24,7 @@ import { ITypeSearchShow, typedata } from "./common";
 import { useEffect, useState } from "react";
 const { RangePicker } = DatePicker;
 import dayjs from "dayjs";
-import StockServices from "../report-expired/services/stock.service";
+import StockServices from "../sm-re-ex-h/services/stock.service";
 import { dateToEndofDay, dateToStartofDay } from "@/app/utils/format";
 export default function TransactionPage() {
   const reportAuth = useAxiosReport();

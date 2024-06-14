@@ -55,7 +55,7 @@ const ProductList: React.FC<props> = ({
   getswitch,
   setSwitch,
 }): React.ReactElement => {
-  const addOrderRule = checkRule("order-add");
+  const addOrderRule = checkRule("sm-order-a");
   const stockAuth = useAxiosStock();
   const inventorystockservices = InventoryStockServices(stockAuth);
   const [detailForm] = Form.useForm();

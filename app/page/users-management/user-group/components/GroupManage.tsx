@@ -21,9 +21,9 @@ type groupDetail = {
 
 const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrganize }): React.ReactElement => {
   const userAuth = useAxiosUser();
-  const addRule = checkRule("user-group-add");
-  const editRule = checkRule("user-group-edit");
-  const deleteRule = checkRule("user-group-delete");
+  const addRule = checkRule("um-ug-a");
+  const editRule = checkRule("um-ug-e");
+  const deleteRule = checkRule("um-ug-d");
   const [addform] = Form.useForm();
   const [editform] = Form.useForm();
   const userGroupServices = UserGroupServices(userAuth);

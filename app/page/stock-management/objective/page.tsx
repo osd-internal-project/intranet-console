@@ -18,9 +18,9 @@ type ObjectiveType = {
 };
 export default function ObjectivePage() {
   const stockAuth = useAxiosStock();
-  const addRule = checkRule("objective-add");
-  const editRule = checkRule("objective-edit");
-  const deleteRule = checkRule("objective-delete");
+  const addRule = checkRule("sm-objective-a");
+  const editRule = checkRule("sm-objective-e");
+  const deleteRule = checkRule("sm-objective-delete");
   const masterObjectiveServices = MasterObjectiveServices(stockAuth);
   const { RangePicker } = DatePicker;
   const [loading, setLoading] = useState<boolean>(true);

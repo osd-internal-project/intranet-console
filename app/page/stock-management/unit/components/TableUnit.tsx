@@ -34,8 +34,8 @@ export const TableUnit: React.FC<props> = ({
   paginationConfig,
 }): React.ReactElement => {
   const stockAuth = useAxiosStock();
-  const editRule = checkRule("mp-unit-edit");
-  const deleteRule = checkRule("mp-unit-delete");
+  const editRule = checkRule("sm-unit-e");
+  const deleteRule = checkRule("sm-unit-d");
   const unitServices = UnitServices(stockAuth);
   const { RangePicker } = DatePicker;
   const [form] = Form.useForm();

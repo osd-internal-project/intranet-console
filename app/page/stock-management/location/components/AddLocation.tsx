@@ -57,7 +57,7 @@ export const AddLocation: React.FC<props> = ({
   const userAuth = useAxiosUser();
   const locationServices = LocationServices(stockAuth);
   const userServices = UserServices(userAuth);
-  const addRule = checkRule("location-add");
+  const addRule = checkRule("sm-location-a");
 
   const [FORMCREATE] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);

@@ -72,10 +72,6 @@ const BookingRoomPage: React.FC = () => {
         setIsModalBooking(false);
     };
 
-    const onChange = (key: string) => {
-        console.log(key);
-    };
-
     const createBooking: FormProps<BookingType>['onFinish'] = async (values) => {
         setSubmitLoading(true)
         const data = {
@@ -331,7 +327,7 @@ const BookingRoomPage: React.FC = () => {
                                     จองห้องประชุม
                                 </Button>
                             </div>
-                            <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+                            <Tabs defaultActiveKey="1" items={items}/>
                         </Card>
                     </div>
                 </Col>

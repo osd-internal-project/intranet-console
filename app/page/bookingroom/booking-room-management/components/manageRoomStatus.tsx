@@ -108,8 +108,12 @@ const RoomStatus = () => {
 
     const fetchData = async () => {
         try {
-            const bookingRoom = await manageRoomServices.getMasterRoomQuery();
-            setBookingData(bookingRoom);
+            const Bookingresponse = await manageRoomServices.getMasterRoomQuery();
+            const BookingRoom: MasterRoomType[] = Bookingresponse.map((item: any, index: number) => ({
+                ...item,
+                key: index.toString(), // Assuming index can be used as a key, adjust as needed
+            }));
+            setBookingData(BookingRoom);
         } catch (error) {
             message.error('Failed to fetch room data');
         }

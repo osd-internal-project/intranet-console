@@ -109,9 +109,9 @@ export interface ITypeDataLeave {
   position?: string;
   typeId?: number;
   typeName?: string;
-  startDate?: Date;
+  startDate: Date | null;
   startTime?: string;
-  endDate?: Date;
+  endDate?: Date | null;
   endTime?: string;
   leaveHour?: number;
   detail?: string;

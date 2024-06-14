@@ -1,10 +1,11 @@
 import { AxiosInstance } from "axios";
-import { Filtertypeleave, ITpyeUser, ITypetypeleave, ITypetypeleaveUpadte } from "../common";
+import { Filtertypeleave, ITpyeUser, ITypeDataLeave, ITypeDataLeaveCreate } from "../common";
 const DataLeaveService = (axiosInstance: AxiosInstance) => {
   const baseUrl = "/master-type-leave";
   const baseUrlTypeleave = "/master-type-leave";
   const baseUrlTypeleaveMap = "/tpye-data-leave-map";
   const baseUrlUser = "/user";
+  const baseUrlDataLeave = "/data-leave";
 
   return {
     getdataAll: async () => {
@@ -19,7 +20,6 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return res.data;
         })
         .catch((err) => {
-          console.log(err);
           return [];
         });
     },
@@ -35,7 +35,24 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return res.data;
         })
         .catch((err) => {
-          console.log(err);
+          return [];
+        });
+    },
+    getdataLeaveByuserID: async (userId: string) => {
+      const condition = {
+        where: {
+          userId: userId,
+        },
+        orderBy: { id: "asc" },
+      };
+      return await axiosInstance
+        .post(`${baseUrlDataLeave}/condition`, {
+          condition: condition,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
           return [];
         });
     },
@@ -61,7 +78,6 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return res.data;
         })
         .catch((err) => {
-          console.log(err);
           return [];
         });
     },
@@ -78,7 +94,6 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return res.data;
         })
         .catch((err) => {
-          console.log(err);
           return [];
         });
     },
@@ -96,7 +111,23 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return res.data;
         })
         .catch((err) => {
-          console.log(err);
+          return [];
+        });
+    },
+    createDataLeave: async (event: ITypeDataLeave) => {
+      const condition = {
+        data: {
+          ...event,
+        },
+      };
+      return await axiosInstance
+        .post(`${baseUrlDataLeave}`, {
+          condition: condition,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
           return [];
         });
     },
@@ -107,7 +138,6 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return res.data;
         })
         .catch((err) => {
-          console.log(err);
           return [];
         });
     },

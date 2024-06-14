@@ -4,17 +4,31 @@ import React, { useEffect, useState } from "react";
 import { Button, Card, Checkbox, DatePicker, Form, Input, Select, Switch, Upload, UploadProps, message } from "antd";
 import dayjs from "dayjs";
 import { useForm } from "antd/es/form/Form";
-import { IDataUser, ISelect, ITypetypeleave } from "../../common";
+import { IDataUser, ISelect, ITypeDataLeave, ITypeDataLeaveCreate } from "../../common";
 export interface props {
   getUser?: IDataUser | null;
   getTypeLeaveOption: ISelect[];
+  onfinishCreate: (values: ITypeDataLeaveCreate) => void;
+  createdataleaveForm: any;
+  setStartDate: (values: Date) => void;
+  setEndDate: (values: Date) => void;
+  setCheckSwitch: (values: boolean) => void;
+  getStartDate: Date | undefined;
+  getEndDate: Date | undefined;
+  checkSwitch: boolean | undefined;
 }
-export const CreateOnlineLeave: React.FC<props> = ({ getUser, getTypeLeaveOption }): React.ReactElement => {
-  const [createdataleaveForm] = useForm();
-  const [getStartDate, setStartDate] = useState<Date>();
-  const [getEndDate, setEndDate] = useState<Date>();
-  const [checkSwitch, setCheckSwitch] = useState<boolean>(false);
-
+export const CreateOnlineLeave: React.FC<props> = ({
+  getUser,
+  getTypeLeaveOption,
+  onfinishCreate,
+  createdataleaveForm,
+  setStartDate,
+  setEndDate,
+  setCheckSwitch,
+  getStartDate,
+  getEndDate,
+  checkSwitch,
+}): React.ReactElement => {
   const props: UploadProps = {
     name: "file",
     action: "https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload",
@@ -36,6 +50,7 @@ export const CreateOnlineLeave: React.FC<props> = ({ getUser, getTypeLeaveOption
   useEffect(() => {
     const getdatauser = () => {
       createdataleaveForm.setFieldsValue({
+        userId: getUser?.userId,
         posId: getUser?.position?.posId,
         position: getUser?.position?.nameEn,
         firstNameTh: getUser?.firstNameTh,
@@ -48,14 +63,19 @@ export const CreateOnlineLeave: React.FC<props> = ({ getUser, getTypeLeaveOption
   return (
     <div>
       <Card className="w-full grid grid-cols-1 gap-y-2 mt-2">
-        <Form form={createdataleaveForm} className="space-y-4 grid grid-cols-1" layout="vertical" autoComplete="off">
+        <Form form={createdataleaveForm} className="space-y-4 grid grid-cols-1" layout="vertical" autoComplete="off" onFinish={onfinishCreate}>
           <div className=" col-span-1 md:col-span-1 ml-5 justify-end flex">
-            <Form.Item label={`วันที่ :`} name={`created_date`}>
-              <DatePicker defaultValue={dayjs(new Date())} value={dayjs(new Date())} disabled />
+            <Form.Item label={`วันที่ :`} name={`createdAt`}>
+              <DatePicker defaultValue={dayjs(new Date())} disabled />
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เรียนถึง :`}>
+              <Input disabled />
+            </Form.Item>
+          </div>
+          <div className=" col-span-3 md:col-span-1 ml-5">
+            <Form.Item label={`รหัสพนักงาน :`} name={`userId`} hidden>
               <Input disabled />
             </Form.Item>
           </div>
@@ -88,12 +108,12 @@ export const CreateOnlineLeave: React.FC<props> = ({ getUser, getTypeLeaveOption
           </div>
           <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
             <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`ตั้งแต่วันที่ :`} name={`start_date`} required>
+              <Form.Item label={`ตั้งแต่วันที่ :`} name={`startDate`} required>
                 <DatePicker className="w-full" onChange={(e: any) => setStartDate(e)} />
               </Form.Item>
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`ถึงวันที่ :`} name={`end_date`} required>
+              <Form.Item label={`ถึงวันที่ :`} name={`endDate`} required>
                 <DatePicker className="w-full" onChange={(e: any) => setEndDate(e)} />
               </Form.Item>
             </div>
@@ -125,7 +145,7 @@ export const CreateOnlineLeave: React.FC<props> = ({ getUser, getTypeLeaveOption
           ) : null}
 
           <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`วัตถุประสงค์การลา :`} name={`remark`} required>
+            <Form.Item label={`วัตถุประสงค์การลา :`} name={`detail`} required>
               <Input placeholder="วัตถุประสงค์การลา" />
             </Form.Item>
           </div>
@@ -136,9 +156,9 @@ export const CreateOnlineLeave: React.FC<props> = ({ getUser, getTypeLeaveOption
               </Form.Item>
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`แนบไฟล์ :`}>
+              <Form.Item label={`แนบไฟล์ :`} name={"attrachFile"}>
                 <Upload {...props}>
-                  <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                  <Button icon={<UploadOutlined />}>{`Click to Upload`}</Button>
                 </Upload>
               </Form.Item>
             </div>

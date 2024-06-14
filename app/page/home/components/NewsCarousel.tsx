@@ -1,12 +1,13 @@
 import { RightOutlined } from "@ant-design/icons";
 import { Carousel, Row, Col, Card, Modal } from "antd";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export interface props {}
 
 const NewsCarouselComponent: React.FC<props> = (): React.ReactElement => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedNews, setSelectedNews] = useState<any>(null);
+  const [numCols, setNumCols] = useState(3);
 
   const newsData = [
     {
@@ -32,7 +33,8 @@ const NewsCarouselComponent: React.FC<props> = (): React.ReactElement => {
       description: `O S D #20thanniversary FROM LEARNING TO RUNNING #OSD #OSDCOMPANY`,
     },
     {
-      title: "โอ เอส ดี ร่วมพันธมิตรธุรกิจดิจิตอล เสริมพลังธุรกิจ ติดอาวุธเทคโนโลยีการสื่อสารรอบด้าน ในงาน O S D econnect 2023",
+      title:
+        "โอ เอส ดี ร่วมพันธมิตรธุรกิจดิจิตอล เสริมพลังธุรกิจ ติดอาวุธเทคโนโลยีการสื่อสารรอบด้าน ในงาน O S D econnect 2023",
       date: "18-july-2023",
       imgSrc: "/images/homeImg/test3.png",
       link: "#",
@@ -86,7 +88,22 @@ const NewsCarouselComponent: React.FC<props> = (): React.ReactElement => {
     return chunkedArray;
   };
 
-  const newsChunks = chunkArray(newsData, 3);
+  const updateNumCols = () => {
+    if (window.innerWidth < 768) {
+      setNumCols(1);
+    } else if (window.innerWidth < 1024) {
+      setNumCols(2);
+    } else {
+      setNumCols(3);
+    }
+  };
+
+  useEffect(() => {
+    updateNumCols();
+    window.addEventListener("resize", updateNumCols);
+    return () => window.removeEventListener("resize", updateNumCols);
+  }, []);
+  const newsChunks = chunkArray(newsData, numCols);
 
   const showModal = (news: any) => {
     setSelectedNews(news);
@@ -108,33 +125,32 @@ const NewsCarouselComponent: React.FC<props> = (): React.ReactElement => {
       <Carousel autoplay arrows infinite>
         {newsChunks.map((newsChunk, index) => (
           <div key={index}>
-            <Row gutter={16} justify="center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {newsChunk.map((news, idx) => (
-                <Col key={idx} span={8}>
-                  <Card
-                    hoverable
-                    cover={
-                      <img
-                        src={news.imgSrc}
-                        style={{ height: "200px", objectFit: "cover" }}
-                      />
-                    }
-                  >
-                    <Card.Meta
-                      title={news.title}
-                      description={
-                        <>
-                          <p>{news.date}</p>
-                          <a onClick={() => showModal(news)}>
-                            read more <RightOutlined />
-                          </a>
-                        </>
-                      }
+                <Card
+                  key={idx}
+                  hoverable
+                  cover={
+                    <img
+                      src={news.imgSrc}
+                      style={{ height: "200px", objectFit: "cover" }}
                     />
-                  </Card>
-                </Col>
+                  }
+                >
+                  <Card.Meta
+                    title={news.title}
+                    description={
+                      <>
+                        <p>{news.date}</p>
+                        <a onClick={() => showModal(news)}>
+                          read more <RightOutlined />
+                        </a>
+                      </>
+                    }
+                  />
+                </Card>
               ))}
-            </Row>
+            </div>
           </div>
         ))}
       </Carousel>

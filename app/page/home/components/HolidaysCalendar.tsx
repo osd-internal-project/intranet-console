@@ -1,67 +1,110 @@
-import React from "react";
-import { Calendar, momentLocalizer } from "react-big-calendar";
-import moment from "moment";
-import "react-big-calendar/lib/css/react-big-calendar.css";
+import React, { useState, useEffect } from "react";
+import { Alert, Calendar } from "antd";
+import axios from "axios";
+import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
+//import './HolidaysCalendar.css';
 
-//Original Thai Events
-const holidays = [
-  { date: "01-01", name: "New Year's Day" },
-  { date: "02-19", name: "Makha Bucha Day" },
-  { date: "04-06", name: "Chakri Memorial Day" },
-  { date: "04-13", name: "Songkran Festival" },
-  { date: "04-14", name: "Songkran Festival" },
-  { date: "04-15", name: "Songkran Festival" },
-  { date: "05-01", name: "Labour Day" },
-  { date: "05-05", name: "Coronation Day" },
-  { date: "05-15", name: "Royal Ploughing Ceremony Day" },
-  { date: "06-03", name: "Queen Suthida's Birthday" },
-  { date: "07-28", name: "King Maha Vajiralongkorn's Birthday" },
-  { date: "08-12", name: "Queen Sirikit's Birthday" },
-  { date: "10-13", name: "King Bhumibol Memorial Day" },
-  { date: "10-23", name: "Chulalongkorn Day" },
-  { date: "12-05", name: "King Bhumibol's Birthday" },
-  { date: "12-10", name: "Constitution Day" },
-  { date: "12-31", name: "New Year's Eve" },
-];
+export interface props {}
 
-function getHolidaysForYear(year: number): { date: Date; name: string }[] {
-  return holidays.map((holiday) => ({
-    date: moment(`${year}-${holiday.date}`, "YYYY-MM-DD").toDate(),
-    name: holiday.name,
-  }));
-}
+const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
+  const [value, setValue] = useState(() => dayjs());
+  const [selectedValue, setSelectedValue] = useState(() => dayjs());
+  const [holidays, setHolidays] = useState<{ date: Dayjs; name: string }[]>([]);
+  const [isHolidaySelected, setIsHolidaySelected] = useState(false);
+  const [holidayName, setHolidayName] = useState<string | null>(null);
 
-const year = 2024;
-const holidayEvents = getHolidaysForYear(year).map((holiday) => ({
-  title: holiday.name,
-  start: holiday.date,
-  end: holiday.date,
-  allDay: true,
-}));
+  useEffect(() => {
+    const fetchHolidays = async () => {
+      try {
+        const response = await axios.get(
+          `https://calendarific.com/api/v2/holidays?&api_key=LLiN3LnZeoqxhqoioo89X6u1e5Vbf2Bv&country=TH&year=2024`
+        );
+        const holidaysData = response.data.response.holidays.map(
+          (holiday: any) => ({
+            date: dayjs(holiday.date.iso),
+            name: holiday.name,
+          })
+        );
+        setHolidays(holidaysData);
+      } catch (error) {
+        console.error("Error fetching holidays", error);
+      }
+    };
+    fetchHolidays();
+  }, []);
 
-//New Events
-const events = [
-  {
-    title: "End of Internship",
-    start: new Date(2024, 5, 14, 0, 0),
-    end: new Date(2024, 5, 14, 23, 59),
-  },
-];
+  const getHolidayName = (date: Dayjs) => {
+    const holiday = holidays.find((holiday) =>
+      holiday.date.isSame(date, "day")
+    );
+    return holiday ? holiday.name : null;
+  };
 
-const allEvents = [...events, ...holidayEvents];
+  const dateFullCellRender = (current: Dayjs) => {
+    const holidayName = getHolidayName(current);
+    return (
+      <div
+        className="ant-picker-cell-inner"
+        style={{
+          height: "25px",
+          width: "25px",
+          display: "flex",
+          borderRadius: "50%",
+          justifyContent: "center",
+          alignItems: "center",
+          margin: '15px',
+        }}
+      >
+        {holidayName ? (
+          <div
+            style={{
+              backgroundColor: "#ff4d4f",
+              height: "25px",
+              width: "25px",
+              color: "#fff",
+              borderRadius: "50%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {current.date()}
+          </div>
+        ) : (
+          current.date()
+        )}
+      </div>
+    );
+  };
 
-const HolidaysCalendarComponent: React.FC = () => {
-  const localizer = momentLocalizer(moment);
+  const onSelect = (newValue: Dayjs) => {
+    setValue(newValue);
+    setSelectedValue(newValue);
+    const holidayName = getHolidayName(newValue);
+    setIsHolidaySelected(!!holidayName);
+    setHolidayName(holidayName);
+  };
+
+  const onPanelChange = (newValue: Dayjs) => {
+    setValue(newValue);
+  };
 
   return (
-    <div style={{ height: 500 }}>
+    <div>
       <Calendar
-        localizer={localizer}
-        events={allEvents}
-        startAccessor="start"
-        endAccessor="end"
-        style={{ height: 500 }}
+        value={value}
+        onSelect={onSelect}
+        onPanelChange={onPanelChange}
+        fullCellRender={dateFullCellRender}
       />
+      {isHolidaySelected && (
+        <Alert
+          style={{ backgroundColor: "#ff4d4f", color:"#fff", marginTop: "16px" }}
+          message={`${selectedValue?.format("YYYY-MM-DD")} (${holidayName})`}
+          type="error"
+        />
+      )}
     </div>
   );
 };

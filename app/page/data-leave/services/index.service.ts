@@ -41,6 +41,7 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
     },
     getdataLeaveByuserID: async (userId: string) => {
       const condition = {
+        where: { userId: userId },
         include: {
           dataLeaveFiles: true,
         },

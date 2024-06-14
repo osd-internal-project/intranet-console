@@ -41,6 +41,7 @@ import {
   truckIcon,
   userGroupIcon,
   warningIcon,
+  contactListIcon,
 } from "@/components/icon";
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -299,6 +300,23 @@ export const MenuSider: MenuItem[] = [
         // icon: shieldExclamationIcon,
         label: `Users Rule`,
         rule: "user-rule-show",
+      },
+    ],
+  },
+  {
+    key: "crm",
+    icon: contactListIcon,
+    label: `CRM`,
+    children: [
+      {
+        key: `crm/customer-info`,
+        label: `Customer Info`,
+        // rule: "housekeeper",
+      },
+      {
+        key: `crm/ticket`,
+        label: `Ticket `,
+        // rule: "housekeeper",
       },
     ],
   },

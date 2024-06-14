@@ -17,6 +17,7 @@ export interface props {
   getEndDate: Date | undefined;
   checkSwitch: boolean | undefined;
   beforeUploadAttendFiles: (e: RcFile) => void;
+  handleChangeAttendFiles: (e: any) => void;
   attendFiles: UploadFile[];
 }
 export const CreateOnlineLeave: React.FC<props> = ({
@@ -31,6 +32,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
   getEndDate,
   checkSwitch,
   beforeUploadAttendFiles,
+  handleChangeAttendFiles,
   attendFiles,
 }): React.ReactElement => {
   useEffect(() => {
@@ -143,7 +145,13 @@ export const CreateOnlineLeave: React.FC<props> = ({
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`แนบไฟล์ :`} name={"attrachFile"}>
-                <Upload fileList={attendFiles} beforeUpload={beforeUploadAttendFiles} multiple={false} maxCount={1}>
+                <Upload
+                  fileList={attendFiles}
+                  onChange={handleChangeAttendFiles}
+                  beforeUpload={beforeUploadAttendFiles}
+                  multiple={false}
+                  maxCount={1}
+                >
                   <Button icon={<UploadOutlined />}>{`Click to Upload`}</Button>
                 </Upload>
               </Form.Item>

@@ -51,6 +51,10 @@ export default function Page() {
     return false;
   };
 
+  const handleChangeAttendFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
+    return setAttendFiles(newFileList);
+  };
+
   const onfinishCreate = (values: ITypeDataLeaveCreate) => {
     const startDate = values.startDate ? dayjs(values.startDate).startOf("day") : null;
     const endDate = values.endDate ? dayjs(values.endDate).endOf("day") : null;
@@ -156,6 +160,7 @@ export default function Page() {
             getEndDate={getEndDate}
             checkSwitch={checkSwitch}
             beforeUploadAttendFiles={(e: RcFile) => beforeUploadAttendFiles(e)}
+            handleChangeAttendFiles={(e: any) => handleChangeAttendFiles(e)}
             attendFiles={attendFiles}
           />
         </Col>

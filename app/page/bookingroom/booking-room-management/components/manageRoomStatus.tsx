@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Select, Table, Space, Button, Row, Modal, Form, Input, Divider, Tag, message, Popconfirm } from 'antd';
 import type { TableProps, FormProps } from 'antd';
-import axios from '@/app/lib/axios/axios';
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageRoomServices } from "../services/manage-room.service";
 import { useForm } from "antd/es/form/Form";
@@ -21,6 +20,7 @@ const RoomStatus = () => {
     const [bookingData, setBookingData] = useState<MasterRoomType[]>([]);
     const [currentBookingId, setCurrentBookingId] = useState<string | null>(null);
     const [modalEditMasterRoom, setModalEditMasterRoom] = useState(false);
+    const [submitLoading, setSubmitLoading] = useState(false);
 
     const columns: TableProps<MasterRoomType>['columns'] = [
         {
@@ -82,26 +82,27 @@ const RoomStatus = () => {
         try {
             await manageRoomServices.deleteMasterRoom(id);
             setBookingData(bookingData.filter(item => item.id !== id));
-            message.success('Booking deleted successfully');
+            message.success('ลบการจองสำเร็จ');
         } catch (error) {
-            message.error('Failed to delete booking');
+            message.error('ลบการจองไม่สำเร็จ');
         }
     };
 
-    const onFinish: FormProps<MasterRoomType>['onFinish'] = async (values) => {
+    const updatedRoom: FormProps<MasterRoomType>['onFinish'] = async (values) => {
+        setSubmitLoading(true)
         try {
             const { ...restValues } = values;
             const updatedMasterRoom = {
                 ...restValues,
                 id: currentBookingId,
             };
-            console.log(updatedMasterRoom);
             await manageRoomServices.updateMasterRoom(updatedMasterRoom);
-            message.success('Updated successfully!');
+            message.success('แก้ไขข้อมูลห้องสำเร็จ');
             fetchData();
             handleEditMasterRoomCancel();
+            setSubmitLoading(false)
         } catch (error) {
-            message.error('Failed to update room');
+            message.error('แก้ไขข้อมูลห้องไม่สำเร็จ');
         }
     };
 
@@ -131,7 +132,7 @@ const RoomStatus = () => {
                     form={form}
                     name="edit_booking"
                     initialValues={{ remember: true }}
-                    onFinish={onFinish}
+                    onFinish={updatedRoom}
                     autoComplete="off"
                 >
                     <Divider orientation="left">แก้ไขห้องประชุม</Divider>
@@ -164,7 +165,7 @@ const RoomStatus = () => {
                             <Button type="default" onClick={handleEditMasterRoomCancel} style={{ marginRight: 8 }}>
                                 ยกเลิก
                             </Button>
-                            <Button type="primary" htmlType="submit">
+                            <Button type="primary" htmlType="submit" loading={submitLoading}>
                                 ตกลง
                             </Button>
                         </Row>

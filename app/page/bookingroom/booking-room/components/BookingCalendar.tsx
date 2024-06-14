@@ -1,40 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Badge, Calendar, Card, Modal, Divider, Typography } from 'antd';
-import { Icon } from "@iconify/react";
-import type { CalendarProps } from 'antd';
-import type { Dayjs } from 'dayjs';
-import dayjs from 'dayjs';
+import { Badge, Calendar, Card, Modal, Divider, Tag } from 'antd';
+import { CalendarProps } from 'antd/es/calendar';
+import dayjs, { Dayjs } from 'dayjs';
 
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { BookingRoomServices } from "../services/booking-room.service";
-
-interface Booking {
+interface BookingType {
     id: string;
     title: string;
     roomName: string;
     bookerName: string;
+    bookingStatus: string;
     description: string;
     startDate: string;
     endDate: string;
 }
 
+interface Props {
+    bookingFetchData: BookingType[];
+}
+
 const getMonthData = (value: Dayjs) => {
     if (value.month() === 8) {
-        return 1394;
+        return 1394; // Example number for demonstration
     }
     return null;
 };
 
-const BookingCalendar: React.FC = () => {
-    const intraAuth = useAxiosIntranet();
-    const bookingRoomServices = BookingRoomServices(intraAuth);
-    const [bookings, setBookings] = useState<Booking[]>([]);
-    const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+const BookingCalendar: React.FC<Props> = ({ bookingFetchData }) => {
+    const [selectedBooking, setSelectedBooking] = useState<BookingType | null>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
 
-    const { Title } = Typography;
-
-    const showModal = (booking: Booking) => {
+    const showModal = (booking: BookingType) => {
         setSelectedBooking(booking);
         setIsModalVisible(true);
     };
@@ -58,27 +53,41 @@ const BookingCalendar: React.FC = () => {
     };
 
     const dateCellRender = (value: Dayjs) => {
-        const dailyBookings = bookings.filter((booking) => {
+        const dailyBookings = bookingFetchData.filter((booking: BookingType) => {
             const bookingStartDate = dayjs(booking.startDate);
             const bookingEndDate = dayjs(booking.endDate);
-            return value.isSame(bookingStartDate, 'day') || value.isSame(bookingEndDate, 'day') || (value.isAfter(bookingStartDate, 'day') && value.isBefore(bookingEndDate, 'day'));
+            return (
+                value.isSame(bookingStartDate, 'day') ||
+                value.isSame(bookingEndDate, 'day') ||
+                (value.isAfter(bookingStartDate, 'day') && value.isBefore(bookingEndDate, 'day'))
+            );
         });
 
         return (
             <div className="events">
-                {dailyBookings.map((booking) => (
+                {dailyBookings.map((booking: BookingType) => (
                     <div key={booking.id} style={{ listStyle: 'none' }}>
                         <div
-                            key={booking.id}
                             style={{
-                                // width: '200px',
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap',
-                                backgroundColor: '#f0f0f0',
                                 borderRadius: '4px',
                                 padding: '2px 4px',
                                 display: 'block',
+                                backgroundColor:
+                                    booking.bookingStatus === 'Approve'
+                                        ? '#f6ffec'
+                                        : booking.bookingStatus === 'process'
+                                        ? '#e6f4ff'
+                                        : '#f0f0f0',
+                                cursor: 'pointer',
+                                border:
+                                    booking.bookingStatus === 'Approve'
+                                        ? '1px solid #b7eb8f'
+                                        : booking.bookingStatus === 'process'
+                                        ? '1px solid #90caf9'
+                                        : '1px solid #ccc',
                             }}
                             onClick={() => showModal(booking)}
                         >
@@ -86,12 +95,13 @@ const BookingCalendar: React.FC = () => {
                                 status="processing"
                                 text={booking.roomName}
                                 style={{
-                                    display: 'block'
+                                    display: 'block',
                                 }}
                             />
                         </div>
                         <div style={{ fontSize: '12px', color: '#888' }}>
-                            {dayjs(booking.startDate).format('HH:mm')} - {dayjs(booking.endDate).format('HH:mm')}
+                            {dayjs(booking.startDate).format('HH:mm')} -{' '}
+                            {dayjs(booking.endDate).format('HH:mm')}
                         </div>
                     </div>
                 ))}
@@ -99,46 +109,60 @@ const BookingCalendar: React.FC = () => {
         );
     };
 
-    const cellRender: CalendarProps<Dayjs>['cellRender'] = (current, info) => {
-        if (info.type === 'date') return dateCellRender(current);
-        if (info.type === 'month') return monthCellRender(current);
-        return info.originNode;
+    const cellRender: CalendarProps<Dayjs>['dateCellRender'] = (current) => {
+        return dateCellRender(current);
     };
 
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const fetchData = async () => {
-        try {
-            const bookingRoom = await bookingRoomServices.getBookingRoomQuery();
-            console.log(bookingRoom);
-            setBookings(bookingRoom);
-        } catch (error) {
-            console.error('Error fetching booking data:', error);
+    const renderStatusTag = (status: string) => {
+        switch (status) {
+            case 'Approve':
+                return <Tag color={'green'}>อนุมัติสำเร็จ</Tag>;
+            case 'process':
+                return <Tag color={'blue'}>กำลังรออนุมัติ</Tag>;
+            case 'cancel':
+                return <Tag color="red">ยกเลิกการจอง</Tag>;
+            default:
+                return 'Unknown Status';
         }
     };
 
     return (
         <>
             <Card>
-                <Calendar cellRender={cellRender}/>
+                <Calendar dateCellRender={cellRender} monthCellRender={monthCellRender} />
             </Card>
             {selectedBooking && (
                 <Modal
+                    title="รายละเอียดการจอง"
                     visible={isModalVisible}
                     onOk={handleOk}
                     onCancel={handleCancel}
+                    width={400}
+                    footer={null}
                 >
-                    <Divider orientation="left" style={{ fontWeight: 'bold' }}><Title level={4}><Icon icon="cil:room" /> {selectedBooking.roomName}</Title></Divider>
-                    <Divider orientation="left" style={{ fontWeight: 'bold' }}>ข้อมูลการจอง</Divider>
-                    <Title level={5} style={{ marginLeft: '24px' }}><strong>หัวข้อประชุม :</strong> {selectedBooking.title}</Title>
-                    <Title level={5} style={{ marginLeft: '24px' }}><strong>วันที่จอง :</strong> {dayjs(selectedBooking.startDate).format('YYYY-MM-DD')} - {dayjs(selectedBooking.endDate).format('YYYY-MM-DD')}</Title>
-                    <Title level={5} style={{ marginLeft: '24px' }}><strong>เวลาที่จอง :</strong> {dayjs(selectedBooking.startDate).format('HH:mm')} - {dayjs(selectedBooking.endDate).format('HH:mm')}</Title>
-                    <Divider orientation="left" style={{ fontWeight: 'bold' }}>ข้อมูลผู้จอง</Divider>
-                    <Title level={5} style={{ marginLeft: '24px' }}><strong>ชื่อผู้จอง :</strong> {selectedBooking.bookerName}</Title>
-                    
-                </Modal >
+                    <Divider />
+                    <p>
+                        <strong>หัวข้อประชุม :</strong> {selectedBooking.title}
+                    </p>
+                    <p>
+                        <strong>วันที่จอง :</strong>{' '}
+                        {dayjs(selectedBooking.startDate).format('YYYY-MM-DD')} -{' '}
+                        {dayjs(selectedBooking.endDate).format('YYYY-MM-DD')}
+                    </p>
+                    <p>
+                        <strong>เวลาที่จอง :</strong>{' '}
+                        {dayjs(selectedBooking.startDate).format('HH:mm')} -{' '}
+                        {dayjs(selectedBooking.endDate).format('HH:mm')}
+                    </p>
+                    <p>
+                        <strong>สถานะการจอง :</strong>{' '}
+                        {renderStatusTag(selectedBooking.bookingStatus)}
+                    </p>
+                    <Divider />
+                    <p>
+                        <strong>ชื่อผู้จอง :</strong> {selectedBooking.bookerName}
+                    </p>
+                </Modal>
             )}
         </>
     );

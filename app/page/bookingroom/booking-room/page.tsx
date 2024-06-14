@@ -28,28 +28,30 @@ type BookingType = {
 type MasterRoomType = {
     roomName: String,
     roomDescription: String,
+    roomStatus: boolean,
     masterRoomTypeId: Number
 }
 
 const BookingRoomPage: React.FC = () => {
-    const {data:session} = useSession();
+    const { data: session } = useSession();
     const stockAuth = useAxiosIntranet();
     const bookingRoomServices = BookingRoomServices(stockAuth);
     const [isModalBooking, setIsModalBooking] = useState(false);
     const [submitLoading, setSubmitLoading] = useState(false);
     const [masterRoomData, setMasterRoomData] = useState<MasterRoomType[]>([]);
+    const [bookingFetchData, setBookingFetchData] = useState([]);
     const [form] = useForm();
 
     const items: TabsProps["items"] = [
         {
             key: "1",
             label: "แสดงข้อมูลแบบปฎิทิน",
-            children: <CalendarComponent />,
+            children: <CalendarComponent bookingFetchData={bookingFetchData}/>,
         },
         {
             key: "2",
             label: "แสดงข้อมูลแบบตาราง",
-            children: <TableComponent />,
+            children: <TableComponent bookingFetchData={bookingFetchData}/>,
         },
         {
             key: "3",
@@ -59,7 +61,7 @@ const BookingRoomPage: React.FC = () => {
     ];
 
     const showModal = () => {
-        form.setFieldsValue({ 
+        form.setFieldsValue({
             bookerName: `${session?.user.firstNameTh || ""} ${session?.user.lastNameTh || ""}`,
             bookerPhone: session?.user.phoneNumber ? session?.user.phoneNumber : ""
         });
@@ -74,12 +76,12 @@ const BookingRoomPage: React.FC = () => {
         console.log(key);
     };
 
-    const onFinish: FormProps<BookingType>['onFinish'] = async (values) => {
+    const createBooking: FormProps<BookingType>['onFinish'] = async (values) => {
         setSubmitLoading(true)
         const data = {
             roomName: values.roomName,
             roomType: values.roomType,
-            bookerName: session?.user.firstNameTh && session?.user.lastNameTh ? session?.user.firstNameTh + " " +session?.user.lastNameTh : "",
+            bookerName: session?.user.firstNameTh && session?.user.lastNameTh ? session?.user.firstNameTh + " " + session?.user.lastNameTh : "",
             bookerPhone: session?.user.phoneNumber ? session?.user.phoneNumber : "",
             title: values.title,
             bookerDepartment: values.bookerDepartment,
@@ -93,17 +95,16 @@ const BookingRoomPage: React.FC = () => {
         try {
             const reponse = await bookingRoomServices.createBookingRoom(data);
             if (reponse) {
-                message.success("Booking Successfull");
+                message.success("จองห้องสำเร็จ");
                 form.resetFields();
                 setIsModalBooking(false);
             } else {
-                message.error("Add Booking failed");
+                message.error("จองห้องไม่สำเร็จ");
             }
             setSubmitLoading(false);
             fetchData();
         } catch (error) {
-            console.error("Error creating user", error);
-            message.error("Add Booking failed");
+            message.error("จองห้องไม่สำเร็จ");
         }
     };
 
@@ -112,8 +113,16 @@ const BookingRoomPage: React.FC = () => {
     };
 
     const fetchData = async () => {
-        const bookingRoom = await bookingRoomServices.getMasterRoomQuery();
-        setMasterRoomData(bookingRoom);
+        try {
+            const bookingRoom = await bookingRoomServices.getMasterRoomQuery();
+            const masterRoomActive = bookingRoom.filter((room: any) => room.roomsStatus === true);
+            setMasterRoomData(masterRoomActive);
+
+            const bookings = await bookingRoomServices.getBookingRoomQuery();
+            setBookingFetchData(bookings);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
     };
 
     useEffect(() => {
@@ -136,7 +145,7 @@ const BookingRoomPage: React.FC = () => {
                     labelCol={{ span: 16 }}
                     wrapperCol={{ span: 120 }}
                     initialValues={{ remember: true }}
-                    onFinish={onFinish}
+                    onFinish={createBooking}
                     onFinishFailed={onFinishFailed}
                     autoComplete="off"
                 >
@@ -148,7 +157,7 @@ const BookingRoomPage: React.FC = () => {
                                 name="bookerName"
                                 rules={[{ required: true, message: 'กรุณากรอกชื่อผู้จอง!' }]}
                             >
-                                <Input disabled  placeholder="กรอกชื่อผู้จอง" />
+                                <Input disabled placeholder="กรอกชื่อผู้จอง" />
                             </Form.Item>
                         </Col>
                         <Col span={8}>
@@ -255,7 +264,7 @@ const BookingRoomPage: React.FC = () => {
                             <Form.Item<BookingType>
                                 label="จำนวนสมาชิก"
                                 name="member"
-                                // rules={[{ required: true, message: 'กรุณาระบุจำนวนผู้เข้าใช้งาน!' }]}
+                            // rules={[{ required: true, message: 'กรุณาระบุจำนวนผู้เข้าใช้งาน!' }]}
                             >
                                 <Input placeholder="กรอกจำนวนผู้เข้าใช้งาน" />
                             </Form.Item>
@@ -264,7 +273,7 @@ const BookingRoomPage: React.FC = () => {
                             <Form.Item<BookingType>
                                 label="บุคคลภายนอก"
                                 name="outSider"
-                                // rules={[{ required: true, message: 'กรุณาระบุข้อมูลบุคคลภายนอก!' }]}
+                            // rules={[{ required: true, message: 'กรุณาระบุข้อมูลบุคคลภายนอก!' }]}
                             >
                                 <Select
                                     placeholder="บุคคลภายนอก"
@@ -288,10 +297,10 @@ const BookingRoomPage: React.FC = () => {
                     <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                         <Row justify="end">
                             <Button type="default" onClick={handleCancel} style={{ marginRight: 8 }}>
-                                Cancel
+                                ยกเลิก
                             </Button>
                             <Button type="primary" htmlType="submit" loading={submitLoading}>
-                                Submit
+                                ตกลง
                             </Button>
                         </Row>
                     </Form.Item>

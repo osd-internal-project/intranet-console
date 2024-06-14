@@ -1,5 +1,5 @@
 "use client";
-import { Breadcrumb, Button, Card, Checkbox, Col, Form, Input, Row, Tabs, TabsProps } from "antd";
+import { Breadcrumb, Card, Col, Row, Tabs, TabsProps } from "antd";
 import React from 'react'
 import ManageRoomComponent from "./components/manageRoom";
 import ManageRoomStatusComponent from "./components/manageRoomStatus";

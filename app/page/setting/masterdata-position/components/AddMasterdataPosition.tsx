@@ -16,7 +16,7 @@ export interface props {
 
 export const AddMasterdataPosition: React.FC<props> = ({ departMent, setLoading }) => {
   const userAuth = useAxiosUser();
-  const addRule = checkRule("user-position-add");
+  const addRule = checkRule("st-p-a");
   const positionServices = PositionServices(userAuth);
   const [FORM] = Form.useForm();
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);

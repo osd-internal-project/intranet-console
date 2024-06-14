@@ -17,9 +17,9 @@ export interface props {
 const OrganizeManage: React.FC<props> = ({ propDataManage, organizeSelect }): React.ReactElement => {
   const intranetAuth = useAxiosIntranet();
   const organizeServices = OrganizeServices(intranetAuth);
-  const addRule = checkRule("user-group-add");
-  const editRule = checkRule("user-group-edit");
-  const deleteRule = checkRule("user-group-delete");
+  const addRule = checkRule("um-ug-a");
+  const editRule = checkRule("um-ug-e");
+  const deleteRule = checkRule("um-ug-d");
   const [addform] = Form.useForm();
   const [editform] = Form.useForm();
   const [organizeDetail, setOrganizeDetail] = useState<TfindAllOrganizeDto | null>(null);

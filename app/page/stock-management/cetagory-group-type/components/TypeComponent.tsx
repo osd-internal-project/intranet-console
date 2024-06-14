@@ -21,9 +21,9 @@ export interface props {
 
 const TypeComponent: React.FC<props> = ({ propType }): React.ReactElement => {
   const stockAuth = useAxiosStock();
-  const addRule = checkRule("mp-type-add");
-  const editRule = checkRule("mp-type-edit");
-  const deleteRule = checkRule("mp-type-delete");
+  const addRule = checkRule("sm-ct-a");
+  const editRule = checkRule("sm-ct-e");
+  const deleteRule = checkRule("sm-ct-d");
   const masterProductTypeServices = MasterProductTypeServices(stockAuth);
   const [addform] = Form.useForm();
   const [editform] = Form.useForm();

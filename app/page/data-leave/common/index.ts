@@ -99,3 +99,52 @@ export interface ITpyeUser {
   username: string;
   typeid?: number;
 }
+
+export interface ITypeDataLeave {
+  id?: number;
+  userId?: string;
+  firstName?: string;
+  lastName?: string;
+  positionId?: number;
+  position?: string;
+  typeId?: number;
+  typeName?: string;
+  startDate: Date | null;
+  startTime?: string;
+  endDate?: Date | null;
+  endTime?: string;
+  leaveHour?: number;
+  detail?: string;
+  phoneNumber?: string;
+  status?: string;
+  approvedDate?: Date;
+  userApproved?: string;
+  attrachFile?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface ITypeDataLeaveCreate {
+  id: number;
+  userId: string;
+  firstNameTh: string;
+  lastNameTh: string;
+  posId: number;
+  position: string;
+  type_id: number;
+  typeName: string;
+  startDate: Date;
+  startTime: string;
+  endDate: Date;
+  endTime: string;
+  leaveHour: number;
+  detail: string;
+  phoneNumber: string;
+  status: string;
+  approvedDate: Date;
+  userApproved: string;
+  attrachFile: string;
+  createdAt: Date;
+  updatedAt: Date;
+  time_start_check: boolean;
+}

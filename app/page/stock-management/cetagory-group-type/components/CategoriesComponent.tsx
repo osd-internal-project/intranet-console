@@ -19,9 +19,9 @@ export interface props {
 
 const CategoriesComponent: React.FC<props> = ({ propCategory }): React.ReactElement => {
   const stockAuth = useAxiosStock();
-  const addRule = checkRule("mp-category-add");
-  const editRule = checkRule("mp-category-edit");
-  const deleteRule = checkRule("mp-category-delete");
+  const addRule = checkRule("sm-c-a");
+  const editRule = checkRule("sm-c-e");
+  const deleteRule = checkRule("sm-c-d");
   const masterProductCagetoryServices = MasterProductCategoryServices(stockAuth);
   const [dataTable, setDataTable] = useState<DataType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);

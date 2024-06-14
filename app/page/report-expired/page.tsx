@@ -14,7 +14,7 @@ import {
   Select,
   Table,
 } from "antd";
-import ExpiredServices from "./services/report-expired.service";
+import ExpiredServices from "./services/sm-re-ex-h.service";
 import StockServices from "./services/stock.service";
 import {
   useAxiosStock,

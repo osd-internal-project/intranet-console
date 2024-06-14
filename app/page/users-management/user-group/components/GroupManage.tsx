@@ -6,9 +6,11 @@ import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ExclamationCircleFilled, PlusOutlined } from "@ant-design/icons";
 import { checkRule } from "@/app/utils/rules";
 export interface props {
-  propDataManage: (res: { groupSelect: string | null; loading: boolean }) => void;
+  propDataManage: (res: { selectOrganize: string | null; groupSelect: string | null; loading: boolean }) => void;
   groupSelect: string | null;
+  selectOrganize: string | null;
 }
+
 type groupDetail = {
   groupId: string;
   groupName: string;
@@ -17,11 +19,11 @@ type groupDetail = {
   // organizedGroupId: string;
 };
 
-const GroupManage: React.FC<props> = ({ propDataManage, groupSelect }): React.ReactElement => {
+const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrganize }): React.ReactElement => {
   const userAuth = useAxiosUser();
-  const addRule = checkRule("user-group-add");
-  const editRule = checkRule("user-group-edit");
-  const deleteRule = checkRule("user-group-delete");
+  const addRule = checkRule("um-ug-a");
+  const editRule = checkRule("um-ug-e");
+  const deleteRule = checkRule("um-ug-d");
   const [addform] = Form.useForm();
   const [editform] = Form.useForm();
   const userGroupServices = UserGroupServices(userAuth);
@@ -44,7 +46,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect }): React.Re
 
   const onCloseDetail = () => {
     setGroupDetail(null);
-    propDataManage({ groupSelect: null, loading: true });
+    propDataManage({ selectOrganize: selectOrganize, groupSelect: null, loading: true });
   };
 
   const onFinish = async (values: groupDetail) => {
@@ -58,10 +60,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect }): React.Re
       .then(() => {
         message.success(`Edit success`);
         setOpenAddModel(false);
-        propDataManage({
-          loading: true,
-          groupSelect: values.groupId,
-        });
+        propDataManage({ selectOrganize: selectOrganize, loading: true, groupSelect: values.groupId });
       })
       .catch((err) => message.error(err));
     setbuttonLoading(false);
@@ -70,6 +69,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect }): React.Re
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
   };
+
   const handleDelete = async () => {
     setbuttonLoading(true);
     Modal.confirm({
@@ -85,10 +85,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect }): React.Re
               message.error(res.data.message);
             } else {
               message.success("Delete Success");
-              propDataManage({
-                loading: true,
-                groupSelect: null,
-              });
+              propDataManage({ selectOrganize: selectOrganize, loading: true, groupSelect: null });
             }
           });
         } else {
@@ -101,12 +98,14 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect }): React.Re
       },
     });
   };
+
   const onFinishAdd = async (values: any) => {
     setbuttonLoading(true);
     const form = {
       groupName: values.groupName,
       description: values.description,
       parentGroupId: groupDetail?.groupId,
+      organizeId: selectOrganize,
     };
     await userGroupServices
       .addUserGroup(form)
@@ -115,10 +114,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect }): React.Re
         setOpenAddModel(false);
       })
       .catch((err) => message.error(err));
-    propDataManage({
-      loading: true,
-      groupSelect: null,
-    });
+    propDataManage({ selectOrganize: selectOrganize, loading: true, groupSelect: null });
     setbuttonLoading(false);
   };
 
@@ -130,7 +126,9 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect }): React.Re
             <Col span={12}>
               <div>
                 <div className=" text-2xl  font-semibold inline-block mb-3">Group Detail</div>
-                <div className=" text-slate-400">{!groupDetail.parentGroupId ? `*หากต้องการเพิ่มกลุ่มย่อยภายใต้ชื่อกลุ่มนี้ให้กด Add Sub Group` : ``}</div>
+                <div className=" text-slate-400">
+                  {!groupDetail.parentGroupId ? `*หากต้องการเพิ่มกลุ่มย่อยภายใต้ชื่อกลุ่มนี้ให้กด Add Sub Group` : ``}
+                </div>
               </div>
             </Col>
             <Col span={12} style={{ justifyContent: "end", display: "flex" }}>
@@ -147,14 +145,25 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect }): React.Re
                 {!editState ? (
                   <>
                     {editRule ? (
-                      <Button type="primary" onClick={() => setEditState(!editState)} disabled={!groupDetail.parentGroupId ? true : false} loading={buttonLoading}>
+                      <Button
+                        type="primary"
+                        onClick={() => setEditState(!editState)}
+                        disabled={!groupDetail.parentGroupId ? true : false}
+                        loading={buttonLoading}
+                      >
                         Edit
                       </Button>
                     ) : (
                       <></>
                     )}
                     {deleteRule ? (
-                      <Button type="primary" danger onClick={handleDelete} disabled={!groupDetail.parentGroupId ? true : false} loading={buttonLoading}>
+                      <Button
+                        type="primary"
+                        danger
+                        onClick={handleDelete}
+                        disabled={!groupDetail.parentGroupId ? true : false}
+                        loading={buttonLoading}
+                      >
                         Delete
                       </Button>
                     ) : (
@@ -175,6 +184,9 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect }): React.Re
               <Form.Item name="groupId" label="Group Id :">
                 <Input className="read-only-input" disabled />
               </Form.Item>
+              <Form.Item hidden name={`organizeId`}>
+                <Input className="read-only-input" />
+              </Form.Item>
             </div>
             <div>
               <Form.Item name="groupName" label="Name :" rules={[{ required: true, message: "Please enter sub group name" }]}>
@@ -183,7 +195,10 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect }): React.Re
             </div>
             <div>
               <Form.Item name="description" label="Description :">
-                <Input.TextArea disabled={!groupDetail.parentGroupId || editState === false ? true : false} className={!editState ? "read-only-input" : ""} />
+                <Input.TextArea
+                  disabled={!groupDetail.parentGroupId || editState === false ? true : false}
+                  className={!editState ? "read-only-input" : ""}
+                />
               </Form.Item>
             </div>
             {editState ? (
@@ -214,7 +229,6 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect }): React.Re
         title="Add Sub Group"
         open={openAddModel}
         onCancel={() => {
-          console.log(addform.getFieldValue);
           setOpenAddModel(false);
           addform.resetFields();
         }}

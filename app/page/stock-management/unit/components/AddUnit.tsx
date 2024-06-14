@@ -14,7 +14,7 @@ export interface props {
 
 export const AddUnit: React.FC<props> = ({ setLoading }) => {
   const stockAuth = useAxiosStock();
-  const addRule = checkRule("mp-unit-add");
+  const addRule = checkRule("sm-unit-a");
   const unitServices = UnitServices(stockAuth);
   const [FORM] = Form.useForm();
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);

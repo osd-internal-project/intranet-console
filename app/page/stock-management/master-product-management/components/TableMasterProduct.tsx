@@ -14,9 +14,9 @@ import { checkRule } from "@/app/utils/rules";
 
 const TableMasterProduct: React.FC = () => {
   const stockAuth = useAxiosStock();
-  const addRule = checkRule("m-product-add");
-  const editRule = checkRule("m-product-edit");
-  const deleteRule = checkRule("m-product-delete");
+  const addRule = checkRule("sm-mp-a");
+  const editRule = checkRule("m-product-e");
+  const deleteRule = checkRule("sm-mp-d");
   const masterProductService = MasterProductServices(stockAuth);
   const ghsServices = GhsServices(stockAuth);
   const [dataTable, setDataTable] = useState<ITypeMasterProduct[]>([]);

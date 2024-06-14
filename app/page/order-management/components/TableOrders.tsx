@@ -57,7 +57,7 @@ const TableOrders: React.FC<props> = ({
   grouplist,
 }): React.ReactElement => {
   const stockAuth = useAxiosStock();
-  const addOrderRule = checkRule("order-add");
+  const addOrderRule = checkRule("sm-order-a");
   const orderManagementServices = OrderManagementServices(stockAuth);
   const [dataTable, setDataTable] = useState<ITypeOrder[]>([]);
   const [subDataTable, setSubDataTable] = useState<SubTableDataType[]>([]);

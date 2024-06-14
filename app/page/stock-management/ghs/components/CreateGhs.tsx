@@ -20,7 +20,7 @@ export interface props {
 
 export const CreateGhs: React.FC<props> = ({ propLoading, loading, handleOpenFilter, openFilter, onFilter }) => {
   const stockAuth = useAxiosStock();
-  const addRule = checkRule("mp-ghs-add");
+  const addRule = checkRule("sm-ghs-a");
   const ghsServices = GhsServices(stockAuth);
   const { RangePicker } = DatePicker;
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);

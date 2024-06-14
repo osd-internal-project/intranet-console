@@ -32,8 +32,8 @@ const GhsTable: React.FC<props> = ({
   setPagination,
 }): React.ReactElement => {
   const stockAuth = useAxiosStock();
-  const editRule = checkRule("mp-ghs-edit");
-  const deleteRule = checkRule("mp-ghs-delete");
+  const editRule = checkRule("sm-ghs-e");
+  const deleteRule = checkRule("sm-ghs-d");
   const ghsServices = GhsServices(stockAuth);
   const [form] = Form.useForm();
   const [switchChecked, setSwitchChecked] = useState<boolean>();

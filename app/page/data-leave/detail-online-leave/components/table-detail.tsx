@@ -1,8 +1,9 @@
 import React from "react";
 import { ITypeDataLeave } from "../../common";
-import { Button, Col, Form, Input, Modal, Row, Table, Tag } from "antd";
+import { Button, Col, Form, Input, Modal, Row, Space, Table, Tag } from "antd";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { deleteIcon, editIcon } from "@/components/icon";
+import { PaperClipOutlined } from "@ant-design/icons";
 
 export interface props {
   dataLeaveUser: ITypeDataLeave[];
@@ -10,6 +11,7 @@ export interface props {
   openModalDetail: boolean;
   formdetail: any;
   onFinishUpdate: (type: string, id: number) => void;
+  downloadFile: (id: number, filename: string) => void;
 }
 
 export const TableDetail: React.FC<props> = ({
@@ -18,6 +20,7 @@ export const TableDetail: React.FC<props> = ({
   openModalDetail,
   formdetail,
   onFinishUpdate,
+  downloadFile,
 }): React.ReactElement => {
   const columns: any = [
     {
@@ -39,9 +42,7 @@ export const TableDetail: React.FC<props> = ({
       dataIndex: "id",
       title: "Fullname",
       render: (e: string, row: ITypeDataLeave) => {
-        const days = row?.leaveHour && row?.leaveHour > 8 ? Math.floor(row?.leaveHour / 8) : row?.leaveHour;
-        console.log(days);
-
+        // const days: any = row?.leaveHour && row?.leaveHour > 8 ? Math.floor(row?.leaveHour / 8) : row?.leaveHour;
         const base = {
           name: `${row.firstName} ${row.lastName}`,
           createAt: row.createdAt ? dateToStringThNoTime(row.createdAt) : "-",
@@ -53,6 +54,7 @@ export const TableDetail: React.FC<props> = ({
           typeLeave: row.typeName,
           approvedDate: row.approvedDate ? dateToStringThNoTime(row?.approvedDate) : "-",
           userApproved: row.userApproved,
+          dataLeaveFiles: row.dataLeaveFiles,
         };
         return (
           <a
@@ -161,6 +163,26 @@ export const TableDetail: React.FC<props> = ({
               <Input readOnly style={{ border: "none", borderBottom: "1px solid #808080" }} />
             </Form.Item>
           </div>
+          {Array.isArray(formdetail.getFieldValue("dataLeaveFiles")) && formdetail.getFieldValue("dataLeaveFiles").length > 0 && (
+            <>
+              {
+                <div className=" col-span-3 md:col-span-1 ml-5">
+                  <Form.Item label={`ไฟล์ `} name={`endDate`} layout={`horizontal`}>
+                    {formdetail.getFieldValue("dataLeaveFiles").map((file: any, index: number) => (
+                      <div key={index}>
+                        <Button type="link" onClick={() => downloadFile(file.id, file.fileName)}>
+                          <Space>
+                            <PaperClipOutlined />
+                            {file.fileName}
+                          </Space>
+                        </Button>
+                      </div>
+                    ))}
+                  </Form.Item>
+                </div>
+              }
+            </>
+          )}
           {formdetail.getFieldValue("userApproved") ? (
             <>
               <div className="w-full grid grid-cols-2 gap-y-2 mt-2">

@@ -6,6 +6,7 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
   const baseUrlTypeleaveMap = "/tpye-data-leave-map";
   const baseUrlUser = "/user";
   const baseUrlDataLeave = "/data-leave";
+  const baseUrlDataLeaveFile = "/data-leave-file";
 
   return {
     getdataAll: async () => {
@@ -42,6 +43,9 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
       const condition = {
         where: {
           userId: userId,
+        },
+        include: {
+          dataLeaveFiles: true,
         },
         orderBy: { id: "asc" },
       };
@@ -131,6 +135,16 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    uploadFiles: async (id: number, form: any) => {
+      return await axiosInstance
+        .post(`${baseUrlDataLeaveFile}/${id}`, form, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((result) => result.data)
+        .catch((err) => err);
+    },
     approvedDataLeave: async (event: string, id: number, data: any) => {
       const condition = {
         where: {
@@ -152,6 +166,14 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
         .catch((err) => {
           return [];
         });
+    },
+    downloadFile: async (id: number) => {
+      return await axiosInstance
+        .get(`${baseUrlDataLeaveFile}/get-file/${id}`, { responseType: "blob" })
+        .then((result) => {
+          return result.data;
+        })
+        .catch((err) => console.log(err));
     },
     deleteTypeLeaveDisabled: async (event: number) => {
       return await axiosInstance

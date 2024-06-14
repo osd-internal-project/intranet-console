@@ -101,6 +101,7 @@ export interface ITpyeUser {
 }
 
 export interface ITypeDataLeave {
+  dataLeaveFiles?: [];
   id?: number;
   userId?: string;
   firstName?: string;

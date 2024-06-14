@@ -49,6 +49,19 @@ export default function Page() {
       },
     });
   };
+
+  async function downloadFile(id: number, name: string): Promise<void> {
+    if (id) {
+      const response = await dataleaveservice.downloadFile(id);
+      const url = URL.createObjectURL(response);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  }
   return (
     <div>
       <Card>
@@ -58,6 +71,7 @@ export default function Page() {
           openModalDetail={openModalDetail}
           formdetail={formdetail}
           onFinishUpdate={(type: string, id: number) => onFinishUpdate(type, id)}
+          downloadFile={(id: number, filename: string) => downloadFile(id, filename)}
         />
       </Card>
     </div>

@@ -1,10 +1,10 @@
 "use client";
 import { UploadOutlined } from "@ant-design/icons";
-import React, { useEffect, useState } from "react";
-import { Button, Card, Checkbox, DatePicker, Form, Input, Select, Switch, Upload, UploadProps, message } from "antd";
+import React, { useEffect } from "react";
+import { Button, Card, DatePicker, Form, Input, Select, Switch, Upload, UploadFile } from "antd";
 import dayjs from "dayjs";
-import { useForm } from "antd/es/form/Form";
-import { IDataUser, ISelect, ITypeDataLeave, ITypeDataLeaveCreate } from "../../common";
+import { IDataUser, ISelect, ITypeDataLeaveCreate } from "../../common";
+import { RcFile } from "antd/es/upload";
 export interface props {
   getUser?: IDataUser | null;
   getTypeLeaveOption: ISelect[];
@@ -16,6 +16,8 @@ export interface props {
   getStartDate: Date | undefined;
   getEndDate: Date | undefined;
   checkSwitch: boolean | undefined;
+  beforeUploadAttendFiles: (e: RcFile) => void;
+  attendFiles: UploadFile[];
 }
 export const CreateOnlineLeave: React.FC<props> = ({
   getUser,
@@ -28,25 +30,9 @@ export const CreateOnlineLeave: React.FC<props> = ({
   getStartDate,
   getEndDate,
   checkSwitch,
+  beforeUploadAttendFiles,
+  attendFiles,
 }): React.ReactElement => {
-  const props: UploadProps = {
-    name: "file",
-    action: "https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload",
-    headers: {
-      authorization: "authorization-text",
-    },
-    onChange(info) {
-      if (info.file.status !== "uploading") {
-        console.log(info.file, info.fileList);
-      }
-      if (info.file.status === "done") {
-        message.success(`${info.file.name} file uploaded successfully`);
-      } else if (info.file.status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
-  };
-
   useEffect(() => {
     const getdatauser = () => {
       createdataleaveForm.setFieldsValue({
@@ -157,7 +143,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`แนบไฟล์ :`} name={"attrachFile"}>
-                <Upload {...props}>
+                <Upload fileList={attendFiles} beforeUpload={beforeUploadAttendFiles} multiple={false} maxCount={1}>
                   <Button icon={<UploadOutlined />}>{`Click to Upload`}</Button>
                 </Upload>
               </Form.Item>

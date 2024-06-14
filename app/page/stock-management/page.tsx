@@ -42,7 +42,7 @@ export default function StockMangementPage() {
         name_header: "Set Objective",
         name_path: "stock-management/objective",
         icon: colorSwatchIcon,
-        rule: "objective-show",
+        rule: "sm-objective-show",
       },
     ],
     [
@@ -50,13 +50,13 @@ export default function StockMangementPage() {
         name_header: "Location",
         name_path: "stock-management/location",
         icon: buldingIcon,
-        rule: "location-show",
+        rule: "sm-location-s",
       },
       {
         name_header: "Inventory Store",
         name_path: "stock-management/inventory",
         icon: cubeIcon,
-        rule: "inventory-show",
+        rule: "sm-inventory-s",
       },
     ],
     [
@@ -64,13 +64,13 @@ export default function StockMangementPage() {
         name_header: "Master Product Management ",
         name_path: "stock-management/master-product-management",
         icon: cubeIcon,
-        rule: "m-product-show",
+        rule: "sm-mp-s",
       },
       {
         name_header: "Set Category & Group ",
         name_path: "stock-management/cetagory-group-type",
         icon: circleSqureIcon,
-        rule: "mp-category-show",
+        rule: "sm-c-s",
       },
       {
         name_header: "Set Unit",
@@ -94,13 +94,13 @@ export default function StockMangementPage() {
         name_header: "Vender",
         name_path: "stock-management/vender",
         icon: truckIcon,
-        rule: "vender-show",
+        rule: "sm-vender-s",
       },
       {
         name_header: "Set Brand",
         name_path: "stock-management/brand",
         icon: starIcon,
-        rule: "brand-show",
+        rule: "sm-brand-s",
       },
       {
         name_header: "Master Type Leave",

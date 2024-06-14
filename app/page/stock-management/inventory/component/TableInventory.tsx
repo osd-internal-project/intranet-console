@@ -37,8 +37,8 @@ export const TableInventory: React.FC<props> = ({
 }) => {
   const stockAuth = useAxiosStock();
 
-  const editRule = checkRule("inventory-edit");
-  const deleteRule = checkRule("inventory-delete");
+  const editRule = checkRule("sm-inventory-e");
+  const deleteRule = checkRule("sm-inventory-d");
   const inventoryServices = InventoryServices(stockAuth);
   const [form] = Form.useForm();
   const [openEdit, setOpenEdit] = useState<boolean>(false);

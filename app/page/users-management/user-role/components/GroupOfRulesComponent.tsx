@@ -23,9 +23,9 @@ const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
   const userAuth = useAxiosUser();
   const profileRuleServices = ProfileServices(userAuth);
   const rulesServices = RulesServices(userAuth);
-  const addRule = checkRule("user-rule-group-add");
-  const editRule = checkRule("user-rule-group-edit");
-  const deleteRule = checkRule("user-rule-group-delete");
+  const addRule = checkRule("um-ru-g-d");
+  const editRule = checkRule("um-ru-g-e");
+  const deleteRule = checkRule("um-ru-g-d");
   const [addform] = useForm();
   const [editform] = useForm();
   const [loading, setLoading] = useState<boolean>(true);

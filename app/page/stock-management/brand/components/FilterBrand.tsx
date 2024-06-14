@@ -12,7 +12,7 @@ export interface props {
 
 export const FilterBrand: React.FC<props> = ({ onCloseDialog }): React.ReactElement => {
   const stockAuth = useAxiosStock();
-  const addRule = checkRule("brand-add");
+  const addRule = checkRule("sm-brand-a");
   const brandservice = BrandService(stockAuth);
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
   const [FORM] = Form.useForm();

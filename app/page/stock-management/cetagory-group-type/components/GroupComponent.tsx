@@ -17,9 +17,9 @@ type optionType = { label: string; value: string };
 type producttypeType = { typeCode: string; typeName: string };
 const GroupComponent: React.FC<props> = ({ categoryCode, categoryId, checkcreatetypeChem }): React.ReactElement => {
   const stockAuth = useAxiosStock();
-  const addRule = checkRule("mp-group-add");
-  const editRule = checkRule("mp-group-edit");
-  const deleteRule = checkRule("mp-group-delete");
+  const addRule = checkRule("sm-cg-a");
+  const editRule = checkRule("sm-cg-e");
+  const deleteRule = checkRule("sm-cg-d");
   const masterProductGroupServices = MasterProductGroupServices(stockAuth);
   // const masterProductTypeServices = MasterProductTypeServices(stockAuth);
   const [addform] = Form.useForm();

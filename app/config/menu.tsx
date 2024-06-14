@@ -101,20 +101,20 @@ export const MenuSider: MenuItem[] = [
         key: `order-management`,
         // icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
         label: `Order Management`,
-        rule: "order-show",
+        rule: "sm-order-s",
       },
       {
         key: `inventory`,
         // icon: <Icon icon="ep:office-building" width="25" height="25" />,
         label: `Inventory`,
-        rule: "inventory-stock-show",
+        rule: "sm-inventory-s",
       },
 
       {
         key: `product-list`,
         // icon: <Icon icon="humbleicons:box" width="25" height="25" />,
         label: `Product List`,
-        rule: "product-list-show",
+        rule: "sm-productlist-s",
       },
       // {
       //   key: `suppliers`,
@@ -235,7 +235,7 @@ export const MenuSider: MenuItem[] = [
     key: `setting`,
     icon: <Icon icon="uil:setting" width="15" height="15" />,
     label: `Setting`,
-    // rule: "setting-show",
+    // rule: "st-s",
     children: [
       {
         key: `setting/maintenance-type`,
@@ -246,7 +246,7 @@ export const MenuSider: MenuItem[] = [
         key: `setting/organize-chart`,
         // icon: organizeChart,
         label: `Organize Chart`,
-        // rule: "user-position-show",
+        // rule: "st-p-s",
       },
       {
         key: `setting/location`,
@@ -274,13 +274,13 @@ export const MenuSider: MenuItem[] = [
     key: `users-management`,
     icon: gridIcon,
     label: `User Management`,
-    // rule: "setting-show",
+    // rule: "st-s",
     children: [
       {
         key: `users-management/users`,
         // icon: groupLineIcon,
         label: `Users`,
-        rule: "user-management-show",
+        rule: "um-s",
       },
       {
         key: `users-management/user-organization`,
@@ -292,19 +292,19 @@ export const MenuSider: MenuItem[] = [
         key: `users-management/user-group`,
         // icon: userGroupIcon,
         label: `Users Group`,
-        rule: "user-group-show",
+        rule: "um-ug-s",
       },
       {
         key: `users-management/user-role`,
         // icon: mindMappingIcon,
         label: `Users Role`,
-        rule: "user-role-show",
+        rule: "um-ro-s",
       },
       {
         key: `users-management/user-rule`,
         // icon: shieldExclamationIcon,
         label: `Users Rule`,
-        rule: "user-rule-show",
+        rule: "um-ru-s",
       },
     ],
   },
@@ -312,13 +312,13 @@ export const MenuSider: MenuItem[] = [
   //   key: `stock-management`,
   //   icon: stockSetting,
   //   label: `Stock Management`,
-  //   // rule: "setting-show",
+  //   // rule: "st-s",
   //   children: [
   //     {
   //       key: `stock-management/location`,
   //       // icon: buldingIcon,
   //       label: `Location`,
-  //       rule: "location-show",
+  //       rule: "sm-location-s",
   //     },
   //     {
   //       key: `stock-management/inventory`,
@@ -336,13 +336,13 @@ export const MenuSider: MenuItem[] = [
   //       key: `stock-management/master-product-management`,
   //       // icon: cubeIcon,
   //       label: `Master Product Management`,
-  //       rule: "m-product-show",
+  //       rule: "sm-mp-s",
   //     },
   //     {
   //       key: `stock-management/cetagory-group-type`,
   //       // icon: circleSqureIcon,
   //       label: `Set Category & Group`,
-  //       rule: "mp-category-show",
+  //       rule: "sm-c-s",
   //     },
   //     {
   //       key: `stock-management/unit`,
@@ -372,7 +372,7 @@ export const MenuSider: MenuItem[] = [
   //       key: `stock-management/brand`,
   //       // icon: starIcon,
   //       label: `Set Brand`,
-  //       rule: "brand-show",
+  //       rule: "sm-brand-s",
   //     },
   //   ],
   // },

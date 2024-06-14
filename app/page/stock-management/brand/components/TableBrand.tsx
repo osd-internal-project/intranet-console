@@ -21,8 +21,8 @@ export interface props {
 export const TableBrand: React.FC<props> = ({ onCloseDialog, loading }): React.ReactElement => {
   const { RangePicker } = DatePicker;
   const axiosStock = useAxiosStock();
-  const editRule = checkRule("brand-edit");
-  const deleteRule = checkRule("brand-delete");
+  const editRule = checkRule("sm-brand-e");
+  const deleteRule = checkRule("sm-brand-d");
   const brandservice = BrandService(axiosStock);
   const [form] = Form.useForm();
   const [getdataAll, setdataAll] = useState<ITypeGetdataAll[]>([]);

@@ -29,8 +29,8 @@ export const TableMasterdataPosition: React.FC<props> = ({
 }): React.ReactElement => {
   const userAuth = useAxiosUser();
 
-  // const editRule = checkRule("user-position-edit");
-  // const deleteRule = checkRule("user-position-delete");
+  // const editRule = checkRule("st-p-e");
+  // const deleteRule = checkRule("st-p-d");
   const positionServices = PositionServices(userAuth);
 
   const { RangePicker } = DatePicker;

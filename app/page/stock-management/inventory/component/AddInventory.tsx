@@ -18,7 +18,7 @@ export interface props {
 export const AddInventory: React.FC<props> = ({ setLoading, locationId, onFilter, handleOpenFilter, openFilter }): React.ReactElement => {
   const { RangePicker } = DatePicker;
   const stockAuth = useAxiosStock();
-  const addRule = checkRule("inventory-add");
+  const addRule = checkRule("sm-inventory-a");
   const inventoryServices = InventoryServices(stockAuth);
   const [FORMCREATE] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);

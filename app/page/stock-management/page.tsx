@@ -76,19 +76,19 @@ export default function StockMangementPage() {
         name_header: "Set Unit",
         name_path: "stock-management/unit",
         icon: gridIcon,
-        rule: "mp-unit-show",
+        rule: "sm-unit-s",
       },
       {
         name_header: "Set Hazard Type",
         name_path: "stock-management/master-hazard-type",
         icon: colorSwatchIcon,
-        rule: "mp-hazard-type-show",
+        rule: "sm-hz-h",
       },
       {
         name_header: "Set GHS",
         name_path: "stock-management/ghs",
         icon: warningIcon,
-        rule: "mp-ghs-show",
+        rule: "sm-ghs-s",
       },
       {
         name_header: "Vender",

@@ -64,19 +64,19 @@ export default function Setting() {
         name_header: "Set Unit",
         name_path: "setting/unit",
         icon: gridIcon,
-        rule: "mp-unit-show",
+        rule: "sm-unit-s",
       },
       {
         name_header: "Set Hazard Type",
         name_path: "setting/master-hazard-type",
         icon: colorSwatchIcon,
-        rule: "mp-hazard-type-show",
+        rule: "sm-hz-h",
       },
       {
         name_header: "Set GHS",
         name_path: "setting/ghs",
         icon: warningIcon,
-        rule: "mp-ghs-show",
+        rule: "sm-ghs-s",
       },
       {
         name_header: "Vender",

@@ -2,13 +2,10 @@
 import React, { useEffect, useState } from "react";
 import UserGroupServices from "../services/usergroup.service";
 import { Card, Tabs, Tree } from "antd";
-import type { DataNode } from "antd/es/tree";
-import Title from "antd/es/skeleton/Title";
 
 import "../style.css";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { icons } from "antd/es/image/PreviewGroup";
-import { CarryOutOutlined, PlusOutlined } from "@ant-design/icons";
+import { CarryOutOutlined } from "@ant-design/icons";
 
 type TabType = {
   label: string;
@@ -33,26 +30,11 @@ const GroupTree: React.FC<props> = ({ propDataTree, loading, selectOrganize }): 
   const userGroupServices = UserGroupServices(userAuth);
   const [treeList, setTreeList] = useState<any[] | null>(null);
   const [tabList, setTabList] = useState<TabType[]>([]);
-  const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const [tabsKey, setTabsKey] = useState<string>("0");
 
   useEffect(() => {
     featchData();
   }, []);
-
-  useEffect(() => {
-    if (featchGroup && selectOrganize) {
-      setTreeList(null);
-      featchGroup(selectOrganize);
-    }
-  }, [loading]);
-
-  const featchGroup = async (organize: string) => {
-    const group = await userGroupServices.getUserGroupByOrganizedGroupId(organize);
-    const tree = createTree(group.organizeMapGroup, null);
-    setTreeList(tree);
-    propDataTree({ selectOrganize: organize, groupSelect: null, loading: false });
-  };
 
   const featchData = async () => {
     const resOrganize = await userGroupServices.findAllOrganize();
@@ -79,19 +61,16 @@ const GroupTree: React.FC<props> = ({ propDataTree, loading, selectOrganize }): 
     return tree;
   };
 
-  const onChangTapOrganize = (value: any) => {
-    setTabsKey(value);
-    propDataTree({ selectOrganize: value, groupSelect: null, loading: true });
+  const onChangTapOrganize = async (organize: any) => {
+    setTabsKey(organize);
+    const group = await userGroupServices.getUserGroupByOrganizedGroupId(organize);
+    const tree = createTree(group.organizeMapGroup, null);
+    setTreeList(tree);
+    propDataTree({ selectOrganize: organize, groupSelect: null, loading: false });
   };
 
   const onSelectTree = (value: any) => {
     propDataTree({ selectOrganize: selectOrganize, groupSelect: value[0], loading: false });
-  };
-
-  const changeParent = (value: any) => {
-    setTabsKey(value);
-    setSelectedTab(value);
-    propDataTree({ selectOrganize: selectOrganize, groupSelect: null, loading: true });
   };
 
   return (

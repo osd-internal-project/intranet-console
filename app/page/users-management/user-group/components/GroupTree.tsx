@@ -14,77 +14,106 @@ type TabType = {
   label: string;
   key: string;
 };
+
+type TOrganizeDto = {
+  id: number;
+  organizedId: string;
+  organizedName: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+};
 export interface props {
-  propDataTree: (res: { groupSelect: string | null; loading: boolean }) => void;
+  propDataTree: (res: { selectOrganize: string | null; groupSelect: string | null; loading: boolean }) => void;
   loading: boolean;
+  selectOrganize: string | null;
 }
-const GroupTree: React.FC<props> = ({ propDataTree, loading }): React.ReactElement => {
+const GroupTree: React.FC<props> = ({ propDataTree, loading, selectOrganize }): React.ReactElement => {
   const userAuth = useAxiosUser();
   const userGroupServices = UserGroupServices(userAuth);
-
   const [treeList, setTreeList] = useState<any[] | null>(null);
   const [tabList, setTabList] = useState<TabType[]>([]);
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const [tabsKey, setTabsKey] = useState<string>("0");
 
   useEffect(() => {
-    if (loading === true) {
+    featchData();
+  }, []);
+
+  useEffect(() => {
+    if (featchGroup && selectOrganize) {
       setTreeList(null);
-      loaddata();
+      featchGroup(selectOrganize);
     }
   }, [loading]);
 
-  const loaddata = async () => {
-    const group = await userGroupServices.getUserGroupAll();
-    const tree = createTree(group, null);
+  const featchGroup = async (organize: string) => {
+    const group = await userGroupServices.getUserGroupByOrganizedGroupId(organize);
+    const tree = createTree(group.organizeMapGroup, null);
     setTreeList(tree);
-    propDataTree({ groupSelect: null, loading: false });
+    propDataTree({ selectOrganize: organize, groupSelect: null, loading: false });
+  };
+
+  const featchData = async () => {
+    const resOrganize = await userGroupServices.findAllOrganize();
+    const orgList = resOrganize.map((item: TOrganizeDto) => ({ key: item.organizedId, label: item.organizedName }));
+    setTabList([...orgList]);
+    propDataTree({ selectOrganize: selectOrganize, groupSelect: null, loading: false });
   };
 
   const createTree = (obj: any[], parentId: string | null) => {
     const tree: any[] = [];
     obj.forEach((item) => {
-      if (item.parentGroupId === parentId) {
-        const children = createTree(obj, item.groupId);
+      if (item.group.parentGroupId === parentId) {
+        const children = createTree(obj, item.group.groupId);
         if (children.length > 0) {
-          (item.icon = <CarryOutOutlined />), (item.children = children);
+          (item.group.icon = <CarryOutOutlined />), (item.group.children = children);
         }
         tree.push({
-          key: item.groupId,
-          title: item.groupName,
-          children: item.children,
+          key: item.group.groupId,
+          title: item.group.groupName,
+          children: item.group.children,
         });
       }
     });
     return tree;
   };
 
-  const onSelectTree = (value: any) => {
-    propDataTree({ groupSelect: value[0], loading: false });
+  const onChangTapOrganize = (value: any) => {
+    setTabsKey(value);
+    propDataTree({ selectOrganize: value, groupSelect: null, loading: true });
   };
+
+  const onSelectTree = (value: any) => {
+    propDataTree({ selectOrganize: selectOrganize, groupSelect: value[0], loading: false });
+  };
+
   const changeParent = (value: any) => {
     setTabsKey(value);
     setSelectedTab(value);
-    propDataTree({ groupSelect: null, loading: true });
+    propDataTree({ selectOrganize: selectOrganize, groupSelect: null, loading: true });
   };
+
   return (
     <Card className="mx-2 my-2 md:my-0" style={{ minHeight: " 500px" }}>
       <div className=" grid-cols-1 gap-0 ">
         <div className="flex flex-row">
-          {/* <div className="basis-1/5   " style={{ minHeight: " 400px", borderRight: "1px solid #E5E7EB" }}>
-            <div className=" mb-5">
-              <div className=" text-2xl  font-semibold ">Organize Name</div>
-            </div>
-            <Tabs tabPosition="left" activeKey={tabsKey} items={tabList} onChange={changeParent} className="user-group-tabs" />
-          </div> */}
+          <Tabs tabPosition="left" activeKey={tabsKey} items={tabList} onChange={onChangTapOrganize} />
           <div className="basis-5/5">
-            <div className=" mb-10">
-              <div className=" text-2xl  font-semibold h-full">{` `}</div>
-            </div>
-            {treeList ? <Tree showIcon={true} treeData={treeList} defaultExpandAll={true} onSelect={onSelectTree} rootStyle={{ fontSize: 14 }} blockNode showLine /> : ``}
+            {treeList ? (
+              <Tree
+                showIcon={true}
+                treeData={treeList}
+                defaultExpandAll={true}
+                onSelect={onSelectTree}
+                rootStyle={{ fontSize: 14 }}
+                blockNode
+                showLine
+              />
+            ) : (
+              ``
+            )}
           </div>
-
-          {/* <Tree showLine treeData={treeData} defaultExpandAll={true} /> */}
         </div>
       </div>
     </Card>

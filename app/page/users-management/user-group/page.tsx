@@ -7,12 +7,15 @@ import GroupManage from "./components/GroupManage";
 export default function UsergroupPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [groupSelect, setGroupSelect] = useState<string | null>(null);
+  const [selectedOrganize, setSelectedOrganize] = useState<string | null>(null);
 
   const propDataTree = (e: any) => {
+    setSelectedOrganize(e.selectOrganize);
     setGroupSelect(e.groupSelect);
     setLoading(e.loading);
   };
   const propDataManage = (e: any) => {
+    setSelectedOrganize(e.selectOrganize);
     setGroupSelect(e.groupSelect);
     setLoading(e.loading);
   };
@@ -44,12 +47,12 @@ export default function UsergroupPage() {
           <div className="grid grid-cols-1 md:grid-cols-2">
             <div>
               <Spin spinning={loading}>
-                <GroupTree propDataTree={propDataTree} loading={loading} />
+                <GroupTree propDataTree={propDataTree} loading={loading} selectOrganize={selectedOrganize} />
               </Spin>
             </div>
             {groupSelect ? (
               <div>
-                <GroupManage propDataManage={propDataManage} groupSelect={groupSelect} />
+                <GroupManage propDataManage={propDataManage} groupSelect={groupSelect} selectOrganize={selectedOrganize} />
               </div>
             ) : (
               <></>

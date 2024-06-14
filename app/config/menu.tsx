@@ -283,6 +283,12 @@ export const MenuSider: MenuItem[] = [
         rule: "user-management-show",
       },
       {
+        key: `users-management/user-organization`,
+        // icon: shieldExclamationIcon,
+        label: `Users Organization`,
+        // rule: "user-organize-show",
+      },
+      {
         key: `users-management/user-group`,
         // icon: userGroupIcon,
         label: `Users Group`,

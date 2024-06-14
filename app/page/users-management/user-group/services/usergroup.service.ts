@@ -48,15 +48,16 @@ const UserGroupServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getUserGroupByOrganizedGroupId: async (organizedGroupId: string) => {
-      const condition = {
-        where: {
-          organizedGroupId: organizedGroupId,
-        },
-      };
-      return await axiosInstance.post(`/user-group/condition`, {
-        condition: condition,
-      });
+    getUserGroupByOrganizedGroupId: async (organizedId: string) => {
+      return await axiosInstance
+        .get(`/user-group/${organizedId}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
     },
     addUserGroup: async (data: Object) => {
       const req = {
@@ -74,6 +75,17 @@ const UserGroupServices = (axiosInstance: AxiosInstance) => {
     },
     deleteUserGroup: async (groupId: string) => {
       return await axiosInstance.delete(`/user-group/${groupId}`);
+    },
+    findAllOrganize: async () => {
+      return await axiosInstance
+        .get(`/organized`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
     },
   };
 };

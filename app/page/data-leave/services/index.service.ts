@@ -131,6 +131,28 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    approvedDataLeave: async (event: string, id: number, data: any) => {
+      const condition = {
+        where: {
+          id: id,
+        },
+        data: {
+          status: event,
+          userApproved: `${data.firstNameTh} ${data.lastNameTh}`,
+          approvedDate: new Date(),
+        },
+      };
+      return await axiosInstance
+        .patch(`${baseUrlDataLeave}/${id}`, {
+          condition: condition,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
     deleteTypeLeaveDisabled: async (event: number) => {
       return await axiosInstance
         .delete(`${baseUrlTypeleaveMap}/${event}`)

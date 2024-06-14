@@ -68,7 +68,7 @@ export default function Page() {
       ...(values.time_start_check
         ? { leaveHour: 8 }
         : {
-            leaveHour: values.startTime && values.endTime ? (totalHours as number) : (totalDays as number) * 8,
+            leaveHour: values.startTime && values.endTime ? Number(totalHours) : Number(totalDays) * 8,
             startTime: values.startTime,
             endTime: values.endTime,
           }),

@@ -9,9 +9,16 @@ export interface props {
   setOpenModalDetail: (e: boolean) => void;
   openModalDetail: boolean;
   formdetail: any;
+  onFinishUpdate: (type: string, id: number) => void;
 }
 
-export const TableDetail: React.FC<props> = ({ dataLeaveUser, setOpenModalDetail, openModalDetail, formdetail }): React.ReactElement => {
+export const TableDetail: React.FC<props> = ({
+  dataLeaveUser,
+  setOpenModalDetail,
+  openModalDetail,
+  formdetail,
+  onFinishUpdate,
+}): React.ReactElement => {
   const columns: any = [
     {
       key: "status",
@@ -20,7 +27,7 @@ export const TableDetail: React.FC<props> = ({ dataLeaveUser, setOpenModalDetail
       render: (e: string) => {
         return e === "waitting" ? (
           <Tag color="blue">{`WAITTING`}</Tag>
-        ) : e === "approve" ? (
+        ) : e === "approved" ? (
           <Tag color="green">{`APPROVED`}</Tag>
         ) : (
           <Tag color="volcano">{`CANCEL`}</Tag>
@@ -32,15 +39,20 @@ export const TableDetail: React.FC<props> = ({ dataLeaveUser, setOpenModalDetail
       dataIndex: "id",
       title: "Fullname",
       render: (e: string, row: ITypeDataLeave) => {
+        const days = row?.leaveHour && row?.leaveHour > 8 ? Math.floor(row?.leaveHour / 8) : row?.leaveHour;
+        console.log(days);
+
         const base = {
           name: `${row.firstName} ${row.lastName}`,
-          createAt: dateToStringThNoTime(row?.createdAt as any),
+          createAt: row.createdAt ? dateToStringThNoTime(row.createdAt) : "-",
           detail: row.detail,
           leaveHour: `${row.leaveHour} ชม.`,
-          startDate: dateToStringThNoTime(row.startDate as any),
-          endDate: dateToStringThNoTime(row.endDate as any),
+          startDate: row?.startDate ? dateToStringThNoTime(row?.startDate) : "-",
+          endDate: row?.endDate ? dateToStringThNoTime(row?.endDate) : "-",
           phoneNumber: row.phoneNumber,
           typeLeave: row.typeName,
+          approvedDate: row.approvedDate ? dateToStringThNoTime(row?.approvedDate) : "-",
+          userApproved: row.userApproved,
         };
         return (
           <a
@@ -55,8 +67,8 @@ export const TableDetail: React.FC<props> = ({ dataLeaveUser, setOpenModalDetail
       key: "id",
       dataIndex: "id",
       title: "Date Leave",
-      render: (e: string, row: any) => {
-        return `${dateToStringThNoTime(row.startDate)} ถึง ${dateToStringThNoTime(row.endDate)}`;
+      render: (e: string, row: ITypeDataLeave) => {
+        return row?.startDate && row?.endDate ? `${dateToStringThNoTime(row?.startDate)} ถึง ${dateToStringThNoTime(row?.endDate)}` : "-";
       },
     },
     { key: "typeName", dataIndex: "typeName", title: "Type Leave" },
@@ -66,16 +78,31 @@ export const TableDetail: React.FC<props> = ({ dataLeaveUser, setOpenModalDetail
       dataIndex: "id",
       title: "ACTIVE",
       align: "center",
-      render: (e: string, row: any) => {
+      render: (e: string, row: ITypeDataLeave, index: number) => {
         return (
           <>
             <Row gutter={[8, 8]} className="flex justify-center">
               <Col>
-                <Button type="primary">{editIcon}</Button>
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    onFinishUpdate("approved", row?.id ? row?.id : 0);
+                  }}
+                  disabled={row.approvedDate ? true : false}
+                >
+                  {editIcon} {`Approved`}
+                </Button>
               </Col>
               <Col>
-                <Button type="primary" danger>
-                  {deleteIcon}
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    onFinishUpdate("cancel", row?.id ? row?.id : 0);
+                  }}
+                  disabled={row.approvedDate ? true : false}
+                  danger
+                >
+                  {deleteIcon} {`Cancel`}
                 </Button>
               </Col>
             </Row>
@@ -87,53 +114,69 @@ export const TableDetail: React.FC<props> = ({ dataLeaveUser, setOpenModalDetail
   return (
     <div>
       <Table dataSource={dataLeaveUser} columns={columns} />
-      <Modal title="รายละเอียด" open={openModalDetail} footer={false} onCancel={() => setOpenModalDetail(false)}>
-        <div className="w-full justify-center flex mb-2">{`ข้อมูลใบลา`}</div>
-        <Form autoComplete="off" form={formdetail}>
+      <Modal title="" open={openModalDetail} footer={false} onCancel={() => setOpenModalDetail(false)}>
+        <div className="w-full justify-center flex mb-2 font-bold text-lg">{`< รายละเอียดการลา >`}</div>
+        <Form autoComplete="off" form={formdetail} layout="vertical">
           <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`วันที่`} name={`createAt`}>
-              <Input disabled />
+            <Form.Item label={`วันที่ :`} name={`createAt`}>
+              <Input readOnly style={{ border: "none", borderBottom: "1px solid #808080" }} />
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เรียนถึง :`}>
-              <Input disabled />
+              <Input readOnly style={{ border: "none", borderBottom: "1px solid #808080" }} />
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`เนื่องจาก`} name={`detail`}>
-              <Input disabled />
+            <Form.Item label={`เนื่องจาก :`} name={`detail`}>
+              <Input readOnly style={{ border: "none", borderBottom: "1px solid #808080" }} />
             </Form.Item>
           </div>
           <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
             <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`จึงขอ`} name={`typeLeave`}>
-                <Input disabled />
+              <Form.Item label={`จึงขอ :`} name={`typeLeave`}>
+                <Input readOnly style={{ border: "none", borderBottom: "1px solid #808080" }} />
               </Form.Item>
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`เป็นเวลา`} name={`leaveHour`}>
-                <Input disabled />
+              <Form.Item label={`เป็นเวลา :`} name={`leaveHour`}>
+                <Input readOnly style={{ border: "none", borderBottom: "1px solid #808080" }} />
               </Form.Item>
             </div>
           </div>
           <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
             <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`ตั้งแต่วันที่`} name={`startDate`}>
-                <Input disabled />
+              <Form.Item label={`ตั้งแต่วันที่ :`} name={`startDate`}>
+                <Input readOnly style={{ border: "none", borderBottom: "1px solid #808080" }} />
               </Form.Item>
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`ถึงวันที่`} name={`endDate`}>
-                <Input disabled />
+              <Form.Item label={`ถึงวันที่ :`} name={`endDate`}>
+                <Input readOnly style={{ border: "none", borderBottom: "1px solid #808080" }} />
               </Form.Item>
             </div>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`เบอร์ติดต่อระหว่างลา`} name={`phoneNumber`}>
-              <Input disabled />
+            <Form.Item label={`เบอร์ติดต่อระหว่างลา :`} name={`phoneNumber`}>
+              <Input readOnly style={{ border: "none", borderBottom: "1px solid #808080" }} />
             </Form.Item>
           </div>
+          {formdetail.getFieldValue("userApproved") ? (
+            <>
+              <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
+                <div className=" col-span-3 md:col-span-1 ml-5">
+                  <Form.Item label={`ผู้อนุมัติ :`} name={`userApproved`}>
+                    <Input readOnly style={{ border: "none", borderBottom: "1px solid #808080" }} />
+                  </Form.Item>
+                </div>
+                <div className=" col-span-3 md:col-span-1 ml-5">
+                  <Form.Item label={`วันที่อนุมัติ :`} name={`approvedDate`}>
+                    <Input readOnly style={{ border: "none", borderBottom: "1px solid #808080" }} />
+                  </Form.Item>
+                </div>
+              </div>
+            </>
+          ) : null}
         </Form>
       </Modal>
     </div>

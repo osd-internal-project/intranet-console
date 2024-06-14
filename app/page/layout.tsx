@@ -12,11 +12,7 @@ import axios from "axios";
 import { useAxiosStock, useAxiosUser } from "../lib/axios/hooks/userAxiosAuth";
 import IndexServices from "./services/index.service";
 
-export default function MainLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function MainLayout({ children }: { children: React.ReactNode }) {
   const stockAuth = useAxiosStock();
   const userAuth = useAxiosUser();
   const indexServices = IndexServices(stockAuth);
@@ -49,7 +45,6 @@ export default function MainLayout({
       //   setCountNoti(count);
       // }
       const image = await userServices.getImage(session.user.userId);
-      console.log(image);
       setAvatar(image);
     }
   }
@@ -74,9 +69,7 @@ export default function MainLayout({
     const currentPathSub = pathname.split("/")[3];
     if (currentPath) {
       if (!pageWithoutMenu.includes(currentPath)) {
-        const checkAuth = MenuSiderWithModule(session?.rulelist).some(
-          (menu: any) => menu.key === currentPath
-        );
+        const checkAuth = MenuSiderWithModule(session?.rulelist).some((menu: any) => menu.key === currentPath);
         if (!checkAuth) {
           // redirect("/404");
         }
@@ -96,28 +89,13 @@ export default function MainLayout({
           <div className="flex justify-center py-4 ">
             {!collapsed ? (
               <>
-                <img
-                  src="/images/osd-logo.png"
-                  alt="logo-page"
-                  className={`${collapsed ? "w-14 " : " w-40"}`}
-                />
+                <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : " w-40"}`} />
               </>
             ) : (
-              <img
-                src="/images/osd-logo.png"
-                alt="logo-page"
-                className={`${collapsed ? "w-14 " : "w-28 "}`}
-              />
+              <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
             )}
           </div>
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={[
-              currentPath,
-              `${currentPath}/${currentPathSub}`,
-            ]}
-            items={menulist}
-          />
+          <Menu mode="inline" defaultSelectedKeys={[currentPath, `${currentPath}/${currentPathSub}`]} items={menulist} />
         </Sider>
         <Layout>
           <div className="w-full">
@@ -142,9 +120,7 @@ export default function MainLayout({
           >
             {children}
           </Content>
-          <Footer style={{ textAlign: "center" }}>
-            Intranet ©{new Date().getFullYear()} Created by OSD
-          </Footer>
+          <Footer style={{ textAlign: "center" }}>Intranet ©{new Date().getFullYear()} Created by OSD</Footer>
         </Layout>
       </Layout>
     );

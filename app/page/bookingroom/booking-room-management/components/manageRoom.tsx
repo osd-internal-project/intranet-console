@@ -31,16 +31,17 @@ interface MasterRoomType {
 }
 
 const ManageRoom: React.FC = () => {
-    const { data: session } = useSession();
     const intraAuth = useAxiosIntranet();
     const [form] = useForm();
     const manageRoomServices = ManageRoomServices(intraAuth);
     const [isModalBooking, setIsModalBooking] = useState(false);
     const [modalEditBooking, setModalEditBooking] = useState(false);
     const [modalApproveBooking, setModalApproveBooking] = useState(false);
+    const [bookingStatus, setBookingStatus] = useState("");
     const [bookingData, setBookingData] = useState<BookingType[]>([]);
     const [masterRoomData, setMasterRoomData] = useState<MasterRoomType[]>([]);
     const [currentBookingId, setCurrentBookingId] = useState<string | null>(null);  // State to store the current booking ID
+    const [submitLoading, setSubmitLoading] = useState(false);
 
     const columns: TableProps<BookingType>['columns'] = [
         {
@@ -136,6 +137,7 @@ const ManageRoom: React.FC = () => {
     };
 
     const showModalApproveBooking = (record: BookingType) => {
+        setBookingStatus(record.bookingStatus);
         setCurrentBookingId(record.id);  // Set the current booking ID
         setModalApproveBooking(true);
     };
@@ -145,17 +147,19 @@ const ManageRoom: React.FC = () => {
     };
 
     const handleDeleteBooking = async (id: string) => {
-        console.log(id);
+        setSubmitLoading(true);
         try {
             await manageRoomServices.deleteBooking(id);
             setBookingData(bookingData.filter(item => item.id !== id));
-            message.success('Booking deleted successfully');
+            message.success('ลบข้อมูลการจองสำเร็จ');
+            setSubmitLoading(false);
         } catch (error) {
-            message.error('Failed to delete booking');
+            message.error('ลบข้อมูลการจองไม่สำเร็จ');
         }
     };
 
-    const onFinish: FormProps<BookingType>['onFinish'] = async (values) => {
+    const updatedBooking: FormProps<BookingType>['onFinish'] = async (values) => {
+        setSubmitLoading(true);
         if (currentBookingId === null) {
             message.error('No booking selected for update');
             return;
@@ -168,17 +172,18 @@ const ManageRoom: React.FC = () => {
                 startDate: startDate.toISOString(),
                 endDate: endDate.toISOString(),
             };
-            console.log(updatedBooking);
             await manageRoomServices.updateBooking(updatedBooking);
-            setModalEditBooking(false);
             fetchData();
-            message.success('Booking updated successfully');
+            message.success('แก้ไขการจองสำเร็จ');
+            setSubmitLoading(false);
+            setModalEditBooking(false);
         } catch (error) {
-            message.error('Failed to update booking');
+            message.error('แก้ไขการจองไม่สำเร็จ');
         }
     };
 
     const onFinishApprove: FormProps<BookingType>['onFinish'] = async () => {
+        setSubmitLoading(true);
         try {
             const updatedApproveBooking = {
                 id: currentBookingId,
@@ -187,9 +192,10 @@ const ManageRoom: React.FC = () => {
             await manageRoomServices.updateBooking(updatedApproveBooking);
             setModalApproveBooking(false);
             fetchData();
-            message.success('Booking updated successfully');
+            message.success('อนุมัติการจองสำเร็จ');
+            setSubmitLoading(false);
         } catch (error) {
-            message.error('Failed to update booking');
+            message.error('อนุมัติการจองไม่สำเร็จ');
         }
     };
 
@@ -233,7 +239,7 @@ const ManageRoom: React.FC = () => {
                     layout="vertical"
                     name="edit_booking"
                     initialValues={{ remember: true }}
-                    onFinish={onFinish}
+                    onFinish={updatedBooking}
                     onFinishFailed={onFinishFailed}
                     autoComplete="off"
                 >
@@ -366,10 +372,10 @@ const ManageRoom: React.FC = () => {
                     <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                         <Row justify="end">
                             <Button type="default" onClick={handleEditBookingCancel} style={{ marginRight: 8 }}>
-                                Cancel
+                                ยกเลิก
                             </Button>
-                            <Button type="primary" htmlType="submit">
-                                Submit
+                            <Button type="primary" htmlType="submit" loading={submitLoading}>
+                                ตกลง
                             </Button>
                         </Row>
                     </Form.Item>
@@ -386,16 +392,11 @@ const ManageRoom: React.FC = () => {
                     onFinishFailed={onFinishFailed}
                     autoComplete="off"
                 >
-                    <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                        <Row justify="end">
-                            <Button type="default" onClick={handleApproveBookingCancel} style={{ marginRight: 8 }}>
-                                Cancel
-                            </Button>
-                            <Button type="primary" htmlType="submit">
-                                Submit
-                            </Button>
-                        </Row>
-                    </Form.Item>
+                    <Row justify="end">
+                        <Button type="primary" htmlType="submit" disabled={bookingStatus === "Approve"} loading={submitLoading}>
+                            อนุมัติ
+                        </Button>
+                    </Row>
                 </Form>
             </Modal>
             <Table columns={columns} dataSource={bookingData} />

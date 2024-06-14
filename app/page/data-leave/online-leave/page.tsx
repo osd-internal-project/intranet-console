@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, Modal, Row, Typography, message } from "antd";
+import { Breadcrumb, Card, Col, Modal, Row, Typography, UploadFile, message } from "antd";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -11,6 +11,7 @@ import { TableOnlineDetailLeave } from "./components/table-online-detail-leave";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
 import { useRouter } from "next/navigation";
+import { RcFile, UploadProps } from "antd/es/upload";
 
 export default function Page() {
   const router = useRouter();
@@ -23,6 +24,7 @@ export default function Page() {
   const [getStartDate, setStartDate] = useState<Date>();
   const [getEndDate, setEndDate] = useState<Date>();
   const [checkSwitch, setCheckSwitch] = useState<boolean>(false);
+  const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [createdataleaveForm] = useForm();
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -39,6 +41,18 @@ export default function Page() {
     setTypeLeaveOption(options);
     setTypeLeave(res);
     setLoading(false);
+  };
+
+  const beforeUploadAttendFiles = (file: RcFile) => {
+    if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
+      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
+      return false;
+    }
+    return false;
+  };
+
+  const handleChangeAttendFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
+    return setAttendFiles(newFileList);
   };
 
   const onfinishCreate = (values: ITypeDataLeaveCreate) => {
@@ -73,7 +87,6 @@ export default function Page() {
             endTime: values.endTime,
           }),
     };
-
     Modal.confirm({
       title: "Add ",
       icon: <ExclamationCircleFilled />,
@@ -89,6 +102,14 @@ export default function Page() {
       onOk: async () => {
         const result = await dataleaveservice.createDataLeave(condition);
         if (result) {
+          if (attendFiles.length > 0) {
+            attendFiles.forEach(async (file) => {
+              const formData: any = new FormData();
+              formData.append("type", "attend");
+              formData.append("files", file.originFileObj);
+              await dataleaveservice.uploadFiles(result.id, formData);
+            });
+          }
           message.success(`Add success`);
           createdataleaveForm.resetFields();
           setStartDate(undefined);
@@ -138,6 +159,9 @@ export default function Page() {
             getStartDate={getStartDate}
             getEndDate={getEndDate}
             checkSwitch={checkSwitch}
+            beforeUploadAttendFiles={(e: RcFile) => beforeUploadAttendFiles(e)}
+            handleChangeAttendFiles={(e: any) => handleChangeAttendFiles(e)}
+            attendFiles={attendFiles}
           />
         </Col>
         <Col span={12}>

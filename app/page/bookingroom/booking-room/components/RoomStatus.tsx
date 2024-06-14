@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Space, Table, Tag } from 'antd';
+import { Table, Tag } from 'antd';
 import type { TableProps } from 'antd';
-import axios from '@/app/lib/axios/axios';
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { BookingRoomServices } from "../services/booking-room.service"
 
 interface DataType {
-    key: string;
-    name: string;
-    age: number;
-    address: string;
-    tags: string[];
+    no: string;
+    roomName: string;
+    roomsStatus: string;
+    roomDescription: string;
 }
 
 const columns: TableProps<DataType>['columns'] = [
@@ -50,9 +48,12 @@ const RoomStatus = () => {
     }, []);
 
     const fetchData = async () => {
-        const bookingRoom = await bookingRoomServices.getMasterRoomQuery();
-        console.log(bookingRoom);
-        setBookingData(bookingRoom);
+        const Bookingresponse = await bookingRoomServices.getMasterRoomQuery();
+        const BookingRoom: DataType[] = Bookingresponse.map((item: any, index: number) => ({
+            ...item,
+            key: index.toString(), // Assuming index can be used as a key, adjust as needed
+        }));
+        setBookingData(BookingRoom);
     };
 
     return (

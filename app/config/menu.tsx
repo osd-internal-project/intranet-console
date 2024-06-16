@@ -165,13 +165,11 @@ export const MenuSider: MenuItem[] = [
     children: [
       {
         key: `housekeeper/housekeepers`,
-        icon: carlendarIcon,
         label: `Housekeeper`,
         rule: "hk-h",
       },
       {
         key: `housekeeper/housekeeper-management`,
-        icon: editTagIcon,
         label: `Housekeeper Management`,
         rule: "hk-m",
       },

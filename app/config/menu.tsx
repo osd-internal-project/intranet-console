@@ -144,7 +144,7 @@ export const MenuSider: MenuItem[] = [
         rule: "sm-re-tr-h",
       },
       {
-        key: `sm-re-ex-h`,
+        key: `report-expired`,
         // icon: <Icon icon="bx:bell" width="25" height="25" />,
         label: `รายงานการหมดอายุ`,
         rule: "sm-re-ex-h",
@@ -247,11 +247,11 @@ export const MenuSider: MenuItem[] = [
         label: `Organize Chart`,
         // rule: "st-p-s",
       },
-      {
-        key: `setting/location`,
-        // icon: buldingIcon,
-        label: `Location`,
-      },
+      // {
+      //   key: `setting/location`,
+      //   // icon: buldingIcon,
+      //   label: `Location`,
+      // },
       {
         key: `setting/typeleave`,
         // icon: IconTypeLeave,
@@ -284,25 +284,25 @@ export const MenuSider: MenuItem[] = [
       {
         key: `users-management/user-organization`,
         // icon: shieldExclamationIcon,
-        label: `Users Organization`,
+        label: `Organizations`,
         // rule: "user-organize-show",
       },
       {
         key: `users-management/user-group`,
         // icon: userGroupIcon,
-        label: `Users Group`,
+        label: `Groups`,
         rule: "um-ug-s",
       },
       {
         key: `users-management/user-role`,
         // icon: mindMappingIcon,
-        label: `Users Role`,
+        label: `Roles`,
         rule: "um-ro-s",
       },
       {
         key: `users-management/user-rule`,
         // icon: shieldExclamationIcon,
-        label: `Users Rule`,
+        label: `Rules`,
         rule: "um-ru-s",
       },
     ],

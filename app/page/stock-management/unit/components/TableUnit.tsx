@@ -193,22 +193,22 @@ export const TableUnit: React.FC<props> = ({
     <div className=" grid grid-cols-1 gap-y-2">
       <Row gutter={[8, 8]}>
         <Col span={24}>
-          <Popover
-            onOpenChange={handleOpenFilter}
-            open={openFilter}
-            content={searchContent}
-            placement="bottomLeft"
-            title="Search"
-            trigger="click"
-            overlayStyle={{ width: "calc(100% - 240px)" }}
-          >
-            <Button className="button-blue" type="primary" icon={<FilterOutlined />}>
-              Filters
-            </Button>
-          </Popover>
-        </Col>
-        <Col span={24}>
           <Card className="card-filter">
+            <div className=" flex justify-end pb-4">
+              <Popover
+                onOpenChange={handleOpenFilter}
+                open={openFilter}
+                content={searchContent}
+                placement="bottomLeft"
+                title="Search"
+                trigger="click"
+                overlayStyle={{ width: "calc(100% - 240px)" }}
+              >
+                <Button className="button-blue" type="primary" icon={<FilterOutlined />}>
+                  Filters
+                </Button>
+              </Popover>
+            </div>
             <Table
               size="small"
               loading={getloading}

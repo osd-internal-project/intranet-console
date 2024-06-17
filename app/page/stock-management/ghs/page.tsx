@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Breadcrumb, Col, Row } from "antd";
+import { Breadcrumb, Card, Col, Divider, Row } from "antd";
 import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
 import GhsServices from "./services/ghs.service";
 import dayjs from "dayjs";
@@ -105,8 +105,8 @@ export default function ghsPage() {
               title: <span>Home</span>,
             },
             {
-              href: "/page/setting",
-              title: <span>Setting</span>,
+              href: "/page/stock-management",
+              title: <span>Stock Management</span>,
             },
             {
               title: <span>Set GHS</span>,
@@ -114,12 +114,14 @@ export default function ghsPage() {
           ]}
         />
       </Col>
-      <Col span={24}>
-        <div className="title-page-font">{`SET GHS`}</div>
-      </Col>
+
+      <Divider orientation="left" orientationMargin="0">
+        <div className="title-page-font">{`Set GHS`}</div>
+      </Divider>
+
       <Col span={24}>
         <div className="grid grid-cols-1 ">
-          <div style={{ marginBottom: "10px" }}>
+          <Card>
             <CreateGhs
               propLoading={(e: boolean) => setLoading(e)}
               loading={loading}
@@ -127,8 +129,6 @@ export default function ghsPage() {
               openFilter={openFilter}
               onFilter={(e: typeGHS) => onFilter(e as any)}
             />
-          </div>
-          <div>
             <GhsTable
               propLoading={(e: boolean) => setLoading(e)}
               loading={loading}
@@ -138,7 +138,7 @@ export default function ghsPage() {
               handlerPaginationTable={(e: any) => handlerPaginationTable(e)}
               setPagination={(e: any) => setPagination(e)}
             />
-          </div>
+          </Card>
         </div>
       </Col>
     </Row>

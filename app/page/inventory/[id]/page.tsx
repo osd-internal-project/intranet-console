@@ -3,7 +3,7 @@ import React from "react";
 
 import { TableStock } from "./components/TableStock";
 import { FiltersAddStock } from "./components/FiltersAddStock";
-import { Breadcrumb, Col, Row, Space } from "antd";
+import { Breadcrumb, Col, Divider, Row, Space } from "antd";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 
@@ -33,18 +33,15 @@ const page = () => {
             ]}
           />
         </Col>
-        <Col span={24}>
+
+        <Divider orientation="left" orientationMargin="0">
+          <div className="title-page-font">{`Inventory`}</div>
+        </Divider>
+        <div className="title-page-font-username">
           <Space>
-            <div className="title-page-font">
-              <div>{`INVENTORY :`}</div>
-            </div>
-            <div className="title-page-font-username">
-              <Space>
-                <div> {inventoryName}</div>
-              </Space>
-            </div>
+            <div> {inventoryName}</div>
           </Space>
-        </Col>
+        </div>
       </Row>
       <Row gutter={[8, 8]}>
         <Col span={24}>

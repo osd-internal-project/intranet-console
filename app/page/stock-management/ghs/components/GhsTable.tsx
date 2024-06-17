@@ -254,20 +254,18 @@ const GhsTable: React.FC<props> = ({
         <img style={{ width: "100%" }} src={previewImage} />
       </Modal>
       <div>
-        <Card>
-          <div className=" col-span-1 space-y-5">
-            <div className=" overflow-auto md:overflow-hidden">
-              <Table
-                loading={loading}
-                columns={columns}
-                dataSource={dataTable}
-                rowKey={(e: typeGHS) => e.id}
-                pagination={{ total: paginationConfig, current: filter?.current, showSizeChanger: false }}
-                onChange={handlerPaginationTable}
-              />
-            </div>
+        <div className=" col-span-1 space-y-5">
+          <div className=" overflow-auto md:overflow-hidden">
+            <Table
+              loading={loading}
+              columns={columns}
+              dataSource={dataTable}
+              rowKey={(e: typeGHS) => e.id}
+              pagination={{ total: paginationConfig, current: filter?.current, showSizeChanger: false }}
+              onChange={handlerPaginationTable}
+            />
           </div>
-        </Card>
+        </div>
       </div>
       <Modal title="Edit GHS" open={isModalOpenEdit} onOk={handleOkedit} onCancel={handleCanceledit} footer={false}>
         <Form layout="vertical" form={form} onFinish={finishEdit}>

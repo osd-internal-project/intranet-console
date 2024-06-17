@@ -1,5 +1,5 @@
 "use client";
-import { Breadcrumb, Button, Card, Col, Row, Table } from "antd";
+import { Breadcrumb, Button, Card, Col, Divider, Row, Table } from "antd";
 import UserTable from "./components/UserTable";
 import { useState } from "react";
 import Link from "next/link";
@@ -58,18 +58,18 @@ export default function UsermanagementPage() {
               title: <span>Home</span>,
             },
             {
-              href: "/page/setting",
-              title: <span>Setting</span>,
+              title: <span>User Management</span>,
             },
             {
-              title: <span>User Management </span>,
+              title: <span>Users</span>,
             },
           ]}
         />
       </Col>
-      <Col span={24}>
-        <div className="title-page-font">{`USER MANAGEMENT`}</div>
-      </Col>
+
+      <Divider orientation="left" orientationMargin="0">
+        <div className="title-page-font">{`Users`}</div>
+      </Divider>
       <Col span={24}>
         <UserTable loading={loading} propLoading={propLoading} search={search} />
       </Col>

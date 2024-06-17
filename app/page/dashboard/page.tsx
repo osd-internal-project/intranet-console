@@ -88,7 +88,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <Row gutter={[8, 8]} style={{ marginBottom: "20px" }}>
+      <Row gutter={[8, 8]}>
         <Col span={24}>
           <Breadcrumb
             items={[
@@ -105,7 +105,12 @@ export default function Dashboard() {
         <Col span={24}>
           <div className=" grid grid-cols-1 md:grid-cols-5 gap-4 ">
             <div className=" md:col-span-3">
-              <DepartmentOverview countstatusPay={countstatusPay} countstatusRecieve={countstatusRecieve} countCost={countCost} countOutofstock={countOutofstock} />
+              <DepartmentOverview
+                countstatusPay={countstatusPay}
+                countstatusRecieve={countstatusRecieve}
+                countCost={countCost}
+                countOutofstock={countOutofstock}
+              />
             </div>
             <div className=" md:col-span-2">
               <ProductSummary countVender={countVender} countMasterproduct={countMasterproduct} countMasterInventory={countMasterInventory} />

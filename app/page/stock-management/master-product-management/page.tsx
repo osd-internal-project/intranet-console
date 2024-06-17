@@ -1,5 +1,5 @@
 "use client";
-import { Breadcrumb, Button, Card, Col, Row, Table } from "antd";
+import { Breadcrumb, Button, Card, Col, Divider, Row, Table } from "antd";
 import TableMasterProduct from "./components/TableMasterProduct";
 import { useState } from "react";
 import Link from "next/link";
@@ -20,8 +20,8 @@ export default function MasterProductPage() {
               title: <span>Home</span>,
             },
             {
-              href: "/page/setting",
-              title: <span>Setting</span>,
+              href: "/page/stock-management",
+              title: <span>Stock Management</span>,
             },
             {
               title: <span>Master Product Manangement</span>,
@@ -29,9 +29,10 @@ export default function MasterProductPage() {
           ]}
         />
       </Col>
-      <Col span={24}>
-        <div className="title-page-font">{`MASTER PRODUCT MANAGEMENT`}</div>
-      </Col>
+
+      <Divider orientation="left" orientationMargin="0">
+        <div className="title-page-font">{`Master Product Manangement`}</div>
+      </Divider>
       <Col span={24}>
         <TableMasterProduct />
       </Col>

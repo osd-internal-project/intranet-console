@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, Form, Modal, Row, message } from "antd";
+import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, message } from "antd";
 import { CreateTypeLeave } from "./components/create-type-leave";
 import { TableTypeLeave } from "./components/table-type-leave";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -152,7 +152,7 @@ export default function TypeLeave() {
   return (
     <>
       <Row gutter={[8, 8]}>
-        <Col span={24} style={{ marginBottom: "20px" }}>
+        <Col span={24}>
           <Breadcrumb
             items={[
               {
@@ -160,18 +160,17 @@ export default function TypeLeave() {
                 title: <span>Home</span>,
               },
               {
-                href: "/page/setting",
                 title: <span>Setting</span>,
               },
               {
-                title: <span>Set Type Leave </span>,
+                title: <span>Set Type Leave</span>,
               },
             ]}
           />
         </Col>
-        <Col span={24}>
-          <div className="title-page-font">{`SET TYPE LEAVE`}</div>
-        </Col>
+        <Divider orientation="left" orientationMargin="0">
+          <div className="title-page-font">{`Set Type Leave`}</div>
+        </Divider>
       </Row>
       <Row gutter={[8, 8]}>
         <Col span={24}>

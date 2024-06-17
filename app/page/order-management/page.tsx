@@ -1,5 +1,5 @@
 "use client";
-import { Breadcrumb, Button, Card, Col, Form, Row, Select, Table } from "antd";
+import { Breadcrumb, Button, Card, Col, Divider, Form, Row, Select, Table } from "antd";
 import TableOrders from "./components/TableOrders";
 import { useEffect, useState } from "react";
 import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -21,11 +21,10 @@ export default function ProductListPage() {
   useEffect(() => {
     fetchData();
   }, []);
+
   const fetchData = async () => {
     if (session?.grouplist) {
-      const locations: ITypeMasterLocation[] =
-        await orderManagementService.getLocationByGroup(session?.grouplist);
-
+      const locations: ITypeMasterLocation[] = await orderManagementService.getLocationByGroup(session?.grouplist);
       const options = locations.map((d: ITypeMasterLocation) => ({
         value: d.id,
         label: d.locationName,
@@ -50,10 +49,12 @@ export default function ProductListPage() {
           ]}
         />
       </Col>
-      <Col span={24} className=" md:flex md:space-x-4 ">
-        <div className="title-page-font  ">{`ORDER MANAGEMENT`}</div>
-        <div className="flex space-x-3  items-center ">
-          <div className=" text-lg">Location :</div>
+      <Divider orientation="left" orientationMargin="0">
+        <div className="title-page-font">{`Order Management`}</div>
+      </Divider>
+      <Col span={24} className=" flex space-x-4">
+        <div className="flex space-x-3  items-center">
+          <div className="text-lg">Location :</div>
           <Select
             value={location}
             options={option}

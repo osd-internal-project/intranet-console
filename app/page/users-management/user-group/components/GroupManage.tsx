@@ -44,10 +44,10 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
   const [selectRole, setSeleceRole] = useState<TSelectRoleDto[]>([]);
 
   useEffect(() => {
-    loading();
+    featchData();
   }, [groupSelect]);
 
-  const loading = async () => {
+  const featchData = async () => {
     setEditState(false);
     setGroupDetail(null);
     if (groupSelect) {
@@ -70,6 +70,10 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
     propDataManage({ selectOrganize: selectOrganize, groupSelect: null, loading: true });
   };
 
+  const onFinishFailed = (errorInfo: any) => {
+    console.log("Failed:", errorInfo);
+  };
+
   const onFinishEdit = async (values: groupDetail) => {
     setbuttonLoading(true);
     await userGroupServices
@@ -77,14 +81,10 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
       .then(() => {
         message.success(`Edit success`);
         setOpenAddModel(false);
-        // propDataManage({ selectOrganize: selectOrganize, loading: true, groupSelect: values.groupId });
+        propDataManage({ selectOrganize: selectOrganize, loading: true, groupSelect: values.groupId });
       })
       .catch((err) => message.error(err));
     setbuttonLoading(false);
-  };
-
-  const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
   };
 
   const handleDelete = async () => {

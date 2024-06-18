@@ -315,12 +315,12 @@ export const MenuSider: MenuItem[] = [
       {
         key: `crm/customer`,
         label: `Customer`,
-        // rule: "housekeeper",
+        rule: "crm-cd-s",
       },
       {
         key: `crm/ticket`,
         label: `Ticket `,
-        // rule: "housekeeper",
+        rule: "crm-tk-s",
       },
     ],
   },

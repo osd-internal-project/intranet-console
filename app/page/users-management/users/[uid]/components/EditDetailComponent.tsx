@@ -245,7 +245,7 @@ const EditDetailComponent: React.FC<props> = ({
             <Avatar size={128} src={image ? URL.createObjectURL(image) : ""} />
           </div>
           <div className=" flex justify-center">
-            <Form.Item name="image">
+            <Form.Item name="image" hidden={disabledEdit}>
               <Upload
                 accept="image/png, image/jpeg"
                 fileList={imageFiles}

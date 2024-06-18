@@ -1,48 +1,10 @@
-import {
-  CreditCardOutlined,
-  DashboardOutlined,
-  FileTextOutlined,
-  LogoutOutlined,
-  UserOutlined,
-  CloseOutlined,
-  FallOutlined,
-  FileExclamationOutlined,
-  MailOutlined,
-  BankOutlined,
-  HomeOutlined,
-} from "@ant-design/icons";
+import { LogoutOutlined, UserOutlined, HomeOutlined } from "@ant-design/icons";
 import { Icon } from "@iconify/react";
-import { MenuProps } from "antd";
+import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
-import React, { Children } from "react";
+import React from "react";
 import { signOut } from "next-auth/react";
-import {
-  buldingIcon,
-  carlendarIcon,
-  circleSqureIcon,
-  colorSwatchIcon,
-  cubeIcon,
-  editTagIcon,
-  gridIcon,
-  groupLineIcon,
-  IconDataLeave,
-  bookingIcon,
-  IconHolidays,
-  IconPosition,
-  IconTypeLeave,
-  maintenanceIcon,
-  mindMappingIcon,
-  organizeChart,
-  persentationChartLoneIcon,
-  shieldExclamationIcon,
-  starIcon,
-  stockIcon,
-  stockSetting,
-  truckIcon,
-  userGroupIcon,
-  warningIcon,
-  contactListIcon,
-} from "@/components/icon";
+import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, organizeChart, stockIcon, contactListIcon } from "@/components/icon";
 
 type MenuItem = Required<MenuProps>["items"][number];
 const MenuNav: MenuProps["items"] = [
@@ -82,7 +44,7 @@ export const MenuSider: MenuItem[] = [
     children: [
       {
         key: `internal-info/organization-chart`,
-        label: `Organization Chart`,
+        label: "Organization Chart",
       },
       {
         key: `internal-info/organization-chart-team`,
@@ -431,7 +393,9 @@ export const MenuSiderWithModule = (modules: string[]) => {
               ...item,
               label: (
                 <>
-                  <Link href={`/page/${item.key}`}>{item.label}</Link>
+                  <Tooltip placement="right" title={item.label}>
+                    <Link href={`/page/${item.key}`}>{item.label}</Link>
+                  </Tooltip>
                 </>
               ),
             }))

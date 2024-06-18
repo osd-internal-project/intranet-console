@@ -4,7 +4,15 @@ import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
 import React from "react";
 import { signOut } from "next-auth/react";
-import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, organizeChart, stockIcon, contactListIcon } from "@/components/icon";
+import {
+  gridIcon,
+  IconDataLeave,
+  bookingIcon,
+  maintenanceIcon,
+  organizeChart,
+  stockIcon,
+  contactListIcon,
+} from "@/components/icon";
 
 type MenuItem = Required<MenuProps>["items"][number];
 const MenuNav: MenuProps["items"] = [
@@ -281,16 +289,17 @@ export const MenuSider: MenuItem[] = [
     key: "crm",
     icon: contactListIcon,
     label: `CRM`,
+    rule: "crm-s",
     children: [
       {
         key: `crm/customer`,
         label: `Customer`,
-        // rule: "housekeeper",
+        rule: "crm-cd-s",
       },
       {
         key: `crm/ticket`,
         label: `Ticket `,
-        // rule: "housekeeper",
+        rule: "crm-tk-s",
       },
     ],
   },

@@ -33,14 +33,25 @@ const GroupTree: React.FC<props> = ({ propDataTree, loading, selectOrganize }): 
   const [tabsKey, setTabsKey] = useState<string>("0");
 
   useEffect(() => {
-    featchData();
-  }, []);
+    if (loading) {
+      featchData();
+      featchDataTree(tabsKey);
+    }
+  }, [loading]);
 
   const featchData = async () => {
     const resOrganize = await userGroupServices.findAllOrganize();
     const orgList = resOrganize.map((item: TOrganizeDto) => ({ key: item.organizedId, label: item.organizedName }));
     setTabList([...orgList]);
     propDataTree({ selectOrganize: selectOrganize, groupSelect: null, loading: false });
+  };
+
+  const featchDataTree = async (organize: string) => {
+    if (organize === "0") return;
+    const group = await userGroupServices.getUserGroupByOrganizedGroupId(organize);
+    const tree = createTree(group.organizeMapGroup, null);
+    setTreeList(tree);
+    propDataTree({ selectOrganize: organize, groupSelect: null, loading: false });
   };
 
   const createTree = (obj: any[], parentId: string | null) => {
@@ -63,10 +74,7 @@ const GroupTree: React.FC<props> = ({ propDataTree, loading, selectOrganize }): 
 
   const onChangTapOrganize = async (organize: any) => {
     setTabsKey(organize);
-    const group = await userGroupServices.getUserGroupByOrganizedGroupId(organize);
-    const tree = createTree(group.organizeMapGroup, null);
-    setTreeList(tree);
-    propDataTree({ selectOrganize: organize, groupSelect: null, loading: false });
+    featchDataTree(organize);
   };
 
   const onSelectTree = (value: any) => {

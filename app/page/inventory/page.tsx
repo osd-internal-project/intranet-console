@@ -1,5 +1,5 @@
 "use client";
-import { Breadcrumb, Card, Col, Row, Space } from "antd";
+import { Breadcrumb, Card, Col, Divider, Row, Space } from "antd";
 import React, { useState } from "react";
 import { FiltersInventory } from "./components/FiltersInventory";
 import { TableInventory } from "./components/TableInventory";
@@ -24,15 +24,13 @@ const page = () => {
             ]}
           />
         </Col>
-        <Col span={24} className=" md:flex md:space-x-4 ">
-          <div className="title-page-font  ">{`INVENTORY`}</div>
-        </Col>
+        <Divider orientation="left" orientationMargin="0">
+          <div className="title-page-font">{`Inventory`}</div>
+        </Divider>
         <Col span={24}>
           <div className="grid grid-cols-1 gap-y-2">
-            <div>
-              <FiltersInventory prop={(e) => setSearch(e)} />
-            </div>
             <Card>
+              <FiltersInventory prop={(e) => setSearch(e)} />
               <TableInventory groupID={session} search={search} />
             </Card>
           </div>

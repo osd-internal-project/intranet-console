@@ -52,10 +52,9 @@ export const FilterBrand: React.FC<props> = ({ onCloseDialog }): React.ReactElem
   };
   return (
     <div>
-      <Card className=" grid grid-cols-1 gap-y-2">
+      <Card className=" grid grid-cols-1 gap-y-2" title="Add Brand">
         {addRule ? (
           <div>
-            <Typography className="title-page-font">{`Add Brand`}</Typography>
             <Form
               form={FORM}
               layout="horizontal"

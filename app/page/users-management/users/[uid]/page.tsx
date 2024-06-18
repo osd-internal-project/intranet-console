@@ -1,5 +1,5 @@
 "use client";
-import { Breadcrumb, Button, Card, Checkbox, Col, Form, Input, Row, Tabs } from "antd";
+import { Breadcrumb, Button, Card, Checkbox, Col, Divider, Form, Input, Row, Tabs } from "antd";
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import EditDetailComponent from "./components/EditDetailComponent";
@@ -20,12 +20,11 @@ export default function UserDetailPage() {
               title: <span>Home</span>,
             },
             {
-              href: "/page/setting",
-              title: <span>Setting</span>,
+              title: <span>User Management</span>,
             },
             {
-              href: "/page/setting/usermanagement",
-              title: <span>User Management</span>,
+              href: "/page/users-management/users",
+              title: <span>Users</span>,
             },
             {
               title: <span>{userid}</span>,
@@ -33,9 +32,10 @@ export default function UserDetailPage() {
           ]}
         />
       </Col>
-      <Col span={24}>
-        <div className="title-page-font">{`EDIT USER`}</div>
-      </Col>
+
+      <Divider orientation="left" orientationMargin="0">
+        <div className="title-page-font">{`Edit User`}</div>
+      </Divider>
       <Col span={24}>
         <div className=" grid-span-1 space-y-2">
           <div>

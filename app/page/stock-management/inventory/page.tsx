@@ -1,11 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Col, Row } from "antd";
+import { Breadcrumb, Card, Col, Divider, Row } from "antd";
 import { useSearchParams } from "next/navigation";
 import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { InventoryServices } from "./services/inventory.service";
-import { AddInventory } from "./component/AddInventory";
-import { TableInventory } from "./component/TableInventory";
+import { AddInventory } from "./components/AddInventory";
+import { TableInventory } from "./components/TableInventory";
 import { typeInventory, typeInventoryFIlters } from "./common";
 import { dateToEndofDay, dateToStartofDay } from "@/app/utils/format";
 
@@ -74,8 +74,8 @@ const Inventory = () => {
                 title: <span>Home</span>,
               },
               {
-                href: "/page/setting",
-                title: <span>Setting</span>,
+                href: "/page/stock-management",
+                title: <span>Stock Management</span>,
               },
               {
                 title: <span>Inventory Store</span>,
@@ -83,12 +83,13 @@ const Inventory = () => {
             ]}
           />
         </Col>
-        <Col span={24}>
-          <div className="title-page-font">{`INVENTORY STORE`}</div>
-        </Col>
+
+        <Divider orientation="left" orientationMargin="0">
+          <div className="title-page-font">{`Inventory Store`}</div>
+        </Divider>
       </Row>
-      <div className="grid grid-cols-1 space-y-4 m-4">
-        <div>
+      <div>
+        <Card>
           <AddInventory
             setLoading={(e: boolean) => setLoading(e)}
             locationId={locationId}
@@ -96,10 +97,8 @@ const Inventory = () => {
             openFilter={openFilter}
             onFilter={(e: typeInventoryFIlters) => onFilter(e)}
           />
-        </div>
-        <div>
           <TableInventory loading={loading} getdataAll={getdataAll} setLoading={(e: boolean) => setLoading(e)} />
-        </div>
+        </Card>
       </div>
     </>
   );

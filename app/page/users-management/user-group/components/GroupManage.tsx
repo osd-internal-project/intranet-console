@@ -44,10 +44,10 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
   const [selectRole, setSeleceRole] = useState<TSelectRoleDto[]>([]);
 
   useEffect(() => {
-    loading();
+    featchData();
   }, [groupSelect]);
 
-  const loading = async () => {
+  const featchData = async () => {
     setEditState(false);
     setGroupDetail(null);
     if (groupSelect) {
@@ -70,6 +70,10 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
     propDataManage({ selectOrganize: selectOrganize, groupSelect: null, loading: true });
   };
 
+  const onFinishFailed = (errorInfo: any) => {
+    console.log("Failed:", errorInfo);
+  };
+
   const onFinishEdit = async (values: groupDetail) => {
     setbuttonLoading(true);
     await userGroupServices
@@ -77,14 +81,10 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
       .then(() => {
         message.success(`Edit success`);
         setOpenAddModel(false);
-        // propDataManage({ selectOrganize: selectOrganize, loading: true, groupSelect: values.groupId });
+        propDataManage({ selectOrganize: selectOrganize, loading: true, groupSelect: values.groupId });
       })
       .catch((err) => message.error(err));
     setbuttonLoading(false);
-  };
-
-  const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
   };
 
   const handleDelete = async () => {
@@ -166,7 +166,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
                 {!editState ? (
                   <>
                     {editRule ? (
-                      <Button type="primary" onClick={onClickEdit} disabled={!groupDetail.parentGroupId ? true : false} loading={buttonLoading}>
+                      <Button type="primary" onClick={onClickEdit} loading={buttonLoading}>
                         Edit
                       </Button>
                     ) : (
@@ -206,15 +206,12 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
             </div>
             <div>
               <Form.Item name="groupName" label="Name :" rules={[{ required: true, message: "Please enter sub group name" }]}>
-                <Input disabled={!groupDetail.parentGroupId || editState === false ? true : false} className={!editState ? "read-only-input" : ""} />
+                <Input disabled={editState === false ? true : false} className={!editState ? "read-only-input" : ""} />
               </Form.Item>
             </div>
             <div>
               <Form.Item name="description" label="Description :">
-                <Input.TextArea
-                  disabled={!groupDetail.parentGroupId || editState === false ? true : false}
-                  className={!editState ? "read-only-input" : ""}
-                />
+                <Input.TextArea disabled={editState === false ? true : false} className={!editState ? "read-only-input" : ""} />
               </Form.Item>
             </div>
             <div>
@@ -222,7 +219,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
                 <Select
                   mode="multiple"
                   options={selectRole.map((item: TSelectRoleDto) => ({ value: item.roleId, label: item.roleName }))}
-                  disabled={!groupDetail.parentGroupId || editState === false ? true : false}
+                  disabled={editState === false ? true : false}
                   className={!editState ? "read-only-input" : ""}
                 />
               </Form.Item>
@@ -235,12 +232,11 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
                       setEditState(false);
                       editform.resetFields();
                     }}
-                    disabled={!groupDetail.parentGroupId ? true : false}
                   >
                     Back
                   </Button>
                 </Form.Item>
-                <Button type="primary" htmlType="submit" disabled={!groupDetail.parentGroupId ? true : false} loading={buttonLoading}>
+                <Button type="primary" htmlType="submit" loading={buttonLoading}>
                   Save Change
                 </Button>
               </div>

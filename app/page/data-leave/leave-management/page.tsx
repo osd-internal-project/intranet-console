@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, Form, Modal, Tabs, message } from "antd";
+import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, Tabs, message } from "antd";
 import { ISelect, ITpyeUser, ITypetypeleave } from "../common";
 import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../services/index.service";
@@ -111,34 +111,52 @@ const page = () => {
     });
   };
   return (
-    <div>
-      <Card>
-        <Tabs
-          tabPosition={"left"}
-          onChange={handdleChangeTab}
-          destroyInactiveTabPane={true}
-          items={getdataTypeLeave.map((type, i) => {
-            return {
-              label: `${type.typeName}`,
-              key: String(type.id),
-              children: (
-                <div className=" space-y-3">
-                  <CreateLeaveManagement
-                    onFinishCreate={(event: any) => onFinishCreate(event)}
-                    TypeId={type.id}
-                    getdataUser={getdataUser}
-                    setOpenModal={(event: boolean) => setOpenModal(event)}
-                    openModal={openModal}
-                    formcreate={formcreate}
-                  />
-                  <TabeLeavManagement getdataUserByTypeId={getdataUserByTypeId} onFinishDel={(e: number) => onFinishDel(e)} />
-                </div>
-              ),
-            };
-          })}
+    <Row>
+      <Col span={24}>
+        <Breadcrumb
+          items={[
+            {
+              href: "/page",
+              title: <span>Home</span>,
+            },
+            {
+              title: <span>Leave Management</span>,
+            },
+          ]}
         />
-      </Card>
-    </div>
+      </Col>
+      <Divider orientation="left" orientationMargin="0">
+        <div className="title-page-font">{`Leave Management`}</div>
+      </Divider>
+      <div className="w-full">
+        <Card>
+          <Tabs
+            tabPosition={"left"}
+            onChange={handdleChangeTab}
+            destroyInactiveTabPane={true}
+            items={getdataTypeLeave.map((type, i) => {
+              return {
+                label: `${type.typeName}`,
+                key: String(type.id),
+                children: (
+                  <div className=" space-y-3">
+                    <CreateLeaveManagement
+                      onFinishCreate={(event: any) => onFinishCreate(event)}
+                      TypeId={type.id}
+                      getdataUser={getdataUser}
+                      setOpenModal={(event: boolean) => setOpenModal(event)}
+                      openModal={openModal}
+                      formcreate={formcreate}
+                    />
+                    <TabeLeavManagement getdataUserByTypeId={getdataUserByTypeId} onFinishDel={(e: number) => onFinishDel(e)} />
+                  </div>
+                ),
+              };
+            })}
+          />
+        </Card>
+      </div>
+    </Row>
   );
 };
 

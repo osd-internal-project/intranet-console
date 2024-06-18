@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Breadcrumb, Col, Row } from "antd";
+import { Breadcrumb, Col, Divider, Row } from "antd";
 
 import { TableBrand } from "./components/TableBrand";
 import { FilterBrand } from "./components/FilterBrand";
@@ -18,8 +18,8 @@ export default function Brand() {
                 title: <span>Home</span>,
               },
               {
-                href: "/page/setting",
-                title: <span>Setting</span>,
+                href: "/page/stock-management",
+                title: <span>Stock Management</span>,
               },
               {
                 title: <span>Set Brand </span>,
@@ -27,9 +27,11 @@ export default function Brand() {
             ]}
           />
         </Col>
-        <Col span={24}>
-          <div className="title-page-font">{`SET BRAND`}</div>
-        </Col>
+
+        <Divider orientation="left" orientationMargin="0">
+          <div className="title-page-font">{`Set Brand`}</div>
+        </Divider>
+
         <Col span={24}>
           <div className="grid grid-cols-1 ">
             <div>

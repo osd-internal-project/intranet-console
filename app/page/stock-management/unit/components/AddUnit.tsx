@@ -50,8 +50,7 @@ export const AddUnit: React.FC<props> = ({ setLoading }) => {
 
   return (
     <div>
-      <Card className=" grid grid-cols-1 gap-y-2">
-        <Typography className="title-page-font">{`Set Unit`}</Typography>
+      <Card className=" grid grid-cols-1 gap-y-2" title="Add Unit">
         <Form
           form={FORM}
           layout="horizontal"

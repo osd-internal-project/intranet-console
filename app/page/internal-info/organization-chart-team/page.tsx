@@ -1,6 +1,6 @@
 "use client";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { Breadcrumb, Card, Col, Row, Tabs, Typography } from "antd";
+import { Breadcrumb, Card, Col, Divider, Row, Tabs, Typography } from "antd";
 import React, { useEffect, useState } from "react";
 import OrganizeServices from "../../setting/organize-chart/services/organize-chart.service";
 import dynamic from "next/dynamic";
@@ -56,14 +56,14 @@ export default function Page() {
             },
 
             {
-              title: <span>team-chart</span>,
+              title: <span>Team Chart</span>,
             },
           ]}
         />
       </Col>
-      <Col span={24}>
+      <Divider orientation="left" orientationMargin="0">
         <div className="title-page-font">{`Team Chart`}</div>
-      </Col>
+      </Divider>
       <Col span={24}>
         <div className=" grid-span-1 space-y-2">
           <Card>

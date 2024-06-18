@@ -1,14 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { signIn, signOut, useSession } from "next-auth/react";
-import { redirect, usePathname } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 import Navigation from "@/components/Navigation";
 import { Layout, Menu, message, Spin } from "antd";
 import { MenuSiderWithModule } from "@/app/config/menu";
 import { pageWithoutMenu } from "@/app/config/data";
 import { Footer } from "antd/es/layout/layout";
-
-import axios from "axios";
 import { useAxiosStock, useAxiosUser } from "../lib/axios/hooks/userAxiosAuth";
 import IndexServices from "./services/index.service";
 
@@ -33,6 +31,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       fatchData();
     }
   }, [session]);
+
   async function fatchData() {
     if (session) {
       // const count = await indexServices.countLotBeforeExpiredByLocation(
@@ -48,6 +47,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       setAvatar(image);
     }
   }
+
   if (status === "loading") {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -55,15 +55,16 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       </div>
     );
   }
+
   const LoseToken = () => {
     message.error("ไม่มีสิทธิ์เข้าถึง");
     signOut();
   };
+
   if (!session) {
     LoseToken();
   } else {
     const { Content, Sider } = Layout;
-
     const menulist = MenuSiderWithModule(session?.rulelist);
     const currentPath = pathname.split("/")[2];
     const currentPathSub = pathname.split("/")[3];

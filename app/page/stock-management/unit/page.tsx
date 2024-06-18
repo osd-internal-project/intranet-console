@@ -1,6 +1,6 @@
 "use client";
 
-import { Breadcrumb, Card, Col, Row, Typography } from "antd";
+import { Breadcrumb, Card, Col, Divider, Row, Typography } from "antd";
 
 import { AddUnit } from "./components/AddUnit";
 import { TableUnit } from "./components/TableUnit";
@@ -79,7 +79,7 @@ export default function UnitPage() {
   return (
     <>
       <Row gutter={[8, 8]}>
-        <Col span={24} style={{ marginBottom: "20px" }}>
+        <Col span={24}>
           <Breadcrumb
             items={[
               {
@@ -87,18 +87,18 @@ export default function UnitPage() {
                 title: <span>Home</span>,
               },
               {
-                href: "/page/setting",
-                title: <span>Setting</span>,
+                href: "/page/stock-management",
+                title: <span>Stock Management</span>,
               },
               {
-                title: <span>Set Unit </span>,
+                title: <span>Set Unit</span>,
               },
             ]}
           />
         </Col>
-        <Col span={24}>
-          <div className="title-page-font">{`SET UNIT`}</div>
-        </Col>
+        <Divider orientation="left" orientationMargin="0">
+          <div className="title-page-font">{`Set Unit`}</div>
+        </Divider>
       </Row>
       <Row gutter={[8, 8]}>
         <Col span={24}>

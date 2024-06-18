@@ -1,14 +1,9 @@
-import { Breadcrumb, Card, Col, Row, Table, Tabs } from "antd";
+import { Breadcrumb, Card, Col, Divider, Row, Table, Tabs } from "antd";
 import RoleComponent from "./components/RoleComponent";
 import GroupOfRulesComponent from "./components/GroupOfRulesComponent";
 export default function RolePage() {
   return (
     <>
-      {/* <div className="grid grid-cols-1 ">
-          <h3 className=" text-2xl  font-semibold ">
-            User Role
-          </h3>
-        </div> */}
       <Row gutter={[8, 8]}>
         <Col span={24}>
           <Breadcrumb
@@ -18,21 +13,20 @@ export default function RolePage() {
                 title: <span>Home</span>,
               },
               {
-                href: "/page/setting",
-                title: <span>Setting</span>,
+                title: <span>Users Management</span>,
               },
               {
-                title: <span>User Role </span>,
+                title: <span>Roles</span>,
               },
             ]}
           />
         </Col>
-        <Col span={24}>
-          <div className="title-page-font">{`USER ROLE`}</div>
-        </Col>
+        <Divider orientation="left" orientationMargin="0">
+          <div className="title-page-font">{`Roles`}</div>
+        </Divider>
         <Col span={24}>
           <div className="grid grid-cols-1 md:grid-cols-1">
-            <div>
+            <Card>
               <Tabs
                 defaultActiveKey="1"
                 destroyInactiveTabPane={true}
@@ -49,7 +43,7 @@ export default function RolePage() {
                   },
                 ]}
               />
-            </div>
+            </Card>
           </div>
         </Col>
       </Row>

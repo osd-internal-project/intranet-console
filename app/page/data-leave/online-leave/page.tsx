@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, Modal, Row, Typography, UploadFile, message } from "antd";
+import { Breadcrumb, Card, Col, Divider, Modal, Row, Typography, UploadFile, message } from "antd";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -127,24 +127,23 @@ export default function Page() {
 
   return (
     <div>
-      <Row gutter={[8, 8]}>
-        <Col span={24} style={{ marginBottom: "20px" }}>
+      <Row>
+        <Col span={24}>
           <Breadcrumb
             items={[
               {
                 href: "/page",
                 title: <span>Home</span>,
               },
-
               {
                 title: <span>Set Data Leave </span>,
               },
             ]}
           />
         </Col>
-        <Card className=" grid grid-cols-1 gap-y-2">
-          <Typography>{`Set Date Leave`}</Typography>
-        </Card>
+        <Divider orientation="left" orientationMargin="0">
+          <div className="title-page-font">{`Set Date Leave`}</div>
+        </Divider>
       </Row>
       <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
         <Col span={12}>

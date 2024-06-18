@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Button, Card, Col, message, Row, Spin, TablePaginationConfig, Tabs } from "antd";
+import { Breadcrumb, Button, Card, Col, Divider, message, Row, Spin, TablePaginationConfig, Tabs } from "antd";
 import MaCalendarComponent from "./components/MaCalendar";
 import MaFilterComponent from "./components/MaFilter";
 import MaTableComponent from "./components/MaTable";
@@ -98,10 +98,9 @@ export default function MaTaskPage() {
             ]}
           />
         </Col>
-        <Col span={24}>
-          <div className="title-page-font">{`MAINTENANCE MANAGEMENT`}</div>
-        </Col>
-
+        <Divider orientation="left" orientationMargin="0">
+          <div className="title-page-font">{`Maintenance Mangement`}</div>
+        </Divider>
         <Col span={24}>
           <Card>
             <Tabs

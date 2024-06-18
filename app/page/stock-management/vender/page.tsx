@@ -1,5 +1,5 @@
 "use client";
-import { Breadcrumb, Card, Col, Row, message } from "antd";
+import { Breadcrumb, Card, Col, Divider, Row, message } from "antd";
 import { FilterVender } from "./components/FilterVender";
 import { TableVender } from "./components/TableVender";
 import { VenderServices } from "./service/vender.service";
@@ -96,8 +96,8 @@ export default function Vender() {
               title: <span>Home</span>,
             },
             {
-              href: "/page/setting",
-              title: <span>Setting</span>,
+              href: "/page/stock-management",
+              title: <span>Stock Management</span>,
             },
             {
               title: <span>Vender</span>,
@@ -105,29 +105,27 @@ export default function Vender() {
           ]}
         />
       </Col>
-      <Col span={24}>
-        <div className="title-page-font">{`VENDER`}</div>
-      </Col>
-      <Col span={24}>
+
+      <Divider orientation="left" orientationMargin="0">
+        <div className="title-page-font">{`Vender`}</div>
+      </Divider>
+
+      <Card style={{ height: "100%" }} className="w-full">
         <FilterVender
           setLoading={(e: boolean) => setLoading(e)}
           handleOpenFilter={(e: boolean) => handleOpenFilter(e)}
           openFilter={openFilter}
           onFilter={(e: typeVenderFilter) => onFilter(e)}
         />
-      </Col>
-      <Col span={24}>
-        <Card style={{ height: "100%" }}>
-          <TableVender
-            getdataallvender={getdataallvender}
-            setLoading={(e: boolean) => setLoading(e)}
-            getloading={getloading}
-            handlerPaginationTable={(e: any) => handlerPaginationTable(e)}
-            paginationConfig={paginationConfig}
-            pagination={pagination}
-          />
-        </Card>
-      </Col>
+        <TableVender
+          getdataallvender={getdataallvender}
+          setLoading={(e: boolean) => setLoading(e)}
+          getloading={getloading}
+          handlerPaginationTable={(e: any) => handlerPaginationTable(e)}
+          paginationConfig={paginationConfig}
+          pagination={pagination}
+        />
+      </Card>
     </Row>
   );
 }

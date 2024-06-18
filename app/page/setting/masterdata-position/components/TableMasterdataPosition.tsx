@@ -125,24 +125,16 @@ export const TableMasterdataPosition: React.FC<props> = ({
         return (
           <>
             <Row gutter={[8, 8]} className="card-filter" style={{ justifyContent: "center", display: "flex" }}>
-              {/* {editRule ? ( */}
               <Col>
                 <Button type="link" onClick={() => showModal(row)}>
                   {editIcon}
                 </Button>
               </Col>
-              {/* ) : (
-                <></>
-              )} */}
-              {/* {deleteRule ? ( */}
               <Col>
                 <Button type="link" danger onClick={() => onfinishDel(Number(event))} disabled={buttonLoading}>
                   {deleteIcon}
                 </Button>
               </Col>
-              {/* ) : (
-                <></>
-              )} */}
             </Row>
           </>
         );
@@ -182,34 +174,35 @@ export const TableMasterdataPosition: React.FC<props> = ({
     </>
   ) : (
     <div className=" grid grid-cols-1 gap-y-2">
-      <Row gutter={[8, 8]}>
-        <Col span={24}>
-          <Popover
-            onOpenChange={handleOpenFilter}
-            open={openFilter}
-            content={searchContent}
-            placement="bottomLeft"
-            title="Search"
-            trigger="click"
-            overlayStyle={{ width: "calc(100% - 240px)" }}
-          >
-            <Button className="button-blue" type="primary" icon={<FilterOutlined />}>
-              Filters
-            </Button>
-          </Popover>
-        </Col>
-        <Col span={24}>
-          <Card className="card-filter">
-            <Table
-              size="small"
-              loading={getloading}
-              dataSource={getdataAll}
-              rowKey={(value: any) => value.id}
-              columns={columns}
-              pagination={{ current: currentPage, onChange: handlePageChange, showSizeChanger: false }}
-            />
-          </Card>
-        </Col>
+      <Row>
+        <Card className="card-filter w-full">
+          <div className=" pb-8">
+            <Popover
+              onOpenChange={handleOpenFilter}
+              open={openFilter}
+              content={searchContent}
+              placement="bottomLeft"
+              title="Search"
+              trigger="click"
+              overlayStyle={{ width: "calc(100% - 240px)" }}
+            >
+              <div className="flex justify-end">
+                <Button className="button-blue" type="primary" icon={<FilterOutlined />}>
+                  Filters
+                </Button>
+              </div>
+            </Popover>
+          </div>
+
+          <Table
+            size="small"
+            loading={getloading}
+            dataSource={getdataAll}
+            rowKey={(value: any) => value.id}
+            columns={columns}
+            pagination={{ current: currentPage, onChange: handlePageChange, showSizeChanger: false }}
+          />
+        </Card>
       </Row>
       <Modal title="Edit Position" open={openEdit} onCancel={handleCancel} footer={false} width={800}>
         <Row gutter={[8, 8]}>

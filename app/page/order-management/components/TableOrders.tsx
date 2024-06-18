@@ -1,25 +1,5 @@
-import {
-  DownOutlined,
-  ExclamationCircleFilled,
-  FilterOutlined,
-  PlusCircleOutlined,
-} from "@ant-design/icons";
-import {
-  Button,
-  Card,
-  Popover,
-  Table,
-  Image,
-  Tag,
-  Form,
-  Input,
-  Modal,
-  message,
-  TableColumnsType,
-  Badge,
-  Dropdown,
-  Space,
-} from "antd";
+import { DownOutlined, ExclamationCircleFilled, FilterOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { Button, Card, Popover, Table, Image, Tag, Form, Input, Modal, message, TableColumnsType, Badge, Dropdown, Space } from "antd";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import OrderManagementServices from "../services/order-management.service";
@@ -52,10 +32,7 @@ interface SubTableDataType {
   total: number;
 }
 
-const TableOrders: React.FC<props> = ({
-  location,
-  grouplist,
-}): React.ReactElement => {
+const TableOrders: React.FC<props> = ({ location, grouplist }): React.ReactElement => {
   const stockAuth = useAxiosStock();
   const addOrderRule = checkRule("sm-order-a");
   const orderManagementServices = OrderManagementServices(stockAuth);
@@ -72,17 +49,11 @@ const TableOrders: React.FC<props> = ({
   const loadData = async () => {
     setLoading(true);
     if (location) {
-      const data = await orderManagementServices.findOrdersByLocation(
-        Number(location),
-        search
-      );
+      const data = await orderManagementServices.findOrdersByLocation(Number(location), search);
       setDataTable(data);
     } else {
       if (grouplist) {
-        const data = await orderManagementServices.findOrdersAllByOwnerGroup(
-          grouplist,
-          search
-        );
+        const data = await orderManagementServices.findOrdersAllByOwnerGroup(grouplist, search);
         setDataTable(data);
       }
     }
@@ -121,15 +92,7 @@ const TableOrders: React.FC<props> = ({
       dataIndex: "status",
       key: "status",
       render: (d: string) =>
-        d === "new" ? (
-          <Tag color="blue">{d}</Tag>
-        ) : d === "done" ? (
-          <Tag color="green">{d}</Tag>
-        ) : d === "cancel" ? (
-          <Tag color="red">{d}</Tag>
-        ) : (
-          ""
-        ),
+        d === "new" ? <Tag color="blue">{d}</Tag> : d === "done" ? <Tag color="green">{d}</Tag> : d === "cancel" ? <Tag color="red">{d}</Tag> : "",
     },
     {
       title: "QTY",
@@ -190,13 +153,7 @@ const TableOrders: React.FC<props> = ({
     ];
     return (
       <div key={e.id}>
-        <Table
-          rowClassName=" bg-neutral-50"
-          rowKey={(r: SubTableDataType) => r.casNo}
-          dataSource={e.orderLot}
-          columns={columns}
-          pagination={false}
-        />
+        <Table rowClassName=" bg-neutral-50" rowKey={(r: SubTableDataType) => r.casNo} dataSource={e.orderLot} columns={columns} pagination={false} />
       </div>
     );
   };
@@ -246,49 +203,37 @@ const TableOrders: React.FC<props> = ({
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-y-2">
-        <div className=" col-span-4  flex justify-between">
-          <div>
-            <Popover
-              onOpenChange={handleOpenFilter}
-              open={openFilter}
-              content={searchContent}
-              placement="bottomLeft"
-              title="Search"
-              trigger="click"
-              overlayStyle={{ width: "calc(100% - 240px)" }}
-            >
-              <Button
-                type="primary"
-                className="button-blue"
-                icon={<FilterOutlined />}
-              >
-                Filters
-              </Button>
-            </Popover>
-          </div>
-          <div className=" space-x-2">
-            {addOrderRule ? (
-              <Link
-                href={`/page/order-management/add${
-                  location ? `?locationId=${location}` : ``
-                }`}
-              >
-                <Button
-                  icon={<PlusCircleOutlined />}
-                  type="primary"
-                  className="button-blue"
-                >
-                  Request Order
-                </Button>
-              </Link>
-            ) : (
-              <></>
-            )}
-
-            {/* <Button icon={exportIcon}> Export</Button> */}
-          </div>
-        </div>
         <Card className="col-span-4 md:col-span-4">
+          <div className=" col-span-4  flex justify-end pb-4">
+            <Space>
+              <div>
+                <Popover
+                  onOpenChange={handleOpenFilter}
+                  open={openFilter}
+                  content={searchContent}
+                  placement="bottomLeft"
+                  title="Search"
+                  trigger="click"
+                  overlayStyle={{ width: "calc(100% - 240px)" }}
+                >
+                  <Button type="primary" className="button-blue" icon={<FilterOutlined />}>
+                    Filters
+                  </Button>
+                </Popover>
+              </div>
+              <div className=" space-x-2">
+                {addOrderRule ? (
+                  <Link href={`/page/order-management/add${location ? `?locationId=${location}` : ``}`}>
+                    <Button icon={<PlusCircleOutlined />} type="primary" className="button-blue">
+                      Request Order
+                    </Button>
+                  </Link>
+                ) : (
+                  <></>
+                )}
+              </div>
+            </Space>
+          </div>
           <Table
             size="small"
             rowKey={(e: ITypeOrder) => e.orderId}

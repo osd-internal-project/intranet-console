@@ -18,21 +18,22 @@ import {
   Tag,
 } from "antd";
 import type { Dayjs } from "dayjs";
-import { ITMaType, ITMaTypeForm, ITPagination } from "../common";
+import { ITCustomer, ITCustomerForm, ITPagination } from "../common";
 import { ColumnType } from "antd/es/table";
 import { dateToStringTh, dateToStringThNoTime } from "@/app/utils/format";
 import { deleteIcon, editIcon } from "@/components/icon";
 import { useForm } from "antd/es/form/Form";
 import { ExclamationCircleFilled } from "@ant-design/icons";
+import Link from "next/link";
 
 export interface props {
-  dataTable: ITMaType[];
+  dataTable: ITCustomer[];
   loading: boolean;
   setLoading: (loading: boolean) => void;
   pagination: ITPagination;
   changePagination: (page: { current: number; pageSize: number }) => void;
-  editMaType: (id: number, data: ITMaTypeForm) => void;
-  deleteMaType: (id: number) => void;
+  // editCustomer: (id: number, data: ITCustomerForm) => void;
+  deleteCustomer: (id: number) => void;
 }
 
 const MaTypeTableComponent: React.FC<props> = ({
@@ -41,8 +42,8 @@ const MaTypeTableComponent: React.FC<props> = ({
   setLoading,
   pagination,
   changePagination,
-  editMaType,
-  deleteMaType,
+  // editMaType,
+  deleteCustomer,
 }): React.ReactElement => {
   useEffect(() => {
     if (loading === true) {
@@ -53,42 +54,42 @@ const MaTypeTableComponent: React.FC<props> = ({
 
   const [editForm] = useForm();
   const [editId, setEditId] = useState<number | undefined>(undefined);
-  function showModalEdit(record: ITMaType): void {
+  function showModalEdit(record: ITCustomer): void {
     setEditId(record.id);
     editForm.setFieldsValue(record);
   }
 
   function showModalDelete(id: number): void {
     Modal.confirm({
-      title: "Delete this Maintenance Type",
+      title: "Delete this Customer",
       icon: <ExclamationCircleFilled />,
       content: "Are you sure you want to delete this ?",
       okText: "Confirm",
       okButtonProps: { type: "primary", danger: true },
       cancelText: "Cancel",
       onOk: async () => {
-        deleteMaType(id);
+        deleteCustomer(id);
       },
       // onCancel() {
       //   setDeleteId(undefined);
       // },
     });
   }
-  function onMaTypeEdit(e: ITMaTypeForm) {
-    if (editId) editMaType(editId, { ...e });
-  }
+  // function onMaTypeEdit(e: ITCustomer) {
+  //   if (editId) editMaType(editId, { ...e });
+  // }
 
-  const maColumns: TableColumnsType<ITMaType> = [
+  const maColumns: TableColumnsType<ITCustomer> = [
     {
-      key: "customerId",
+      key: "customerCode",
       title: "รหัส",
-      dataIndex: "customerId",
+      dataIndex: "customerCode",
       width: "100px",
       align: "center",
     },
     {
-      key: "refCode",
-      dataIndex: "refCode",
+      key: "referenceCode",
+      dataIndex: "referenceCode",
       title: "รหัสอ้างอิงลูกค้า",
       width: "200px",
     },
@@ -97,12 +98,22 @@ const MaTypeTableComponent: React.FC<props> = ({
       dataIndex: "customerName",
       title: "ชื่อ",
       width: "200px",
+      render: (value: string, record, index) =>
+        `${record.prefixTh ? record.prefixTh : ""} ${
+          record.firstNameTh ? record.firstNameTh : ""
+        } ${record.lastNameTh ? record.lastNameTh : ""}`,
     },
     {
       key: "activeStatus",
       dataIndex: "activeStatus",
       title: "Active",
       width: "200px",
+      render: (value: boolean, record, index) =>
+        value ? (
+          <Tag color="green">Active</Tag>
+        ) : (
+          <Tag color="red">not Active</Tag>
+        ),
     },
     {
       key: "customerGroupName",
@@ -117,8 +128,8 @@ const MaTypeTableComponent: React.FC<props> = ({
       width: "200px",
     },
     {
-      key: "responsible",
-      dataIndex: "responsible",
+      key: "responsibleName",
+      dataIndex: "responsibleName",
       title: "ผู้รับผิดชอบ",
       width: "200px",
     },
@@ -134,11 +145,11 @@ const MaTypeTableComponent: React.FC<props> = ({
       title: "ตรวจสอบ",
       width: "200px",
       align: "center",
-      render: (id: number, record: ITMaType, index: number) => (
+      render: (id: number, record: ITCustomer, index: number) => (
         <div className="space-x-1">
-          <Button type="link" onClick={() => showModalEdit(record)}>
-            View
-          </Button>
+          <Link href={`/page/crm/customer/${id}`}>
+            <Button type="link">View</Button>
+          </Link>
         </div>
       ),
     },
@@ -148,11 +159,11 @@ const MaTypeTableComponent: React.FC<props> = ({
       title: "ดำเนินการ",
       width: "200px",
       align: "center",
-      render: (id: number, record: ITMaType, index: number) => (
+      render: (id: number, record: ITCustomer, index: number) => (
         <div className="space-x-1">
-          <Button type="link" onClick={() => showModalEdit(record)}>
+          {/* <Button type="link" onClick={() => showModalEdit(record)}>
             {editIcon}
-          </Button>
+          </Button> */}
           <Button type="link" onClick={() => showModalDelete(id)} danger>
             {deleteIcon}
           </Button>
@@ -167,9 +178,9 @@ const MaTypeTableComponent: React.FC<props> = ({
         columns={maColumns}
         dataSource={dataTable}
         size="small"
-        rowKey={(data: ITMaType) => data.id}
+        rowKey={(data: ITCustomer) => data.id}
       />
-      <Modal
+      {/* <Modal
         title="Edit Maintenance Type"
         open={editId ? true : false}
         footer={[]}
@@ -202,7 +213,7 @@ const MaTypeTableComponent: React.FC<props> = ({
             </div>
           </Form.Item>
         </Form>
-      </Modal>
+      </Modal> */}
     </>
   );
 };

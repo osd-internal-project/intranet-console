@@ -1,17 +1,29 @@
 import { AxiosInstance } from "axios";
-import { ITMaType, ITMaTypeForm } from "../common";
+import { ITCustomer, ITCustomerForm } from "../common";
 export interface TMaServices {
-  findMaTypeAll: () => Promise<ITMaType[]>;
-  create: (form: ITMaTypeForm) => Promise<ITMaType>;
-  update: (id: number, form: ITMaTypeForm) => Promise<ITMaType>;
-  delete: (id: number) => Promise<ITMaType>;
+  findCustomerList: () => Promise<ITCustomer[]>;
+  findCustomerByCustomerId: (id: number) => Promise<ITCustomer>;
+  create: (form: ITCustomerForm) => Promise<ITCustomer>;
+  update: (id: number, form: ITCustomerForm) => Promise<ITCustomer>;
+  delete: (id: number) => Promise<ITCustomerForm>;
 }
 const MaTypesServices = (axiosInstance: AxiosInstance): TMaServices => {
-  const userUrl = "/ma-type";
+  const customerUrl = "/customer-detail";
   return {
-    findMaTypeAll: async () => {
+    findCustomerList: async () => {
       return await axiosInstance
-        .get(`${userUrl}/many`)
+        .get(`${customerUrl}/many`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    findCustomerByCustomerId: async (id) => {
+      return await axiosInstance
+        .get(`${customerUrl}/${id}`)
         .then((res) => {
           return res.data;
         })
@@ -21,19 +33,11 @@ const MaTypesServices = (axiosInstance: AxiosInstance): TMaServices => {
         });
     },
     create: async (form) => {
-      return await axiosInstance
-        .post(`${userUrl}/`, form)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
+      return await axiosInstance.post(`${customerUrl}/`, form);
     },
     update: async (id, form) => {
       return await axiosInstance
-        .patch(`${userUrl}/${id}`, form)
+        .patch(`${customerUrl}/${id}`, { data: form })
         .then((res) => {
           return res.data;
         })
@@ -44,7 +48,7 @@ const MaTypesServices = (axiosInstance: AxiosInstance): TMaServices => {
     },
     delete: async (id) => {
       return await axiosInstance
-        .delete(`${userUrl}/${id}`)
+        .delete(`${customerUrl}/${id}`)
         .then((res) => {
           return res.data;
         })

@@ -149,22 +149,27 @@ export const MenuSider: MenuItem[] = [
     key: "data-leave",
     icon: IconDataLeave,
     label: `Data Leave`,
+    rule: "dl-s",
     children: [
       {
         key: `data-leave/online-leave`,
         label: `Create Data Leave`,
+        rule: "dl-a",
       },
       {
         key: `data-leave/detail-online-leave`,
         label: `Detail Data Leave User`,
+        rule: "dl-dt-u",
       },
       {
         key: `data-leave/detail-online-leave-admin`,
         label: `Detail Data Leave Admin`,
+        rule: "dl-dt-a",
       },
       {
         key: `data-leave/leave-management`,
         label: `Leave Management`,
+        rule: "dl-dis",
       },
     ],
   },
@@ -226,16 +231,19 @@ export const MenuSider: MenuItem[] = [
         key: `setting/typeleave`,
         // icon: IconTypeLeave,
         label: `Type Leave`,
+        rule: "st-tl-s",
       },
       {
         key: `setting/master-holidays`,
         // icon: IconHolidays,
         label: `Master Holidays`,
+        rule: "st-mth-s",
       },
       {
         key: `setting/masterdata-position`,
         // icon: IconPosition,
         label: `Master Position`,
+        rule: "st-p-s",
       },
     ],
   },
@@ -249,7 +257,7 @@ export const MenuSider: MenuItem[] = [
         key: `users-management/users`,
         // icon: groupLineIcon,
         label: `Users`,
-        rule: "um-s",
+        // rule: "um-s",
       },
       {
         key: `users-management/user-organization`,
@@ -261,7 +269,7 @@ export const MenuSider: MenuItem[] = [
         key: `users-management/user-group`,
         // icon: userGroupIcon,
         label: `Groups`,
-        rule: "um-ug-s",
+        // rule: "um-ug-s",
       },
       {
         key: `users-management/user-role`,

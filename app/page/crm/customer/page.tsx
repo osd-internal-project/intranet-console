@@ -1,29 +1,30 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, Row, Spin } from "antd";
-import CustomerCreateComponent from "./components/CustomerCreate";
-import CustomerTableComponent from "./components/CustomerTable";
-import { ITMaType, ITMaTypeForm, ITPagination } from "./common";
+import { Breadcrumb, Button, Card, Col, Row, Spin } from "antd";
+import CustomerFilterComponent from "./components/customer-filter";
+import CustomerTableComponent from "./components/customer-table";
+import { ITCustomer, ITCustomerForm, ITPagination } from "./common";
 import CrmServices from "./services/index.service";
 import { useAxiosCrm } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { checkRule } from "@/app/utils/rules";
+import Link from "next/link";
 
 export default function MaTaskPage() {
   const intranetAuth = useAxiosCrm();
-  const maTypeServices = CrmServices(intranetAuth);
+  const crmServices = CrmServices(intranetAuth);
   const [loading, setloading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<ITPagination>({
     current: 1,
     pageSize: 10,
   });
-  const [dataTable, setDataTable] = useState<ITMaType[]>([]);
+  const [dataTable, setDataTable] = useState<ITCustomer[]>([]);
 
   useEffect(() => {
     if (loading === true) fetchData();
   }, [loading]);
 
   const fetchData = async () => {
-    const data = await maTypeServices.findMaTypeAll();
+    const data = await crmServices.findCustomerList();
     setDataTable(data);
     setloading(false);
   };
@@ -32,18 +33,13 @@ export default function MaTaskPage() {
     console.log(page);
   };
 
-  async function createMaType(form: ITMaTypeForm): Promise<void> {
-    await maTypeServices.create(form);
-    setloading(true);
-  }
+  // async function editCustomer(id: number, data: ITCustomerForm): Promise<void> {
+  //   await maTypeServices.update(id, data);
+  //   setloading(true);
+  // }
 
-  async function editMaType(id: number, data: ITMaTypeForm): Promise<void> {
-    await maTypeServices.update(id, data);
-    setloading(true);
-  }
-
-  async function deleteMaType(id: number): Promise<void> {
-    await maTypeServices.delete(id);
+  async function deleteCustomer(id: number): Promise<void> {
+    await crmServices.delete(id);
     setloading(true);
   }
 
@@ -62,7 +58,7 @@ export default function MaTaskPage() {
               },
               {
                 // href: "/page/mantenance-type",
-                title: <span>Customer Info</span>,
+                title: <span>Customer</span>,
               },
             ]}
           />
@@ -70,18 +66,33 @@ export default function MaTaskPage() {
         <Col span={24}>
           <div className="title-page-font">{`CUSTOMER`}</div>
         </Col>
+
         <Col span={24}>
           <div className="grid grid-cols-1 ">
             <Card>
-              <CustomerTableComponent
-                dataTable={dataTable}
-                loading={loading}
-                setLoading={(e: boolean) => setloading(e)}
-                pagination={pagination}
-                changePagination={changePagination}
-                editMaType={editMaType}
-                deleteMaType={deleteMaType}
-              />
+              <div className=" grid grid-col-1 space-y-2">
+                <div className=" flex justify-end">
+                  <Link href="/page/crm/customer/add-customer">
+                    <Button type="primary"> Add Customer</Button>
+                  </Link>
+                </div>
+                <div>
+                  <CustomerFilterComponent
+                    onFinishFilter={function (form: ITCustomerForm): void {
+                      throw new Error("Function not implemented.");
+                    }}
+                  />
+                </div>
+                <CustomerTableComponent
+                  dataTable={dataTable}
+                  loading={loading}
+                  setLoading={(e: boolean) => setloading(e)}
+                  pagination={pagination}
+                  changePagination={changePagination}
+                  // editCustomer={editCustomer}
+                  deleteCustomer={deleteCustomer}
+                />
+              </div>
             </Card>
           </div>
         </Col>

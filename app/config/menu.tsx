@@ -275,8 +275,8 @@ export const MenuSider: MenuItem[] = [
     label: `CRM`,
     children: [
       {
-        key: `crm/customer-info`,
-        label: `Customer Info`,
+        key: `crm/customer`,
+        label: `Customer`,
         // rule: "housekeeper",
       },
       {

@@ -44,7 +44,6 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
   const customerContactUrl = "/customer-contact";
   return {
     findCustomerList: async (search) => {
-      console.log(search);
       return await axiosInstance
         .get(`${customerUrl}/many`, { params: search })
         .then((res) => {

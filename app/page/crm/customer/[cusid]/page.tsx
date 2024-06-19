@@ -212,7 +212,10 @@ export default function CustomerDetailPage() {
                 title: <span>Home</span>,
               },
               {
-                href: "/page/maintenance-management",
+                href: "/page/crm/customer",
+                title: <span>Customer</span>,
+              },
+              {
                 title: <span>Customer Description</span>,
               },
             ]}

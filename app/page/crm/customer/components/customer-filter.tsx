@@ -28,12 +28,26 @@ import { FilterOutlined } from "@ant-design/icons";
 import { exportIcon } from "@/components/icon";
 const { RangePicker } = DatePicker;
 export interface props {
-  onFinishFilter: (form: ITCustomerForm) => void;
+  onSearch: (form: object) => void;
 }
 
 const CustomerFilterComponent: React.FC<props> = ({
-  onFinishFilter,
+  onSearch,
 }): React.ReactElement => {
+  async function onFinishFilter(values: any): Promise<void> {
+    let search = {};
+    if (values.refcode) {
+      search = { ...search, refcode: values.refcode };
+    }
+    if (values.customername) {
+      search = { ...search, customername: values.customername };
+    }
+    if (values.activestatus) {
+      search = { ...search, activestatus: values.activestatus };
+    }
+    await onSearch(search);
+  }
+
   return (
     <Collapse
       bordered={false}
@@ -49,26 +63,19 @@ const CustomerFilterComponent: React.FC<props> = ({
               // form={filterForm}
             >
               <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-                <Form.Item name={"maName"} label={"MA Name"}>
+                <Form.Item name={"refcode"} label={"รหัสรหัสอ้างอิงลูกค้า"}>
                   <Input />
                 </Form.Item>
-                <Form.Item name={"maDate"} label={"วันที่นัดหมาย"}>
-                  <RangePicker
-                    className=" w-full"
-                    format={"DD/MM/YYYY"}
-                    allowClear={true}
-                  />
-                </Form.Item>
-                <Form.Item name={"contact"} label={"ผู้นัดหมาย"}>
+                <Form.Item name={"customername"} label={"ชื่อ"}>
                   <Input />
                 </Form.Item>
-                <Form.Item name={"maStatus"} label={"สถานะ"}>
+                <Form.Item name={"activestatus"} label={"สถานะ"}>
                   <Select
                     allowClear
+                    placeholder={"All"}
                     options={[
-                      { label: "รอดำเนินการ", value: "process" },
-                      { label: "สำเร็จ", value: "success" },
-                      { label: "ยกเลิก", value: "cancel" },
+                      { label: "Active", value: true },
+                      { label: "Not Active", value: false },
                     ]}
                   />
                 </Form.Item>

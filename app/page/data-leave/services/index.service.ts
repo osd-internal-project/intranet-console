@@ -117,6 +117,31 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    getOwnerGroupsByPositionId: async (PositionId: string) => {
+      return await axiosInstance
+        .get(`${baseUrlUser}/find-owner-users/${PositionId}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
+    findDetailTypeLeaveByUserId: async (
+      userId: string | undefined,
+      params: { typeId: string; startDate: any; startTime: any; endDate: any; endTime: any },
+    ) => {
+      let url = `${baseUrlDataLeave}/find-detail-type-leave-by-userId/${userId}`;
+
+      return await axiosInstance
+        .get(url)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
     createTypeLeaveDisabled: async (event: ITpyeUser) => {
       const condition = {
         data: {

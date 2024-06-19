@@ -58,11 +58,32 @@ const DescriptionCustomerForm: React.FC<props> = ({
               className="custom-disabled-form"
               {...layout}
             >
-              <div className="fix-form grid grid-cols-1 md:grid-cols-4 md:mb-0 md:mt-0">
+              <div className="fix-form grid md:ml-4 grid-cols-2 md:grid-cols-4 md:mb-0 md:mt-0">
+                <div className=" col-span-2 md:col-span-4 flex  justify-end">
+                  {isEdit ? (
+                    <div className=" space-x-2">
+                      <Button type="primary" htmlType="submit">
+                        Save
+                      </Button>
+                      <Button
+                        onClick={() => setIsEdit(!isEdit)}
+                        type="primary"
+                        ghost
+                        disabled={false}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button onClick={() => setIsEdit(!isEdit)} disabled={false}>
+                      Edit
+                    </Button>
+                  )}
+                </div>
+
                 <Form.Item label={<b>รหัส</b>} name={"customerCode"}>
                   <Input placeholder="Enter Text" maxLength={50} />
                 </Form.Item>
-
                 <Form.Item
                   label={<b>อ้างอิงรหัสลูกค้า</b>}
                   name={"referenceCode"}
@@ -81,7 +102,7 @@ const DescriptionCustomerForm: React.FC<props> = ({
                 <Form.Item label={<b>ชื่อ TH</b>} name={"firstNameTh"}>
                   <Input placeholder="Enter Text" maxLength={200} />
                 </Form.Item>
-                <Form.Item label={<b>"นามสกุล TH</b>} name={"lastNameTh"}>
+                <Form.Item label={<b>นามสกุล TH</b>} name={"lastNameTh"}>
                   <Input placeholder="Enter Text" maxLength={200} />
                 </Form.Item>
                 <Form.Item label={<b>คำนำหน้า EN</b>} name={"prefixEn"}>
@@ -93,7 +114,6 @@ const DescriptionCustomerForm: React.FC<props> = ({
                 <Form.Item label={<b>นามสกุล EN</b>} name={"lastNameEn"}>
                   <Input placeholder="Enter Text" maxLength={200} />
                 </Form.Item>
-
                 <Form.Item
                   label={<b>เลขที่ทะเบียนบริษัท</b>}
                   name={"companyRegisNumber"}
@@ -182,29 +202,6 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   <Form.Item label={<b>วัตถุประสงค์</b>} name={"objective"}>
                     <TextArea />
                   </Form.Item>
-                </div>
-                <div className=" md:col-span-4">
-                  {/* <Form.Item> */}
-                  {isEdit ? (
-                    <div className=" space-x-2">
-                      <Button type="primary" htmlType="submit">
-                        Save
-                      </Button>
-                      <Button
-                        onClick={() => setIsEdit(!isEdit)}
-                        type="primary"
-                        ghost
-                        disabled={false}
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  ) : (
-                    <Button onClick={() => setIsEdit(!isEdit)} disabled={false}>
-                      Edit
-                    </Button>
-                  )}
-                  {/* </Form.Item> */}
                 </div>
               </div>
             </Form>

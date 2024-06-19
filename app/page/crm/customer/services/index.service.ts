@@ -1,14 +1,47 @@
 import { AxiosInstance } from "axios";
-import { ITCustomer, ITCustomerForm } from "../common";
+import {
+  ITBranch,
+  ITBranchAddress,
+  ITBranchAddressForm,
+  ITBranchContact,
+  ITBranchContactForm,
+  ITBranchDetail,
+  ITBranchForm,
+  ITCustomer,
+  ITCustomerForm,
+} from "../common";
 export interface TMaServices {
   findCustomerList: () => Promise<ITCustomer[]>;
   findCustomerByCustomerId: (id: number) => Promise<ITCustomer>;
   create: (form: ITCustomerForm) => Promise<ITCustomer>;
   update: (id: number, form: ITCustomerForm) => Promise<ITCustomer>;
   delete: (id: number) => Promise<ITCustomerForm>;
+  findBranchByCustomerId: (
+    customerId: number,
+    condition: object
+  ) => Promise<ITBranch[]>;
+  findBranchDetailByBranchId: (branchId: number) => Promise<ITBranchDetail>;
+  createBranch: (
+    customerId: number,
+    branchForm: ITBranchForm
+  ) => Promise<ITBranch>;
+  deleteBranch: (id: number) => Promise<ITBranch>;
+  createBranchAddress: (
+    customerBranchId: number,
+    address: ITBranchAddressForm
+  ) => Promise<ITBranchAddress>;
+  deleteBranchAddress: (addressId: number) => Promise<ITBranchAddress>;
+  createBranchContact: (
+    customerBranchId: number,
+    contact: ITBranchContactForm
+  ) => Promise<ITBranchAddress>;
+  deleteBranchContact: (contactId: number) => Promise<ITBranchContact>;
 }
-const MaTypesServices = (axiosInstance: AxiosInstance): TMaServices => {
+const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
   const customerUrl = "/customer-detail";
+  const customerBranchUrl = "/customer-branch";
+  const customerAdrressUrl = "/customer-address";
+  const customerContactUrl = "/customer-contact";
   return {
     findCustomerList: async () => {
       return await axiosInstance
@@ -57,7 +90,65 @@ const MaTypesServices = (axiosInstance: AxiosInstance): TMaServices => {
           return [];
         });
     },
+    findBranchByCustomerId: async (customerId, condition) => {
+      const query = {
+        ...condition,
+        customerDetailId: customerId,
+      };
+      return await axiosInstance
+        .get(`${customerBranchUrl}/many`, {
+          data: query,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    findBranchDetailByBranchId: async (branchId) => {
+      return await axiosInstance
+        .get(`${customerBranchUrl}/detail/${branchId}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    createBranch: async (customerId, form) => {
+      const formData = {
+        ...form,
+        customerDetailId: customerId,
+      };
+      return await axiosInstance.post(`${customerBranchUrl}/`, formData);
+    },
+    deleteBranch: async (id) => {
+      return await axiosInstance.delete(`${customerBranchUrl}/${id}`);
+    },
+    createBranchAddress: async (customerBranchId, form) => {
+      const formData = {
+        ...form,
+        customerBranchId: customerBranchId,
+      };
+      return await axiosInstance.post(`${customerAdrressUrl}/`, formData);
+    },
+    deleteBranchAddress: async (id) => {
+      return await axiosInstance.delete(`${customerAdrressUrl}/${id}`);
+    },
+    createBranchContact: async (customerBranchId, form) => {
+      const formData = {
+        ...form,
+        customerBranchId: customerBranchId,
+      };
+      return await axiosInstance.post(`${customerContactUrl}/`, formData);
+    },
+    deleteBranchContact: async (id) => {
+      return await axiosInstance.delete(`${customerContactUrl}/${id}`);
+    },
   };
 };
 
-export default MaTypesServices;
+export default CrmServices;

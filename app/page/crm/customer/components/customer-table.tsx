@@ -79,7 +79,7 @@ const MaTypeTableComponent: React.FC<props> = ({
   //   if (editId) editMaType(editId, { ...e });
   // }
 
-  const maColumns: TableColumnsType<ITCustomer> = [
+  const customerColumns: TableColumnsType<ITCustomer> = [
     {
       key: "customerCode",
       title: "รหัส",
@@ -175,7 +175,7 @@ const MaTypeTableComponent: React.FC<props> = ({
   return (
     <>
       <Table
-        columns={maColumns}
+        columns={customerColumns}
         dataSource={dataTable}
         size="small"
         rowKey={(data: ITCustomer) => data.id}

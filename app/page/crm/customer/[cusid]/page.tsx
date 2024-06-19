@@ -4,7 +4,16 @@ import { Breadcrumb, Card, Col, message, Row, UploadFile, Tabs } from "antd";
 import DescriptionCustomerComponent from "./components/description-form";
 import BranchCustomerComponent from "./components/customer-branch";
 import ProjectCustomerComponent from "./components/customer-project";
-import { ITCustomerForm, ITCustomer, ITPagination } from "../common";
+import {
+  ITCustomerForm,
+  ITCustomer,
+  ITPagination,
+  ITBranchForm,
+  ITBranch,
+  ITBranchAddressForm,
+  ITBranchDetail,
+  ITBranchContactForm,
+} from "../common";
 import { useAxiosCrm } from "@/app/lib/axios/hooks/userAxiosAuth";
 import CrmServices from "../services/index.service";
 import { useParams } from "next/navigation";
@@ -21,44 +30,48 @@ const users = [
   { userId: "22", name: "user2" },
 ];
 
-export default function MaTaskPage() {
+export default function CustomerDetailPage() {
   const { data: session } = useSession();
   const crmAuth = useAxiosCrm();
   const crmServices = CrmServices(crmAuth);
   const params = useParams<{ cusid: string }>();
   const [descriptionForm] = useForm();
+  const [branchs, setBranchs] = useState<ITBranch[]>([]);
   const [loading, setloading] = useState<boolean>(true);
   const [isEdit, setIsEdit] = useState(false);
   const [showModalBranchAdd, setShowModalBranchAdd] = useState(false);
+  const [branchDetail, setBranchDetail] = useState<ITBranchDetail | undefined>(
+    undefined
+  );
   // const [data, setData] = useState<ITCustomer>();
   useEffect(() => {
     if (loading === true) fetchData();
   }, [loading]);
 
   const fetchData = async () => {
-    const res = await crmServices.findCustomerByCustomerId(+params.cusid);
-    const regisDate = res?.regisDate ? dayjs(res.regisDate) : null;
-    console.log(regisDate);
-    descriptionForm.setFieldsValue({
-      ...res,
-      regisDate: regisDate,
-    });
-    setIsEdit(false);
+    await fetchDescription();
+    await fetchBranch();
     setloading(false);
   };
-  // const data: ITMaDetail = {
-  //   id: 2,
-  //   maName: "task 2",
-  //   maStatus: "success",
-  //   maTypeId: 2,
-  //   maTypeName: "ตรวจสภาพ",
-  //   maDate: new Date(),
-  //   detail: "ทดสอบ",
-  //   contact: "บริษัท",
-  //   remake: "สำเร็จ",
-  //   updatedDate: new Date(),
-  //   createdDate: new Date(),
-  // };
+  const fetchDescription = async () => {
+    const customerDetail = await crmServices.findCustomerByCustomerId(
+      +params.cusid
+    );
+    const regisDate = customerDetail?.regisDate
+      ? dayjs(customerDetail.regisDate)
+      : null;
+    descriptionForm.setFieldsValue({
+      ...customerDetail,
+      regisDate: regisDate,
+    });
+
+    setIsEdit(false);
+  };
+  const fetchBranch = async () => {
+    const branchs = await crmServices.findBranchByCustomerId(+params.cusid, {});
+    setBranchs(branchs);
+    setShowModalBranchAdd(false);
+  };
 
   async function onFinishEdit(data: ITCustomerForm): Promise<void> {
     let form = {
@@ -100,27 +113,94 @@ export default function MaTaskPage() {
     setloading(true);
   }
 
-  // async function downloadFile(id: number, name: string): Promise<void> {
-  //   if (id) {
-  //     const response = await maServices.downloadFile(id);
-  //     const url = URL.createObjectURL(response);
-  //     const a = document.createElement("a");
-  //     a.href = url;
-  //     a.download = name;
-  //     document.body.appendChild(a);
-  //     a.click();
-  //     document.body.removeChild(a);
-  //   }
-  // }
-
-  // async function getImageBlob(id: number, name: string) {
-  //   if (id) {
-  //     const response = await maServices.downloadFile(id);
-  //     if (response) return response;
-  //     else return undefined;
-  //   }
-  // }
-
+  async function onSaveBranch(form: ITBranchForm): Promise<void> {
+    await crmServices
+      .createBranch(+params.cusid, form)
+      .then((res) => {
+        message.success("เพิ่มสาขาสำเร็จ");
+      })
+      .catch(() => {
+        message.error("ผิดพลาด กรุณาลองใหม่");
+      });
+    setloading(true);
+  }
+  async function onShowModalBranchDetail(
+    id: number | undefined
+  ): Promise<void> {
+    if (id) {
+      const branchDetail = await crmServices.findBranchDetailByBranchId(id);
+      setBranchDetail(branchDetail);
+    } else {
+      setBranchDetail(undefined);
+    }
+  }
+  async function onDeleteCustomerBranch(id: number): Promise<void> {
+    await crmServices
+      .deleteBranch(id)
+      .then((res) => {
+        message.success("ลบสาขาสำเร็จ");
+      })
+      .catch(() => {
+        message.error("ผิดพลาด กรุณาลองใหม่");
+      });
+    setloading(true);
+  }
+  async function onSaveBranchAddress(
+    id: number,
+    form: ITBranchAddressForm
+  ): Promise<void> {
+    await crmServices
+      .createBranchAddress(id, form)
+      .then((res) => {
+        message.success("เพิ่มที่อยู่สำเร็จ");
+      })
+      .catch(() => {
+        message.error("ผิดพลาด กรุณาลองใหม่");
+      });
+    onShowModalBranchDetail(id);
+  }
+  async function onDeleteCustomerBranchAddress(
+    branchId: number,
+    addressId: number
+  ): Promise<void> {
+    await crmServices
+      .deleteBranchAddress(addressId)
+      .then((res) => {
+        message.success("ลบที่อยู่สำเร็จ");
+      })
+      .catch(() => {
+        message.error("ผิดพลาด กรุณาลองใหม่");
+      });
+    onShowModalBranchDetail(branchId);
+  }
+  async function onSaveBranchContact(
+    branchId: number,
+    form: ITBranchContactForm
+  ): Promise<void> {
+    await crmServices
+      .createBranchContact(branchId, form)
+      .then((res) => {
+        message.success("เพิ่มที่อยู่สำเร็จ");
+      })
+      .catch(() => {
+        message.error("ผิดพลาด กรุณาลองใหม่");
+      });
+    onShowModalBranchDetail(branchId);
+  }
+  async function onDeleteCustomerBranchContact(
+    branchId: number,
+    contactId: number
+  ): Promise<void> {
+    await crmServices
+      .deleteBranchContact(contactId)
+      .then((res) => {
+        message.success("ลบผู้ติดต่อสำเร็จ");
+      })
+      .catch(() => {
+        message.error("ผิดพลาด กรุณาลองใหม่");
+      });
+    onShowModalBranchDetail(branchId);
+  }
   return descriptionForm.getFieldsValue() ? (
     <div>
       <Row gutter={[8, 8]}>
@@ -161,9 +241,22 @@ export default function MaTaskPage() {
                       label: "สาขา",
                       children: (
                         <BranchCustomerComponent
+                          branchs={branchs}
+                          branchDetail={branchDetail}
                           showModalBranchAdd={showModalBranchAdd}
                           onShowModalBranchAdd={(status) =>
                             setShowModalBranchAdd(status)
+                          }
+                          onShowModalBranchDetail={onShowModalBranchDetail}
+                          onSaveBranch={onSaveBranch}
+                          onDeleteCustomerBranch={onDeleteCustomerBranch}
+                          onSaveBranchAddress={onSaveBranchAddress}
+                          onDeleteCustomerBranchAddress={
+                            onDeleteCustomerBranchAddress
+                          }
+                          onSaveBranchContact={onSaveBranchContact}
+                          onDeleteCustomerBranchContact={
+                            onDeleteCustomerBranchContact
                           }
                         />
                       ),

@@ -29,21 +29,21 @@ const BranchAddressAddComponent: React.FC<props> = ({
   onSaveBranchAddress,
 }): React.ReactElement => {
   const [form] = useForm();
-  const addressType = [
-    { value: "tax", label: "ที่อยู่ใบกำกับภาษี" },
-    { value: "delivery", label: "ที่อยู่การจัดส่งบริการ" },
-    { value: "noti", label: "ที่อยู่จัดส่งใบแจ้งบริการ" },
-  ];
+  // const addressType = [
+  //   { value: "tax", label: "ที่อยู่ใบกำกับภาษี" },
+  //   { value: "delivery", label: "ที่อยู่การจัดส่งบริการ" },
+  //   { value: "noti", label: "ที่อยู่จัดส่งใบแจ้งบริการ" },
+  // ];
   useEffect(() => {
     form.resetFields();
   }, [showModalAddressAdd]);
   const onFinishBranchAddress = (form: ITBranchAddressForm) => {
-    const addressTypeName = addressType.findLast(
-      (type) => (type.value = form.addressTypeId)
-    );
+    // const addressTypeName = addressType.findLast(
+    //   (type) => (type.value = form.addressTypeId)
+    // );
     onSaveBranchAddress(branchId, {
       ...form,
-      addressTypeName: addressTypeName?.label ? addressTypeName.label : "",
+      // addressTypeName: addressTypeName?.label ? addressTypeName.label : "",
     });
   };
   return (
@@ -66,7 +66,7 @@ const BranchAddressAddComponent: React.FC<props> = ({
         initialValues={{
           address: [
             {
-              addressTypeId: undefined,
+              // addressTypeId: undefined,
               alley: undefined,
               building: undefined,
               district: undefined,
@@ -83,9 +83,9 @@ const BranchAddressAddComponent: React.FC<props> = ({
         }}
       >
         <div className="grid md:grid-cols-4">
-          <Form.Item label="ประเภทที่อยู่" name={"addressTypeId"}>
+          {/* <Form.Item label="ประเภทที่อยู่" name={"addressTypeId"}>
             <Select options={addressType} placeholder="Please Select" />
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item label="เลขที่บ้าน" name={"houseNumber"}>
             <Input maxLength={10} />
           </Form.Item>

@@ -301,7 +301,7 @@ const UserTable: React.FC<props> = ({
               }}
             /> */}
             {checkRule("um-a") ? (
-              <Link href="/page/setting/usermanagement/add">
+              <Link href="/page/users-management/users/add">
                 <Button icon={<PlusCircleOutlined />} className="button-blue">
                   Add User
                 </Button>

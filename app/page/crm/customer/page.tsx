@@ -1,6 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Button, Card, Col, Row, Spin } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Card,
+  Col,
+  Row,
+  Spin,
+  TablePaginationConfig,
+} from "antd";
 import CustomerFilterComponent from "./components/customer-filter";
 import CustomerTableComponent from "./components/customer-table";
 import { ITCustomer, ITCustomerForm, ITPagination } from "./common";
@@ -13,9 +21,10 @@ export default function MaTaskPage() {
   const intranetAuth = useAxiosCrm();
   const crmServices = CrmServices(intranetAuth);
   const [loading, setloading] = useState<boolean>(true);
-  const [pagination, setPagination] = useState<ITPagination>({
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
+    total: 0,
   });
   const [dataTable, setDataTable] = useState<ITCustomer[]>([]);
   const [search, setSearch] = useState<object>({});
@@ -24,13 +33,18 @@ export default function MaTaskPage() {
   }, [loading]);
 
   const fetchData = async () => {
-    const data = await crmServices.findCustomerList(search);
-    setDataTable(data);
+    const skip: number =
+      (Number(pagination.current) - 1) * Number(pagination.pageSize);
+    const take: number = Number(pagination.pageSize);
+    const res = await crmServices.findCustomerDataTable(search, take, skip);
+    setDataTable(res.data);
+    setPagination({ ...pagination, total: res.count });
     setloading(false);
   };
 
-  const changePagination = (page: ITPagination) => {
-    console.log(page);
+  const changePagination = (page: TablePaginationConfig) => {
+    setPagination({ ...page });
+    setloading(true);
   };
 
   // async function editCustomer(id: number, data: ITCustomerForm): Promise<void> {
@@ -54,10 +68,10 @@ export default function MaTaskPage() {
                 title: <span>Home</span>,
               },
               {
+                href: "/page/customer",
                 title: <span>CRM</span>,
               },
               {
-                // href: "/page/mantenance-type",
                 title: <span>Customer</span>,
               },
             ]}
@@ -80,6 +94,7 @@ export default function MaTaskPage() {
                   <CustomerFilterComponent
                     onSearch={(data) => {
                       setSearch(data);
+                      setPagination({ ...pagination, current: 1 });
                       setloading(true);
                     }}
                   />
@@ -90,7 +105,6 @@ export default function MaTaskPage() {
                   setLoading={(e: boolean) => setloading(e)}
                   pagination={pagination}
                   changePagination={changePagination}
-                  // editCustomer={editCustomer}
                   deleteCustomer={deleteCustomer}
                 />
               </div>

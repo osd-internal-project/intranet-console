@@ -4,6 +4,7 @@ import type {
   CalendarProps,
   TableColumnsType,
   TableColumnType,
+  TablePaginationConfig,
 } from "antd";
 import {
   Badge,
@@ -30,13 +31,13 @@ export interface props {
   dataTable: ITCustomer[];
   loading: boolean;
   setLoading: (loading: boolean) => void;
-  pagination: ITPagination;
-  changePagination: (page: { current: number; pageSize: number }) => void;
+  pagination: TablePaginationConfig;
+  changePagination: (pagination: TablePaginationConfig) => void;
   // editCustomer: (id: number, data: ITCustomerForm) => void;
   deleteCustomer: (id: number) => void;
 }
 
-const MaTypeTableComponent: React.FC<props> = ({
+const CustomerTableComponent: React.FC<props> = ({
   dataTable,
   loading,
   setLoading,
@@ -178,44 +179,12 @@ const MaTypeTableComponent: React.FC<props> = ({
         columns={customerColumns}
         dataSource={dataTable}
         size="small"
+        pagination={pagination}
+        onChange={changePagination}
         rowKey={(data: ITCustomer) => data.id}
       />
-      {/* <Modal
-        title="Edit Maintenance Type"
-        open={editId ? true : false}
-        footer={[]}
-        onCancel={() => {
-          setEditId(undefined);
-        }}
-      >
-        <Form form={editForm} onFinish={onMaTypeEdit}>
-          <Form.Item
-            name={"name"}
-            rules={[{ required: true, message: "Plase enter MA Type Name" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item name={"activeStatus"}>
-            <Switch />
-          </Form.Item>
-          <Form.Item>
-            <div className=" space-x-2 text-right">
-              <Button
-                onClick={() => {
-                  setEditId(undefined);
-                }}
-              >
-                Close
-              </Button>
-              <Button type="primary" htmlType="submit">
-                Confirm
-              </Button>
-            </div>
-          </Form.Item>
-        </Form>
-      </Modal> */}
     </>
   );
 };
 
-export default MaTypeTableComponent;
+export default CustomerTableComponent;

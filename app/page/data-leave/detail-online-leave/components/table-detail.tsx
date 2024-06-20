@@ -55,6 +55,8 @@ export const TableDetail: React.FC<props> = ({
           approvedDate: row.approvedDate ? dateToStringThNoTime(row?.approvedDate) : "-",
           userApproved: row.userApproved,
           dataLeaveFiles: row.dataLeaveFiles,
+          ownerId: row.ownerId,
+          ownerName: row.ownerName,
         };
         return (
           <a
@@ -126,7 +128,7 @@ export const TableDetail: React.FC<props> = ({
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`เรียนถึง :`}>
+            <Form.Item label={`เรียนถึง :`} name={`ownerName`}>
               <Input readOnly style={{ border: "none", borderBottom: "1px solid #808080" }} />
             </Form.Item>
           </div>

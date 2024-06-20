@@ -44,7 +44,41 @@ export interface ITypeRequester {
     groupName: string;
   };
 }
-export type ITMaTypeForm = {
+export type ITBranchForm = {
+  branchCode: string;
+  branchName: string;
+};
+export type ITBranch = { id: number } & ITBranchForm;
+export type ITBranchAddressForm = {
+  addressTypeId: string;
+  addressTypeName: string;
+  alley: string;
+  building: string;
+  district: string;
+  floor: string;
+  houseNumber: string;
+  province: string;
+  road: string;
+  roomNumber: string;
+  subDistrict: string;
+  village: string;
+  zipCode: string;
+};
+export type ITBranchAddress = { id: number } & ITBranchAddressForm;
+export type ITBranchContactForm = {
   name: string;
+  nickName: string;
+  position: string;
+  phone: string;
+  officePhone: string;
+  fax: string;
+  email: string;
+  birthday: Date;
   activeStatus: boolean;
 };
+export type ITBranchContact = { id: number } & ITBranchContactForm;
+export type ITBranchDetail = {
+  id: number;
+  customerAddress: ITBranchAddress[];
+  customerContact: ITBranchContact[];
+} & ITBranchForm;

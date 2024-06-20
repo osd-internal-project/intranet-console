@@ -18,13 +18,13 @@ export default function MaTaskPage() {
     pageSize: 10,
   });
   const [dataTable, setDataTable] = useState<ITCustomer[]>([]);
-
+  const [search, setSearch] = useState<object>({});
   useEffect(() => {
     if (loading === true) fetchData();
   }, [loading]);
 
   const fetchData = async () => {
-    const data = await crmServices.findCustomerList();
+    const data = await crmServices.findCustomerList(search);
     setDataTable(data);
     setloading(false);
   };
@@ -78,8 +78,9 @@ export default function MaTaskPage() {
                 </div>
                 <div>
                   <CustomerFilterComponent
-                    onFinishFilter={function (form: ITCustomerForm): void {
-                      throw new Error("Function not implemented.");
+                    onSearch={(data) => {
+                      setSearch(data);
+                      setloading(true);
                     }}
                   />
                 </div>

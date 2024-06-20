@@ -53,6 +53,7 @@ export interface IDataUser {
   position?: { id?: number; posId?: number; nameTh?: string; nameEn?: string; createdAt?: string };
   userId?: string;
   username?: string;
+  userMapOrganizeChart?: any;
 }
 
 export interface ISelect {
@@ -123,6 +124,8 @@ export interface ITypeDataLeave {
   attrachFile?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  ownerId?: string;
+  ownerName?: string;
 }
 
 export interface ITypeDataLeaveCreate {
@@ -148,4 +151,6 @@ export interface ITypeDataLeaveCreate {
   createdAt: Date;
   updatedAt: Date;
   time_start_check: boolean;
+  ownerId?: string;
+  ownerName?: string;
 }

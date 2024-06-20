@@ -71,7 +71,7 @@ export default function Housekeeper() {
       dataIndex: "quitYourJob",
       key: "quitYourJob",
       width: "20%",
-      render: (value: boolean) => (!value ? <Tag color="red">ลาออก</Tag> : <Tag color="green">ยังอยู่</Tag>),
+      render: (value: boolean) => (value ? <Tag color="red">ลาออก</Tag> : <Tag color="green">ยังอยู่</Tag>),
     },
     {
       title: "สร้างเมื่อ",
@@ -193,11 +193,10 @@ export default function Housekeeper() {
           </Space>
         </div>
         <div></div>
-        <Table columns={columns} dataSource={dataHouseKeeper} size="small" />
+        <Table columns={columns} dataSource={dataHouseKeeper} size="small" rowKey={"id"} />
         <Modal title={titleModal} open={openModal} onCancel={handleCancelModal} footer={[]}>
           <Form
             form={form}
-            name="basic"
             initialValues={{ remember: true }}
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 20 }}

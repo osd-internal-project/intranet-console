@@ -1,10 +1,11 @@
 "use client";
-import { Breadcrumb, Button, Card, Checkbox, Col, Form, Input, Row, Tabs } from "antd";
+import { Breadcrumb, Button, Card, Checkbox, Col, Divider, Form, Input, Row, Tabs } from "antd";
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import EditDetailComponent from "./components/EditDetailComponent";
 import EditTreeComponent from "./components/EditTreeComponent";
 import EditRoleComponent from "./components/EditRoleComponent";
+import EditAssignGroupComponent from "./components/EditAssignGroupComponent";
 export default function UserDetailPage() {
   const params = useParams();
   const userid = params.uid as string;
@@ -19,12 +20,11 @@ export default function UserDetailPage() {
               title: <span>Home</span>,
             },
             {
-              href: "/page/setting",
-              title: <span>Setting</span>,
+              title: <span>User Management</span>,
             },
             {
-              href: "/page/setting/usermanagement",
-              title: <span>User Management</span>,
+              href: "/page/users-management/users",
+              title: <span>Users</span>,
             },
             {
               title: <span>{userid}</span>,
@@ -32,9 +32,10 @@ export default function UserDetailPage() {
           ]}
         />
       </Col>
-      <Col span={24}>
-        <div className="title-page-font">{`EDIT USER`}</div>
-      </Col>
+
+      <Divider orientation="left" orientationMargin="0">
+        <div className="title-page-font">{`Edit User`}</div>
+      </Divider>
       <Col span={24}>
         <div className=" grid-span-1 space-y-2">
           <div>
@@ -50,31 +51,21 @@ export default function UserDetailPage() {
                 {
                   label: "Set Roles & Group",
                   key: "2",
-                  children: (
-                    <div className="grid grid-cols-2">
-                      <div className="mb-5">
-                        <EditRoleComponent userid={userid} />
-                      </div>
-                      <div className="mb-5">
-                        <EditTreeComponent userid={userid} />
-                      </div>
-                    </div>
-                  ),
+                  children: <EditAssignGroupComponent userid={userid} />,
+                  // (
+                  //   <div className="grid grid-cols-2">
+                  //     <div className="mb-5">
+                  //       <EditRoleComponent userid={userid} />
+                  //     </div>
+                  //     <div className="mb-5">
+                  //       <EditTreeComponent userid={userid} />
+                  //     </div>
+                  //   </div>
+                  // ),
                 },
               ]}
             />
           </div>
-          {/* <div>
-        <EditDetailComponent userid={userid} />
-      </div>
-      <div className=" grid grid-cols-1 md:space-x-2 md:grid-cols-2">
-        <div>
-          <EditTreeComponent userid={userid} />
-        </div>
-        <div>
-          <EditRoleComponent userid={userid} />
-        </div> */}
-          {/* </div> */}
         </div>
       </Col>
     </Row>

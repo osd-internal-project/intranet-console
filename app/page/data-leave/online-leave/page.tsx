@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, Modal, Row, Typography, UploadFile, message } from "antd";
+import { Breadcrumb, Card, Col, Divider, Modal, Row, Typography, UploadFile, message } from "antd";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../services/index.service";
 import { IDataUser, ISelect, ITypeDataLeave, ITypetypeleave, ITypeDataLeaveCreate } from "../common";
 import { CreateOnlineLeave } from "./components/create-online-leave";
@@ -16,28 +16,48 @@ import { RcFile, UploadProps } from "antd/es/upload";
 export default function Page() {
   const router = useRouter();
   const Auth = useAxiosIntranet();
+  const AuthUser = useAxiosUser();
   const dataleaveservice = DataLeaveService(Auth);
+  const dataleaveserviceUser = DataLeaveService(AuthUser);
   const { data: session } = useSession();
   const [getUser, setUser] = useState<IDataUser | null>(session ? session.user : null);
+  const [getUserOwner, setUserOwner] = useState<IDataUser | null>({});
   const [getTypeLeaveOption, setTypeLeaveOption] = useState<ISelect[]>([]);
   const [getTypeLeave, setTypeLeave] = useState<ITypetypeleave[]>([]);
+  const [typeLeaveTable, setTypeLeaveTable] = useState<ITypetypeleave[]>([]);
+  const [typeLeaveTableAll, setTypeLeaveTableAll] = useState<ITypetypeleave[]>([]);
   const [getStartDate, setStartDate] = useState<Date>();
   const [getEndDate, setEndDate] = useState<Date>();
   const [checkSwitch, setCheckSwitch] = useState<boolean>(false);
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
-  const [createdataleaveForm] = useForm();
-
   const [loading, setLoading] = useState<boolean>(true);
+  const [params, setParams] = useState<any>({
+    typeId: null,
+    startDate: null,
+    endDate: null,
+    startTime: null,
+    endTime: null,
+    lengthDate: 0,
+    lengthTime: 0,
+  });
+
+  const [createdataleaveForm] = useForm();
 
   useEffect(() => {
     if (loading) loadDataTypeLeave();
-  }, [loading]);
+  }, [loading, params]);
 
   const loadDataTypeLeave = async () => {
     const res = await dataleaveservice.getdataAll();
+    const resOwner = await dataleaveserviceUser.getOwnerGroupsByPositionId(getUser?.userMapOrganizeChart[0]?.positionId);
+    const resTableDeatilTypeLeave = await dataleaveservice.findDetailTypeLeaveByUserId(getUser?.userId, params);
+    const resTableDeatilTypeLeaveAll = await dataleaveservice.getdataTypeLeaveAll({});
     const options = res.map((event: ITypetypeleave) => {
       return { value: event.typeId, label: event.typeName };
     });
+    setUserOwner(resOwner);
+    setTypeLeaveTable(resTableDeatilTypeLeave);
+    setTypeLeaveTableAll(resTableDeatilTypeLeaveAll);
     setTypeLeaveOption(options);
     setTypeLeave(res);
     setLoading(false);
@@ -49,6 +69,46 @@ export default function Page() {
       return false;
     }
     return false;
+  };
+
+  const onChangeParams = (value: string, type: string) => {
+    if (type === "type") {
+      setParams((e: any) => ({ ...e, typeId: value }));
+    }
+    if (type === "startDate") {
+      setParams((e: any) => ({ ...e, startDate: value }));
+    } else if (type === "endDate" && params.startDate) {
+      checklenghtDay(params.startDate, value);
+    }
+    if (type === "endDate") {
+      setParams((e: any) => ({ ...e, endDate: value }));
+    }
+    if (type === "startTime") {
+      setParams((e: any) => ({ ...e, startTime: value }));
+    } else if (type === "endTime" && params.startTime) {
+      checklenghtTime(params.startTime, value);
+    }
+    if (type === "endTime") {
+      setParams((e: any) => ({ ...e, endTime: value }));
+    }
+    setLoading(true);
+  };
+
+  const checklenghtDay = async (value1: any, value2: any) => {
+    const startDate = value1 ? dayjs(value1).startOf("day") : null;
+    const endDate = value2 ? dayjs(value2).endOf("day") : null;
+    const totalDays = startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
+    setParams((e: any) => ({ ...e, lengthDate: totalDays != "0" ? Number(totalDays) : checkSwitch ? 1 : 0 }));
+  };
+  const checklenghtTime = async (value1: any, value2: any) => {
+    const startTime = value1 ? dayjs(value1, "HH:mm") : null;
+    const endTime = value2 ? dayjs(value2, "HH:mm") : null;
+    const totalHours = startTime && endTime ? endTime.diff(startTime, "hour", true).toFixed(1) : 0;
+    setParams((e: any) => ({ ...e, lengthTime: totalHours != 0 ? Number(totalHours) : 1 }));
+  };
+
+  const handleChangeAttendFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
+    return setAttendFiles(newFileList);
   };
 
   const onfinishCreate = (values: ITypeDataLeaveCreate) => {
@@ -72,6 +132,8 @@ export default function Page() {
       detail: values.detail,
       phoneNumber: values.phoneNumber,
       status: "waitting",
+      ownerId: values.ownerId,
+      ownerName: values.ownerName,
     };
     const condition: ITypeDataLeave = {
       ...base,
@@ -121,29 +183,28 @@ export default function Page() {
     });
   };
 
-  return (
+  return getUserOwner ? (
     <div>
-      <Row gutter={[8, 8]}>
-        <Col span={24} style={{ marginBottom: "20px" }}>
+      <Row>
+        <Col span={24}>
           <Breadcrumb
             items={[
               {
                 href: "/page",
                 title: <span>Home</span>,
               },
-
               {
                 title: <span>Set Data Leave </span>,
               },
             ]}
           />
         </Col>
-        <Card className=" grid grid-cols-1 gap-y-2">
-          <Typography>{`Set Date Leave`}</Typography>
-        </Card>
+        <Divider orientation="left" orientationMargin="0">
+          <div className="title-page-font">{`Set Date Leave`}</div>
+        </Divider>
       </Row>
-      <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-        <Col span={12}>
+      <Row gutter={{ xs: 3, sm: 3, md: 3, lg: 3 }}>
+        <Col span={10}>
           <CreateOnlineLeave
             getUser={getUser}
             getTypeLeaveOption={getTypeLeaveOption}
@@ -156,13 +217,16 @@ export default function Page() {
             getEndDate={getEndDate}
             checkSwitch={checkSwitch}
             beforeUploadAttendFiles={(e: RcFile) => beforeUploadAttendFiles(e)}
+            handleChangeAttendFiles={(e: any) => handleChangeAttendFiles(e)}
             attendFiles={attendFiles}
+            getUserOwner={getUserOwner}
+            onChangeParams={onChangeParams}
           />
         </Col>
-        <Col span={12}>
-          <TableOnlineDetailLeave />
+        <Col span={14}>
+          <TableOnlineDetailLeave typeLeaveTable={typeLeaveTable} params={params} />
         </Col>
       </Row>
     </div>
-  );
+  ) : null;
 }

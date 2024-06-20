@@ -78,7 +78,7 @@ export const TableDetail: React.FC<props> = ({
     {
       key: "id",
       dataIndex: "id",
-      title: "ACTIVE",
+      title: "Active",
       align: "center",
       render: (e: string, row: ITypeDataLeave, index: number) => {
         return (
@@ -86,6 +86,7 @@ export const TableDetail: React.FC<props> = ({
             <Row gutter={[8, 8]} className="flex justify-center">
               <Col>
                 <Button
+                  size="small"
                   type="primary"
                   onClick={() => {
                     onFinishUpdate("approved", row?.id ? row?.id : 0);
@@ -97,6 +98,7 @@ export const TableDetail: React.FC<props> = ({
               </Col>
               <Col>
                 <Button
+                  size="small"
                   type="primary"
                   onClick={() => {
                     onFinishUpdate("cancel", row?.id ? row?.id : 0);
@@ -115,7 +117,7 @@ export const TableDetail: React.FC<props> = ({
   ];
   return (
     <div>
-      <Table dataSource={dataLeaveUser} columns={columns} />
+      <Table dataSource={dataLeaveUser} columns={columns} size="small" />
       <Modal title="" open={openModalDetail} footer={false} onCancel={() => setOpenModalDetail(false)}>
         <div className="w-full justify-center flex mb-2 font-bold text-lg">{`< รายละเอียดการลา >`}</div>
         <Form autoComplete="off" form={formdetail} layout="vertical">

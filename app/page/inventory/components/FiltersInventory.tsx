@@ -64,7 +64,7 @@ export const FiltersInventory: React.FC<props> = ({ prop }) => {
 
   return (
     <div>
-      <Row gutter={[8, 8]} style={{ justifyContent: "space-between", display: "flex", alignItems: "center" }}>
+      <Row gutter={[8, 8]} className=" flex justify-end pb-4">
         <Col>
           <Popover
             onOpenChange={handleOpenFilter}

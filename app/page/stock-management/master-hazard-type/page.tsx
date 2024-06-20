@@ -1,5 +1,5 @@
 "use client";
-import { Breadcrumb, Col, Row } from "antd";
+import { Breadcrumb, Card, Col, Divider, Row } from "antd";
 import { CreateMasterHazardtype } from "./components/CreateMasterHazardtype";
 import { TableMasterHazardtype } from "./components/TableMasterHazardtype";
 import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -83,8 +83,8 @@ export default function MasterHazardType() {
                 title: <span>Home</span>,
               },
               {
-                href: "/page/setting",
-                title: <span>Setting</span>,
+                href: "/page/stock-management",
+                title: <span>Stock Management</span>,
               },
               {
                 title: <span>Set Hazard Type</span>,
@@ -92,12 +92,14 @@ export default function MasterHazardType() {
             ]}
           />
         </Col>
-        <Col span={24}>
-          <div className="title-page-font">{`SET HAZARD TYPE`}</div>
-        </Col>
+
+        <Divider orientation="left" orientationMargin="0">
+          <div className="title-page-font">{`Set Hazard Type`}</div>
+        </Divider>
+
         <Col span={24}>
           <div className="grid grid-cols-1 ">
-            <div style={{ marginBottom: "10px" }}>
+            <Card>
               <CreateMasterHazardtype
                 propLoading={(e: boolean) => setLoading(e)}
                 loading={loading}
@@ -105,8 +107,6 @@ export default function MasterHazardType() {
                 openFilter={openFilter}
                 onFilter={(e: any) => onFilter(e as any)}
               />
-            </div>
-            <div>
               <TableMasterHazardtype
                 propLoading={(e: boolean) => setLoading(e)}
                 loading={loading}
@@ -116,7 +116,7 @@ export default function MasterHazardType() {
                 handlerPaginationTable={(e: any) => handlerPaginationTable(e)}
                 setPagination={(e: any) => setPagination(e)}
               />
-            </div>
+            </Card>
           </div>
         </Col>
       </Row>

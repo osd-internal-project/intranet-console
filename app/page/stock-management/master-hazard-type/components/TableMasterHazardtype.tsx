@@ -166,20 +166,18 @@ export const TableMasterHazardtype: React.FC<props> = ({
   ) : (
     <div className=" grid grid-cols-1 gap-y-2">
       <div>
-        <Card>
-          <div className=" col-span-1 space-y-5">
-            <div className=" overflow-auto md:overflow-hidden">
-              <Table
-                loading={loading}
-                columns={columns}
-                dataSource={dataTable}
-                rowKey={(e: any) => e.id}
-                pagination={{ total: paginationConfig, current: filter?.current, showSizeChanger: false }}
-                onChange={handlerPaginationTable}
-              />
-            </div>
+        <div className=" col-span-1 space-y-5">
+          <div className=" overflow-auto md:overflow-hidden">
+            <Table
+              loading={loading}
+              columns={columns}
+              dataSource={dataTable}
+              rowKey={(e: any) => e.id}
+              pagination={{ total: paginationConfig, current: filter?.current, showSizeChanger: false }}
+              onChange={handlerPaginationTable}
+            />
           </div>
-        </Card>
+        </div>
       </div>
 
       <Modal title="Edit Hazard Type" open={isModalOpenEdit} onOk={handleOkedit} onCancel={handleCanceledit} footer={false}>

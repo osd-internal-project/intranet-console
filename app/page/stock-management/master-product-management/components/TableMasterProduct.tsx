@@ -299,42 +299,33 @@ const TableMasterProduct: React.FC = () => {
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-y-2">
-        <div className=" col-span-4  flex justify-between">
-          <div>
-            <Popover
-              onOpenChange={handleOpenFilter}
-              open={openFilter}
-              content={searchContent}
-              placement="bottomLeft"
-              title="Search"
-              trigger="click"
-              overlayStyle={{ width: "calc(100% - 240px)" }}
-            >
-              <Button type="primary" icon={<FilterOutlined />}>
-                Filters
-              </Button>
-            </Popover>
-          </div>
-          <div className=" space-x-2">
-            {/* <RangePicker
-                  format={dateFormat}
-                  onChange={(val: any) => {
-                    setDateRange(val);
-                    propLoading(true, searchText);
-                  }}
-                /> */}
-            {addRule ? (
-              <Link href="/page/setting/master-product-management/add">
-                <Button icon={<PlusCircleOutlined />} type="primary">
-                  Add Master Product
-                </Button>
-              </Link>
-            ) : (
-              <></>
-            )}
-          </div>
-        </div>
         <Card className="col-span-4 md:col-span-4">
+          <div className=" flex justify-end pb-4">
+            <Space>
+              <Popover
+                onOpenChange={handleOpenFilter}
+                open={openFilter}
+                content={searchContent}
+                placement="bottomLeft"
+                title="Search"
+                trigger="click"
+                overlayStyle={{ width: "calc(100% - 240px)" }}
+              >
+                <Button type="primary" icon={<FilterOutlined />}>
+                  Filters
+                </Button>
+              </Popover>
+              {addRule ? (
+                <Link href="/page/setting/master-product-management/add">
+                  <Button icon={<PlusCircleOutlined />} type="primary">
+                    Add Master Product
+                  </Button>
+                </Link>
+              ) : (
+                <></>
+              )}
+            </Space>
+          </div>
           <Table
             scroll={{ x: "calc(800px + 90%)" }}
             pagination={{ onChange: handlePageChange, showSizeChanger: false }}
@@ -348,7 +339,13 @@ const TableMasterProduct: React.FC = () => {
       </div>
       <div>
         {openModal ? (
-          <Modal title={<div className=" text-2xl">{"DETAIL"}</div>} open={openModal} onCancel={() => setOpenModal(false)} footer={false} width={1500}>
+          <Modal
+            title={<div className=" text-2xl">{"DETAIL"}</div>}
+            open={openModal}
+            onCancel={() => setOpenModal(false)}
+            footer={false}
+            width={1500}
+          >
             <Row gutter={[8, 8]}>
               <Col span={24}>
                 <Form

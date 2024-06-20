@@ -55,6 +55,8 @@ export const TableDetail: React.FC<props> = ({
           approvedDate: row.approvedDate ? dateToStringThNoTime(row?.approvedDate) : "-",
           userApproved: row.userApproved,
           dataLeaveFiles: row.dataLeaveFiles,
+          ownerId: row.ownerId,
+          ownerName: row.ownerName,
         };
         return (
           <a
@@ -78,7 +80,7 @@ export const TableDetail: React.FC<props> = ({
     {
       key: "id",
       dataIndex: "id",
-      title: "ACTIVE",
+      title: "Active",
       align: "center",
       render: (e: string, row: ITypeDataLeave, index: number) => {
         return (
@@ -97,6 +99,7 @@ export const TableDetail: React.FC<props> = ({
               </Col> */}
               <Col>
                 <Button
+                  size="small"
                   type="primary"
                   onClick={() => {
                     onFinishUpdate("cancel", row?.id ? row?.id : 0);
@@ -115,7 +118,7 @@ export const TableDetail: React.FC<props> = ({
   ];
   return (
     <div>
-      <Table dataSource={dataLeaveUser} columns={columns} />
+      <Table dataSource={dataLeaveUser} columns={columns} size="small" />
       <Modal title="" open={openModalDetail} footer={false} onCancel={() => setOpenModalDetail(false)}>
         <div className="w-full justify-center flex mb-2 font-bold text-lg">{`< รายละเอียดการลา >`}</div>
         <Form autoComplete="off" form={formdetail} layout="vertical">
@@ -125,7 +128,7 @@ export const TableDetail: React.FC<props> = ({
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`เรียนถึง :`}>
+            <Form.Item label={`เรียนถึง :`} name={`ownerName`}>
               <Input readOnly style={{ border: "none", borderBottom: "1px solid #808080" }} />
             </Form.Item>
           </div>

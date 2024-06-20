@@ -1,6 +1,6 @@
 "use client";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { Button, Card, Col, Form, Input, Modal, Row, Select, Typography, message } from "antd";
+import { Button, Card, Col, Divider, Form, Input, Modal, Row, Select, Typography, message } from "antd";
 // import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { PositionServices } from "../services/position.service";
@@ -53,16 +53,9 @@ export const AddMasterdataPosition: React.FC<props> = ({ departMent, setLoading 
 
   return (
     <div>
-      <Card className=" grid grid-cols-1 gap-y-2">
-        <Typography className="title-page-font">{`Set Position`}</Typography>
-        {/* {addRule ? ( */}
+      <Card className=" grid grid-cols-1 gap-y-2" title={`Add Position`}>
         <Form form={FORM} layout="horizontal" name={`add-position`} onFinish={onfinish} labelAlign="left">
           <div className="grid grid-cols-3 gap-2">
-            {/* <div>
-              <Form.Item name={`departMentId`} label={`Department :`} rules={[{ required: true, message: "Please enter Department" }]}>
-                <Select options={departMent.map((item: TdepartmentFindMany) => ({ value: item.departId, label: item.departName }))} />
-              </Form.Item>
-            </div> */}
             <div>
               <Form.Item name={`nameTh`} label={`Name TH :`} rules={[{ required: true, message: "Please enter name TH" }]}>
                 <Input placeholder="Text" />
@@ -80,9 +73,6 @@ export const AddMasterdataPosition: React.FC<props> = ({ departMent, setLoading 
             </Form.Item>
           </div>
         </Form>
-        {/* ) : (
-          <></>
-        )} */}
       </Card>
     </div>
   );

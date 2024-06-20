@@ -1,19 +1,6 @@
 "use client";
 import { deleteIcon, editIcon } from "@/components/icon";
-import {
-  Button,
-  Card,
-  Col,
-  Form,
-  Input,
-  Modal,
-  Row,
-  Space,
-  Switch,
-  Table,
-  Tag,
-  message,
-} from "antd";
+import { Button, Card, Col, Form, Input, Modal, Row, Space, Switch, Table, Tag, message } from "antd";
 
 import React, { useState } from "react";
 import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -30,11 +17,7 @@ export interface props {
   setLoading: (value: boolean) => void;
 }
 
-export const TableInventory: React.FC<props> = ({
-  loading,
-  getdataAll,
-  setLoading,
-}) => {
+export const TableInventory: React.FC<props> = ({ loading, getdataAll, setLoading }) => {
   const stockAuth = useAxiosStock();
 
   const editRule = checkRule("sm-inventory-e");
@@ -154,11 +137,7 @@ export const TableInventory: React.FC<props> = ({
       dataIndex: "status",
       key: "status",
       render: (event: boolean, row: typeInventory, index: number) =>
-        event === true ? (
-          <Tag color="green">{`Active`}</Tag>
-        ) : (
-          <Tag color="volcano">{`Inactive`}</Tag>
-        ),
+        event === true ? <Tag color="green">{`Active`}</Tag> : <Tag color="volcano">{`Inactive`}</Tag>,
     },
     {
       title: "ACTIVE",
@@ -175,12 +154,7 @@ export const TableInventory: React.FC<props> = ({
             <></>
           )}
           {deleteRule ? (
-            <Button
-              type="link"
-              danger
-              onClick={() => onfinishDel(Number(event))}
-              disabled={buttonLoading}
-            >
+            <Button type="link" danger onClick={() => onfinishDel(Number(event))} disabled={buttonLoading}>
               {deleteIcon}
             </Button>
           ) : (
@@ -193,34 +167,13 @@ export const TableInventory: React.FC<props> = ({
 
   return (
     <div>
-      <Card>
-        <div className=" col-span-1 space-y-5">
-          <div className=" overflow-auto md:overflow-hidden">
-            <Table
-              size="small"
-              columns={columns}
-              dataSource={getdataAll}
-              loading={loading}
-              rowKey="id"
-              scroll={{ x: 1000 }}
-            />
-          </div>
+      <div className=" col-span-1 space-y-5">
+        <div className=" overflow-auto md:overflow-hidden">
+          <Table size="small" columns={columns} dataSource={getdataAll} loading={loading} rowKey="id" scroll={{ x: 1000 }} />
         </div>
-      </Card>
-      <Modal
-        title="Edit Inventory Store"
-        open={openEdit}
-        onCancel={handleCancel}
-        footer={false}
-      >
-        <Form
-          style={{ width: "100%" }}
-          name="edit"
-          autoComplete="off"
-          layout="vertical"
-          form={form}
-          onFinish={onfinishEdit}
-        >
+      </div>
+      <Modal title="Edit Inventory Store" open={openEdit} onCancel={handleCancel} footer={false}>
+        <Form style={{ width: "100%" }} name="edit" autoComplete="off" layout="vertical" form={form} onFinish={onfinishEdit}>
           <Row gutter={[8, 8]}>
             <Form.Item name={`id`} hidden />
             <Col span={12}>
@@ -229,22 +182,12 @@ export const TableInventory: React.FC<props> = ({
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item
-                name={"inventoryName"}
-                label={`Inventory Name :`}
-                rules={[
-                  { required: true, message: "Please enter inventory name" },
-                ]}
-              >
+              <Form.Item name={"inventoryName"} label={`Inventory Name :`} rules={[{ required: true, message: "Please enter inventory name" }]}>
                 <Input />
               </Form.Item>
             </Col>
             <Col span={24}>
-              <Form.Item
-                name={"locationPlace"}
-                label={`Location :`}
-                rules={[{ required: true, message: "Please enter location" }]}
-              >
+              <Form.Item name={"locationPlace"} label={`Location :`} rules={[{ required: true, message: "Please enter location" }]}>
                 <Input />
               </Form.Item>
             </Col>
@@ -252,10 +195,7 @@ export const TableInventory: React.FC<props> = ({
               <Form.Item
                 name={"phoneNumber"}
                 label={`Phone Number :`}
-                rules={[
-                  { required: true, message: "Please enter phone number" },
-                  { validator: validateOnlyNumbers },
-                ]}
+                rules={[{ required: true, message: "Please enter phone number" }, { validator: validateOnlyNumbers }]}
               >
                 <Input />
               </Form.Item>
@@ -267,17 +207,12 @@ export const TableInventory: React.FC<props> = ({
                   unCheckedChildren="Inactive"
                   checked={switchChecked}
                   onChange={handleChange}
-                  className={
-                    switchChecked === true ? "active-switch" : "inactive-switch"
-                  }
+                  className={switchChecked === true ? "active-switch" : "inactive-switch"}
                 />
               </Form.Item>
             </Col>
             <Col span={24}>
-              <Row
-                gutter={[8, 8]}
-                style={{ justifyContent: "end", display: "flex" }}
-              >
+              <Row gutter={[8, 8]} style={{ justifyContent: "end", display: "flex" }}>
                 <Col>
                   <Button
                     onClick={() => {
@@ -288,12 +223,7 @@ export const TableInventory: React.FC<props> = ({
                   >{`Cancel`}</Button>
                 </Col>
                 <Col>
-                  <Button
-                    htmlType="submit"
-                    type="default"
-                    className="button-blue"
-                    loading={buttonLoading}
-                  >{`Save Change`}</Button>
+                  <Button htmlType="submit" type="default" className="button-blue" loading={buttonLoading}>{`Save Change`}</Button>
                 </Col>
               </Row>
             </Col>

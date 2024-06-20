@@ -17,7 +17,10 @@ export interface props {
   getEndDate: Date | undefined;
   checkSwitch: boolean | undefined;
   beforeUploadAttendFiles: (e: RcFile) => void;
+  handleChangeAttendFiles: (e: any) => void;
   attendFiles: UploadFile[];
+  getUserOwner: IDataUser | null;
+  onChangeParams: (value: string, type: string) => void;
 }
 export const CreateOnlineLeave: React.FC<props> = ({
   getUser,
@@ -31,7 +34,10 @@ export const CreateOnlineLeave: React.FC<props> = ({
   getEndDate,
   checkSwitch,
   beforeUploadAttendFiles,
+  handleChangeAttendFiles,
   attendFiles,
+  getUserOwner,
+  onChangeParams,
 }): React.ReactElement => {
   useEffect(() => {
     const getdatauser = () => {
@@ -41,10 +47,12 @@ export const CreateOnlineLeave: React.FC<props> = ({
         position: getUser?.position?.nameEn,
         firstNameTh: getUser?.firstNameTh,
         lastNameTh: getUser?.lastNameTh,
+        ownerName: `${getUserOwner?.firstNameTh} ${getUserOwner?.lastNameTh}`,
+        ownerId: getUserOwner?.userId,
       });
     };
     getdatauser();
-  }, []);
+  }, [getUserOwner]);
 
   return (
     <div>
@@ -55,8 +63,13 @@ export const CreateOnlineLeave: React.FC<props> = ({
               <DatePicker defaultValue={dayjs(new Date())} disabled />
             </Form.Item>
           </div>
+          <div className=" col-span-3 md:col-span-1 ml-5" hidden>
+            <Form.Item label={`เรียนถึง :`} name={`ownerId`}>
+              <Input disabled />
+            </Form.Item>
+          </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`เรียนถึง :`}>
+            <Form.Item label={`เรียนถึง :`} name={`ownerName`}>
               <Input disabled />
             </Form.Item>
           </div>
@@ -89,18 +102,28 @@ export const CreateOnlineLeave: React.FC<props> = ({
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`ประเภทการลา :`} name={`type_id`} required>
-              <Select placeholder={`ประเภทการลา`} options={getTypeLeaveOption} allowClear />
+              <Select placeholder={`ประเภทการลา`} options={getTypeLeaveOption} onChange={(e) => onChangeParams(e, "type")} allowClear />
             </Form.Item>
           </div>
           <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`ตั้งแต่วันที่ :`} name={`startDate`} required>
-                <DatePicker className="w-full" onChange={(e: any) => setStartDate(e)} />
+                <DatePicker
+                  className="w-full"
+                  onChange={(e: any) => {
+                    setStartDate(e), onChangeParams(e, "startDate");
+                  }}
+                />
               </Form.Item>
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`ถึงวันที่ :`} name={`endDate`} required>
-                <DatePicker className="w-full" onChange={(e: any) => setEndDate(e)} />
+                <DatePicker
+                  className="w-full"
+                  onChange={(e: any) => {
+                    setEndDate(e), onChangeParams(e, "endDate");
+                  }}
+                />
               </Form.Item>
             </div>
           </div>
@@ -109,19 +132,26 @@ export const CreateOnlineLeave: React.FC<props> = ({
               <div className="w-full grid grid-cols-3 gap-y-2 mt-2">
                 <div className=" col-span-3 md:col-span-1 ml-5">
                   <Form.Item label={`1 วัน`} name={`time_start_check`}>
-                    <Switch checkedChildren="ใช่" unCheckedChildren="ไม่" defaultChecked={false} onChange={(e: any) => setCheckSwitch(e)} />
+                    <Switch
+                      checkedChildren="ใช่"
+                      unCheckedChildren="ไม่"
+                      defaultChecked={false}
+                      onChange={(e: any) => {
+                        setCheckSwitch(e);
+                      }}
+                    />
                   </Form.Item>
                 </div>
                 {!checkSwitch ? (
                   <>
                     <div className=" col-span-3 md:col-span-1 ml-5">
                       <Form.Item label={`เวลาเริ่มต้น :`} name={"startTime"} required>
-                        <DatePicker picker="time" className="w-full" />
+                        <DatePicker picker="time" className="w-full" onChange={(e: any) => onChangeParams(e, "startTime")} />
                       </Form.Item>
                     </div>
                     <div className=" col-span-3 md:col-span-1 ml-5">
                       <Form.Item label={`เวลาสิ้นสุด :`} name={"endTime"} required>
-                        <DatePicker picker="time" className="w-full" />
+                        <DatePicker picker="time" className="w-full" onChange={(e: any) => onChangeParams(e, "endTime")} />
                       </Form.Item>
                     </div>
                   </>
@@ -143,7 +173,13 @@ export const CreateOnlineLeave: React.FC<props> = ({
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`แนบไฟล์ :`} name={"attrachFile"}>
-                <Upload fileList={attendFiles} beforeUpload={beforeUploadAttendFiles} multiple={false} maxCount={1}>
+                <Upload
+                  fileList={attendFiles}
+                  onChange={handleChangeAttendFiles}
+                  beforeUpload={beforeUploadAttendFiles}
+                  multiple={false}
+                  maxCount={1}
+                >
                   <Button icon={<UploadOutlined />}>{`Click to Upload`}</Button>
                 </Upload>
               </Form.Item>

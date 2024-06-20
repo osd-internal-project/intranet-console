@@ -1,7 +1,7 @@
 "use client";
 import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ExclamationCircleFilled, FilterOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Col, DatePicker, Form, Input, Modal, Popover, Row, Switch, message } from "antd";
+import { Button, Col, DatePicker, Form, Input, Modal, Popover, Row, Space, Switch, message } from "antd";
 import React, { useEffect, useState } from "react";
 import MasterHazardTypeService from "../services/index.service";
 
@@ -140,26 +140,26 @@ export const CreateMasterHazardtype: React.FC<props> = ({ propLoading, loading, 
           </Form.Item>
         </Form>
       </Modal>
-      <div className=" flex justify-between md:col-span-2 ">
-        <Popover
-          onOpenChange={handleOpenFilter}
-          open={openFilter}
-          content={searchContent}
-          placement="bottomLeft"
-          title="Search"
-          trigger="click"
-          overlayStyle={{ width: "calc(100% - 240px)" }}
-        >
-          <Button className="button-blue" type="primary" icon={<FilterOutlined />}>
-            {`Filters`}
-          </Button>
-        </Popover>
+      <div className=" flex justify-end pb-4">
+        <Space>
+          <Popover
+            onOpenChange={handleOpenFilter}
+            open={openFilter}
+            content={searchContent}
+            placement="bottomLeft"
+            title="Search"
+            trigger="click"
+            overlayStyle={{ width: "calc(100% - 240px)" }}
+          >
+            <Button className="button-blue" type="primary" icon={<FilterOutlined />}>
+              {`Filters`}
+            </Button>
+          </Popover>
 
-        <div>
           <Button type="primary" onClick={showModal} disabled={buttonLoading}>
             {`Add Hazard Type`}
           </Button>
-        </div>
+        </Space>
       </div>
     </>
   );

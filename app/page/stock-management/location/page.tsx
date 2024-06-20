@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Breadcrumb, Col, Row } from "antd";
+import { Breadcrumb, Card, Col, Divider, Row } from "antd";
 import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { LocationServices } from "./services/location.service";
 
@@ -61,9 +61,7 @@ export default function UsergroupPage() {
       const data = await Promise.all(
         result.map(async (event: typeLocation) => {
           const imageData = await dataImages(event);
-          const numberOfInventory = await locationServices.countInventorybyID(
-            event.id
-          );
+          const numberOfInventory = await locationServices.countInventorybyID(event.id);
           const mapData = {
             ...event,
             numberOfInventory: numberOfInventory,
@@ -78,9 +76,7 @@ export default function UsergroupPage() {
   };
   const dataImages = async (e: typeLocation) => {
     if (e.imagesLocation.length >= 1) {
-      const getImages = await locationServices.getImages(
-        e.imagesLocation[0]?.idfile
-      );
+      const getImages = await locationServices.getImages(e.imagesLocation[0]?.idfile);
 
       return getImages;
     } else {
@@ -98,8 +94,8 @@ export default function UsergroupPage() {
                 title: <span>Home</span>,
               },
               {
-                href: "/page/setting",
-                title: <span>Setting</span>,
+                href: "/page/stock-management",
+                title: <span>Stock Management</span>,
               },
               {
                 title: <span>Location</span>,
@@ -107,26 +103,26 @@ export default function UsergroupPage() {
             ]}
           />
         </Col>
+
+        <Divider orientation="left" orientationMargin="0">
+          <div className="title-page-font">{`Location`}</div>
+        </Divider>
+
         <Col span={24}>
-          <div className="title-page-font">{`LOCATION`}</div>
-        </Col>
-        <Col span={24}>
-          <div className="grid grid-cols-1 space-y-4 ">
-            <div>
-              <AddLocation
-                setLoading={(e: boolean) => setLoading(e)}
-                onFilter={(e: typeLocationFilter) => onFilter(e)}
-                handleOpenFilter={(e: boolean) => handleOpenFilter(e)}
-                openFilter={openFilter}
-              />
-            </div>
-            <div>
-              <LocationTable
-                loading={loading}
-                getdataAll={getdataAll}
-                setLoading={(e: boolean) => setLoading(e)}
-              />
-            </div>
+          <div>
+            <Card>
+              <div>
+                <AddLocation
+                  setLoading={(e: boolean) => setLoading(e)}
+                  onFilter={(e: typeLocationFilter) => onFilter(e)}
+                  handleOpenFilter={(e: boolean) => handleOpenFilter(e)}
+                  openFilter={openFilter}
+                />
+              </div>
+              <div>
+                <LocationTable loading={loading} getdataAll={getdataAll} setLoading={(e: boolean) => setLoading(e)} />
+              </div>
+            </Card>
           </div>
         </Col>
       </Row>

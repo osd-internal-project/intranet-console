@@ -1,5 +1,5 @@
 "use client";
-import { Breadcrumb, Col, Row } from "antd";
+import { Breadcrumb, Card, Col, Divider, Row } from "antd";
 import React from "react";
 import dynamic from "next/dynamic";
 
@@ -10,23 +10,21 @@ const Organizational = dynamic(() => import("./components/organizational"), {
 export default function Pages() {
   return (
     <Row>
-      <Col span={24}>
-        <Breadcrumb
-          items={[
-            {
-              href: "/page",
-              title: <span>Home</span>,
-            },
+      <Breadcrumb
+        items={[
+          {
+            href: "/page",
+            title: <span>Home</span>,
+          },
 
-            {
-              title: <span>organize-chart</span>,
-            },
-          ]}
-        />
-      </Col>
-      <Col span={24}>
-        <div className="title-page-font">{`Organize Chart`}</div>
-      </Col>
+          {
+            title: <span>Organization Chart</span>,
+          },
+        ]}
+      />
+      <Divider orientation="left" orientationMargin="0">
+        <div className="title-page-font">{`Organization Chart`}</div>
+      </Divider>
       <Organizational />
     </Row>
   );

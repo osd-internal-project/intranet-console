@@ -35,6 +35,17 @@ const UserGroupServices = (axiosInstance: AxiosInstance) => {
         where: {
           groupId: groupId,
         },
+        select: {
+          id: true,
+          groupId: true,
+          groupName: true,
+          createdAt: true,
+          updatedAt: true,
+          parentGroupId: true,
+          organizedGroupId: true,
+          description: true,
+          userGroupUserRoleMap: true,
+        },
       };
       return await axiosInstance
         .post(`/user-group/condition-first`, {
@@ -67,11 +78,7 @@ const UserGroupServices = (axiosInstance: AxiosInstance) => {
     },
 
     updateUserGroup: async (groupId: string, data: Object) => {
-      const req = {
-        groupId: groupId,
-        data: data,
-      };
-      return await axiosInstance.patch(`/user-group`, req);
+      return await axiosInstance.patch(`/user-group/${groupId}`, data);
     },
     deleteUserGroup: async (groupId: string) => {
       return await axiosInstance.delete(`/user-group/${groupId}`);

@@ -1,46 +1,16 @@
-import {
-  CreditCardOutlined,
-  DashboardOutlined,
-  FileTextOutlined,
-  LogoutOutlined,
-  UserOutlined,
-  CloseOutlined,
-  FallOutlined,
-  FileExclamationOutlined,
-  MailOutlined,
-  BankOutlined,
-  HomeOutlined,
-} from "@ant-design/icons";
+import { LogoutOutlined, UserOutlined, HomeOutlined } from "@ant-design/icons";
 import { Icon } from "@iconify/react";
-import { MenuProps } from "antd";
+import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
-import React, { Children } from "react";
+import React from "react";
 import { signOut } from "next-auth/react";
 import {
-  buldingIcon,
-  carlendarIcon,
-  circleSqureIcon,
-  colorSwatchIcon,
-  cubeIcon,
-  editTagIcon,
   gridIcon,
-  groupLineIcon,
   IconDataLeave,
   bookingIcon,
-  IconHolidays,
-  IconPosition,
-  IconTypeLeave,
   maintenanceIcon,
-  mindMappingIcon,
   organizeChart,
-  persentationChartLoneIcon,
-  shieldExclamationIcon,
-  starIcon,
   stockIcon,
-  stockSetting,
-  truckIcon,
-  userGroupIcon,
-  warningIcon,
   contactListIcon,
 } from "@/components/icon";
 
@@ -82,7 +52,7 @@ export const MenuSider: MenuItem[] = [
     children: [
       {
         key: `internal-info/organization-chart`,
-        label: `Organization Chart`,
+        label: "Organization Chart",
       },
       {
         key: `internal-info/organization-chart-team`,
@@ -144,7 +114,7 @@ export const MenuSider: MenuItem[] = [
         rule: "sm-re-tr-h",
       },
       {
-        key: `sm-re-ex-h`,
+        key: `report-expired`,
         // icon: <Icon icon="bx:bell" width="25" height="25" />,
         label: `รายงานการหมดอายุ`,
         rule: "sm-re-ex-h",
@@ -165,13 +135,11 @@ export const MenuSider: MenuItem[] = [
     children: [
       {
         key: `housekeeper/housekeepers`,
-        icon: carlendarIcon,
         label: `Housekeeper`,
         rule: "hk-h",
       },
       {
         key: `housekeeper/housekeeper-management`,
-        icon: editTagIcon,
         label: `Housekeeper Management`,
         rule: "hk-m",
       },
@@ -181,22 +149,27 @@ export const MenuSider: MenuItem[] = [
     key: "data-leave",
     icon: IconDataLeave,
     label: `Data Leave`,
+    rule: "dl-s",
     children: [
       {
         key: `data-leave/online-leave`,
         label: `Create Data Leave`,
+        rule: "dl-a",
       },
       {
         key: `data-leave/detail-online-leave`,
         label: `Detail Data Leave User`,
+        rule: "dl-dt-u",
       },
       {
         key: `data-leave/detail-online-leave-admin`,
         label: `Detail Data Leave Admin`,
+        rule: "dl-dt-a",
       },
       {
         key: `data-leave/leave-management`,
         label: `Leave Management`,
+        rule: "dl-dis",
       },
     ],
   },
@@ -249,25 +222,28 @@ export const MenuSider: MenuItem[] = [
         label: `Organize Chart`,
         // rule: "st-p-s",
       },
-      {
-        key: `setting/location`,
-        // icon: buldingIcon,
-        label: `Location`,
-      },
+      // {
+      //   key: `setting/location`,
+      //   // icon: buldingIcon,
+      //   label: `Location`,
+      // },
       {
         key: `setting/typeleave`,
         // icon: IconTypeLeave,
         label: `Type Leave`,
+        rule: "st-tl-s",
       },
       {
         key: `setting/master-holidays`,
         // icon: IconHolidays,
         label: `Master Holidays`,
+        rule: "st-mth-s",
       },
       {
         key: `setting/masterdata-position`,
         // icon: IconPosition,
         label: `Master Position`,
+        rule: "st-p-s",
       },
     ],
   },
@@ -281,30 +257,30 @@ export const MenuSider: MenuItem[] = [
         key: `users-management/users`,
         // icon: groupLineIcon,
         label: `Users`,
-        rule: "um-s",
+        // rule: "um-s",
       },
       {
         key: `users-management/user-organization`,
         // icon: shieldExclamationIcon,
-        label: `Users Organization`,
+        label: `Organizations`,
         // rule: "user-organize-show",
       },
       {
         key: `users-management/user-group`,
         // icon: userGroupIcon,
-        label: `Users Group`,
-        rule: "um-ug-s",
+        label: `Groups`,
+        // rule: "um-ug-s",
       },
       {
         key: `users-management/user-role`,
         // icon: mindMappingIcon,
-        label: `Users Role`,
+        label: `Roles`,
         rule: "um-ro-s",
       },
       {
         key: `users-management/user-rule`,
         // icon: shieldExclamationIcon,
-        label: `Users Rule`,
+        label: `Rules`,
         rule: "um-ru-s",
       },
     ],
@@ -313,16 +289,17 @@ export const MenuSider: MenuItem[] = [
     key: "crm",
     icon: contactListIcon,
     label: `CRM`,
+    rule: "crm-s",
     children: [
       {
-        key: `crm/customer-info`,
-        label: `Customer Info`,
-        // rule: "housekeeper",
+        key: `crm/customer`,
+        label: `Customer`,
+        rule: "crm-c-s",
       },
       {
         key: `crm/ticket`,
         label: `Ticket `,
-        // rule: "housekeeper",
+        rule: "crm-t-s",
       },
     ],
   },
@@ -433,7 +410,9 @@ export const MenuSiderWithModule = (modules: string[]) => {
               ...item,
               label: (
                 <>
-                  <Link href={`/page/${item.key}`}>{item.label}</Link>
+                  <Tooltip placement="right" title={item.label}>
+                    <Link href={`/page/${item.key}`}>{item.label}</Link>
+                  </Tooltip>
                 </>
               ),
             }))

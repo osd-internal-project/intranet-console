@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { TableDetail } from "./components/table-detail";
-import { Card, Form, Modal, message } from "antd";
+import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, message } from "antd";
 import { useRouter } from "next/navigation";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../services/index.service";
@@ -63,17 +63,35 @@ export default function Page() {
     }
   }
   return (
-    <div>
-      <Card>
-        <TableDetail
-          dataLeaveUser={dataLeaveUser}
-          setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
-          openModalDetail={openModalDetail}
-          formdetail={formdetail}
-          onFinishUpdate={(type: string, id: number) => onFinishUpdate(type, id)}
-          downloadFile={(id: number, filename: string) => downloadFile(id, filename)}
+    <Row>
+      <Col span={24}>
+        <Breadcrumb
+          items={[
+            {
+              href: "/page",
+              title: <span>Home</span>,
+            },
+            {
+              title: <span>Detail Online Leave</span>,
+            },
+          ]}
         />
-      </Card>
-    </div>
+      </Col>
+      <Divider orientation="left" orientationMargin="0">
+        <div className="title-page-font">{`Detail Online Leave`}</div>
+      </Divider>
+      <div className="w-full">
+        <Card>
+          <TableDetail
+            dataLeaveUser={dataLeaveUser}
+            setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
+            openModalDetail={openModalDetail}
+            formdetail={formdetail}
+            onFinishUpdate={(type: string, id: number) => onFinishUpdate(type, id)}
+            downloadFile={(id: number, filename: string) => downloadFile(id, filename)}
+          />
+        </Card>
+      </div>
+    </Row>
   );
 }

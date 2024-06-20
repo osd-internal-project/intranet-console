@@ -1,12 +1,26 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Button, Card, Col, Divider, message, Row, Spin, TablePaginationConfig, Tabs } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Card,
+  Col,
+  Divider,
+  message,
+  Row,
+  Spin,
+  TablePaginationConfig,
+  Tabs,
+} from "antd";
 import MaCalendarComponent from "./components/MaCalendar";
 import MaFilterComponent from "./components/MaFilter";
 import MaTableComponent from "./components/MaTable";
 import { ITMaTask, ITMaType } from "./common";
 import Link from "next/link";
-import { useAxiosIntranet, useAxiosReport } from "@/app/lib/axios/hooks/userAxiosAuth";
+import {
+  useAxiosIntranet,
+  useAxiosReport,
+} from "@/app/lib/axios/hooks/userAxiosAuth";
 import MaServices from "./services/ma.service";
 import dayjs from "dayjs";
 export default function MaTaskPage() {
@@ -16,12 +30,19 @@ export default function MaTaskPage() {
   const reportServices = MaServices(reportAuth);
   const [search, setSearch] = useState<object>({});
   const [loading, setloading] = useState<boolean>(true);
-  const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 20 });
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
   const [dataTable, setDataTable] = useState<ITMaTask[]>([]);
   const [maTabs, setMamaTabs] = useState<ITMaType[]>([]);
   const startDayOfMonth = dayjs().startOf("month").toDate();
   const lastDayOfMonth = dayjs().endOf("month").toDate();
-  const [rangeCalendar, setRangeCalendar] = useState<{ start: Date; end: Date }>({ start: startDayOfMonth, end: lastDayOfMonth });
+  const [rangeCalendar, setRangeCalendar] = useState<{
+    start: Date;
+    end: Date;
+  }>({ start: startDayOfMonth, end: lastDayOfMonth });
   const [calendarEvents, setCalendarEvents] = useState<ITMaTask[]>([]);
   useEffect(() => {
     defaultData();
@@ -39,14 +60,22 @@ export default function MaTaskPage() {
   };
   const getEventData = async () => {
     if (rangeCalendar?.start && rangeCalendar?.end) {
-      const event = await maServices.findMaTaskByRange(rangeCalendar.start, rangeCalendar.end);
+      const event = await maServices.findMaTaskByRange(
+        rangeCalendar.start,
+        rangeCalendar.end
+      );
       setCalendarEvents(event);
     }
   };
   const fetchData = async () => {
-    const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
+    const skip: number =
+      (Number(pagination.current) - 1) * Number(pagination.pageSize);
     const take: number = Number(pagination.pageSize);
-    const res = await maServices.findMaDataTable({ take: take, skip: skip, search: search });
+    const res = await maServices.findMaDataTable({
+      take: take,
+      skip: skip,
+      search: search,
+    });
     setDataTable(res.data);
     setPagination({ ...pagination, total: res.count });
     setloading(false);
@@ -66,11 +95,17 @@ export default function MaTaskPage() {
   }
   async function exportMa(filter: any): Promise<void> {
     const searchExport = { ...search, ...filter };
-    const response = await reportServices.exportMaReport({ search: searchExport });
-    const blob = new Blob([response], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    const response = await reportServices.exportMaReport({
+      search: searchExport,
+    });
+    const blob = new Blob([response], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
     const link = document.createElement("a");
     link.href = window.URL.createObjectURL(blob);
-    link.download = `รายงานการดำเนินการMA-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`;
+    link.download = `รายงานการดำเนินการMA-${dayjs(new Date()).format(
+      "YYYYMMDDHHmmss"
+    )}.xlsx`;
     link.click();
     message.success("สำเร็จ");
   }
@@ -118,7 +153,10 @@ export default function MaTaskPage() {
                   key: "1",
                   children: (
                     <div>
-                      <MaCalendarComponent calendarEvents={calendarEvents} handleCalendarChange={handleCalendarChange} />
+                      <MaCalendarComponent
+                        calendarEvents={calendarEvents}
+                        handleCalendarChange={handleCalendarChange}
+                      />
                     </div>
                   ),
                 },
@@ -136,7 +174,10 @@ export default function MaTaskPage() {
                           key: String(type.id),
                           children: (
                             <div className=" space-y-3">
-                              <MaFilterComponent exportMa={exportMa} searchMa={searchMa} />
+                              <MaFilterComponent
+                                exportMa={exportMa}
+                                searchMa={searchMa}
+                              />
                               <MaTableComponent
                                 dataTable={dataTable}
                                 loading={loading}

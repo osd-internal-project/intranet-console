@@ -61,13 +61,13 @@ const BranchAddressComponent: React.FC<props> = ({
   };
 
   const columns: TableColumnsType<ITBranchAddress> = [
-    {
-      key: "addressTypeName",
-      dataIndex: "addressTypeName",
-      title: "ประเภทที่อยู่",
-      width: "100px",
-      // render: (id: number, record: ITBranchAddress, index: number) => index + 1,
-    },
+    // {
+    //   key: "addressTypeName",
+    //   dataIndex: "addressTypeName",
+    //   title: "ประเภทที่อยู่",
+    //   width: "100px",
+    //   // render: (id: number, record: ITBranchAddress, index: number) => index + 1,
+    // },
     {
       key: "houseNumber",
       dataIndex: "houseNumber",

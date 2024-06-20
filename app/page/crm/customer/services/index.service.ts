@@ -11,7 +11,11 @@ import {
   ITCustomerForm,
 } from "../common";
 export interface TMaServices {
-  findCustomerList: (search: object) => Promise<ITCustomer[]>;
+  findCustomerDataTable: (
+    search: object,
+    take: number,
+    skip: number
+  ) => Promise<{ data: ITCustomer[]; count: number }>;
   findCustomerByCustomerId: (id: number) => Promise<ITCustomer>;
   create: (form: ITCustomerForm) => Promise<ITCustomer>;
   update: (id: number, form: ITCustomerForm) => Promise<ITCustomer>;
@@ -43,9 +47,11 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
   const customerAdrressUrl = "/customer-address";
   const customerContactUrl = "/customer-contact";
   return {
-    findCustomerList: async (search) => {
+    findCustomerDataTable: async (search, take, skip) => {
       return await axiosInstance
-        .get(`${customerUrl}/many`, { params: search })
+        .get(`${customerUrl}/data-table?take=${take}&skip=${skip}`, {
+          params: search,
+        })
         .then((res) => {
           return res.data;
         })

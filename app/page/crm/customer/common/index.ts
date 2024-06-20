@@ -50,8 +50,8 @@ export type ITBranchForm = {
 };
 export type ITBranch = { id: number } & ITBranchForm;
 export type ITBranchAddressForm = {
-  addressTypeId: string;
-  addressTypeName: string;
+  addressTypeId?: string;
+  addressTypeName?: string;
   alley: string;
   building: string;
   district: string;

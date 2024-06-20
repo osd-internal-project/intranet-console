@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, Divider, Modal, Row, Typography, UploadFile, message } from "antd";
+import { Breadcrumb, Col, Divider, Modal, Row, UploadFile, message } from "antd";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -50,14 +50,15 @@ export default function Page() {
   const loadDataTypeLeave = async () => {
     const res = await dataleaveservice.getdataAll();
     const resOwner = await dataleaveserviceUser.getOwnerGroupsByPositionId(getUser?.userMapOrganizeChart[0]?.positionId);
-    const resTableDeatilTypeLeave = await dataleaveservice.findDetailTypeLeaveByUserId(getUser?.userId, params);
-    const resTableDeatilTypeLeaveAll = await dataleaveservice.getdataTypeLeaveAll({});
+    const resTableDeatilTypeLeave = await dataleaveservice.findDetailTypeLeaveByUserId(getUser?.userId);
+    const resTableUserTypeLeave = await dataleaveservice.findUserByUserId(getUser?.userId);
+    // const resTableDeatilTypeLeaveAll = await dataleaveservice.getdataTypeLeaveAll({});
     const options = res.map((event: ITypetypeleave) => {
       return { value: event.typeId, label: event.typeName };
     });
     setUserOwner(resOwner);
     setTypeLeaveTable(resTableDeatilTypeLeave);
-    setTypeLeaveTableAll(resTableDeatilTypeLeaveAll);
+    setTypeLeaveTableAll(resTableUserTypeLeave.typeLeaveDisabledMap);
     setTypeLeaveOption(options);
     setTypeLeave(res);
     setLoading(false);
@@ -204,7 +205,7 @@ export default function Page() {
         </Divider>
       </Row>
       <Row gutter={{ xs: 3, sm: 3, md: 3, lg: 3 }}>
-        <Col span={10}>
+        <Col span={12}>
           <CreateOnlineLeave
             getUser={getUser}
             getTypeLeaveOption={getTypeLeaveOption}
@@ -223,8 +224,8 @@ export default function Page() {
             onChangeParams={onChangeParams}
           />
         </Col>
-        <Col span={14}>
-          <TableOnlineDetailLeave typeLeaveTable={typeLeaveTable} params={params} />
+        <Col span={12}>
+          <TableOnlineDetailLeave typeLeaveTable={typeLeaveTable} params={params} typeLeaveTableAll={typeLeaveTableAll} />
         </Col>
       </Row>
     </div>

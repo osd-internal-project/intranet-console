@@ -127,12 +127,8 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    findDetailTypeLeaveByUserId: async (
-      userId: string | undefined,
-      params: { typeId: string; startDate: any; startTime: any; endDate: any; endTime: any },
-    ) => {
+    findDetailTypeLeaveByUserId: async (userId: string | undefined) => {
       let url = `${baseUrlDataLeave}/find-detail-type-leave-by-userId/${userId}`;
-
       return await axiosInstance
         .get(url)
         .then((res) => {
@@ -142,6 +138,19 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+
+    findUserByUserId: async (userId: string | undefined) => {
+      let url = `${baseUrlDataLeave}/find-user-by-userId/${userId}`;
+      return await axiosInstance
+        .get(url)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
+
     createTypeLeaveDisabled: async (event: ITpyeUser) => {
       const condition = {
         data: {

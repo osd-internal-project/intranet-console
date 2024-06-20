@@ -1,15 +1,17 @@
-import { Card, Modal, Table, TableColumnsType, Typography } from "antd";
+import { Card, Modal, Table, TableColumnsType, Tag, Typography } from "antd";
 import React, { useState } from "react";
 import dayjs from "dayjs";
-import { ITypetypeleave } from "../../common";
+import { IDataUser, ITypetypeleave } from "../../common";
 
 export interface props {
   typeLeaveTable: ITypetypeleave[];
   params: any;
+  typeLeaveTableAll: any;
 }
 
-export const TableOnlineDetailLeave: React.FC<props> = ({ typeLeaveTable, params }): React.ReactElement => {
+export const TableOnlineDetailLeave: React.FC<props> = ({ typeLeaveTable, params, typeLeaveTableAll }): React.ReactElement => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const columns: TableColumnsType<ITypetypeleave> = [
     { key: "typeName", dataIndex: "typeName", title: "ประเภทการลา" },
     {
@@ -17,7 +19,11 @@ export const TableOnlineDetailLeave: React.FC<props> = ({ typeLeaveTable, params
       dataIndex: "haveLeft",
       title: "ลามาแล้ว",
       render: (values: string, row: ITypetypeleave, index: number) => {
-        return <>{`${values} วัน (${0} ชม.)`}</>;
+        return (
+          <div className="flex justify-center">
+            <Tag className="w-full flex justify-center">{`${values} วัน (${0} ชม.)`}</Tag>
+          </div>
+        );
       },
     },
 
@@ -26,7 +32,11 @@ export const TableOnlineDetailLeave: React.FC<props> = ({ typeLeaveTable, params
       dataIndex: "limitLeaveLastResult",
       title: "คงเหลือ",
       render: (values: string, row: ITypetypeleave, index: number) => {
-        return <>{`${values} วัน (${0} ชม.)`}</>;
+        return (
+          <div className="flex justify-center">
+            <Tag className="w-full flex justify-center">{`${values} วัน (${0} ชม.)`}</Tag>
+          </div>
+        );
       },
     },
     {
@@ -35,9 +45,17 @@ export const TableOnlineDetailLeave: React.FC<props> = ({ typeLeaveTable, params
       title: "ลาครั้งนี้",
       render: (values: string, row: ITypetypeleave, index: number) => {
         if (row.typeId === params.typeId) {
-          return <>{`${params.lengthDate} วัน (${params.lengthTime} ชม.)`}</>;
+          return (
+            <div className="flex justify-center">
+              <Tag className="w-full flex justify-center">{`${params.lengthDate} วัน (${params.lengthTime} ชม.)`}</Tag>
+            </div>
+          );
         } else {
-          return <>{`${Number(values).toString()} วัน (${params.lengthTime} ชม.)`}</>;
+          return (
+            <div className="flex justify-center">
+              <Tag className="w-full flex justify-center">{`${0} วัน (${0} ชม.)`}</Tag>
+            </div>
+          );
         }
       },
     },
@@ -47,9 +65,25 @@ export const TableOnlineDetailLeave: React.FC<props> = ({ typeLeaveTable, params
       title: "รวม",
       render: (values: string, row: any, index: number) => {
         if (row.typeId === params.typeId) {
-          return <>{`${(Number(values) + params.lengthDate).toString()} วัน (${(Number(values) + params.lengthTime).toString()} ชม.)`}</>;
+          return Number(values) + params.lengthDate > row.limitLeaveLastResult ? (
+            <div className="flex justify-center">
+              <Tag className="w-full flex justify-center" color="orange-inverse">{`${(row.haveLeft + params.lengthDate).toString()} วัน (${(
+                Number(values) + params.lengthTime
+              ).toString()} ชม.)`}</Tag>
+            </div>
+          ) : (
+            <div className="flex justify-center">
+              <Tag className="w-full flex justify-center" color={params.startDate && params.endDate ? "green-inverse" : undefined}>{`${(
+                row.haveLeft + params.lengthDate
+              ).toString()} วัน (${(Number(values) + params.lengthTime).toString()} ชม.)`}</Tag>
+            </div>
+          );
         } else {
-          return <>{`${Number(values)} วัน (${params.lengthTime} ชม.)`}</>;
+          return (
+            <div className="flex justify-center">
+              <Tag className="w-full flex justify-center">{`${row.haveLeft} วัน (${params.lengthTime} ชม.)`}</Tag>
+            </div>
+          );
         }
       },
     },
@@ -75,7 +109,9 @@ export const TableOnlineDetailLeave: React.FC<props> = ({ typeLeaveTable, params
       },
     },
   ];
-
+  const rowClassName = (record: any) => {
+    return typeLeaveTableAll.some((e: any) => record.id === e.masterTypeleaveId) ? "disabled-row" : "";
+  };
   return (
     <>
       <Card
@@ -83,10 +119,12 @@ export const TableOnlineDetailLeave: React.FC<props> = ({ typeLeaveTable, params
         title={<div className="flex justify-center w-full">{`ประวัติการลาปี ${dayjs(new Date()).format("YYYY")}`}</div>}
       >
         <Table
+          size="small"
           columns={columns}
           dataSource={typeLeaveTable}
           rowKey={(e: ITypetypeleave) => e.id}
           pagination={{ pageSize: 13, position: ["none"] }}
+          rowClassName={rowClassName}
           footer={() => (
             <>
               <div className="flex justify-center w-full">
@@ -107,6 +145,7 @@ export const TableOnlineDetailLeave: React.FC<props> = ({ typeLeaveTable, params
         width={700}
       >
         <Table
+          size="small"
           columns={columnsDetail}
           dataSource={typeLeaveTable}
           rowKey={(e: ITypetypeleave) => e.id}

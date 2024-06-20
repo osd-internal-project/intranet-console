@@ -57,9 +57,9 @@ export const CreateOnlineLeave: React.FC<props> = ({
   return (
     <div>
       <Card className="w-full grid grid-cols-1 gap-y-2 mt-2">
-        <Form form={createdataleaveForm} className="space-y-4 grid grid-cols-1" layout="vertical" autoComplete="off" onFinish={onfinishCreate}>
+        <Form size="small" form={createdataleaveForm} className=" grid grid-cols-1" layout="vertical" autoComplete="off" onFinish={onfinishCreate}>
           <div className=" col-span-1 md:col-span-1 ml-5 justify-end flex">
-            <Form.Item label={`วันที่ :`} name={`createdAt`}>
+            <Form.Item label={`วันที่ `} name={`createdAt`} layout="horizontal">
               <DatePicker defaultValue={dayjs(new Date())} disabled />
             </Form.Item>
           </div>
@@ -162,7 +162,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
 
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`วัตถุประสงค์การลา :`} name={`detail`} required>
-              <Input placeholder="วัตถุประสงค์การลา" />
+              <Input.TextArea placeholder="วัตถุประสงค์การลา" />
             </Form.Item>
           </div>
           <div className="w-full grid grid-cols-2 gap-y-2 mt-2">

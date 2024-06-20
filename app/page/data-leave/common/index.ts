@@ -54,6 +54,7 @@ export interface IDataUser {
   userId?: string;
   username?: string;
   userMapOrganizeChart?: any;
+  typeLeaveDisabledMap?: {};
 }
 
 export interface ISelect {

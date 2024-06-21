@@ -71,6 +71,7 @@ const BookingRoomPage: React.FC = () => {
     };
 
     const handleCancel = () => {
+        form.resetFields();
         setIsModalBooking(false);
     };
 

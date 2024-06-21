@@ -133,7 +133,7 @@ const ManageRoom: React.FC = () => {
 
     const showModalEditBooking = (record: BookingType) => {
         if (record.bookingStatus === "Approve") {
-            message.warning('ไม่สามารถแก้ไขการจองที่อนุมัติแล้วหรือกำลังรออนุมัติได้');
+            message.warning('ไม่สามารถแก้ไขการจองที่อนุมัติแล้วได้');
             return;
         }
         setCurrentBookingId(record.id);

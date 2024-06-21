@@ -180,7 +180,7 @@ const BookingRoomPage: React.FC = () => {
                 open={isModalBooking}
                 onCancel={handleCancel}
                 footer={null}
-                width={1000} // Set custom width
+                width={1000}
             >
                 <Form
                     form={form}

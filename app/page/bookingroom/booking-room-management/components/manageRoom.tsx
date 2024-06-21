@@ -48,7 +48,7 @@ const ManageRoom: React.FC = () => {
     const [bookingStatus, setBookingStatus] = useState("");
     const [bookingData, setBookingData] = useState<BookingType[]>([]);
     const [masterRoomData, setMasterRoomData] = useState<MasterRoomType[]>([]);
-    const [currentBookingId, setCurrentBookingId] = useState<string | null>(null);  // State to store the current booking ID
+    const [currentBookingId, setCurrentBookingId] = useState<string | null>(null);
     const [submitLoading, setSubmitLoading] = useState(false);
     const { data: session } = useSession();
 
@@ -133,7 +133,6 @@ const ManageRoom: React.FC = () => {
 
     const showModalEditBooking = (record: BookingType) => {
         if (record.bookingStatus === "Approve") {
-            // If booking is already approved or in progress, prevent editing
             message.warning('ไม่สามารถแก้ไขการจองที่อนุมัติแล้วหรือกำลังรออนุมัติได้');
             return;
         }
@@ -152,7 +151,7 @@ const ManageRoom: React.FC = () => {
 
     const showModalApproveBooking = (record: BookingType) => {
         setBookingStatus(record.bookingStatus);
-        setCurrentBookingId(record.id);  // Set the current booking ID
+        setCurrentBookingId(record.id);
         setModalApproveBooking(true);
     };
 

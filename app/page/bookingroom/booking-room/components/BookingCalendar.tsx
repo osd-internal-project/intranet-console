@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { Badge, Modal, Tag, Form, Input, DatePicker, Collapse, TimePicker } from "antd";
-import moment from "moment"; // Import moment instead of dayjs
-import { Calendar, momentLocalizer, EventProps, Event as RbcEvent, CalendarProps } from "react-big-calendar";
+import { Modal, Tag, Form, Input, DatePicker, Collapse} from "antd";
+import moment from "moment";
+import { Calendar, momentLocalizer, Event as RbcEvent } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useForm } from "antd/es/form/Form";
 import { CaretRightOutlined } from "@ant-design/icons";
-import { useSession } from "next-auth/react";
 
 const localizer = momentLocalizer(moment);
 const { TextArea } = Input;
@@ -40,7 +39,6 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchData }) => {
     const [selectedBooking, setSelectedBooking] = useState<BookingType | null>(null);
     const [statusModalDetail, setStatusModalDetail] = useState(false);
     const [formUpdate] = useForm();
-    const { data: session } = useSession();
 
     const onCancelModalDetail = () => {
         setStatusModalDetail(false);
@@ -62,22 +60,17 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchData }) => {
 
     const onSelectEventCalendar = (event: CustomEvent) => {
         const booking = bookingFetchData.find((b) => b.id === event.id);
-        console.log(booking);
         if (booking) {
             setSelectedBooking(booking);
             formUpdate.setFieldsValue({
                 ...booking,
-                startDate: moment(booking.startDate), // Ensure moment is used here
-                endDate: moment(booking.endDate), // Ensure moment is used here
+                startDate: moment(booking.startDate),
+                endDate: moment(booking.endDate),
                 approveDate: moment(booking.approveDate).format('DD-MM-YYYY HH:mm'),
             });
             setStatusModalDetail(true);
         }
     };
-
-    const approvalDate = moment().format('DD-MM-YYYY HH:mm');
-
-    console.log(session?.user.userId);
 
     return (
         <>
@@ -105,7 +98,7 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchData }) => {
             />
             <Modal
                 title="รายละเอียดการจอง"
-                visible={statusModalDetail} // Use 'visible' instead of 'open' for Modal
+                visible={statusModalDetail}
                 width={750}
                 onCancel={onCancelModalDetail}
                 footer={null}

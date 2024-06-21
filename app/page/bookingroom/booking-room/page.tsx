@@ -19,8 +19,10 @@ type BookingType = {
     bookingStatus: String;
     startDate: String;
     endDate: String;
+    approveDate: string;
     title: String;
     member: String;
+    approver: string;
     outSider: String;
     note: String;
 };
@@ -34,8 +36,8 @@ type MasterRoomType = {
 
 const BookingRoomPage: React.FC = () => {
     const { data: session } = useSession();
-    const stockAuth = useAxiosIntranet();
-    const bookingRoomServices = BookingRoomServices(stockAuth);
+    const intraAuth = useAxiosIntranet();
+    const bookingRoomServices = BookingRoomServices(intraAuth);
     const [isModalBooking, setIsModalBooking] = useState(false);
     const [submitLoading, setSubmitLoading] = useState(false);
     const [masterRoomData, setMasterRoomData] = useState<MasterRoomType[]>([]);
@@ -85,10 +87,22 @@ const BookingRoomPage: React.FC = () => {
     const createBooking: FormProps<BookingType>["onFinish"] = async (values) => {
         setSubmitLoading(true);
 
-        // Cast roomName, startDate, and endDate to string explicitly
         const roomName = values.roomName as string;
         const startDate = values.startDate as string;
         const endDate = values.endDate as string;
+
+        const today = new Date();
+        if (new Date(startDate) < today) {
+            message.error("ไม่สามารถจองในวันที่ผ่านมาได้");
+            setSubmitLoading(false);
+            return;
+        }
+
+        if (new Date(endDate) < new Date(startDate)) {
+            message.error("วันที่สิ้นสุดการจองต้องหลังวันที่เริ่มการจอง");
+            setSubmitLoading(false);
+            return;
+        }
 
         const data = {
             userId: session?.user.userId,
@@ -99,15 +113,16 @@ const BookingRoomPage: React.FC = () => {
             title: values.title,
             bookerDepartment: values.bookerDepartment,
             bookingStatus: "process",
+            approver: "",
             startDate: startDate,
             endDate: endDate,
+            approveDate: null,
             member: values.member ? values.member : "",
             outSider: values.outSider,
             note: values.note ? values.note : "",
         };
 
         try {
-            // Ensure checkBookingConflict receives string parameters
             const conflict = await checkBookingConflict(roomName, startDate, endDate);
 
             if (conflict) {
@@ -272,7 +287,6 @@ const BookingRoomPage: React.FC = () => {
                             <Form.Item<BookingType>
                                 label="จำนวนสมาชิก"
                                 name="member"
-                            // rules={[{ required: true, message: 'กรุณาระบุจำนวนผู้เข้าใช้งาน!' }]}
                             >
                                 <Input placeholder="กรอกจำนวนผู้เข้าใช้งาน" />
                             </Form.Item>
@@ -281,7 +295,6 @@ const BookingRoomPage: React.FC = () => {
                             <Form.Item<BookingType>
                                 label="บุคคลภายนอก"
                                 name="outSider"
-                            // rules={[{ required: true, message: 'กรุณาระบุข้อมูลบุคคลภายนอก!' }]}
                             >
                                 <Select
                                     placeholder="บุคคลภายนอก"

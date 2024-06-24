@@ -16,6 +16,17 @@ export const ManageRoomServices = (axiosInstance: AxiosInstance) => {
                     return [];
                 });
         },
+        findBookingRoom: async (skip:number, take:number) => {
+            return await axiosInstance
+                .get(`${baseUrlApiBookingRoom}?take=${take}&skip=${skip}`)
+                .then((res) => {
+                    return res.data;
+                })
+                .catch((err) => {
+                    console.log(err);
+                    return [];
+                });
+        },
         createBookingRoom: async (body: any) => {
             return await axiosInstance
                 .post(`${baseUrlApiBookingRoom}`, body)

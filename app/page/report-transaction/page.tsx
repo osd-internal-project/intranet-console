@@ -1,10 +1,29 @@
 "use client";
 import { exportIcon } from "@/components/icon";
 import { FilterOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Card, Checkbox, Col, DatePicker, Divider, Form, Input, Popover, Row, Select, Space, Table } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Card,
+  Checkbox,
+  Col,
+  DatePicker,
+  Divider,
+  Form,
+  Input,
+  Popover,
+  Row,
+  Select,
+  Space,
+  Table,
+} from "antd";
 import ReportServices from "./services/report.service";
 import UsersServices from "./services/users.service";
-import { useAxiosUser, useAxiosReport, useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
+import {
+  useAxiosUser,
+  useAxiosReport,
+  useAxiosStock,
+} from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ReportTable } from "./components/ReportTable";
 import { useEffect, useState } from "react";
 import { typedata, ITypeRequester } from "./common";
@@ -31,9 +50,13 @@ export default function TransactionPage() {
   const [search, setSearch] = useState<object>({});
   const [openFilter, setOpenFilter] = useState(false);
   const [status, setStatus] = useState("pay");
-  const [location, setLocation] = useState<{ key: number; value: string; label: string }[]>([]);
+  const [location, setLocation] = useState<
+    { key: number; value: string; label: string }[]
+  >([]);
   const [inventorySelectDisable, setInventorySelectDisable] = useState(true);
-  const [inventory, setInventory] = useState<{ value: number; label: string }[]>([]);
+  const [inventory, setInventory] = useState<
+    { value: number; label: string }[]
+  >([]);
   const [paginationConfig, setPaginationConfig] = useState<number>(0);
   const [filterForm] = Form.useForm();
   const [filter, setFilter] = useState<{
@@ -171,7 +194,9 @@ export default function TransactionPage() {
 
   const handleChangeLocation = async (locationId?: number) => {
     if (locationId) {
-      const getInventory = await stockServices.getInventoryByLocationId(locationId);
+      const getInventory = await stockServices.getInventoryByLocationId(
+        locationId
+      );
       setInventory(
         getInventory.map((inv: any) => ({
           value: inv.id,
@@ -188,13 +213,30 @@ export default function TransactionPage() {
   };
 
   const searchContent = (
-    <Form initialValues={{ status: "pay" }} form={filterForm} name="filter" layout="vertical" onFinish={onFilter} autoComplete="off">
+    <Form
+      initialValues={{ status: "pay" }}
+      form={filterForm}
+      name="filter"
+      layout="vertical"
+      onFinish={onFilter}
+      autoComplete="off"
+    >
       <div className="grid grid-cols-1 md:gap-4 md:grid-cols-4">
         <Form.Item label="Location :" name="location">
-          <Select allowClear options={location} placeholder="Select" onChange={(e: any, row: any) => handleChangeLocation(row.key)} />
+          <Select
+            allowClear
+            options={location}
+            placeholder="Select"
+            onChange={(e: any, row: any) => handleChangeLocation(row.key)}
+          />
         </Form.Item>
         <Form.Item label="Inventory :" name="inventory">
-          <Select disabled={inventorySelectDisable} options={inventory} allowClear placeholder="Select " />
+          <Select
+            disabled={inventorySelectDisable}
+            options={inventory}
+            allowClear
+            placeholder="Select "
+          />
         </Form.Item>
         <Form.Item label="Person :" name="person">
           <Select
@@ -206,10 +248,18 @@ export default function TransactionPage() {
             }))}
           />
         </Form.Item>
-        <Form.Item label="Order Date :" name="updatedAt" rules={[{ required: true, message: "Please enter date" }]}>
+        <Form.Item
+          label="Order Date :"
+          name="updatedAt"
+          rules={[{ required: true, message: "Please enter date" }]}
+        >
           <RangePicker className=" w-full" />
         </Form.Item>
-        <Form.Item label="Status :" name="status" rules={[{ required: true, message: "Please enter status" }]}>
+        <Form.Item
+          label="Status :"
+          name="status"
+          rules={[{ required: true, message: "Please enter status" }]}
+        >
           <Select
             onChange={(value) => {
               setStatus(value);
@@ -245,7 +295,10 @@ export default function TransactionPage() {
           <></>
         )}
       </div>
-      <Row gutter={[8, 8]} style={{ justifyContent: "end", display: "flex", width: "100%" }}>
+      <Row
+        gutter={[8, 8]}
+        style={{ justifyContent: "end", display: "flex", width: "100%" }}
+      >
         <Col>
           <Form.Item
             style={{
@@ -254,7 +307,10 @@ export default function TransactionPage() {
               alignItems: "center",
             }}
           >
-            <Button type="default" onClick={handleResetFilter}>{`Reset`}</Button>
+            <Button
+              type="default"
+              onClick={handleResetFilter}
+            >{`Reset`}</Button>
           </Form.Item>
         </Col>
         <Col>
@@ -282,7 +338,9 @@ export default function TransactionPage() {
       });
       const link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);
-      link.download = `report-transaction- ${dayjs(new Date()).format("YYYYMMDDHHmmss")} .xlsx`;
+      link.download = `report-transaction- ${dayjs(new Date()).format(
+        "YYYYMMDDHHmmss"
+      )} .xlsx`;
       link.click();
     } catch (error) {
       console.error("Error downloading Excel file:", error);
@@ -299,10 +357,10 @@ export default function TransactionPage() {
                 href: "/page",
                 title: <span>Home</span>,
               },
-              {
-                href: "/page/setting",
-                title: <span>Setting</span>,
-              },
+              // {
+              //   href: "/page/setting",
+              //   title: <span>Setting</span>,
+              // },
               {
                 title: <span>การรับเข้าเบิกจ่าย</span>,
               },
@@ -329,12 +387,22 @@ export default function TransactionPage() {
                       trigger="click"
                       overlayStyle={{ width: "calc(100% - 240px)" }}
                     >
-                      <Button type="primary" className="button-blue" icon={<FilterOutlined />}>
+                      <Button
+                        type="primary"
+                        className="button-blue"
+                        icon={<FilterOutlined />}
+                      >
                         Filters
                       </Button>
                     </Popover>
 
-                    <Button type="primary" icon={exportIcon} className="button-blue" onClick={exportExcel} disabled={disableExport}>
+                    <Button
+                      type="primary"
+                      icon={exportIcon}
+                      className="button-blue"
+                      onClick={exportExcel}
+                      disabled={disableExport}
+                    >
                       Export
                     </Button>
                   </Space>
@@ -345,7 +413,9 @@ export default function TransactionPage() {
                       status={status}
                       getdataresult={getdataresult}
                       paginationConfig={paginationConfig}
-                      handlerPaginationTable={(e: any) => handlerPaginationTable(e)}
+                      handlerPaginationTable={(e: any) =>
+                        handlerPaginationTable(e)
+                      }
                       filter={filter}
                       loading={loading}
                       checkvaluestatus={checkvaluestatus}

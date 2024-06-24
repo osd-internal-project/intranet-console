@@ -13,7 +13,10 @@ export default function Page() {
   const intranetAuth = useAxiosIntranet();
   const departmentServices = DepartmentServices(intranetAuth);
   const [loading, setloading] = useState<boolean>(true);
-  const [pagination, setPagination] = useState<TPagination>({ current: 1, pageSize: 10 });
+  const [pagination, setPagination] = useState<TPagination>({
+    current: 1,
+    pageSize: 10,
+  });
   const [dataTable, setDataTable] = useState<TdepartmentFindMany[]>([]);
   const [formCreate] = useForm();
 
@@ -37,7 +40,10 @@ export default function Page() {
     setloading(true);
   }
 
-  async function editDepartMent(id: number, data: TdepartmentCreateDto): Promise<void> {
+  async function editDepartMent(
+    id: number,
+    data: TdepartmentCreateDto
+  ): Promise<void> {
     await departmentServices.update(id, data);
     setloading(true);
   }
@@ -74,7 +80,10 @@ export default function Page() {
         <Col span={24}>
           <div className="grid grid-cols-1 ">
             <Card>
-              <DepartmentCreateComponent createDepartMent={createDepartMent} form={formCreate} />
+              <DepartmentCreateComponent
+                createDepartMent={createDepartMent}
+                form={formCreate}
+              />
             </Card>
             <Card>
               <DepartmentComponent

@@ -1,8 +1,3 @@
-export type ITPagination = {
-  current: number;
-  pageSize: number;
-};
-
 export type ITCustomerForSelect = {
   id: number;
   firstNameTh?: string;
@@ -43,3 +38,35 @@ export type ITBranchContactForm = {
   activeStatus: boolean;
 };
 export type ITBranchContact = { id: number } & ITBranchContactForm;
+export type ITCustomerProject = {
+  id: number;
+  projectName: string;
+  startDate: Date;
+  endDate: Date;
+  duration: number;
+  taxAddressText?: string;
+  deliveryAddressText?: string;
+  notiAddressText?: string;
+  contactId?: string;
+  customerBranch: { customerDetail: ITCustomerForSelect } & ITBranchForSelect;
+};
+export type ITProjectTicketCreateForm = {
+  ticketTitle: string;
+  ticketDetail: string;
+  customerProjectTaskId?: number;
+  dueDate: Date;
+};
+export type ITProjectTicket = {
+  id: number;
+  status: string;
+} & ITProjectTicketCreateForm;
+export type ITProjectTaskForm = {
+  taskTitle: string;
+  startDate: Date;
+  endDate: Date;
+  customerProjectId: number;
+};
+export type ITProjectTask = {
+  id: number;
+  customerProjectTicket?: ITProjectTicket[];
+} & ITProjectTaskForm;

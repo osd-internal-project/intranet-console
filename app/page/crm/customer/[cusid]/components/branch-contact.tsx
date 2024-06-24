@@ -27,6 +27,8 @@ import {
 import { useForm } from "antd/es/form/Form";
 import BranchContactAddComponent from "../components/branch-contact-add";
 import { deleteIcon } from "@/components/icon";
+import { dateTimeFormatNoTime } from "@/app/utils";
+import { dateToStringThNoTime } from "@/app/utils/format";
 // const { RangePicker } = DatePicker;
 
 export interface props {
@@ -115,6 +117,7 @@ const BranchContactComponent: React.FC<props> = ({
       dataIndex: "birthday",
       title: "วันเกิด",
       // width: "200px",
+      render: (data: Date) => dateToStringThNoTime(data),
     },
     {
       key: "activeStatus",
@@ -161,7 +164,7 @@ const BranchContactComponent: React.FC<props> = ({
             setShowModalContactAdd(!showModalContactAdd);
           }}
         >
-          เพิ่มผู้ติดต่อ
+          Add Contact
         </Button>
       </div>
       {showModalContactAdd && branchDetail?.id ? (

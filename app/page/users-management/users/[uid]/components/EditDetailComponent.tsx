@@ -417,7 +417,7 @@ const EditDetailComponent: React.FC<props> = ({
             <div className=" flex  space-x-4">
               <Button
                 onClick={() => {
-                  router.push(`/page/setting/usermanagement/`);
+                  router.push(`/page/users-management/users`);
                 }}
               >{`Back`}</Button>
               <Button

@@ -200,7 +200,7 @@ export const MenuSider: MenuItem[] = [
         key: `maintenance-management`,
         // icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
         label: `Maintenance Management`,
-        // rule: "ma-task-show",
+        rule: "ma-m-s",
       },
     ],
   },
@@ -214,7 +214,8 @@ export const MenuSider: MenuItem[] = [
       {
         key: `setting/maintenance-type`,
         // icon: colorSwatchIcon,
-        label: `Ma Type`,
+        label: `MA Type`,
+        rule: "ma-t-s",
       },
       {
         key: `setting/organize-chart`,
@@ -297,9 +298,9 @@ export const MenuSider: MenuItem[] = [
         rule: "crm-c-s",
       },
       {
-        key: `crm/ticket`,
-        label: `Ticket `,
-        rule: "crm-t-s",
+        key: `crm/project`,
+        label: `Project `,
+        rule: "crm-p-s",
       },
     ],
   },

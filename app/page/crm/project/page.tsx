@@ -1,6 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Button, Card, Col, Row, Spin } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Card,
+  Col,
+  Row,
+  Spin,
+  TablePaginationConfig,
+} from "antd";
 import ProjectFilterComponent from "./components/project-filter";
 import ProjectTableComponent from "./components/project-table";
 // import { ITCustomer, ITCustomerForm, ITPagination } from "./common";
@@ -8,30 +16,35 @@ import ProjectTableComponent from "./components/project-table";
 import { useAxiosCrm } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { checkRule } from "@/app/utils/rules";
 import Link from "next/link";
-import { ITPagination } from "./common";
+import CrmServices from "./services/index.service";
 
 export default function MaTaskPage() {
   const intranetAuth = useAxiosCrm();
-  // const crmServices = CrmServices(intranetAuth);
+  const crmServices = CrmServices(intranetAuth);
   const [loading, setloading] = useState<boolean>(true);
-  const [pagination, setPagination] = useState<ITPagination>({
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
+    total: 0,
   });
-  // const [dataTable, setDataTable] = useState<ITCustomer[]>([]);
+  const [dataTable, setDataTable] = useState<any[]>([]);
   const [search, setSearch] = useState<object>({});
   useEffect(() => {
     if (loading === true) fetchData();
   }, [loading]);
 
   const fetchData = async () => {
-    // const data = await crmServices.findCustomerList(search);
-    // setDataTable(data);
+    const skip: number =
+      (Number(pagination.current) - 1) * Number(pagination.pageSize);
+    const take: number = Number(pagination.pageSize);
+    const res = await crmServices.findProjectDataTable(search, take, skip);
+    setDataTable(res.data);
+    setPagination({ ...pagination, total: res.count });
     setloading(false);
   };
-
-  const changePagination = (page: ITPagination) => {
-    console.log(page);
+  const changePagination = (page: TablePaginationConfig) => {
+    setPagination({ ...page });
+    setloading(true);
   };
 
   // async function editCustomer(id: number, data: ITCustomerForm): Promise<void> {
@@ -80,7 +93,11 @@ export default function MaTaskPage() {
                     }}
                   />
                 </div>
-                <ProjectTableComponent dataTable={[]} />
+                <ProjectTableComponent
+                  dataTable={dataTable}
+                  changePagination={changePagination}
+                  pagination={pagination}
+                />
               </div>
             </Card>
           </div>

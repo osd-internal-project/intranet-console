@@ -21,10 +21,6 @@ import {
   Tag,
 } from "antd";
 import type { Dayjs } from "dayjs";
-import { ColumnType } from "antd/es/table";
-import { dateToStringThNoTime } from "@/app/utils/format";
-import { FilterOutlined } from "@ant-design/icons";
-import { exportIcon } from "@/components/icon";
 const { RangePicker } = DatePicker;
 export interface props {
   onSearch: (form: object) => void;
@@ -35,14 +31,18 @@ const ProjectFilterComponent: React.FC<props> = ({
 }): React.ReactElement => {
   async function onFinishFilter(values: any): Promise<void> {
     let search = {};
-    if (values.refcode) {
-      search = { ...search, refcode: values.refcode };
+    if (values.projectcode) {
+      search = { ...search, projectcode: values.projectcode };
     }
-    if (values.customername) {
-      search = { ...search, customername: values.customername };
+    if (values.projectname) {
+      search = { ...search, projectname: values.projectname };
     }
-    if (values.activestatus) {
-      search = { ...search, activestatus: values.activestatus };
+    if (values.activeDate) {
+      search = {
+        ...search,
+        fdate: values.activeDate[0],
+        ldate: values.activeDate[1],
+      };
     }
     await onSearch(search);
   }
@@ -62,10 +62,10 @@ const ProjectFilterComponent: React.FC<props> = ({
               // form={filterForm}
             >
               <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-                <Form.Item name={"customername"} label={"ชื่อ Customer"}>
+                <Form.Item name={"projectcode"} label={"Project Code"}>
                   <Input />
                 </Form.Item>
-                <Form.Item name={"projectname"} label={"ชื่อ Project"}>
+                <Form.Item name={"projectname"} label={"Project Name"}>
                   <Input />
                 </Form.Item>
                 <Form.Item name={"activeDate"} label={"ช่วงเวลาดำเนินการ"}>

@@ -4,7 +4,7 @@ import { Breadcrumb, Button, Card, Col, message, Row, Spin } from "antd";
 import {
   ITBranchForSelect,
   ITCustomerForSelect,
-  ITPagination,
+  ITCustomerProject,
 } from "../common";
 import { useAxiosCrm } from "@/app/lib/axios/hooks/userAxiosAuth";
 import CrmServices from "../services/index.service";
@@ -29,11 +29,11 @@ export default function AddProjectPage() {
     setCustomerList(data);
     setloading(false);
   };
-  async function onFinishAdd(form: ITCustomerForSelect): Promise<void> {
-    const data = await crmServices
+  async function onFinishAdd(form: ITCustomerProject): Promise<void> {
+    await crmServices
       .createProject(form)
       .then(() => {
-        message.error("สร้าง Project สำเร็จ");
+        message.success("สร้าง Project สำเร็จ");
         rounter.push("/page/crm/project");
       })
       .catch(() => {

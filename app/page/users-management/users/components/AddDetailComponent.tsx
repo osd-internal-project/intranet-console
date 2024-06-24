@@ -152,12 +152,9 @@ const AddDetailComponent: React.FC = (): React.ReactElement => {
               href: "/page",
               title: <span>Home</span>,
             },
+
             {
-              href: "/page/setting",
-              title: <span>Setting</span>,
-            },
-            {
-              href: "/page/setting/usermanagement",
+              href: "/page/users-management/users",
               title: <span>User Management</span>,
             },
             {
@@ -316,7 +313,7 @@ const AddDetailComponent: React.FC = (): React.ReactElement => {
                 <div className=" w-full text-right space-x-4">
                   <Button
                     onClick={() => {
-                      router.push(`/page/setting/usermanagement/`);
+                      router.push(`/page/users-management/users`);
                     }}
                   >{`Cancel`}</Button>
                   <Button

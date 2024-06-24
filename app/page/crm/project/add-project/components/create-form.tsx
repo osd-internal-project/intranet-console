@@ -27,6 +27,7 @@ import {
   ITBranchContact,
   ITBranchForSelect,
   ITCustomerForSelect,
+  ITCustomerProject,
 } from "../../common";
 import { ColumnType } from "antd/es/table";
 import { dateToStringThNoTime } from "@/app/utils/format";
@@ -39,7 +40,7 @@ const { RangePicker } = DatePicker;
 export interface props {
   customerList: ITCustomerForSelect[];
   branchList: ITBranchForSelect[];
-  onFinishAdd: (form: ITCustomerForSelect) => void;
+  onFinishAdd: (form: ITCustomerProject) => void;
   changeCustomerSelect: (id: number) => void;
 }
 
@@ -139,41 +140,47 @@ const CreateProjectForm: React.FC<props> = ({
         <Form.Item label="Dularion" name={"duration"}>
           <Input readOnly className=" w-20" />
         </Form.Item>
-        <div className=" md:col-span-3">
-          <Form.Item
-            label="Customer"
-            // name={"customerId"}
-            rules={[{ required: true, message: "กรุณาเลือก Customer" }]}
-          >
-            <Select
-              allowClear
-              onChange={changeCustomerSelect}
-              options={customerList.map((customer) => ({
-                value: customer.id,
-                label: `${customer.prefixTh} ${customer.firstNameTh} ${customer.lastNameTh}`,
-              }))}
-            />
-          </Form.Item>
-          <Form.Item
-            label="Branch"
-            name={"customerBranchId"}
-            rules={[{ required: true, message: "กรุณาเลือก Branch" }]}
-          >
-            <Select
-              disabled={branchList.length > 0 ? false : true}
-              allowClear
-              onChange={onChangeBranchSelect}
-              options={branchList.map((branch) => ({
-                value: branch.id,
-                label: branch.branchName,
-              }))}
-            />
-          </Form.Item>
 
+        <Form.Item
+          label="Customer"
+          // name={"customerId"}
+          rules={[{ required: true, message: "กรุณาเลือก Customer" }]}
+        >
+          <Select
+            allowClear
+            onChange={changeCustomerSelect}
+            options={customerList.map((customer) => ({
+              value: customer.id,
+              label: `${customer.prefixTh} ${customer.firstNameTh} ${customer.lastNameTh}`,
+            }))}
+          />
+        </Form.Item>
+        <Form.Item
+          label="Branch"
+          name={"customerBranchId"}
+          rules={[{ required: true, message: "กรุณาเลือก Branch" }]}
+        >
+          <Select
+            disabled={branchList.length > 0 ? false : true}
+            allowClear
+            onChange={onChangeBranchSelect}
+            options={branchList.map((branch) => ({
+              value: branch.id,
+              label: branch.branchName,
+            }))}
+          />
+        </Form.Item>
+        <Form.Item hidden name={"taxAddressText"}>
+          <Input />
+        </Form.Item>
+        <div className=" md:col-span-3">
           <Form.Item label="ที่อยู่ใบกำกับภาษี" name={"taxAddressId"}>
             <Select
               allowClear
               disabled={branchList.length > 0 ? false : true}
+              onSelect={(value, option) => {
+                form.setFieldValue("taxAddressText", option.label);
+              }}
               options={addressSelect.map((address) => ({
                 value: address.id,
                 label: `บ้านเลขที่ ${
@@ -186,20 +193,28 @@ const CreateProjectForm: React.FC<props> = ({
                   address.alley ? address.alley : "-"
                 } หมู่ที่ ${address.village ? address.village : "-"} ถนน ${
                   address.road ? address.road : "-"
-                } ตำบล ${
+                } ตำบล/แขวง ${
                   address.subDistrict ? address.subDistrict : "-"
-                } อำเภอ ${address.district ? address.district : "-"} จังหวัด ${
+                } อำเภอ/เขต ${
+                  address.district ? address.district : "-"
+                } จังหวัด ${
                   address.province ? address.province : "-"
                 } รหัสไปรษณีย์ ${
                   address.houseNumber ? address.houseNumber : "-"
                 }`,
               }))}
             />
+          </Form.Item>
+          <Form.Item hidden name={"deliveryAddressText"}>
+            <Input />
           </Form.Item>
           <Form.Item label="ที่อยู่การจัดส่งบริการ" name={"deliveryAddressId"}>
             <Select
               allowClear
               disabled={branchList.length > 0 ? false : true}
+              onSelect={(value, option) => {
+                form.setFieldValue("deliveryAddressText", option.label);
+              }}
               options={addressSelect.map((address) => ({
                 value: address.id,
                 label: `บ้านเลขที่ ${
@@ -222,10 +237,17 @@ const CreateProjectForm: React.FC<props> = ({
               }))}
             />
           </Form.Item>
+          <Form.Item hidden name={"notiAddressText"}>
+            <Input />
+          </Form.Item>
           <Form.Item label="ที่อยู่จัดส่งใบแจ้งบริการ" name={"notiAddressId"}>
             <Select
               allowClear
               disabled={branchList.length > 0 ? false : true}
+              onSelect={(value, option) => {
+                console.log(option);
+                form.setFieldValue("notiAddressText", option.label);
+              }}
               options={addressSelect.map((address) => ({
                 value: address.id,
                 label: `บ้านเลขที่ ${

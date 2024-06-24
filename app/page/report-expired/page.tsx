@@ -1,9 +1,26 @@
 "use client";
 import { exportIcon } from "@/components/icon";
 import { FilterOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Card, Col, DatePicker, Divider, Form, Input, Popover, Row, Select, Space, Table } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Card,
+  Col,
+  DatePicker,
+  Divider,
+  Form,
+  Input,
+  Popover,
+  Row,
+  Select,
+  Space,
+  Table,
+} from "antd";
 import StockServices from "./services/stock.service";
-import { useAxiosStock, useAxiosReport } from "@/app/lib/axios/hooks/userAxiosAuth";
+import {
+  useAxiosStock,
+  useAxiosReport,
+} from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ReportTable } from "./components/ReportTable";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
@@ -41,9 +58,13 @@ export default function TransectionPage() {
     skip: number;
     current: number;
   }>(InitialFilter);
-  const [location, setLocation] = useState<{ value: number; label: string }[]>([]);
+  const [location, setLocation] = useState<{ value: number; label: string }[]>(
+    []
+  );
   const [inventorySelectDisable, setInventorySelectDisable] = useState(true);
-  const [inventory, setInventory] = useState<{ value: number; label: string }[]>([]);
+  const [inventory, setInventory] = useState<
+    { value: number; label: string }[]
+  >([]);
   const [disableExport, setDisableExport] = useState(true);
   const [checknumber, setScheckNumber] = useState<number | undefined>(0);
 
@@ -66,7 +87,10 @@ export default function TransectionPage() {
     if (Object.keys(search).length !== 0) {
       const count = await expiredServices.count(search);
       setPaginationConfig(count);
-      const res = await expiredServices.getInventorylotByExpiredDate(search, filter);
+      const res = await expiredServices.getInventorylotByExpiredDate(
+        search,
+        filter
+      );
       if (res) {
         setdataAll(res);
       }
@@ -144,7 +168,9 @@ export default function TransectionPage() {
     }
 
     if (locationId) {
-      const getInventory = await stockServices.getInventoryByLocationId(locationId);
+      const getInventory = await stockServices.getInventoryByLocationId(
+        locationId
+      );
       setInventory(
         getInventory.map((inv: any) => ({
           value: inv.id,
@@ -173,7 +199,13 @@ export default function TransectionPage() {
   };
 
   const searchContent = (
-    <Form form={filterForm} name="filter" layout="vertical" onFinish={onFilter} autoComplete="off">
+    <Form
+      form={filterForm}
+      name="filter"
+      layout="vertical"
+      onFinish={onFilter}
+      autoComplete="off"
+    >
       <div className="grid grid-cols-1 md:gap-4 md:grid-cols-4">
         <Form.Item label="Cas No. :" name="casNo">
           <Input placeholder="Search Text" />
@@ -182,16 +214,33 @@ export default function TransectionPage() {
           <Input placeholder="Search Text" />
         </Form.Item>
         <Form.Item label="Location :" name="location">
-          <Select allowClear options={location} placeholder="Select" onChange={handleChangeLocation} />
+          <Select
+            allowClear
+            options={location}
+            placeholder="Select"
+            onChange={handleChangeLocation}
+          />
         </Form.Item>
         <Form.Item label="Inventory :" name="inventory">
-          <Select disabled={inventorySelectDisable} options={inventory} allowClear placeholder="Select " />
+          <Select
+            disabled={inventorySelectDisable}
+            options={inventory}
+            allowClear
+            placeholder="Select "
+          />
         </Form.Item>
-        <Form.Item label="Expried Date :" name="updatedAt" rules={[{ required: true, message: "Please enter date" }]}>
+        <Form.Item
+          label="Expried Date :"
+          name="updatedAt"
+          rules={[{ required: true, message: "Please enter date" }]}
+        >
           <RangePicker className=" w-full" />
         </Form.Item>
       </div>
-      <Row gutter={[8, 8]} style={{ justifyContent: "end", display: "flex", width: "100%" }}>
+      <Row
+        gutter={[8, 8]}
+        style={{ justifyContent: "end", display: "flex", width: "100%" }}
+      >
         <Col>
           <Form.Item
             style={{
@@ -200,7 +249,10 @@ export default function TransectionPage() {
               alignItems: "center",
             }}
           >
-            <Button type="default" onClick={handleResetFilter}>{`Reset`}</Button>
+            <Button
+              type="default"
+              onClick={handleResetFilter}
+            >{`Reset`}</Button>
           </Form.Item>
         </Col>
         <Col>
@@ -228,7 +280,9 @@ export default function TransectionPage() {
       });
       const link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);
-      link.download = `report-transaction-expired-${dayjs(new Date()).format("YYYYMMDDHHmmss")} .xlsx`;
+      link.download = `report-transaction-expired-${dayjs(new Date()).format(
+        "YYYYMMDDHHmmss"
+      )} .xlsx`;
       link.click();
     } catch (error) {
       console.error("Error downloading Excel file:", error);
@@ -245,10 +299,10 @@ export default function TransectionPage() {
                 href: "/page",
                 title: <span>{`Home`}</span>,
               },
-              {
-                href: "/page/setting",
-                title: <span>{`Setting`}</span>,
-              },
+              // {
+              //   href: "/page/setting",
+              //   title: <span>{`Setting`}</span>,
+              // },
               {
                 title: <span>{`รายงานการหมดอายุ`}</span>,
               },
@@ -274,12 +328,22 @@ export default function TransectionPage() {
                     trigger="click"
                     overlayStyle={{ width: "calc(100% - 240px)" }}
                   >
-                    <Button type="primary" className="button-blue" icon={<FilterOutlined />}>
+                    <Button
+                      type="primary"
+                      className="button-blue"
+                      icon={<FilterOutlined />}
+                    >
                       {`Filters`}
                     </Button>
                   </Popover>
 
-                  <Button type="primary" icon={exportIcon} disabled={disableExport} className="button-blue" onClick={exportExcel}>
+                  <Button
+                    type="primary"
+                    icon={exportIcon}
+                    disabled={disableExport}
+                    className="button-blue"
+                    onClick={exportExcel}
+                  >
                     {`Export`}
                   </Button>
                 </Space>
@@ -290,7 +354,9 @@ export default function TransectionPage() {
                     gatdataAll={gatdataAll}
                     getloading={getloading}
                     paginationConfig={paginationConfig}
-                    handlerPaginationTable={(e: any) => handlerPaginationTable(e)}
+                    handlerPaginationTable={(e: any) =>
+                      handlerPaginationTable(e)
+                    }
                     filter={filter}
                   />
                 </div>

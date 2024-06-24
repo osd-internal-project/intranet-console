@@ -4,6 +4,7 @@ import type {
   CalendarProps,
   TableColumnsType,
   TableColumnType,
+  TablePaginationConfig,
 } from "antd";
 import {
   Badge,
@@ -18,20 +19,21 @@ import {
   Tag,
 } from "antd";
 import type { Dayjs } from "dayjs";
-import { ITCustomer, ITCustomerForm, ITPagination } from "../common";
+import { ITCustomerProject } from "../common";
 import { ColumnType } from "antd/es/table";
 import { dateToStringTh, dateToStringThNoTime } from "@/app/utils/format";
 import { deleteIcon, editIcon } from "@/components/icon";
 import { useForm } from "antd/es/form/Form";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import Link from "next/link";
+import { ITCustomer } from "../../customer/common";
 
 export interface props {
-  dataTable: ITCustomer[];
+  dataTable: ITCustomerProject[];
   // loading: boolean;
   // setLoading: (loading: boolean) => void;
-  // pagination: ITPagination;
-  // changePagination: (page: { current: number; pageSize: number }) => void;
+  pagination: TablePaginationConfig;
+  changePagination: (page: TablePaginationConfig) => void;
   // // editCustomer: (id: number, data: ITCustomerForm) => void;
   // deleteCustomer: (id: number) => void;
 }
@@ -40,102 +42,96 @@ const ProjectTableComponent: React.FC<props> = ({
   dataTable,
   // loading,
   // setLoading,
-  // pagination,
-  // changePagination,
+  pagination,
+  changePagination,
   // // editMaType,
   // deleteCustomer,
 }): React.ReactElement => {
-  const customerColumns: TableColumnsType<ITCustomer> = [
+  const customerColumns: TableColumnsType<ITCustomerProject> = [
     {
-      key: "customerCode",
-      title: "รหัส",
-      dataIndex: "customerCode",
-      width: "100px",
+      key: "projectCode",
+      dataIndex: "projectCode",
+      title: "Project Code",
+      width: "200px",
       align: "center",
+      render: (data: Date, record: ITCustomerProject, index: number) =>
+        (pagination?.current ? pagination?.current - 1 : 0) * 10 + index + 1,
     },
     {
-      key: "referenceCode",
-      dataIndex: "referenceCode",
-      title: "รหัสอ้างอิงลูกค้า",
+      key: "projectName",
+      dataIndex: "projectName",
+      title: "Project Name",
       width: "200px",
     },
     {
       key: "customerName",
-      dataIndex: "customerName",
-      title: "ชื่อ",
+      dataIndex: ["customerBranch", "customerDetail"],
+      title: "Customer",
       width: "200px",
-      render: (value: string, record, index) =>
-        `${record.prefixTh ? record.prefixTh : ""} ${
-          record.firstNameTh ? record.firstNameTh : ""
-        } ${record.lastNameTh ? record.lastNameTh : ""}`,
+      render: (data: ITCustomer) =>
+        data.prefixTh && data.firstNameTh && data.lastNameTh
+          ? `${data.prefixTh} ${data.firstNameTh} ${data.lastNameTh}`
+          : "",
     },
     {
-      key: "activeStatus",
-      dataIndex: "activeStatus",
-      title: "Active",
-      width: "200px",
-      render: (value: boolean, record, index) =>
-        value ? (
-          <Tag color="green">Active</Tag>
-        ) : (
-          <Tag color="red">not Active</Tag>
-        ),
-    },
-    {
-      key: "customerGroupName",
-      dataIndex: "customerGroupName",
-      title: "กลุ่มลูกค้า",
+      key: "branchName",
+      dataIndex: ["customerBranch", "branchName"],
+      title: "Branch",
       width: "200px",
     },
     {
-      key: "grade",
-      dataIndex: "grade",
-      title: "Grade",
+      key: "createdAt",
+      dataIndex: "createdAt",
+      title: "Create Date",
       width: "200px",
+      render: (data: Date) => dateToStringThNoTime(data),
     },
     {
-      key: "responsibleName",
-      dataIndex: "responsibleName",
-      title: "ผู้รับผิดชอบ",
+      key: "startDate",
+      dataIndex: "startDate",
+      title: "Start Date",
       width: "200px",
+      render: (data: Date) => dateToStringThNoTime(data),
     },
     {
-      key: "customerCode",
-      dataIndex: "customerCode",
-      title: "เลขทะเบียนบริษัท",
+      key: "endDate",
+      dataIndex: "endDate",
+      title: "End Date",
       width: "200px",
+      render: (data: Date) => dateToStringThNoTime(data),
     },
+
     {
       key: "id",
       dataIndex: "id",
       title: "ตรวจสอบ",
       width: "200px",
       align: "center",
-      render: (id: number, record: ITCustomer, index: number) => (
+      render: (id: number, record: ITCustomerProject, index: number) => (
         <div className="space-x-1">
-          <Link href={`/page/crm/customer/${id}`}>
+          <Link href={`/page/crm/project/${id}`}>
             <Button type="link">View</Button>
           </Link>
         </div>
       ),
     },
-    {
-      key: "id",
-      dataIndex: "id",
-      title: "ดำเนินการ",
-      width: "200px",
-      align: "center",
-      render: (id: number, record: ITCustomer, index: number) => (
-        <div className="space-x-1">
-          {/* <Button type="link" onClick={() => showModalEdit(record)}>
-            {editIcon}
-          </Button> */}
-          <Button type="link" danger>
-            {deleteIcon}
-          </Button>
-        </div>
-      ),
-    },
+    // {
+    //   key: "id",
+    //   dataIndex: "id",
+    //   title: "ดำเนินการ",
+    //   width: "200px",
+    //   align: "center",
+    //   render: (id: number, record: ITCustomerProject, index: number) => (
+    //     <div className="space-x-1">
+    //       {/* <Button type="link" onClick={() => showModalEdit(record)}>
+    //         {editIcon}
+    //       </Button> */}
+    //       <Button type="link" danger>
+    //         {deleteIcon}
+    //       </Button>
+    //     </div>
+    //   ),
+    // },
   ];
 
   return (
@@ -144,7 +140,9 @@ const ProjectTableComponent: React.FC<props> = ({
         columns={customerColumns}
         dataSource={dataTable}
         size="small"
-        rowKey={(data: ITCustomer) => data.id}
+        pagination={pagination}
+        onChange={changePagination}
+        rowKey={(data: ITCustomerProject) => data.id}
       />
     </>
   );

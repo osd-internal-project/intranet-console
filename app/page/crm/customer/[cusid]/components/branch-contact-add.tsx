@@ -50,7 +50,7 @@ const BranchContactAddComponent: React.FC<props> = ({
   return (
     <Card
       // open={showModalContactAdd}
-      title={"เพิ่มผู้ติดต่อ"}
+      title={"เพิ่ม Branch"}
       // width={1200}
       // footer={[]}
       // onCancel={() => {

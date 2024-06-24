@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Tag, Button, Row, Col, Space, Modal, Form, Input, Divider, message, Select, DatePicker, Popconfirm } from 'antd';
 import type { TableProps, FormProps } from 'antd';
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageRoomServices } from "../services/manage-room.service";
 import dayjs, { Dayjs } from 'dayjs';
 import { useForm } from "antd/es/form/Form";
 import { useSession } from 'next-auth/react';
+import isBetween from 'dayjs/plugin/isBetween';
+
+dayjs.extend(isBetween);
 
 interface BookingType {
     id: string;
@@ -30,18 +33,26 @@ interface MasterRoomType {
     masterRoomTypeId: number;
 }
 
+interface UserData {
+    firstNameTh: string;
+}
+
 const ManageRoom: React.FC = () => {
     const intraAuth = useAxiosIntranet();
     const [form] = useForm();
     const manageRoomServices = ManageRoomServices(intraAuth);
+    const userAuth = useAxiosUser();
     const [isModalBooking, setIsModalBooking] = useState(false);
     const [modalEditBooking, setModalEditBooking] = useState(false);
     const [modalApproveBooking, setModalApproveBooking] = useState(false);
     const [bookingStatus, setBookingStatus] = useState("");
     const [bookingData, setBookingData] = useState<BookingType[]>([]);
     const [masterRoomData, setMasterRoomData] = useState<MasterRoomType[]>([]);
-    const [currentBookingId, setCurrentBookingId] = useState<string | null>(null);  // State to store the current booking ID
+    const [currentBookingId, setCurrentBookingId] = useState<string | null>(null);
     const [submitLoading, setSubmitLoading] = useState(false);
+    const { data: session } = useSession();
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
 
     const columns: TableProps<BookingType>['columns'] = [
         {
@@ -49,7 +60,7 @@ const ManageRoom: React.FC = () => {
             dataIndex: 'no',
             key: 'no',
             width: "50px",
-            render: (_, __, index) => <>{index + 1}</>,
+            render: (_, __, index) => <>{(currentPage - 1) * pageSize + index + 1}</>,
         },
         {
             title: 'ชื่อห้องประชุม',
@@ -123,7 +134,11 @@ const ManageRoom: React.FC = () => {
     ];
 
     const showModalEditBooking = (record: BookingType) => {
-        setCurrentBookingId(record.id);  // Set the current booking ID
+        if (record.bookingStatus === "Approve") {
+            message.warning('ไม่สามารถแก้ไขการจองที่อนุมัติแล้วได้');
+            return;
+        }
+        setCurrentBookingId(record.id);
         form.setFieldsValue({
             ...record,
             startDate: dayjs(record.startDate),
@@ -138,7 +153,7 @@ const ManageRoom: React.FC = () => {
 
     const showModalApproveBooking = (record: BookingType) => {
         setBookingStatus(record.bookingStatus);
-        setCurrentBookingId(record.id);  // Set the current booking ID
+        setCurrentBookingId(record.id);
         setModalApproveBooking(true);
     };
 
@@ -164,14 +179,58 @@ const ManageRoom: React.FC = () => {
             message.error('No booking selected for update');
             return;
         }
+
         try {
-            const { startDate, endDate, ...restValues } = values;
+            const { startDate, endDate, roomName, ...restValues } = values;
+            const updatedStartDate = startDate.toISOString();
+            const updatedEndDate = endDate.toISOString();
+
+            const today = new Date();
+            if (new Date(updatedStartDate) < today) {
+                message.error('ไม่สามารถจองในวันที่ผ่านมาได้');
+                setSubmitLoading(false);
+                return;
+            }
+
+            if (new Date(updatedEndDate) < new Date(updatedStartDate)) {
+                message.error('วันที่สิ้นสุดการจองต้องหลังวันที่เริ่มการจอง');
+                setSubmitLoading(false);
+                return;
+            }
+
+            const existingBookings = await manageRoomServices.getBookingRoomQuery();
+
+            const hasOverlap = existingBookings.some((booking: BookingType) => {
+                if (booking.roomName === roomName && booking.id !== currentBookingId) {
+                    const existingStart = dayjs(booking.startDate);
+                    const existingEnd = dayjs(booking.endDate);
+                    const newStart = dayjs(updatedStartDate);
+                    const newEnd = dayjs(updatedEndDate);
+
+                    return (
+                        (newStart.isBetween(existingStart, existingEnd, null, '[)') ||
+                            newEnd.isBetween(existingStart, existingEnd, null, '(]')) ||
+                        (existingStart.isBetween(newStart, newEnd, null, '[)') ||
+                            existingEnd.isBetween(newStart, newEnd, null, '(]'))
+                    );
+                }
+                return false;
+            });
+
+            if (hasOverlap) {
+                message.error('ไม่สามารถแก้ไขการจองนี้ได้เนื่องจากมีการจองห้องนี้ในช่วงเวลานี้แล้ว');
+                setSubmitLoading(false);
+                return;
+            }
+
             const updatedBooking = {
                 ...restValues,
                 id: currentBookingId,
-                startDate: startDate.toISOString(),
-                endDate: endDate.toISOString(),
+                roomName,
+                startDate: updatedStartDate,
+                endDate: updatedEndDate,
             };
+
             await manageRoomServices.updateBooking(updatedBooking);
             fetchData();
             message.success('แก้ไขการจองสำเร็จ');
@@ -179,15 +238,19 @@ const ManageRoom: React.FC = () => {
             setModalEditBooking(false);
         } catch (error) {
             message.error('แก้ไขการจองไม่สำเร็จ');
+            setSubmitLoading(false);
         }
     };
+
 
     const onFinishApprove: FormProps<BookingType>['onFinish'] = async () => {
         setSubmitLoading(true);
         try {
             const updatedApproveBooking = {
                 id: currentBookingId,
-                bookingStatus: "Approve"
+                approver: session?.user.firstNameTh && session?.user.lastNameTh ? `${session.user.firstNameTh} ${session.user.lastNameTh}` : "",
+                bookingStatus: "Approve",
+                approveDate: dayjs()
             };
             await manageRoomServices.updateBooking(updatedApproveBooking);
             setModalApproveBooking(false);
@@ -208,17 +271,35 @@ const ManageRoom: React.FC = () => {
         setIsModalBooking(false);
     };
 
+    const handleTableChange = (pagination: any) => {
+        setCurrentPage(pagination.current);
+        setPageSize(pagination.pageSize);
+    };
+
+    const paginatedData = bookingData.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+    const paginationConfig = {
+        current: currentPage,
+        pageSize: pageSize,
+        total: bookingData.length,
+        onChange: handleTableChange,
+    };
+
     useEffect(() => {
         fetchData();
     }, []);
 
     const fetchData = async () => {
         try {
+            const masterRoom = await manageRoomServices.getMasterRoomQuery();
+            const masterRoomActive = masterRoom.filter((room: any) => room.roomsStatus === true);
+            setMasterRoomData(masterRoomActive);
+
             const bookingRoom = await manageRoomServices.getBookingRoomQuery();
             setBookingData(bookingRoom.map((item: any, index: number) => ({
                 ...item,
                 key: index.toString(),
-                id: item.id,  // Ensure ID is mapped
+                id: item.id,
             })));
         } catch (error) {
             console.error('Failed to fetch data', error);
@@ -399,7 +480,13 @@ const ManageRoom: React.FC = () => {
                     </Row>
                 </Form>
             </Modal>
-            <Table columns={columns} dataSource={bookingData} />
+            <Table
+                columns={columns}
+                dataSource={paginatedData}
+                rowKey="id"
+                pagination={paginationConfig}
+                onChange={handleTableChange}
+            />
         </>
     );
 }

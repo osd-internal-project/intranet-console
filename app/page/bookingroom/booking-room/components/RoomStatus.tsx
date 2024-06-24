@@ -51,7 +51,7 @@ const RoomStatus = () => {
         const Bookingresponse = await bookingRoomServices.getMasterRoomQuery();
         const BookingRoom: DataType[] = Bookingresponse.map((item: any, index: number) => ({
             ...item,
-            key: index.toString(), // Assuming index can be used as a key, adjust as needed
+            key: index.toString()
         }));
         setBookingData(BookingRoom);
     };

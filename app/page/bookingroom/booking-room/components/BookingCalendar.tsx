@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import { Badge, Modal, Tag, Form, Input, DatePicker, Collapse, TimePicker } from "antd";
-import dayjs from "dayjs";
-import { Calendar, momentLocalizer, EventProps, Event as RbcEvent, CalendarProps } from "react-big-calendar";
+import { Modal, Tag, Form, Input, DatePicker, Collapse} from "antd";
 import moment from "moment";
+import { Calendar, momentLocalizer, Event as RbcEvent } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useForm } from "antd/es/form/Form";
 import { CaretRightOutlined } from "@ant-design/icons";
-import { useSession } from "next-auth/react";
 
 const localizer = momentLocalizer(moment);
 const { TextArea } = Input;
@@ -18,9 +16,12 @@ interface BookingType {
     bookerName: string;
     bookerPhone: string;
     bookingStatus: string;
+    approver: string;
     description: string;
     startDate: string;
+    approveDate: string;
     endDate: string;
+    updatedAt: string;
 }
 
 interface Props {
@@ -38,7 +39,6 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchData }) => {
     const [selectedBooking, setSelectedBooking] = useState<BookingType | null>(null);
     const [statusModalDetail, setStatusModalDetail] = useState(false);
     const [formUpdate] = useForm();
-    const { data: session } = useSession();
 
     const onCancelModalDetail = () => {
         setStatusModalDetail(false);
@@ -66,6 +66,7 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchData }) => {
                 ...booking,
                 startDate: moment(booking.startDate),
                 endDate: moment(booking.endDate),
+                approveDate: moment(booking.approveDate).format('DD-MM-YYYY HH:mm'),
             });
             setStatusModalDetail(true);
         }
@@ -97,7 +98,7 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchData }) => {
             />
             <Modal
                 title="รายละเอียดการจอง"
-                open={statusModalDetail}
+                visible={statusModalDetail}
                 width={750}
                 onCancel={onCancelModalDetail}
                 footer={null}
@@ -122,7 +123,7 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchData }) => {
                                 <Form.Item label="สิ้นสุดวันที่" name="endDate">
                                     <DatePicker showTime={false} format="DD-MM-YYYY HH:mm" disabled className="read-only-input" />
                                 </Form.Item>
-                                <Form.Item label="คำอธิบาย" name="description">
+                                <Form.Item label="คำอธิบาย" name="note">
                                     <TextArea className="read-only-input" disabled />
                                 </Form.Item>
                             </Collapse.Panel>
@@ -138,6 +139,16 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchData }) => {
                                 <Form.Item label="สถานะ">
                                     {renderStatusTag(selectedBooking.bookingStatus)}
                                 </Form.Item>
+                                {selectedBooking.bookingStatus !== "process" && (
+                                    <>
+                                        <Form.Item label="ผู้อนุมัติ" name="approver">
+                                            <Input className="read-only-input" disabled />
+                                        </Form.Item>
+                                        <Form.Item label="วันที่อนุมัติ" name="approveDate">
+                                            <Input disabled className="read-only-input" />
+                                        </Form.Item>
+                                    </>
+                                )}
                             </Collapse.Panel>
                         </Collapse>
                     </Form>

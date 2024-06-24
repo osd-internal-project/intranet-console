@@ -23,6 +23,8 @@ interface Props {
 const BookingTable: React.FC<Props> = ({ bookingFetchData }) => {
     const [modalBookingDetails, setModalBookingDetails] = useState(false);
     const [currentBookingDetails, setCurrentBookingDetails] = useState<DataType | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
 
     const columns: TableProps<DataType>['columns'] = [
         {
@@ -30,7 +32,7 @@ const BookingTable: React.FC<Props> = ({ bookingFetchData }) => {
             title: 'ลำดับ',
             dataIndex: 'no',
             width: "50px",
-            render: (_, __, index) => <>{index + 1}</>,
+            render: (_, __, index) => <>{(currentPage - 1) * pageSize + index + 1}</>,
         },
         {
             key: 'roomName',
@@ -136,8 +138,22 @@ const BookingTable: React.FC<Props> = ({ bookingFetchData }) => {
         setCurrentBookingDetails(null);
     };
 
+    const handleTableChange = (pagination: any) => {
+        setCurrentPage(pagination.current);
+        setPageSize(pagination.pageSize);
+    };
+
+    const paginatedData = bookingFetchData.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+    const paginationConfig = {
+        current: currentPage,
+        pageSize: pageSize,
+        total: bookingFetchData.length,
+        onChange: handleTableChange,
+    };
+
     useEffect(() => {
-    }, []);
+    }, [currentPage, pageSize]);
 
     return (
         <>
@@ -168,7 +184,13 @@ const BookingTable: React.FC<Props> = ({ bookingFetchData }) => {
                     </>
                 )}
             </Modal>
-            <Table columns={columns} dataSource={bookingFetchData} rowKey="id" />
+            <Table
+                columns={columns}
+                dataSource={paginatedData}
+                rowKey="id"
+                pagination={paginationConfig}
+                onChange={handleTableChange}
+            />
         </>
     );
 };

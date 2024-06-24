@@ -51,6 +51,8 @@ const ManageRoom: React.FC = () => {
     const [currentBookingId, setCurrentBookingId] = useState<string | null>(null);
     const [submitLoading, setSubmitLoading] = useState(false);
     const { data: session } = useSession();
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
 
     const columns: TableProps<BookingType>['columns'] = [
         {
@@ -58,7 +60,7 @@ const ManageRoom: React.FC = () => {
             dataIndex: 'no',
             key: 'no',
             width: "50px",
-            render: (_, __, index) => <>{index + 1}</>,
+            render: (_, __, index) => <>{(currentPage - 1) * pageSize + index + 1}</>,
         },
         {
             title: 'ชื่อห้องประชุม',
@@ -269,6 +271,20 @@ const ManageRoom: React.FC = () => {
         setIsModalBooking(false);
     };
 
+    const handleTableChange = (pagination: any) => {
+        setCurrentPage(pagination.current);
+        setPageSize(pagination.pageSize);
+    };
+
+    const paginatedData = bookingData.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+    const paginationConfig = {
+        current: currentPage,
+        pageSize: pageSize,
+        total: bookingData.length,
+        onChange: handleTableChange,
+    };
+
     useEffect(() => {
         fetchData();
     }, []);
@@ -464,7 +480,13 @@ const ManageRoom: React.FC = () => {
                     </Row>
                 </Form>
             </Modal>
-            <Table columns={columns} dataSource={bookingData} />
+            <Table
+                columns={columns}
+                dataSource={paginatedData}
+                rowKey="id"
+                pagination={paginationConfig}
+                onChange={handleTableChange}
+            />
         </>
     );
 }

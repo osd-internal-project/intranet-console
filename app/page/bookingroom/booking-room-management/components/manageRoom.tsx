@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Tag, Button, Row, Col, Space, Modal, Form, Input, Divider, message, Select, DatePicker, Popconfirm } from 'antd';
+import { Table, Tag, Button, Row, Col, Space, Modal, Form, Input, Divider, message, Select, DatePicker, Popconfirm, TablePaginationConfig } from 'antd';
 import type { TableProps, FormProps } from 'antd';
 import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageRoomServices } from "../services/manage-room.service";
@@ -41,7 +41,6 @@ const ManageRoom: React.FC = () => {
     const intraAuth = useAxiosIntranet();
     const [form] = useForm();
     const manageRoomServices = ManageRoomServices(intraAuth);
-    const userAuth = useAxiosUser();
     const [isModalBooking, setIsModalBooking] = useState(false);
     const [modalEditBooking, setModalEditBooking] = useState(false);
     const [modalApproveBooking, setModalApproveBooking] = useState(false);
@@ -51,16 +50,26 @@ const ManageRoom: React.FC = () => {
     const [currentBookingId, setCurrentBookingId] = useState<string | null>(null);
     const [submitLoading, setSubmitLoading] = useState(false);
     const { data: session } = useSession();
-    const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
+    const [loading, setloading] = useState<boolean>(true);
+    const [pagination, setPagination] = useState<TablePaginationConfig>({
+        current: 1,
+        pageSize: 10,
+        total: 0,
+    });
+
+    const changePagination = (page: TablePaginationConfig) => {
+        setPagination({ ...page });
+        setloading(true);
+    };
 
     const columns: TableProps<BookingType>['columns'] = [
         {
+
             title: 'ลำดับ',
             dataIndex: 'no',
             key: 'no',
             width: "50px",
-            render: (_, __, index) => <>{(currentPage - 1) * pageSize + index + 1}</>,
+            render: (id: number, record: any, index: number) => (pagination.current && pagination.pageSize ? (pagination.current - 1) * pagination.pageSize + (index + 1) : ""),
         },
         {
             title: 'ชื่อห้องประชุม',
@@ -242,12 +251,12 @@ const ManageRoom: React.FC = () => {
         }
     };
 
-
     const onFinishApprove: FormProps<BookingType>['onFinish'] = async () => {
         setSubmitLoading(true);
         try {
             const updatedApproveBooking = {
                 id: currentBookingId,
+                approverId: session?.user.userId,
                 approver: session?.user.firstNameTh && session?.user.lastNameTh ? `${session.user.firstNameTh} ${session.user.lastNameTh}` : "",
                 bookingStatus: "Approve",
                 approveDate: dayjs()
@@ -271,36 +280,25 @@ const ManageRoom: React.FC = () => {
         setIsModalBooking(false);
     };
 
-    const handleTableChange = (pagination: any) => {
-        setCurrentPage(pagination.current);
-        setPageSize(pagination.pageSize);
-    };
-
-    const paginatedData = bookingData.slice((currentPage - 1) * pageSize, currentPage * pageSize);
-
-    const paginationConfig = {
-        current: currentPage,
-        pageSize: pageSize,
-        total: bookingData.length,
-        onChange: handleTableChange,
-    };
-
     useEffect(() => {
-        fetchData();
-    }, []);
+        if (loading === true) fetchData();
+    }, [loading]);
 
     const fetchData = async () => {
+        const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
+        const take: number = Number(pagination.pageSize);
         try {
             const masterRoom = await manageRoomServices.getMasterRoomQuery();
             const masterRoomActive = masterRoom.filter((room: any) => room.roomsStatus === true);
             setMasterRoomData(masterRoomActive);
-
-            const bookingRoom = await manageRoomServices.getBookingRoomQuery();
-            setBookingData(bookingRoom.map((item: any, index: number) => ({
+            const bookings = await manageRoomServices.findBookingRoom(skip, take);
+            setPagination({ ...pagination, total: bookings.count });
+            setBookingData(bookings.data.map((item: any, index: number) => ({
                 ...item,
                 key: index.toString(),
                 id: item.id,
             })));
+            setloading(false);
         } catch (error) {
             console.error('Failed to fetch data', error);
         }
@@ -482,10 +480,10 @@ const ManageRoom: React.FC = () => {
             </Modal>
             <Table
                 columns={columns}
-                dataSource={paginatedData}
+                dataSource={bookingData}
                 rowKey="id"
-                pagination={paginationConfig}
-                onChange={handleTableChange}
+                pagination={pagination}
+                onChange={changePagination}
             />
         </>
     );

@@ -25,7 +25,7 @@ interface BookingType {
 }
 
 interface Props {
-    bookingFetchData: BookingType[];
+    bookingFetchCalendar: BookingType[];
 }
 
 interface CustomEvent extends RbcEvent {
@@ -35,7 +35,7 @@ interface CustomEvent extends RbcEvent {
     userName: string;
 }
 
-const BookingCalendar: React.FC<Props> = ({ bookingFetchData }) => {
+const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar }) => {
     const [selectedBooking, setSelectedBooking] = useState<BookingType | null>(null);
     const [statusModalDetail, setStatusModalDetail] = useState(false);
     const [formUpdate] = useForm();
@@ -59,7 +59,7 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchData }) => {
     };
 
     const onSelectEventCalendar = (event: CustomEvent) => {
-        const booking = bookingFetchData.find((b) => b.id === event.id);
+        const booking = bookingFetchCalendar.find((b) => b.id === event.id);
         if (booking) {
             setSelectedBooking(booking);
             formUpdate.setFieldsValue({
@@ -76,7 +76,7 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchData }) => {
         <>
             <Calendar<CustomEvent>
                 localizer={localizer}
-                events={bookingFetchData.map((booking: BookingType) => ({
+                events={bookingFetchCalendar.map((booking: BookingType) => ({
                     id: booking.id,
                     title: booking.roomName,
                     start: new Date(booking.startDate),

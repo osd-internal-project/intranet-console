@@ -4,7 +4,7 @@ import React from "react";
 import ManageRoomComponent from "./components/manageRoom";
 import ManageRoomStatusComponent from "./components/manageRoomStatus";
 
-const page = () => {
+const ManageBookingRoom = () => {
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -49,4 +49,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default ManageBookingRoom;

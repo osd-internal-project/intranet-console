@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { Breadcrumb, Card, Col, Row, TabsProps, Tabs, Button, Modal, message, Form, Input, FormProps, Divider, Select, DatePicker } from "antd";
+import { Breadcrumb, Card, Col, Row, TabsProps, Tabs, Button, Modal, message, Form, Input, FormProps, Divider, Select, DatePicker, TablePaginationConfig } from "antd";
 import CalendarComponent from "./components/BookingCalendar";
 import TableComponent from "./components/BookingTable";
 import RoomStatusComponent from "./components/RoomStatus";
@@ -16,6 +16,7 @@ type BookingType = {
     bookerName: String;
     bookerPhone: String;
     bookerDepartment: String;
+    positionName: String;
     bookingStatus: String;
     startDate: String;
     endDate: String;
@@ -42,18 +43,31 @@ const BookingRoomPage: React.FC = () => {
     const [submitLoading, setSubmitLoading] = useState(false);
     const [masterRoomData, setMasterRoomData] = useState<MasterRoomType[]>([]);
     const [bookingFetchData, setBookingFetchData] = useState([]);
+    const [bookingFetchCalendar, setBookingFetchCalendar] = useState([]);
+    const [department, setDepartment] = useState<BookingType[]>([]);
     const [form] = useForm();
+    const [loading, setloading] = useState<boolean>(true);
+    const [pagination, setPagination] = useState<TablePaginationConfig>({
+        current: 1,
+        pageSize: 10,
+        total: 0,
+    });
+
+    const changePagination = (page: TablePaginationConfig) => {
+        setPagination({ ...page });
+        setloading(true);
+      };
 
     const items: TabsProps["items"] = [
         {
             key: "1",
             label: "แสดงข้อมูลแบบปฎิทิน",
-            children: <CalendarComponent bookingFetchData={bookingFetchData} />,
+            children: <CalendarComponent bookingFetchCalendar={bookingFetchCalendar} />,
         },
         {
             key: "2",
             label: "แสดงข้อมูลแบบตาราง",
-            children: <TableComponent bookingFetchData={bookingFetchData} />,
+            children: <TableComponent bookingFetchData={bookingFetchData} pagination={pagination} changePagination={changePagination} />,
         },
         {
             key: "3",
@@ -150,28 +164,34 @@ const BookingRoomPage: React.FC = () => {
         }
     };
 
-
-
     const onFinishFailed: FormProps<BookingType>["onFinishFailed"] = (errorInfo) => {
         console.log("Failed:", errorInfo);
     };
 
     const fetchData = async () => {
+        const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
+        const take: number = Number(pagination.pageSize);
         try {
             const bookingRoom = await bookingRoomServices.getMasterRoomQuery();
             const masterRoomActive = bookingRoom.filter((room: any) => room.roomsStatus === true);
             setMasterRoomData(masterRoomActive);
-
-            const bookings = await bookingRoomServices.getBookingRoomQuery();
-            setBookingFetchData(bookings);
+            const bookingCalendar = await bookingRoomServices.getBookingRoomQuery();
+            const bookings = await bookingRoomServices.findBookingRoom(skip, take);
+            setBookingFetchData(bookings.data);
+            setBookingFetchCalendar(bookingCalendar);
+            setPagination({ ...pagination, total: bookings.count });
+            const organizeChart = await bookingRoomServices.getOrganizeChartQuery();
+            const department = organizeChart.filter((organize: any) => organize.type === "department");
+            setDepartment(department);
+            setloading(false);
         } catch (error) {
             console.error("Error fetching data:", error);
         }
     };
 
     useEffect(() => {
-        fetchData();
-    }, []);
+        if (loading === true) fetchData();
+    }, [loading]);
 
     return (
         <>
@@ -211,31 +231,13 @@ const BookingRoomPage: React.FC = () => {
                         </Col>
                         <Col span={8}>
                             <Form.Item<BookingType> label="ชื่อแผนก" name="bookerDepartment" rules={[{ required: true, message: "กรุณากรอกกรอกชื่อแผนก!" }]}>
-                                <Select
-                                    placeholder="โปรดเลือกเเผนกผู้จอง"
-                                    style={{ width: "100%" }}
-                                    options={[
-                                        { value: "Business Consulting Department", label: "Business Consulting Department" },
-                                        { value: "Business Solution Consulting Department", label: "Business Solution Consulting Department" },
-                                        { value: "Business Support Department", label: "Business Support Department" },
-                                        { value: "Customer Relationship Management Department", label: "Customer Relationship Management Department" },
-                                        { value: "Executive Division", label: "Executive Division" },
-                                        { value: "Executive Secretary Department", label: "Executive Secretary Department" },
-                                        { value: "Finance and Accounting Department", label: "Finance and Accounting Department" },
-                                        { value: "Human Resources Department", label: "Human Resources Department" },
-                                        { value: "IT Support Department", label: "IT Support Department" },
-                                        { value: "Legal & Compliance Department", label: "Legal & Compliance Department" },
-                                        { value: "Marketing Department ", label: "Marketing Department " },
-                                        { value: "Mbiz & Exam", label: "Mbiz & Exam" },
-                                        { value: "Network Department", label: "Network Department" },
-                                        { value: "New Installation Department", label: "New Installation Department" },
-                                        { value: "New Network Department", label: "New Network Department" },
-                                        { value: "Procurement Department", label: "Procurement Department" },
-                                        { value: "Research and Development Department", label: "Research and Development Department" },
-                                        { value: "Service and Support Department", label: "Service and Support Department" },
-                                        { value: "Voice Collaboration Department", label: "Voice Collaboration Department" },
-                                    ]}
-                                />
+                                <Select placeholder="โปรดเลือกห้องประชุม" style={{ width: "100%" }}>
+                                    {department.map((organize, index) => (
+                                        <Select.Option key={index} value={organize.positionName}>
+                                            {organize.positionName}
+                                        </Select.Option>
+                                    ))}
+                                </Select>
                             </Form.Item>
                         </Col>
                     </Row>

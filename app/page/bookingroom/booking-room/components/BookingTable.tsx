@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Tag, Button, Modal, Divider } from 'antd';
-import { TableProps } from 'antd/es/table';
+import { Table, Tag, Button, Modal, Divider, TablePaginationConfig } from 'antd';
+import type { TableProps } from 'antd';
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { BookingRoomServices } from "../services/booking-room.service";
 import dayjs from 'dayjs';
 
 interface DataType {
@@ -16,15 +18,18 @@ interface DataType {
     created_at: string;
 }
 
-interface Props {
-    bookingFetchData: DataType[];
-}
+export interface props {
+    bookingFetchData: any[];
+    pagination: TablePaginationConfig;
+    changePagination: (pagination: TablePaginationConfig) => void;
+  }
 
-const BookingTable: React.FC<Props> = ({ bookingFetchData }) => {
+const BookingTable: React.FC<props> = ({ bookingFetchData, pagination, changePagination }: any): React.ReactElement => {
+    const intraAuth = useAxiosIntranet();
+    const bookingRoomServices = BookingRoomServices(intraAuth);
+    const [bookingData, setBookingData] = useState<DataType[]>([]);
     const [modalBookingDetails, setModalBookingDetails] = useState(false);
     const [currentBookingDetails, setCurrentBookingDetails] = useState<DataType | null>(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
 
     const columns: TableProps<DataType>['columns'] = [
         {
@@ -32,7 +37,7 @@ const BookingTable: React.FC<Props> = ({ bookingFetchData }) => {
             title: 'ลำดับ',
             dataIndex: 'no',
             width: "50px",
-            render: (_, __, index) => <>{(currentPage - 1) * pageSize + index + 1}</>,
+            render: (id: number, record: any, index: number) => (pagination.current && pagination.pageSize ? (pagination.current - 1) * pagination.pageSize + (index + 1) : ""),
         },
         {
             key: 'roomName',
@@ -115,7 +120,7 @@ const BookingTable: React.FC<Props> = ({ bookingFetchData }) => {
         },
     ];
 
-    const renderStatusTag = (status: string) => {
+    const renderStatusTag = (status: any) => {
         switch (status) {
             case 'Approve':
                 return <Tag color={'green'}>อนุมัติสำเร็จ</Tag>;
@@ -138,22 +143,8 @@ const BookingTable: React.FC<Props> = ({ bookingFetchData }) => {
         setCurrentBookingDetails(null);
     };
 
-    const handleTableChange = (pagination: any) => {
-        setCurrentPage(pagination.current);
-        setPageSize(pagination.pageSize);
-    };
-
-    const paginatedData = bookingFetchData.slice((currentPage - 1) * pageSize, currentPage * pageSize);
-
-    const paginationConfig = {
-        current: currentPage,
-        pageSize: pageSize,
-        total: bookingFetchData.length,
-        onChange: handleTableChange,
-    };
-
     useEffect(() => {
-    }, [currentPage, pageSize]);
+    }, []);
 
     return (
         <>
@@ -186,10 +177,10 @@ const BookingTable: React.FC<Props> = ({ bookingFetchData }) => {
             </Modal>
             <Table
                 columns={columns}
-                dataSource={paginatedData}
+                dataSource={bookingFetchData}
                 rowKey="id"
-                pagination={paginationConfig}
-                onChange={handleTableChange}
+                onChange={changePagination}
+                pagination={pagination}
             />
         </>
     );

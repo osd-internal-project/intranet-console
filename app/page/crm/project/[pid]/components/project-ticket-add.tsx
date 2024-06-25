@@ -31,6 +31,7 @@ export interface props {
   onShowModalProjectTicketAdd: (status: boolean) => void;
   onSaveProjectTicket: (
     projectId: number,
+    taskId: number | undefined,
     form: ITProjectTicketCreateForm
   ) => void;
 }
@@ -47,13 +48,9 @@ const ProjectTicketAddComponent: React.FC<props> = ({
   useEffect(() => {
     form.resetFields();
   }, [showModalTicketAdd]);
-  useEffect(() => {
-    if (projectTaskSelectId) {
-      form.setFieldValue("customerProjectTaskId", projectTaskSelectId);
-    }
-  }, [projectTaskSelectId]);
+
   const onFinishSave = (form: ITProjectTicketCreateForm) => {
-    onSaveProjectTicket(projectId, {
+    onSaveProjectTicket(projectId, projectTaskSelectId, {
       ...form,
     });
   };
@@ -74,13 +71,6 @@ const ProjectTicketAddComponent: React.FC<props> = ({
         onFinish={onFinishSave}
         autoComplete="off"
       >
-        {projectTaskSelectId ? (
-          <Form.Item name={"customerProjectTaskId"} className=" hidden">
-            <Input maxLength={100} />
-          </Form.Item>
-        ) : (
-          <></>
-        )}
         <Form.Item label="Title" name={"ticketTitle"}>
           <Input maxLength={100} />
         </Form.Item>

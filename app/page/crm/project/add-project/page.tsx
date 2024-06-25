@@ -4,34 +4,78 @@ import { Breadcrumb, Button, Card, Col, message, Row, Spin } from "antd";
 import {
   ITBranchForSelect,
   ITCustomerForSelect,
-  ITCustomerProject,
+  ITProject,
+  ITProjectCreateForm,
+  ITSelectUsers,
 } from "../common";
-import { useAxiosCrm } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosCrm, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import CrmServices from "../services/index.service";
-
+import UserServices from "../services/user.service";
 import { checkRule } from "@/app/utils/rules";
 import CreateCustomerForm from "./components/create-form";
 import { useRouter } from "next/navigation";
-import { count } from "console";
+import { useSession } from "next-auth/react";
 
 export default function AddProjectPage() {
-  const intranetAuth = useAxiosCrm();
-  const crmServices = CrmServices(intranetAuth);
+  const { data: session } = useSession();
+  const crmAuth = useAxiosCrm();
+  const userAuth = useAxiosUser();
+  const crmServices = CrmServices(crmAuth);
+  const userServices = UserServices(userAuth);
   const rounter = useRouter();
   const [loading, setloading] = useState<boolean>(true);
   const [customerList, setCustomerList] = useState<ITCustomerForSelect[]>([]);
   const [branchList, setBranchList] = useState<ITBranchForSelect[]>([]);
+  const [userList, setUserList] = useState<ITSelectUsers[]>([]);
   useEffect(() => {
     if (loading === true) fetchData();
   }, [loading]);
   const fetchData = async () => {
     const data = await crmServices.findCustomerActive();
+    if (session?.user.userId) {
+      const users = await userServices.findOrganizeUserByUserId(
+        session?.user.userId
+      );
+      setUserList(users);
+    }
     setCustomerList(data);
     setloading(false);
   };
-  async function onFinishAdd(form: ITCustomerProject): Promise<void> {
+  async function onFinishAdd(form: ITProjectCreateForm): Promise<void> {
+    let data = { ...form };
+    if (form.projectManagerId) {
+      const user = userList.findLast(
+        (user) => user.userId === form.projectManagerId
+      );
+      if (user) {
+        data = {
+          ...form,
+          projectManagerName: `${user.firstNameTh} ${user.lastNameTh}`,
+        };
+      }
+    }
+    if (form.saleManagerId) {
+      const user = userList.findLast(
+        (user) => user.userId === form.saleManagerId
+      );
+      if (user) {
+        data = {
+          ...form,
+          saleManagerName: `${user.firstNameTh} ${user.lastNameTh}`,
+        };
+      }
+    }
+    if (form.saleId) {
+      const user = userList.findLast((user) => user.userId === form.saleId);
+      if (user) {
+        data = {
+          ...form,
+          saleName: `${user.firstNameTh} ${user.lastNameTh}`,
+        };
+      }
+    }
     await crmServices
-      .createProject(form)
+      .createProject(data)
       .then(() => {
         message.success("สร้าง Project สำเร็จ");
         rounter.push("/page/crm/project");
@@ -41,8 +85,10 @@ export default function AddProjectPage() {
       });
   }
   async function changeCustomerSelect(id: number): Promise<void> {
-    const data = await crmServices.findBranchByCustomerId(id);
-    setBranchList(data);
+    if (id) {
+      const data = await crmServices.findBranchByCustomerId(id);
+      setBranchList(data);
+    }
   }
 
   return (
@@ -80,6 +126,7 @@ export default function AddProjectPage() {
                 branchList={branchList}
                 onFinishAdd={onFinishAdd}
                 changeCustomerSelect={changeCustomerSelect}
+                userList={userList}
               />
             </Card>
           </div>

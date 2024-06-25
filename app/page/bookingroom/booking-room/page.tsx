@@ -43,6 +43,7 @@ const BookingRoomPage: React.FC = () => {
     const [submitLoading, setSubmitLoading] = useState(false);
     const [masterRoomData, setMasterRoomData] = useState<MasterRoomType[]>([]);
     const [bookingFetchData, setBookingFetchData] = useState([]);
+    const [bookingFetchCalendar, setBookingFetchCalendar] = useState([]);
     const [department, setDepartment] = useState<BookingType[]>([]);
     const [form] = useForm();
     const [loading, setloading] = useState<boolean>(true);
@@ -61,7 +62,7 @@ const BookingRoomPage: React.FC = () => {
         {
             key: "1",
             label: "แสดงข้อมูลแบบปฎิทิน",
-            children: <CalendarComponent bookingFetchData={bookingFetchData} />,
+            children: <CalendarComponent bookingFetchCalendar={bookingFetchCalendar} />,
         },
         {
             key: "2",
@@ -174,8 +175,10 @@ const BookingRoomPage: React.FC = () => {
             const bookingRoom = await bookingRoomServices.getMasterRoomQuery();
             const masterRoomActive = bookingRoom.filter((room: any) => room.roomsStatus === true);
             setMasterRoomData(masterRoomActive);
+            const bookingCalendar = await bookingRoomServices.getBookingRoomQuery();
             const bookings = await bookingRoomServices.findBookingRoom(skip, take);
             setBookingFetchData(bookings.data);
+            setBookingFetchCalendar(bookingCalendar);
             setPagination({ ...pagination, total: bookings.count });
             const organizeChart = await bookingRoomServices.getOrganizeChartQuery();
             const department = organizeChart.filter((organize: any) => organize.type === "department");

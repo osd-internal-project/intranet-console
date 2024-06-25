@@ -1,6 +1,6 @@
 import React from "react";
 import type { FormInstance, TableColumnsType } from "antd";
-import { Button, Input, Table } from "antd";
+import { Button, Input, Table, Tag } from "antd";
 import ProjectTicketAddComponent from "./project-ticket-add";
 import {
   ITProjectTaskForm,
@@ -9,6 +9,7 @@ import {
 } from "../../common";
 import Link from "next/link";
 import { dateToStringThNoTime } from "@/app/utils/format";
+import { EditOutlined } from "@ant-design/icons";
 
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -20,8 +21,10 @@ export interface props {
   projectTicketList: ITProjectTicket[];
   showModalTicketAdd: boolean;
   onShowModalProjectTicketAdd: (status: boolean) => void;
+  onShowModalProjectTicketDetail: (id: number | undefined) => void;
   onSaveProjectTicket: (
     projectId: number,
+    taskId: number | undefined,
     form: ITProjectTicketCreateForm
   ) => void;
 }
@@ -39,13 +42,14 @@ const TicketComponent: React.FC<props> = ({
   projectTicketList,
   showModalTicketAdd,
   onShowModalProjectTicketAdd,
+  onShowModalProjectTicketDetail,
   onSaveProjectTicket,
 }): React.ReactElement => {
   const ticketColumns: TableColumnsType<ITProjectTicket> = [
     {
-      key: "No.",
-      dataIndex: "No.",
-      title: "Project Code",
+      key: "id",
+      dataIndex: "id",
+      title: "No.",
       width: "100px",
       align: "center",
       render: (data: Date, record: ITProjectTicket, index: number) => index + 1,
@@ -62,6 +66,19 @@ const TicketComponent: React.FC<props> = ({
       dataIndex: "status",
       title: "Status",
       width: "200px",
+      render: (status) => {
+        return status === "new" ? (
+          <Tag color="#faad14">New</Tag>
+        ) : status === "inprogress" ? (
+          <Tag color="#1677ff">Inprogress</Tag>
+        ) : status === "finish" ? (
+          <Tag color="#52c41a">Finish</Tag>
+        ) : status === "cancel" ? (
+          <Tag color="#f5222d">Cancel</Tag>
+        ) : (
+          <></>
+        );
+      },
     },
     {
       key: "createdAt",
@@ -80,9 +97,17 @@ const TicketComponent: React.FC<props> = ({
     {
       key: "id",
       dataIndex: "id",
-      title: "ตรวจสอบ",
+      title: "ดำเนินการ",
       width: "200px",
       align: "center",
+      render: (data: number) => (
+        <Button
+          type="link"
+          onClick={() => (data ? onShowModalProjectTicketDetail(data) : {})}
+        >
+          <EditOutlined />
+        </Button>
+      ),
     },
   ];
   return (

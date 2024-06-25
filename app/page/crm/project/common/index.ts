@@ -38,28 +38,59 @@ export type ITBranchContactForm = {
   activeStatus: boolean;
 };
 export type ITBranchContact = { id: number } & ITBranchContactForm;
-export type ITCustomerProject = {
-  id: number;
+// export type ITCustomerProject = {
+//   id: number;
+//   projectName: string;
+//   startDate: Date;
+//   endDate: Date;
+//   duration: number;
+//   taxAddressText?: string;
+//   deliveryAddressText?: string;
+//   notiAddressText?: string;
+//   contactId?: string;
+//   customerBranch: { customerDetail: ITCustomerForSelect } & ITBranchForSelect;
+// };
+
+export type ITProjectCreateForm = {
   projectName: string;
   startDate: Date;
   endDate: Date;
   duration: number;
+  customerBranchId: number;
+  taxAddressId?: number;
   taxAddressText?: string;
+  deliveryAddressId?: number;
   deliveryAddressText?: string;
+  notiAddressId?: number;
   notiAddressText?: string;
-  contactId?: string;
-  customerBranch: { customerDetail: ITCustomerForSelect } & ITBranchForSelect;
+  contactId?: number;
+  projectManagerId?: string;
+  projectManagerName?: string;
+  saleManagerId?: string;
+  saleManagerName?: string;
+  saleId?: string;
+  saleName?: string;
 };
+export type ITProject = {
+  id: number;
+  customerBranch: { customerDetail: ITCustomerForSelect } & ITBranchForSelect;
+} & ITProjectCreateForm;
 export type ITProjectTicketCreateForm = {
   ticketTitle: string;
   ticketDetail: string;
   customerProjectTaskId?: number;
   dueDate: Date;
 };
+export type ITProjectTicketEditForm = {
+  problem?: string;
+  solution?: string;
+  result?: string;
+};
 export type ITProjectTicket = {
   id: number;
   status: string;
-} & ITProjectTicketCreateForm;
+} & ITProjectTicketCreateForm &
+  ITProjectTicketEditForm;
 export type ITProjectTaskForm = {
   taskTitle: string;
   startDate: Date;
@@ -70,3 +101,8 @@ export type ITProjectTask = {
   id: number;
   customerProjectTicket?: ITProjectTicket[];
 } & ITProjectTaskForm;
+export type ITSelectUsers = {
+  userId: string;
+  firstNameTh: string;
+  lastNameTh: string;
+};

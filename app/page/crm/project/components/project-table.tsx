@@ -19,7 +19,7 @@ import {
   Tag,
 } from "antd";
 import type { Dayjs } from "dayjs";
-import { ITCustomerProject } from "../common";
+import { ITProject } from "../common";
 import { ColumnType } from "antd/es/table";
 import { dateToStringTh, dateToStringThNoTime } from "@/app/utils/format";
 import { deleteIcon, editIcon } from "@/components/icon";
@@ -29,7 +29,7 @@ import Link from "next/link";
 import { ITCustomer } from "../../customer/common";
 
 export interface props {
-  dataTable: ITCustomerProject[];
+  dataTable: ITProject[];
   // loading: boolean;
   // setLoading: (loading: boolean) => void;
   pagination: TablePaginationConfig;
@@ -47,14 +47,14 @@ const ProjectTableComponent: React.FC<props> = ({
   // // editMaType,
   // deleteCustomer,
 }): React.ReactElement => {
-  const customerColumns: TableColumnsType<ITCustomerProject> = [
+  const customerColumns: TableColumnsType<ITProject> = [
     {
       key: "projectCode",
       dataIndex: "projectCode",
       title: "Project Code",
       width: "200px",
       align: "center",
-      render: (data: Date, record: ITCustomerProject, index: number) =>
+      render: (data: Date, record: ITProject, index: number) =>
         (pagination?.current ? pagination?.current - 1 : 0) * 10 + index + 1,
     },
     {
@@ -107,7 +107,7 @@ const ProjectTableComponent: React.FC<props> = ({
       title: "ตรวจสอบ",
       width: "200px",
       align: "center",
-      render: (id: number, record: ITCustomerProject, index: number) => (
+      render: (id: number, record: ITProject, index: number) => (
         <div className="space-x-1">
           <Link href={`/page/crm/project/${id}`}>
             <Button type="link">View</Button>
@@ -121,7 +121,7 @@ const ProjectTableComponent: React.FC<props> = ({
     //   title: "ดำเนินการ",
     //   width: "200px",
     //   align: "center",
-    //   render: (id: number, record: ITCustomerProject, index: number) => (
+    //   render: (id: number, record: ITProject, index: number) => (
     //     <div className="space-x-1">
     //       {/* <Button type="link" onClick={() => showModalEdit(record)}>
     //         {editIcon}
@@ -142,7 +142,7 @@ const ProjectTableComponent: React.FC<props> = ({
         size="small"
         pagination={pagination}
         onChange={changePagination}
-        rowKey={(data: ITCustomerProject) => data.id}
+        rowKey={(data: ITProject) => data.id}
       />
     </>
   );

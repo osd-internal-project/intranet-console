@@ -10,19 +10,19 @@ import {
   Select,
   Switch,
 } from "antd";
-import { ITBranchContact, ITCustomerProject } from "../../common";
+import { ITBranchContact, ITProject } from "../../common";
 
 import "../../style.css";
 import { dateToStringThNoTime } from "@/app/utils/format";
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 export interface props {
-  // descriptionForm: FormInstance<ITCustomerProject>;
-  projectDescription: ITCustomerProject;
+  // descriptionForm: FormInstance<ITProject>;
+  projectDescription: ITProject;
   contactDescription: ITBranchContact | undefined;
   isEdit: boolean;
   setIsEdit: (isEdit: boolean) => void;
-  onFinishEdit: (form: ITCustomerProject) => void;
+  onFinishEdit: (form: ITProject) => void;
 }
 
 const layout = {
@@ -39,7 +39,6 @@ const DescriptionCustomerForm: React.FC<props> = ({
   setIsEdit,
   onFinishEdit,
 }): React.ReactElement => {
-  console.log(contactDescription);
   return (
     <Collapse
       bordered={true}
@@ -148,89 +147,29 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   <div className=" col-span-2 md:col-span-5 text-slate-500">
                     {projectDescription.notiAddressText}
                   </div>
+                  <div className=" font-bold pl-3  pr-3 text-right ">
+                    Project Manager :
+                  </div>
+                  <div className=" col-span-2 md:col-span-1 text-slate-500">
+                    {projectDescription.projectManagerName}
+                  </div>
+                  <div className=" font-bold pl-3  pr-3 text-right ">
+                    Sale Manager :
+                  </div>
+                  <div className=" col-span-2 md:col-span-1 text-slate-500">
+                    {projectDescription.saleManagerName}
+                  </div>
+                  <div className=" font-bold pl-3  pr-3 text-right ">
+                    Sale :
+                  </div>
+                  <div className=" col-span-2 md:col-span-1 text-slate-500">
+                    {projectDescription.saleName}
+                  </div>
                 </div>
               ) : (
                 ""
               )}
             </>
-            // <Form
-            //   style={{ color: "#000" }}
-            //   form={descriptionForm}
-            //   size="small"
-            //   layout="vertical"
-            //   onFinish={onFinishEdit}
-            //   disabled={!isEdit}
-            //   autoComplete="off"
-            //   variant={isEdit ? "outlined" : "borderless"}
-            //   className="custom-disabled-form"
-            //   {...layout}
-            // >
-            //   <div className="fix-form grid md:ml-4 grid-cols-2 md:grid-cols-3 md:mb-0 md:mt-0">
-            //     <div className=" col-span-2 md:col-span-3 flex  justify-end">
-            //       {/* {isEdit ? (
-            //         <div className=" space-x-2">
-            //           <Button type="primary" htmlType="submit">
-            //             Save
-            //           </Button>
-            //           <Button
-            //             onClick={() => setIsEdit(!isEdit)}
-            //             type="primary"
-            //             ghost
-            //             disabled={false}
-            //           >
-            //             Cancel
-            //           </Button>
-            //         </div>
-            //       ) : (
-            //         <Button onClick={() => setIsEdit(!isEdit)} disabled={false}>
-            //           Edit
-            //         </Button>
-            //       )} */}
-            //     </div>
-            //     <Form.Item
-            //       // label={<b>Project Name</b>}
-            //       name={"projectName"}
-            //       className=" col-span-3"
-            //     >
-            //       <Input readOnly className=" text-2xl font-bold " />
-            //     </Form.Item>
-            //     <Form.Item label={<b>Start Date</b>} name={"startDate"}>
-            //       <Input readOnly />
-            //     </Form.Item>
-            //     <Form.Item label={<b>End Date</b>} name={"endDate"}>
-            //       <Input readOnly />
-            //     </Form.Item>
-            //     <Form.Item label={<b>Duration (Day)</b>} name={"duration"}>
-            //       <Input placeholder="Enter Text" maxLength={200} />
-            //     </Form.Item>
-            //     <Form.Item label={<b>Customer</b>} name={"customer"}>
-            //       <Input readOnly />
-            //     </Form.Item>
-            //     <Form.Item label={<b>Branch</b>} name={"branch"}>
-            //       <Input readOnly />
-            //     </Form.Item>
-            //     <div className=" md:col-span-3">
-            //       <Form.Item
-            //         label={<b>ที่อยู่ใบกำกับภาษี</b>}
-            //         name={"taxAddressText"}
-            //       >
-            //         <Input readOnly />
-            //       </Form.Item>
-            //       <Form.Item
-            //         label={<b>ที่อยู่การจัดส่งบริการ</b>}
-            //         name={"deliveryAddressText"}
-            //       >
-            //         <Input readOnly />
-            //       </Form.Item>
-            //       <Form.Item
-            //         label={<b>ที่อยู่จัดส่งใบแจ้งบริการ</b>}
-            //         name={"notiAddressText"}
-            //       >
-            //         <Input readOnly />
-            //       </Form.Item>
-            //     </div>
-            //   </div>
-            // </Form>
           ),
         },
       ]}

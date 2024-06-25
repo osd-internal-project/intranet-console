@@ -27,7 +27,9 @@ import {
   ITBranchContact,
   ITBranchForSelect,
   ITCustomerForSelect,
-  ITCustomerProject,
+  ITProject,
+  ITProjectCreateForm,
+  ITSelectUsers,
 } from "../../common";
 import { ColumnType } from "antd/es/table";
 import { dateToStringThNoTime } from "@/app/utils/format";
@@ -40,7 +42,8 @@ const { RangePicker } = DatePicker;
 export interface props {
   customerList: ITCustomerForSelect[];
   branchList: ITBranchForSelect[];
-  onFinishAdd: (form: ITCustomerProject) => void;
+  userList: ITSelectUsers[];
+  onFinishAdd: (form: ITProjectCreateForm) => void;
   changeCustomerSelect: (id: number) => void;
 }
 
@@ -58,6 +61,7 @@ const CreateProjectForm: React.FC<props> = ({
   branchList,
   onFinishAdd,
   changeCustomerSelect,
+  userList,
 }): React.ReactElement => {
   const [form] = useForm();
   const [addressSelect, setAddressSelect] = useState<ITBranchAddress[]>([]);
@@ -148,6 +152,11 @@ const CreateProjectForm: React.FC<props> = ({
         >
           <Select
             allowClear
+            showSearch
+            placeholder="Please select Customer"
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
             onChange={changeCustomerSelect}
             options={customerList.map((customer) => ({
               value: customer.id,
@@ -161,6 +170,11 @@ const CreateProjectForm: React.FC<props> = ({
           rules={[{ required: true, message: "กรุณาเลือก Branch" }]}
         >
           <Select
+            showSearch
+            placeholder="Please select Branch"
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
             disabled={branchList.length > 0 ? false : true}
             allowClear
             onChange={onChangeBranchSelect}
@@ -281,6 +295,33 @@ const CreateProjectForm: React.FC<props> = ({
             />
           </Form.Item>
         </div>
+        <Form.Item label="Project Manager" name={"projectManagerId"}>
+          <Select
+            allowClear
+            options={userList.map((user) => ({
+              value: user.userId,
+              label: `${user.firstNameTh} ${user.lastNameTh}`,
+            }))}
+          />
+        </Form.Item>
+        <Form.Item label="Sale Manager" name={"saleManagerId"}>
+          <Select
+            allowClear
+            options={userList.map((user) => ({
+              value: user.userId,
+              label: `${user.firstNameTh} ${user.lastNameTh}`,
+            }))}
+          />
+        </Form.Item>
+        <Form.Item label="Sale" name={"saleId"}>
+          <Select
+            allowClear
+            options={userList.map((user) => ({
+              value: user.userId,
+              label: `${user.firstNameTh} ${user.lastNameTh}`,
+            }))}
+          />
+        </Form.Item>
         <div className=" md:col-span-3">
           <Form.Item>
             <Button type="primary" htmlType="submit">

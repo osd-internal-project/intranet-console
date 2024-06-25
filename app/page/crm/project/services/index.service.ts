@@ -2,25 +2,31 @@ import { AxiosInstance } from "axios";
 import {
   ITBranchForSelect,
   ITCustomerForSelect,
-  ITCustomerProject,
   ITBranchContact,
   ITProjectTaskForm,
   ITProjectTask,
   ITProjectTicket,
+  ITProjectTicketEditForm,
+  ITProjectCreateForm,
+  ITProject,
 } from "../common";
 export interface TMaServices {
   findProjectDataTable: (
     search: object,
     take: number,
     skip: number
-  ) => Promise<{ data: ITCustomerProject[]; count: number }>;
+  ) => Promise<{ data: ITProject[]; count: number }>;
   findCustomerActive: () => Promise<ITCustomerForSelect[]>;
   findBranchByCustomerId: (customerId: number) => Promise<ITBranchForSelect[]>;
-  findProjectDetailById: (project: number) => Promise<ITCustomerProject>;
+  findProjectDetailById: (project: number) => Promise<ITProject>;
   findProjectTaskByProjectId: (project: number) => Promise<ITProjectTask[]>;
   findContactlById: (contactId: number) => Promise<ITBranchContact>;
   findProjectTicketByTaskId: (task: number) => Promise<ITProjectTicket[]>;
-  createProject: (form: ITCustomerForSelect) => Promise<ITCustomerForSelect[]>;
+  findProjectTicketDetailById: (ticket: number) => Promise<ITProjectTicket>;
+  findProjectTicketByProjectId: (
+    projectId: number
+  ) => Promise<ITProjectTicket[]>;
+  createProject: (form: ITProjectCreateForm) => Promise<ITProject>;
   createProjectTask: (
     projectId: number,
     form: ITProjectTaskForm
@@ -28,6 +34,14 @@ export interface TMaServices {
   createProjectTicket: (
     projectId: number,
     form: any
+  ) => Promise<ITProjectTicket>;
+  updateStatusProjectTicket: (
+    ticketId: number,
+    status: string
+  ) => Promise<ITProjectTicket>;
+  updateProjectTicket: (
+    ticketId: number,
+    form: ITProjectTicketEditForm
   ) => Promise<ITProjectTicket>;
 }
 const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
@@ -120,6 +134,29 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
           return;
         });
     },
+    findProjectTicketByProjectId: async (projectId) => {
+      return await axiosInstance
+        .get(`${projectTicketUrl}/find-by-project/${projectId}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return;
+        });
+    },
+    findProjectTicketDetailById: async (id) => {
+      return await axiosInstance
+        .get(`${projectTicketUrl}/detail/${id}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return;
+        });
+    },
+
     createProject: async (form) => {
       return await axiosInstance.post(`${customerProjectUrl}/`, form);
     },
@@ -136,6 +173,24 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
         customerProjectId: projectId,
       };
       return await axiosInstance.post(`${projectTicketUrl}/`, formData);
+    },
+    updateStatusProjectTicket: async (ticketId, status) => {
+      const formData = {
+        status: status,
+      };
+      return await axiosInstance.patch(
+        `${projectTicketUrl}/${ticketId}`,
+        formData
+      );
+    },
+    updateProjectTicket: async (ticketId, form) => {
+      const formData = {
+        ...form,
+      };
+      return await axiosInstance.patch(
+        `${projectTicketUrl}/${ticketId}`,
+        formData
+      );
     },
   };
 };

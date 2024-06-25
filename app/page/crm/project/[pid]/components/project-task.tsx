@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import type { FormInstance } from "antd";
 import { Button, Card, ConfigProvider, Input, Progress, Table } from "antd";
 import TicketComponent from "./project-ticket";
@@ -26,8 +26,10 @@ export interface props {
   projectTicketList: ITProjectTicket[];
   showModalTicketAdd: boolean;
   onShowModalProjectTicketAdd: (status: boolean) => void;
+  onShowModalProjectTicketDetail: (id: number | undefined) => void;
   onSaveProjectTicket: (
     projectId: number,
+    taskId: number | undefined,
     form: ITProjectTicketCreateForm
   ) => void;
 }
@@ -51,6 +53,7 @@ const TaskComponent: React.FC<props> = ({
   onSetProjectTaskSelectId,
   showModalTicketAdd,
   onShowModalProjectTicketAdd,
+  onShowModalProjectTicketDetail,
   onSaveProjectTicket,
 }): React.ReactElement => {
   return (
@@ -71,9 +74,15 @@ const TaskComponent: React.FC<props> = ({
             {projectTaskList.map((task: ITProjectTask, index: number) => (
               <Card
                 key={index}
-                className=" m-2 cursor-pointer hover:shadow-md"
+                className={`m-2 cursor-pointer hover:shadow-md   ${
+                  task.id === projectTaskSelectId
+                    ? " border-2 border-blue-500"
+                    : ""
+                }`}
                 styles={{ body: { padding: 12 } }}
-                onClick={() => onSetProjectTaskSelectId(task.id)}
+                onClick={() => {
+                  onSetProjectTaskSelectId(task.id);
+                }}
               >
                 <div className=" font-bold">
                   {index + 1}.{task.taskTitle}
@@ -87,7 +96,7 @@ const TaskComponent: React.FC<props> = ({
                     task.customerProjectTicket &&
                     task.customerProjectTicket.length > 0
                       ? (task.customerProjectTicket.filter(
-                          (data) => data.status !== "process"
+                          (data) => data.status !== "new"
                         ).length *
                           100) /
                         task.customerProjectTicket.length
@@ -126,6 +135,7 @@ const TaskComponent: React.FC<props> = ({
                 showModalTicketAdd={showModalTicketAdd}
                 onShowModalProjectTicketAdd={onShowModalProjectTicketAdd}
                 onSaveProjectTicket={onSaveProjectTicket}
+                onShowModalProjectTicketDetail={onShowModalProjectTicketDetail}
               />
             </div>
           ) : (

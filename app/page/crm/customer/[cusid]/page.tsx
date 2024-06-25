@@ -42,10 +42,12 @@ export default function CustomerDetailPage() {
   const [showModalBranchAdd, setShowModalBranchAdd] = useState(false);
   const [showModalBranchEdit, setShowModalBranchEdit] = useState(false);
   const [branchDetail, setBranchDetail] = useState<ITBranchDetail | undefined>(undefined);
+  const [projectDetail, setProjectDetail] = useState<ITCustomerForm[]>([]);
 
   const [formEdit] = Form.useForm();
   useEffect(() => {
     if (loading === true) fetchData();
+    fetchProject();
   }, [loading]);
 
   const fetchData = async () => {
@@ -66,6 +68,12 @@ export default function CustomerDetailPage() {
     const branchs = await crmServices.findBranchByCustomerId(+params.cusid, {});
     setBranchs(branchs);
     setShowModalBranchAdd(false);
+  };
+
+  const fetchProject = async () => {
+    const projects = await crmServices.findProjectDataTable(+params.cusid);
+    setProjectDetail(projects);
+    setloading(false);
   };
 
   async function onFinishEdit(data: ITCustomerForm): Promise<void> {
@@ -259,7 +267,7 @@ export default function CustomerDetailPage() {
                     {
                       key: "project",
                       label: "Project",
-                      children: <ProjectCustomerComponent />,
+                      children: <ProjectCustomerComponent projectDetail={projectDetail} loading={loading} setLoading={setloading} />,
                     },
                   ]}
                 />

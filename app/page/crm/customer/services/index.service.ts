@@ -10,8 +10,10 @@ import {
   ITCustomer,
   ITCustomerForm,
 } from "../common";
+import { ITProject } from "../../project/common";
 export interface TMaServices {
   findCustomerDataTable: (search: object, take: number, skip: number) => Promise<{ data: ITCustomer[]; count: number }>;
+  findProjectDataTable: (branchId: number) => Promise<ITCustomer[]>;
   findCustomerByCustomerId: (id: number) => Promise<ITCustomer>;
   create: (form: ITCustomerForm) => Promise<ITCustomer>;
   update: (id: number, form: ITCustomerForm) => Promise<ITCustomer>;
@@ -37,6 +39,17 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
         .get(`${customerUrl}/data-table?take=${take}&skip=${skip}`, {
           params: search,
         })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    findProjectDataTable: async (branchId: number) => {
+      return await axiosInstance
+        .get(`${customerBranchUrl}/customer-project/${branchId}`)
         .then((res) => {
           return res.data;
         })

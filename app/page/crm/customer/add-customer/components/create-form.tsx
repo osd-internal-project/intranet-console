@@ -13,6 +13,7 @@ import {
   Divider,
   Form,
   Input,
+  InputNumber,
   Modal,
   Popover,
   Select,
@@ -21,7 +22,12 @@ import {
   Tag,
 } from "antd";
 import type { Dayjs } from "dayjs";
-import { ITCustomerForm, ITPagination } from "../../common";
+import {
+  ITConfigData,
+  ITCustomerForm,
+  ITPagination,
+  ITSelectUsers,
+} from "../../common";
 import { ColumnType } from "antd/es/table";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { FilterOutlined } from "@ant-design/icons";
@@ -29,6 +35,9 @@ import TextArea from "antd/es/input/TextArea";
 import "../../style.css";
 const { RangePicker } = DatePicker;
 export interface props {
+  customerGroup: ITConfigData[];
+  customerTypes: ITConfigData[];
+  customerResponsibles: ITSelectUsers[];
   onFinishAdd: (form: ITCustomerForm) => void;
 }
 
@@ -42,6 +51,9 @@ const layout = {
 };
 
 const CreateCustomerForm: React.FC<props> = ({
+  customerGroup,
+  customerTypes,
+  customerResponsibles,
   onFinishAdd,
 }): React.ReactElement => {
   return (
@@ -104,13 +116,31 @@ const CreateCustomerForm: React.FC<props> = ({
         <Form.Item label="วันที่จดทะเบียน" name={"regisDate"}>
           <DatePicker format={"DD/MM/YYYY"} className=" w-full" />
         </Form.Item>
+        <Form.Item label="ทุนจดทะเบียน" name={"registration"}>
+          <InputNumber
+            min={0}
+            className=" w-full"
+            formatter={(value) =>
+              `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            }
+          />
+        </Form.Item>
+        <Form.Item label="Type" name={"customerTypeId"}>
+          <Select
+            placeholder="Please Choose"
+            options={customerTypes.map((data) => ({
+              value: data.id,
+              label: data.name,
+            }))}
+          />
+        </Form.Item>
         <Form.Item label="กลุ่มลูกค้า" name={"customerGroupId"}>
           <Select
             placeholder="Please Choose"
-            options={[
-              { value: 1, label: "osd1" },
-              { value: 2, label: "osd2" },
-            ]}
+            options={customerGroup.map((data) => ({
+              value: data.id,
+              label: data.name,
+            }))}
           />
         </Form.Item>
         <Form.Item label="Grade" name={"grade"}>
@@ -127,14 +157,16 @@ const CreateCustomerForm: React.FC<props> = ({
         </Form.Item>
         <Form.Item label="ผู้รับผิดชอบ" name={"responsibleId"}>
           <Select
+            mode="multiple"
+            allowClear
             placeholder="Please Choose"
-            options={[
-              { value: "11", label: "user1" },
-              { value: "22", label: "user2" },
-            ]}
+            options={customerResponsibles.map((data) => ({
+              value: data.userId,
+              label: `${data.firstNameTh} ${data.lastNameTh}`,
+            }))}
           />
         </Form.Item>
-        <Form.Item label="ผู้รับผิดชอบร่วม" name={"thirdPartyId"}>
+        {/* <Form.Item label="ผู้รับผิดชอบร่วม" name={"thirdPartyId"}>
           <Select
             placeholder="Please Choose"
             options={[
@@ -142,7 +174,7 @@ const CreateCustomerForm: React.FC<props> = ({
               { value: "22", label: "user2" },
             ]}
           />
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item
           label="Status"
           valuePropName="checked"

@@ -7,10 +7,11 @@ import {
   ITBranchContactForm,
   ITBranchDetail,
   ITBranchForm,
+  ITConfigData,
   ITCustomer,
   ITCustomerForm,
 } from "../common";
-export interface TMaServices {
+export interface TCrmServices {
   findCustomerDataTable: (
     search: object,
     take: number,
@@ -40,8 +41,11 @@ export interface TMaServices {
     contact: ITBranchContactForm
   ) => Promise<ITBranchAddress>;
   deleteBranchContact: (contactId: number) => Promise<ITBranchContact>;
+  findConfigCustomerGroup: () => Promise<ITConfigData[]>;
+  findConfigCustomerResponsible: () => Promise<ITConfigData[]>;
+  findConfigCustomerType: () => Promise<[ITConfigData]>;
 }
-const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
+const CrmServices = (axiosInstance: AxiosInstance): TCrmServices => {
   const customerUrl = "/customer-detail";
   const customerBranchUrl = "/customer-branch";
   const customerAdrressUrl = "/customer-address";
@@ -153,6 +157,39 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
     },
     deleteBranchContact: async (id) => {
       return await axiosInstance.delete(`${customerContactUrl}/${id}`);
+    },
+    findConfigCustomerGroup: async () => {
+      return await axiosInstance
+        .get(`${customerUrl}/config/customer-group`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    findConfigCustomerResponsible: async () => {
+      return await axiosInstance
+        .get(`${customerUrl}/config/customer-responsible`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    findConfigCustomerType: async () => {
+      return await axiosInstance
+        .get(`${customerUrl}/config/customer-type`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
     },
   };
 };

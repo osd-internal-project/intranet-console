@@ -18,10 +18,13 @@ export type ITCustomerForm = {
   prefixTh?: string;
   referenceCode?: string;
   regisDate?: Date;
-  responsibleId?: string;
+  registration?: number;
+  responsibleId?: String[];
   responsibleName?: string;
-  thirdPartyId?: string;
+  thirdPartyId?: number;
   thirdPartyName?: string;
+  customerTypeId?: number;
+  customerTypeName?: string;
   taxAlley?: string;
   businessCategory?: string;
   objective?: string;
@@ -82,3 +85,9 @@ export type ITBranchDetail = {
   customerAddress: ITBranchAddress[];
   customerContact: ITBranchContact[];
 } & ITBranchForm;
+export type ITConfigData = { id: number; name: string };
+export type ITSelectUsers = {
+  userId: string;
+  firstNameTh: string;
+  lastNameTh: string;
+};

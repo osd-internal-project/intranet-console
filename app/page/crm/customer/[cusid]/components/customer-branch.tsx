@@ -1,47 +1,46 @@
 import React from "react";
 import type { FormInstance, TableColumnsType } from "antd";
 import { Button, Input, Modal, Table } from "antd";
-import {
-  ITBranch,
-  ITBranchAddressForm,
-  ITBranchContactForm,
-  ITBranchDetail,
-  ITBranchForm,
-  ITCustomerForm,
-} from "../../common";
+import { ITBranch, ITBranchAddressForm, ITBranchContactForm, ITBranchDetail, ITBranchForm } from "../../common";
 import BranchModalAdd from "../components/branch-data-add";
+import BranchModalEdit from "./branch-data-edit";
 import BranchModalDetail from "../components/branch-data-detail";
-import { deleteIcon } from "@/components/icon";
+import { deleteIcon, editIcon } from "@/components/icon";
 import { ExclamationCircleFilled } from "@ant-design/icons";
-
-// const { RangePicker } = DatePicker;
-const { TextArea } = Input;
 export interface props {
   branchs: ITBranch[];
   branchDetail?: ITBranchDetail;
   showModalBranchAdd: boolean;
+  showModalBranchEdit: boolean;
   onShowModalBranchAdd: (status: boolean) => void;
+  onShowModalBranchEdit: (status: boolean) => void;
   onShowModalBranchDetail: (id: number | undefined) => void;
   onSaveBranch: (form: ITBranchForm) => void;
+  onSaveBranchEdit: (form: ITBranchForm) => void;
   onDeleteCustomerBranch: (id: number) => void;
   onSaveBranchAddress: (branchId: number, form: ITBranchAddressForm) => void;
   onDeleteCustomerBranchAddress: (branchId: number, addressId: number) => void;
   onSaveBranchContact: (branchId: number, form: ITBranchContactForm) => void;
   onDeleteCustomerBranchContact: (branchId: number, contactId: number) => void;
+  formEdit: FormInstance;
 }
 
 const BranchComponent: React.FC<props> = ({
   branchs,
   branchDetail,
   showModalBranchAdd,
+  showModalBranchEdit,
   onShowModalBranchAdd,
+  onShowModalBranchEdit,
   onShowModalBranchDetail,
   onSaveBranch,
+  onSaveBranchEdit,
   onDeleteCustomerBranch,
   onSaveBranchAddress,
   onDeleteCustomerBranchAddress,
   onSaveBranchContact,
   onDeleteCustomerBranchContact,
+  formEdit,
 }): React.ReactElement => {
   const showModalBranchDelete = (id: number) => {
     Modal.confirm({
@@ -74,7 +73,6 @@ const BranchComponent: React.FC<props> = ({
       key: "branchName",
       dataIndex: "branchName",
       title: "ชื่อสาขา",
-      // width: "200px",
     },
     {
       key: "id",
@@ -89,7 +87,6 @@ const BranchComponent: React.FC<props> = ({
         </div>
       ),
     },
-
     {
       key: "id",
       dataIndex: "id",
@@ -98,9 +95,14 @@ const BranchComponent: React.FC<props> = ({
       align: "center",
       render: (id: number, record: ITBranch, index: number) => (
         <div className="space-x-1">
-          {/* <Button type="link" onClick={() => showModalEdit(record)}>
+          <Button
+            type="link"
+            onClick={() => {
+              onShowModalBranchEdit(true), formEdit.setFieldsValue(record);
+            }}
+          >
             {editIcon}
-          </Button> */}
+          </Button>
           <Button type="link" onClick={() => showModalBranchDelete(id)} danger>
             {deleteIcon}
           </Button>
@@ -117,18 +119,16 @@ const BranchComponent: React.FC<props> = ({
             onShowModalBranchAdd(true);
           }}
         >
-          Add Branch
+          {`Add Branch`}
         </Button>
       </div>
-      <Table
-        columns={columns}
-        dataSource={branchs}
-        rowKey={(data: ITBranch) => data.id}
-      />
-      <BranchModalAdd
-        onSaveBranch={onSaveBranch}
-        showModalBranchAdd={showModalBranchAdd}
-        onShowModalBranchAdd={onShowModalBranchAdd}
+      <Table columns={columns} dataSource={branchs} rowKey={(data: ITBranch) => data.id} />
+      <BranchModalAdd onSaveBranch={onSaveBranch} showModalBranchAdd={showModalBranchAdd} onShowModalBranchAdd={onShowModalBranchAdd} />
+      <BranchModalEdit
+        onSaveBranchEdit={onSaveBranchEdit}
+        showModalBranchEdit={showModalBranchEdit}
+        onShowModalBranchEdit={onShowModalBranchEdit}
+        formEdit={formEdit}
       />
       {branchDetail ? (
         <BranchModalDetail

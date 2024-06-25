@@ -17,6 +17,7 @@ export interface TCrmServices {
     take: number,
     skip: number
   ) => Promise<{ data: ITCustomer[]; count: number }>;
+  findProjectDataTable: (branchId: number) => Promise<ITCustomer[]>;
   findCustomerByCustomerId: (id: number) => Promise<ITCustomer>;
   create: (form: ITCustomerForm) => Promise<ITCustomer>;
   update: (id: number, form: ITCustomerForm) => Promise<ITCustomer>;
@@ -30,6 +31,7 @@ export interface TCrmServices {
     customerId: number,
     branchForm: ITBranchForm
   ) => Promise<ITBranch>;
+  editBranch: (id: number, branchForm: ITBranchForm) => Promise<ITBranch>;
   deleteBranch: (id: number) => Promise<ITBranch>;
   createBranchAddress: (
     customerBranchId: number,
@@ -56,6 +58,17 @@ const CrmServices = (axiosInstance: AxiosInstance): TCrmServices => {
         .get(`${customerUrl}/data-table?take=${take}&skip=${skip}`, {
           params: search,
         })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    findProjectDataTable: async (branchId: number) => {
+      return await axiosInstance
+        .get(`${customerBranchUrl}/customer-project/${branchId}`)
         .then((res) => {
           return res.data;
         })
@@ -134,6 +147,12 @@ const CrmServices = (axiosInstance: AxiosInstance): TCrmServices => {
         customerDetailId: customerId,
       };
       return await axiosInstance.post(`${customerBranchUrl}/`, formData);
+    },
+    editBranch: async (id, form) => {
+      const formData = {
+        ...form,
+      };
+      return await axiosInstance.patch(`${customerBranchUrl}/${id}`, formData);
     },
     deleteBranch: async (id) => {
       return await axiosInstance.delete(`${customerBranchUrl}/${id}`);

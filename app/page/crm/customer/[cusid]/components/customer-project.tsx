@@ -1,11 +1,13 @@
 import React from "react";
-import type { FormInstance } from "antd";
-import { Input, Table } from "antd";
-import { ITCustomerForm } from "../../common";
+import type { FormInstance, TableColumnsType } from "antd";
+import { Button, Input, Table } from "antd";
+import { ITCustomer, ITCustomerForm } from "../../common";
+import { ITProject } from "../../../project/common";
+import { dateToStringThNoTime } from "@/app/utils/format";
+import Link from "next/link";
 
-// const { RangePicker } = DatePicker;
-const { TextArea } = Input;
 export interface props {
+  projectDetail: any;
   loading: boolean;
   setLoading: (loading: boolean) => void;
 }
@@ -17,8 +19,66 @@ const layout = {
   },
 };
 
-const BranchComponent: React.FC = ({}): React.ReactElement => {
-  return <Table />;
+const BranchComponent: React.FC<props> = ({ projectDetail, loading }): React.ReactElement => {
+  const customerColumns: TableColumnsType<ITProject> = [
+    {
+      key: "projectCode",
+      dataIndex: "projectCode",
+      title: "Project Code",
+      width: "200px",
+      align: "center",
+      render: (data: Date, record: ITProject, index: number) => index + 1,
+    },
+    {
+      key: "projectName",
+      dataIndex: "projectName",
+      title: "Project Name",
+      width: "200px",
+    },
+    {
+      key: "branchName",
+      dataIndex: ["customerBranch", "branchName"],
+      title: "Branch",
+      width: "200px",
+    },
+    {
+      key: "createdAt",
+      dataIndex: "createdAt",
+      title: "Create Date",
+      width: "200px",
+      render: (data: Date) => dateToStringThNoTime(data),
+    },
+    {
+      key: "startDate",
+      dataIndex: "startDate",
+      title: "Start Date",
+      width: "200px",
+      render: (data: Date) => dateToStringThNoTime(data),
+    },
+    {
+      key: "endDate",
+      dataIndex: "endDate",
+      title: "End Date",
+      width: "200px",
+      render: (data: Date) => dateToStringThNoTime(data),
+    },
+
+    {
+      key: "id",
+      dataIndex: "id",
+      title: "ตรวจสอบ",
+      width: "200px",
+      align: "center",
+      render: (id: number, record: ITProject, index: number) => (
+        <div className="space-x-1">
+          <Link href={`/page/crm/project/${id}`}>
+            <Button type="link">View</Button>
+          </Link>
+        </div>
+      ),
+    },
+  ];
+  return <Table dataSource={projectDetail} columns={customerColumns} size="small" rowKey={(data: ITProject) => data.id} loading={loading} />;
 };
 
 export default BranchComponent;

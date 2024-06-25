@@ -45,6 +45,7 @@ export interface ITypeRequester {
   };
 }
 export type ITBranchForm = {
+  id: number;
   branchCode: string;
   branchName: string;
 };

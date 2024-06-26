@@ -9,6 +9,7 @@ import {
   ITProjectTicketEditForm,
   ITProjectCreateForm,
   ITProject,
+  ITTicketConfigs,
 } from "../common";
 export interface TMaServices {
   findProjectDataTable: (
@@ -26,6 +27,7 @@ export interface TMaServices {
   findProjectTicketByProjectId: (
     projectId: number
   ) => Promise<ITProjectTicket[]>;
+  findConfigsForTicket: () => Promise<ITTicketConfigs>;
   createProject: (form: ITProjectCreateForm) => Promise<ITProject>;
   createProjectTask: (
     projectId: number,
@@ -37,7 +39,8 @@ export interface TMaServices {
   ) => Promise<ITProjectTicket>;
   updateStatusProjectTicket: (
     ticketId: number,
-    status: string
+    status: string,
+    form: object
   ) => Promise<ITProjectTicket>;
   updateProjectTicket: (
     ticketId: number,
@@ -156,6 +159,17 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
           return;
         });
     },
+    findConfigsForTicket: async () => {
+      return await axiosInstance
+        .get(`${customerUrl}/config/ticket-configs`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return;
+        });
+    },
 
     createProject: async (form) => {
       return await axiosInstance.post(`${customerProjectUrl}/`, form);
@@ -174,8 +188,9 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
       };
       return await axiosInstance.post(`${projectTicketUrl}/`, formData);
     },
-    updateStatusProjectTicket: async (ticketId, status) => {
+    updateStatusProjectTicket: async (ticketId, status, form) => {
       const formData = {
+        ...form,
         status: status,
       };
       return await axiosInstance.patch(

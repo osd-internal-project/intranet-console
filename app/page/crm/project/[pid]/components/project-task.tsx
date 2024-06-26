@@ -9,6 +9,7 @@ import {
   ITProjectTaskForm,
   ITProjectTicket,
   ITProjectTicketCreateForm,
+  ITTicketConfigs,
 } from "../../common";
 import { dateToStringThNoTime } from "@/app/utils/format";
 // const { RangePicker } = DatePicker;
@@ -25,6 +26,7 @@ export interface props {
   onSetProjectTaskSelectId: (taskId: number) => void;
   projectTicketList: ITProjectTicket[];
   showModalTicketAdd: boolean;
+  ticketConfigs: ITTicketConfigs;
   onShowModalProjectTicketAdd: (status: boolean) => void;
   onShowModalProjectTicketDetail: (id: number | undefined) => void;
   onSaveProjectTicket: (
@@ -50,6 +52,7 @@ const TaskComponent: React.FC<props> = ({
   projectTaskList,
   projectTaskSelectId,
   projectTicketList,
+  ticketConfigs,
   onSetProjectTaskSelectId,
   showModalTicketAdd,
   onShowModalProjectTicketAdd,
@@ -95,9 +98,11 @@ const TaskComponent: React.FC<props> = ({
                   percent={
                     task.customerProjectTicket &&
                     task.customerProjectTicket.length > 0
-                      ? (task.customerProjectTicket.filter(
-                          (data) => data.status !== "new"
-                        ).length *
+                      ? (task.customerProjectTicket.filter((data) => {
+                          data.status === "finish" ||
+                            data.status === "close" ||
+                            data.status === "cancel";
+                        }).length *
                           100) /
                         task.customerProjectTicket.length
                       : 0
@@ -136,6 +141,7 @@ const TaskComponent: React.FC<props> = ({
                 onShowModalProjectTicketAdd={onShowModalProjectTicketAdd}
                 onSaveProjectTicket={onSaveProjectTicket}
                 onShowModalProjectTicketDetail={onShowModalProjectTicketDetail}
+                ticketConfigs={ticketConfigs}
               />
             </div>
           ) : (

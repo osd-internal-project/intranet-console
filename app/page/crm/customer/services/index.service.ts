@@ -11,13 +11,16 @@ import {
   ITCustomer,
   ITCustomerForm,
 } from "../common";
+import { ITProject } from "../../project/common";
 export interface TCrmServices {
   findCustomerDataTable: (
     search: object,
     take: number,
     skip: number
   ) => Promise<{ data: ITCustomer[]; count: number }>;
-  findProjectDataTable: (branchId: number) => Promise<ITCustomer[]>;
+  findProjectDataTableByCustomerId: (
+    customerId: number
+  ) => Promise<ITProject[]>;
   findCustomerByCustomerId: (id: number) => Promise<ITCustomer>;
   create: (form: ITCustomerForm) => Promise<ITCustomer>;
   update: (id: number, form: ITCustomerForm) => Promise<ITCustomer>;
@@ -66,9 +69,9 @@ const CrmServices = (axiosInstance: AxiosInstance): TCrmServices => {
           return [];
         });
     },
-    findProjectDataTable: async (branchId: number) => {
+    findProjectDataTableByCustomerId: async (custoemrId: number) => {
       return await axiosInstance
-        .get(`${customerBranchUrl}/customer-project/${branchId}`)
+        .get(`${customerBranchUrl}/customer-project/${custoemrId}`)
         .then((res) => {
           return res.data;
         })
@@ -119,9 +122,7 @@ const CrmServices = (axiosInstance: AxiosInstance): TCrmServices => {
         customerDetailId: customerId,
       };
       return await axiosInstance
-        .get(`${customerBranchUrl}/many`, {
-          data: query,
-        })
+        .get(`${customerBranchUrl}/both-address-contact/${customerId}`)
         .then((res) => {
           return res.data;
         })

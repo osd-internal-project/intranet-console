@@ -20,6 +20,7 @@ import {
   ITProjectTicket,
   ITProjectTicketCreateForm,
   ITProjectTicketEditForm,
+  ITTicketConfigs,
 } from "../common";
 import { useAxiosCrm } from "@/app/lib/axios/hooks/userAxiosAuth";
 import CrmServices from "../services/index.service";
@@ -59,14 +60,28 @@ export default function CustomerDetailPage() {
   const [projectTicketDetail, setProjectTicketDetail] = useState<
     ITProjectTicket | undefined
   >(undefined);
+  const [ticketConfigs, setTicketConfigs] = useState<ITTicketConfigs>({
+    channelTypeList: [],
+    jobTypeList: [],
+    priorityList: [],
+    workTypeList: [],
+    requestTypeList: [],
+  });
   // const [data, setData] = useState<ITCustomer>();
   useEffect(() => {
     if (loading === true) fetchData();
   }, [loading]);
 
   const fetchData = async () => {
+    await fetchConfigs();
     await fetchDescription();
     setloading(false);
+  };
+  const fetchConfigs = async () => {
+    const ticketConfigs = await crmServices.findConfigsForTicket();
+    if (ticketConfigs) {
+      setTicketConfigs(ticketConfigs);
+    }
   };
   const fetchDescription = async () => {
     const detail = await crmServices.findProjectDetailById(+params.pid);
@@ -137,6 +152,61 @@ export default function CustomerDetailPage() {
       groupId: session?.user.ownerGroup,
       createdByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
     };
+    if (form.requestTypeId) {
+      const selected = ticketConfigs.requestTypeList.findLast(
+        (config) => config.id === form.requestTypeId
+      );
+      if (selected?.name) {
+        form = {
+          ...form,
+          requestTypeName: selected.name,
+        };
+      }
+    }
+    if (form.jobTypeId) {
+      const selected = ticketConfigs.jobTypeList.findLast(
+        (config) => config.id === form.jobTypeId
+      );
+      if (selected?.name) {
+        form = {
+          ...form,
+          jobTypeName: selected.name,
+        };
+      }
+    }
+    if (form.workTypeId) {
+      const selected = ticketConfigs.workTypeList.findLast(
+        (config) => config.id === form.workTypeId
+      );
+      if (selected?.name) {
+        form = {
+          ...form,
+          workTypeName: selected.name,
+        };
+      }
+    }
+    if (form.channelTypeId) {
+      const selected = ticketConfigs.channelTypeList.findLast(
+        (config) => config.id === form.channelTypeId
+      );
+      if (selected?.name) {
+        form = {
+          ...form,
+          channelTypeName: selected.name,
+        };
+      }
+    }
+    if (form.priorityId) {
+      const selected = ticketConfigs.priorityList.findLast(
+        (config) => config.id === form.priorityId
+      );
+      if (selected?.name) {
+        form = {
+          ...form,
+          priorityName: selected.name,
+        };
+      }
+    }
     if (taskId) {
       form = { ...form, customerProjectTaskId: taskId };
     }
@@ -174,44 +244,53 @@ export default function CustomerDetailPage() {
     ticketId: number,
     form: ITProjectTicketEditForm
   ) {
-    Modal.confirm({
-      title: "Edit Ticket",
-      icon: <ExclamationCircleFilled />,
-      content: "ยืนยันการแก้ไข ?",
-      okText: "Confirm",
-      okButtonProps: { type: "primary" },
-      cancelText: "Cancel",
-      onOk: async () => {
-        await crmServices
-          .updateProjectTicket(+ticketId, form)
-          .then(() => {
-            setShowModalTicketAdd(false);
-            message.success("อัพเดท Ticket สำเร็จ");
-            onShowModalProjectTicketDetail(ticketId);
-          })
-          .catch(() => {
-            message.error("ผิดพลาด กรุณาลองใหม่");
-          });
-        setloading(true);
-      },
-    });
+    await crmServices
+      .updateProjectTicket(+ticketId, form)
+      .then(() => {
+        setShowModalTicketAdd(false);
+        message.success("อัพเดท Ticket สำเร็จ");
+        onShowModalProjectTicketDetail(ticketId);
+      })
+      .catch(() => {
+        message.error("ผิดพลาด กรุณาลองใหม่");
+      });
+    setloading(true);
   }
 
   async function updateTicketStatus(
     ticketId: number,
     status: string
   ): Promise<void> {
+    let form = {};
     let title = "";
     let content = "";
     if (status === "inprogress") {
       title = "Receive Ticket";
       content = "ยืนยันการรับงาน ?";
+      form = {
+        reciveDate: new Date(),
+      };
+    } else if (status === "hold") {
+      title = "Hold Ticket";
+      content = "ยืนยันการ Hold ?";
     } else if (status === "finish") {
       title = "Close Ticket";
       content = "ยืนยันการรับงาน ?";
+      form = {
+        finishDate: new Date(),
+      };
     } else if (status === "cancel") {
       title = "Cancel Ticket";
       content = "ยืนยันการรับงาน ?";
+      form = {
+        finishDate: new Date(),
+      };
+    } else if (status === "close") {
+      title = "Close Ticket";
+      content = "ยืนยันการจบงาน ?";
+      form = {
+        completeDate: new Date(),
+      };
     }
     Modal.confirm({
       title: title,
@@ -222,7 +301,7 @@ export default function CustomerDetailPage() {
       cancelText: "Cancel",
       onOk: async () => {
         await crmServices
-          .updateStatusProjectTicket(+ticketId, status)
+          .updateStatusProjectTicket(+ticketId, status, form)
           .then(() => {
             setShowModalTicketAdd(false);
             message.success("อัพเดท Ticket สำเร็จ");
@@ -315,6 +394,7 @@ export default function CustomerDetailPage() {
                       onShowModalProjectTicketDetail={
                         onShowModalProjectTicketDetail
                       }
+                      ticketConfigs={ticketConfigs}
                     />
                   ),
                 },
@@ -336,6 +416,7 @@ export default function CustomerDetailPage() {
                       onShowModalProjectTicketDetail={
                         onShowModalProjectTicketDetail
                       }
+                      ticketConfigs={ticketConfigs}
                     />
                   ),
                 },

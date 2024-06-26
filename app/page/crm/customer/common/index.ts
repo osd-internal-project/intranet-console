@@ -19,7 +19,8 @@ export type ITCustomerForm = {
   referenceCode?: string;
   regisDate?: Date;
   registration?: number;
-  responsibleId?: String[];
+  responsibleSelect?: string[];
+  responsible?: { uid: string; name: string }[];
   responsibleName?: string;
   thirdPartyId?: number;
   thirdPartyName?: string;

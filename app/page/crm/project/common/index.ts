@@ -80,6 +80,16 @@ export type ITProjectTicketCreateForm = {
   ticketDetail: string;
   customerProjectTaskId?: number;
   dueDate: Date;
+  requestTypeId?: number;
+  requestTypeName?: string;
+  jobTypeId?: number;
+  jobTypeName?: string;
+  workTypeId?: number;
+  workTypeName?: string;
+  channelTypeId?: number;
+  channelTypeName?: string;
+  priorityId?: number;
+  priorityName?: string;
 };
 export type ITProjectTicketEditForm = {
   problem?: string;
@@ -89,6 +99,11 @@ export type ITProjectTicketEditForm = {
 export type ITProjectTicket = {
   id: number;
   status: string;
+  createdAt?: Date;
+  appointmentDate?: Date;
+  reciveDate?: Date;
+  finishDate?: Date;
+  completeDate?: Date;
 } & ITProjectTicketCreateForm &
   ITProjectTicketEditForm;
 export type ITProjectTaskForm = {
@@ -105,4 +120,12 @@ export type ITSelectUsers = {
   userId: string;
   firstNameTh: string;
   lastNameTh: string;
+};
+export type ITConfigData = { id: number; name: string };
+export type ITTicketConfigs = {
+  channelTypeList: ITConfigData[];
+  jobTypeList: ITConfigData[];
+  priorityList: ITConfigData[];
+  workTypeList: ITConfigData[];
+  requestTypeList: ITConfigData[];
 };

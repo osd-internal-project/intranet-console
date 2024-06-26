@@ -73,17 +73,23 @@ export default function AddCustomerPage() {
       }
     }
 
-    // if (form.thirdPartyId) {
-    //   const responsibleSelected = customerResponsibles.findLast(
-    //     (responsible) => responsible.id === form.thirdPartyId
-    //   );
-    //   if (responsibleSelected?.name) {
-    //     createForm = {
-    //       ...createForm,
-    //       customerGroupName: responsibleSelected.name,
-    //     };
-    //   }
-    // }
+    if (form.responsibleSelect && form.responsibleSelect.length > 0) {
+      const responsibleSelected = customerResponsibles
+        .filter((user) => form.responsibleSelect?.includes(user.userId))
+        .map((user) => ({
+          uid: user.userId,
+          name: `${user.firstNameTh} ${user.lastNameTh}`,
+        }));
+      if (responsibleSelected) {
+        createForm = {
+          ...createForm,
+          responsible: responsibleSelected,
+        };
+      }
+    }
+    if (createForm.hasOwnProperty("responsibleSelect")) {
+      delete createForm["responsibleSelect"];
+    }
     crmServices
       .create(createForm)
       .then((res) => {

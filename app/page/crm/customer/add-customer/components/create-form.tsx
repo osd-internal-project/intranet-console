@@ -33,6 +33,7 @@ import { dateToStringThNoTime } from "@/app/utils/format";
 import { FilterOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import "../../style.css";
+import { useForm } from "antd/es/form/Form";
 const { RangePicker } = DatePicker;
 export interface props {
   customerGroup: ITConfigData[];
@@ -56,11 +57,13 @@ const CreateCustomerForm: React.FC<props> = ({
   customerResponsibles,
   onFinishAdd,
 }): React.ReactElement => {
+  const [form] = useForm();
   return (
     <Form
       size="small"
       layout="vertical"
       onFinish={onFinishAdd}
+      form={form}
       autoComplete="off"
       {...layout}
     >
@@ -155,7 +158,8 @@ const CreateCustomerForm: React.FC<props> = ({
             ]}
           />
         </Form.Item>
-        <Form.Item label="ผู้รับผิดชอบ" name={"responsibleId"}>
+        <Form.Item name={"responsible"} hidden></Form.Item>
+        <Form.Item label="ผู้รับผิดชอบ" name={"responsibleSelect"}>
           <Select
             mode="multiple"
             allowClear
@@ -188,114 +192,7 @@ const CreateCustomerForm: React.FC<props> = ({
           />
         </Form.Item>
         <Divider className=" md:col-span-3" />
-        {/* <div className=" md:col-span-3 font-bold">ที่อยู่ใบกำกับภาษี </div>
-        <Form.Item label="เลขที่บ้าน" name={"taxHouseNumber"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="เลขที่ห้อง" name={"taxRoomNumber"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="อาคาร/หมู่บ้าน" name={"taxBuilding"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="ชั้น" name={"taxFloor"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="ซอย" name={"taxAlley"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="หมู่ที่" name={"taxVillage"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="ถนน" name={"taxRoad"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="ตำบล" name={"taxSubDistrict"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="อำเภอ" name={"taxDistrict"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="จังหวัด" name={"taxProvince"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="รหัสไปรษณีย์" name={"taxZipCode"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
 
-        <Divider className=" md:col-span-3" />
-        <div className=" md:col-span-3 font-bold">ที่อยู่การจัดส่งบริการ </div>
-        <Form.Item label="เลขที่บ้าน" name={"deliveryHouseNumber"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="เลขที่ห้อง" name={"deliveryRoomNumber"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="อาคาร/หมู่บ้าน" name={"deliveryBuilding"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="ชั้น" name={"deliveryFloor"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="ซอย" name={"deliveryAlley"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="หมู่ที่" name={"deliveryVillage"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="ถนน" name={"deliveryRoad"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="ตำบล" name={"deliverySubDistrict"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="อำเภอ" name={"deliveryDistrict"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="จังหวัด" name={"deliveryProvince"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="รหัสไปรษณีย์" name={"deliveryZipCode"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Divider className=" md:col-span-3" />
-        <div className=" md:col-span-3 font-bold">
-          ที่อยู่จัดส่งใบแจ้งบริการ
-        </div>
-        <Form.Item label="เลขที่บ้าน" name={"notiHouseNumber"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="เลขที่ห้อง" name={"notiRoomNumber"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="อาคาร/หมู่บ้าน" name={"notiBuilding"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="ชั้น" name={"notiFloor"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="ซอย" name={"notiAlley"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="หมู่ที่" name={"notiVillage"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="ถนน" name={"notiRoad"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="ตำบล" name={"notiSubDistrict"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="อำเภอ" name={"notiDistrict"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="จังหวัด" name={"notiProvince"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <Form.Item label="รหัสไปรษณีย์" name={"notiZipCode"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item>
-        <div></div> */}
         <Form.Item label="โทรศัพท์" name={"notiPhone"}>
           <Input placeholder="Enter Text" />
         </Form.Item>

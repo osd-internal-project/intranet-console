@@ -129,10 +129,12 @@ const CustomerTableComponent: React.FC<props> = ({
       width: "200px",
     },
     {
-      key: "responsibleName",
-      dataIndex: "responsibleName",
+      key: "responsible",
+      dataIndex: "responsible",
       title: "ผู้รับผิดชอบ",
       width: "200px",
+      render: (value: { uid: string; name: string }[]) =>
+        value.map((data) => <div>{data.name}</div>),
     },
     {
       key: "customerCode",

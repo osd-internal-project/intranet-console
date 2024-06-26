@@ -4,13 +4,18 @@ import {
   Button,
   Card,
   DatePicker,
+  Divider,
   Form,
   Input,
   Modal,
   Select,
   Switch,
 } from "antd";
-import { ITBranchContactForm, ITProjectTicketCreateForm } from "../../common";
+import {
+  ITBranchContactForm,
+  ITProjectTicketCreateForm,
+  ITTicketConfigs,
+} from "../../common";
 import { CloseOutlined } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
 
@@ -28,6 +33,7 @@ export interface props {
   projectTaskSelectId: number | undefined;
   projectId: number;
   showModalTicketAdd: boolean;
+  ticketConfigs: ITTicketConfigs;
   onShowModalProjectTicketAdd: (status: boolean) => void;
   onSaveProjectTicket: (
     projectId: number,
@@ -40,6 +46,7 @@ const ProjectTicketAddComponent: React.FC<props> = ({
   projectTaskSelectId,
   projectId,
   showModalTicketAdd,
+  ticketConfigs,
   onShowModalProjectTicketAdd,
   onSaveProjectTicket,
 }): React.ReactElement => {
@@ -60,7 +67,8 @@ const ProjectTicketAddComponent: React.FC<props> = ({
       footer={[]}
       open={showModalTicketAdd}
       onCancel={() => onShowModalProjectTicketAdd(false)}
-      // width={1200}
+      width={1200}
+      style={{ top: 20 }}
       // footer={[]}
     >
       <Form
@@ -70,17 +78,88 @@ const ProjectTicketAddComponent: React.FC<props> = ({
         {...layout}
         onFinish={onFinishSave}
         autoComplete="off"
+        // layout="vertical"
       >
-        <Form.Item label="Title" name={"ticketTitle"}>
-          <Input maxLength={100} />
-        </Form.Item>
-        <Form.Item label="Due Date" name={"dueDate"}>
-          <DatePicker format={"DD/MM/YYYY"} />
-        </Form.Item>
-        <Form.Item label="Detail" name={"ticketDetail"}>
-          <TextArea maxLength={200} showCount />
-        </Form.Item>
-
+        <div className="gap-3">
+          <Form.Item label="Title" name={"ticketTitle"}>
+            <Input maxLength={100} />
+          </Form.Item>
+          <Form.Item label="Due Date" name={"dueDate"}>
+            <DatePicker className=" w-full" format={"DD/MM/YYYY"} />
+          </Form.Item>
+          <Form.Item label="Assign To" name={"dueDate"}>
+            <Select
+              className=" w-full"
+              allowClear
+              placeholder="Please Select"
+            />
+          </Form.Item>
+          <Form.Item
+            label="Detail"
+            name={"ticketDetail"}
+            className=" col-span-4"
+          >
+            <TextArea maxLength={200} showCount />
+          </Form.Item>
+          <Divider orientation="left" className="  p-0 m-0">
+            CLASSIFIED DETAIL
+          </Divider>
+          <Form.Item label="Request Type" name={"requestTypeId"}>
+            <Select
+              className=" w-full"
+              allowClear
+              placeholder="Please Select"
+              options={ticketConfigs.requestTypeList.map((data) => ({
+                value: data.id,
+                label: data.name,
+              }))}
+            />
+          </Form.Item>
+          <Form.Item label="Job Type" name={"jobTypeId"}>
+            <Select
+              className=" w-full"
+              allowClear
+              placeholder="Please Select"
+              options={ticketConfigs.jobTypeList.map((data) => ({
+                value: data.id,
+                label: data.name,
+              }))}
+            />
+          </Form.Item>
+          <Form.Item label="Work Type" name={"workTypeId"}>
+            <Select
+              className=" w-full"
+              allowClear
+              placeholder="Please Select"
+              options={ticketConfigs.workTypeList.map((data) => ({
+                value: data.id,
+                label: data.name,
+              }))}
+            />
+          </Form.Item>
+          <Form.Item label="Channel" name={"channelTypeId"}>
+            <Select
+              className=" w-full"
+              allowClear
+              placeholder="Please Select"
+              options={ticketConfigs.channelTypeList.map((data) => ({
+                value: data.id,
+                label: data.name,
+              }))}
+            />
+          </Form.Item>
+          <Form.Item label="Priority" name={"priorityId"}>
+            <Select
+              className=" w-full"
+              allowClear
+              placeholder="Please Select"
+              options={ticketConfigs.priorityList.map((data) => ({
+                value: data.id,
+                label: data.name,
+              }))}
+            />
+          </Form.Item>
+        </div>
         <div className=" flex justify-end space-x-2">
           <Button type="primary" htmlType="submit">
             Save

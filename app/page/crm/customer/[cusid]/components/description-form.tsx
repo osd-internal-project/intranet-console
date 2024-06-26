@@ -9,12 +9,15 @@ import {
   Select,
   Switch,
 } from "antd";
-import { ITCustomerForm } from "../../common";
+import { ITConfigData, ITCustomerForm, ITSelectUsers } from "../../common";
 
 import "../../style.css";
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 export interface props {
+  customerGroup: ITConfigData[];
+  customerTypes: ITConfigData[];
+  customerResponsibles: ITSelectUsers[];
   descriptionForm: FormInstance<ITCustomerForm>;
   isEdit: boolean;
   setIsEdit: (isEdit: boolean) => void;
@@ -29,6 +32,9 @@ const layout = {
 };
 
 const DescriptionCustomerForm: React.FC<props> = ({
+  customerGroup,
+  customerTypes,
+  customerResponsibles,
   descriptionForm,
   isEdit,
   setIsEdit,
@@ -123,13 +129,22 @@ const DescriptionCustomerForm: React.FC<props> = ({
                 <Form.Item label={<b>วันที่จดทะเบียน</b>} name={"regisDate"}>
                   <DatePicker format={"DD/MM/YYYY"} className=" w-full" />
                 </Form.Item>
-                <Form.Item label={<b>กลุ่มลูกค้า</b>} name={"customerGroupId"}>
+                <Form.Item label="Type" name={"customerTypeId"}>
                   <Select
                     placeholder="Please Choose"
-                    options={[
-                      { value: 1, label: "osd1" },
-                      { value: 2, label: "osd2" },
-                    ]}
+                    options={customerTypes.map((data) => ({
+                      value: data.id,
+                      label: data.name,
+                    }))}
+                  />
+                </Form.Item>
+                <Form.Item label="กลุ่มลูกค้า" name={"customerGroupId"}>
+                  <Select
+                    placeholder="Please Choose"
+                    options={customerGroup.map((data) => ({
+                      value: data.id,
+                      label: data.name,
+                    }))}
                   />
                 </Form.Item>
                 <Form.Item label={<b>Grade</b>} name={"grade"}>
@@ -145,7 +160,19 @@ const DescriptionCustomerForm: React.FC<props> = ({
                     ]}
                   />
                 </Form.Item>
-                <Form.Item label={<b>ผู้รับผิดชอบ</b>} name={"responsibleId"}>
+                <Form.Item name={"responsible"} hidden></Form.Item>
+                <Form.Item label="ผู้รับผิดชอบ" name={"responsibleSelect"}>
+                  <Select
+                    mode="multiple"
+                    allowClear
+                    placeholder="Please Choose"
+                    options={customerResponsibles.map((data) => ({
+                      value: data.userId,
+                      label: `${data.firstNameTh} ${data.lastNameTh}`,
+                    }))}
+                  />
+                </Form.Item>
+                {/* <Form.Item label={<b>ผู้รับผิดชอบ</b>} name={"responsibleId"}>
                   <Select
                     placeholder="Please Choose"
                     options={[
@@ -153,8 +180,8 @@ const DescriptionCustomerForm: React.FC<props> = ({
                       { value: "22", label: "user2" },
                     ]}
                   />
-                </Form.Item>
-                <Form.Item
+                </Form.Item> */}
+                {/* <Form.Item
                   label={<b>ผู้รับผิดชอบร่วม</b>}
                   name={"thirdPartyId"}
                 >
@@ -165,7 +192,7 @@ const DescriptionCustomerForm: React.FC<props> = ({
                       { value: "22", label: "user2" },
                     ]}
                   />
-                </Form.Item>
+                </Form.Item> */}
                 <Form.Item
                   label={<b>Status</b>}
                   valuePropName="checked"

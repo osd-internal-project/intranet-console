@@ -10,7 +10,11 @@ import {
   Select,
   Switch,
 } from "antd";
-import { ITBranchContactForm, ITProjectTaskForm } from "../../common";
+import {
+  ITBranchContactForm,
+  ITProjectTaskForm,
+  ITTicketConfigs,
+} from "../../common";
 import { CloseOutlined } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
 

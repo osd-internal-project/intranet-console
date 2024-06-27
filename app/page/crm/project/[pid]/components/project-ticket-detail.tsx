@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import type { FormInstance } from "antd";
+import type { FormInstance, UploadFile, UploadProps } from "antd";
 import {
   Button,
   Card,
@@ -8,11 +8,14 @@ import {
   Divider,
   Form,
   Input,
+  message,
   Modal,
   Select,
+  Space,
   Switch,
   Tabs,
   Tag,
+  Upload,
 } from "antd";
 import {
   ITBranchContactForm,
@@ -22,10 +25,17 @@ import {
   ITTicketHistoryLog,
 } from "../../common";
 import "../../style.css";
-import { CloseOutlined, ExclamationCircleFilled } from "@ant-design/icons";
+import {
+  CloseOutlined,
+  ExclamationCircleFilled,
+  PaperClipOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import TicketHistoryTableComponent from "./ticket-history-table";
+import { RcFile } from "antd/es/upload";
+import { deleteIcon } from "@/components/icon";
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 const layout = {
@@ -41,13 +51,16 @@ export interface props {
   onShowModalProjectTicketDetail: (id: number | undefined) => void;
   onEditProjectTicket: (
     ticketId: number,
-    form: ITProjectTicketEditForm
+    form: ITProjectTicketEditForm,
+    attendFiles: UploadFile[]
   ) => void;
   updateTicketStatus: (
     ticketId: number,
     status: string,
     action: string
   ) => void;
+  downloadFile: (id: number, name: string) => void;
+  onDeleteTicketFile: (fileId: number, ticketId: number) => void;
 }
 
 const ProjectTicketDetailComponent: React.FC<props> = ({
@@ -55,13 +68,17 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
   onShowModalProjectTicketDetail,
   onEditProjectTicket,
   updateTicketStatus,
+  downloadFile,
+  onDeleteTicketFile,
 }): React.ReactElement => {
   const [editForm] = useForm();
-
+  const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   useEffect(() => {
-    editForm.resetFields();
+    editForm.setFieldsValue(ticketSelectedDetail);
+    setAttendFiles([]);
   }, [ticketSelectedDetail]);
   const [editTicketStatus, setEditTicketStatus] = useState<boolean>(false);
+
   const onFinishSave = async (form: ITProjectTicketEditForm) => {
     Modal.confirm({
       title: "Edit Ticket",
@@ -71,11 +88,42 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
       okButtonProps: { type: "primary" },
       cancelText: "Cancel",
       onOk: async () => {
-        onEditProjectTicket(ticketSelectedDetail.id, form);
+        onEditProjectTicket(ticketSelectedDetail.id, form, attendFiles);
         setEditTicketStatus(false);
       },
     });
   };
+  const handleChangeAttendFiles: UploadProps["onChange"] = async ({
+    fileList: newFileList,
+  }) => {
+    return setAttendFiles(newFileList);
+  };
+  const beforeUploadAttendFiles = (file: RcFile) => {
+    if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
+      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
+      return false;
+    }
+    return false;
+  };
+
+  function deleteTicketFile(
+    id: number,
+    fileName: string,
+    ticketId: number
+  ): void {
+    Modal.confirm({
+      title: "Delete File Ticket",
+      icon: <ExclamationCircleFilled />,
+      content: `ยืนยันการลบไฟล์ ${fileName} ?`,
+      okText: "Confirm",
+      okButtonProps: { type: "primary" },
+      cancelText: "Cancel",
+      onOk: async () => {
+        onDeleteTicketFile(id, ticketId);
+      },
+    });
+  }
+
   return (
     <Modal
       title={ticketSelectedDetail?.ticketTitle}
@@ -140,8 +188,28 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                     <div className=" md:col-span-1 font-bold pl-3 pr-3 text-right">
                       Detail:
                     </div>
-                    <div className=" col-span-2 md:col-span-5">
+                    <div className=" col-span-1 md:col-span-1">
                       {ticketSelectedDetail.ticketDetail}
+                    </div>
+                    <div className=" col-span-2 md:col-span-4"></div>
+                    <div className="md:col-span-1  font-bold pl-3 pr-3 text-right">
+                      Attend Files
+                    </div>
+
+                    <div className=" col-span-2 md:col-span-5">
+                      {ticketSelectedDetail.createFiles?.map((file, index) => (
+                        <div key={index}>
+                          <Button
+                            type="link"
+                            onClick={() => downloadFile(file.id, file.fileName)}
+                          >
+                            <Space>
+                              <PaperClipOutlined />
+                              {file.fileName}
+                            </Space>
+                          </Button>
+                        </div>
+                      ))}
                     </div>
                     <Divider
                       orientation="left"
@@ -180,6 +248,7 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                     <div className=" col-span-2 md:col-span-1">
                       {ticketSelectedDetail.priorityName}
                     </div>
+
                     <Divider
                       orientation="left"
                       className=" col-span-3 md:col-span-6 p-0 m-0"
@@ -234,6 +303,91 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                         ) : (
                           " - "
                         )}
+                      </Form.Item>
+                      <Form.Item
+                        label={
+                          <div className=" font-bold  text-purple-700">
+                            Attach File
+                          </div>
+                        }
+                        valuePropName="fileList"
+                      >
+                        {editTicketStatus ? (
+                          <>
+                            <Upload
+                              fileList={attendFiles}
+                              onChange={handleChangeAttendFiles}
+                              beforeUpload={beforeUploadAttendFiles}
+                              multiple={true}
+                              maxCount={10}
+                            >
+                              <Button icon={<UploadOutlined />}>
+                                Click to upload
+                              </Button>
+                            </Upload>
+
+                            <div className=" p-2 text-slate-500">
+                              Existing files
+                            </div>
+                            {ticketSelectedDetail.updateFiles?.map(
+                              (file, index) => (
+                                <Space key={index} className=" flex ">
+                                  <Button
+                                    type="link"
+                                    onClick={() =>
+                                      downloadFile(file.id, file.fileName)
+                                    }
+                                  >
+                                    <Space>
+                                      <PaperClipOutlined />
+                                      {file.fileName}
+                                    </Space>
+                                  </Button>
+                                  <Button
+                                    type="link"
+                                    onClick={() =>
+                                      deleteTicketFile(
+                                        file.id,
+                                        file.fileName,
+                                        ticketSelectedDetail.id
+                                      )
+                                    }
+                                    danger
+                                  >
+                                    {deleteIcon}
+                                  </Button>
+                                </Space>
+                              )
+                            )}
+                          </>
+                        ) : (
+                          ticketSelectedDetail.updateFiles?.map(
+                            (file, index) => (
+                              <div key={index}>
+                                <Button
+                                  type="link"
+                                  onClick={() =>
+                                    downloadFile(file.id, file.fileName)
+                                  }
+                                >
+                                  <Space>
+                                    <PaperClipOutlined />
+                                    {file.fileName}
+                                  </Space>
+                                </Button>
+                              </div>
+                            )
+                          )
+                        )}
+                      </Form.Item>
+                      <Form.Item
+                        label={
+                          <div className=" font-bold text-slate-600">
+                            SUMMARY DETAIL
+                          </div>
+                        }
+                      >
+                        {ticketSelectedDetail.summary}
                       </Form.Item>
                     </div>
                   </div>

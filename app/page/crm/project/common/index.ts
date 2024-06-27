@@ -5,6 +5,11 @@ export type ITCustomerForSelect = {
   prefixTh?: string;
   responsible: { uid: string; name: string }[];
 };
+export interface ITCustomerFile {
+  id: number;
+  fileCode: string;
+  fileName: string;
+}
 export type ITBranchForSelect = {
   id: number;
   branchName: string;
@@ -106,6 +111,9 @@ export type ITProjectTicket = {
   finishDate?: Date;
   completeDate?: Date;
   ticketHistoryLogs?: ITTicketHistoryLog[];
+  summary?: string;
+  createFiles?: ITCustomerFile[];
+  updateFiles?: ITCustomerFile[];
 } & ITProjectTicketCreateForm &
   ITProjectTicketEditForm;
 export type ITProjectTaskForm = {

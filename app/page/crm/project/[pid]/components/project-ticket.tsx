@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { EditOutlined } from "@ant-design/icons";
+import { UploadFile } from "antd/lib";
 
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -27,7 +28,8 @@ export interface props {
   onSaveProjectTicket: (
     projectId: number,
     taskId: number | undefined,
-    form: ITProjectTicketCreateForm
+    form: ITProjectTicketCreateForm,
+    attendFiles: UploadFile[]
   ) => void;
 }
 

@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import type { FormInstance } from "antd";
+import React, { useEffect, useState } from "react";
+import type { FormInstance, UploadFile, UploadProps } from "antd";
 import {
   Button,
   Card,
@@ -7,17 +7,20 @@ import {
   Divider,
   Form,
   Input,
+  message,
   Modal,
   Select,
   Switch,
+  Upload,
 } from "antd";
 import {
   ITBranchContactForm,
   ITProjectTicketCreateForm,
   ITTicketConfigs,
 } from "../../common";
-import { CloseOutlined } from "@ant-design/icons";
+import { CloseOutlined, UploadOutlined } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
+import { RcFile } from "antd/es/upload";
 
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -38,7 +41,8 @@ export interface props {
   onSaveProjectTicket: (
     projectId: number,
     taskId: number | undefined,
-    form: ITProjectTicketCreateForm
+    form: ITProjectTicketCreateForm,
+    attendFiles: UploadFile[]
   ) => void;
 }
 
@@ -51,15 +55,33 @@ const ProjectTicketAddComponent: React.FC<props> = ({
   onSaveProjectTicket,
 }): React.ReactElement => {
   const [form] = useForm();
-
+  const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   useEffect(() => {
     form.resetFields();
   }, [showModalTicketAdd]);
 
   const onFinishSave = (form: ITProjectTicketCreateForm) => {
-    onSaveProjectTicket(projectId, projectTaskSelectId, {
-      ...form,
-    });
+    onSaveProjectTicket(
+      projectId,
+      projectTaskSelectId,
+      {
+        ...form,
+      },
+      attendFiles
+    );
+  };
+
+  const handleChangeAttendFiles: UploadProps["onChange"] = async ({
+    fileList: newFileList,
+  }) => {
+    return setAttendFiles(newFileList);
+  };
+  const beforeUploadAttendFiles = (file: RcFile) => {
+    if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
+      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
+      return false;
+    }
+    return false;
   };
   return (
     <Modal
@@ -158,6 +180,22 @@ const ProjectTicketAddComponent: React.FC<props> = ({
                 label: data.name,
               }))}
             />
+          </Form.Item>
+          <Form.Item
+            label={
+              <div className=" font-bold  text-purple-700">Attach File</div>
+            }
+            valuePropName="fileList"
+          >
+            <Upload
+              fileList={attendFiles}
+              onChange={handleChangeAttendFiles}
+              beforeUpload={beforeUploadAttendFiles}
+              multiple={true}
+              maxCount={10}
+            >
+              <Button icon={<UploadOutlined />}>Click to upload</Button>
+            </Upload>
           </Form.Item>
         </div>
         <div className=" flex justify-end space-x-2">

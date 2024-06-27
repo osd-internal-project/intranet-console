@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { FormInstance } from "antd";
+import type { FormInstance, UploadFile } from "antd";
 import { Button, Card, ConfigProvider, Input, Progress, Table } from "antd";
 import TicketComponent from "./project-ticket";
 import ProjectTaskAddComponent from "./project-task-add";
@@ -32,7 +32,8 @@ export interface props {
   onSaveProjectTicket: (
     projectId: number,
     taskId: number | undefined,
-    form: ITProjectTicketCreateForm
+    form: ITProjectTicketCreateForm,
+    attendFiles: UploadFile[]
   ) => void;
 }
 const layout = {

@@ -151,7 +151,8 @@ export default function CustomerDetailPage() {
   const onSaveProjectTicket = async (
     projectId: number,
     taskId: number | undefined,
-    data: ITProjectTicketCreateForm
+    data: ITProjectTicketCreateForm,
+    attendFiles: UploadFile[]
   ) => {
     let form = {
       ...data,
@@ -221,6 +222,14 @@ export default function CustomerDetailPage() {
     await crmServices
       .createProjectTicket(+projectId, form)
       .then(async (data) => {
+        if (data.id && attendFiles.length > 0) {
+          attendFiles.forEach(async (file) => {
+            const formData: any = new FormData();
+            formData.append("type", "create-attend");
+            formData.append("files", file.originFileObj);
+            await crmServices.uploadFiles(data.id, formData);
+          });
+        }
         setShowModalTicketAdd(false);
         message.success("สร้าง Ticket สำเร็จ");
         await onSaveHistoryLogs(data.id, "create");
@@ -253,11 +262,20 @@ export default function CustomerDetailPage() {
   }
   async function onEditProjectTicket(
     ticketId: number,
-    form: ITProjectTicketEditForm
+    form: ITProjectTicketEditForm,
+    attendFiles: UploadFile[]
   ) {
     await crmServices
       .updateProjectTicket(+ticketId, form)
       .then(async (data) => {
+        if (data.id && attendFiles.length > 0) {
+          attendFiles.forEach(async (file) => {
+            const formData: any = new FormData();
+            formData.append("type", "update-attend");
+            formData.append("files", file.originFileObj);
+            await crmServices.uploadFiles(data.id, formData);
+          });
+        }
         setShowModalTicketAdd(false);
         message.success("อัพเดท Ticket สำเร็จ");
         await onSaveHistoryLogs(ticketId, "update");
@@ -266,6 +284,7 @@ export default function CustomerDetailPage() {
       .catch(() => {
         message.error("ผิดพลาด กรุณาลองใหม่");
       });
+
     setloading(true);
   }
 
@@ -362,6 +381,9 @@ export default function CustomerDetailPage() {
     } else if (action === "close") {
       type = "Complete";
       detail = summaryTicketInput;
+    } else if (action === "deleteFile") {
+      type = "Update Progress Info";
+      detail = "Delete Attend File";
     }
     const form: ITTicketHistoryLogForm = {
       customerProjectTicketId: ticketId,
@@ -375,6 +397,32 @@ export default function CustomerDetailPage() {
     };
     await crmServices.createTicketHistoryLogs(form);
   };
+
+  async function downloadFile(id: number, name: string): Promise<void> {
+    if (id) {
+      const response = await crmServices.downloadFile(id);
+      const url = URL.createObjectURL(response);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  }
+
+  async function onDeleteTicketFile(fileId: number, ticketId: number) {
+    await crmServices
+      .deleteTicketFile(fileId)
+      .then(async () => {
+        await onSaveHistoryLogs(ticketId, "deleteFile");
+        await onShowModalProjectTicketDetail(ticketId);
+      })
+      .catch(() => {
+        message.error("ไม่สามารถลบไฟล์ได้");
+      });
+  }
+
   return projectDescription ? (
     <div>
       <Row gutter={[8, 8]}>
@@ -490,6 +538,8 @@ export default function CustomerDetailPage() {
               updateTicketStatus={updateTicketStatus}
               onEditProjectTicket={onEditProjectTicket}
               // ticketHistoryLogs={ticketHistoryLogs}
+              downloadFile={downloadFile}
+              onDeleteTicketFile={onDeleteTicketFile}
             />
           ) : (
             <></>

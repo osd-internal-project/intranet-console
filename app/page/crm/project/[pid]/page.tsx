@@ -307,6 +307,7 @@ export default function CustomerDetailPage() {
         </>
       );
       form = {
+        summary: summaryTicketInput,
         completeDate: new Date(),
       };
     }

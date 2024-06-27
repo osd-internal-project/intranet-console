@@ -3,6 +3,7 @@ export type ITCustomerForSelect = {
   firstNameTh?: string;
   lastNameTh?: string;
   prefixTh?: string;
+  responsible: { uid: string; name: string }[];
 };
 export type ITBranchForSelect = {
   id: number;
@@ -104,6 +105,7 @@ export type ITProjectTicket = {
   reciveDate?: Date;
   finishDate?: Date;
   completeDate?: Date;
+  ticketHistoryLogs?: ITTicketHistoryLog[];
 } & ITProjectTicketCreateForm &
   ITProjectTicketEditForm;
 export type ITProjectTaskForm = {
@@ -129,3 +131,14 @@ export type ITTicketConfigs = {
   workTypeList: ITConfigData[];
   requestTypeList: ITConfigData[];
 };
+export type ITTicketHistoryLogForm = {
+  type: string;
+  updatedById: string;
+  updatedByName: string;
+  updatedAt: Date;
+  detail: string;
+  customerProjectTicketId: number;
+};
+export type ITTicketHistoryLog = {
+  id: number;
+} & ITTicketHistoryLogForm;

@@ -27,6 +27,7 @@ export default function AddProjectPage() {
   const [customerList, setCustomerList] = useState<ITCustomerForSelect[]>([]);
   const [branchList, setBranchList] = useState<ITBranchForSelect[]>([]);
   const [userList, setUserList] = useState<ITSelectUsers[]>([]);
+  const [saleList, setSaleList] = useState<{ uid: string; name: string }[]>([]);
   useEffect(() => {
     if (loading === true) fetchData();
   }, [loading]);
@@ -88,6 +89,11 @@ export default function AddProjectPage() {
     if (id) {
       const data = await crmServices.findBranchByCustomerId(id);
       setBranchList(data);
+      const customer = customerList.findLast((customer) => customer.id === id);
+      console.log(customer);
+      if (customer?.responsible) {
+        setSaleList(customer.responsible);
+      }
     }
   }
 
@@ -127,6 +133,7 @@ export default function AddProjectPage() {
                 onFinishAdd={onFinishAdd}
                 changeCustomerSelect={changeCustomerSelect}
                 userList={userList}
+                saleList={saleList}
               />
             </Card>
           </div>

@@ -9,6 +9,7 @@ import {
   UploadFile,
   Tabs,
   Modal,
+  Input,
 } from "antd";
 import DescriptionCustomerComponent from "./components/description-form";
 import {
@@ -21,6 +22,8 @@ import {
   ITProjectTicketCreateForm,
   ITProjectTicketEditForm,
   ITTicketConfigs,
+  ITTicketHistoryLog,
+  ITTicketHistoryLogForm,
 } from "../common";
 import { useAxiosCrm } from "@/app/lib/axios/hooks/userAxiosAuth";
 import CrmServices from "../services/index.service";
@@ -34,6 +37,7 @@ import TaskComponent from "./components/project-task";
 import { group } from "console";
 import ProjectTicketDetailComponent from "./components/project-ticket-detail";
 import { ExclamationCircleFilled } from "@ant-design/icons";
+import TextArea from "antd/es/input/TextArea";
 
 export default function CustomerDetailPage() {
   const { data: session } = useSession();
@@ -57,9 +61,13 @@ export default function CustomerDetailPage() {
   const [projectTicketList, setProjecTicketList] = useState<ITProjectTicket[]>(
     []
   );
+  const [summaryTicketInput, setSummaryTicketInput] = useState<string>("");
   const [projectTicketDetail, setProjectTicketDetail] = useState<
     ITProjectTicket | undefined
   >(undefined);
+  // const [ticketHistoryLogs, setTicketHistoryLogs] = useState<
+  //   ITTicketHistoryLog[]
+  // >([]);
   const [ticketConfigs, setTicketConfigs] = useState<ITTicketConfigs>({
     channelTypeList: [],
     jobTypeList: [],
@@ -212,9 +220,10 @@ export default function CustomerDetailPage() {
     }
     await crmServices
       .createProjectTicket(+projectId, form)
-      .then(() => {
+      .then(async (data) => {
         setShowModalTicketAdd(false);
         message.success("สร้าง Ticket สำเร็จ");
+        await onSaveHistoryLogs(data.id, "create");
       })
       .catch(() => {
         message.error("ผิดพลาด กรุณาลองใหม่");
@@ -235,6 +244,8 @@ export default function CustomerDetailPage() {
   ): Promise<void> {
     if (ticketId) {
       const detail = await crmServices.findProjectTicketDetailById(ticketId);
+
+      // setTicketHistoryLogs([]);
       setProjectTicketDetail(detail);
     } else {
       setProjectTicketDetail(undefined);
@@ -246,10 +257,11 @@ export default function CustomerDetailPage() {
   ) {
     await crmServices
       .updateProjectTicket(+ticketId, form)
-      .then(() => {
+      .then(async (data) => {
         setShowModalTicketAdd(false);
         message.success("อัพเดท Ticket สำเร็จ");
-        onShowModalProjectTicketDetail(ticketId);
+        await onSaveHistoryLogs(ticketId, "update");
+        await onShowModalProjectTicketDetail(ticketId);
       })
       .catch(() => {
         message.error("ผิดพลาด กรุณาลองใหม่");
@@ -259,35 +271,41 @@ export default function CustomerDetailPage() {
 
   async function updateTicketStatus(
     ticketId: number,
-    status: string
+    status: string,
+    action: string
   ): Promise<void> {
     let form = {};
     let title = "";
-    let content = "";
+    let content = <></>;
     if (status === "inprogress") {
       title = "Receive Ticket";
-      content = "ยืนยันการรับงาน ?";
+      content = <>ยืนยันการรับงาน ?</>;
       form = {
         reciveDate: new Date(),
       };
     } else if (status === "hold") {
       title = "Hold Ticket";
-      content = "ยืนยันการ Hold ?";
+      content = <>ยืนยันการ Hold ?</>;
     } else if (status === "finish") {
-      title = "Close Ticket";
-      content = "ยืนยันการรับงาน ?";
+      title = "Finish Ticket";
+      content = <>ยืนยันการปิดงาน ?</>;
       form = {
         finishDate: new Date(),
       };
     } else if (status === "cancel") {
       title = "Cancel Ticket";
-      content = "ยืนยันการรับงาน ?";
+      content = <>ยืนยันการยกเลิกงาน ?</>;
       form = {
         finishDate: new Date(),
       };
     } else if (status === "close") {
       title = "Close Ticket";
-      content = "ยืนยันการจบงาน ?";
+      content = (
+        <>
+          <div>Summary :</div>
+          <TextArea onChange={(e) => setSummaryTicketInput(e.target.value)} />
+        </>
+      );
       form = {
         completeDate: new Date(),
       };
@@ -302,10 +320,11 @@ export default function CustomerDetailPage() {
       onOk: async () => {
         await crmServices
           .updateStatusProjectTicket(+ticketId, status, form)
-          .then(() => {
+          .then(async () => {
             setShowModalTicketAdd(false);
             message.success("อัพเดท Ticket สำเร็จ");
-            onShowModalProjectTicketDetail(ticketId);
+            await onSaveHistoryLogs(ticketId, action);
+            await onShowModalProjectTicketDetail(ticketId);
           })
           .catch(() => {
             message.error("ผิดพลาด กรุณาลองใหม่");
@@ -313,8 +332,48 @@ export default function CustomerDetailPage() {
         setloading(true);
       },
     });
+    setSummaryTicketInput("");
   }
-
+  const onSaveHistoryLogs = async (ticketId: number, action: string) => {
+    let type = "";
+    let detail = "";
+    if (action === "create") {
+      type = "Create";
+      detail = "Create";
+    } else if (action === "receive") {
+      type = "Receive";
+      detail = "Receive";
+    } else if (action === "update") {
+      type = "Update Progress Info";
+      detail = "Update Progress Info";
+    } else if (action === "finish") {
+      type = "Finish";
+      detail = "Finish";
+    } else if (action === "cancel") {
+      type = "Cancel";
+      detail = "Cancel";
+    } else if (action === "hold") {
+      type = "Hold";
+      detail = "Hold";
+    } else if (action === "resume") {
+      type = "Resume";
+      detail = "Resume";
+    } else if (action === "close") {
+      type = "Complete";
+      detail = summaryTicketInput;
+    }
+    const form: ITTicketHistoryLogForm = {
+      customerProjectTicketId: ticketId,
+      updatedAt: new Date(),
+      type: type,
+      updatedById: session?.user.userId ? session?.user.userId : "",
+      updatedByName: session?.user.firstNameTh
+        ? `${session?.user.firstNameTh} ${session?.user.lastNameTh} `
+        : "",
+      detail: detail,
+    };
+    await crmServices.createTicketHistoryLogs(form);
+  };
   return projectDescription ? (
     <div>
       <Row gutter={[8, 8]}>
@@ -429,6 +488,7 @@ export default function CustomerDetailPage() {
               onShowModalProjectTicketDetail={onShowModalProjectTicketDetail}
               updateTicketStatus={updateTicketStatus}
               onEditProjectTicket={onEditProjectTicket}
+              // ticketHistoryLogs={ticketHistoryLogs}
             />
           ) : (
             <></>

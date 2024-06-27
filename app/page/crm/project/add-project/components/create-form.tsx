@@ -43,6 +43,7 @@ export interface props {
   customerList: ITCustomerForSelect[];
   branchList: ITBranchForSelect[];
   userList: ITSelectUsers[];
+  saleList: { uid: string; name: string }[];
   onFinishAdd: (form: ITProjectCreateForm) => void;
   changeCustomerSelect: (id: number) => void;
 }
@@ -62,6 +63,7 @@ const CreateProjectForm: React.FC<props> = ({
   onFinishAdd,
   changeCustomerSelect,
   userList,
+  saleList,
 }): React.ReactElement => {
   const [form] = useForm();
   const [addressSelect, setAddressSelect] = useState<ITBranchAddress[]>([]);
@@ -304,7 +306,7 @@ const CreateProjectForm: React.FC<props> = ({
             }))}
           />
         </Form.Item>
-        <Form.Item label="Sale Manager" name={"saleManagerId"}>
+        {/* <Form.Item label="Sale Manager" name={"saleManagerId"}>
           <Select
             allowClear
             options={userList.map((user) => ({
@@ -312,17 +314,18 @@ const CreateProjectForm: React.FC<props> = ({
               label: `${user.firstNameTh} ${user.lastNameTh}`,
             }))}
           />
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item label="Sale" name={"saleId"}>
           <Select
+            disabled={saleList.length > 0 ? false : true}
             allowClear
-            options={userList.map((user) => ({
-              value: user.userId,
-              label: `${user.firstNameTh} ${user.lastNameTh}`,
+            options={saleList.map((sale) => ({
+              value: sale.uid,
+              label: `${sale.name}`,
             }))}
           />
         </Form.Item>
-        <div className=" md:col-span-3">
+        <div className=" md:col-span-3 mt-5">
           <Form.Item>
             <Button type="primary" htmlType="submit">
               Save

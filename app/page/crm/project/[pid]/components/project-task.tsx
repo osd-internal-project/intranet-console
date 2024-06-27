@@ -98,13 +98,18 @@ const TaskComponent: React.FC<props> = ({
                   percent={
                     task.customerProjectTicket &&
                     task.customerProjectTicket.length > 0
-                      ? (task.customerProjectTicket.filter((data) => {
-                          data.status === "finish" ||
-                            data.status === "close" ||
-                            data.status === "cancel";
-                        }).length *
-                          100) /
-                        task.customerProjectTicket.length
+                      ? Number(
+                          (
+                            (task.customerProjectTicket.filter(
+                              (data) =>
+                                data.status === "finish" ||
+                                data.status === "close" ||
+                                data.status === "cancel"
+                            ).length *
+                              100) /
+                            task.customerProjectTicket.length
+                          ).toFixed(2)
+                        )
                       : 0
                   }
                   size="small"

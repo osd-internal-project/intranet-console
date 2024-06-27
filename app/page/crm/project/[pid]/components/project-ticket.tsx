@@ -78,6 +78,10 @@ const TicketComponent: React.FC<props> = ({
           <Tag color="#52c41a">Finish</Tag>
         ) : status === "cancel" ? (
           <Tag color="#f5222d">Cancel</Tag>
+        ) : status === "hold" ? (
+          <Tag color="#aB5E00">On Hold</Tag>
+        ) : status === "close" ? (
+          <Tag color="#aaa">Close</Tag>
         ) : (
           <></>
         );

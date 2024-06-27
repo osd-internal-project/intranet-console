@@ -10,6 +10,7 @@ import {
   ITProjectCreateForm,
   ITProject,
   ITTicketConfigs,
+  ITTicketHistoryLogForm,
 } from "../common";
 export interface TMaServices {
   findProjectDataTable: (
@@ -37,6 +38,9 @@ export interface TMaServices {
     projectId: number,
     form: any
   ) => Promise<ITProjectTicket>;
+  createTicketHistoryLogs: (
+    form: ITTicketHistoryLogForm
+  ) => Promise<ITProjectTicket>;
   updateStatusProjectTicket: (
     ticketId: number,
     status: string,
@@ -54,6 +58,7 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
   const customerContactUrl = "/customer-contact";
   const projectTaskUrl = "/customer-project-task";
   const projectTicketUrl = "/customer-project-ticket";
+  const ticketHistoryLogsUrl = "/ticket-history-logs";
   return {
     findCustomerActive: async () => {
       return await axiosInstance
@@ -186,7 +191,27 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
         ...form,
         customerProjectId: projectId,
       };
-      return await axiosInstance.post(`${projectTicketUrl}/`, formData);
+      return await axiosInstance
+        .post(`${projectTicketUrl}/`, formData)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return err;
+        });
+    },
+    createTicketHistoryLogs: async (form) => {
+      const formData = {
+        ...form,
+      };
+      return await axiosInstance
+        .post(`${ticketHistoryLogsUrl}/`, formData)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return err;
+        });
     },
     updateStatusProjectTicket: async (ticketId, status, form) => {
       const formData = {

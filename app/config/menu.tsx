@@ -415,11 +415,11 @@ export const MenuSiderWithModule = (modules: string[]) => {
             .map((item: any) => ({
               ...item,
               label: (
-                <>
-                  <Tooltip placement="right" title={item.label}>
+                <Tooltip placement="right" title={item.label}>
+                  <div style={{ width: 140 }}>
                     <Link href={`/page/${item.key}`}>{item.label}</Link>
-                  </Tooltip>
-                </>
+                  </div>
+                </Tooltip>
               ),
             }))
         : null,

@@ -242,7 +242,6 @@ export default function CustomerDetailPage() {
             await crmServices.uploadFiles(data.id, formData);
           });
         }
-        setShowModalTicketAdd(false);
         message.success("อัพเดท Ticket สำเร็จ");
         await onSaveHistoryLogs(ticketId, "update");
         await onShowModalProjectTicketDetail(ticketId);
@@ -250,6 +249,28 @@ export default function CustomerDetailPage() {
       .catch(() => {
         message.error("ผิดพลาด กรุณาลองใหม่");
       });
+
+    setloading(true);
+  }
+
+  async function saveRequestTicketFile(
+    ticketId: number,
+    reqFiles: UploadFile[]
+  ) {
+    await crmServices;
+
+    if (ticketId && reqFiles.length > 0) {
+      reqFiles.forEach(async (file) => {
+        const formData: any = new FormData();
+        formData.append("type", "create-attend");
+        formData.append("files", file.originFileObj);
+        await crmServices.uploadFiles(ticketId, formData);
+      });
+    }
+    setShowModalTicketAdd(false);
+    message.success("อัพเดท Ticket สำเร็จ");
+    await onSaveHistoryLogs(ticketId, "update");
+    await onShowModalProjectTicketDetail(ticketId);
 
     setloading(true);
   }
@@ -458,6 +479,7 @@ export default function CustomerDetailPage() {
                 onShowModalProjectTicketDetail={onShowModalProjectTicketDetail}
                 updateTicketStatus={updateTicketStatus}
                 onEditProjectTicket={onEditProjectTicket}
+                saveRequestTicketFile={saveRequestTicketFile}
                 downloadFile={downloadFile}
                 onDeleteTicketFile={onDeleteTicketFile}
               />

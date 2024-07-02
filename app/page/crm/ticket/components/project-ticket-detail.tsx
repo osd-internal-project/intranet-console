@@ -54,6 +54,7 @@ export interface props {
     form: ITProjectTicketEditForm,
     attendFiles: UploadFile[]
   ) => void;
+  saveRequestTicketFile: (ticketId: number, requestFiles: UploadFile[]) => void;
   updateTicketStatus: (
     ticketId: number,
     status: string,
@@ -67,15 +68,18 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
   ticketSelectedDetail,
   onShowModalProjectTicketDetail,
   onEditProjectTicket,
+  saveRequestTicketFile,
   updateTicketStatus,
   downloadFile,
   onDeleteTicketFile,
 }): React.ReactElement => {
   const [editForm] = useForm();
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
+  const [requestFiles, setRequestFiles] = useState<UploadFile[]>([]);
   useEffect(() => {
     editForm.setFieldsValue(ticketSelectedDetail);
     setAttendFiles([]);
+    setRequestFiles([]);
   }, [ticketSelectedDetail]);
   const [editTicketStatus, setEditTicketStatus] = useState<boolean>(false);
 
@@ -93,10 +97,29 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
       },
     });
   };
+
+  const onSaveRequestTicketFile = async () => {
+    Modal.confirm({
+      title: "Save File Ticket",
+      icon: <ExclamationCircleFilled />,
+      content: "ยืนยันการเพิ่มไฟล์ ?",
+      okText: "Confirm",
+      okButtonProps: { type: "primary" },
+      cancelText: "Cancel",
+      onOk: async () => {
+        saveRequestTicketFile(ticketSelectedDetail.id, requestFiles);
+      },
+    });
+  };
   const handleChangeAttendFiles: UploadProps["onChange"] = async ({
     fileList: newFileList,
   }) => {
     return setAttendFiles(newFileList);
+  };
+  const handleChangeRequestFiles: UploadProps["onChange"] = async ({
+    fileList: newFileList,
+  }) => {
+    return setRequestFiles(newFileList);
   };
   const beforeUploadAttendFiles = (file: RcFile) => {
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
@@ -105,7 +128,13 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
     }
     return false;
   };
-
+  const beforeUploadRequestFiles = (file: RcFile) => {
+    if (requestFiles.find((oneFile) => oneFile.name === file.name)) {
+      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
+      return false;
+    }
+    return false;
+  };
   function deleteTicketFile(
     id: number,
     fileName: string,
@@ -215,7 +244,33 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                     <div className="md:col-span-1  font-bold pl-3 pr-3 text-right">
                       Attend Files
                     </div>
+
                     <div className=" col-span-2 md:col-span-5">
+                      <div className="flex space-x-2 ">
+                        <Upload
+                          fileList={requestFiles}
+                          onChange={handleChangeRequestFiles}
+                          beforeUpload={beforeUploadRequestFiles}
+                          multiple={true}
+                          maxCount={10}
+                        >
+                          <Button icon={<UploadOutlined />}>
+                            Click to upload
+                          </Button>
+                        </Upload>
+                        {requestFiles.length > 0 ? (
+                          <>
+                            <Button
+                              type="primary"
+                              onClick={() => onSaveRequestTicketFile()}
+                            >
+                              Save
+                            </Button>
+                          </>
+                        ) : (
+                          <></>
+                        )}
+                      </div>
                       {ticketSelectedDetail.createFiles?.map((file, index) => (
                         <div key={index} className="flex items-center">
                           <Button

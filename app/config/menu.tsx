@@ -305,7 +305,7 @@ export const MenuSider: MenuItem[] = [
       {
         key: `crm/ticket`,
         label: `Ticket `,
-        rule: "crm-p-s",
+        rule: "crm-t-s",
       },
     ],
   },

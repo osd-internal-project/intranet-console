@@ -10,6 +10,7 @@ import {
   Tabs,
   Modal,
   Input,
+  Form,
 } from "antd";
 import DescriptionCustomerComponent from "./components/description-form";
 import {
@@ -21,11 +22,12 @@ import {
   ITProjectTicket,
   ITProjectTicketCreateForm,
   ITProjectTicketEditForm,
+  ITSelectUsers,
   ITTicketConfigs,
   ITTicketHistoryLog,
   ITTicketHistoryLogForm,
 } from "../common";
-import { useAxiosCrm } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosCrm, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import CrmServices from "../services/index.service";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -38,12 +40,16 @@ import { group } from "console";
 import ProjectTicketDetailComponent from "./components/project-ticket-detail";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
+import UserServices from "../services/user.service";
 
 export default function CustomerDetailPage() {
   const { data: session } = useSession();
   const crmAuth = useAxiosCrm();
   const crmServices = CrmServices(crmAuth);
+  const userAuth = useAxiosUser();
+  const userServices = UserServices(userAuth);
   const params = useParams<{ pid: string }>();
+  const [summaryForm] = useForm();
   const [projectDescription, setProjectDescription] = useState<ITProject>();
   const [contactDescription, setContactDescription] = useState<
     ITBranchContact | undefined
@@ -61,7 +67,7 @@ export default function CustomerDetailPage() {
   const [projectTicketList, setProjecTicketList] = useState<ITProjectTicket[]>(
     []
   );
-  const [summaryTicketInput, setSummaryTicketInput] = useState<string>("");
+  // const [summaryTicketInput, setSummaryTicketInput] = useState<string>("");
   const [projectTicketDetail, setProjectTicketDetail] = useState<
     ITProjectTicket | undefined
   >(undefined);
@@ -75,14 +81,29 @@ export default function CustomerDetailPage() {
     workTypeList: [],
     requestTypeList: [],
   });
+  const [usersList, setUsersList] = useState<ITSelectUsers[]>([]);
   // const [data, setData] = useState<ITCustomer>();
   useEffect(() => {
     if (loading === true) fetchData();
   }, [loading]);
+  useEffect(() => {
+    fetchUserList();
+  }, []);
 
   const fetchData = async () => {
     await fetchConfigs();
     await fetchDescription();
+    setloading(false);
+  };
+
+  const fetchUserList = async () => {
+    if (session?.user.userId) {
+      const usersList = await userServices.findOrganizeUserByUserId(
+        session?.user.userId
+      );
+      setUsersList(usersList);
+    }
+
     setloading(false);
   };
   const fetchConfigs = async () => {
@@ -158,7 +179,7 @@ export default function CustomerDetailPage() {
       ...data,
       status: "new",
       createdById: session?.user.userId,
-      groupId: session?.user.ownerGroup,
+      // groupId: session?.user.ownerGroup,
       createdByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
     };
     if (form.requestTypeId) {
@@ -172,6 +193,7 @@ export default function CustomerDetailPage() {
         };
       }
     }
+
     if (form.jobTypeId) {
       const selected = ticketConfigs.jobTypeList.findLast(
         (config) => config.id === form.jobTypeId
@@ -213,6 +235,17 @@ export default function CustomerDetailPage() {
         form = {
           ...form,
           priorityName: selected.name,
+        };
+      }
+    }
+    if (form.assignId) {
+      const selected = usersList.findLast(
+        (config) => config.userId === form.assignId
+      );
+      if (selected?.firstNameTh) {
+        form = {
+          ...form,
+          assignName: `${selected?.firstNameTh} ${selected?.lastNameTh}`,
         };
       }
     }
@@ -300,7 +333,7 @@ export default function CustomerDetailPage() {
       title = "Receive Ticket";
       content = <>ยืนยันการรับงาน ?</>;
       form = {
-        reciveDate: new Date(),
+        receiveDate: new Date(),
       };
     } else if (status === "hold") {
       title = "Hold Ticket";
@@ -318,15 +351,22 @@ export default function CustomerDetailPage() {
         finishDate: new Date(),
       };
     } else if (status === "close") {
+      summaryForm.resetFields();
       title = "Close Ticket";
       content = (
         <>
-          <div>Summary :</div>
-          <TextArea onChange={(e) => setSummaryTicketInput(e.target.value)} />
+          <Form form={summaryForm}>
+            <Form.Item
+              name={"summary"}
+              rules={[{ required: true, message: "กรุณากรอก Summary" }]}
+            >
+              <TextArea showCount={true} maxLength={200} />
+            </Form.Item>
+          </Form>
         </>
       );
+
       form = {
-        summary: summaryTicketInput,
         completeDate: new Date(),
       };
     }
@@ -338,6 +378,10 @@ export default function CustomerDetailPage() {
       okButtonProps: { type: "primary" },
       cancelText: "Cancel",
       onOk: async () => {
+        if (status === "close") {
+          const summary = summaryForm.getFieldValue("summary");
+          form = { ...form, summary: summary };
+        }
         await crmServices
           .updateStatusProjectTicket(+ticketId, status, form)
           .then(async () => {
@@ -352,7 +396,6 @@ export default function CustomerDetailPage() {
         setloading(true);
       },
     });
-    setSummaryTicketInput("");
   }
   const onSaveHistoryLogs = async (ticketId: number, action: string) => {
     let type = "";
@@ -380,7 +423,7 @@ export default function CustomerDetailPage() {
       detail = "Resume";
     } else if (action === "close") {
       type = "Complete";
-      detail = summaryTicketInput;
+      detail = summaryForm.getFieldValue("summary");
     } else if (action === "deleteFile") {
       type = "Update Progress Info";
       detail = "Delete Attend File";
@@ -503,6 +546,7 @@ export default function CustomerDetailPage() {
                         onShowModalProjectTicketDetail
                       }
                       ticketConfigs={ticketConfigs}
+                      usersList={usersList}
                     />
                   ),
                 },
@@ -525,6 +569,7 @@ export default function CustomerDetailPage() {
                         onShowModalProjectTicketDetail
                       }
                       ticketConfigs={ticketConfigs}
+                      usersList={usersList}
                     />
                   ),
                 },
@@ -540,6 +585,7 @@ export default function CustomerDetailPage() {
               // ticketHistoryLogs={ticketHistoryLogs}
               downloadFile={downloadFile}
               onDeleteTicketFile={onDeleteTicketFile}
+              usersList={usersList}
             />
           ) : (
             <></>

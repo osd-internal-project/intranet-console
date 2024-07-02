@@ -6,6 +6,7 @@ import {
   ITProjectTaskForm,
   ITProjectTicket,
   ITProjectTicketCreateForm,
+  ITSelectUsers,
   ITTicketConfigs,
 } from "../../common";
 import Link from "next/link";
@@ -23,6 +24,7 @@ export interface props {
   projectTicketList: ITProjectTicket[];
   showModalTicketAdd: boolean;
   ticketConfigs: ITTicketConfigs;
+  usersList: ITSelectUsers[];
   onShowModalProjectTicketAdd: (status: boolean) => void;
   onShowModalProjectTicketDetail: (id: number | undefined) => void;
   onSaveProjectTicket: (
@@ -48,6 +50,7 @@ const TicketComponent: React.FC<props> = ({
   onShowModalProjectTicketAdd,
   onShowModalProjectTicketDetail,
   onSaveProjectTicket,
+  usersList,
   ticketConfigs,
 }): React.ReactElement => {
   const ticketColumns: TableColumnsType<ITProjectTicket> = [
@@ -135,9 +138,10 @@ const TicketComponent: React.FC<props> = ({
       <div className=" flex justify-end"></div>
       <div>
         <Table
+          size="small"
           columns={ticketColumns}
           dataSource={projectTicketList}
-          rowKey={(data, index) => data.id}
+          rowKey={(row) => row.id}
         />
       </div>
 
@@ -148,6 +152,7 @@ const TicketComponent: React.FC<props> = ({
         onShowModalProjectTicketAdd={onShowModalProjectTicketAdd}
         onSaveProjectTicket={onSaveProjectTicket}
         ticketConfigs={ticketConfigs}
+        usersList={usersList}
       />
     </>
   );

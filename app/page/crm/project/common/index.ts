@@ -86,6 +86,8 @@ export type ITProjectTicketCreateForm = {
   ticketDetail: string;
   customerProjectTaskId?: number;
   dueDate: Date;
+  appointmentDate: Date;
+  requestDate: Date;
   requestTypeId?: number;
   requestTypeName?: string;
   jobTypeId?: number;
@@ -96,6 +98,8 @@ export type ITProjectTicketCreateForm = {
   channelTypeName?: string;
   priorityId?: number;
   priorityName?: string;
+  assignId: string;
+  assignName: string;
 };
 export type ITProjectTicketEditForm = {
   problem?: string;
@@ -106,8 +110,8 @@ export type ITProjectTicket = {
   id: number;
   status: string;
   createdAt?: Date;
-  appointmentDate?: Date;
-  reciveDate?: Date;
+
+  receiveDate?: Date;
   finishDate?: Date;
   completeDate?: Date;
   ticketHistoryLogs?: ITTicketHistoryLog[];

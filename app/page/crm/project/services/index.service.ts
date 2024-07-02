@@ -11,18 +11,21 @@ import {
   ITProject,
   ITTicketConfigs,
   ITTicketHistoryLogForm,
+  ITSelectUsers,
 } from "../common";
 import { ITMaTaskFiles } from "@/app/page/maintenance-management/common";
 export interface TMaServices {
   findProjectDataTable: (
     search: object,
     take: number,
-    skip: number
+    skip: number,
+    userId: string
   ) => Promise<{ data: ITProject[]; count: number }>;
   findCustomerActive: () => Promise<ITCustomerForSelect[]>;
   findBranchByCustomerId: (customerId: number) => Promise<ITBranchForSelect[]>;
   findProjectDetailById: (project: number) => Promise<ITProject>;
   findProjectTaskByProjectId: (project: number) => Promise<ITProjectTask[]>;
+
   findContactlById: (contactId: number) => Promise<ITBranchContact>;
   findProjectTicketByTaskId: (task: number) => Promise<ITProjectTicket[]>;
   findProjectTicketDetailById: (ticket: number) => Promise<ITProjectTicket>;
@@ -90,10 +93,10 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
           return [];
         });
     },
-    findProjectDataTable: async (search, take, skip) => {
+    findProjectDataTable: async (search, take, skip, userId) => {
       return await axiosInstance
         .get(`${customerProjectUrl}/data-table?take=${take}&skip=${skip}`, {
-          params: search,
+          params: { ...search, userid: userId },
         })
         .then((res) => {
           return res.data;

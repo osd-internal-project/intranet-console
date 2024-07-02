@@ -16,7 +16,8 @@ export interface TCrmServices {
   findCustomerDataTable: (
     search: object,
     take: number,
-    skip: number
+    skip: number,
+    userId: string
   ) => Promise<{ data: ITCustomer[]; count: number }>;
   findProjectDataTableByCustomerId: (
     customerId: number
@@ -56,10 +57,10 @@ const CrmServices = (axiosInstance: AxiosInstance): TCrmServices => {
   const customerAdrressUrl = "/customer-address";
   const customerContactUrl = "/customer-contact";
   return {
-    findCustomerDataTable: async (search, take, skip) => {
+    findCustomerDataTable: async (search, take, skip, userId) => {
       return await axiosInstance
         .get(`${customerUrl}/data-table?take=${take}&skip=${skip}`, {
-          params: search,
+          params: { ...search, userid: userId },
         })
         .then((res) => {
           return res.data;

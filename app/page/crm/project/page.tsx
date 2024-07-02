@@ -13,14 +13,19 @@ import ProjectFilterComponent from "./components/project-filter";
 import ProjectTableComponent from "./components/project-table";
 // import { ITCustomer, ITCustomerForm, ITPagination } from "./common";
 // import CrmServices from "./services/index.service";
-import { useAxiosCrm } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosCrm, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { checkRule } from "@/app/utils/rules";
 import Link from "next/link";
 import CrmServices from "./services/index.service";
+import { useSession } from "next-auth/react";
+import UserServices from "./services/user.service";
+import { ITSelectUsers } from "./common";
 
 export default function MaTaskPage() {
-  const intranetAuth = useAxiosCrm();
-  const crmServices = CrmServices(intranetAuth);
+  const { data: session } = useSession();
+  const crmAuth = useAxiosCrm();
+  const crmServices = CrmServices(crmAuth);
+
   const [loading, setloading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -29,17 +34,25 @@ export default function MaTaskPage() {
   });
   const [dataTable, setDataTable] = useState<any[]>([]);
   const [search, setSearch] = useState<object>({});
+
   useEffect(() => {
     if (loading === true) fetchData();
   }, [loading]);
 
   const fetchData = async () => {
-    const skip: number =
-      (Number(pagination.current) - 1) * Number(pagination.pageSize);
-    const take: number = Number(pagination.pageSize);
-    const res = await crmServices.findProjectDataTable(search, take, skip);
-    setDataTable(res.data);
-    setPagination({ ...pagination, total: res.count });
+    if (session?.user.userId) {
+      const skip: number =
+        (Number(pagination.current) - 1) * Number(pagination.pageSize);
+      const take: number = Number(pagination.pageSize);
+      const res = await crmServices.findProjectDataTable(
+        search,
+        take,
+        skip,
+        session?.user.userId
+      );
+      setDataTable(res.data);
+      setPagination({ ...pagination, total: res.count });
+    }
     setloading(false);
   };
   const changePagination = (page: TablePaginationConfig) => {
@@ -82,13 +95,16 @@ export default function MaTaskPage() {
               <div className=" grid grid-col-1 space-y-2">
                 <div className=" flex justify-end">
                   <Link href="/page/crm/project/add-project">
-                    <Button type="primary"> Add Project</Button>
+                    <Button size="small" type="primary">
+                      Add Project
+                    </Button>
                   </Link>
                 </div>
                 <div>
                   <ProjectFilterComponent
                     onSearch={(data) => {
                       setSearch(data);
+                      setPagination({ ...pagination, current: 1 });
                       setloading(true);
                     }}
                   />

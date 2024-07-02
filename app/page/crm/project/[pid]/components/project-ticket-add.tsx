@@ -16,11 +16,14 @@ import {
 import {
   ITBranchContactForm,
   ITProjectTicketCreateForm,
+  ITSelectUsers,
   ITTicketConfigs,
 } from "../../common";
 import { CloseOutlined, UploadOutlined } from "@ant-design/icons";
-import { useForm } from "antd/es/form/Form";
+
 import { RcFile } from "antd/es/upload";
+import { useForm } from "antd/es/form/Form";
+import { Label } from "recharts";
 
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -37,11 +40,12 @@ export interface props {
   projectId: number;
   showModalTicketAdd: boolean;
   ticketConfigs: ITTicketConfigs;
+  usersList: ITSelectUsers[];
   onShowModalProjectTicketAdd: (status: boolean) => void;
   onSaveProjectTicket: (
     projectId: number,
     taskId: number | undefined,
-    form: ITProjectTicketCreateForm,
+    dataForm: ITProjectTicketCreateForm,
     attendFiles: UploadFile[]
   ) => void;
 }
@@ -51,13 +55,15 @@ const ProjectTicketAddComponent: React.FC<props> = ({
   projectId,
   showModalTicketAdd,
   ticketConfigs,
+  usersList,
   onShowModalProjectTicketAdd,
   onSaveProjectTicket,
 }): React.ReactElement => {
-  const [form] = useForm();
+  const [addform] = useForm();
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   useEffect(() => {
-    form.resetFields();
+    addform.resetFields();
+    setAttendFiles([]);
   }, [showModalTicketAdd]);
 
   const onFinishSave = (form: ITProjectTicketCreateForm) => {
@@ -70,7 +76,6 @@ const ProjectTicketAddComponent: React.FC<props> = ({
       attendFiles
     );
   };
-
   const handleChangeAttendFiles: UploadProps["onChange"] = async ({
     fileList: newFileList,
   }) => {
@@ -85,6 +90,7 @@ const ProjectTicketAddComponent: React.FC<props> = ({
   };
   return (
     <Modal
+      forceRender
       title={"Add Ticket"}
       footer={[]}
       open={showModalTicketAdd}
@@ -95,7 +101,7 @@ const ProjectTicketAddComponent: React.FC<props> = ({
     >
       <Form
         name="addTaskForm"
-        form={form}
+        form={addform}
         size="small"
         {...layout}
         onFinish={onFinishSave}
@@ -106,14 +112,24 @@ const ProjectTicketAddComponent: React.FC<props> = ({
           <Form.Item label="Title" name={"ticketTitle"}>
             <Input maxLength={100} />
           </Form.Item>
+          <Form.Item label="Request Date" name={"requestDate"}>
+            <DatePicker className=" w-full" format={"DD/MM/YYYY"} />
+          </Form.Item>
           <Form.Item label="Due Date" name={"dueDate"}>
             <DatePicker className=" w-full" format={"DD/MM/YYYY"} />
           </Form.Item>
-          <Form.Item label="Assign To" name={"dueDate"}>
+          <Form.Item label="Appointment Date" name={"appointmentDate"}>
+            <DatePicker className=" w-full" format={"DD/MM/YYYY"} />
+          </Form.Item>
+          <Form.Item label="Assign To" name={"assignId"}>
             <Select
               className=" w-full"
               allowClear
               placeholder="Please Select"
+              options={usersList.map((data) => ({
+                value: data.userId,
+                label: `${data.firstNameTh} ${data.lastNameTh}`,
+              }))}
             />
           </Form.Item>
           <Form.Item
@@ -181,12 +197,7 @@ const ProjectTicketAddComponent: React.FC<props> = ({
               }))}
             />
           </Form.Item>
-          <Form.Item
-            label={
-              <div className=" font-bold  text-purple-700">Attach File</div>
-            }
-            valuePropName="fileList"
-          >
+          <Form.Item label={<div>Attach File</div>} valuePropName="fileList">
             <Upload
               fileList={attendFiles}
               onChange={handleChangeAttendFiles}

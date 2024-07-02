@@ -9,6 +9,7 @@ import {
   ITProjectTaskForm,
   ITProjectTicket,
   ITProjectTicketCreateForm,
+  ITSelectUsers,
   ITTicketConfigs,
 } from "../../common";
 import { dateToStringThNoTime } from "@/app/utils/format";
@@ -27,6 +28,7 @@ export interface props {
   projectTicketList: ITProjectTicket[];
   showModalTicketAdd: boolean;
   ticketConfigs: ITTicketConfigs;
+  usersList: ITSelectUsers[];
   onShowModalProjectTicketAdd: (status: boolean) => void;
   onShowModalProjectTicketDetail: (id: number | undefined) => void;
   onSaveProjectTicket: (
@@ -54,6 +56,7 @@ const TaskComponent: React.FC<props> = ({
   projectTaskSelectId,
   projectTicketList,
   ticketConfigs,
+  usersList,
   onSetProjectTaskSelectId,
   showModalTicketAdd,
   onShowModalProjectTicketAdd,
@@ -148,6 +151,7 @@ const TaskComponent: React.FC<props> = ({
                 onSaveProjectTicket={onSaveProjectTicket}
                 onShowModalProjectTicketDetail={onShowModalProjectTicketDetail}
                 ticketConfigs={ticketConfigs}
+                usersList={usersList}
               />
             </div>
           ) : (

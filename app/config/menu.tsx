@@ -290,17 +290,22 @@ export const MenuSider: MenuItem[] = [
     key: "crm",
     icon: contactListIcon,
     label: `CRM`,
-    // rule: "crm-s",
+    rule: "crm-s",
     children: [
       {
         key: `crm/customer`,
         label: `Customer`,
-        // rule: "crm-c-s",
+        rule: "crm-c-s",
       },
       {
         key: `crm/project`,
         label: `Project `,
-        // rule: "crm-p-s",
+        rule: "crm-p-s",
+      },
+      {
+        key: `crm/ticket`,
+        label: `Ticket `,
+        rule: "crm-p-s",
       },
     ],
   },

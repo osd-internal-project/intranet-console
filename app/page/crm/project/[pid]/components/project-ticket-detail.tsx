@@ -22,6 +22,7 @@ import {
   ITProjectTicket,
   ITProjectTicketCreateForm,
   ITProjectTicketEditForm,
+  ITSelectUsers,
   ITTicketHistoryLog,
 } from "../../common";
 import "../../style.css";
@@ -61,6 +62,7 @@ export interface props {
   ) => void;
   downloadFile: (id: number, name: string) => void;
   onDeleteTicketFile: (fileId: number, ticketId: number) => void;
+  usersList: ITSelectUsers[];
 }
 
 const ProjectTicketDetailComponent: React.FC<props> = ({
@@ -70,6 +72,7 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
   updateTicketStatus,
   downloadFile,
   onDeleteTicketFile,
+  usersList,
 }): React.ReactElement => {
   const [editForm] = useForm();
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
@@ -179,10 +182,30 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                       )}
                     </div>
                     <div className=" font-bold pl-3 pr-3 text-right">
+                      Request Date :
+                    </div>
+                    <div className=" col-span-2 md:col-span-1">
+                      {ticketSelectedDetail.requestDate
+                        ? dateToStringThNoTime(ticketSelectedDetail.requestDate)
+                        : ""}
+                    </div>
+                    <div className=" font-bold pl-3 pr-3 text-right">
                       Due Date :
                     </div>
-                    <div className=" col-span-2 md:col-span-3">
-                      {dateToStringThNoTime(ticketSelectedDetail.dueDate)}
+                    <div className="col-span-2 md:col-span-1">
+                      {ticketSelectedDetail.dueDate
+                        ? dateToStringThNoTime(ticketSelectedDetail.dueDate)
+                        : ""}
+                    </div>
+                    <div className=" font-bold pl-3 pr-3 text-right">
+                      Appointment Date :
+                    </div>
+                    <div className=" col-span-2 md:col-span-5">
+                      {ticketSelectedDetail.appointmentDate
+                        ? dateToStringThNoTime(
+                            ticketSelectedDetail.appointmentDate
+                          )
+                        : ""}
                     </div>
                     {/* <div className=" md:col-span-2  sm:h"> </div> */}
                     <div className=" md:col-span-1 font-bold pl-3 pr-3 text-right">
@@ -195,10 +218,9 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                     <div className="md:col-span-1  font-bold pl-3 pr-3 text-right">
                       Attend Files
                     </div>
-
                     <div className=" col-span-2 md:col-span-5">
                       {ticketSelectedDetail.createFiles?.map((file, index) => (
-                        <div key={index}>
+                        <div key={index} className="flex items-center">
                           <Button
                             type="link"
                             onClick={() => downloadFile(file.id, file.fileName)}
@@ -207,6 +229,19 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                               <PaperClipOutlined />
                               {file.fileName}
                             </Space>
+                          </Button>
+                          <Button
+                            type="link"
+                            onClick={() =>
+                              deleteTicketFile(
+                                file.id,
+                                file.fileName,
+                                ticketSelectedDetail.id
+                              )
+                            }
+                            danger
+                          >
+                            {deleteIcon}
                           </Button>
                         </div>
                       ))}
@@ -217,7 +252,6 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                     >
                       CLASSIFIED DETAIL
                     </Divider>
-
                     <div className=" font-bold pl-3 pr-3 text-right">
                       Request Type :
                     </div>
@@ -248,7 +282,6 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                     <div className=" col-span-2 md:col-span-1">
                       {ticketSelectedDetail.priorityName}
                     </div>
-
                     <Divider
                       orientation="left"
                       className=" col-span-3 md:col-span-6 p-0 m-0"
@@ -331,7 +364,10 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                             </div>
                             {ticketSelectedDetail.updateFiles?.map(
                               (file, index) => (
-                                <Space key={index} className=" flex ">
+                                <Space
+                                  key={index}
+                                  className="flex items-center"
+                                >
                                   <Button
                                     type="link"
                                     onClick={() =>
@@ -418,8 +454,8 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                       Receive Date :
                     </div>
                     <div className=" col-span-3 md:col-span-1">
-                      {ticketSelectedDetail.reciveDate
-                        ? dateToStringThNoTime(ticketSelectedDetail.reciveDate)
+                      {ticketSelectedDetail.receiveDate
+                        ? dateToStringThNoTime(ticketSelectedDetail.receiveDate)
                         : "-"}
                     </div>
                     <div className=" font-bold pl-3 pr-3 text-right">

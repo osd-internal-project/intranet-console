@@ -36,7 +36,7 @@ export default function AddCustomerPage() {
     const group = await crmServices.findConfigCustomerGroup();
     setCustomerGroup(group);
     if (session?.user.userId) {
-      const responsibles = await userServices.findOrganizeUserByUserId(
+      const responsibles = await userServices.findSaleUserBySalePermission(
         session?.user.userId
       );
       if (responsibles && responsibles.length > 0) {

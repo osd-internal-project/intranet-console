@@ -252,6 +252,7 @@ export default function CustomerDetailPage() {
     if (taskId) {
       form = { ...form, customerProjectTaskId: taskId };
     }
+    console.log(form);
     await crmServices
       .createProjectTicket(+projectId, form)
       .then(async (data) => {

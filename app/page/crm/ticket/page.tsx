@@ -433,20 +433,23 @@ export default function CustomerDetailPage() {
 
         <Col span={24}>
           <Card>
-            <ProjectTicketFilterComponent onSearch={onSearch} />
-            <TicketComponent
-              projectTaskSelectId={undefined}
-              projectTicketList={projectTicketList}
-              showModalTicketAdd={showModalTicketAdd}
-              onShowModalProjectTicketAdd={function (status: boolean): void {
-                setShowModalTicketAdd(status);
-              }}
-              onSaveProjectTicket={onSaveProjectTicket}
-              onShowModalProjectTicketDetail={onShowModalProjectTicketDetail}
-              ticketConfigs={ticketConfigs}
-              changePagination={changePagination}
-              pagination={pagination}
-            />
+            <div className=" space-y-2">
+              <ProjectTicketFilterComponent onSearch={onSearch} />
+
+              <TicketComponent
+                projectTaskSelectId={undefined}
+                projectTicketList={projectTicketList}
+                showModalTicketAdd={showModalTicketAdd}
+                onShowModalProjectTicketAdd={function (status: boolean): void {
+                  setShowModalTicketAdd(status);
+                }}
+                onSaveProjectTicket={onSaveProjectTicket}
+                onShowModalProjectTicketDetail={onShowModalProjectTicketDetail}
+                ticketConfigs={ticketConfigs}
+                changePagination={changePagination}
+                pagination={pagination}
+              />
+            </div>
           </Card>
           {projectTicketDetail ? (
             <div>

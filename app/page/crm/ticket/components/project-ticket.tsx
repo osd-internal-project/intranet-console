@@ -5,7 +5,7 @@ import type {
   TablePaginationConfig,
 } from "antd";
 import { Button, Input, Table, Tag } from "antd";
-import ProjectTicketAddComponent from "./project-ticket-add";
+// import ProjectTicketAddComponent from "./project-ticket-add";
 import {
   ITProjectTaskForm,
   ITProjectTicket,
@@ -107,7 +107,19 @@ const TicketComponent: React.FC<props> = ({
       title: "Created By",
       width: "200px",
     },
-
+    {
+      key: "assignName",
+      dataIndex: "assignName",
+      title: "Assign To ",
+      width: "200px",
+    },
+    {
+      key: "dueDate",
+      dataIndex: "dueDate",
+      title: "Due Date",
+      width: "200px",
+      render: (data: Date) => dateToStringThNoTime(data),
+    },
     {
       key: "id",
       dataIndex: "id",
@@ -126,7 +138,7 @@ const TicketComponent: React.FC<props> = ({
   ];
   return (
     <>
-      <div className=" flex justify-end mb-4">
+      {/* <div className=" flex justify-end mb-4">
         <Button
           size="small"
           type="primary"
@@ -136,7 +148,7 @@ const TicketComponent: React.FC<props> = ({
         >
           Add Ticket
         </Button>
-      </div>
+      </div> */}
       <div className=" flex justify-end"></div>
       <div>
         <Table
@@ -149,13 +161,13 @@ const TicketComponent: React.FC<props> = ({
         />
       </div>
 
-      <ProjectTicketAddComponent
+      {/* <ProjectTicketAddComponent
         projectTaskSelectId={projectTaskSelectId}
         showModalTicketAdd={showModalTicketAdd}
         onShowModalProjectTicketAdd={onShowModalProjectTicketAdd}
         onSaveProjectTicket={onSaveProjectTicket}
         ticketConfigs={ticketConfigs}
-      />
+      /> */}
     </>
   );
 };

@@ -69,7 +69,7 @@ const ProjectTableComponent: React.FC<props> = ({
       title: "Customer",
       width: "200px",
       render: (data: ITCustomer) =>
-        data.prefixTh && data.firstNameTh && data.lastNameTh
+        data?.prefixTh && data.firstNameTh && data.lastNameTh
           ? `${data.prefixTh} ${data.firstNameTh} ${data.lastNameTh}`
           : "",
     },

@@ -310,6 +310,9 @@ const CreateProjectForm: React.FC<props> = ({
               }))}
             />
           </Form.Item>
+          <Form.Item label="Description" name={"description"}>
+            <TextArea />
+          </Form.Item>
         </div>
         <Form.Item label="Sale" name={"saleId"}>
           <Select

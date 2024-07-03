@@ -136,7 +136,7 @@ const CustomerTableComponent: React.FC<props> = ({
       title: "ผู้รับผิดชอบ",
       width: "200px",
       render: (value: { uid: string; name: string }[]) =>
-        value.map((data) => <div>{data.name}</div>),
+        value.map((data, index) => <div key={index}>{data.name}</div>),
     },
     {
       key: "customerCode",
@@ -151,7 +151,7 @@ const CustomerTableComponent: React.FC<props> = ({
       width: "200px",
       align: "center",
       render: (id: number, record: ITCustomer, index: number) => (
-        <div className="space-x-1">
+        <div className="space-x-1" key={index}>
           <Link href={`/page/crm/customer/${id}`}>
             <Button type="link">View</Button>
           </Link>
@@ -165,7 +165,7 @@ const CustomerTableComponent: React.FC<props> = ({
       width: "200px",
       align: "center",
       render: (id: number, record: ITCustomer, index: number) => (
-        <div className="space-x-1">
+        <div className="space-x-1" key={index}>
           {/* <Button type="link" onClick={() => showModalEdit(record)}>
             {editIcon}
           </Button> */}

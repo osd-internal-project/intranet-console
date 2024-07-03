@@ -113,7 +113,6 @@ export default function AddProjectPage() {
         };
       }
     }
-    console.log(data);
     await crmServices
       .createProject(data)
       .then((data) => {

@@ -478,6 +478,16 @@ export default function CustomerDetailPage() {
               />
             </Col>
             <Col span={24}>
+              {/* <ProjuctComponent
+                // descriptionForm={descriptionForm}
+                projectDescription={projectDescription}
+                contactDescription={contactDescription}
+                isEdit={isEdit}
+                setIsEdit={(e: boolean) => setIsEdit(e)}
+                onFinishEdit={onFinishEdit}
+              /> */}
+            </Col>
+            <Col span={24}>
               <Card>
                 <Tabs
                   destroyInactiveTabPane={true}

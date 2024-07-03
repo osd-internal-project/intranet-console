@@ -147,6 +147,12 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   <div className=" col-span-2 md:col-span-5 text-slate-500">
                     {projectDescription.notiAddressText}
                   </div>
+                  <div className="font-bold pl-3 pr-3 text-right">
+                    รายละเอียด :
+                  </div>
+                  <div className=" col-span-2 md:col-span-5 text-slate-500">
+                    {projectDescription.description}
+                  </div>
                   <div className=" font-bold pl-3  pr-3 text-right ">
                     Project Manager :
                   </div>

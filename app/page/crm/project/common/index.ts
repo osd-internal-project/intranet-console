@@ -76,6 +76,7 @@ export type ITProjectCreateForm = {
   saleManagerName?: string;
   saleId?: string;
   saleName?: string;
+  description?: string;
 };
 export type ITProject = {
   id: number;

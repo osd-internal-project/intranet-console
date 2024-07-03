@@ -41,6 +41,7 @@ import ProjectTicketDetailComponent from "./components/project-ticket-detail";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import UserServices from "../services/user.service";
+import { FormInstance } from "antd/lib";
 
 export default function CustomerDetailPage() {
   const { data: session } = useSession();
@@ -50,12 +51,14 @@ export default function CustomerDetailPage() {
   const userServices = UserServices(userAuth);
   const params = useParams<{ pid: string }>();
   const [summaryForm] = useForm();
+  const [editTaskForm] = useForm();
   const [projectDescription, setProjectDescription] = useState<ITProject>();
   const [contactDescription, setContactDescription] = useState<
     ITBranchContact | undefined
   >();
   const [loading, setloading] = useState<boolean>(true);
   const [showModalTaskAdd, setShowModalTaskAdd] = useState<boolean>(false);
+  const [showModalTaskEdit, setShowModalTaskEdit] = useState<boolean>(false);
   const [showModalTicketAdd, setShowModalTicketAdd] = useState<boolean>(false);
 
   const [isEdit, setIsEdit] = useState(false);
@@ -193,84 +196,22 @@ export default function CustomerDetailPage() {
         };
       }
     }
-
-    if (form.jobTypeId) {
-      const selected = ticketConfigs.jobTypeList.findLast(
-        (config) => config.id === form.jobTypeId
-      );
-      if (selected?.name) {
-        form = {
-          ...form,
-          jobTypeName: selected.name,
-        };
-      }
-    }
-    if (form.workTypeId) {
-      const selected = ticketConfigs.workTypeList.findLast(
-        (config) => config.id === form.workTypeId
-      );
-      if (selected?.name) {
-        form = {
-          ...form,
-          workTypeName: selected.name,
-        };
-      }
-    }
-    if (form.channelTypeId) {
-      const selected = ticketConfigs.channelTypeList.findLast(
-        (config) => config.id === form.channelTypeId
-      );
-      if (selected?.name) {
-        form = {
-          ...form,
-          channelTypeName: selected.name,
-        };
-      }
-    }
-    if (form.priorityId) {
-      const selected = ticketConfigs.priorityList.findLast(
-        (config) => config.id === form.priorityId
-      );
-      if (selected?.name) {
-        form = {
-          ...form,
-          priorityName: selected.name,
-        };
-      }
-    }
-    if (form.assignId) {
-      const selected = usersList.findLast(
-        (config) => config.userId === form.assignId
-      );
-      if (selected?.firstNameTh) {
-        form = {
-          ...form,
-          assignName: `${selected?.firstNameTh} ${selected?.lastNameTh}`,
-        };
-      }
-    }
+  };
+  const onUpdateProjectTask = async (
+    taskId: number | undefined,
+    form: ITProjectTaskForm
+  ) => {
     if (taskId) {
-      form = { ...form, customerProjectTaskId: taskId };
+      await crmServices
+        .updateProjectTask(+taskId, form)
+        .then(async (data) => {
+          setShowModalTaskEdit(false);
+          message.success("อัพเดท Task สำเร็จ");
+        })
+        .catch(() => {
+          message.error("ผิดพลาด กรุณาลองใหม่");
+        });
     }
-    console.log(form);
-    await crmServices
-      .createProjectTicket(+projectId, form)
-      .then(async (data) => {
-        if (data.id && attendFiles.length > 0) {
-          attendFiles.forEach(async (file) => {
-            const formData: any = new FormData();
-            formData.append("type", "create-attend");
-            formData.append("files", file.originFileObj);
-            await crmServices.uploadFiles(data.id, formData);
-          });
-        }
-        setShowModalTicketAdd(false);
-        message.success("สร้าง Ticket สำเร็จ");
-        await onSaveHistoryLogs(data.id, "create");
-      })
-      .catch(() => {
-        message.error("ผิดพลาด กรุณาลองใหม่");
-      });
     setloading(true);
   };
   function changeTabs(activeKey: string): void {
@@ -566,6 +507,14 @@ export default function CustomerDetailPage() {
                       }
                       ticketConfigs={ticketConfigs}
                       usersList={usersList}
+                      showModalTaskEdit={showModalTaskEdit}
+                      editTaskForm={editTaskForm}
+                      onShowModalProjectTaskEdit={function (
+                        status: boolean
+                      ): void {
+                        setShowModalTaskEdit(status);
+                      }}
+                      onUpdateProjectTask={onUpdateProjectTask}
                     />
                   ),
                 },

@@ -13,14 +13,19 @@ import {
   ITTicketConfigs,
 } from "../../common";
 import { dateToStringThNoTime } from "@/app/utils/format";
+import ProjectTaskEditComponent from "./project-task-edit";
+import moment from "moment";
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 export interface props {
+  setLoading: (loading: boolean) => void;
+  editTaskForm: FormInstance<ITProjectTaskForm>;
   projectId: number;
   loading: boolean;
   showModalTaskAdd: boolean;
-  setLoading: (loading: boolean) => void;
   onShowModalProjectTaskAdd: (status: boolean) => void;
+  showModalTaskEdit: boolean;
+  onShowModalProjectTaskEdit: (status: boolean) => void;
   onSaveProjectTask: (projectId: number, form: ITProjectTaskForm) => void;
   projectTaskSelectId: number | undefined;
   projectTaskList: ITProjectTask[];
@@ -37,6 +42,7 @@ export interface props {
     form: ITProjectTicketCreateForm,
     attendFiles: UploadFile[]
   ) => void;
+  onUpdateProjectTask: (taskId: number, form: ITProjectTaskForm) => void;
 }
 const layout = {
   labelCol: {},
@@ -47,10 +53,14 @@ const layout = {
 
 const TaskComponent: React.FC<props> = ({
   loading,
+  editTaskForm,
   projectId,
+
   setLoading,
   showModalTaskAdd,
   onShowModalProjectTaskAdd,
+  showModalTaskEdit,
+  onShowModalProjectTaskEdit,
   onSaveProjectTask,
   projectTaskList,
   projectTaskSelectId,
@@ -62,7 +72,13 @@ const TaskComponent: React.FC<props> = ({
   onShowModalProjectTicketAdd,
   onShowModalProjectTicketDetail,
   onSaveProjectTicket,
+  onUpdateProjectTask,
 }): React.ReactElement => {
+  const [taskIdSelect, setTaskIdSelect] = useState<number>();
+  function dayjs(startDate: Date) {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <>
       <div className=" grid grid-cols-3 gap-3 ">
@@ -91,12 +107,30 @@ const TaskComponent: React.FC<props> = ({
                   onSetProjectTaskSelectId(task.id);
                 }}
               >
-                <div className=" font-bold">
-                  {index + 1}.{task.taskTitle}
+                <div className=" flex justify-between mb-2">
+                  <div className="  font-bold">
+                    {index + 1}.{task.taskTitle}
+                  </div>
+                  <Button
+                    size="small"
+                    onClick={() => {
+                      setTaskIdSelect(task.id);
+                      const form = {
+                        taskTitle: task.taskTitle,
+                        startDate: moment(task.startDate),
+                        endDate: moment(task.endDate),
+                      };
+                      editTaskForm.setFieldsValue(form);
+                      onShowModalProjectTaskEdit(true);
+                    }}
+                  >
+                    Edit
+                  </Button>
                 </div>
+
                 <div className=" grid grid-cols-2">
-                  <div>start date : {dateToStringThNoTime(task.startDate)}</div>
-                  <div>end date : {dateToStringThNoTime(task.endDate)}</div>
+                  <div>Start date : {dateToStringThNoTime(task.startDate)}</div>
+                  <div>End date : {dateToStringThNoTime(task.endDate)}</div>
                 </div>
                 <Progress
                   percent={
@@ -165,6 +199,17 @@ const TaskComponent: React.FC<props> = ({
         onShowModalProjectTaskAdd={onShowModalProjectTaskAdd}
         onSaveProjectTask={onSaveProjectTask}
       />
+      {taskIdSelect ? (
+        <ProjectTaskEditComponent
+          editTaskForm={editTaskForm}
+          showModalTaskEdit={showModalTaskEdit}
+          onShowModalProjectTaskEdit={onShowModalProjectTaskEdit}
+          taskId={taskIdSelect}
+          onUpdateProjectTask={onUpdateProjectTask}
+        />
+      ) : (
+        <></>
+      )}
     </>
   );
 };

@@ -54,7 +54,7 @@ const ProjectTaskAddComponent: React.FC<props> = ({
   return (
     <Modal
       // open={showModalContactAdd}
-      title={"Add Contact"}
+      title={"Add Task"}
       footer={[]}
       open={showModalTaskAdd}
       onCancel={() => onShowModalProjectTaskAdd(false)}

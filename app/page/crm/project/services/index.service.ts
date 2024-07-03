@@ -14,6 +14,7 @@ import {
   ITSelectUsers,
 } from "../common";
 import { ITMaTaskFiles } from "@/app/page/maintenance-management/common";
+import { FormInstance } from "antd";
 export interface TMaServices {
   findProjectDataTable: (
     search: object,
@@ -50,6 +51,10 @@ export interface TMaServices {
     status: string,
     form: object
   ) => Promise<ITProjectTicket>;
+  updateProjectTask: (
+    taskId: number,
+    form: ITProjectTaskForm
+  ) => Promise<ITProjectTaskForm>;
   updateProjectTicket: (
     ticketId: number,
     form: ITProjectTicketEditForm
@@ -220,6 +225,9 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
         .catch((err) => {
           return err;
         });
+    },
+    updateProjectTask: async (ticketId, form) => {
+      return await axiosInstance.patch(`${projectTaskUrl}/${ticketId}`, form);
     },
     updateStatusProjectTicket: async (ticketId, status, form) => {
       const formData = {

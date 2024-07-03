@@ -34,9 +34,19 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import ProjectTicketFilterComponent from "./components/project-ticket-filter";
 import UserServices from "./services/user.service";
+import { checkRule } from "@/app/utils/rules";
 
 export default function CustomerDetailPage() {
   const { data: session } = useSession();
+  const rules = {
+    ruleTicketShow: checkRule("crm-t-s"),
+    ruleTicketAdd: checkRule("crm-t-a"),
+    ruleTicketEdit: checkRule("crm-t-e"),
+    ruleTicketRequestFilesEdit: checkRule("crm-trf-e"),
+    ruleTicketUpdateStatus: checkRule("crm-t-u"),
+    ruleTicketHold: checkRule("crm-t-h"),
+    ruleTicketClose: checkRule("crm-t-c"),
+  };
   const crmAuth = useAxiosCrm();
   const crmServices = CrmServices(crmAuth);
   const userAuth = useAxiosUser();
@@ -451,28 +461,37 @@ export default function CustomerDetailPage() {
         </Col>
 
         <Col span={24}>
-          <Card>
-            <div className=" space-y-2">
-              <ProjectTicketFilterComponent onSearch={onSearch} />
+          {rules.ruleTicketShow ? (
+            <Card>
+              <div className=" space-y-2">
+                <ProjectTicketFilterComponent onSearch={onSearch} />
 
-              <TicketComponent
-                projectTaskSelectId={undefined}
-                projectTicketList={projectTicketList}
-                showModalTicketAdd={showModalTicketAdd}
-                onShowModalProjectTicketAdd={function (status: boolean): void {
-                  setShowModalTicketAdd(status);
-                }}
-                onSaveProjectTicket={onSaveProjectTicket}
-                onShowModalProjectTicketDetail={onShowModalProjectTicketDetail}
-                ticketConfigs={ticketConfigs}
-                changePagination={changePagination}
-                pagination={pagination}
-              />
-            </div>
-          </Card>
+                <TicketComponent
+                  projectTaskSelectId={undefined}
+                  projectTicketList={projectTicketList}
+                  showModalTicketAdd={showModalTicketAdd}
+                  onShowModalProjectTicketAdd={function (
+                    status: boolean
+                  ): void {
+                    setShowModalTicketAdd(status);
+                  }}
+                  onSaveProjectTicket={onSaveProjectTicket}
+                  onShowModalProjectTicketDetail={
+                    onShowModalProjectTicketDetail
+                  }
+                  ticketConfigs={ticketConfigs}
+                  changePagination={changePagination}
+                  pagination={pagination}
+                />
+              </div>
+            </Card>
+          ) : (
+            <></>
+          )}
           {projectTicketDetail ? (
             <div>
               <ProjectTicketDetailComponent
+                rules={rules}
                 ticketSelectedDetail={projectTicketDetail}
                 onShowModalProjectTicketDetail={onShowModalProjectTicketDetail}
                 updateTicketStatus={updateTicketStatus}

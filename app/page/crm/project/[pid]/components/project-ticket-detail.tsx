@@ -555,7 +555,7 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                             )
                           }
                         >
-                          Resume
+                          Receive
                         </Button>
                       ) : (
                         <></>
@@ -661,18 +661,22 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                       )
                     ) : ticketSelectedDetail.status === "finish" ||
                       ticketSelectedDetail.status === "cancel" ? (
-                      <Button
-                        type="primary"
-                        onClick={() =>
-                          updateTicketStatus(
-                            ticketSelectedDetail.id,
-                            "close",
-                            "close"
-                          )
-                        }
-                      >
-                        Close Ticket
-                      </Button>
+                      rules.ruleTicketClose ? (
+                        <Button
+                          type="primary"
+                          onClick={() =>
+                            updateTicketStatus(
+                              ticketSelectedDetail.id,
+                              "close",
+                              "close"
+                            )
+                          }
+                        >
+                          Close Ticket
+                        </Button>
+                      ) : (
+                        <></>
+                      )
                     ) : (
                       <></>
                     )}

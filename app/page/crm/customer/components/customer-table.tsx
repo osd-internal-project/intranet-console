@@ -28,6 +28,7 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import Link from "next/link";
 
 export interface props {
+  rules: any;
   dataTable: ITCustomer[];
   loading: boolean;
   setLoading: (loading: boolean) => void;
@@ -38,6 +39,7 @@ export interface props {
 }
 
 const CustomerTableComponent: React.FC<props> = ({
+  rules,
   dataTable,
   loading,
   setLoading,
@@ -167,9 +169,13 @@ const CustomerTableComponent: React.FC<props> = ({
           {/* <Button type="link" onClick={() => showModalEdit(record)}>
             {editIcon}
           </Button> */}
-          <Button type="link" onClick={() => showModalDelete(id)} danger>
-            {deleteIcon}
-          </Button>
+          {rules.ruleCustomerDelete ? (
+            <Button type="link" onClick={() => showModalDelete(id)} danger>
+              {deleteIcon}
+            </Button>
+          ) : (
+            <></>
+          )}
         </div>
       ),
     },

@@ -15,6 +15,7 @@ import "../../style.css";
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 export interface props {
+  rules: any;
   customerGroup: ITConfigData[];
   customerTypes: ITConfigData[];
   customerResponsibles: ITSelectUsers[];
@@ -32,6 +33,7 @@ const layout = {
 };
 
 const DescriptionCustomerForm: React.FC<props> = ({
+  rules,
   customerGroup,
   customerTypes,
   customerResponsibles,
@@ -80,10 +82,16 @@ const DescriptionCustomerForm: React.FC<props> = ({
                         Cancel
                       </Button>
                     </div>
-                  ) : (
-                    <Button onClick={() => setIsEdit(!isEdit)} disabled={false}>
+                  ) : rules.ruleCustomerBranchEdit ? (
+                    <Button
+                      type="primary"
+                      onClick={() => setIsEdit(!isEdit)}
+                      disabled={false}
+                    >
                       Edit
                     </Button>
+                  ) : (
+                    <></>
                   )}
                 </div>
 

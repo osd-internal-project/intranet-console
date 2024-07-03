@@ -7,6 +7,7 @@ import { dateToStringThNoTime } from "@/app/utils/format";
 import Link from "next/link";
 
 export interface props {
+  rules: any;
   projectDetail: any;
   loading: boolean;
   setLoading: (loading: boolean) => void;
@@ -19,7 +20,11 @@ const layout = {
   },
 };
 
-const BranchComponent: React.FC<props> = ({ projectDetail, loading }): React.ReactElement => {
+const BranchComponent: React.FC<props> = ({
+  rules,
+  projectDetail,
+  loading,
+}): React.ReactElement => {
   const customerColumns: TableColumnsType<ITProject> = [
     {
       key: "projectCode",
@@ -71,14 +76,26 @@ const BranchComponent: React.FC<props> = ({ projectDetail, loading }): React.Rea
       align: "center",
       render: (id: number, record: ITProject, index: number) => (
         <div className="space-x-1">
-          <Link href={`/page/crm/project/${id}`}>
-            <Button type="link">View</Button>
-          </Link>
+          {rules.ruleProjectShow ? (
+            <Link href={`/page/crm/project/${id}`}>
+              <Button type="link">View</Button>
+            </Link>
+          ) : (
+            <></>
+          )}
         </div>
       ),
     },
   ];
-  return <Table dataSource={projectDetail} columns={customerColumns} size="small" rowKey={(data: ITProject) => data.id} loading={loading} />;
+  return (
+    <Table
+      dataSource={projectDetail}
+      columns={customerColumns}
+      size="small"
+      rowKey={(data: ITProject) => data.id}
+      loading={loading}
+    />
+  );
 };
 
 export default BranchComponent;

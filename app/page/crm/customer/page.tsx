@@ -19,6 +19,12 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 
 export default function MaTaskPage() {
+  const rules = {
+    ruleCustomerShow: checkRule("crm-c-s"),
+    ruleCustomerAdd: checkRule("crm-c-a"),
+    ruleCustomerDelete: checkRule("crm-c-d"),
+  };
+
   const { data: session } = useSession();
   const intranetAuth = useAxiosCrm();
   const crmServices = CrmServices(intranetAuth);
@@ -92,34 +98,43 @@ export default function MaTaskPage() {
 
         <Col span={24}>
           <div className="grid grid-cols-1 ">
-            <Card>
-              <div className=" grid grid-col-1 space-y-2">
-                <div className=" flex justify-end">
-                  <Link href="/page/crm/customer/add-customer">
-                    <Button size="small" type="primary">
-                      Add Customer
-                    </Button>
-                  </Link>
-                </div>
-                <div>
-                  <CustomerFilterComponent
-                    onSearch={(data) => {
-                      setSearch(data);
-                      setPagination({ ...pagination, current: 1 });
-                      setloading(true);
-                    }}
+            {rules.ruleCustomerShow ? (
+              <Card>
+                <div className=" grid grid-col-1 space-y-2">
+                  <div className=" flex justify-end">
+                    {rules.ruleCustomerAdd ? (
+                      <Link href="/page/crm/customer/add-customer">
+                        <Button size="small" type="primary">
+                          Add Customer
+                        </Button>
+                      </Link>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                  <div>
+                    <CustomerFilterComponent
+                      onSearch={(data) => {
+                        setSearch(data);
+                        setPagination({ ...pagination, current: 1 });
+                        setloading(true);
+                      }}
+                    />
+                  </div>
+                  <CustomerTableComponent
+                    rules={rules}
+                    dataTable={dataTable}
+                    loading={loading}
+                    setLoading={(e: boolean) => setloading(e)}
+                    pagination={pagination}
+                    changePagination={changePagination}
+                    deleteCustomer={deleteCustomer}
                   />
                 </div>
-                <CustomerTableComponent
-                  dataTable={dataTable}
-                  loading={loading}
-                  setLoading={(e: boolean) => setloading(e)}
-                  pagination={pagination}
-                  changePagination={changePagination}
-                  deleteCustomer={deleteCustomer}
-                />
-              </div>
-            </Card>
+              </Card>
+            ) : (
+              <></>
+            )}
           </div>
         </Col>
       </Row>

@@ -466,7 +466,25 @@ export default function CustomerDetailPage() {
         message.error("ไม่สามารถลบไฟล์ได้");
       });
   }
+  async function saveRequestTicketFile(
+    ticketId: number,
+    reqFiles: UploadFile[]
+  ) {
+    if (ticketId && reqFiles.length > 0) {
+      reqFiles.forEach(async (file) => {
+        const formData: any = new FormData();
+        formData.append("type", "create-attend");
+        formData.append("files", file.originFileObj);
+        await crmServices.uploadFiles(ticketId, formData);
+      });
+    }
+    setShowModalTicketAdd(false);
+    message.success("อัพเดท Ticket สำเร็จ");
+    await onSaveHistoryLogs(ticketId, "update");
+    await onShowModalProjectTicketDetail(ticketId);
 
+    setloading(true);
+  }
   return projectDescription ? (
     <div>
       <Row gutter={[8, 8]}>
@@ -587,6 +605,7 @@ export default function CustomerDetailPage() {
               downloadFile={downloadFile}
               onDeleteTicketFile={onDeleteTicketFile}
               usersList={usersList}
+              saveRequestTicketFile={saveRequestTicketFile}
             />
           ) : (
             <></>

@@ -76,12 +76,12 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
   const [editForm] = useForm();
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [requestFiles, setRequestFiles] = useState<UploadFile[]>([]);
+  const [editTicketStatus, setEditTicketStatus] = useState<boolean>(false);
   useEffect(() => {
     editForm.setFieldsValue(ticketSelectedDetail);
     setAttendFiles([]);
     setRequestFiles([]);
   }, [ticketSelectedDetail]);
-  const [editTicketStatus, setEditTicketStatus] = useState<boolean>(false);
 
   const onFinishSave = async (form: ITProjectTicketEditForm) => {
     Modal.confirm({

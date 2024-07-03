@@ -257,8 +257,6 @@ export default function CustomerDetailPage() {
     ticketId: number,
     reqFiles: UploadFile[]
   ) {
-    await crmServices;
-
     if (ticketId && reqFiles.length > 0) {
       reqFiles.forEach(async (file) => {
         const formData: any = new FormData();

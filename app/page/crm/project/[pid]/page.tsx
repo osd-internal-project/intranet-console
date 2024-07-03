@@ -42,9 +42,22 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import UserServices from "../services/user.service";
 import { FormInstance } from "antd/lib";
+import { checkRule } from "@/app/utils/rules";
 
 export default function CustomerDetailPage() {
   const { data: session } = useSession();
+  const rules = {
+    ruleProjectShow: checkRule("crm-p-s"),
+    ruleProjectTaskAdd: checkRule("crm-pt-a"),
+    ruleProjectTaskEdit: checkRule("crm-pt-e"),
+    ruleProjectTaskDelete: checkRule("crm-pt-d"),
+    ruleTicketAdd: checkRule("crm-t-a"),
+    ruleTicketEdit: checkRule("crm-t-e"),
+    ruleTicketRequestFilesEdit: checkRule("crm-trf-e"),
+    ruleTicketUpdateStatus: checkRule("crm-t-u"),
+    ruleTicketHold: checkRule("crm-t-h"),
+    ruleTicketClose: checkRule("crm-t-c"),
+  };
   const crmAuth = useAxiosCrm();
   const crmServices = CrmServices(crmAuth);
   const userAuth = useAxiosUser();
@@ -452,114 +465,125 @@ export default function CustomerDetailPage() {
         <Col span={24}>
           <div className="title-page-font">{`PROJECT DESCRIPTION`}</div>
         </Col>
-        <Col span={24}>
-          <DescriptionCustomerComponent
-            // descriptionForm={descriptionForm}
-            projectDescription={projectDescription}
-            contactDescription={contactDescription}
-            isEdit={isEdit}
-            setIsEdit={(e: boolean) => setIsEdit(e)}
-            onFinishEdit={onFinishEdit}
-          />
-        </Col>
-        <Col span={24}>
-          <Card>
-            <Tabs
-              destroyInactiveTabPane={true}
-              onChange={changeTabs}
-              items={[
-                {
-                  key: "Task",
-                  label: "Task",
-                  children: (
-                    <TaskComponent
-                      projectId={projectDescription.id}
-                      loading={loading}
-                      showModalTaskAdd={showModalTaskAdd}
-                      setLoading={function (loading: boolean): void {
-                        setloading(loading);
-                      }}
-                      onShowModalProjectTaskAdd={function (
-                        status: boolean
-                      ): void {
-                        setShowModalTaskAdd(status);
-                      }}
-                      onSaveProjectTask={onSaveProjectTask}
-                      projectTaskList={projectTaskList}
-                      projectTaskSelectId={projectTaskSelectId}
-                      projectTicketList={projectTicketList}
-                      onSetProjectTaskSelectId={function (
-                        taskId: number
-                      ): void {
-                        console.log(taskId);
-                        setProjectTaskSelectId(taskId);
-                        fetchProjectTicket(taskId);
-                      }}
-                      showModalTicketAdd={showModalTicketAdd}
-                      onShowModalProjectTicketAdd={function (
-                        status: boolean
-                      ): void {
-                        setShowModalTicketAdd(status);
-                      }}
-                      onSaveProjectTicket={onSaveProjectTicket}
-                      onShowModalProjectTicketDetail={
-                        onShowModalProjectTicketDetail
-                      }
-                      ticketConfigs={ticketConfigs}
-                      usersList={usersList}
-                      showModalTaskEdit={showModalTaskEdit}
-                      editTaskForm={editTaskForm}
-                      onShowModalProjectTaskEdit={function (
-                        status: boolean
-                      ): void {
-                        setShowModalTaskEdit(status);
-                      }}
-                      onUpdateProjectTask={onUpdateProjectTask}
-                    />
-                  ),
-                },
-                {
-                  key: "Ticket",
-                  label: "Ticket",
-                  children: (
-                    <TicketComponent
-                      projectTaskSelectId={undefined}
-                      projectTicketList={projectTicketList}
-                      showModalTicketAdd={showModalTicketAdd}
-                      onShowModalProjectTicketAdd={function (
-                        status: boolean
-                      ): void {
-                        setShowModalTicketAdd(status);
-                      }}
-                      onSaveProjectTicket={onSaveProjectTicket}
-                      projectId={+params.pid}
-                      onShowModalProjectTicketDetail={
-                        onShowModalProjectTicketDetail
-                      }
-                      ticketConfigs={ticketConfigs}
-                      usersList={usersList}
-                    />
-                  ),
-                },
-              ]}
-            />
-          </Card>
-          {projectTicketDetail ? (
-            <ProjectTicketDetailComponent
-              ticketSelectedDetail={projectTicketDetail}
-              onShowModalProjectTicketDetail={onShowModalProjectTicketDetail}
-              updateTicketStatus={updateTicketStatus}
-              onEditProjectTicket={onEditProjectTicket}
-              // ticketHistoryLogs={ticketHistoryLogs}
-              downloadFile={downloadFile}
-              onDeleteTicketFile={onDeleteTicketFile}
-              usersList={usersList}
-              saveRequestTicketFile={saveRequestTicketFile}
-            />
-          ) : (
-            <></>
-          )}
-        </Col>
+        {rules.ruleProjectShow ? (
+          <>
+            <Col span={24}>
+              <DescriptionCustomerComponent
+                // descriptionForm={descriptionForm}
+                projectDescription={projectDescription}
+                contactDescription={contactDescription}
+                isEdit={isEdit}
+                setIsEdit={(e: boolean) => setIsEdit(e)}
+                onFinishEdit={onFinishEdit}
+              />
+            </Col>
+            <Col span={24}>
+              <Card>
+                <Tabs
+                  destroyInactiveTabPane={true}
+                  onChange={changeTabs}
+                  items={[
+                    {
+                      key: "Task",
+                      label: "Task",
+                      children: (
+                        <TaskComponent
+                          rules={rules}
+                          projectId={projectDescription.id}
+                          loading={loading}
+                          showModalTaskAdd={showModalTaskAdd}
+                          setLoading={function (loading: boolean): void {
+                            setloading(loading);
+                          }}
+                          onShowModalProjectTaskAdd={function (
+                            status: boolean
+                          ): void {
+                            setShowModalTaskAdd(status);
+                          }}
+                          onSaveProjectTask={onSaveProjectTask}
+                          projectTaskList={projectTaskList}
+                          projectTaskSelectId={projectTaskSelectId}
+                          projectTicketList={projectTicketList}
+                          onSetProjectTaskSelectId={function (
+                            taskId: number
+                          ): void {
+                            console.log(taskId);
+                            setProjectTaskSelectId(taskId);
+                            fetchProjectTicket(taskId);
+                          }}
+                          showModalTicketAdd={showModalTicketAdd}
+                          onShowModalProjectTicketAdd={function (
+                            status: boolean
+                          ): void {
+                            setShowModalTicketAdd(status);
+                          }}
+                          onSaveProjectTicket={onSaveProjectTicket}
+                          onShowModalProjectTicketDetail={
+                            onShowModalProjectTicketDetail
+                          }
+                          ticketConfigs={ticketConfigs}
+                          usersList={usersList}
+                          showModalTaskEdit={showModalTaskEdit}
+                          editTaskForm={editTaskForm}
+                          onShowModalProjectTaskEdit={function (
+                            status: boolean
+                          ): void {
+                            setShowModalTaskEdit(status);
+                          }}
+                          onUpdateProjectTask={onUpdateProjectTask}
+                        />
+                      ),
+                    },
+                    {
+                      key: "Ticket",
+                      label: "Ticket",
+                      children: (
+                        <TicketComponent
+                          projectTaskSelectId={undefined}
+                          projectTicketList={projectTicketList}
+                          showModalTicketAdd={showModalTicketAdd}
+                          onShowModalProjectTicketAdd={function (
+                            status: boolean
+                          ): void {
+                            setShowModalTicketAdd(status);
+                          }}
+                          onSaveProjectTicket={onSaveProjectTicket}
+                          projectId={+params.pid}
+                          onShowModalProjectTicketDetail={
+                            onShowModalProjectTicketDetail
+                          }
+                          ticketConfigs={ticketConfigs}
+                          usersList={usersList}
+                          rules={rules}
+                        />
+                      ),
+                    },
+                  ]}
+                />
+              </Card>
+              {projectTicketDetail ? (
+                <ProjectTicketDetailComponent
+                  rules={rules}
+                  ticketSelectedDetail={projectTicketDetail}
+                  onShowModalProjectTicketDetail={
+                    onShowModalProjectTicketDetail
+                  }
+                  updateTicketStatus={updateTicketStatus}
+                  onEditProjectTicket={onEditProjectTicket}
+                  // ticketHistoryLogs={ticketHistoryLogs}
+                  downloadFile={downloadFile}
+                  onDeleteTicketFile={onDeleteTicketFile}
+                  usersList={usersList}
+                  saveRequestTicketFile={saveRequestTicketFile}
+                />
+              ) : (
+                <></>
+              )}
+            </Col>
+          </>
+        ) : (
+          <></>
+        )}
       </Row>
     </div>
   ) : (

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import type { FormInstance, UploadFile } from "antd";
 import { Button, Card, ConfigProvider, Input, Progress, Table } from "antd";
+import dayjs from "dayjs";
 import TicketComponent from "./project-ticket";
 import ProjectTaskAddComponent from "./project-task-add";
 import {
@@ -18,6 +19,7 @@ import moment from "moment";
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 export interface props {
+  rules: any;
   setLoading: (loading: boolean) => void;
   editTaskForm: FormInstance<ITProjectTaskForm>;
   projectId: number;
@@ -52,6 +54,7 @@ const layout = {
 };
 
 const TaskComponent: React.FC<props> = ({
+  rules,
   loading,
   editTaskForm,
   projectId,
@@ -75,9 +78,6 @@ const TaskComponent: React.FC<props> = ({
   onUpdateProjectTask,
 }): React.ReactElement => {
   const [taskIdSelect, setTaskIdSelect] = useState<number>();
-  function dayjs(startDate: Date) {
-    throw new Error("Function not implemented.");
-  }
 
   return (
     <>
@@ -85,24 +85,29 @@ const TaskComponent: React.FC<props> = ({
         <div>
           <div className=" flex justify-between ">
             <div className=" font-bold pl-2">Task List</div>
-            <Button
-              size="small"
-              type="primary"
-              onClick={() => onShowModalProjectTaskAdd(true)}
-            >
-              Add Task
-            </Button>
+            {rules.ruleTaskAdd ? (
+              <Button
+                size="small"
+                type="primary"
+                onClick={() => onShowModalProjectTaskAdd(true)}
+              >
+                Add Task
+              </Button>
+            ) : (
+              <></>
+            )}
           </div>
           <div className="overflow-y-auto">
             {projectTaskList.map((task: ITProjectTask, index: number) => (
               <Card
                 key={index}
-                className={`m-2 cursor-pointer hover:shadow-md   ${
+                className={`m-2 cursor-pointer hover:shadow-md ${
                   task.id === projectTaskSelectId
                     ? " border-2 border-blue-500"
                     : ""
                 }`}
                 styles={{ body: { padding: 12 } }}
+                style={{ zIndex: 1 }}
                 onClick={() => {
                   onSetProjectTaskSelectId(task.id);
                 }}
@@ -111,21 +116,28 @@ const TaskComponent: React.FC<props> = ({
                   <div className="  font-bold">
                     {index + 1}.{task.taskTitle}
                   </div>
-                  <Button
-                    size="small"
-                    onClick={() => {
-                      setTaskIdSelect(task.id);
-                      const form = {
-                        taskTitle: task.taskTitle,
-                        startDate: moment(task.startDate),
-                        endDate: moment(task.endDate),
-                      };
-                      editTaskForm.setFieldsValue(form);
-                      onShowModalProjectTaskEdit(true);
-                    }}
-                  >
-                    Edit
-                  </Button>
+                  {rules.ruleProjectEdit ? (
+                    <Button
+                      style={{ zIndex: 2 }}
+                      size="small"
+                      ghost
+                      type="primary"
+                      onClick={() => {
+                        setTaskIdSelect(task.id);
+                        const form = {
+                          taskTitle: task.taskTitle,
+                          startDate: dayjs(task.startDate),
+                          endDate: dayjs(task.endDate),
+                        };
+                        editTaskForm.setFieldsValue(form);
+                        onShowModalProjectTaskEdit(true);
+                      }}
+                    >
+                      Edit
+                    </Button>
+                  ) : (
+                    <></>
+                  )}
                 </div>
 
                 <div className=" grid grid-cols-2">
@@ -177,6 +189,7 @@ const TaskComponent: React.FC<props> = ({
           {projectTaskSelectId ? (
             <div>
               <TicketComponent
+                rules={rules}
                 projectId={projectId}
                 projectTaskSelectId={projectTaskSelectId}
                 projectTicketList={projectTicketList}

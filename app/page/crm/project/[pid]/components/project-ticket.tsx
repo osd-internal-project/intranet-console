@@ -17,6 +17,7 @@ import { UploadFile } from "antd/lib";
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 export interface props {
+  rules: any;
   // loading: boolean;
   // setLoading: (loading: boolean) => void;
   projectId: number;
@@ -43,6 +44,7 @@ const layout = {
 };
 
 const TicketComponent: React.FC<props> = ({
+  rules,
   projectId,
   projectTaskSelectId,
   projectTicketList,
@@ -125,15 +127,19 @@ const TicketComponent: React.FC<props> = ({
   return (
     <>
       <div className=" flex justify-end mb-4">
-        <Button
-          size="small"
-          type="primary"
-          onClick={() => {
-            onShowModalProjectTicketAdd(true);
-          }}
-        >
-          Add Ticket
-        </Button>
+        {rules.ruleProjectTaskAdd ? (
+          <Button
+            size="small"
+            type="primary"
+            onClick={() => {
+              onShowModalProjectTicketAdd(true);
+            }}
+          >
+            Add Ticket
+          </Button>
+        ) : (
+          <></>
+        )}
       </div>
       <div className=" flex justify-end"></div>
       <div>

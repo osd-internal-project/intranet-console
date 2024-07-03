@@ -48,6 +48,7 @@ const layout = {
   // },
 };
 export interface props {
+  rules: any;
   ticketSelectedDetail: ITProjectTicket;
   onShowModalProjectTicketDetail: (id: number | undefined) => void;
   onEditProjectTicket: (
@@ -67,6 +68,7 @@ export interface props {
 }
 
 const ProjectTicketDetailComponent: React.FC<props> = ({
+  rules,
   ticketSelectedDetail,
   onShowModalProjectTicketDetail,
   onEditProjectTicket,
@@ -248,31 +250,36 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                       Attend Files
                     </div>
                     <div className=" col-span-2 md:col-span-5">
-                      <div className="flex space-x-2 ">
-                        <Upload
-                          fileList={requestFiles}
-                          onChange={handleChangeRequestFiles}
-                          beforeUpload={beforeUploadRequestFiles}
-                          multiple={true}
-                          maxCount={10}
-                        >
-                          <Button icon={<UploadOutlined />}>
-                            Click to upload
-                          </Button>
-                        </Upload>
-                        {requestFiles.length > 0 ? (
-                          <>
-                            <Button
-                              type="primary"
-                              onClick={() => onSaveRequestTicketFile()}
-                            >
-                              Save
+                      {rules.ruleTicketRequestFilesEdit ? (
+                        <div className="flex space-x-2 ">
+                          <Upload
+                            fileList={requestFiles}
+                            onChange={handleChangeRequestFiles}
+                            beforeUpload={beforeUploadRequestFiles}
+                            multiple={true}
+                            maxCount={10}
+                          >
+                            <Button icon={<UploadOutlined />}>
+                              Click to upload
                             </Button>
-                          </>
-                        ) : (
-                          <></>
-                        )}
-                      </div>
+                          </Upload>
+                          x
+                          {requestFiles.length > 0 ? (
+                            <>
+                              <Button
+                                type="primary"
+                                onClick={() => onSaveRequestTicketFile()}
+                              >
+                                Save
+                              </Button>
+                            </>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      ) : (
+                        <></>
+                      )}
                       {ticketSelectedDetail.createFiles?.map((file, index) => (
                         <div key={index} className="flex items-center">
                           <Button
@@ -284,19 +291,23 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                               {file.fileName}
                             </Space>
                           </Button>
-                          <Button
-                            type="link"
-                            onClick={() =>
-                              deleteTicketFile(
-                                file.id,
-                                file.fileName,
-                                ticketSelectedDetail.id
-                              )
-                            }
-                            danger
-                          >
-                            {deleteIcon}
-                          </Button>
+                          {rules.ruleTicketRequestFilesEdit ? (
+                            <Button
+                              type="link"
+                              onClick={() =>
+                                deleteTicketFile(
+                                  file.id,
+                                  file.fileName,
+                                  ticketSelectedDetail.id
+                                )
+                              }
+                              danger
+                            >
+                              {deleteIcon}
+                            </Button>
+                          ) : (
+                            <></>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -533,31 +544,39 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                   </div>
                   <div className=" flex justify-end space-x-2 mt-5">
                     {ticketSelectedDetail.status === "new" ? (
-                      <Button
-                        type="primary"
-                        onClick={() =>
-                          updateTicketStatus(
-                            ticketSelectedDetail.id,
-                            "inprogress",
-                            "receive"
-                          )
-                        }
-                      >
-                        Resume
-                      </Button>
+                      rules.ruleTicketUpdateStatus ? (
+                        <Button
+                          type="primary"
+                          onClick={() =>
+                            updateTicketStatus(
+                              ticketSelectedDetail.id,
+                              "inprogress",
+                              "receive"
+                            )
+                          }
+                        >
+                          Resume
+                        </Button>
+                      ) : (
+                        <></>
+                      )
                     ) : ticketSelectedDetail.status === "hold" ? (
-                      <Button
-                        type="primary"
-                        onClick={() =>
-                          updateTicketStatus(
-                            ticketSelectedDetail.id,
-                            "inprogress",
-                            "resume"
-                          )
-                        }
-                      >
-                        Resume
-                      </Button>
+                      rules.ruleTicketHold ? (
+                        <Button
+                          type="primary"
+                          onClick={() =>
+                            updateTicketStatus(
+                              ticketSelectedDetail.id,
+                              "inprogress",
+                              "resume"
+                            )
+                          }
+                        >
+                          Resume
+                        </Button>
+                      ) : (
+                        <></>
+                      )
                     ) : ticketSelectedDetail.status === "inprogress" ? (
                       editTicketStatus ? (
                         <>
@@ -578,51 +597,66 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                         </>
                       ) : (
                         <>
-                          <Button
-                            ghost
-                            type="primary"
-                            onClick={() => setEditTicketStatus(true)}
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            type="primary"
-                            onClick={() =>
-                              updateTicketStatus(
-                                ticketSelectedDetail.id,
-                                "hold",
-                                "hold"
-                              )
-                            }
-                          >
-                            Hold Ticket
-                          </Button>
-
-                          <Button
-                            type="primary"
-                            onClick={() =>
-                              updateTicketStatus(
-                                ticketSelectedDetail.id,
-                                "finish",
-                                "finish"
-                              )
-                            }
-                          >
-                            Finish Ticket
-                          </Button>
-                          <Button
-                            type="primary"
-                            danger
-                            onClick={() =>
-                              updateTicketStatus(
-                                ticketSelectedDetail.id,
-                                "cancel",
-                                "cancel"
-                              )
-                            }
-                          >
-                            Cancel Ticket
-                          </Button>
+                          {rules.ruleTicketUpdateStatus ? (
+                            <Button
+                              ghost
+                              type="primary"
+                              onClick={() => setEditTicketStatus(true)}
+                            >
+                              Edit
+                            </Button>
+                          ) : (
+                            <></>
+                          )}
+                          {rules.ruleTicketHold ? (
+                            <Button
+                              type="primary"
+                              onClick={() =>
+                                updateTicketStatus(
+                                  ticketSelectedDetail.id,
+                                  "hold",
+                                  "hold"
+                                )
+                              }
+                            >
+                              Hold Ticket
+                            </Button>
+                          ) : (
+                            <></>
+                          )}
+                          {rules.ruleTicketUpdateStatus ? (
+                            <Button
+                              type="primary"
+                              onClick={() =>
+                                updateTicketStatus(
+                                  ticketSelectedDetail.id,
+                                  "finish",
+                                  "finish"
+                                )
+                              }
+                            >
+                              Finish Ticket
+                            </Button>
+                          ) : (
+                            <></>
+                          )}
+                          {rules.ruleTicketUpdateStatus ? (
+                            <Button
+                              type="primary"
+                              danger
+                              onClick={() =>
+                                updateTicketStatus(
+                                  ticketSelectedDetail.id,
+                                  "cancel",
+                                  "cancel"
+                                )
+                              }
+                            >
+                              Cancel Ticket
+                            </Button>
+                          ) : (
+                            <></>
+                          )}
                         </>
                       )
                     ) : ticketSelectedDetail.status === "finish" ||

@@ -23,6 +23,21 @@ import { ITSelectUsers } from "./common";
 
 export default function MaTaskPage() {
   const { data: session } = useSession();
+  const rules = {
+    ruleProjectShow: checkRule("crm-p-s"),
+    ruleProjectAdd: checkRule("crm-p-a"),
+    ruleProjectEdit: checkRule("crm-p-e"),
+    ruleProjectDelete: checkRule("crm-p-d"),
+    ruleProjectTaskAdd: checkRule("crm-pt-a"),
+    ruleProjectTaskEdit: checkRule("crm-pt-e"),
+    ruleProjectTaskDelete: checkRule("crm-pt-d"),
+    ruleTicketAdd: checkRule("crm-t-a"),
+    ruleTicketEdit: checkRule("crm-t-e"),
+    ruleTicketRequestFilesEdit: checkRule("crm-trf-e"),
+    ruleTicketUpdateStatus: checkRule("crm-t-u"),
+    ruleTicketHold: checkRule("crm-t-h"),
+    ruleTicketClose: checkRule("crm-t-c"),
+  };
   const crmAuth = useAxiosCrm();
   const crmServices = CrmServices(crmAuth);
 
@@ -91,31 +106,39 @@ export default function MaTaskPage() {
 
         <Col span={24}>
           <div className="grid grid-cols-1 ">
-            <Card>
-              <div className=" grid grid-col-1 space-y-2">
-                <div className=" flex justify-end">
-                  <Link href="/page/crm/project/add-project">
-                    <Button size="small" type="primary">
-                      Add Project
-                    </Button>
-                  </Link>
-                </div>
-                <div>
-                  <ProjectFilterComponent
-                    onSearch={(data) => {
-                      setSearch(data);
-                      setPagination({ ...pagination, current: 1 });
-                      setloading(true);
-                    }}
+            {rules.ruleProjectShow ? (
+              <Card>
+                <div className=" grid grid-col-1 space-y-2">
+                  <div className=" flex justify-end">
+                    {rules.ruleProjectAdd ? (
+                      <Link href="/page/crm/project/add-project">
+                        <Button size="small" type="primary">
+                          Add Project
+                        </Button>
+                      </Link>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                  <div>
+                    <ProjectFilterComponent
+                      onSearch={(data) => {
+                        setSearch(data);
+                        setPagination({ ...pagination, current: 1 });
+                        setloading(true);
+                      }}
+                    />
+                  </div>
+                  <ProjectTableComponent
+                    dataTable={dataTable}
+                    changePagination={changePagination}
+                    pagination={pagination}
                   />
                 </div>
-                <ProjectTableComponent
-                  dataTable={dataTable}
-                  changePagination={changePagination}
-                  pagination={pagination}
-                />
-              </div>
-            </Card>
+              </Card>
+            ) : (
+              <></>
+            )}
           </div>
         </Col>
       </Row>

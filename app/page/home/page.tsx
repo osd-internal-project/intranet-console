@@ -32,10 +32,10 @@ export default function HomePage() {
           </Card>
         </div>
         <div className="px-2 mb-4">
-          <Card className="text-center">
+          <Card className="text-center" >
             <CarFilled className="text-5xl text-blue-500" />
             <br />
-            <a href="#">จองรถยนต์ออนไลน์</a>
+            <a href="/page/carre-serve">จองรถยนต์ออนไลน์</a>
           </Card>
         </div>
       </div>

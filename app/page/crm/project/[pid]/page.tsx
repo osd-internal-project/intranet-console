@@ -195,7 +195,6 @@ export default function CustomerDetailPage() {
       ...data,
       status: "new",
       createdById: session?.user.userId,
-      // groupId: session?.user.ownerGroup,
       createdByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
     };
     if (form.requestTypeId) {
@@ -209,6 +208,72 @@ export default function CustomerDetailPage() {
         };
       }
     }
+    if (form.jobTypeId) {
+      const selected = ticketConfigs.jobTypeList.findLast(
+        (config) => config.id === form.jobTypeId
+      );
+      if (selected?.name) {
+        form = {
+          ...form,
+          jobTypeName: selected.name,
+        };
+      }
+    }
+    if (form.workTypeId) {
+      const selected = ticketConfigs.workTypeList.findLast(
+        (config) => config.id === form.workTypeId
+      );
+      if (selected?.name) {
+        form = {
+          ...form,
+          workTypeName: selected.name,
+        };
+      }
+    }
+    if (form.channelTypeId) {
+      const selected = ticketConfigs.channelTypeList.findLast(
+        (config) => config.id === form.channelTypeId
+      );
+      if (selected?.name) {
+        form = {
+          ...form,
+          channelTypeName: selected.name,
+        };
+      }
+    }
+    if (form.priorityId) {
+      const selected = ticketConfigs.priorityList.findLast(
+        (config) => config.id === form.priorityId
+      );
+      if (selected?.name) {
+        form = {
+          ...form,
+          priorityName: selected.name,
+        };
+      }
+    }
+    if (taskId) {
+      form = { ...form, customerProjectTaskId: taskId };
+    }
+    await crmServices
+      .createProjectTicket(projectId, form)
+      .then(async (data) => {
+        if (data.id && attendFiles.length > 0) {
+          attendFiles.forEach(async (file) => {
+            const formData: any = new FormData();
+            formData.append("type", "create-attend");
+            formData.append("files", file.originFileObj);
+            await crmServices.uploadFiles(data.id, formData);
+          });
+        }
+        setShowModalTicketAdd(false);
+        message.success("สร้าง Ticket สำเร็จ");
+        await onSaveHistoryLogs(data.id, "create");
+      })
+      .catch(() => {
+        message.error("ผิดพลาด กรุณาลองใหม่");
+      });
+    setloading(true);
   };
   const onUpdateProjectTask = async (
     taskId: number | undefined,

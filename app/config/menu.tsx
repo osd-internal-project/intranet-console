@@ -49,6 +49,7 @@ export const MenuSider: MenuItem[] = [
     key: "internal-info",
     icon: organizeChart,
     label: `Internal Info`,
+    rule: "m-s",
     children: [
       {
         key: `internal-info/organization-chart`,
@@ -64,7 +65,7 @@ export const MenuSider: MenuItem[] = [
     key: "stock",
     icon: stockIcon,
     label: "Stock",
-    rule: "stock",
+    rule: "s-s",
     children: [
       {
         key: `order-management`,
@@ -131,7 +132,7 @@ export const MenuSider: MenuItem[] = [
     key: "housekeeper",
     icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
     label: "Housekeeper",
-    rule: "housekeeper",
+    rule: "hk-s",
     children: [
       {
         key: `housekeeper/housekeepers`,
@@ -194,7 +195,7 @@ export const MenuSider: MenuItem[] = [
     key: "maintenance",
     icon: maintenanceIcon,
     label: "Maintenance",
-    // rule: "menu-ma",
+    rule: "ma-s",
     children: [
       {
         key: `maintenance-management`,
@@ -209,7 +210,7 @@ export const MenuSider: MenuItem[] = [
     key: `setting`,
     icon: <Icon icon="uil:setting" width="15" height="15" />,
     label: `Setting`,
-    // rule: "st-s",
+    rule: "st-s",
     children: [
       {
         key: `setting/maintenance-type`,
@@ -252,7 +253,7 @@ export const MenuSider: MenuItem[] = [
     key: `users-management`,
     icon: gridIcon,
     label: `User Management`,
-    // rule: "st-s",
+    rule: "um-s",
     children: [
       {
         key: `users-management/users`,

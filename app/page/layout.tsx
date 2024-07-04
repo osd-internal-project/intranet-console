@@ -3,12 +3,13 @@ import React, { useEffect, useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Navigation from "@/components/Navigation";
-import { Layout, Menu, message, Spin } from "antd";
+import { FloatButton, Layout, Menu, message, Spin } from "antd";
 import { MenuSiderWithModule } from "@/app/config/menu";
 import { pageWithoutMenu } from "@/app/config/data";
 import { Footer } from "antd/es/layout/layout";
 import { useAxiosStock, useAxiosUser } from "../lib/axios/hooks/userAxiosAuth";
 import IndexServices from "./services/index.service";
+import { PhoneOutlined } from "@ant-design/icons";
 
 export default function MainLayout({
   children,
@@ -144,6 +145,12 @@ export default function MainLayout({
             {children}
           </Content>
           <Footer style={{ textAlign: "center" }}>
+            <FloatButton
+              shape="circle"
+              type="primary"
+              style={{ right: 10, bottom: 10 }}
+              icon={<PhoneOutlined />}
+            />
             Intranet ©{new Date().getFullYear()} Created by OSD
           </Footer>
         </Layout>

@@ -11,7 +11,11 @@ export function createCookieLocal(name: string, value: string) {
 
 export const checkRule = (keyword: string) => {
   const { data: session } = useSession();
-  return session?.rulelist.includes(keyword);
+  if (session) {
+    return session?.rulelist.includes(keyword);
+  } else {
+    return false;
+  }
 };
 // export async function createCookie(name: string, value: string) {
 //   cookies().set({

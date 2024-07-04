@@ -85,7 +85,7 @@ const TaskComponent: React.FC<props> = ({
         <div>
           <div className=" flex justify-between ">
             <div className=" font-bold pl-2">Task List</div>
-            {rules.ruleTaskAdd ? (
+            {rules.ruleProjectTaskAdd ? (
               <Button
                 size="small"
                 type="primary"
@@ -116,7 +116,7 @@ const TaskComponent: React.FC<props> = ({
                   <div className="  font-bold">
                     {index + 1}.{task.taskTitle}
                   </div>
-                  {rules.ruleProjectEdit ? (
+                  {rules.ruleProjectTaskEdit ? (
                     <Button
                       style={{ zIndex: 2 }}
                       size="small"

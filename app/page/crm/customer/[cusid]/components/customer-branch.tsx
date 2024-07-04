@@ -135,6 +135,7 @@ const BranchComponent: React.FC<props> = ({
       <div className=" flex justify-end">
         {rules.ruleCustomerBranchAdd ? (
           <Button
+            size="small"
             type="primary"
             onClick={() => {
               onShowModalBranchAdd(true);
@@ -147,6 +148,7 @@ const BranchComponent: React.FC<props> = ({
         )}
       </div>
       <Table
+        size="small"
         columns={columns}
         dataSource={branchs}
         rowKey={(data: ITBranch) => data.id}

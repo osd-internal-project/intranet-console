@@ -342,6 +342,7 @@ export default function CustomerDetailPage() {
               <div>
                 <Card>
                   <Tabs
+                    size="small"
                     items={[
                       {
                         key: "branch",

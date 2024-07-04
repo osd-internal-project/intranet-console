@@ -263,7 +263,6 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                               Click to upload
                             </Button>
                           </Upload>
-                          x
                           {requestFiles.length > 0 ? (
                             <>
                               <Button

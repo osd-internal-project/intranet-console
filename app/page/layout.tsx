@@ -143,14 +143,14 @@ export default function MainLayout({
             }}
           >
             {children}
-          </Content>
-          <Footer style={{ textAlign: "center" }}>
-            {/* <FloatButton
+            <FloatButton
               shape="circle"
               type="primary"
               style={{ right: 10, bottom: 10 }}
               icon={<PhoneOutlined />}
-            /> */}
+            />
+          </Content>
+          <Footer style={{ textAlign: "center" }}>
             Intranet ©{new Date().getFullYear()} Created by OSD
           </Footer>
         </Layout>

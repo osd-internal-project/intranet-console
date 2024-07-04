@@ -5,6 +5,7 @@ import {
   Button,
   Card,
   Col,
+  message,
   Row,
   Spin,
   TablePaginationConfig,
@@ -68,7 +69,9 @@ export default function MaTaskPage() {
   // }
 
   async function deleteCustomer(id: number): Promise<void> {
-    await crmServices.delete(id);
+    await crmServices.delete(id).then((data) => {
+      message.success("ลบสำเร็จ");
+    });
     setloading(true);
   }
 

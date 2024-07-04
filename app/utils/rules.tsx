@@ -11,7 +11,7 @@ export function createCookieLocal(name: string, value: string) {
 
 export const checkRule = (keyword: string) => {
   const { data: session } = useSession();
-  if (session) {
+  if (session?.rulelist) {
     return session?.rulelist.includes(keyword);
   } else {
     return false;

@@ -17,7 +17,12 @@ export interface props {
   formEdit: FormInstance;
 }
 
-const BranchEditComponent: React.FC<props> = ({ showModalBranchEdit, onShowModalBranchEdit, onSaveBranchEdit, formEdit }): React.ReactElement => {
+const BranchEditComponent: React.FC<props> = ({
+  showModalBranchEdit,
+  onShowModalBranchEdit,
+  onSaveBranchEdit,
+  formEdit,
+}): React.ReactElement => {
   const [form] = useForm();
   useEffect(() => {
     form.resetFields();
@@ -31,14 +36,29 @@ const BranchEditComponent: React.FC<props> = ({ showModalBranchEdit, onShowModal
         onShowModalBranchEdit(false);
       }}
     >
-      <Form form={formEdit} name="addBranchForm" size="small" {...layout} onFinish={onSaveBranchEdit} autoComplete="off">
+      <Form
+        form={formEdit}
+        name="addBranchForm"
+        size="small"
+        {...layout}
+        onFinish={onSaveBranchEdit}
+        autoComplete="off"
+      >
         <Form.Item label={"id"} name={"id"} hidden>
           <Input readOnly />
         </Form.Item>
-        <Form.Item label={"รหัสสาขา"} name={"branchCode"} rules={[{ required: true, message: `กรุณากรอกรหัสสาขา` }]}>
+        <Form.Item
+          label={"รหัสสาขา"}
+          name={"branchCode"}
+          rules={[{ required: true, message: `กรุณากรอกรหัสสาขา` }]}
+        >
           <Input />
         </Form.Item>
-        <Form.Item label={"ชื่อสาขา"} name={"branchName"} rules={[{ required: true, message: `กรุณากรอกชื่อสาขา` }]}>
+        <Form.Item
+          label={"ชื่อสาขา"}
+          name={"branchName"}
+          rules={[{ required: true, message: `กรุณากรอกชื่อสาขา` }]}
+        >
           <Input />
         </Form.Item>
         <div className=" flex justify-end space-x-2">

@@ -217,6 +217,7 @@ export default function CustomerDetailPage() {
       .editBranch(+form.id, base)
       .then((res) => {
         message.success("แก้ไขสาขาสำเร็จ");
+        setShowModalBranchEdit(false);
       })
       .catch(() => {
         message.error("ผิดพลาด กรุณาลองใหม่");

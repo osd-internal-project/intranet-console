@@ -12,7 +12,10 @@ import {
   organizeChart,
   stockIcon,
   contactListIcon,
+  macarIcon,
+  chevronIcon,
 } from "@/components/icon";
+import { icons } from "antd/es/image/PreviewGroup";
 
 type MenuItem = Required<MenuProps>["items"][number];
 const MenuNav: MenuProps["items"] = [
@@ -290,17 +293,39 @@ export const MenuSider: MenuItem[] = [
     key: "crm",
     icon: contactListIcon,
     label: `CRM`,
-    rule: "crm-s",
+    // rule: "crm-s",
     children: [
       {
         key: `crm/customer`,
         label: `Customer`,
-        rule: "crm-c-s",
+        // rule: "crm-c-s",
       },
       {
         key: `crm/project`,
         label: `Project `,
-        rule: "crm-p-s",
+        // rule: "crm-p-s",
+      },
+    ],
+  },
+  {
+    key: "ma-cars",
+    icon: macarIcon,
+    label: `Ma Car`,
+    children: [
+      {
+        key: `macar/ma-car`,
+        // icon: chevronIcon,
+        label: `Ma car`,
+      },
+      {
+        key: `macar/ma-car-booking`,
+        // icon: chevronIcon,
+        label: `Ma car Booking`,
+      },
+      {
+        key: `macar/ma-car-management`,
+        // icon: chevronIcon,
+        label: `Ma car Management`,
       },
     ],
   },

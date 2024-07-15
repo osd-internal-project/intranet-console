@@ -19,6 +19,7 @@ export default function UsergroupPage() {
     setGroupSelect(e.groupSelect);
     setLoading(e.loading);
   };
+  const onSetPermission = () => {};
   return (
     <>
       <Row gutter={[8, 8]}>
@@ -47,12 +48,20 @@ export default function UsergroupPage() {
           <div className="grid grid-cols-1 md:grid-cols-2">
             <div>
               <Spin spinning={loading}>
-                <GroupTree propDataTree={propDataTree} loading={loading} selectOrganize={selectedOrganize} />
+                <GroupTree
+                  propDataTree={propDataTree}
+                  loading={loading}
+                  selectOrganize={selectedOrganize}
+                />
               </Spin>
             </div>
             {groupSelect ? (
               <div>
-                <GroupManage propDataManage={propDataManage} groupSelect={groupSelect} selectOrganize={selectedOrganize} />
+                <GroupManage
+                  propDataManage={propDataManage}
+                  groupSelect={groupSelect}
+                  selectOrganize={selectedOrganize}
+                />
               </div>
             ) : (
               <></>

@@ -1,6 +1,26 @@
 import React, { useState } from "react";
-import type { BadgeProps, CalendarProps, TableColumnsType, TableColumnType, UploadFile } from "antd";
-import { Badge, Button, Calendar, Card, DatePicker, Divider, Form, Input, Modal, Select, Switch, Table, Tag } from "antd";
+import type {
+  BadgeProps,
+  CalendarProps,
+  TableColumnsType,
+  TableColumnType,
+  UploadFile,
+} from "antd";
+import {
+  Badge,
+  Button,
+  Calendar,
+  Card,
+  DatePicker,
+  Divider,
+  Form,
+  Input,
+  Modal,
+  Select,
+  Switch,
+  Table,
+  Tag,
+} from "antd";
 import type { Dayjs } from "dayjs";
 import { ColumnType } from "antd/es/table";
 import { dateToStringTh, dateToStringThNoTime } from "@/app/utils/format";
@@ -14,13 +34,25 @@ export interface props {
   data: ITMaTask;
   loading: boolean;
   setLoading: (loading: boolean) => void;
-  updateMa: (data: ITMaUpdateForm, attendFiles: UploadFile[], imageFiles: UploadFile[]) => void;
+  updateMa: (
+    data: ITMaUpdateForm,
+    attendFiles: UploadFile[],
+    imageFiles: UploadFile[]
+  ) => void;
   maTypes: ITMaType[];
   downloadFile: (id: number, name: string) => void;
   getImageBlob: (id: number, name: string) => Promise<Blob | undefined>;
 }
 
-const MaDescriptionComponent: React.FC<props> = ({ data, loading, setLoading, maTypes, updateMa, downloadFile, getImageBlob }): React.ReactElement => {
+const MaDescriptionComponent: React.FC<props> = ({
+  data,
+  loading,
+  setLoading,
+  maTypes,
+  updateMa,
+  downloadFile,
+  getImageBlob,
+}): React.ReactElement => {
   console.log(data);
   const [checkNextTask, setCheckNextTask] = useState<boolean>(false);
 
@@ -77,7 +109,9 @@ const MaDescriptionComponent: React.FC<props> = ({ data, loading, setLoading, ma
         </div>
         <div className="grid  grid-cols-3  mb-2">
           <div className=" col-span-1 font-bold">วันนัดหมาย :</div>
-          <div className=" col-span-2">{data.maDate ? dateToStringTh(data.maDate) : ""}</div>
+          <div className=" col-span-2">
+            {data.maDate ? dateToStringTh(data.maDate) : ""}
+          </div>
         </div>
         <div className="grid  grid-cols-3 mb-2 ">
           <div className=" col-span-1 font-bold">ผู้นัดหมาย :</div>
@@ -85,7 +119,9 @@ const MaDescriptionComponent: React.FC<props> = ({ data, loading, setLoading, ma
         </div>
         <div className="grid  grid-cols-3  mb-2">
           <div className=" col-span-1 font-bold">วันที่สร้าง :</div>
-          <div className=" col-span-2">{data.createdAt ? dateToStringThNoTime(data.createdAt) : ""}</div>
+          <div className=" col-span-2">
+            {data.createdAt ? dateToStringThNoTime(data.createdAt) : ""}
+          </div>
         </div>
         <div className="grid  grid-cols-3  mb-2">
           <div className=" col-span-1 font-bold">ผู้สร้าง :</div>
@@ -98,7 +134,15 @@ const MaDescriptionComponent: React.FC<props> = ({ data, loading, setLoading, ma
       </div>
 
       <Divider />
-      {data.maStatus === "process" ? <MaSubmitForm updateMa={updateMa} maTypes={maTypes} /> : <MaSolution data={data} downloadFile={downloadFile} getImageBlob={getImageBlob} />}
+      {data.maStatus === "process" ? (
+        <MaSubmitForm updateMa={updateMa} maTypes={maTypes} />
+      ) : (
+        <MaSolution
+          data={data}
+          downloadFile={downloadFile}
+          getImageBlob={getImageBlob}
+        />
+      )}
     </Card>
   );
 };

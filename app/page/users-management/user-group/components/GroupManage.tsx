@@ -1,13 +1,38 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Col, Descriptions, DescriptionsProps, Form, Input, Modal, Row, Select, Skeleton, Tree, message } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Descriptions,
+  DescriptionsProps,
+  Form,
+  Input,
+  Modal,
+  Row,
+  Select,
+  SelectProps,
+  Skeleton,
+  Tree,
+  message,
+} from "antd";
 import UserGroupServices from "../services/usergroup.service";
 import { GroupManageSkeleton } from "./Skeleton";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { ExclamationCircleFilled, PlusOutlined } from "@ant-design/icons";
+import {
+  CarryOutOutlined,
+  ExclamationCircleFilled,
+  PlusOutlined,
+} from "@ant-design/icons";
 import { checkRule } from "@/app/utils/rules";
 import RolesServices from "../../user-role/services/role.service";
+import GroupPermissionComponent from "./GroupPermission";
+import { useSession } from "next-auth/react";
 export interface props {
-  propDataManage: (res: { selectOrganize: string | null; groupSelect: string | null; loading: boolean }) => void;
+  propDataManage: (res: {
+    selectOrganize: string | null;
+    groupSelect: string | null;
+    loading: boolean;
+  }) => void;
   groupSelect: string | null;
   selectOrganize: string | null;
 }
@@ -27,14 +52,24 @@ type groupDetail = {
   parentGroupId: string;
   // organizedGroupId: string;
 };
-
-const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrganize }): React.ReactElement => {
+export type ITSelectUsers = {
+  userId: string;
+  firstNameTh: string;
+  lastNameTh: string;
+};
+const GroupManage: React.FC<props> = ({
+  propDataManage,
+  groupSelect,
+  selectOrganize,
+}): React.ReactElement => {
+  const { data: session } = useSession();
   const userAuth = useAxiosUser();
   const addRule = checkRule("um-ug-a");
   const editRule = checkRule("um-ug-e");
   const deleteRule = checkRule("um-ug-d");
   const [addform] = Form.useForm();
   const [editform] = Form.useForm();
+  const [permissionform] = Form.useForm();
   const userGroupServices = UserGroupServices(userAuth);
   const userRolesServices = RolesServices(userAuth);
   const [groupDetail, setGroupDetail] = useState<groupDetail | null>(null);
@@ -42,7 +77,15 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
   const [editState, setEditState] = useState<boolean>(false);
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
   const [selectRole, setSeleceRole] = useState<TSelectRoleDto[]>([]);
-
+  const [showModalPermission, setShowModalPermission] =
+    useState<boolean>(false);
+  const [groupOption, setGroupOption] = useState<SelectProps["options"]>([]);
+  const [saleUsersFormGroup, setSaleUsersFormGroup] = useState<ITSelectUsers[]>(
+    []
+  );
+  const [engineerUsersFormGroup, setEngineerUsersFormGroup] = useState<
+    ITSelectUsers[]
+  >([]);
   useEffect(() => {
     featchData();
   }, [groupSelect]);
@@ -50,24 +93,79 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
   const featchData = async () => {
     setEditState(false);
     setGroupDetail(null);
+    if (session?.user.userId) {
+      const groups = await userGroupServices.getUserGroupFormOrganizedByUserId(
+        session?.user.userId
+      );
+      const tree = createTree(groups.organizeMapGroup, null);
+      setGroupOption(tree);
+    }
+
     if (groupSelect) {
-      const groupDetail: any = await userGroupServices.getUserGroupByGroupId(groupSelect);
+      const groupDetail: any = await userGroupServices.getUserGroupByGroupId(
+        groupSelect
+      );
+
       const resRole = await userRolesServices.getUserRoleAll();
       editform.setFieldsValue(groupDetail);
       editform.setFieldValue(
         "userRole",
         groupDetail.userGroupUserRoleMap.length > 0
-          ? groupDetail.userGroupUserRoleMap.map((item: { id: number; roleId: string; userGroupId: string }) => item.roleId)
+          ? groupDetail.userGroupUserRoleMap.map(
+              (item: { id: number; roleId: string; userGroupId: string }) =>
+                item.roleId
+            )
           : []
       );
+
+      await onChangeSaleGroupSelect(groupDetail.saleUserGroupId);
+      await onChangeEngineerGroupSelect(groupDetail.engineerUserGroupId);
+      console.log(groupDetail.exceptionalSatatus);
+      permissionform.setFieldsValue({
+        exceptionalSatatus: groupDetail.exceptionalSatatus,
+        saleUserGroupId: groupDetail.saleUserGroupId,
+        saleUsersId: groupDetail.saleUsersId,
+        engineerUserGroupId: groupDetail.engineerUserGroupId,
+        engineerUsersId: groupDetail.engineerUsersId,
+      });
       setGroupDetail(groupDetail);
       setSeleceRole(resRole);
     }
   };
+  const createTree = (obj: any[], parentId: string | null) => {
+    const tree: any[] = [];
+    obj.forEach((item) => {
+      if (item.group.parentGroupId === parentId) {
+        const children = createTree(obj, item.group.groupId);
+        if (children.length > 0) {
+          (item.group.icon = <CarryOutOutlined />),
+            (item.group.children = children);
+        }
+        tree.push({
+          value: item.group.groupId,
+          title: item.group.groupName,
+          children: item.group.children,
+        });
+      }
+    });
+    return tree;
+  };
 
+  async function onChangeSaleGroupSelect(group: string[]): Promise<void> {
+    const data = await userGroupServices.findUsersByOwnerGroup(group);
+    setSaleUsersFormGroup(data);
+  }
+  async function onChangeEngineerGroupSelect(group: string[]): Promise<void> {
+    const data = await userGroupServices.findUsersByOwnerGroup(group);
+    setEngineerUsersFormGroup(data);
+  }
   const onCloseDetail = () => {
     setGroupDetail(null);
-    propDataManage({ selectOrganize: selectOrganize, groupSelect: null, loading: true });
+    propDataManage({
+      selectOrganize: selectOrganize,
+      groupSelect: null,
+      loading: true,
+    });
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -81,7 +179,11 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
       .then(() => {
         message.success(`Edit success`);
         setOpenAddModel(false);
-        propDataManage({ selectOrganize: selectOrganize, loading: true, groupSelect: values.groupId });
+        propDataManage({
+          selectOrganize: selectOrganize,
+          loading: true,
+          groupSelect: values.groupId,
+        });
       })
       .catch((err) => message.error(err));
     setbuttonLoading(false);
@@ -97,14 +199,20 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
       okText: "Confirm",
       async onOk() {
         if (groupDetail) {
-          await userGroupServices.deleteUserGroup(groupDetail.groupId).then((res) => {
-            if (res.data.status === 401) {
-              message.error(res.data.message);
-            } else {
-              message.success("Delete Success");
-              propDataManage({ selectOrganize: selectOrganize, loading: true, groupSelect: null });
-            }
-          });
+          await userGroupServices
+            .deleteUserGroup(groupDetail.groupId)
+            .then((res) => {
+              if (res.data.status === 401) {
+                message.error(res.data.message);
+              } else {
+                message.success("Delete Success");
+                propDataManage({
+                  selectOrganize: selectOrganize,
+                  loading: true,
+                  groupSelect: null,
+                });
+              }
+            });
         } else {
           message.error(`ผิดพลาด กรุณาลองใหม่`);
         }
@@ -131,14 +239,45 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
         setOpenAddModel(false);
       })
       .catch((err) => message.error(err));
-    propDataManage({ selectOrganize: selectOrganize, loading: true, groupSelect: null });
+    propDataManage({
+      selectOrganize: selectOrganize,
+      loading: true,
+      groupSelect: null,
+    });
     setbuttonLoading(false);
   };
 
   const onClickEdit = async () => {
     setEditState(!editState);
   };
-
+  const onSetPermission = async (form: {
+    exceptionalSatatus: boolean;
+    saleUserGroupId: string[];
+    saleUsersId: string[];
+    engineerUserGroupId: string[];
+    engineerUsersId: string[];
+  }): Promise<void> => {
+    const data = {
+      exceptionalSatatus: form.exceptionalSatatus,
+      saleUserGroupId: form.saleUserGroupId,
+      saleUsersId: form.saleUsersId,
+      engineerUserGroupId: form.engineerUserGroupId,
+      engineerUsersId: form.engineerUsersId,
+    };
+    if (groupSelect) {
+      await userGroupServices
+        .updateUserGroupPermission(groupSelect, data)
+        .then(() => {
+          message.success(`Edit success`);
+          setShowModalPermission(false);
+        })
+        .catch((err) => message.error(err));
+    }
+    console.log(form);
+  };
+  const onShowSetPermission = () => {
+    setShowModalPermission(true);
+  };
   return groupDetail ? (
     <>
       <Card className="mx-2 my-2 md:my-0  " style={{ minHeight: " 500px" }}>
@@ -146,9 +285,13 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
           <Row>
             <Col span={12}>
               <div>
-                <div className=" text-2xl  font-semibold inline-block mb-3">Group Detail</div>
+                <div className=" text-2xl  font-semibold inline-block mb-3">
+                  Group Detail
+                </div>
                 <div className=" text-slate-400">
-                  {!groupDetail.parentGroupId ? `*หากต้องการเพิ่มกลุ่มย่อยภายใต้ชื่อกลุ่มนี้ให้กด Add Sub Group` : ``}
+                  {!groupDetail.parentGroupId
+                    ? `*หากต้องการเพิ่มกลุ่มย่อยภายใต้ชื่อกลุ่มนี้ให้กด Add Sub Group`
+                    : ``}
                 </div>
               </div>
             </Col>
@@ -166,7 +309,11 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
                 {!editState ? (
                   <>
                     {editRule ? (
-                      <Button type="primary" onClick={onClickEdit} loading={buttonLoading}>
+                      <Button
+                        type="primary"
+                        onClick={onClickEdit}
+                        loading={buttonLoading}
+                      >
                         Edit
                       </Button>
                     ) : (
@@ -195,7 +342,14 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
           </Row>
           {/* </div> */}
 
-          <Form form={editform} onFinish={onFinishEdit} onFinishFailed={onFinishFailed} name="editForm" layout="vertical" initialValues={groupDetail}>
+          <Form
+            form={editform}
+            onFinish={onFinishEdit}
+            onFinishFailed={onFinishFailed}
+            name="editForm"
+            layout="vertical"
+            initialValues={groupDetail}
+          >
             <div>
               <Form.Item name="groupId" label="Group Id :">
                 <Input className="read-only-input" disabled />
@@ -205,24 +359,44 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
               </Form.Item>
             </div>
             <div>
-              <Form.Item name="groupName" label="Name :" rules={[{ required: true, message: "Please enter sub group name" }]}>
-                <Input disabled={editState === false ? true : false} className={!editState ? "read-only-input" : ""} />
+              <Form.Item
+                name="groupName"
+                label="Name :"
+                rules={[
+                  { required: true, message: "Please enter sub group name" },
+                ]}
+              >
+                <Input
+                  disabled={editState === false ? true : false}
+                  className={!editState ? "read-only-input" : ""}
+                />
               </Form.Item>
             </div>
             <div>
               <Form.Item name="description" label="Description :">
-                <Input.TextArea disabled={editState === false ? true : false} className={!editState ? "read-only-input" : ""} />
+                <Input.TextArea
+                  disabled={editState === false ? true : false}
+                  className={!editState ? "read-only-input" : ""}
+                />
               </Form.Item>
             </div>
             <div>
               <Form.Item name="userRole" label="user role :">
                 <Select
                   mode="multiple"
-                  options={selectRole.map((item: TSelectRoleDto) => ({ value: item.roleId, label: item.roleName }))}
+                  options={selectRole.map((item: TSelectRoleDto) => ({
+                    value: item.roleId,
+                    label: item.roleName,
+                  }))}
                   disabled={editState === false ? true : false}
                   className={!editState ? "read-only-input" : ""}
                 />
               </Form.Item>
+            </div>
+            <div className=" text-right">
+              <Button onClick={onShowSetPermission} type="link">
+                Set CRM Permission
+              </Button>
             </div>
             {editState ? (
               <div className="flex justify-end space-x-4 ">
@@ -236,7 +410,11 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
                     Back
                   </Button>
                 </Form.Item>
-                <Button type="primary" htmlType="submit" loading={buttonLoading}>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={buttonLoading}
+                >
                   Save Change
                 </Button>
               </div>
@@ -264,16 +442,27 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
           labelCol={{ span: 7 }}
           style={{ marginBottom: "-30px" }}
         >
-          <Form.Item label="Group Parent" name="parentName" style={{ marginTop: "22px" }}>
+          <Form.Item
+            label="Group Parent"
+            name="parentName"
+            style={{ marginTop: "22px" }}
+          >
             <Input disabled />
           </Form.Item>
-          <Form.Item label="Sub Group Name" name="groupName" rules={[{ required: true, message: "Please enter sub group name" }]}>
+          <Form.Item
+            label="Sub Group Name"
+            name="groupName"
+            rules={[{ required: true, message: "Please enter sub group name" }]}
+          >
             <Input />
           </Form.Item>
           <Form.Item label="Description" name="description">
             <Input.TextArea />
           </Form.Item>
-          <Row gutter={[8, 8]} style={{ justifyContent: "end", display: "flex" }}>
+          <Row
+            gutter={[8, 8]}
+            style={{ justifyContent: "end", display: "flex" }}
+          >
             <Col>
               <Button
                 key="cancel"
@@ -288,7 +477,12 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
             <Col>
               {addRule ? (
                 <Form.Item>
-                  <Button key="submit" htmlType="submit" type="primary" loading={buttonLoading}>
+                  <Button
+                    key="submit"
+                    htmlType="submit"
+                    type="primary"
+                    loading={buttonLoading}
+                  >
                     Add
                   </Button>
                 </Form.Item>
@@ -299,6 +493,19 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
           </Row>
         </Form>
       </Modal>
+      <GroupPermissionComponent
+        groupOption={groupOption}
+        onChangeSaleGroupSelect={onChangeSaleGroupSelect}
+        onChangeEngineerGroupSelect={onChangeEngineerGroupSelect}
+        saleUsersFormGroup={saleUsersFormGroup}
+        engineerUsersFormGroup={engineerUsersFormGroup}
+        showModalPermission={showModalPermission}
+        onShowModalPermission={(status: boolean) =>
+          setShowModalPermission(status)
+        }
+        permissionform={permissionform}
+        onSetPermission={onSetPermission}
+      />
     </>
   ) : (
     <GroupManageSkeleton />

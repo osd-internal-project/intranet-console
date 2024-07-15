@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import type { FormInstance } from "antd";
+import React, { useEffect, useState } from "react";
+import type { FormInstance, UploadFile, UploadProps } from "antd";
 import {
   Button,
   Card,
@@ -7,17 +7,23 @@ import {
   Divider,
   Form,
   Input,
+  message,
   Modal,
   Select,
   Switch,
+  Upload,
 } from "antd";
 import {
   ITBranchContactForm,
   ITProjectTicketCreateForm,
+  ITSelectUsers,
   ITTicketConfigs,
 } from "../../common";
-import { CloseOutlined } from "@ant-design/icons";
+import { CloseOutlined, UploadOutlined } from "@ant-design/icons";
+
+import { RcFile } from "antd/es/upload";
 import { useForm } from "antd/es/form/Form";
+import { Label } from "recharts";
 
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -34,11 +40,13 @@ export interface props {
   projectId: number;
   showModalTicketAdd: boolean;
   ticketConfigs: ITTicketConfigs;
+  usersList: ITSelectUsers[];
   onShowModalProjectTicketAdd: (status: boolean) => void;
   onSaveProjectTicket: (
     projectId: number,
     taskId: number | undefined,
-    form: ITProjectTicketCreateForm
+    dataForm: ITProjectTicketCreateForm,
+    attendFiles: UploadFile[]
   ) => void;
 }
 
@@ -47,22 +55,42 @@ const ProjectTicketAddComponent: React.FC<props> = ({
   projectId,
   showModalTicketAdd,
   ticketConfigs,
+  usersList,
   onShowModalProjectTicketAdd,
   onSaveProjectTicket,
 }): React.ReactElement => {
-  const [form] = useForm();
-
+  const [addform] = useForm();
+  const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   useEffect(() => {
-    form.resetFields();
+    addform.resetFields();
+    setAttendFiles([]);
   }, [showModalTicketAdd]);
 
   const onFinishSave = (form: ITProjectTicketCreateForm) => {
-    onSaveProjectTicket(projectId, projectTaskSelectId, {
-      ...form,
-    });
+    onSaveProjectTicket(
+      projectId,
+      projectTaskSelectId,
+      {
+        ...form,
+      },
+      attendFiles
+    );
+  };
+  const handleChangeAttendFiles: UploadProps["onChange"] = async ({
+    fileList: newFileList,
+  }) => {
+    return setAttendFiles(newFileList);
+  };
+  const beforeUploadAttendFiles = (file: RcFile) => {
+    if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
+      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
+      return false;
+    }
+    return false;
   };
   return (
     <Modal
+      forceRender
       title={"Add Ticket"}
       footer={[]}
       open={showModalTicketAdd}
@@ -73,7 +101,7 @@ const ProjectTicketAddComponent: React.FC<props> = ({
     >
       <Form
         name="addTaskForm"
-        form={form}
+        form={addform}
         size="small"
         {...layout}
         onFinish={onFinishSave}
@@ -84,14 +112,24 @@ const ProjectTicketAddComponent: React.FC<props> = ({
           <Form.Item label="Title" name={"ticketTitle"}>
             <Input maxLength={100} />
           </Form.Item>
+          <Form.Item label="Request Date" name={"requestDate"}>
+            <DatePicker className=" w-full" format={"DD/MM/YYYY"} />
+          </Form.Item>
           <Form.Item label="Due Date" name={"dueDate"}>
             <DatePicker className=" w-full" format={"DD/MM/YYYY"} />
           </Form.Item>
-          <Form.Item label="Assign To" name={"dueDate"}>
+          <Form.Item label="Appointment Date" name={"appointmentDate"}>
+            <DatePicker className=" w-full" format={"DD/MM/YYYY"} />
+          </Form.Item>
+          <Form.Item label="Assign To" name={"assignId"}>
             <Select
               className=" w-full"
               allowClear
               placeholder="Please Select"
+              options={usersList.map((data) => ({
+                value: data.userId,
+                label: `${data.firstNameTh} ${data.lastNameTh}`,
+              }))}
             />
           </Form.Item>
           <Form.Item
@@ -158,6 +196,17 @@ const ProjectTicketAddComponent: React.FC<props> = ({
                 label: data.name,
               }))}
             />
+          </Form.Item>
+          <Form.Item label={<div>Attach File</div>} valuePropName="fileList">
+            <Upload
+              fileList={attendFiles}
+              onChange={handleChangeAttendFiles}
+              beforeUpload={beforeUploadAttendFiles}
+              multiple={true}
+              maxCount={10}
+            >
+              <Button icon={<UploadOutlined />}>Click to upload</Button>
+            </Upload>
           </Form.Item>
         </div>
         <div className=" flex justify-end space-x-2">

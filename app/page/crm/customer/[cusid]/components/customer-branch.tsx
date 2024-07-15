@@ -1,13 +1,20 @@
 import React from "react";
 import type { FormInstance, TableColumnsType } from "antd";
 import { Button, Input, Modal, Table } from "antd";
-import { ITBranch, ITBranchAddressForm, ITBranchContactForm, ITBranchDetail, ITBranchForm } from "../../common";
+import {
+  ITBranch,
+  ITBranchAddressForm,
+  ITBranchContactForm,
+  ITBranchDetail,
+  ITBranchForm,
+} from "../../common";
 import BranchModalAdd from "../components/branch-data-add";
 import BranchModalEdit from "./branch-data-edit";
 import BranchModalDetail from "../components/branch-data-detail";
 import { deleteIcon, editIcon } from "@/components/icon";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 export interface props {
+  rules: any;
   branchs: ITBranch[];
   branchDetail?: ITBranchDetail;
   showModalBranchAdd: boolean;
@@ -26,6 +33,7 @@ export interface props {
 }
 
 const BranchComponent: React.FC<props> = ({
+  rules,
   branchs,
   branchDetail,
   showModalBranchAdd,
@@ -95,17 +103,29 @@ const BranchComponent: React.FC<props> = ({
       align: "center",
       render: (id: number, record: ITBranch, index: number) => (
         <div className="space-x-1">
-          <Button
-            type="link"
-            onClick={() => {
-              onShowModalBranchEdit(true), formEdit.setFieldsValue(record);
-            }}
-          >
-            {editIcon}
-          </Button>
-          <Button type="link" onClick={() => showModalBranchDelete(id)} danger>
-            {deleteIcon}
-          </Button>
+          {rules.ruleCustomerBranchEdit ? (
+            <Button
+              type="link"
+              onClick={() => {
+                onShowModalBranchEdit(true), formEdit.setFieldsValue(record);
+              }}
+            >
+              {editIcon}
+            </Button>
+          ) : (
+            <></>
+          )}
+          {rules.ruleCustomerBranchDelete ? (
+            <Button
+              type="link"
+              onClick={() => showModalBranchDelete(id)}
+              danger
+            >
+              {deleteIcon}
+            </Button>
+          ) : (
+            <></>
+          )}
         </div>
       ),
     },
@@ -113,17 +133,31 @@ const BranchComponent: React.FC<props> = ({
   return (
     <div className=" grid grid-cols-1 gap-3">
       <div className=" flex justify-end">
-        <Button
-          type="primary"
-          onClick={() => {
-            onShowModalBranchAdd(true);
-          }}
-        >
-          {`Add Branch`}
-        </Button>
+        {rules.ruleCustomerBranchAdd ? (
+          <Button
+            size="small"
+            type="primary"
+            onClick={() => {
+              onShowModalBranchAdd(true);
+            }}
+          >
+            {`Add Branch`}
+          </Button>
+        ) : (
+          <></>
+        )}
       </div>
-      <Table columns={columns} dataSource={branchs} rowKey={(data: ITBranch) => data.id} />
-      <BranchModalAdd onSaveBranch={onSaveBranch} showModalBranchAdd={showModalBranchAdd} onShowModalBranchAdd={onShowModalBranchAdd} />
+      <Table
+        size="small"
+        columns={columns}
+        dataSource={branchs}
+        rowKey={(data: ITBranch) => data.id}
+      />
+      <BranchModalAdd
+        onSaveBranch={onSaveBranch}
+        showModalBranchAdd={showModalBranchAdd}
+        onShowModalBranchAdd={onShowModalBranchAdd}
+      />
       <BranchModalEdit
         onSaveBranchEdit={onSaveBranchEdit}
         showModalBranchEdit={showModalBranchEdit}
@@ -132,6 +166,7 @@ const BranchComponent: React.FC<props> = ({
       />
       {branchDetail ? (
         <BranchModalDetail
+          rules={rules}
           branchDetail={branchDetail}
           onDeleteCustomerBranchAddress={onDeleteCustomerBranchAddress}
           onShowModalBranchDetail={onShowModalBranchDetail}

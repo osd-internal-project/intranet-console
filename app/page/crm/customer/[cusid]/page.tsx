@@ -33,17 +33,21 @@ import { useForm } from "antd/es/form/Form";
 import dayjs from "dayjs";
 import UserServices from "../services/user.service";
 import { ITProject } from "../../project/common";
-
-const customerGroup = [
-  { id: 1, name: "osd1" },
-  { id: 2, name: "osd2" },
-];
-const users = [
-  { userId: "11", name: "user1" },
-  { userId: "22", name: "user2" },
-];
+import { checkRule } from "@/app/utils/rules";
 
 export default function CustomerDetailPage() {
+  const rules = {
+    ruleCustomerShow: checkRule("crm-c-s"),
+    ruleCustomerEdit: checkRule("crm-c-e"),
+    ruleCustomerBranchAdd: checkRule("crm-cb-a"),
+    ruleCustomerBranchEdit: checkRule("crm-cb-e"),
+    ruleCustomerBranchDelete: checkRule("crm-cb-d"),
+    ruleCustomerAddressAdd: checkRule("crm-ca-a"),
+    ruleCustomerAddressDelete: checkRule("crm-ca-d"),
+    ruleCustomerContactAdd: checkRule("crm-cc-a"),
+    ruleCustomerContactDelete: checkRule("crm-cc-d"),
+    ruleProjectShow: checkRule("crm-p-s"),
+  };
   const { data: session } = useSession();
   const crmAuth = useAxiosCrm();
   const crmServices = CrmServices(crmAuth);
@@ -320,70 +324,78 @@ export default function CustomerDetailPage() {
           <div className="title-page-font">{`CUSTOMER DESCRIPTION`}</div>
         </Col>
         <Col span={24}>
-          <div className="grid grid-cols-1 ">
-            <DescriptionCustomerComponent
-              descriptionForm={descriptionForm}
-              isEdit={isEdit}
-              setIsEdit={(e: boolean) => setIsEdit(e)}
-              // maTypes={maTypes}
-              onFinishEdit={onFinishEdit}
-              // downloadFile={downloadFile}
-              // getImageBlob={getImageBlob}
-              customerGroup={customerGroup}
-              customerTypes={customerTypes}
-              customerResponsibles={customerResponsibles}
-            />
-            <div>
-              <Card>
-                <Tabs
-                  items={[
-                    {
-                      key: "branch",
-                      label: "สาขา",
-                      children: (
-                        <BranchCustomerComponent
-                          branchs={branchs}
-                          branchDetail={branchDetail}
-                          showModalBranchAdd={showModalBranchAdd}
-                          showModalBranchEdit={showModalBranchEdit}
-                          onShowModalBranchAdd={(status) =>
-                            setShowModalBranchAdd(status)
-                          }
-                          onShowModalBranchEdit={(status) =>
-                            setShowModalBranchEdit(status)
-                          }
-                          onShowModalBranchDetail={onShowModalBranchDetail}
-                          onSaveBranch={onSaveBranch}
-                          onSaveBranchEdit={onSaveBranchEdit}
-                          onDeleteCustomerBranch={onDeleteCustomerBranch}
-                          onSaveBranchAddress={onSaveBranchAddress}
-                          onDeleteCustomerBranchAddress={
-                            onDeleteCustomerBranchAddress
-                          }
-                          onSaveBranchContact={onSaveBranchContact}
-                          onDeleteCustomerBranchContact={
-                            onDeleteCustomerBranchContact
-                          }
-                          formEdit={formEdit}
-                        />
-                      ),
-                    },
-                    {
-                      key: "project",
-                      label: "Project",
-                      children: (
-                        <ProjectCustomerComponent
-                          projectDetail={projectDetail}
-                          loading={loading}
-                          setLoading={setloading}
-                        />
-                      ),
-                    },
-                  ]}
-                />
-              </Card>
+          {rules.ruleCustomerShow ? (
+            <div className="grid grid-cols-1 ">
+              <DescriptionCustomerComponent
+                rules={rules}
+                descriptionForm={descriptionForm}
+                isEdit={isEdit}
+                setIsEdit={(e: boolean) => setIsEdit(e)}
+                // maTypes={maTypes}
+                onFinishEdit={onFinishEdit}
+                // downloadFile={downloadFile}
+                // getImageBlob={getImageBlob}
+                customerGroup={customerGroup}
+                customerTypes={customerTypes}
+                customerResponsibles={customerResponsibles}
+              />
+              <div>
+                <Card>
+                  <Tabs
+                    size="small"
+                    items={[
+                      {
+                        key: "branch",
+                        label: "สาขา",
+                        children: (
+                          <BranchCustomerComponent
+                            rules={rules}
+                            branchs={branchs}
+                            branchDetail={branchDetail}
+                            showModalBranchAdd={showModalBranchAdd}
+                            showModalBranchEdit={showModalBranchEdit}
+                            onShowModalBranchAdd={(status) =>
+                              setShowModalBranchAdd(status)
+                            }
+                            onShowModalBranchEdit={(status) =>
+                              setShowModalBranchEdit(status)
+                            }
+                            onShowModalBranchDetail={onShowModalBranchDetail}
+                            onSaveBranch={onSaveBranch}
+                            onSaveBranchEdit={onSaveBranchEdit}
+                            onDeleteCustomerBranch={onDeleteCustomerBranch}
+                            onSaveBranchAddress={onSaveBranchAddress}
+                            onDeleteCustomerBranchAddress={
+                              onDeleteCustomerBranchAddress
+                            }
+                            onSaveBranchContact={onSaveBranchContact}
+                            onDeleteCustomerBranchContact={
+                              onDeleteCustomerBranchContact
+                            }
+                            formEdit={formEdit}
+                          />
+                        ),
+                      },
+                      {
+                        key: "project",
+                        label: "Project",
+                        children: (
+                          <ProjectCustomerComponent
+                            rules={rules}
+                            projectDetail={projectDetail}
+                            loading={loading}
+                            setLoading={setloading}
+                          />
+                        ),
+                      },
+                    ]}
+                  />
+                </Card>
+              </div>
             </div>
-          </div>
+          ) : (
+            <></>
+          )}
         </Col>
       </Row>
     </div>

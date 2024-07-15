@@ -39,6 +39,7 @@ const layout = {
   },
 };
 export interface props {
+  rules: any;
   branchDetail?: ITBranchDetail;
   onShowModalBranchDetail: (id: number | undefined) => void;
   onSaveBranchAddress: (branchId: number, form: ITBranchAddressForm) => void;
@@ -48,6 +49,7 @@ export interface props {
 }
 
 const BranchDetailComponent: React.FC<props> = ({
+  rules,
   branchDetail,
   onShowModalBranchDetail,
   onSaveBranchAddress,
@@ -92,6 +94,7 @@ const BranchDetailComponent: React.FC<props> = ({
                 label: "ที่อยู่",
                 children: (
                   <BranchAddressComponent
+                    rules={rules}
                     branchDetail={branchDetail}
                     onDeleteCustomerBranchAddress={
                       onDeleteCustomerBranchAddress
@@ -105,6 +108,7 @@ const BranchDetailComponent: React.FC<props> = ({
                 label: "ผู้ติดต่อ",
                 children: (
                   <BranchContactComponent
+                    rules={rules}
                     branchDetail={branchDetail}
                     onDeleteCustomerBranchContact={
                       onDeleteCustomerBranchContact

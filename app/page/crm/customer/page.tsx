@@ -5,6 +5,7 @@ import {
   Button,
   Card,
   Col,
+  message,
   Row,
   Spin,
   TablePaginationConfig,
@@ -16,8 +17,16 @@ import CrmServices from "./services/index.service";
 import { useAxiosCrm } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { checkRule } from "@/app/utils/rules";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 export default function MaTaskPage() {
+  const rules = {
+    ruleCustomerShow: checkRule("crm-c-s"),
+    ruleCustomerAdd: checkRule("crm-c-a"),
+    ruleCustomerDelete: checkRule("crm-c-d"),
+  };
+
+  const { data: session } = useSession();
   const intranetAuth = useAxiosCrm();
   const crmServices = CrmServices(intranetAuth);
   const [loading, setloading] = useState<boolean>(true);
@@ -33,12 +42,19 @@ export default function MaTaskPage() {
   }, [loading]);
 
   const fetchData = async () => {
-    const skip: number =
-      (Number(pagination.current) - 1) * Number(pagination.pageSize);
-    const take: number = Number(pagination.pageSize);
-    const res = await crmServices.findCustomerDataTable(search, take, skip);
-    setDataTable(res.data);
-    setPagination({ ...pagination, total: res.count });
+    if (session?.user.userId) {
+      const skip: number =
+        (Number(pagination.current) - 1) * Number(pagination.pageSize);
+      const take: number = Number(pagination.pageSize);
+      const res = await crmServices.findCustomerDataTable(
+        search,
+        take,
+        skip,
+        session?.user.userId
+      );
+      setDataTable(res.data);
+      setPagination({ ...pagination, total: res.count });
+    }
     setloading(false);
   };
 
@@ -53,7 +69,9 @@ export default function MaTaskPage() {
   // }
 
   async function deleteCustomer(id: number): Promise<void> {
-    await crmServices.delete(id);
+    await crmServices.delete(id).then((data) => {
+      message.success("ลบสำเร็จ");
+    });
     setloading(true);
   }
 
@@ -83,32 +101,43 @@ export default function MaTaskPage() {
 
         <Col span={24}>
           <div className="grid grid-cols-1 ">
-            <Card>
-              <div className=" grid grid-col-1 space-y-2">
-                <div className=" flex justify-end">
-                  <Link href="/page/crm/customer/add-customer">
-                    <Button type="primary"> Add Customer</Button>
-                  </Link>
-                </div>
-                <div>
-                  <CustomerFilterComponent
-                    onSearch={(data) => {
-                      setSearch(data);
-                      setPagination({ ...pagination, current: 1 });
-                      setloading(true);
-                    }}
+            {rules.ruleCustomerShow ? (
+              <Card>
+                <div className=" grid grid-col-1 space-y-2">
+                  <div className=" flex justify-end">
+                    {rules.ruleCustomerAdd ? (
+                      <Link href="/page/crm/customer/add-customer">
+                        <Button size="small" type="primary">
+                          Add Customer
+                        </Button>
+                      </Link>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                  <div>
+                    <CustomerFilterComponent
+                      onSearch={(data) => {
+                        setSearch(data);
+                        setPagination({ ...pagination, current: 1 });
+                        setloading(true);
+                      }}
+                    />
+                  </div>
+                  <CustomerTableComponent
+                    rules={rules}
+                    dataTable={dataTable}
+                    loading={loading}
+                    setLoading={(e: boolean) => setloading(e)}
+                    pagination={pagination}
+                    changePagination={changePagination}
+                    deleteCustomer={deleteCustomer}
                   />
                 </div>
-                <CustomerTableComponent
-                  dataTable={dataTable}
-                  loading={loading}
-                  setLoading={(e: boolean) => setloading(e)}
-                  pagination={pagination}
-                  changePagination={changePagination}
-                  deleteCustomer={deleteCustomer}
-                />
-              </div>
-            </Card>
+              </Card>
+            ) : (
+              <></>
+            )}
           </div>
         </Col>
       </Row>

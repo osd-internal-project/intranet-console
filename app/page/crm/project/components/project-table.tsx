@@ -19,7 +19,7 @@ import {
   Tag,
 } from "antd";
 import type { Dayjs } from "dayjs";
-import { ITProject } from "../common";
+import { ITProject, ITSelectUsers } from "../common";
 import { ColumnType } from "antd/es/table";
 import { dateToStringTh, dateToStringThNoTime } from "@/app/utils/format";
 import { deleteIcon, editIcon } from "@/components/icon";
@@ -69,7 +69,7 @@ const ProjectTableComponent: React.FC<props> = ({
       title: "Customer",
       width: "200px",
       render: (data: ITCustomer) =>
-        data.prefixTh && data.firstNameTh && data.lastNameTh
+        data?.prefixTh && data.firstNameTh && data.lastNameTh
           ? `${data.prefixTh} ${data.firstNameTh} ${data.lastNameTh}`
           : "",
     },

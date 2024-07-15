@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Card, DatePicker, Form, Input, Modal, Popover, Select, Spin, Table, Tag, Tree, message } from "antd";
+import { Button, Card, DatePicker, Form, Input, Modal, Popover, Select, Space, Spin, Table, Tag, Tree, message } from "antd";
 import RolesServices from "../services/role.service";
 import ProfileRuleServices from "../services/profile.service";
 import { useForm } from "antd/es/form/Form";
@@ -19,9 +19,9 @@ type ProfileList = {
 const { RangePicker } = DatePicker;
 const RoleComponent: React.FC = (): React.ReactElement => {
   const userAuth = useAxiosUser();
-  const addRule = checkRule("user-role-add");
-  const editRule = checkRule("user-role-edit");
-  const deleteRule = checkRule("user-role-delete");
+  const addRule = checkRule("um-ro-a");
+  const editRule = checkRule("um-ro-e");
+  const deleteRule = checkRule("um-ro-d");
   const userRolesServices = RolesServices(userAuth);
   const profileRuleServices = ProfileRuleServices(userAuth);
 
@@ -59,20 +59,20 @@ const RoleComponent: React.FC = (): React.ReactElement => {
   };
   const columns: any = [
     {
-      title: "NO.",
+      title: "No.",
       dataIndex: "roleId",
       key: "roleId",
       render: (value: string, record: any, index: number) => (currentPage - 1) * 10 + index + 1,
     },
     {
-      title: "ROLE NAME",
+      title: "Role Name",
       dataIndex: "roleName",
       key: "roleName",
 
       render: (d: string) => <b className=" text-indigo-700">{d}</b>,
     },
     {
-      title: "GROUP OF RULES",
+      title: "Group of Rules",
       dataIndex: "roleProfileMap",
       key: "roleProfileMap",
       width: "30%",
@@ -89,20 +89,19 @@ const RoleComponent: React.FC = (): React.ReactElement => {
       ),
     },
     {
-      title: "DESCRIPTION",
+      title: "Description",
       dataIndex: "description",
       key: "roleId",
     },
     {
-      title: "CREATED",
+      title: "Created",
       dataIndex: "createdAt",
       key: "roleId",
       width: "16%",
       render: (d: Date, r: any, i: number) => (d ? dateToStringTh(d) : ""),
     },
-
     {
-      title: "ACTIVE",
+      title: "Active",
       dataIndex: "roleId",
       key: "roleId",
       width: "15%",
@@ -110,14 +109,14 @@ const RoleComponent: React.FC = (): React.ReactElement => {
       render: (text: string, record: any) => (
         <div className="space-x-2">
           {editRule ? (
-            <Button type="link" onClick={() => onOpenEditModal(record)}>
+            <Button size="small" type="link" onClick={() => onOpenEditModal(record)}>
               {editIcon}
             </Button>
           ) : (
             <></>
           )}
           {deleteRule ? (
-            <Button type="link" onClick={() => onOpenDelete(record.roleId)} disabled={buttonLoading} danger>
+            <Button size="small" type="link" onClick={() => onOpenDelete(record.roleId)} disabled={buttonLoading} danger>
               {deleteIcon}
             </Button>
           ) : (
@@ -282,21 +281,21 @@ const RoleComponent: React.FC = (): React.ReactElement => {
   return (
     <>
       <div className="grid grid-cols-1 mb-5">
-        <div className=" flex justify-between md:col-span-2 ">
-          <Popover
-            onOpenChange={handleOpenFilter}
-            open={openFilter}
-            content={searchContent}
-            placement="bottomLeft"
-            title="Search"
-            trigger="click"
-            overlayStyle={{ width: "calc(100% - 240px)" }}
-          >
-            <Button type="primary" icon={<FilterOutlined />} className="button-blue">
-              Filters
-            </Button>
-          </Popover>
-          <div>
+        <div className=" flex justify-end ">
+          <Space>
+            <Popover
+              onOpenChange={handleOpenFilter}
+              open={openFilter}
+              content={searchContent}
+              placement="bottomLeft"
+              title="Search"
+              trigger="click"
+              overlayStyle={{ width: "calc(100% - 240px)" }}
+            >
+              <Button type="primary" icon={<FilterOutlined />} className="button-blue">
+                Filters
+              </Button>
+            </Popover>
             {addRule ? (
               <Button
                 icon={<PlusCircleOutlined />}
@@ -312,24 +311,23 @@ const RoleComponent: React.FC = (): React.ReactElement => {
             ) : (
               <></>
             )}
-          </div>
+          </Space>
         </div>
       </div>
-      <Card className="grid grid-cols-1 ">
-        <Spin spinning={loading}>
-          <div className="grid grid-cols-1 md:grid-cols-1">
-            <div>
-              <Table
-                loading={loading}
-                rowKey="roleId"
-                columns={columns}
-                dataSource={dataTable}
-                pagination={{ current: currentPage, onChange: handlePageChange, showSizeChanger: false }}
-              />
-            </div>
+      <Spin spinning={loading}>
+        <div className="grid grid-cols-1 md:grid-cols-1">
+          <div>
+            <Table
+              size="small"
+              loading={loading}
+              rowKey="roleId"
+              columns={columns}
+              dataSource={dataTable}
+              pagination={{ current: currentPage, onChange: handlePageChange, showSizeChanger: false }}
+            />
           </div>
-        </Spin>
-      </Card>
+        </div>
+      </Spin>
       <div>
         <Modal title="Add User Role" onCancel={() => setOpenAddProfileModel(false)} open={openAddProfileModel} footer={[]}>
           <Form form={addform} layout="vertical" labelCol={{ span: 6 }} onFinish={onFinishAdd} style={{ marginBottom: "-20px" }}>

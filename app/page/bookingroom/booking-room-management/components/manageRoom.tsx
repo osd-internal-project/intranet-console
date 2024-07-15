@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Tag, Button, Row, Col, Space, Modal, Form, Input, Divider, message, Select, DatePicker, Popconfirm } from 'antd';
+import { Table, Tag, Button, Row, Col, Space, Modal, Form, Input, Divider, message, Select, DatePicker, Popconfirm, TablePaginationConfig } from 'antd';
 import type { TableProps, FormProps } from 'antd';
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageRoomServices } from "../services/manage-room.service";
 import dayjs, { Dayjs } from 'dayjs';
 import { useForm } from "antd/es/form/Form";
 import { useSession } from 'next-auth/react';
+import isBetween from 'dayjs/plugin/isBetween';
+
+dayjs.extend(isBetween);
 
 interface BookingType {
     id: string;
@@ -30,25 +33,43 @@ interface MasterRoomType {
     masterRoomTypeId: number;
 }
 
+interface UserData {
+    firstNameTh: string;
+}
+
 const ManageRoom: React.FC = () => {
-    const { data: session } = useSession();
     const intraAuth = useAxiosIntranet();
     const [form] = useForm();
     const manageRoomServices = ManageRoomServices(intraAuth);
     const [isModalBooking, setIsModalBooking] = useState(false);
     const [modalEditBooking, setModalEditBooking] = useState(false);
     const [modalApproveBooking, setModalApproveBooking] = useState(false);
+    const [bookingStatus, setBookingStatus] = useState("");
     const [bookingData, setBookingData] = useState<BookingType[]>([]);
     const [masterRoomData, setMasterRoomData] = useState<MasterRoomType[]>([]);
-    const [currentBookingId, setCurrentBookingId] = useState<string | null>(null);  // State to store the current booking ID
+    const [currentBookingId, setCurrentBookingId] = useState<string | null>(null);
+    const [submitLoading, setSubmitLoading] = useState(false);
+    const { data: session } = useSession();
+    const [loading, setloading] = useState<boolean>(true);
+    const [pagination, setPagination] = useState<TablePaginationConfig>({
+        current: 1,
+        pageSize: 10,
+        total: 0,
+    });
+
+    const changePagination = (page: TablePaginationConfig) => {
+        setPagination({ ...page });
+        setloading(true);
+    };
 
     const columns: TableProps<BookingType>['columns'] = [
         {
+
             title: 'ลำดับ',
             dataIndex: 'no',
             key: 'no',
             width: "50px",
-            render: (_, __, index) => <>{index + 1}</>,
+            render: (id: number, record: any, index: number) => (pagination.current && pagination.pageSize ? (pagination.current - 1) * pagination.pageSize + (index + 1) : ""),
         },
         {
             title: 'ชื่อห้องประชุม',
@@ -122,7 +143,11 @@ const ManageRoom: React.FC = () => {
     ];
 
     const showModalEditBooking = (record: BookingType) => {
-        setCurrentBookingId(record.id);  // Set the current booking ID
+        if (record.bookingStatus === "Approve") {
+            message.warning('ไม่สามารถแก้ไขการจองที่อนุมัติแล้วได้');
+            return;
+        }
+        setCurrentBookingId(record.id);
         form.setFieldsValue({
             ...record,
             startDate: dayjs(record.startDate),
@@ -136,7 +161,8 @@ const ManageRoom: React.FC = () => {
     };
 
     const showModalApproveBooking = (record: BookingType) => {
-        setCurrentBookingId(record.id);  // Set the current booking ID
+        setBookingStatus(record.bookingStatus);
+        setCurrentBookingId(record.id);
         setModalApproveBooking(true);
     };
 
@@ -145,51 +171,103 @@ const ManageRoom: React.FC = () => {
     };
 
     const handleDeleteBooking = async (id: string) => {
-        console.log(id);
+        setSubmitLoading(true);
         try {
             await manageRoomServices.deleteBooking(id);
             setBookingData(bookingData.filter(item => item.id !== id));
-            message.success('Booking deleted successfully');
+            message.success('ลบข้อมูลการจองสำเร็จ');
+            setSubmitLoading(false);
         } catch (error) {
-            message.error('Failed to delete booking');
+            message.error('ลบข้อมูลการจองไม่สำเร็จ');
         }
     };
 
-    const onFinish: FormProps<BookingType>['onFinish'] = async (values) => {
+    const updatedBooking: FormProps<BookingType>['onFinish'] = async (values) => {
+        setSubmitLoading(true);
         if (currentBookingId === null) {
             message.error('No booking selected for update');
             return;
         }
+
         try {
-            const { startDate, endDate, ...restValues } = values;
+            const { startDate, endDate, roomName, ...restValues } = values;
+            const updatedStartDate = startDate.toISOString();
+            const updatedEndDate = endDate.toISOString();
+
+            const today = new Date();
+            if (new Date(updatedStartDate) < today) {
+                message.error('ไม่สามารถจองในวันที่ผ่านมาได้');
+                setSubmitLoading(false);
+                return;
+            }
+
+            if (new Date(updatedEndDate) < new Date(updatedStartDate)) {
+                message.error('วันที่สิ้นสุดการจองต้องหลังวันที่เริ่มการจอง');
+                setSubmitLoading(false);
+                return;
+            }
+
+            const existingBookings = await manageRoomServices.getBookingRoomQuery();
+
+            const hasOverlap = existingBookings.some((booking: BookingType) => {
+                if (booking.roomName === roomName && booking.id !== currentBookingId) {
+                    const existingStart = dayjs(booking.startDate);
+                    const existingEnd = dayjs(booking.endDate);
+                    const newStart = dayjs(updatedStartDate);
+                    const newEnd = dayjs(updatedEndDate);
+
+                    return (
+                        (newStart.isBetween(existingStart, existingEnd, null, '[)') ||
+                            newEnd.isBetween(existingStart, existingEnd, null, '(]')) ||
+                        (existingStart.isBetween(newStart, newEnd, null, '[)') ||
+                            existingEnd.isBetween(newStart, newEnd, null, '(]'))
+                    );
+                }
+                return false;
+            });
+
+            if (hasOverlap) {
+                message.error('ไม่สามารถแก้ไขการจองนี้ได้เนื่องจากมีการจองห้องนี้ในช่วงเวลานี้แล้ว');
+                setSubmitLoading(false);
+                return;
+            }
+
             const updatedBooking = {
                 ...restValues,
                 id: currentBookingId,
-                startDate: startDate.toISOString(),
-                endDate: endDate.toISOString(),
+                roomName,
+                startDate: updatedStartDate,
+                endDate: updatedEndDate,
             };
-            console.log(updatedBooking);
+
             await manageRoomServices.updateBooking(updatedBooking);
-            setModalEditBooking(false);
             fetchData();
-            message.success('Booking updated successfully');
+            message.success('แก้ไขการจองสำเร็จ');
+            setSubmitLoading(false);
+            setModalEditBooking(false);
         } catch (error) {
-            message.error('Failed to update booking');
+            message.error('แก้ไขการจองไม่สำเร็จ');
+            setSubmitLoading(false);
         }
     };
 
     const onFinishApprove: FormProps<BookingType>['onFinish'] = async () => {
+        setSubmitLoading(true);
         try {
             const updatedApproveBooking = {
                 id: currentBookingId,
-                bookingStatus: "Approve"
+                approverId: session?.user.userId,
+                approver: session?.user.firstNameTh && session?.user.lastNameTh ? `${session.user.firstNameTh} ${session.user.lastNameTh}` : "",
+                bookingStatus: "Approve",
+                approveDate: dayjs()
             };
             await manageRoomServices.updateBooking(updatedApproveBooking);
             setModalApproveBooking(false);
             fetchData();
-            message.success('Booking updated successfully');
+            message.success('อนุมัติการจองสำเร็จ');
+            setSubmitLoading(false);
         } catch (error) {
-            message.error('Failed to update booking');
+            message.error('อนุมัติการจองไม่สำเร็จ');
         }
     };
 
@@ -203,17 +281,24 @@ const ManageRoom: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchData();
-    }, []);
+        if (loading === true) fetchData();
+    }, [loading]);
 
     const fetchData = async () => {
+        const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
+        const take: number = Number(pagination.pageSize);
         try {
-            const bookingRoom = await manageRoomServices.getBookingRoomQuery();
-            setBookingData(bookingRoom.map((item: any, index: number) => ({
+            const masterRoom = await manageRoomServices.getMasterRoomQuery();
+            const masterRoomActive = masterRoom.filter((room: any) => room.roomsStatus === true);
+            setMasterRoomData(masterRoomActive);
+            const bookings = await manageRoomServices.findBookingRoom(skip, take);
+            setPagination({ ...pagination, total: bookings.count });
+            setBookingData(bookings.data.map((item: any, index: number) => ({
                 ...item,
                 key: index.toString(),
-                id: item.id,  // Ensure ID is mapped
+                id: item.id,
             })));
+            setloading(false);
         } catch (error) {
             console.error('Failed to fetch data', error);
         }
@@ -233,7 +318,7 @@ const ManageRoom: React.FC = () => {
                     layout="vertical"
                     name="edit_booking"
                     initialValues={{ remember: true }}
-                    onFinish={onFinish}
+                    onFinish={updatedBooking}
                     onFinishFailed={onFinishFailed}
                     autoComplete="off"
                 >
@@ -366,10 +451,10 @@ const ManageRoom: React.FC = () => {
                     <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                         <Row justify="end">
                             <Button type="default" onClick={handleEditBookingCancel} style={{ marginRight: 8 }}>
-                                Cancel
+                                ยกเลิก
                             </Button>
-                            <Button type="primary" htmlType="submit">
-                                Submit
+                            <Button type="primary" htmlType="submit" loading={submitLoading}>
+                                ตกลง
                             </Button>
                         </Row>
                     </Form.Item>
@@ -386,19 +471,20 @@ const ManageRoom: React.FC = () => {
                     onFinishFailed={onFinishFailed}
                     autoComplete="off"
                 >
-                    <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                        <Row justify="end">
-                            <Button type="default" onClick={handleApproveBookingCancel} style={{ marginRight: 8 }}>
-                                Cancel
-                            </Button>
-                            <Button type="primary" htmlType="submit">
-                                Submit
-                            </Button>
-                        </Row>
-                    </Form.Item>
+                    <Row justify="end">
+                        <Button type="primary" htmlType="submit" disabled={bookingStatus === "Approve"} loading={submitLoading}>
+                            อนุมัติ
+                        </Button>
+                    </Row>
                 </Form>
             </Modal>
-            <Table columns={columns} dataSource={bookingData} />
+            <Table
+                columns={columns}
+                dataSource={bookingData}
+                rowKey="id"
+                pagination={pagination}
+                onChange={changePagination}
+            />
         </>
     );
 }

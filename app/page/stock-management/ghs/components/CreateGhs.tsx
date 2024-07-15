@@ -1,7 +1,7 @@
 "use client";
 import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ExclamationCircleFilled, FilterOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
-import { Button, Col, Form, Input, Modal, Row, Switch, Upload, message, UploadProps, DatePicker, Popover } from "antd";
+import { Button, Col, Form, Input, Modal, Row, Switch, Upload, message, UploadProps, DatePicker, Popover, Space } from "antd";
 // import ImgCrop from "antd-img-crop";
 // import Search from "antd/es/input/Search";
 import { RcFile, UploadFile } from "antd/es/upload";
@@ -20,7 +20,7 @@ export interface props {
 
 export const CreateGhs: React.FC<props> = ({ propLoading, loading, handleOpenFilter, openFilter, onFilter }) => {
   const stockAuth = useAxiosStock();
-  const addRule = checkRule("mp-ghs-add");
+  const addRule = checkRule("sm-ghs-a");
   const ghsServices = GhsServices(stockAuth);
   const { RangePicker } = DatePicker;
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -243,22 +243,22 @@ export const CreateGhs: React.FC<props> = ({ propLoading, loading, handleOpenFil
           </Form.Item>
         </Form>
       </Modal>
-      <div className=" flex justify-between md:col-span-2 ">
-        <Popover
-          onOpenChange={handleOpenFilter}
-          open={openFilter}
-          content={searchContent}
-          placement="bottomLeft"
-          title="Search"
-          trigger="click"
-          overlayStyle={{ width: "calc(100% - 240px)" }}
-        >
-          <Button className="button-blue" type="primary" icon={<FilterOutlined />}>
-            Filters
-          </Button>
-        </Popover>
+      <div className=" flex justify-end pb-4">
+        <Space>
+          <Popover
+            onOpenChange={handleOpenFilter}
+            open={openFilter}
+            content={searchContent}
+            placement="bottomLeft"
+            title="Search"
+            trigger="click"
+            overlayStyle={{ width: "calc(100% - 240px)" }}
+          >
+            <Button className="button-blue" type="primary" icon={<FilterOutlined />}>
+              Filters
+            </Button>
+          </Popover>
 
-        <div>
           {addRule ? (
             <Button className="button-blue" type="primary" onClick={showModal} disabled={buttonLoading}>
               {`Add New GHS`}
@@ -266,7 +266,7 @@ export const CreateGhs: React.FC<props> = ({ propLoading, loading, handleOpenFil
           ) : (
             <></>
           )}
-        </div>
+        </Space>
       </div>
     </>
   );

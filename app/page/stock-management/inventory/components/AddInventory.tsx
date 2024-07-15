@@ -18,7 +18,7 @@ export interface props {
 export const AddInventory: React.FC<props> = ({ setLoading, locationId, onFilter, handleOpenFilter, openFilter }): React.ReactElement => {
   const { RangePicker } = DatePicker;
   const stockAuth = useAxiosStock();
-  const addRule = checkRule("inventory-add");
+  const addRule = checkRule("sm-inventory-a");
   const inventoryServices = InventoryServices(stockAuth);
   const [FORMCREATE] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -123,34 +123,28 @@ export const AddInventory: React.FC<props> = ({ setLoading, locationId, onFilter
   );
   return (
     <div>
-      <Row gutter={[8, 8]}>
-        <Col span={12} style={{ justifyContent: "start", display: "flex" }}>
-          <Space>
-            <Popover
-              onOpenChange={handleOpenFilter}
-              open={openFilter}
-              content={searchContent}
-              placement="bottomLeft"
-              title="Search"
-              trigger="click"
-              overlayStyle={{ width: "calc(100% - 240px)" }}
-            >
-              <Button className="button-blue" type="primary" icon={<FilterOutlined />}>
-                Filters
-              </Button>
-            </Popover>
-          </Space>
-        </Col>
-        <Col span={12} style={{ justifyContent: "end", display: "flex" }}>
+      <div className=" flex justify-end pb-4">
+        <Space>
+          <Popover
+            onOpenChange={handleOpenFilter}
+            open={openFilter}
+            content={searchContent}
+            placement="bottomLeft"
+            title="Search"
+            trigger="click"
+            overlayStyle={{ width: "calc(100% - 240px)" }}
+          >
+            <Button className="button-blue" type="primary" icon={<FilterOutlined />}>
+              Filters
+            </Button>
+          </Popover>
           {addRule ? (
-            <Space>
-              <Button className="button-blue" type="primary" onClick={showModal} disabled={buttonLoading}>{`Add Inventory Store`}</Button>
-            </Space>
+            <Button className="button-blue" type="primary" onClick={showModal} disabled={buttonLoading}>{`Add Inventory Store`}</Button>
           ) : (
             <></>
           )}
-        </Col>
-      </Row>
+        </Space>
+      </div>
       <Modal title="Add Inventory Store" footer={false} open={isModalOpen} onCancel={handleCancel}>
         <Form name={`createinventory`} layout="vertical" onFinish={onfinish} form={FORMCREATE}>
           <Row gutter={[8, 8]}>

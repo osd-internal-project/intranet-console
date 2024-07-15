@@ -58,8 +58,8 @@ const UserTable: React.FC<props> = ({
   const [openFilter, setOpenFilter] = useState<boolean>(false);
   const [positionOption, setPositionOption] = useState<ITypeOption[]>([]);
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
-  const userEditRules = checkRule("user-management-edit");
-  const userDeleteRules = checkRule("user-management-delete");
+  const userEditRules = checkRule("um-e");
+  const userDeleteRules = checkRule("um-d");
   useEffect(() => {
     if (loading) {
       loadingData();
@@ -300,8 +300,8 @@ const UserTable: React.FC<props> = ({
                 propLoading(true, search);
               }}
             /> */}
-            {checkRule("user-management-add") ? (
-              <Link href="/page/setting/usermanagement/add">
+            {checkRule("um-a") ? (
+              <Link href="/page/users-management/users/add">
                 <Button icon={<PlusCircleOutlined />} className="button-blue">
                   Add User
                 </Button>

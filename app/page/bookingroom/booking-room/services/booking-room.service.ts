@@ -3,11 +3,23 @@ import { AxiosInstance } from "axios";
 export const BookingRoomServices = (axiosInstance: AxiosInstance) => {
     const baseUrlApiBookingRoom = "/booking-room";
     const baseUrlApiMasterRoom = "/master-room";
+    const baseUrlApiOrganizeChart = "/organize-chart";
 
     return {
         getBookingRoomQuery: async () => {
             return await axiosInstance
                 .get(`${baseUrlApiBookingRoom}`)
+                .then((res) => {
+                    return res.data;
+                })
+                .catch((err) => {
+                    console.log(err);
+                    return [];
+                });
+        },
+        findBookingRoom: async (skip:number, take:number) => {
+            return await axiosInstance
+                .get(`${baseUrlApiBookingRoom}?take=${take}&skip=${skip}`)
                 .then((res) => {
                     return res.data;
                 })
@@ -30,6 +42,17 @@ export const BookingRoomServices = (axiosInstance: AxiosInstance) => {
         getMasterRoomQuery: async () => {
             return await axiosInstance
                 .get(`${baseUrlApiMasterRoom}`)
+                .then((res) => {
+                    return res.data;
+                })
+                .catch((err) => {
+                    console.log(err);
+                    return [];
+                });
+        },
+        getOrganizeChartQuery: async () => {
+            return await axiosInstance
+                .get(`${baseUrlApiOrganizeChart}`)
                 .then((res) => {
                     return res.data;
                 })

@@ -7,14 +7,15 @@ import {
   Card,
   Col,
   DatePicker,
+  Divider,
   Form,
   Input,
   Popover,
   Row,
   Select,
+  Space,
   Table,
 } from "antd";
-import ExpiredServices from "./services/report-expired.service";
 import StockServices from "./services/stock.service";
 import {
   useAxiosStock,
@@ -24,6 +25,7 @@ import { ReportTable } from "./components/ReportTable";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { dateToEndofDay, dateToStartofDay } from "@/app/utils/format";
+import ExpiredServices from "./services/report-expired.service";
 
 type searchType = {
   casNo?: string;
@@ -297,70 +299,69 @@ export default function TransectionPage() {
                 href: "/page",
                 title: <span>{`Home`}</span>,
               },
-              {
-                href: "/page/setting",
-                title: <span>{`Setting`}</span>,
-              },
+              // {
+              //   href: "/page/setting",
+              //   title: <span>{`Setting`}</span>,
+              // },
               {
                 title: <span>{`รายงานการหมดอายุ`}</span>,
               },
             ]}
           />
         </Col>
-        <Col span={24}>
+
+        <Divider orientation="left" orientationMargin="0">
           <div className="title-page-font">{`รายงานการหมดอายุ`}</div>
-        </Col>
+        </Divider>
+
         <Col span={24}>
           <div className=" grid grid-cols-1 gap-y-2">
-            <div className=" flex justify-between md:col-span-2 ">
-              <div>
-                <Popover
-                  onOpenChange={handleOpenFilter}
-                  open={openFilter}
-                  content={searchContent}
-                  placement="bottomLeft"
-                  title="Search"
-                  trigger="click"
-                  overlayStyle={{ width: "calc(100% - 240px)" }}
-                >
+            <Card>
+              <div className=" flex justify-end pb-4">
+                <Space>
+                  <Popover
+                    onOpenChange={handleOpenFilter}
+                    open={openFilter}
+                    content={searchContent}
+                    placement="bottomLeft"
+                    title="Search"
+                    trigger="click"
+                    overlayStyle={{ width: "calc(100% - 240px)" }}
+                  >
+                    <Button
+                      type="primary"
+                      className="button-blue"
+                      icon={<FilterOutlined />}
+                    >
+                      {`Filters`}
+                    </Button>
+                  </Popover>
+
                   <Button
                     type="primary"
+                    icon={exportIcon}
+                    disabled={disableExport}
                     className="button-blue"
-                    icon={<FilterOutlined />}
+                    onClick={exportExcel}
                   >
-                    {`Filters`}
+                    {`Export`}
                   </Button>
-                </Popover>
+                </Space>
               </div>
-              <div>
-                <Button
-                  type="primary"
-                  icon={exportIcon}
-                  disabled={disableExport}
-                  className="button-blue"
-                  onClick={exportExcel}
-                >
-                  {`Export`}
-                </Button>
-              </div>
-            </div>
-            <div>
-              <Card>
-                <div className=" col-span-1 space-y-5 md:top-1">
-                  <div className=" overflow-auto md:overflow-hidden">
-                    <ReportTable
-                      gatdataAll={gatdataAll}
-                      getloading={getloading}
-                      paginationConfig={paginationConfig}
-                      handlerPaginationTable={(e: any) =>
-                        handlerPaginationTable(e)
-                      }
-                      filter={filter}
-                    />
-                  </div>
+              <div className=" col-span-1 space-y-5 md:top-1">
+                <div className=" overflow-auto md:overflow-hidden">
+                  <ReportTable
+                    gatdataAll={gatdataAll}
+                    getloading={getloading}
+                    paginationConfig={paginationConfig}
+                    handlerPaginationTable={(e: any) =>
+                      handlerPaginationTable(e)
+                    }
+                    filter={filter}
+                  />
                 </div>
-              </Card>
-            </div>
+              </div>
+            </Card>
           </div>
         </Col>
       </Row>

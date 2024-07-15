@@ -35,6 +35,21 @@ const UserGroupServices = (axiosInstance: AxiosInstance) => {
         where: {
           groupId: groupId,
         },
+        select: {
+          id: true,
+          groupId: true,
+          groupName: true,
+          createdAt: true,
+          updatedAt: true,
+          parentGroupId: true,
+          organizedGroupId: true,
+          description: true,
+          userGroupUserRoleMap: true,
+          saleUserGroupId: true,
+          saleUsersId: true,
+          engineerUserGroupId: true,
+          engineerUsersId: true,
+        },
       };
       return await axiosInstance
         .post(`/user-group/condition-first`, {
@@ -48,15 +63,16 @@ const UserGroupServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getUserGroupByOrganizedGroupId: async (organizedGroupId: string) => {
-      const condition = {
-        where: {
-          organizedGroupId: organizedGroupId,
-        },
-      };
-      return await axiosInstance.post(`/user-group/condition`, {
-        condition: condition,
-      });
+    getUserGroupByOrganizedGroupId: async (organizedId: string) => {
+      return await axiosInstance
+        .get(`/user-group/${organizedId}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
     },
     addUserGroup: async (data: Object) => {
       const req = {
@@ -66,14 +82,51 @@ const UserGroupServices = (axiosInstance: AxiosInstance) => {
     },
 
     updateUserGroup: async (groupId: string, data: Object) => {
-      const req = {
-        groupId: groupId,
-        data: data,
-      };
-      return await axiosInstance.patch(`/user-group`, req);
+      return await axiosInstance.patch(`/user-group/${groupId}`, data);
+    },
+    updateUserGroupPermission: async (groupId: string, data: Object) => {
+      return await axiosInstance.patch(
+        `/user-group/permission/${groupId}`,
+        data
+      );
     },
     deleteUserGroup: async (groupId: string) => {
       return await axiosInstance.delete(`/user-group/${groupId}`);
+    },
+    findAllOrganize: async () => {
+      return await axiosInstance
+        .get(`/organized`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    getUserGroupFormOrganizedByUserId: async (userId: string) => {
+      return await axiosInstance
+        .get(`user-group/find-group-by-user/${userId}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    findUsersByOwnerGroup: async (ownerGroup: string[]) => {
+      return await axiosInstance
+        .get(`user/find-users-by-ownergroup/`, {
+          params: ownerGroup,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
     },
   };
 };

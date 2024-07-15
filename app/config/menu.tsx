@@ -1,47 +1,21 @@
-import {
-  CreditCardOutlined,
-  DashboardOutlined,
-  FileTextOutlined,
-  LogoutOutlined,
-  UserOutlined,
-  CloseOutlined,
-  FallOutlined,
-  FileExclamationOutlined,
-  MailOutlined,
-  BankOutlined,
-  HomeOutlined,
-} from "@ant-design/icons";
+import { LogoutOutlined, UserOutlined, HomeOutlined } from "@ant-design/icons";
 import { Icon } from "@iconify/react";
-import { MenuProps } from "antd";
+import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
-import React, { Children } from "react";
+import React from "react";
 import { signOut } from "next-auth/react";
 import {
-  buldingIcon,
-  carlendarIcon,
-  circleSqureIcon,
-  colorSwatchIcon,
-  cubeIcon,
-  editTagIcon,
   gridIcon,
-  groupLineIcon,
   IconDataLeave,
   bookingIcon,
-  IconHolidays,
-  IconPosition,
-  IconTypeLeave,
   maintenanceIcon,
-  mindMappingIcon,
   organizeChart,
-  persentationChartLoneIcon,
-  shieldExclamationIcon,
-  starIcon,
   stockIcon,
-  stockSetting,
-  truckIcon,
-  userGroupIcon,
-  warningIcon,
+  contactListIcon,
+  macarIcon,
+  chevronIcon,
 } from "@/components/icon";
+import { icons } from "antd/es/image/PreviewGroup";
 
 type MenuItem = Required<MenuProps>["items"][number];
 const MenuNav: MenuProps["items"] = [
@@ -78,16 +52,15 @@ export const MenuSider: MenuItem[] = [
     key: "internal-info",
     icon: organizeChart,
     label: `Internal Info`,
+    rule: "m-s",
     children: [
       {
         key: `internal-info/organization-chart`,
-        label: `Organization Chart`,
-        // rule: "housekeeper",
+        label: "Organization Chart",
       },
       {
         key: `internal-info/organization-chart-team`,
         label: `Team Chart `,
-        // rule: "housekeeper",
       },
     ],
   },
@@ -95,26 +68,26 @@ export const MenuSider: MenuItem[] = [
     key: "stock",
     icon: stockIcon,
     label: "Stock",
-    // rule: "menu-stock",
+    rule: "s-s",
     children: [
       {
         key: `order-management`,
         // icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
         label: `Order Management`,
-        rule: "order-show",
+        rule: "sm-order-s",
       },
       {
         key: `inventory`,
         // icon: <Icon icon="ep:office-building" width="25" height="25" />,
         label: `Inventory`,
-        rule: "inventory-stock-show",
+        rule: "sm-inventory-s",
       },
 
       {
         key: `product-list`,
         // icon: <Icon icon="humbleicons:box" width="25" height="25" />,
         label: `Product List`,
-        rule: "product-list-show",
+        rule: "sm-productlist-s",
       },
       // {
       //   key: `suppliers`,
@@ -136,25 +109,25 @@ export const MenuSider: MenuItem[] = [
         key: `report-withdraw-ranking`,
         // icon: persentationChartLoneIcon,
         label: `10 อันดับการเบิกจ่ายที่มากที่สุด`,
-        rule: "report-withdraw-ranking-show",
+        rule: "sm-re-wr-h",
       },
       {
         key: `report-transaction`,
         // icon: <Icon icon="bx:file" width="25" height="25" />,
         label: `การรับเข้าเบิกจ่าย`,
-        rule: "report-transaction-show",
+        rule: "sm-re-tr-h",
       },
       {
         key: `report-expired`,
         // icon: <Icon icon="bx:bell" width="25" height="25" />,
         label: `รายงานการหมดอายุ`,
-        rule: "report-expired",
+        rule: "sm-re-ex-h",
       },
       {
         key: `stock-management`,
         // icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
         label: `Stock Management`,
-        // rule: "setting",
+        rule: "sm-s",
       },
     ],
   },
@@ -162,19 +135,17 @@ export const MenuSider: MenuItem[] = [
     key: "housekeeper",
     icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
     label: "Housekeeper",
-    // rule:'menu-housekeeper',
+    rule: "hk-s",
     children: [
       {
         key: `housekeeper/housekeepers`,
-        icon: carlendarIcon,
         label: `Housekeeper`,
-        // rule: "housekeeper",
+        rule: "hk-h",
       },
       {
         key: `housekeeper/housekeeper-management`,
-        icon: editTagIcon,
         label: `Housekeeper Management`,
-        // rule: "housekeeper",
+        rule: "hk-m",
       },
     ],
   },
@@ -182,18 +153,27 @@ export const MenuSider: MenuItem[] = [
     key: "data-leave",
     icon: IconDataLeave,
     label: `Data Leave`,
+    rule: "dl-s",
     children: [
       {
         key: `data-leave/online-leave`,
         label: `Create Data Leave`,
+        rule: "dl-a",
       },
       {
         key: `data-leave/detail-online-leave`,
-        label: `Detail Data Leave`,
+        label: `Detail Data Leave User`,
+        rule: "dl-dt-u",
+      },
+      {
+        key: `data-leave/detail-online-leave-admin`,
+        label: `Detail Data Leave Admin`,
+        rule: "dl-dt-a",
       },
       {
         key: `data-leave/leave-management`,
         label: `Leave Management`,
+        rule: "dl-dis",
       },
     ],
   },
@@ -206,13 +186,11 @@ export const MenuSider: MenuItem[] = [
         key: `bookingroom/booking-room`,
         // icon: <Icon icon="mdi:book-sync-outline" width="20" height="20" />,
         label: `Booking room`,
-        // rule: "housekeeper",
       },
       {
         key: `bookingroom/booking-room-management`,
         // icon: <Icon icon="mdi:book-plus-outline" width="20" height="20" />,
         label: `Booking room Management`,
-        // rule: "housekeeper",
       },
     ],
   },
@@ -220,13 +198,13 @@ export const MenuSider: MenuItem[] = [
     key: "maintenance",
     icon: maintenanceIcon,
     label: "Maintenance",
-    // rule: "menu-ma",
+    rule: "ma-s",
     children: [
       {
         key: `maintenance-management`,
         // icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
         label: `Maintenance Management`,
-        // rule: "ma-task-show",
+        rule: "ma-m-s",
       },
     ],
   },
@@ -235,38 +213,42 @@ export const MenuSider: MenuItem[] = [
     key: `setting`,
     icon: <Icon icon="uil:setting" width="15" height="15" />,
     label: `Setting`,
-    // rule: "setting-show",
+    rule: "st-s",
     children: [
       {
         key: `setting/maintenance-type`,
         // icon: colorSwatchIcon,
-        label: `Ma Type`,
+        label: `MA Type`,
+        rule: "ma-t-s",
       },
       {
         key: `setting/organize-chart`,
         // icon: organizeChart,
         label: `Organize Chart`,
-        // rule: "user-position-show",
+        // rule: "st-p-s",
       },
-      {
-        key: `setting/location`,
-        // icon: buldingIcon,
-        label: `Location`,
-      },
+      // {
+      //   key: `setting/location`,
+      //   // icon: buldingIcon,
+      //   label: `Location`,
+      // },
       {
         key: `setting/typeleave`,
         // icon: IconTypeLeave,
         label: `Type Leave`,
+        rule: "st-tl-s",
       },
       {
         key: `setting/master-holidays`,
         // icon: IconHolidays,
         label: `Master Holidays`,
+        rule: "st-mth-s",
       },
       {
         key: `setting/masterdata-position`,
         // icon: IconPosition,
         label: `Master Position`,
+        rule: "st-p-s",
       },
     ],
   },
@@ -274,45 +256,103 @@ export const MenuSider: MenuItem[] = [
     key: `users-management`,
     icon: gridIcon,
     label: `User Management`,
-    // rule: "setting-show",
+    rule: "um-s",
     children: [
       {
         key: `users-management/users`,
         // icon: groupLineIcon,
         label: `Users`,
-        rule: "user-management-show",
+        // rule: "um-s",
+      },
+      {
+        key: `users-management/user-organization`,
+        // icon: shieldExclamationIcon,
+        label: `Organizations`,
+        // rule: "user-organize-show",
       },
       {
         key: `users-management/user-group`,
         // icon: userGroupIcon,
-        label: `Users Group`,
-        rule: "user-group-show",
+        label: `Groups`,
+        // rule: "um-ug-s",
       },
       {
         key: `users-management/user-role`,
         // icon: mindMappingIcon,
-        label: `Users Role`,
-        rule: "user-role-show",
+        label: `Roles`,
+        rule: "um-ro-s",
       },
       {
         key: `users-management/user-rule`,
         // icon: shieldExclamationIcon,
-        label: `Users Rule`,
-        rule: "user-rule-show",
+        label: `Rules`,
+        rule: "um-ru-s",
       },
     ],
   },
+  {
+    key: "crm",
+    icon: contactListIcon,
+    label: `CRM`,
+    // rule: "crm-s",
+    children: [
+      {
+        key: `crm/customer`,
+        label: `Customer`,
+        // rule: "crm-c-s",
+      },
+      {
+        key: `crm/project`,
+        label: `Project `,
+        // rule: "crm-p-s",
+      },
+    ],
+  },
+  {
+    key: "ma-cars",
+    icon: macarIcon,
+    label: `Ma Car`,
+    children: [
+      {
+        key: `macar/ma-car`,
+        // icon: chevronIcon,
+        label: `Ma car`,
+      },
+      {
+        key: `macar/ma-car-booking`,
+        // icon: chevronIcon,
+        label: `Ma car Booking`,
+      },
+      {
+        key: `macar/ma-car-management`,
+        // icon: chevronIcon,
+        label: `Ma car Management`,
+      },
+      {
+        key: `crm/ticket`,
+        label: `Ticket `,
+        rule: "crm-t-s",
+      },
+    ],
+  },
+  {
+    key: "carre-serve",
+    icon: contactListIcon,
+    label: `CarReserve`,
+    // rule: "carreserve",
+  },
+
   // {
   //   key: `stock-management`,
   //   icon: stockSetting,
   //   label: `Stock Management`,
-  //   // rule: "setting-show",
+  //   // rule: "st-s",
   //   children: [
   //     {
   //       key: `stock-management/location`,
   //       // icon: buldingIcon,
   //       label: `Location`,
-  //       rule: "location-show",
+  //       rule: "sm-location-s",
   //     },
   //     {
   //       key: `stock-management/inventory`,
@@ -330,31 +370,31 @@ export const MenuSider: MenuItem[] = [
   //       key: `stock-management/master-product-management`,
   //       // icon: cubeIcon,
   //       label: `Master Product Management`,
-  //       rule: "m-product-show",
+  //       rule: "sm-mp-s",
   //     },
   //     {
   //       key: `stock-management/cetagory-group-type`,
   //       // icon: circleSqureIcon,
   //       label: `Set Category & Group`,
-  //       rule: "mp-category-show",
+  //       rule: "sm-c-s",
   //     },
   //     {
   //       key: `stock-management/unit`,
   //       // icon: gridIcon,
   //       label: `Set Unit`,
-  //       rule: "mp-unit-show",
+  //       rule: "sm-unit-s",
   //     },
   //     {
   //       key: `stock-management/master-hazard-type`,
   //       // icon: colorSwatchIcon,
   //       label: `Set Hazard Type`,
-  //       rule: "mp-hazard-type-show",
+  //       rule: "sm-hz-h",
   //     },
   //     {
   //       key: `stock-management/ghs`,
   //       // icon: warningIcon,
   //       label: `Set GHS`,
-  //       rule: "mp-ghs-show",
+  //       rule: "sm-ghs-s",
   //     },
   //     {
   //       key: `stock-management/vender`,
@@ -366,7 +406,7 @@ export const MenuSider: MenuItem[] = [
   //       key: `stock-management/brand`,
   //       // icon: starIcon,
   //       label: `Set Brand`,
-  //       rule: "brand-show",
+  //       rule: "sm-brand-s",
   //     },
   //   ],
   // },
@@ -408,9 +448,11 @@ export const MenuSiderWithModule = (modules: string[]) => {
             .map((item: any) => ({
               ...item,
               label: (
-                <>
-                  <Link href={`/page/${item.key}`}>{item.label}</Link>
-                </>
+                <Tooltip placement="right" title={item.label}>
+                  <div style={{ width: 140 }}>
+                    <Link href={`/page/${item.key}`}>{item.label}</Link>
+                  </div>
+                </Tooltip>
               ),
             }))
         : null,

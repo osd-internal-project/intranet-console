@@ -1,5 +1,5 @@
 "use client";
-import { Breadcrumb, Button, Card, Col, DatePicker, Form, Input, Row, Table } from "antd";
+import { Breadcrumb, Button, Card, Col, DatePicker, Divider, Form, Input, Row, Table } from "antd";
 import { useEffect, useState } from "react";
 import OrganizationManage from "./components/OrgenizationManage";
 import OrganizedServices from "./services/organized.service";
@@ -54,42 +54,41 @@ export default function Organization() {
 
   const columns: any = [
     {
-      title: "NO.",
+      title: "No.",
       dataIndex: "organizedId",
       key: "organizedId",
-      // width: "20%",
       render: (text: string, record: any, index: number) => index + 1,
     },
     {
-      title: "ORGANIZATION ID",
+      title: "Organize Id",
       dataIndex: "organizedId",
       key: "organizedId",
       width: "20%",
       // render: (text: string, record: any, index: number) => index + 1,
     },
     {
-      title: "NAME",
+      title: "Organize Name",
       dataIndex: "organizedName",
       key: "organizedName",
       width: "20%",
       render: (text: string, record: any, index: number) => <div className="text-blue">{text}</div>,
     },
     {
-      title: "DESCRIPTION",
+      title: "Description",
       dataIndex: "description",
       key: "description",
       width: "30%",
       // render: (text: string, record: any, index: number) => index + 1,
     },
     {
-      title: "CREATED",
+      title: "Create",
       dataIndex: "createdAt",
       key: "createdAt",
       width: "20%",
       // render: (text: string, record: any, index: number) => index + 1,
     },
     {
-      title: "ACTIVE",
+      title: "Active",
       dataIndex: "organizedId",
       key: "organizedId",
       width: "20%",
@@ -109,20 +108,6 @@ export default function Organization() {
             >
               {editIcon}
             </Button>
-            {/* <Button
-              type="link"
-              danger
-              onClick={() =>
-                setManageStatus({
-                  status: "delete",
-                  organizedId: data,
-                  organizedName: record.organizedName,
-                  description: record.description,
-                })
-              }
-            >
-              {deleteIcon}
-            </Button> */}
           </div>
         </>
       ),
@@ -188,21 +173,21 @@ export default function Organization() {
               title: <span>Home</span>,
             },
             {
-              href: "/page/setting",
-              title: <span>Setting</span>,
+              title: <span>Users Management</span>,
             },
             {
-              title: <span>Organization </span>,
+              title: <span>Organizations</span>,
             },
           ]}
         />
       </Col>
-      <Col span={24}>
-        <div className="title-page-font">{`ORGANIZATION`}</div>
-      </Col>
+
+      <Divider orientation="left" orientationMargin="0">
+        <div className="title-page-font">{`Organizations`}</div>
+      </Divider>
       <Col span={24}>
         <div className=" grid grid-cols-1 gap-y-2">
-          <div className=" flex  justify-between ">
+          <div className="flex justify-between ">
             <div className="flex">
               {/* <Popover
                 onOpenChange={handleOpenFilter}
@@ -240,7 +225,7 @@ export default function Organization() {
           <Card className="grid grid-cols-1 ">
             <div className="grid grid-cols-1 md:grid-cols-1">
               <div>
-                <Table loading={loading} dataSource={dataSource} rowKey={"organizedId"} columns={columns} />
+                <Table size="small" loading={loading} dataSource={dataSource} rowKey={"organizedId"} columns={columns} />
               </div>
             </div>
           </Card>

@@ -44,8 +44,8 @@ export const TableVender: React.FC<props> = ({
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [getdatavender, setdataDetailvender] = useState<typeVender>();
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
-  const editVenderRule = checkRule("vender-edit");
-  const deleteVenderRule = checkRule("vender-delete");
+  const editVenderRule = checkRule("sm-vender-edit");
+  const deleteVenderRule = checkRule("sm-vender-delete");
   const openDetailvender = async (row: typeVender) => {
     setdataDetailvender(row);
     setIsModalOpen(true);

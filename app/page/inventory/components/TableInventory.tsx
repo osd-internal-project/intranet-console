@@ -14,10 +14,7 @@ export interface props {
   search: object;
 }
 
-export const TableInventory: React.FC<props> = ({
-  groupID,
-  search,
-}): React.ReactElement => {
+export const TableInventory: React.FC<props> = ({ groupID, search }): React.ReactElement => {
   const stockAuth = useAxiosStock();
 
   const inventorystockservices = InventoryStockServices(stockAuth);
@@ -27,10 +24,7 @@ export const TableInventory: React.FC<props> = ({
     if (loading === true) loaddata();
   }, [groupID?.grouplist, loading]);
   const loaddata = async () => {
-    const result = await inventorystockservices.getInventoryByGroup(
-      groupID?.grouplist,
-      search
-    );
+    const result = await inventorystockservices.getInventoryByGroup(groupID?.grouplist, search);
     if (result) setdataResult(result);
     setLoading(false);
   };
@@ -40,12 +34,12 @@ export const TableInventory: React.FC<props> = ({
   const columns: ColumnsType<ITypeInventory> = [
     {
       key: "inventoryName",
-      title: "INVENTORY NAME",
+      title: "Inventory Name",
       dataIndex: "inventoryName",
     },
     {
       key: "locationId",
-      title: "LOCATION",
+      title: "Location",
       dataIndex: "locationId",
       render: (event: string, row: any, index: number) => {
         return row.location.locationName;
@@ -53,7 +47,7 @@ export const TableInventory: React.FC<props> = ({
     },
     {
       key: "locationId",
-      title: "LOCATION PLACE",
+      title: "Location Place",
       dataIndex: "locationPlace",
       render: (event: string, row: any, index: number) => {
         return row.locationPlace;
@@ -61,18 +55,18 @@ export const TableInventory: React.FC<props> = ({
     },
     {
       key: "phoneNumber",
-      title: "PHONE NUMBER",
+      title: "Phone Number",
       dataIndex: "phoneNumber",
     },
     {
       key: "createdAt",
-      title: "CREATED",
+      title: "Created",
       dataIndex: "createdAt",
       render: (event: Date) => dateToStringThNoTime(event),
     },
     {
       key: "status",
-      title: "STATUS",
+      title: "Status",
       dataIndex: "status",
       render: (d: boolean, r: any, index: number) =>
         d ? (
@@ -88,7 +82,7 @@ export const TableInventory: React.FC<props> = ({
 
     {
       key: "id",
-      title: "ACTIVE",
+      title: "Active",
       dataIndex: "id",
       align: "center",
       fixed: "right",
@@ -108,7 +102,7 @@ export const TableInventory: React.FC<props> = ({
                 },
               }}
             >
-              <Button type="link">
+              <Button size="small" type="link">
                 <Space>
                   <div
                     style={{

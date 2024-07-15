@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Breadcrumb, Card, Col, Row, Spin } from "antd";
+import { Breadcrumb, Card, Col, Divider, Row, Spin } from "antd";
 import RuleTable from "./components/RuleTable";
 import RuleManage from "./components/RuleManage";
 
@@ -59,20 +59,20 @@ export default function UsergroupPage() {
             },
             {
               href: "/page/setting",
-              title: <span>Setting</span>,
+              title: <span>Users Management</span>,
             },
             {
-              title: <span>Set Rule </span>,
+              title: <span>Rules</span>,
             },
           ]}
         />
       </Col>
-      <Col span={24}>
-        <div className="title-page-font">{`SET RULE`}</div>
-      </Col>
+      <Divider orientation="left" orientationMargin="0">
+        <div className="title-page-font">{`Rules`}</div>
+      </Divider>
       <Col span={24}>
         <div className="grid grid-cols-1 ">
-          <div>
+          <Card>
             <RuleTable
               propLoading={propLoading}
               propDataTable={propDataTable}
@@ -82,10 +82,8 @@ export default function UsergroupPage() {
               setPaginationConfig={(e: number) => setPaginationConfig(e)}
               paginationConfig={paginationConfig}
             />
-          </div>
-          <div>
             <RuleManage propDataManage={propDataManage} manageStatus={manageStatus} />
-          </div>
+          </Card>
         </div>
       </Col>
     </Row>

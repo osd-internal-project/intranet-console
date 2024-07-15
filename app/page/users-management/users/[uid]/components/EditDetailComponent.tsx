@@ -245,7 +245,7 @@ const EditDetailComponent: React.FC<props> = ({
             <Avatar size={128} src={image ? URL.createObjectURL(image) : ""} />
           </div>
           <div className=" flex justify-center">
-            <Form.Item name="image">
+            <Form.Item name="image" hidden={disabledEdit}>
               <Upload
                 accept="image/png, image/jpeg"
                 fileList={imageFiles}
@@ -417,7 +417,7 @@ const EditDetailComponent: React.FC<props> = ({
             <div className=" flex  space-x-4">
               <Button
                 onClick={() => {
-                  router.push(`/page/setting/usermanagement/`);
+                  router.push(`/page/users-management/users`);
                 }}
               >{`Back`}</Button>
               <Button

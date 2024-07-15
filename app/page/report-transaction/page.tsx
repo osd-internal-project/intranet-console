@@ -8,11 +8,13 @@ import {
   Checkbox,
   Col,
   DatePicker,
+  Divider,
   Form,
   Input,
   Popover,
   Row,
   Select,
+  Space,
   Table,
 } from "antd";
 import ReportServices from "./services/report.service";
@@ -355,55 +357,56 @@ export default function TransactionPage() {
                 href: "/page",
                 title: <span>Home</span>,
               },
-              {
-                href: "/page/setting",
-                title: <span>Setting</span>,
-              },
+              // {
+              //   href: "/page/setting",
+              //   title: <span>Setting</span>,
+              // },
               {
                 title: <span>การรับเข้าเบิกจ่าย</span>,
               },
             ]}
           />
         </Col>
-        <Col span={24}>
+
+        <Divider orientation="left" orientationMargin="0">
           <div className="title-page-font">{`การรับเข้าเบิกจ่าย`}</div>
-        </Col>
+        </Divider>
+
         <Col span={24}>
           <div className=" grid grid-cols-1 gap-y-2">
-            <div className=" flex justify-between md:col-span-2 ">
-              <div>
-                <Popover
-                  onOpenChange={handleOpenFilter}
-                  open={openFilter}
-                  content={searchContent}
-                  placement="bottomLeft"
-                  title="Search"
-                  trigger="click"
-                  overlayStyle={{ width: "calc(100% - 240px)" }}
-                >
-                  <Button
-                    type="primary"
-                    className="button-blue"
-                    icon={<FilterOutlined />}
-                  >
-                    Filters
-                  </Button>
-                </Popover>
-              </div>
-              <div>
-                <Button
-                  type="primary"
-                  icon={exportIcon}
-                  className="button-blue"
-                  onClick={exportExcel}
-                  disabled={disableExport}
-                >
-                  Export
-                </Button>
-              </div>
-            </div>
             <div>
               <Card>
+                <div className=" flex justify-end pb-4">
+                  <Space>
+                    <Popover
+                      onOpenChange={handleOpenFilter}
+                      open={openFilter}
+                      content={searchContent}
+                      placement="bottomLeft"
+                      title="Search"
+                      trigger="click"
+                      overlayStyle={{ width: "calc(100% - 240px)" }}
+                    >
+                      <Button
+                        type="primary"
+                        className="button-blue"
+                        icon={<FilterOutlined />}
+                      >
+                        Filters
+                      </Button>
+                    </Popover>
+
+                    <Button
+                      type="primary"
+                      icon={exportIcon}
+                      className="button-blue"
+                      onClick={exportExcel}
+                      disabled={disableExport}
+                    >
+                      Export
+                    </Button>
+                  </Space>
+                </div>
                 <div className=" col-span-1 space-y-5 md:top-1">
                   <div className=" overflow-auto md:overflow-hidden">
                     <ReportTable

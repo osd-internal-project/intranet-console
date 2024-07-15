@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Card, DatePicker, Dropdown, Form, Input, Popover, Table, Tag, Tree } from "antd";
+import { Button, Card, DatePicker, Dropdown, Form, Input, Popover, Space, Table, Tag, Tree } from "antd";
 import type { DataNode } from "antd/es/tree";
 import Title from "antd/es/skeleton/Title";
 import RuleServices from "../services/rule.service";
@@ -20,7 +20,15 @@ export interface props {
 }
 
 const { RangePicker } = DatePicker;
-const RuleTable: React.FC<props> = ({ propDataTable, propLoading, loading, handlerPaginationTable, filter, setPaginationConfig, paginationConfig }): React.ReactElement => {
+const RuleTable: React.FC<props> = ({
+  propDataTable,
+  propLoading,
+  loading,
+  handlerPaginationTable,
+  filter,
+  setPaginationConfig,
+  paginationConfig,
+}): React.ReactElement => {
   const userAuth = useAxiosUser();
   const ruleServices = RuleServices(userAuth);
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,7 +38,7 @@ const RuleTable: React.FC<props> = ({ propDataTable, propLoading, loading, handl
 
   const columns = [
     {
-      title: "NO.",
+      title: "No.",
       dataIndex: "id",
       key: "id",
       render: (event: string, row: any, index: number) => {
@@ -38,23 +46,21 @@ const RuleTable: React.FC<props> = ({ propDataTable, propLoading, loading, handl
         return index + skip + 1;
       },
     },
-    // render: (text: string, record: any, index: number) => (currentPage - 1) * 10 + index + 1 }
-
     {
-      title: "RULE NAME",
+      title: "Rule Name",
       dataIndex: "ruleName",
       key: "ruleCode",
       width: "20%",
       render: (text: string) => <Tag className="bg-gray-100 text-gray-800 font-medium mr-2 rounded  border border-gray-500">{text}</Tag>,
     },
     {
-      title: "DESCRIPTION",
+      title: "Description",
       dataIndex: "description",
       key: "ruleCode",
       width: "30%",
     },
     {
-      title: "CREATED",
+      title: "Created",
       dataIndex: "createdAt",
       key: "ruleCode",
       render: (d: Date, r: any, i: number) => (d ? dateToStringTh(d) : ""),
@@ -67,10 +73,10 @@ const RuleTable: React.FC<props> = ({ propDataTable, propLoading, loading, handl
       width: "20%",
       render: (text: string, record: any) => (
         <div className="space-x-2">
-          <Button type="primary" onClick={() => toManage("edit", text, record.ruleName, record.description)} ghost>
+          <Button size="small" type="primary" onClick={() => toManage("edit", text, record.ruleName, record.description)} ghost>
             Edit
           </Button>
-          <Button type="primary" onClick={() => toManage("delete", text, record.ruleName, record.description)} ghost danger>
+          <Button size="small" type="primary" onClick={() => toManage("delete", text, record.ruleName, record.description)} ghost danger>
             Delete
           </Button>
         </div>
@@ -83,6 +89,7 @@ const RuleTable: React.FC<props> = ({ propDataTable, propLoading, loading, handl
       loaddata();
     }
   }, [loading]);
+
   const loaddata = async () => {
     setCurrentPage(1);
     const data = await ruleServices.getMasterRuleByFilter(search);
@@ -144,14 +151,11 @@ const RuleTable: React.FC<props> = ({ propDataTable, propLoading, loading, handl
       </div>
     </Form>
   );
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
 
   return (
     <div className=" grid grid-cols-1 gap-y-2">
-      <div className=" flex justify-between md:col-span-2 ">
-        <div>
+      <div className=" flex justify-end">
+        <Space>
           <Popover
             onOpenChange={handleOpenFilter}
             open={openFilter}
@@ -165,28 +169,26 @@ const RuleTable: React.FC<props> = ({ propDataTable, propLoading, loading, handl
               Filters
             </Button>
           </Popover>
-        </div>
-        <div>
           <Button type="primary" className="button-blue" onClick={() => toManage("add", null, null, null)}>
             Add Rule
           </Button>
-        </div>
+        </Space>
       </div>
+
       <div>
-        <Card>
-          <div className=" col-span-1 space-y-5 md:top-1">
-            <div className=" overflow-auto md:overflow-hidden">
-              <Table
-                loading={loading}
-                columns={columns}
-                dataSource={dataTable}
-                rowKey={"ruleCode"}
-                pagination={{ total: paginationConfig, current: filter?.current, showSizeChanger: false }}
-                onChange={handlerPaginationTable}
-              />
-            </div>
+        <div className=" col-span-1 space-y-5 md:top-1">
+          <div className=" overflow-auto md:overflow-hidden">
+            <Table
+              size="small"
+              loading={loading}
+              columns={columns}
+              dataSource={dataTable}
+              rowKey={"ruleCode"}
+              pagination={{ total: paginationConfig, current: filter?.current, showSizeChanger: false }}
+              onChange={handlerPaginationTable}
+            />
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );

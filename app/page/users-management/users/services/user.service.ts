@@ -7,7 +7,7 @@ type createdType = {
   firstNameTh: string;
   lastNameTh: string;
   phoneNumber: string;
-  masterPositionId: number;
+  positionId: number;
 };
 type detailType = {
   userId: string;
@@ -138,7 +138,10 @@ const UserServices = (axiosInstance: AxiosInstance) => {
 
     getDuplicateUsername: async (userId: string, username: string) => {
       return await axiosInstance
-        .post(`${baseUrl}/find-duplicate-username`, { userId: userId, username: username })
+        .post(`${baseUrl}/find-duplicate-username`, {
+          userId: userId,
+          username: username,
+        })
         .then((res) => {
           return res.data;
         })
@@ -172,7 +175,12 @@ const UserServices = (axiosInstance: AxiosInstance) => {
       };
       return await axiosInstance.post(`${baseUrl}/set-user-roles-map`, req);
     },
-    setUserGroupMap: async (userId: string, organizedGroupId: string, ownerGroupId: string, group: string[]) => {
+    setUserGroupMap: async (
+      userId: string,
+      organizedGroupId: string,
+      ownerGroupId: string,
+      group: string[]
+    ) => {
       const req = {
         ownerGroupId: ownerGroupId,
         userId: userId,
@@ -182,7 +190,10 @@ const UserServices = (axiosInstance: AxiosInstance) => {
       return await axiosInstance.post(`${baseUrl}/set-user-group-map`, req);
     },
     changeUserPassword: async (userId: string, newPassword: string) => {
-      return await axiosInstance.patch(`/auth/reset-password`, { userId: userId, newPassword: newPassword });
+      return await axiosInstance.patch(`/auth/reset-password`, {
+        userId: userId,
+        newPassword: newPassword,
+      });
     },
     remove: async (id: string) => {
       return await axiosInstance.delete(`${baseUrl}/${id}`);
@@ -212,6 +223,44 @@ const UserServices = (axiosInstance: AxiosInstance) => {
           console.log(err);
           return [];
         });
+    },
+    assignGroups: async (
+      userId: string,
+      organizeId: string,
+      groups: string[]
+    ) => {
+      return await axiosInstance
+        .post(`${baseUrl}/assign-groups/${userId}`, {
+          organizeId: organizeId,
+          groups: groups,
+        })
+        .then((result) => result.data)
+        .catch((err) => err);
+    },
+    assignOwnerGroups: async (
+      userId: string,
+      organizeId: string,
+      groupOwnerId: string
+    ) => {
+      return await axiosInstance
+        .post(`${baseUrl}/assign_owner_groups/${userId}`, {
+          organizeId: organizeId,
+          groupOwnerId: groupOwnerId,
+        })
+        .then((result) => result.data)
+        .catch((err) => err);
+    },
+    findAssignGroup: async (userId: string, organizeId: string) => {
+      return await axiosInstance
+        .get(`${baseUrl}/assign-groups/${userId}/${organizeId}`)
+        .then((result) => result.data)
+        .catch((err) => err);
+    },
+    findOwnerGroupByOrganizeId: async (userId: string, organizeId: string) => {
+      return await axiosInstance
+        .get(`${baseUrl}/assign-owner-groups/${userId}/${organizeId}`)
+        .then((result) => result.data)
+        .catch((err) => err);
     },
   };
 };

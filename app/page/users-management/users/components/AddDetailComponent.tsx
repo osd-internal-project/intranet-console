@@ -1,5 +1,16 @@
 "use client";
-import { Breadcrumb, Button, Card, Col, Form, Input, Row, Select, Switch, message } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  Row,
+  Select,
+  Switch,
+  message,
+} from "antd";
 import React, { useState, useEffect } from "react";
 import UserServices from "../services/user.service";
 import { useForm } from "antd/es/form/Form";
@@ -33,7 +44,10 @@ const AddDetailComponent: React.FC = (): React.ReactElement => {
   }, []);
   const loadingConfig = async () => {
     const positions = await masterPositionServices.getMasterPositionAll();
-    const positionOption: ITypeOption[] = positions.map((d: any) => ({ label: d.nameTh, value: d.id }));
+    const positionOption: ITypeOption[] = positions.map((d: any) => ({
+      label: d.nameTh,
+      value: d.id,
+    }));
     setPositionOption(positionOption);
   };
   const onClickFinishAdd = () => {
@@ -41,7 +55,9 @@ const AddDetailComponent: React.FC = (): React.ReactElement => {
   };
   const onFinishAdd = async (value: detailType) => {
     setbuttonLoading(true);
-    const dupilcateUser = await userServices.getUsersByCondition({ where: { username: value.username.trim() } });
+    const dupilcateUser = await userServices.getUsersByCondition({
+      where: { username: value.username.trim() },
+    });
 
     if (dupilcateUser) {
       message.error("A user with that username already exists");
@@ -56,13 +72,13 @@ const AddDetailComponent: React.FC = (): React.ReactElement => {
         firstNameTh: value.firstNameTh,
         lastNameTh: value.lastNameTh,
         phoneNumber: value.phoneNumber,
-        masterPositionId: value.masterPositionId,
+        positionId: value.masterPositionId,
       };
       await userServices
         .addUser(form)
         .then((res) => {
           message.success("Add Success");
-          router.push(`/page/setting/usermanagement/${res.userId}`);
+          router.push(`/page/users-management/users/${res.userId}`);
           setbuttonLoading(false);
         })
         .catch((err) => {
@@ -121,7 +137,9 @@ const AddDetailComponent: React.FC = (): React.ReactElement => {
   const validateConfirmPassword = (_: any, value: any) => {
     const firstPassword = detailForm.getFieldValue("password");
     if (value && value !== firstPassword) {
-      return Promise.reject(new Error("Your password and confirm password must match"));
+      return Promise.reject(
+        new Error("Your password and confirm password must match")
+      );
     }
     return Promise.resolve();
   };
@@ -134,12 +152,9 @@ const AddDetailComponent: React.FC = (): React.ReactElement => {
               href: "/page",
               title: <span>Home</span>,
             },
+
             {
-              href: "/page/setting",
-              title: <span>Setting</span>,
-            },
-            {
-              href: "/page/setting/usermanagement",
+              href: "/page/users-management/users",
               title: <span>User Management</span>,
             },
             {
@@ -164,17 +179,33 @@ const AddDetailComponent: React.FC = (): React.ReactElement => {
           >
             <div className="grid grid-cols-1 md:grid-cols-3 space-y-0">
               <div>
-                <Form.Item label="Username" name="username" rules={[{ required: true, message: "Please enter username" }, { validator: validateNoSpaces }]}>
+                <Form.Item
+                  label="Username"
+                  name="username"
+                  rules={[
+                    { required: true, message: "Please enter username" },
+                    { validator: validateNoSpaces },
+                  ]}
+                >
                   <Input />
                 </Form.Item>
               </div>
               <div>
-                <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please enter email" }]} style={{ marginBottom: "2px" }}>
+                <Form.Item
+                  label="Email"
+                  name="email"
+                  rules={[{ required: true, message: "Please enter email" }]}
+                  style={{ marginBottom: "2px" }}
+                >
                   <Input />
                 </Form.Item>
               </div>
               <div>
-                <Form.Item label="Status" name="activeStatus" style={{ marginBottom: "2px" }}>
+                <Form.Item
+                  label="Status"
+                  name="activeStatus"
+                  style={{ marginBottom: "2px" }}
+                >
                   <Switch
                     checkedChildren="Active"
                     unCheckedChildren="Inactive"
@@ -183,12 +214,23 @@ const AddDetailComponent: React.FC = (): React.ReactElement => {
                     onChange={() => {
                       setSwitchChecked(!switchChecked);
                     }}
-                    className={switchChecked === true ? "active-switch" : "inactive-switch"}
+                    className={
+                      switchChecked === true
+                        ? "active-switch"
+                        : "inactive-switch"
+                    }
                   />
                 </Form.Item>
               </div>
               <div>
-                <Form.Item label="Password" name="password" rules={[{ required: true, message: "Please enter password" }, { validator: validatePassword }]}>
+                <Form.Item
+                  label="Password"
+                  name="password"
+                  rules={[
+                    { required: true, message: "Please enter password" },
+                    { validator: validatePassword },
+                  ]}
+                >
                   <Input.Password />
                 </Form.Item>
               </div>
@@ -198,7 +240,10 @@ const AddDetailComponent: React.FC = (): React.ReactElement => {
                   name="cfpassword"
                   dependencies={["password"]}
                   rules={[
-                    { required: true, message: "Please enter confirm password" },
+                    {
+                      required: true,
+                      message: "Please enter confirm password",
+                    },
                     { validator: validateNoSpaces },
                     ({ getFieldValue }) => ({
                       validator(_, value) {
@@ -216,12 +261,25 @@ const AddDetailComponent: React.FC = (): React.ReactElement => {
               </div>
 
               <div>
-                <Form.Item label="First Name" name="firstNameTh" rules={[{ required: true, message: "Please enter first name" }]}>
+                <Form.Item
+                  label="First Name"
+                  name="firstNameTh"
+                  rules={[
+                    { required: true, message: "Please enter first name" },
+                  ]}
+                >
                   <Input />
                 </Form.Item>
               </div>
               <div>
-                <Form.Item label="Last Name" name="lastNameTh" rules={[{ required: true, message: "Please enter last Name" }]} style={{ marginBottom: "2px" }}>
+                <Form.Item
+                  label="Last Name"
+                  name="lastNameTh"
+                  rules={[
+                    { required: true, message: "Please enter last Name" },
+                  ]}
+                  style={{ marginBottom: "2px" }}
+                >
                   <Input />
                 </Form.Item>
               </div>
@@ -230,25 +288,39 @@ const AddDetailComponent: React.FC = (): React.ReactElement => {
                 <Form.Item
                   label="Phone Number"
                   name="phoneNumber"
-                  rules={[{ required: true, message: "Please enter phone number" }, { validator: validateOnlyNumbers }]}
+                  rules={[
+                    { required: true, message: "Please enter phone number" },
+                    { validator: validateOnlyNumbers },
+                  ]}
                   style={{ marginBottom: "2px" }}
                 >
                   <Input maxLength={12} />
                 </Form.Item>
               </div>
               <div>
-                <Form.Item label="Position" name="masterPositionId" rules={[{ required: true, message: "Please enter position" }]}>
-                  <Select placeholder="Please Select" options={positionOption} />
+                <Form.Item
+                  label="Position"
+                  name="masterPositionId"
+                  rules={[{ required: true, message: "Please enter position" }]}
+                >
+                  <Select
+                    placeholder="Please Select"
+                    options={positionOption}
+                  />
                 </Form.Item>
               </div>
               <div className="  col-span-3">
                 <div className=" w-full text-right space-x-4">
                   <Button
                     onClick={() => {
-                      router.push(`/page/setting/usermanagement/`);
+                      router.push(`/page/users-management/users`);
                     }}
                   >{`Cancel`}</Button>
-                  <Button type={"primary"} onClick={onClickFinishAdd} loading={buttonLoading}>
+                  <Button
+                    type={"primary"}
+                    onClick={onClickFinishAdd}
+                    loading={buttonLoading}
+                  >
                     {`Add User`}
                   </Button>
                 </div>

@@ -16,8 +16,8 @@ export interface props {
 const ShowOrder: React.FC<props> = ({ order, propData }): React.ReactElement => {
   const { data: session } = useSession();
   const stockAuth = useAxiosStock();
-  const cancelOrderRule = checkRule("order-cancel");
-  const successOrderRule = checkRule("order-success");
+  const cancelOrderRule = checkRule("sm-order-c");
+  const successOrderRule = checkRule("sm-order-s");
   const orderManagementServices = OrderManagementServices(stockAuth);
   const [date, setDate] = useState<Date>(new Date());
   const [getcheckdoneButton, setcheckdoneButton] = useState<boolean>(false);

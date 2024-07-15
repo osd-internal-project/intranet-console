@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, Row, Spin } from "antd";
+import { Breadcrumb, Card, Col, Divider, Row, Spin } from "antd";
 import MaTypeCreateComponent from "./components/MaTypeCreate";
 import MaTypeTableComponent from "./components/MaTypeTable";
 import { ITMaType, ITMaTypeForm, ITPagination } from "./common";
@@ -58,19 +58,17 @@ export default function MaTaskPage() {
                 title: <span>Home</span>,
               },
               {
-                href: "/page/setting",
                 title: <span>Setting</span>,
               },
               {
-                // href: "/page/mantenance-type",
                 title: <span>Set Maintenance Type</span>,
               },
             ]}
           />
         </Col>
-        <Col span={24}>
-          <div className="title-page-font">{`SET MAINTENANCE TYPE`}</div>
-        </Col>
+        <Divider orientation="left" orientationMargin="0">
+          <div className="title-page-font">{`Set Maintenance Type`}</div>
+        </Divider>
         <Col span={24}>
           <div className="grid grid-cols-1 ">
             <Card>

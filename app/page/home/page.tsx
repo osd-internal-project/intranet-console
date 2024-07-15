@@ -19,23 +19,29 @@ export default function HomePage() {
       <div className="grid md:grid-cols-3">
         <div className="px-2 mb-4">
           <Card className="text-center">
-            <FileFilled className="text-5xl text-blue-500" />
-            <br />
-            <a href="/page/data-leave/online-leave">ใบลาออนไลน์</a>
+            <a href="/page/data-leave/online-leave">
+              <FileFilled className="text-5xl text-blue-500" />
+              <br />
+              ใบลาออนไลน์
+            </a>
           </Card>
         </div>
         <div className="px-2 mb-4">
           <Card className="text-center">
-            <TeamOutlined className="text-5xl text-blue-500" />
-            <br />
-            <a href="/page/bookingroom/booking-room">จองห้องประชุมออนไลน์</a>
+            <a href="/page/bookingroom/booking-room">
+              <TeamOutlined className="text-5xl text-blue-500" />
+              <br />
+              จองห้องประชุมออนไลน์
+            </a>
           </Card>
         </div>
         <div className="px-2 mb-4">
-          <Card className="text-center" >
-            <CarFilled className="text-5xl text-blue-500" />
-            <br />
-            <a href="/page/carre-serve">จองรถยนต์ออนไลน์</a>
+          <Card className="text-center">
+            <a href="/page/macar/ma-car">
+              <CarFilled className="text-5xl text-blue-500" />
+              <br />
+              จองรถยนต์ออนไลน์
+            </a>
           </Card>
         </div>
       </div>

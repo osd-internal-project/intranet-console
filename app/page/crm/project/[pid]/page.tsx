@@ -10,6 +10,7 @@ import {
   Tabs,
   Modal,
   Input,
+  Form,
 } from "antd";
 import DescriptionCustomerComponent from "./components/description-form";
 import {
@@ -21,11 +22,12 @@ import {
   ITProjectTicket,
   ITProjectTicketCreateForm,
   ITProjectTicketEditForm,
+  ITSelectUsers,
   ITTicketConfigs,
   ITTicketHistoryLog,
   ITTicketHistoryLogForm,
 } from "../common";
-import { useAxiosCrm } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosCrm, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import CrmServices from "../services/index.service";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -38,18 +40,38 @@ import { group } from "console";
 import ProjectTicketDetailComponent from "./components/project-ticket-detail";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
+import UserServices from "../services/user.service";
+import { FormInstance } from "antd/lib";
+import { checkRule } from "@/app/utils/rules";
 
 export default function CustomerDetailPage() {
   const { data: session } = useSession();
+  const rules = {
+    ruleProjectShow: checkRule("crm-p-s"),
+    ruleProjectTaskAdd: checkRule("crm-pt-a"),
+    ruleProjectTaskEdit: checkRule("crm-pt-e"),
+    ruleProjectTaskDelete: checkRule("crm-pt-d"),
+    ruleTicketAdd: checkRule("crm-t-a"),
+    ruleTicketEdit: checkRule("crm-t-e"),
+    ruleTicketRequestFilesEdit: checkRule("crm-trf-e"),
+    ruleTicketUpdateStatus: checkRule("crm-t-u"),
+    ruleTicketHold: checkRule("crm-t-h"),
+    ruleTicketClose: checkRule("crm-t-c"),
+  };
   const crmAuth = useAxiosCrm();
   const crmServices = CrmServices(crmAuth);
+  const userAuth = useAxiosUser();
+  const userServices = UserServices(userAuth);
   const params = useParams<{ pid: string }>();
+  const [summaryForm] = useForm();
+  const [editTaskForm] = useForm();
   const [projectDescription, setProjectDescription] = useState<ITProject>();
   const [contactDescription, setContactDescription] = useState<
     ITBranchContact | undefined
   >();
   const [loading, setloading] = useState<boolean>(true);
   const [showModalTaskAdd, setShowModalTaskAdd] = useState<boolean>(false);
+  const [showModalTaskEdit, setShowModalTaskEdit] = useState<boolean>(false);
   const [showModalTicketAdd, setShowModalTicketAdd] = useState<boolean>(false);
 
   const [isEdit, setIsEdit] = useState(false);
@@ -61,7 +83,7 @@ export default function CustomerDetailPage() {
   const [projectTicketList, setProjecTicketList] = useState<ITProjectTicket[]>(
     []
   );
-  const [summaryTicketInput, setSummaryTicketInput] = useState<string>("");
+  // const [summaryTicketInput, setSummaryTicketInput] = useState<string>("");
   const [projectTicketDetail, setProjectTicketDetail] = useState<
     ITProjectTicket | undefined
   >(undefined);
@@ -75,14 +97,29 @@ export default function CustomerDetailPage() {
     workTypeList: [],
     requestTypeList: [],
   });
+  const [usersList, setUsersList] = useState<ITSelectUsers[]>([]);
   // const [data, setData] = useState<ITCustomer>();
   useEffect(() => {
     if (loading === true) fetchData();
   }, [loading]);
+  useEffect(() => {
+    fetchUserList();
+  }, []);
 
   const fetchData = async () => {
     await fetchConfigs();
     await fetchDescription();
+    setloading(false);
+  };
+
+  const fetchUserList = async () => {
+    if (session?.user.userId) {
+      const usersList = await userServices.findOrganizeUserByUserId(
+        session?.user.userId
+      );
+      setUsersList(usersList);
+    }
+
     setloading(false);
   };
   const fetchConfigs = async () => {
@@ -151,13 +188,13 @@ export default function CustomerDetailPage() {
   const onSaveProjectTicket = async (
     projectId: number,
     taskId: number | undefined,
-    data: ITProjectTicketCreateForm
+    data: ITProjectTicketCreateForm,
+    attendFiles: UploadFile[]
   ) => {
     let form = {
       ...data,
       status: "new",
       createdById: session?.user.userId,
-      groupId: session?.user.ownerGroup,
       createdByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
     };
     if (form.requestTypeId) {
@@ -219,8 +256,16 @@ export default function CustomerDetailPage() {
       form = { ...form, customerProjectTaskId: taskId };
     }
     await crmServices
-      .createProjectTicket(+projectId, form)
+      .createProjectTicket(projectId, form)
       .then(async (data) => {
+        if (data.id && attendFiles.length > 0) {
+          attendFiles.forEach(async (file) => {
+            const formData: any = new FormData();
+            formData.append("type", "create-attend");
+            formData.append("files", file.originFileObj);
+            await crmServices.uploadFiles(data.id, formData);
+          });
+        }
         setShowModalTicketAdd(false);
         message.success("สร้าง Ticket สำเร็จ");
         await onSaveHistoryLogs(data.id, "create");
@@ -228,6 +273,23 @@ export default function CustomerDetailPage() {
       .catch(() => {
         message.error("ผิดพลาด กรุณาลองใหม่");
       });
+    setloading(true);
+  };
+  const onUpdateProjectTask = async (
+    taskId: number | undefined,
+    form: ITProjectTaskForm
+  ) => {
+    if (taskId) {
+      await crmServices
+        .updateProjectTask(+taskId, form)
+        .then(async (data) => {
+          setShowModalTaskEdit(false);
+          message.success("อัพเดท Task สำเร็จ");
+        })
+        .catch(() => {
+          message.error("ผิดพลาด กรุณาลองใหม่");
+        });
+    }
     setloading(true);
   };
   function changeTabs(activeKey: string): void {
@@ -253,11 +315,20 @@ export default function CustomerDetailPage() {
   }
   async function onEditProjectTicket(
     ticketId: number,
-    form: ITProjectTicketEditForm
+    form: ITProjectTicketEditForm,
+    attendFiles: UploadFile[]
   ) {
     await crmServices
       .updateProjectTicket(+ticketId, form)
       .then(async (data) => {
+        if (data.id && attendFiles.length > 0) {
+          attendFiles.forEach(async (file) => {
+            const formData: any = new FormData();
+            formData.append("type", "update-attend");
+            formData.append("files", file.originFileObj);
+            await crmServices.uploadFiles(data.id, formData);
+          });
+        }
         setShowModalTicketAdd(false);
         message.success("อัพเดท Ticket สำเร็จ");
         await onSaveHistoryLogs(ticketId, "update");
@@ -266,6 +337,7 @@ export default function CustomerDetailPage() {
       .catch(() => {
         message.error("ผิดพลาด กรุณาลองใหม่");
       });
+
     setloading(true);
   }
 
@@ -281,7 +353,7 @@ export default function CustomerDetailPage() {
       title = "Receive Ticket";
       content = <>ยืนยันการรับงาน ?</>;
       form = {
-        reciveDate: new Date(),
+        receiveDate: new Date(),
       };
     } else if (status === "hold") {
       title = "Hold Ticket";
@@ -299,15 +371,22 @@ export default function CustomerDetailPage() {
         finishDate: new Date(),
       };
     } else if (status === "close") {
+      summaryForm.resetFields();
       title = "Close Ticket";
       content = (
         <>
-          <div>Summary :</div>
-          <TextArea onChange={(e) => setSummaryTicketInput(e.target.value)} />
+          <Form form={summaryForm}>
+            <Form.Item
+              name={"summary"}
+              rules={[{ required: true, message: "กรุณากรอก Summary" }]}
+            >
+              <TextArea showCount={true} maxLength={200} />
+            </Form.Item>
+          </Form>
         </>
       );
+
       form = {
-        summary: summaryTicketInput,
         completeDate: new Date(),
       };
     }
@@ -319,6 +398,10 @@ export default function CustomerDetailPage() {
       okButtonProps: { type: "primary" },
       cancelText: "Cancel",
       onOk: async () => {
+        if (status === "close") {
+          const summary = summaryForm.getFieldValue("summary");
+          form = { ...form, summary: summary };
+        }
         await crmServices
           .updateStatusProjectTicket(+ticketId, status, form)
           .then(async () => {
@@ -333,7 +416,6 @@ export default function CustomerDetailPage() {
         setloading(true);
       },
     });
-    setSummaryTicketInput("");
   }
   const onSaveHistoryLogs = async (ticketId: number, action: string) => {
     let type = "";
@@ -361,7 +443,10 @@ export default function CustomerDetailPage() {
       detail = "Resume";
     } else if (action === "close") {
       type = "Complete";
-      detail = summaryTicketInput;
+      detail = summaryForm.getFieldValue("summary");
+    } else if (action === "deleteFile") {
+      type = "Update Progress Info";
+      detail = "Delete Attend File";
     }
     const form: ITTicketHistoryLogForm = {
       customerProjectTicketId: ticketId,
@@ -375,6 +460,50 @@ export default function CustomerDetailPage() {
     };
     await crmServices.createTicketHistoryLogs(form);
   };
+
+  async function downloadFile(id: number, name: string): Promise<void> {
+    if (id) {
+      const response = await crmServices.downloadFile(id);
+      const url = URL.createObjectURL(response);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  }
+
+  async function onDeleteTicketFile(fileId: number, ticketId: number) {
+    await crmServices
+      .deleteTicketFile(fileId)
+      .then(async () => {
+        await onSaveHistoryLogs(ticketId, "deleteFile");
+        await onShowModalProjectTicketDetail(ticketId);
+      })
+      .catch(() => {
+        message.error("ไม่สามารถลบไฟล์ได้");
+      });
+  }
+  async function saveRequestTicketFile(
+    ticketId: number,
+    reqFiles: UploadFile[]
+  ) {
+    if (ticketId && reqFiles.length > 0) {
+      reqFiles.forEach(async (file) => {
+        const formData: any = new FormData();
+        formData.append("type", "create-attend");
+        formData.append("files", file.originFileObj);
+        await crmServices.uploadFiles(ticketId, formData);
+      });
+    }
+    setShowModalTicketAdd(false);
+    message.success("อัพเดท Ticket สำเร็จ");
+    await onSaveHistoryLogs(ticketId, "update");
+    await onShowModalProjectTicketDetail(ticketId);
+
+    setloading(true);
+  }
   return projectDescription ? (
     <div>
       <Row gutter={[8, 8]}>
@@ -401,100 +530,135 @@ export default function CustomerDetailPage() {
         <Col span={24}>
           <div className="title-page-font">{`PROJECT DESCRIPTION`}</div>
         </Col>
-        <Col span={24}>
-          <DescriptionCustomerComponent
-            // descriptionForm={descriptionForm}
-            projectDescription={projectDescription}
-            contactDescription={contactDescription}
-            isEdit={isEdit}
-            setIsEdit={(e: boolean) => setIsEdit(e)}
-            onFinishEdit={onFinishEdit}
-          />
-        </Col>
-        <Col span={24}>
-          <Card>
-            <Tabs
-              destroyInactiveTabPane={true}
-              onChange={changeTabs}
-              items={[
-                {
-                  key: "Task",
-                  label: "Task",
-                  children: (
-                    <TaskComponent
-                      projectId={projectDescription.id}
-                      loading={loading}
-                      showModalTaskAdd={showModalTaskAdd}
-                      setLoading={function (loading: boolean): void {
-                        setloading(loading);
-                      }}
-                      onShowModalProjectTaskAdd={function (
-                        status: boolean
-                      ): void {
-                        setShowModalTaskAdd(status);
-                      }}
-                      onSaveProjectTask={onSaveProjectTask}
-                      projectTaskList={projectTaskList}
-                      projectTaskSelectId={projectTaskSelectId}
-                      projectTicketList={projectTicketList}
-                      onSetProjectTaskSelectId={function (
-                        taskId: number
-                      ): void {
-                        console.log(taskId);
-                        setProjectTaskSelectId(taskId);
-                        fetchProjectTicket(taskId);
-                      }}
-                      showModalTicketAdd={showModalTicketAdd}
-                      onShowModalProjectTicketAdd={function (
-                        status: boolean
-                      ): void {
-                        setShowModalTicketAdd(status);
-                      }}
-                      onSaveProjectTicket={onSaveProjectTicket}
-                      onShowModalProjectTicketDetail={
-                        onShowModalProjectTicketDetail
-                      }
-                      ticketConfigs={ticketConfigs}
-                    />
-                  ),
-                },
-                {
-                  key: "Ticket",
-                  label: "Ticket",
-                  children: (
-                    <TicketComponent
-                      projectTaskSelectId={undefined}
-                      projectTicketList={projectTicketList}
-                      showModalTicketAdd={showModalTicketAdd}
-                      onShowModalProjectTicketAdd={function (
-                        status: boolean
-                      ): void {
-                        setShowModalTicketAdd(status);
-                      }}
-                      onSaveProjectTicket={onSaveProjectTicket}
-                      projectId={+params.pid}
-                      onShowModalProjectTicketDetail={
-                        onShowModalProjectTicketDetail
-                      }
-                      ticketConfigs={ticketConfigs}
-                    />
-                  ),
-                },
-              ]}
-            />
-          </Card>
-          {projectTicketDetail ? (
-            <ProjectTicketDetailComponent
-              ticketSelectedDetail={projectTicketDetail}
-              onShowModalProjectTicketDetail={onShowModalProjectTicketDetail}
-              updateTicketStatus={updateTicketStatus}
-              onEditProjectTicket={onEditProjectTicket}
-              // ticketHistoryLogs={ticketHistoryLogs}
-            />
-          ) : (
-            <></>
-          )}
-        </Col>
+        {rules.ruleProjectShow ? (
+          <>
+            <Col span={24}>
+              <DescriptionCustomerComponent
+                // descriptionForm={descriptionForm}
+                projectDescription={projectDescription}
+                contactDescription={contactDescription}
+                isEdit={isEdit}
+                setIsEdit={(e: boolean) => setIsEdit(e)}
+                onFinishEdit={onFinishEdit}
+              />
+            </Col>
+            <Col span={24}>
+              {/* <ProjuctComponent
+                // descriptionForm={descriptionForm}
+                projectDescription={projectDescription}
+                contactDescription={contactDescription}
+                isEdit={isEdit}
+                setIsEdit={(e: boolean) => setIsEdit(e)}
+                onFinishEdit={onFinishEdit}
+              /> */}
+            </Col>
+            <Col span={24}>
+              <Card>
+                <Tabs
+                  destroyInactiveTabPane={true}
+                  onChange={changeTabs}
+                  items={[
+                    {
+                      key: "Task",
+                      label: "Task",
+                      children: (
+                        <TaskComponent
+                          rules={rules}
+                          projectId={projectDescription.id}
+                          loading={loading}
+                          showModalTaskAdd={showModalTaskAdd}
+                          setLoading={function (loading: boolean): void {
+                            setloading(loading);
+                          }}
+                          onShowModalProjectTaskAdd={function (
+                            status: boolean
+                          ): void {
+                            setShowModalTaskAdd(status);
+                          }}
+                          onSaveProjectTask={onSaveProjectTask}
+                          projectTaskList={projectTaskList}
+                          projectTaskSelectId={projectTaskSelectId}
+                          projectTicketList={projectTicketList}
+                          onSetProjectTaskSelectId={function (
+                            taskId: number
+                          ): void {
+                            console.log(taskId);
+                            setProjectTaskSelectId(taskId);
+                            fetchProjectTicket(taskId);
+                          }}
+                          showModalTicketAdd={showModalTicketAdd}
+                          onShowModalProjectTicketAdd={function (
+                            status: boolean
+                          ): void {
+                            setShowModalTicketAdd(status);
+                          }}
+                          onSaveProjectTicket={onSaveProjectTicket}
+                          onShowModalProjectTicketDetail={
+                            onShowModalProjectTicketDetail
+                          }
+                          ticketConfigs={ticketConfigs}
+                          usersList={usersList}
+                          showModalTaskEdit={showModalTaskEdit}
+                          editTaskForm={editTaskForm}
+                          onShowModalProjectTaskEdit={function (
+                            status: boolean
+                          ): void {
+                            setShowModalTaskEdit(status);
+                          }}
+                          onUpdateProjectTask={onUpdateProjectTask}
+                        />
+                      ),
+                    },
+                    {
+                      key: "Ticket",
+                      label: "Ticket",
+                      children: (
+                        <TicketComponent
+                          projectTaskSelectId={undefined}
+                          projectTicketList={projectTicketList}
+                          showModalTicketAdd={showModalTicketAdd}
+                          onShowModalProjectTicketAdd={function (
+                            status: boolean
+                          ): void {
+                            setShowModalTicketAdd(status);
+                          }}
+                          onSaveProjectTicket={onSaveProjectTicket}
+                          projectId={+params.pid}
+                          onShowModalProjectTicketDetail={
+                            onShowModalProjectTicketDetail
+                          }
+                          ticketConfigs={ticketConfigs}
+                          usersList={usersList}
+                          rules={rules}
+                        />
+                      ),
+                    },
+                  ]}
+                />
+              </Card>
+              {projectTicketDetail ? (
+                <ProjectTicketDetailComponent
+                  rules={rules}
+                  ticketSelectedDetail={projectTicketDetail}
+                  onShowModalProjectTicketDetail={
+                    onShowModalProjectTicketDetail
+                  }
+                  updateTicketStatus={updateTicketStatus}
+                  onEditProjectTicket={onEditProjectTicket}
+                  // ticketHistoryLogs={ticketHistoryLogs}
+                  downloadFile={downloadFile}
+                  onDeleteTicketFile={onDeleteTicketFile}
+                  usersList={usersList}
+                  saveRequestTicketFile={saveRequestTicketFile}
+                />
+              ) : (
+                <></>
+              )}
+            </Col>
+          </>
+        ) : (
+          <></>
+        )}
       </Row>
     </div>
   ) : (

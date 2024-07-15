@@ -1,6 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Button, Card, Col, message, Row, Spin } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Card,
+  Col,
+  message,
+  Row,
+  SelectProps,
+  Spin,
+} from "antd";
 import {
   ITBranchForSelect,
   ITCustomerForSelect,
@@ -15,6 +24,7 @@ import { checkRule } from "@/app/utils/rules";
 import CreateCustomerForm from "./components/create-form";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { CarryOutOutlined } from "@ant-design/icons";
 
 export default function AddProjectPage() {
   const { data: session } = useSession();
@@ -28,6 +38,8 @@ export default function AddProjectPage() {
   const [branchList, setBranchList] = useState<ITBranchForSelect[]>([]);
   const [userList, setUserList] = useState<ITSelectUsers[]>([]);
   const [saleList, setSaleList] = useState<{ uid: string; name: string }[]>([]);
+  const [groupOption, setGroupOption] = useState<SelectProps["options"]>([]);
+  const [usersFormGroup, setUsersFormGroup] = useState<ITSelectUsers[]>([]);
   useEffect(() => {
     if (loading === true) fetchData();
   }, [loading]);
@@ -37,20 +49,46 @@ export default function AddProjectPage() {
       const users = await userServices.findOrganizeUserByUserId(
         session?.user.userId
       );
+      selectOrganize(session?.user.userId);
       setUserList(users);
     }
     setCustomerList(data);
     setloading(false);
   };
+  const selectOrganize = async (userId: string) => {
+    const groups = await userServices.getUserGroupFormOrganizedByUserId(userId);
+    const tree = createTree(groups.organizeMapGroup, null);
+    setGroupOption(tree);
+  };
+  const createTree = (obj: any[], parentId: string | null) => {
+    const tree: any[] = [];
+    obj.forEach((item) => {
+      if (item.group.parentGroupId === parentId) {
+        const children = createTree(obj, item.group.groupId);
+        if (children.length > 0) {
+          (item.group.icon = <CarryOutOutlined />),
+            (item.group.children = children);
+        }
+        tree.push({
+          value: item.group.groupId,
+          title: item.group.groupName,
+          children: item.group.children,
+        });
+      }
+    });
+    return tree;
+  };
+
   async function onFinishAdd(form: ITProjectCreateForm): Promise<void> {
     let data = { ...form };
     if (form.projectManagerId) {
       const user = userList.findLast(
         (user) => user.userId === form.projectManagerId
       );
+
       if (user) {
         data = {
-          ...form,
+          ...data,
           projectManagerName: `${user.firstNameTh} ${user.lastNameTh}`,
         };
       }
@@ -61,7 +99,7 @@ export default function AddProjectPage() {
       );
       if (user) {
         data = {
-          ...form,
+          ...data,
           saleManagerName: `${user.firstNameTh} ${user.lastNameTh}`,
         };
       }
@@ -70,14 +108,14 @@ export default function AddProjectPage() {
       const user = userList.findLast((user) => user.userId === form.saleId);
       if (user) {
         data = {
-          ...form,
+          ...data,
           saleName: `${user.firstNameTh} ${user.lastNameTh}`,
         };
       }
     }
     await crmServices
       .createProject(data)
-      .then(() => {
+      .then((data) => {
         message.success("สร้าง Project สำเร็จ");
         rounter.push("/page/crm/project");
       })
@@ -88,13 +126,24 @@ export default function AddProjectPage() {
   async function changeCustomerSelect(id: number): Promise<void> {
     if (id) {
       const data = await crmServices.findBranchByCustomerId(id);
+
       setBranchList(data);
       const customer = customerList.findLast((customer) => customer.id === id);
-      console.log(customer);
       if (customer?.responsible) {
         setSaleList(customer.responsible);
       }
+    } else {
+      setBranchList([]);
     }
+  }
+
+  async function onChangeGroupSelect(value: string[]): Promise<void> {
+    const data = await userServices.findUsersByOwnerGroup(value);
+    setUsersFormGroup(data);
+  }
+
+  function selectRelateUsers(value: string[]): void {
+    throw new Error("Function not implemented.");
   }
 
   return (
@@ -134,6 +183,9 @@ export default function AddProjectPage() {
                 changeCustomerSelect={changeCustomerSelect}
                 userList={userList}
                 saleList={saleList}
+                groupOption={groupOption}
+                onChangeGroupSelect={onChangeGroupSelect}
+                usersFormGroup={usersFormGroup}
               />
             </Card>
           </div>

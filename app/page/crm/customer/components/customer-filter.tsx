@@ -61,6 +61,7 @@ const CustomerFilterComponent: React.FC<props> = ({
               layout="vertical"
               onFinish={onFinishFilter}
               // form={filterForm}
+              autoComplete="off"
             >
               <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
                 <Form.Item name={"refcode"} label={"รหัสรหัสอ้างอิงลูกค้า"}>

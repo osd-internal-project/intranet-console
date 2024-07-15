@@ -29,12 +29,14 @@ import { deleteIcon } from "@/components/icon";
 // const { RangePicker } = DatePicker;
 
 export interface props {
+  rules: any;
   branchDetail?: ITBranchDetail;
   onSaveBranchAddress: (branchId: number, form: ITBranchAddressForm) => void;
   onDeleteCustomerBranchAddress: (branchId: number, addressId: number) => void;
 }
 
 const BranchAddressComponent: React.FC<props> = ({
+  rules,
   branchDetail,
   onSaveBranchAddress,
   onDeleteCustomerBranchAddress,
@@ -138,13 +140,17 @@ const BranchAddressComponent: React.FC<props> = ({
           {/* <Button type="link" onClick={() => showModalEdit(record)}>
             {editIcon}
           </Button> */}
-          <Button
-            type="link"
-            onClick={() => showModalBranchAddressDelete(id)}
-            danger
-          >
-            {deleteIcon}
-          </Button>
+          {rules.ruleCustomerAddressDelete ? (
+            <Button
+              type="link"
+              onClick={() => showModalBranchAddressDelete(id)}
+              danger
+            >
+              {deleteIcon}
+            </Button>
+          ) : (
+            <></>
+          )}
         </div>
       ),
     },
@@ -153,16 +159,20 @@ const BranchAddressComponent: React.FC<props> = ({
   return (
     <div className=" grid gap-2">
       <div className=" flex justify-end">
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          ghost={!showModalAddressAdd}
-          onClick={() => {
-            setShowModalAddressAdd(!showModalAddressAdd);
-          }}
-        >
-          เพิ่มที่อยู่
-        </Button>
+        {rules.ruleCustomerAddressAdd ? (
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            ghost={!showModalAddressAdd}
+            onClick={() => {
+              setShowModalAddressAdd(!showModalAddressAdd);
+            }}
+          >
+            Add Address
+          </Button>
+        ) : (
+          <></>
+        )}
       </div>
       {showModalAddressAdd && branchDetail?.id ? (
         <BranchAdressAddComponent

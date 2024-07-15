@@ -6,15 +6,18 @@ import {
   ITProjectTaskForm,
   ITProjectTicket,
   ITProjectTicketCreateForm,
+  ITSelectUsers,
   ITTicketConfigs,
 } from "../../common";
 import Link from "next/link";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { EditOutlined } from "@ant-design/icons";
+import { UploadFile } from "antd/lib";
 
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 export interface props {
+  rules: any;
   // loading: boolean;
   // setLoading: (loading: boolean) => void;
   projectId: number;
@@ -22,12 +25,14 @@ export interface props {
   projectTicketList: ITProjectTicket[];
   showModalTicketAdd: boolean;
   ticketConfigs: ITTicketConfigs;
+  usersList: ITSelectUsers[];
   onShowModalProjectTicketAdd: (status: boolean) => void;
   onShowModalProjectTicketDetail: (id: number | undefined) => void;
   onSaveProjectTicket: (
     projectId: number,
     taskId: number | undefined,
-    form: ITProjectTicketCreateForm
+    form: ITProjectTicketCreateForm,
+    attendFiles: UploadFile[]
   ) => void;
 }
 
@@ -39,6 +44,7 @@ const layout = {
 };
 
 const TicketComponent: React.FC<props> = ({
+  rules,
   projectId,
   projectTaskSelectId,
   projectTicketList,
@@ -46,6 +52,7 @@ const TicketComponent: React.FC<props> = ({
   onShowModalProjectTicketAdd,
   onShowModalProjectTicketDetail,
   onSaveProjectTicket,
+  usersList,
   ticketConfigs,
 }): React.ReactElement => {
   const ticketColumns: TableColumnsType<ITProjectTicket> = [
@@ -120,22 +127,27 @@ const TicketComponent: React.FC<props> = ({
   return (
     <>
       <div className=" flex justify-end mb-4">
-        <Button
-          size="small"
-          type="primary"
-          onClick={() => {
-            onShowModalProjectTicketAdd(true);
-          }}
-        >
-          Add Ticket
-        </Button>
+        {rules.ruleProjectTaskAdd ? (
+          <Button
+            size="small"
+            type="primary"
+            onClick={() => {
+              onShowModalProjectTicketAdd(true);
+            }}
+          >
+            Add Ticket
+          </Button>
+        ) : (
+          <></>
+        )}
       </div>
       <div className=" flex justify-end"></div>
       <div>
         <Table
+          size="small"
           columns={ticketColumns}
           dataSource={projectTicketList}
-          rowKey={(data, index) => data.id}
+          rowKey={(row) => row.id}
         />
       </div>
 
@@ -146,6 +158,7 @@ const TicketComponent: React.FC<props> = ({
         onShowModalProjectTicketAdd={onShowModalProjectTicketAdd}
         onSaveProjectTicket={onSaveProjectTicket}
         ticketConfigs={ticketConfigs}
+        usersList={usersList}
       />
     </>
   );

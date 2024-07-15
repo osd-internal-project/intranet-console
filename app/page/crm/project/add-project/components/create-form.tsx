@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type {
   BadgeProps,
   CalendarProps,
+  SelectProps,
   TableColumnsType,
   TableColumnType,
 } from "antd";
@@ -20,6 +21,7 @@ import {
   Switch,
   Table,
   Tag,
+  TreeSelect,
 } from "antd";
 import type { Dayjs } from "dayjs";
 import {
@@ -43,9 +45,12 @@ export interface props {
   customerList: ITCustomerForSelect[];
   branchList: ITBranchForSelect[];
   userList: ITSelectUsers[];
+  groupOption: SelectProps["options"];
   saleList: { uid: string; name: string }[];
+  usersFormGroup: ITSelectUsers[];
   onFinishAdd: (form: ITProjectCreateForm) => void;
   changeCustomerSelect: (id: number) => void;
+  onChangeGroupSelect: (value: string[]) => void;
 }
 
 const layout = {
@@ -60,14 +65,21 @@ const layout = {
 const CreateProjectForm: React.FC<props> = ({
   customerList,
   branchList,
+  groupOption,
+  saleList,
+  userList,
+  usersFormGroup,
   onFinishAdd,
   changeCustomerSelect,
-  userList,
-  saleList,
+  onChangeGroupSelect,
 }): React.ReactElement => {
   const [form] = useForm();
   const [addressSelect, setAddressSelect] = useState<ITBranchAddress[]>([]);
   const [contactSelect, setContactSelect] = useState<ITBranchContact[]>([]);
+  useEffect(() => {
+    const users = usersFormGroup.map((user) => user.userId);
+    form.setFieldValue("relatedUsersId", users);
+  }, [usersFormGroup]);
   const calculateDuration = (type: string) => {
     let startDate = form.getFieldValue("startDate");
     let endDate = form.getFieldValue("endDate");
@@ -91,6 +103,7 @@ const CreateProjectForm: React.FC<props> = ({
       form.setFieldValue("duration", 0);
     }
   };
+
   async function onChangeBranchSelect(value: number) {
     const branch = branchList.findLast((branch) => value === branch.id);
     if (branch) {
@@ -98,7 +111,10 @@ const CreateProjectForm: React.FC<props> = ({
       setContactSelect(branch.customerContact);
     }
   }
-
+  const onChangeCustomerSelect = (id: number) => {
+    form.setFieldValue("customerBranchId", undefined);
+    changeCustomerSelect(id);
+  };
   return (
     <Form
       form={form}
@@ -146,7 +162,6 @@ const CreateProjectForm: React.FC<props> = ({
         <Form.Item label="Dularion" name={"duration"}>
           <Input readOnly className=" w-20" />
         </Form.Item>
-
         <Form.Item
           label="Customer"
           // name={"customerId"}
@@ -159,7 +174,7 @@ const CreateProjectForm: React.FC<props> = ({
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
-            onChange={changeCustomerSelect}
+            onChange={onChangeCustomerSelect}
             options={customerList.map((customer) => ({
               value: customer.id,
               label: `${customer.prefixTh} ${customer.firstNameTh} ${customer.lastNameTh}`,
@@ -261,7 +276,6 @@ const CreateProjectForm: React.FC<props> = ({
               allowClear
               disabled={branchList.length > 0 ? false : true}
               onSelect={(value, option) => {
-                console.log(option);
                 form.setFieldValue("notiAddressText", option.label);
               }}
               options={addressSelect.map((address) => ({
@@ -296,32 +310,63 @@ const CreateProjectForm: React.FC<props> = ({
               }))}
             />
           </Form.Item>
+          <Form.Item label="Description" name={"description"}>
+            <TextArea />
+          </Form.Item>
         </div>
-        <Form.Item label="Project Manager" name={"projectManagerId"}>
+        <Form.Item label="Sale" name={"saleId"}>
+          <Select
+            disabled={saleList.length > 0 ? false : true}
+            allowClear
+            showSearch
+            options={saleList.map((sale) => ({
+              value: sale.uid,
+              label: `${sale.name}`,
+            }))}
+          />
+        </Form.Item>
+        {/* <Form.Item label="Related Group" name="relatedGroupId">
+          <TreeSelect
+            multiple
+            allowClear
+            showSearch={false}
+            style={{ width: "100%" }}
+            treeDefaultExpandAll
+            onChange={onChangeGroupSelect}
+            placeholder="Please select"
+            treeData={groupOption}
+          />
+        </Form.Item>
+        <Form.Item label="Related Users" name="relatedUsersId">
           <Select
             allowClear
+            mode="multiple"
+            showSearch={true}
+            options={usersFormGroup.map((user) => ({
+              label: `${user.firstNameTh} ${user.lastNameTh}`,
+              value: user.userId,
+            }))}
+          />
+        </Form.Item> */}
+        <Form.Item label="Sale Manager" name={"saleManagerId"}>
+          <Select
+            allowClear
+            showSearch
+            optionFilterProp="label"
             options={userList.map((user) => ({
               value: user.userId,
               label: `${user.firstNameTh} ${user.lastNameTh}`,
             }))}
           />
         </Form.Item>
-        {/* <Form.Item label="Sale Manager" name={"saleManagerId"}>
+        <Form.Item label="Project Manager" name={"projectManagerId"}>
           <Select
             allowClear
+            showSearch
+            optionFilterProp="label"
             options={userList.map((user) => ({
               value: user.userId,
               label: `${user.firstNameTh} ${user.lastNameTh}`,
-            }))}
-          />
-        </Form.Item> */}
-        <Form.Item label="Sale" name={"saleId"}>
-          <Select
-            disabled={saleList.length > 0 ? false : true}
-            allowClear
-            options={saleList.map((sale) => ({
-              value: sale.uid,
-              label: `${sale.name}`,
             }))}
           />
         </Form.Item>

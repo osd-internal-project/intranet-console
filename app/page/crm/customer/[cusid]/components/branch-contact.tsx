@@ -32,12 +32,14 @@ import { dateToStringThNoTime } from "@/app/utils/format";
 // const { RangePicker } = DatePicker;
 
 export interface props {
+  rules: any;
   branchDetail?: ITBranchDetail;
   onSaveBranchContact: (branchId: number, form: ITBranchContactForm) => void;
   onDeleteCustomerBranchContact: (branchId: number, contactId: number) => void;
 }
 
 const BranchContactComponent: React.FC<props> = ({
+  rules,
   branchDetail,
   onSaveBranchContact,
   onDeleteCustomerBranchContact,
@@ -141,13 +143,17 @@ const BranchContactComponent: React.FC<props> = ({
           {/* <Button type="link" onClick={() => showModalEdit(record)}>
             {editIcon}
           </Button> */}
-          <Button
-            type="link"
-            onClick={() => showModalBranchContactDelete(id)}
-            danger
-          >
-            {deleteIcon}
-          </Button>
+          {rules.ruleCustomerContactDelete ? (
+            <Button
+              type="link"
+              onClick={() => showModalBranchContactDelete(id)}
+              danger
+            >
+              {deleteIcon}
+            </Button>
+          ) : (
+            <></>
+          )}
         </div>
       ),
     },
@@ -156,16 +162,20 @@ const BranchContactComponent: React.FC<props> = ({
   return (
     <div className=" grid gap-2">
       <div className=" flex justify-end">
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          ghost={!showModalContactAdd}
-          onClick={() => {
-            setShowModalContactAdd(!showModalContactAdd);
-          }}
-        >
-          Add Contact
-        </Button>
+        {rules.ruleCustomerContactDelete ? (
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            ghost={!showModalContactAdd}
+            onClick={() => {
+              setShowModalContactAdd(!showModalContactAdd);
+            }}
+          >
+            Add Contact
+          </Button>
+        ) : (
+          <></>
+        )}
       </div>
       {showModalContactAdd && branchDetail?.id ? (
         <BranchContactAddComponent

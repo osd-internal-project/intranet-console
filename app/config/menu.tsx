@@ -12,7 +12,10 @@ import {
   organizeChart,
   stockIcon,
   contactListIcon,
+  macarIcon,
+  chevronIcon,
 } from "@/components/icon";
+import { icons } from "antd/es/image/PreviewGroup";
 
 type MenuItem = Required<MenuProps>["items"][number];
 const MenuNav: MenuProps["items"] = [
@@ -49,6 +52,7 @@ export const MenuSider: MenuItem[] = [
     key: "internal-info",
     icon: organizeChart,
     label: `Internal Info`,
+    rule: "m-s",
     children: [
       {
         key: `internal-info/organization-chart`,
@@ -64,7 +68,7 @@ export const MenuSider: MenuItem[] = [
     key: "stock",
     icon: stockIcon,
     label: "Stock",
-    rule: "stock",
+    rule: "s-s",
     children: [
       {
         key: `order-management`,
@@ -131,7 +135,7 @@ export const MenuSider: MenuItem[] = [
     key: "housekeeper",
     icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
     label: "Housekeeper",
-    rule: "housekeeper",
+    rule: "hk-s",
     children: [
       {
         key: `housekeeper/housekeepers`,
@@ -194,7 +198,7 @@ export const MenuSider: MenuItem[] = [
     key: "maintenance",
     icon: maintenanceIcon,
     label: "Maintenance",
-    // rule: "menu-ma",
+    rule: "ma-s",
     children: [
       {
         key: `maintenance-management`,
@@ -209,7 +213,7 @@ export const MenuSider: MenuItem[] = [
     key: `setting`,
     icon: <Icon icon="uil:setting" width="15" height="15" />,
     label: `Setting`,
-    // rule: "st-s",
+    rule: "st-s",
     children: [
       {
         key: `setting/maintenance-type`,
@@ -252,7 +256,7 @@ export const MenuSider: MenuItem[] = [
     key: `users-management`,
     icon: gridIcon,
     label: `User Management`,
-    // rule: "st-s",
+    rule: "um-s",
     children: [
       {
         key: `users-management/users`,
@@ -290,17 +294,44 @@ export const MenuSider: MenuItem[] = [
     key: "crm",
     icon: contactListIcon,
     label: `CRM`,
-    rule: "crm-s",
+    // rule: "crm-s",
     children: [
       {
         key: `crm/customer`,
         label: `Customer`,
-        rule: "crm-c-s",
+        // rule: "crm-c-s",
       },
       {
         key: `crm/project`,
         label: `Project `,
-        rule: "crm-p-s",
+        // rule: "crm-p-s",
+      },
+    ],
+  },
+  {
+    key: "ma-cars",
+    icon: macarIcon,
+    label: `Ma Car`,
+    children: [
+      {
+        key: `macar/ma-car`,
+        // icon: chevronIcon,
+        label: `Ma car`,
+      },
+      {
+        key: `macar/ma-car-booking`,
+        // icon: chevronIcon,
+        label: `Ma car Booking`,
+      },
+      {
+        key: `macar/ma-car-management`,
+        // icon: chevronIcon,
+        label: `Ma car Management`,
+      },
+      {
+        key: `crm/ticket`,
+        label: `Ticket `,
+        rule: "crm-t-s",
       },
     ],
   },
@@ -417,11 +448,11 @@ export const MenuSiderWithModule = (modules: string[]) => {
             .map((item: any) => ({
               ...item,
               label: (
-                <>
-                  <Tooltip placement="right" title={item.label}>
+                <Tooltip placement="right" title={item.label}>
+                  <div style={{ width: 140 }}>
                     <Link href={`/page/${item.key}`}>{item.label}</Link>
-                  </Tooltip>
-                </>
+                  </div>
+                </Tooltip>
               ),
             }))
         : null,

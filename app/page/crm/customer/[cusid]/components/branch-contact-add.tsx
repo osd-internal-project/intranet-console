@@ -108,7 +108,7 @@ const BranchContactAddComponent: React.FC<props> = ({
           <Form.Item label="วันเกิด" name={"birthday"}>
             <DatePicker format={"DD/MM/YYYY"} />
           </Form.Item>
-          <Form.Item
+          {/* <Form.Item
             label={"Status"}
             valuePropName="checked"
             initialValue={true}
@@ -119,7 +119,7 @@ const BranchContactAddComponent: React.FC<props> = ({
               unCheckedChildren={"Not Active"}
               checkedChildren={"Active"}
             />
-          </Form.Item>
+          </Form.Item> */}
         </div>
         <div className=" flex justify-end space-x-2">
           <Button type="primary" htmlType="submit">

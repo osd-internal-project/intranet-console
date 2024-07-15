@@ -121,17 +121,17 @@ const BranchContactComponent: React.FC<props> = ({
       // width: "200px",
       render: (data: Date) => dateToStringThNoTime(data),
     },
-    {
-      key: "activeStatus",
-      dataIndex: "activeStatus",
-      title: "Status",
-      render: (status: boolean) =>
-        status ? (
-          <Tag color="green">Active</Tag>
-        ) : (
-          <Tag color="red">Not Active</Tag>
-        ),
-    },
+    // {
+    //   key: "activeStatus",
+    //   dataIndex: "activeStatus",
+    //   title: "Status",
+    //   render: (status: boolean) =>
+    //     status ? (
+    //       <Tag color="green">Active</Tag>
+    //     ) : (
+    //       <Tag color="red">Not Active</Tag>
+    //     ),
+    // },
     {
       key: "id",
       dataIndex: "id",

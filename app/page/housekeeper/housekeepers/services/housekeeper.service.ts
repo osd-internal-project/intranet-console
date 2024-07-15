@@ -15,7 +15,18 @@ export const HouseKeeperStockServices = (axiosInstance: AxiosInstance) => {
         })
         .catch((err) => {
           console.log(err);
-          return 200;
+          return 500;
+        });
+    },
+    updateEvent: async (id: number, body: any) => {
+      return await axiosInstance
+        .patch(`${baseUrlApiResultCleanlines}/${id}`, body)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return 500;
         });
     },
     getEventByMonth: async (param: any) => {

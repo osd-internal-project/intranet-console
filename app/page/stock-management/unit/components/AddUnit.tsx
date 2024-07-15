@@ -14,7 +14,7 @@ export interface props {
 
 export const AddUnit: React.FC<props> = ({ setLoading }) => {
   const stockAuth = useAxiosStock();
-  const addRule = checkRule("mp-unit-add");
+  const addRule = checkRule("sm-unit-a");
   const unitServices = UnitServices(stockAuth);
   const [FORM] = Form.useForm();
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
@@ -50,8 +50,7 @@ export const AddUnit: React.FC<props> = ({ setLoading }) => {
 
   return (
     <div>
-      <Card className=" grid grid-cols-1 gap-y-2">
-        <Typography className="title-page-font">{`Set Unit`}</Typography>
+      <Card className=" grid grid-cols-1 gap-y-2" title="Add Unit">
         <Form
           form={FORM}
           layout="horizontal"

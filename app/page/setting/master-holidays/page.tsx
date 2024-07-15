@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, Form, Modal, Row, message } from "antd";
+import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, message } from "antd";
 import { CreateMasterHolidays } from "./components/create-master-holidays";
 import { TableMasterHolidays } from "./components/table-master-holidays";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -144,8 +144,8 @@ export default function MasterdataHolidays() {
 
   return (
     <>
-      <Row gutter={[8, 8]}>
-        <Col span={24} style={{ marginBottom: "20px" }}>
+      <Row>
+        <Col span={24}>
           <Breadcrumb
             items={[
               {
@@ -153,18 +153,17 @@ export default function MasterdataHolidays() {
                 title: <span>Home</span>,
               },
               {
-                href: "/page/setting",
                 title: <span>Setting</span>,
               },
               {
-                title: <span>Set Master Holidays </span>,
+                title: <span>Set Master Holidays</span>,
               },
             ]}
           />
         </Col>
-        <Col span={24}>
-          <div className="title-page-font">{`SET MASTER HOLIDAYS`}</div>
-        </Col>
+        <Divider orientation="left" orientationMargin="0">
+          <div className="title-page-font">{`Set Master Holidays`}</div>
+        </Divider>
       </Row>
       <Row gutter={[8, 8]}>
         <Col span={24}>

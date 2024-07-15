@@ -1,145 +1,159 @@
-import React, { useState, useEffect } from 'react';
-import { Badge, Calendar, Card, Modal, Divider, Typography } from 'antd';
-import { Icon } from "@iconify/react";
-import type { CalendarProps } from 'antd';
-import type { Dayjs } from 'dayjs';
-import dayjs from 'dayjs';
+import React, { useState } from "react";
+import { Modal, Tag, Form, Input, DatePicker, Collapse} from "antd";
+import moment from "moment";
+import { Calendar, momentLocalizer, Event as RbcEvent } from "react-big-calendar";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import { useForm } from "antd/es/form/Form";
+import { CaretRightOutlined } from "@ant-design/icons";
 
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { BookingRoomServices } from "../services/booking-room.service";
+const localizer = momentLocalizer(moment);
+const { TextArea } = Input;
 
-interface Booking {
+interface BookingType {
     id: string;
     title: string;
     roomName: string;
     bookerName: string;
+    bookerPhone: string;
+    bookingStatus: string;
+    approver: string;
     description: string;
     startDate: string;
+    approveDate: string;
     endDate: string;
+    updatedAt: string;
 }
 
-const getMonthData = (value: Dayjs) => {
-    if (value.month() === 8) {
-        return 1394;
-    }
-    return null;
-};
+interface Props {
+    bookingFetchCalendar: BookingType[];
+}
 
-const BookingCalendar: React.FC = () => {
-    const intraAuth = useAxiosIntranet();
-    const bookingRoomServices = BookingRoomServices(intraAuth);
-    const [bookings, setBookings] = useState<Booking[]>([]);
-    const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
-    const [isModalVisible, setIsModalVisible] = useState(false);
+interface CustomEvent extends RbcEvent {
+    id: string;
+    status: string;
+    description: string;
+    userName: string;
+}
 
-    const { Title } = Typography;
+const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar }) => {
+    const [selectedBooking, setSelectedBooking] = useState<BookingType | null>(null);
+    const [statusModalDetail, setStatusModalDetail] = useState(false);
+    const [formUpdate] = useForm();
 
-    const showModal = (booking: Booking) => {
-        setSelectedBooking(booking);
-        setIsModalVisible(true);
+    const onCancelModalDetail = () => {
+        setStatusModalDetail(false);
+        setSelectedBooking(null);
     };
 
-    const handleOk = () => {
-        setIsModalVisible(false);
+    const renderStatusTag = (status: string) => {
+        switch (status) {
+            case "Approve":
+                return <Tag color="green">อนุมัติสำเร็จ</Tag>;
+            case "process":
+                return <Tag color="blue">กำลังรออนุมัติ</Tag>;
+            case "cancel":
+                return <Tag color="red">ยกเลิกการจอง</Tag>;
+            default:
+                return "Unknown Status";
+        }
     };
 
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    };
-
-    const monthCellRender = (value: Dayjs) => {
-        const num = getMonthData(value);
-        return num ? (
-            <div className="notes-month">
-                <section>{num}</section>
-                <span>Backlog number</span>
-            </div>
-        ) : null;
-    };
-
-    const dateCellRender = (value: Dayjs) => {
-        const dailyBookings = bookings.filter((booking) => {
-            const bookingStartDate = dayjs(booking.startDate);
-            const bookingEndDate = dayjs(booking.endDate);
-            return value.isSame(bookingStartDate, 'day') || value.isSame(bookingEndDate, 'day') || (value.isAfter(bookingStartDate, 'day') && value.isBefore(bookingEndDate, 'day'));
-        });
-
-        return (
-            <div className="events">
-                {dailyBookings.map((booking) => (
-                    <div key={booking.id} style={{ listStyle: 'none' }}>
-                        <div
-                            key={booking.id}
-                            style={{
-                                // width: '200px',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                                backgroundColor: '#f0f0f0',
-                                borderRadius: '4px',
-                                padding: '2px 4px',
-                                display: 'block',
-                            }}
-                            onClick={() => showModal(booking)}
-                        >
-                            <Badge
-                                status="processing"
-                                text={booking.roomName}
-                                style={{
-                                    display: 'block'
-                                }}
-                            />
-                        </div>
-                        <div style={{ fontSize: '12px', color: '#888' }}>
-                            {dayjs(booking.startDate).format('HH:mm')} - {dayjs(booking.endDate).format('HH:mm')}
-                        </div>
-                    </div>
-                ))}
-            </div>
-        );
-    };
-
-    const cellRender: CalendarProps<Dayjs>['cellRender'] = (current, info) => {
-        if (info.type === 'date') return dateCellRender(current);
-        if (info.type === 'month') return monthCellRender(current);
-        return info.originNode;
-    };
-
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const fetchData = async () => {
-        try {
-            const bookingRoom = await bookingRoomServices.getBookingRoomQuery();
-            console.log(bookingRoom);
-            setBookings(bookingRoom);
-        } catch (error) {
-            console.error('Error fetching booking data:', error);
+    const onSelectEventCalendar = (event: CustomEvent) => {
+        const booking = bookingFetchCalendar.find((b) => b.id === event.id);
+        if (booking) {
+            setSelectedBooking(booking);
+            formUpdate.setFieldsValue({
+                ...booking,
+                startDate: moment(booking.startDate),
+                endDate: moment(booking.endDate),
+                approveDate: moment(booking.approveDate).format('DD-MM-YYYY HH:mm'),
+            });
+            setStatusModalDetail(true);
         }
     };
 
     return (
         <>
-            <Card>
-                <Calendar cellRender={cellRender}/>
-            </Card>
-            {selectedBooking && (
-                <Modal
-                    visible={isModalVisible}
-                    onOk={handleOk}
-                    onCancel={handleCancel}
-                >
-                    <Divider orientation="left" style={{ fontWeight: 'bold' }}><Title level={4}><Icon icon="cil:room" /> {selectedBooking.roomName}</Title></Divider>
-                    <Divider orientation="left" style={{ fontWeight: 'bold' }}>ข้อมูลการจอง</Divider>
-                    <Title level={5} style={{ marginLeft: '24px' }}><strong>หัวข้อประชุม :</strong> {selectedBooking.title}</Title>
-                    <Title level={5} style={{ marginLeft: '24px' }}><strong>วันที่จอง :</strong> {dayjs(selectedBooking.startDate).format('YYYY-MM-DD')} - {dayjs(selectedBooking.endDate).format('YYYY-MM-DD')}</Title>
-                    <Title level={5} style={{ marginLeft: '24px' }}><strong>เวลาที่จอง :</strong> {dayjs(selectedBooking.startDate).format('HH:mm')} - {dayjs(selectedBooking.endDate).format('HH:mm')}</Title>
-                    <Divider orientation="left" style={{ fontWeight: 'bold' }}>ข้อมูลผู้จอง</Divider>
-                    <Title level={5} style={{ marginLeft: '24px' }}><strong>ชื่อผู้จอง :</strong> {selectedBooking.bookerName}</Title>
-                    
-                </Modal >
-            )}
+            <Calendar<CustomEvent>
+                localizer={localizer}
+                events={bookingFetchCalendar.map((booking: BookingType) => ({
+                    id: booking.id,
+                    title: booking.roomName,
+                    start: new Date(booking.startDate),
+                    end: new Date(booking.endDate),
+                    status: booking.bookingStatus,
+                    description: booking.description,
+                    userName: booking.bookerName,
+                }))}
+                style={{ height: 500 }}
+                onSelectEvent={onSelectEventCalendar}
+                eventPropGetter={(event: CustomEvent) => {
+                    const backgroundColor =
+                        event.status === "Approve" ? "#4CAF50" :
+                            event.status === "cancel" ? "#D24545" : "#2196F3";
+                    return {
+                        style: { backgroundColor, color: "#fff", fontSize: 10 },
+                    };
+                }}
+            />
+            <Modal
+                title="รายละเอียดการจอง"
+                visible={statusModalDetail}
+                width={750}
+                onCancel={onCancelModalDetail}
+                footer={null}
+            >
+                {selectedBooking && (
+                    <Form form={formUpdate} labelCol={{ span: 4 }}>
+                        <Collapse
+                            bordered={false}
+                            defaultActiveKey={["1", "2", "3"]}
+                            expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
+                        >
+                            <Collapse.Panel header="ข้อมูลการจอง" key="1">
+                                <Form.Item label="หัวข้อการประชุม" name="title">
+                                    <Input className="read-only-input" disabled />
+                                </Form.Item>
+                                <Form.Item label="ห้อง" name="roomName">
+                                    <Input className="read-only-input" disabled />
+                                </Form.Item>
+                                <Form.Item label="เริ่มวันที่" name="startDate">
+                                    <DatePicker showTime={false} format="DD-MM-YYYY HH:mm" disabled className="read-only-input" />
+                                </Form.Item>
+                                <Form.Item label="สิ้นสุดวันที่" name="endDate">
+                                    <DatePicker showTime={false} format="DD-MM-YYYY HH:mm" disabled className="read-only-input" />
+                                </Form.Item>
+                                <Form.Item label="คำอธิบาย" name="note">
+                                    <TextArea className="read-only-input" disabled />
+                                </Form.Item>
+                            </Collapse.Panel>
+                            <Collapse.Panel header="ข้อมูลผู้จอง" key="2">
+                                <Form.Item label="ชื่อผู้จอง" name="bookerName">
+                                    <Input className="read-only-input" disabled />
+                                </Form.Item>
+                                <Form.Item label="ติดต่อโทร" name="bookerPhone">
+                                    <Input className="read-only-input" disabled />
+                                </Form.Item>
+                            </Collapse.Panel>
+                            <Collapse.Panel header="Status" key="3">
+                                <Form.Item label="สถานะ">
+                                    {renderStatusTag(selectedBooking.bookingStatus)}
+                                </Form.Item>
+                                {selectedBooking.bookingStatus !== "process" && (
+                                    <>
+                                        <Form.Item label="ผู้อนุมัติ" name="approver">
+                                            <Input className="read-only-input" disabled />
+                                        </Form.Item>
+                                        <Form.Item label="วันที่อนุมัติ" name="approveDate">
+                                            <Input disabled className="read-only-input" />
+                                        </Form.Item>
+                                    </>
+                                )}
+                            </Collapse.Panel>
+                        </Collapse>
+                    </Form>
+                )}
+            </Modal>
         </>
     );
 };

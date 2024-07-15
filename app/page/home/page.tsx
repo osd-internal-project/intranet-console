@@ -1,7 +1,8 @@
 "use client";
 
+//import "./globals.css";
 import React from "react";
-import { Card, Row, Col } from "antd";
+import { Card } from "antd";
 import MeetingRoomTableComponent from "./components/MeetingRoomTable";
 import NewsCarouselComponent from "./components/NewsCarousel";
 import HolidaysCalendarComponent from "./components/HolidaysCalendar";
@@ -14,57 +15,64 @@ export default function HomePage() {
   return (
     <>
       <BigCarouselComponent />
-      <br />
-      <Row gutter={16}>
-        <Col span={8}>
-          <Card style={{ textAlign: "center" }}>
-            <FileFilled style={{ fontSize: "30px", color: "#0693E3" }} />
-            <br />
-            <a href="#">ใบลาออนไลน์</a>
+      <div className="my-2" />
+      <div className="grid md:grid-cols-3">
+        <div className="px-2 mb-4">
+          <Card className="text-center">
+            <a href="/page/data-leave/online-leave">
+              <FileFilled className="text-5xl text-blue-500" />
+              <br />
+              ใบลาออนไลน์
+            </a>
           </Card>
-        </Col>
-        <Col span={8}>
-          <Card style={{ textAlign: "center" }}>
-            <TeamOutlined style={{ fontSize: "30px", color: "#0693E3" }} />
-            <br />
-            <a href="/page/bookingroom/booking-room">จองห้องประชุมออนไลน์</a>
+        </div>
+        <div className="px-2 mb-4">
+          <Card className="text-center">
+            <a href="/page/bookingroom/booking-room">
+              <TeamOutlined className="text-5xl text-blue-500" />
+              <br />
+              จองห้องประชุมออนไลน์
+            </a>
           </Card>
-        </Col>
-        <Col span={8}>
-          <Card style={{ textAlign: "center" }}>
-            <CarFilled style={{ fontSize: "30px", color: "#0693E3" }} />
-            <br />
-            <a href="#">จองรถยนต์ออนไลน์</a>
+        </div>
+        <div className="px-2 mb-4">
+          <Card className="text-center">
+            <a href="/page/macar/ma-car">
+              <CarFilled className="text-5xl text-blue-500" />
+              <br />
+              จองรถยนต์ออนไลน์
+            </a>
           </Card>
-        </Col>
-      </Row>
-      <br />
-      <Row gutter={16}>
-        <Col span={16}>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2">
           <Card
             title="ข่าวเเละกิจกรรมล่าสุด"
             bordered={false}
-            style={{ textAlign: "center" }}
+            className="text-center"
           >
             <NewsCarouselComponent />
-            <br />
           </Card>
-          <br />
-          <Card title="เอกสาร" bordered={false} style={{ textAlign: "center" }}>
+          <div className="my-4"></div>
+          <Card title="เอกสาร" bordered={false} className="text-center">
             <DocumentComponent />
           </Card>
-        </Col>
-        <Col span={8}>
+        </div>
+
+        <div className="lg:col-span-1">
           <Card title="หอประชุม">
             <MeetingRoomTableComponent pagination={false} />
           </Card>
-          <br />
+          <div className="my-4"></div>
           <Card title="วันหยุดประจำปี">
             <HolidaysCalendarComponent />
           </Card>
-        </Col>
-      </Row>
-      <br />
+        </div>
+      </div>
+
+      <div className="my-6"></div>
     </>
   );
 }

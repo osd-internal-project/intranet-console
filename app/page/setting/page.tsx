@@ -34,12 +34,12 @@ export default function Setting() {
   const categories: string[] = ["PRODUCT MANAGEMENT"];
   const buttonsData: TypeButtonData[] = [
     // [
-    //   { name_header: "User Management", name_path: "setting/usermanagement", icon: groupLineIcon, rule: "user-management-show" },
-    //   { name_header: "User Group", name_path: "setting/user-group", icon: userGroupIcon, rule: "user-group-show" },
-    //   { name_header: "User Role", name_path: "setting/user-role", icon: mindMappingIcon, rule: "user-role-show" },
+    //   { name_header: "User Management", name_path: "setting/usermanagement", icon: groupLineIcon, rule: "um-s" },
+    //   { name_header: "User Group", name_path: "setting/user-group", icon: userGroupIcon, rule: "um-ug-s" },
+    //   { name_header: "User Role", name_path: "setting/user-role", icon: mindMappingIcon, rule: "um-ro-s" },
     //   // { name_header: "Organization", name_path: "setting/user-organization", icon: vectorIcon },
-    //   { name_header: "Set Rule", name_path: "setting/user-rule", icon: shieldExclamationIcon, rule: "user-rule-show" },
-    //   { name_header: "Set Position", name_path: "setting/masterdata-position", icon: IconPosition, rule: "user-position-show" },
+    //   { name_header: "Set Rule", name_path: "setting/user-rule", icon: shieldExclamationIcon, rule: "um-ru-s" },
+    //   { name_header: "Set Position", name_path: "setting/masterdata-position", icon: IconPosition, rule: "st-p-s" },
     // ],
     // [
     //   { name_header: "Department", name_path: "stock-management/location", icon: buldingIcon, rule: "department-show" },
@@ -52,43 +52,43 @@ export default function Setting() {
         name_header: "Master Product Management ",
         name_path: "setting/master-product-management",
         icon: cubeIcon,
-        rule: "m-product-show",
+        rule: "sm-mp-s",
       },
       {
         name_header: "Set Category & Group ",
         name_path: "setting/cetagory-group-type",
         icon: circleSqureIcon,
-        rule: "mp-category-show",
+        rule: "sm-c-s",
       },
       {
         name_header: "Set Unit",
         name_path: "setting/unit",
         icon: gridIcon,
-        rule: "mp-unit-show",
+        rule: "sm-unit-s",
       },
       {
         name_header: "Set Hazard Type",
         name_path: "setting/master-hazard-type",
         icon: colorSwatchIcon,
-        rule: "mp-hazard-type-show",
+        rule: "sm-hz-h",
       },
       {
         name_header: "Set GHS",
         name_path: "setting/ghs",
         icon: warningIcon,
-        rule: "mp-ghs-show",
+        rule: "sm-ghs-s",
       },
       {
         name_header: "Vender",
         name_path: "stock-management/vender",
         icon: truckIcon,
-        rule: "vender-show",
+        rule: "sm-vender-s",
       },
       {
         name_header: "Set Brand",
         name_path: "setting/brand",
         icon: starIcon,
-        rule: "brand-show",
+        rule: "sm-brand-s",
       },
       {
         name_header: "Master Type Leave",

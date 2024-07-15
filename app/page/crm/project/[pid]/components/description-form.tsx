@@ -1,0 +1,186 @@
+import React, { useState } from "react";
+import type { FormInstance } from "antd";
+import {
+  Button,
+  Collapse,
+  ConfigProvider,
+  DatePicker,
+  Form,
+  Input,
+  Select,
+  Switch,
+} from "antd";
+import { ITBranchContact, ITProject } from "../../common";
+
+import "../../style.css";
+import { dateToStringThNoTime } from "@/app/utils/format";
+// const { RangePicker } = DatePicker;
+const { TextArea } = Input;
+export interface props {
+  // descriptionForm: FormInstance<ITProject>;
+  projectDescription: ITProject;
+  contactDescription: ITBranchContact | undefined;
+  isEdit: boolean;
+  setIsEdit: (isEdit: boolean) => void;
+  onFinishEdit: (form: ITProject) => void;
+}
+
+const layout = {
+  labelCol: {},
+  wrapperCol: {
+    md: { span: 22 },
+  },
+};
+
+const DescriptionCustomerForm: React.FC<props> = ({
+  projectDescription,
+  contactDescription,
+  isEdit,
+  setIsEdit,
+  onFinishEdit,
+}): React.ReactElement => {
+  return (
+    <Collapse
+      bordered={true}
+      defaultActiveKey={1}
+      style={{ backgroundColor: "#fff" }}
+      items={[
+        {
+          key: 1,
+          label: (
+            <div className=" md:col-span-3 font-bold">ข้อมูลเบื้องต้น </div>
+          ),
+          children: (
+            <>
+              {projectDescription ? (
+                <div className=" grid  grid-cols-3 md:grid-cols-6 gap-2 pr-10">
+                  <div className=" font-bold pl-3  pr-3 text-right ">
+                    Project Name :
+                  </div>
+                  <div className=" col-span-2 md:col-span-5 text-slate-500">
+                    {projectDescription.projectName}
+                  </div>
+                  <div className=" font-bold pl-3 pr-3 text-right">
+                    Start Date :{" "}
+                  </div>
+                  <div className=" col-span-2 md:col-span-1 text-slate-500">
+                    {projectDescription.startDate
+                      ? dateToStringThNoTime(projectDescription.startDate)
+                      : "-"}
+                  </div>
+                  <div className=" font-bold pl-3 pr-3 text-right">
+                    End Date :{" "}
+                  </div>
+                  <div className=" col-span-2 md:col-span-1 text-slate-500">
+                    {projectDescription.endDate
+                      ? dateToStringThNoTime(projectDescription.endDate)
+                      : "-"}
+                  </div>
+                  <div className=" font-bold pl-3 pr-3 text-right">
+                    Duration :{" "}
+                  </div>
+                  <div className=" col-span-2 md:col-span-1 text-slate-500">
+                    {projectDescription.duration
+                      ? projectDescription.duration
+                      : "-"}
+                  </div>
+                  {contactDescription ? (
+                    <div className=" grid  grid-cols-3 md:grid-cols-6 gap-2  md:col-span-6">
+                      <div className=" font-bold pl-3 pr-3 text-right">
+                        ชื่อผู้ติดต่อ :{" "}
+                      </div>
+                      <div className="  col-span-2 md:col-span-1 text-slate-500">
+                        {contactDescription.name}
+                        {contactDescription.nickName
+                          ? `(${contactDescription.nickName})`
+                          : ``}
+                      </div>
+                      <div className=" font-bold pl-3 pr-3 text-right">
+                        ตำแหน่ง :{" "}
+                      </div>
+                      <div className="  col-span-2 md:col-span-1 text-slate-500">
+                        {contactDescription.position}
+                      </div>
+                      <div className=" font-bold pl-3 pr-3 text-right">
+                        เบอร์มือถือ :{" "}
+                      </div>
+                      <div className="  col-span-2 md:col-span-1 text-slate-500">
+                        {contactDescription.phone}
+                      </div>
+                      <div className=" font-bold pl-3 pr-3 text-right">
+                        เบอร์ออฟฟิศ :{" "}
+                      </div>
+                      <div className="  col-span-2 md:col-span-1 text-slate-500">
+                        {contactDescription.officePhone}
+                      </div>
+                      <div className=" font-bold pl-3 pr-3 text-right">
+                        เบอร์แฟกซ์ :{" "}
+                      </div>
+                      <div className="  col-span-2 md:col-span-1 text-slate-500">
+                        {contactDescription.officePhone}
+                      </div>
+                      <div className=" font-bold pl-3 pr-3 text-right">
+                        อีเมล :{" "}
+                      </div>
+                      <div className="  col-span-2 md:col-span-1 text-slate-500">
+                        {contactDescription.email}
+                      </div>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                  <div className="font-bold pl-3 pr-3 text-right">
+                    ที่อยู่ใบกำกับภาษี :
+                  </div>
+                  <div className=" col-span-2 md:col-span-5 text-slate-500">
+                    {projectDescription.taxAddressText}
+                  </div>
+                  <div className="font-bold pl-3 pr-3 text-right">
+                    ที่อยู่การจัดส่งบริการ :
+                  </div>
+                  <div className=" col-span-2 md:col-span-5 text-slate-500">
+                    {projectDescription.deliveryAddressText}
+                  </div>
+                  <div className="font-bold pl-3 pr-3 text-right">
+                    ที่อยู่จัดส่งใบแจ้งบริการ :
+                  </div>
+                  <div className=" col-span-2 md:col-span-5 text-slate-500">
+                    {projectDescription.notiAddressText}
+                  </div>
+                  <div className="font-bold pl-3 pr-3 text-right">
+                    รายละเอียด :
+                  </div>
+                  <div className=" col-span-2 md:col-span-5 text-slate-500">
+                    {projectDescription.description}
+                  </div>
+                  <div className=" font-bold pl-3  pr-3 text-right ">
+                    Project Manager :
+                  </div>
+                  <div className=" col-span-2 md:col-span-1 text-slate-500">
+                    {projectDescription.projectManagerName}
+                  </div>
+                  <div className=" font-bold pl-3  pr-3 text-right ">
+                    Sale Manager :
+                  </div>
+                  <div className=" col-span-2 md:col-span-1 text-slate-500">
+                    {projectDescription.saleManagerName}
+                  </div>
+                  <div className=" font-bold pl-3  pr-3 text-right ">
+                    Sale :
+                  </div>
+                  <div className=" col-span-2 md:col-span-1 text-slate-500">
+                    {projectDescription.saleName}
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+            </>
+          ),
+        },
+      ]}
+    />
+  );
+};
+
+export default DescriptionCustomerForm;

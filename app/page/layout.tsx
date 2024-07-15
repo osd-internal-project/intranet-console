@@ -1,16 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { signIn, signOut, useSession } from "next-auth/react";
-import { redirect, usePathname } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 import Navigation from "@/components/Navigation";
-import { Layout, Menu, message, Spin } from "antd";
+import { FloatButton, Layout, Menu, message, Spin } from "antd";
 import { MenuSiderWithModule } from "@/app/config/menu";
 import { pageWithoutMenu } from "@/app/config/data";
 import { Footer } from "antd/es/layout/layout";
-
-import axios from "axios";
 import { useAxiosStock, useAxiosUser } from "../lib/axios/hooks/userAxiosAuth";
 import IndexServices from "./services/index.service";
+import { PhoneOutlined } from "@ant-design/icons";
 
 export default function MainLayout({
   children,
@@ -37,6 +36,7 @@ export default function MainLayout({
       fatchData();
     }
   }, [session]);
+
   async function fatchData() {
     if (session) {
       // const count = await indexServices.countLotBeforeExpiredByLocation(
@@ -52,6 +52,7 @@ export default function MainLayout({
       setAvatar(image);
     }
   }
+
   if (status === "loading") {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -59,19 +60,22 @@ export default function MainLayout({
       </div>
     );
   }
+
   const LoseToken = () => {
     message.error("ไม่มีสิทธิ์เข้าถึง");
     signOut();
   };
+
   if (!session) {
     LoseToken();
   } else {
     const { Content, Sider } = Layout;
-
     const menulist = MenuSiderWithModule(session?.rulelist);
     const currentPath = pathname.split("/")[2];
+    const currentPathSub = pathname.split("/")[3];
 
     if (currentPath) {
+      // console.log(currentPath, `${currentPath}/${currentPathSub}`)
       if (!pageWithoutMenu.includes(currentPath)) {
         const checkAuth = MenuSiderWithModule(session?.rulelist).some(
           (menu: any) => menu.key === currentPath
@@ -111,7 +115,11 @@ export default function MainLayout({
           </div>
           <Menu
             mode="inline"
-            defaultSelectedKeys={[currentPath]}
+            selectedKeys={[currentPath, `${currentPath}/${currentPathSub}`]}
+            defaultSelectedKeys={[
+              currentPath,
+              `${currentPath}/${currentPathSub}`,
+            ]}
             items={menulist}
           />
         </Sider>
@@ -137,6 +145,12 @@ export default function MainLayout({
             }}
           >
             {children}
+            <FloatButton
+              shape="circle"
+              type="primary"
+              style={{ right: 10, bottom: 10 }}
+              icon={<PhoneOutlined />}
+            />
           </Content>
           <Footer style={{ textAlign: "center" }}>
             Intranet ©{new Date().getFullYear()} Created by OSD

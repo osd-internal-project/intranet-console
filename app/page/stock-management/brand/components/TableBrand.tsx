@@ -21,8 +21,8 @@ export interface props {
 export const TableBrand: React.FC<props> = ({ onCloseDialog, loading }): React.ReactElement => {
   const { RangePicker } = DatePicker;
   const axiosStock = useAxiosStock();
-  const editRule = checkRule("brand-edit");
-  const deleteRule = checkRule("brand-delete");
+  const editRule = checkRule("sm-brand-e");
+  const deleteRule = checkRule("sm-brand-d");
   const brandservice = BrandService(axiosStock);
   const [form] = Form.useForm();
   const [getdataAll, setdataAll] = useState<ITypeGetdataAll[]>([]);
@@ -232,36 +232,34 @@ export const TableBrand: React.FC<props> = ({ onCloseDialog, loading }): React.R
   );
   return (
     <React.Fragment>
-      <Row gutter={[8, 8]} style={{ marginTop: "10px" }}>
-        <Col span={24}>
-          <Popover
-            onOpenChange={handleOpenFilter}
-            open={openFilter}
-            content={searchContent}
-            placement="bottomLeft"
-            title="Search"
-            trigger="click"
-            overlayStyle={{ width: "calc(100% - 240px)" }}
-          >
-            <Button className="button-blue" type="primary" icon={<FilterOutlined />}>
-              Filters
-            </Button>
-          </Popover>
-        </Col>
-        <Col span={24}>
-          <Card className="card-filter">
-            <Table
-              size="small"
-              loading={loading}
-              dataSource={getdataAll}
-              rowKey={(value: ITypeGetdataAll) => value.id}
-              columns={columns}
-              pagination={{ total: paginationConfig, current: pagination?.current, showSizeChanger: false }}
-              onChange={(e: any) => handlerPaginationTable(e)}
-            />
-          </Card>
-        </Col>
-      </Row>
+      <div>
+        <Card className="card-filter">
+          <div className=" flex justify-end pb-4">
+            <Popover
+              onOpenChange={handleOpenFilter}
+              open={openFilter}
+              content={searchContent}
+              placement="bottomLeft"
+              title="Search"
+              trigger="click"
+              overlayStyle={{ width: "calc(100% - 240px)" }}
+            >
+              <Button className="button-blue" type="primary" icon={<FilterOutlined />}>
+                Filters
+              </Button>
+            </Popover>
+          </div>
+          <Table
+            size="small"
+            loading={loading}
+            dataSource={getdataAll}
+            rowKey={(value: ITypeGetdataAll) => value.id}
+            columns={columns}
+            pagination={{ total: paginationConfig, current: pagination?.current, showSizeChanger: false }}
+            onChange={(e: any) => handlerPaginationTable(e)}
+          />
+        </Card>
+      </div>
 
       <Modal title="Edit Brand" open={openEdit} onCancel={handleCancel} footer={false}>
         <Form style={{ width: "100%" }} name="edit" autoComplete="off" layout="vertical" form={form} onFinish={onfinishEdit}>

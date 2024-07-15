@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Card, DatePicker, Form, Input, Modal, Popover, Select, SelectProps, Spin, Table, Tag, Tree, message } from "antd";
+import { Button, Card, DatePicker, Form, Input, Modal, Popover, Select, SelectProps, Space, Spin, Table, Tag, Tree, message } from "antd";
 import ProfileServices from "../services/profile.service";
 import RulesServices from "../services/rule.service";
 import { useForm } from "antd/lib/form/Form";
@@ -23,9 +23,9 @@ const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
   const userAuth = useAxiosUser();
   const profileRuleServices = ProfileServices(userAuth);
   const rulesServices = RulesServices(userAuth);
-  const addRule = checkRule("user-rule-group-add");
-  const editRule = checkRule("user-rule-group-edit");
-  const deleteRule = checkRule("user-rule-group-delete");
+  const addRule = checkRule("um-ru-g-d");
+  const editRule = checkRule("um-ru-g-e");
+  const deleteRule = checkRule("um-ru-g-d");
   const [addform] = useForm();
   const [editform] = useForm();
   const [loading, setLoading] = useState<boolean>(true);
@@ -62,26 +62,26 @@ const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
       rules.map((x: any) => ({
         label: x.ruleName,
         value: x.ruleCode,
-      })),
+      }))
     );
   };
 
   const columns: any = [
     {
-      title: "NO.",
+      title: "No.",
       dataIndex: "profileId",
       key: "profileId",
       render: (value: string, record: any, index: number) => (currentPage - 1) * 10 + index + 1,
       width: "5%",
     },
     {
-      title: "GROUP NAME",
+      title: "Group Name",
       dataIndex: "profileName",
       key: "profileName",
       width: "15%",
     },
     {
-      title: "RULES",
+      title: "Rules",
       dataIndex: "profileRuleMap",
       key: "profileRuleMap",
       width: "30%",
@@ -98,19 +98,19 @@ const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
       ),
     },
     {
-      title: "DESCRIPTION",
+      title: "Description",
       dataIndex: "description",
       key: "description",
     },
 
     {
-      title: "CREATED",
+      title: "Created",
       dataIndex: "createdAt",
       key: "createdAt",
       render: (d: Date, r: any, i: number) => (d ? dateToStringTh(d) : ""),
     },
     {
-      title: "ACTIVE",
+      title: "Active",
       dataIndex: "profileId",
       key: "profileId",
       width: "15%",
@@ -118,14 +118,14 @@ const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
       render: (text: string, record: any) => (
         <div className="space-x-2">
           {editRule ? (
-            <Button type="link" onClick={() => onOpenEditModal(record.profileId)}>
+            <Button size="small" type="link" onClick={() => onOpenEditModal(record.profileId)}>
               {editIcon}
             </Button>
           ) : (
             <></>
           )}
           {deleteRule ? (
-            <Button type="link" onClick={() => onOpenDelete(record.profileId)} disabled={buttonLoading} danger>
+            <Button size="small" type="link" onClick={() => onOpenDelete(record.profileId)} disabled={buttonLoading} danger>
               {deleteIcon}
             </Button>
           ) : (
@@ -290,21 +290,21 @@ const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
   return (
     <>
       <div className="grid grid-cols-1 mb-5">
-        <div className=" flex justify-between md:col-span-2 ">
-          <Popover
-            onOpenChange={handleOpenFilter}
-            open={openFilter}
-            content={searchContent}
-            placement="bottomLeft"
-            title="Search"
-            trigger="click"
-            overlayStyle={{ width: "calc(100% - 240px)" }}
-          >
-            <Button type="primary" icon={<FilterOutlined />} className="button-blue">
-              Filters
-            </Button>
-          </Popover>
-          <div>
+        <div className=" flex justify-end ">
+          <Space>
+            <Popover
+              onOpenChange={handleOpenFilter}
+              open={openFilter}
+              content={searchContent}
+              placement="bottomLeft"
+              title="Search"
+              trigger="click"
+              overlayStyle={{ width: "calc(100% - 240px)" }}
+            >
+              <Button type="primary" icon={<FilterOutlined />} className="button-blue">
+                Filters
+              </Button>
+            </Popover>
             {addRule ? (
               <Button icon={<PlusCircleOutlined />} type="primary" onClick={() => onOpenAddModal()} className="button-blue" disabled={buttonLoading}>
                 Add Group of Rules
@@ -312,104 +312,103 @@ const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
             ) : (
               <></>
             )}
-          </div>
+          </Space>
         </div>
       </div>
-      <Card className="grid grid-cols-1 ">
-        <Spin spinning={loading}>
-          <div className="grid grid-cols-1 ">
-            <div>
-              <Table
-                loading={loading}
-                rowKey="profileId"
-                columns={columns}
-                dataSource={dataTable}
-                pagination={{ current: currentPage, onChange: handlePageChange, showSizeChanger: false }}
-              />
-            </div>
-            <div></div>
-          </div>
+      <Spin spinning={loading}>
+        <div className="grid grid-cols-1 ">
           <div>
-            <Modal
-              title="Add Group of Rules"
-              open={openAddProfileModel}
-              onCancel={() => {
-                setOpenAddProfileModel(false), setbuttonLoading(false);
-              }}
-              footer={[]}
+            <Table
+              size="small"
+              loading={loading}
+              rowKey="profileId"
+              columns={columns}
+              dataSource={dataTable}
+              pagination={{ current: currentPage, onChange: handlePageChange, showSizeChanger: false }}
+            />
+          </div>
+          <div></div>
+        </div>
+        <div>
+          <Modal
+            title="Add Group of Rules"
+            open={openAddProfileModel}
+            onCancel={() => {
+              setOpenAddProfileModel(false), setbuttonLoading(false);
+            }}
+            footer={[]}
+          >
+            <Form
+              form={addform}
+              onFinish={onFinishAdd}
+              onFinishFailed={onFinishFailed}
+              labelCol={{ span: 6 }}
+              style={{ marginBottom: "-20px", marginTop: "20px" }}
             >
-              <Form
-                form={addform}
-                onFinish={onFinishAdd}
-                onFinishFailed={onFinishFailed}
-                labelCol={{ span: 6 }}
-                style={{ marginBottom: "-20px", marginTop: "20px" }}
-              >
-                <Form.Item label="Group Name" name="profileName" rules={[{ required: true, message: "Please enter group name" }]}>
-                  <Input />
-                </Form.Item>
-                <Form.Item label="Description" name="description">
-                  <Input />
-                </Form.Item>
-                <Form.Item label="Rules" name="rules">
-                  <Select allowClear showSearch={false} mode="multiple" style={{ width: "100%" }} placeholder="Please Select" options={ruleOptions} />
-                </Form.Item>
-                <Form.Item>
-                  <div className=" flex justify-end space-x-4">
-                    <Button
-                      key="cancel"
-                      onClick={() => {
-                        setOpenAddProfileModel(false), setbuttonLoading(false);
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                    <Button key="submit" htmlType="submit" type="primary" className="button-blue" loading={buttonConfirm}>
-                      Add
-                    </Button>
-                  </div>
-                </Form.Item>
-              </Form>
-            </Modal>
-          </div>
-
-          <div>
-            <Modal title="Edit Group of Rules" open={openEditProfileModel} onCancel={() => setOpenEditProfileModel(false)} footer={[]}>
-              <Form
-                form={editform}
-                onFinish={onFinishEdit}
-                onFinishFailed={onFinishFailed}
-                labelCol={{ span: 6 }}
-                style={{ marginBottom: "-30px", marginTop: "20px" }}
-              >
-                <Form.Item label="Profile Id" name="profileId" hidden>
-                  <Input />
-                </Form.Item>
-                <Form.Item label="Group Name" name="profileName" rules={[{ required: true, message: "Please enter group name" }]}>
-                  <Input />
-                </Form.Item>
-                <Form.Item label="Description" name="description">
-                  <Input />
-                </Form.Item>
-                <Form.Item label="Rules" name="rules">
-                  <Select allowClear showSearch={false} mode="multiple" style={{ width: "100%" }} placeholder="Please Select" options={ruleOptions} />
-                </Form.Item>
-
-                <div className=" flex justify-end space-x-5">
-                  <Button key="cancel" onClick={() => setOpenEditProfileModel(false)}>
+              <Form.Item label="Group Name" name="profileName" rules={[{ required: true, message: "Please enter group name" }]}>
+                <Input />
+              </Form.Item>
+              <Form.Item label="Description" name="description">
+                <Input />
+              </Form.Item>
+              <Form.Item label="Rules" name="rules">
+                <Select allowClear showSearch={false} mode="multiple" style={{ width: "100%" }} placeholder="Please Select" options={ruleOptions} />
+              </Form.Item>
+              <Form.Item>
+                <div className=" flex justify-end space-x-4">
+                  <Button
+                    key="cancel"
+                    onClick={() => {
+                      setOpenAddProfileModel(false), setbuttonLoading(false);
+                    }}
+                  >
                     Cancel
                   </Button>
-                  <Form.Item>
-                    <Button key="submit" htmlType="submit" type="primary" className="button-blue" loading={buttonLoading}>
-                      Save Change
-                    </Button>
-                  </Form.Item>
+                  <Button key="submit" htmlType="submit" type="primary" className="button-blue" loading={buttonConfirm}>
+                    Add
+                  </Button>
                 </div>
-              </Form>
-            </Modal>
-          </div>
-        </Spin>
-      </Card>
+              </Form.Item>
+            </Form>
+          </Modal>
+        </div>
+
+        <div>
+          <Modal title="Edit Group of Rules" open={openEditProfileModel} onCancel={() => setOpenEditProfileModel(false)} footer={[]}>
+            <Form
+              form={editform}
+              onFinish={onFinishEdit}
+              onFinishFailed={onFinishFailed}
+              labelCol={{ span: 6 }}
+              style={{ marginBottom: "-30px", marginTop: "20px" }}
+            >
+              <Form.Item label="Profile Id" name="profileId" hidden>
+                <Input />
+              </Form.Item>
+              <Form.Item label="Group Name" name="profileName" rules={[{ required: true, message: "Please enter group name" }]}>
+                <Input />
+              </Form.Item>
+              <Form.Item label="Description" name="description">
+                <Input />
+              </Form.Item>
+              <Form.Item label="Rules" name="rules">
+                <Select allowClear showSearch={false} mode="multiple" style={{ width: "100%" }} placeholder="Please Select" options={ruleOptions} />
+              </Form.Item>
+
+              <div className=" flex justify-end space-x-5">
+                <Button key="cancel" onClick={() => setOpenEditProfileModel(false)}>
+                  Cancel
+                </Button>
+                <Form.Item>
+                  <Button key="submit" htmlType="submit" type="primary" className="button-blue" loading={buttonLoading}>
+                    Save Change
+                  </Button>
+                </Form.Item>
+              </div>
+            </Form>
+          </Modal>
+        </div>
+      </Spin>
     </>
   );
 };

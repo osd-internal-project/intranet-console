@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start ",
     "lint": "next lint",
-    "docker:buildx": "docker build --no-cache --platform linux/amd64 -t 'dinventory-fe:v1.0.31' -f ./Dockerfile .",
-    "docker:buildx:prd": "docker build --no-cache --platform linux/amd64 -t 'dinventory-fe:v1.0.4' -f ./Dockerfile ."
+    "docker:buildx": "docker build --no-cache --platform linux/amd64 -t 'intranet-fe:v1.0.1' -f ./Dockerfile ."
   },
   "dependencies": {
     "@ant-design/charts": "^2.1.0",
@@ -16,7 +15,8 @@
     "@babel/plugin-transform-runtime": "^7.24.6",
     "@babel/runtime": "^7.24.6",
     "@types/file-saver": "^2.0.7",
-    "antd": "^5.10.1",
+    "and": "^0.0.3",
+    "antd": "^5.19.0",
     "antd-img-crop": "^4.18.0",
     "axios": "^1.7.2",
     "cookie": "^0.5.0",
@@ -32,9 +32,11 @@
     "react-calendar": "^5.0.0",
     "react-dom": "^18",
     "react-organizational-chart": "^2.2.1",
+    "react-router-dom": "^6.24.0",
     "recharts": "^2.12.6",
     "sheetjs-style": "^0.15.8",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@babel/core": "^7.24.7",
@@ -59,6 +61,7 @@
     "@types/react": "^18",
     "@types/react-big-calendar": "^1.8.9",
     "@types/react-dom": "^18",
+    "@types/react-router-dom": "^5.3.3",
     "@types/uuid": "^9.0.7",
     "autoprefixer": "^10",
     "eslint": "^8",

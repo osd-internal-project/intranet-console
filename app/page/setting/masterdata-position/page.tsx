@@ -1,6 +1,6 @@
 "use client";
 
-import { Breadcrumb, Col, Row } from "antd";
+import { Breadcrumb, Col, Divider, Row } from "antd";
 import { useEffect, useState } from "react";
 import { AddMasterdataPosition } from "./components/AddMasterdataPosition";
 import { TableMasterdataPosition } from "./components/TableMasterdataPosition";
@@ -63,8 +63,8 @@ export default function MasterDataPositionPage() {
 
   return (
     <>
-      <Row gutter={[8, 8]}>
-        <Col span={24} style={{ marginBottom: "20px" }}>
+      <Row>
+        <Col span={24}>
           <Breadcrumb
             items={[
               {
@@ -72,40 +72,35 @@ export default function MasterDataPositionPage() {
                 title: <span>Home</span>,
               },
               {
-                href: "/page/setting",
                 title: <span>Setting</span>,
               },
               {
-                title: <span>Set Position </span>,
+                title: <span>Set Position</span>,
               },
             ]}
           />
         </Col>
-        {/* <Col span={24}>
-          <div className="title-page-font">{`SET POSITION`}</div>
-        </Col> */}
+        <Divider orientation="left" orientationMargin="0">
+          <div className="title-page-font">{`Set Position`}</div>
+        </Divider>
       </Row>
-      <Row gutter={[8, 8]}>
-        <Col span={24}>
-          <div className="title-page-font">
-            <AddMasterdataPosition departMent={departMent} setLoading={(e: boolean) => setLoading(e)} />
-          </div>
-        </Col>
-      </Row>
-      <Row gutter={[8, 8]}>
-        <Col span={24}>
-          <div className="grid grid-cols-1 ">
-            <TableMasterdataPosition
-              getloading={getloading}
-              getdataAll={getdataAll}
-              setLoading={(e: boolean) => setLoading(e)}
-              handleOpenFilter={(e: boolean) => handleOpenFilter(e)}
-              openFilter={openFilter}
-              onFilter={(e: any) => onFilter(e)}
-            />
-          </div>
-        </Col>
-      </Row>
+      <Col span={24}>
+        <div className="title-page-font">
+          <AddMasterdataPosition departMent={departMent} setLoading={(e: boolean) => setLoading(e)} />
+        </div>
+      </Col>
+      <Col span={24}>
+        <div className="grid grid-cols-1 ">
+          <TableMasterdataPosition
+            getloading={getloading}
+            getdataAll={getdataAll}
+            setLoading={(e: boolean) => setLoading(e)}
+            handleOpenFilter={(e: boolean) => handleOpenFilter(e)}
+            openFilter={openFilter}
+            onFilter={(e: any) => onFilter(e)}
+          />
+        </div>
+      </Col>
     </>
   );
 }

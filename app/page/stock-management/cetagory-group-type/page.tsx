@@ -1,5 +1,5 @@
 "use client";
-import { Breadcrumb, Card, Col, Row, Tabs } from "antd";
+import { Breadcrumb, Card, Col, Divider, Row, Tabs } from "antd";
 import CategoriesComponent from "./components/CategoriesComponent";
 import GroupComponent from "./components/GroupComponent";
 import TypeComponent from "./components/TypeComponent";
@@ -28,8 +28,8 @@ export default function SetCatogoryGroupType() {
               title: <span>Home</span>,
             },
             {
-              href: "/page/setting",
-              title: <span>Setting</span>,
+              href: "/page/stock-management",
+              title: <span>Stock Management</span>,
             },
             {
               title: <span>Set Category & Group</span>,
@@ -37,9 +37,11 @@ export default function SetCatogoryGroupType() {
           ]}
         />
       </Col>
-      <Col span={24}>
-        <div className="title-page-font">{`SET CATEGORY & GROUP`}</div>
-      </Col>
+
+      <Divider orientation="left" orientationMargin="0">
+        <div className="title-page-font">{`Set Category & Group`}</div>
+      </Divider>
+
       <Col span={24}>
         <div className=" grid grid-cols-5 gap-4">
           <div className=" col-span-5 md:col-span-2">

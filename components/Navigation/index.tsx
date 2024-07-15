@@ -1,9 +1,25 @@
 "use client";
 
-import { Avatar, Badge, Button, Drawer, Dropdown, Menu, MenuProps, Space } from "antd";
+import {
+  Avatar,
+  Badge,
+  Button,
+  Drawer,
+  Dropdown,
+  Menu,
+  MenuProps,
+  Space,
+} from "antd";
 import { Header } from "antd/es/layout/layout";
 import MenuNav from "@/app/config/menu";
-import { ArrowLeftOutlined, ArrowRightOutlined, BellOutlined, MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  ArrowLeftOutlined,
+  ArrowRightOutlined,
+  BellOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -32,7 +48,15 @@ interface Prop {
   avatar: any;
 }
 
-const Navigation: React.FC<Prop> = ({ session, collapsed, setCollapsed, currentPath, menulist, countNoti, avatar }) => {
+const Navigation: React.FC<Prop> = ({
+  session,
+  collapsed,
+  setCollapsed,
+  currentPath,
+  menulist,
+  countNoti,
+  avatar,
+}) => {
   const [open, setOpen] = useState(false);
   const navigate = useRouter();
   useAxiosRefreshToken(session);
@@ -79,11 +103,23 @@ const Navigation: React.FC<Prop> = ({ session, collapsed, setCollapsed, currentP
               <BellOutlined />
             </Badge>
           </Link> */}
-          <Dropdown menu={{ items: MenuNav }} className="text-black hover:text-zinc-300">
+          <Dropdown
+            menu={{ items: MenuNav }}
+            className="text-black hover:text-zinc-300"
+          >
             <a onClick={(e) => e.preventDefault()}>
               <Space className=" text-base">
                 {`คุณ ${session.user.firstNameTh} ${session.user.lastNameTh} `}
-                {avatar ? <Avatar size={40} src={avatar instanceof File ? URL.createObjectURL(avatar) : ""} /> : <UserOutlined />}
+                {avatar && avatar instanceof Blob ? (
+                  <Avatar
+                    size={40}
+                    src={
+                      avatar instanceof Blob ? URL.createObjectURL(avatar) : ""
+                    }
+                  />
+                ) : (
+                  <UserOutlined />
+                )}
               </Space>
             </a>
           </Dropdown>
@@ -92,7 +128,11 @@ const Navigation: React.FC<Prop> = ({ session, collapsed, setCollapsed, currentP
       <Drawer
         title={
           <div className="flex justify-center bg-white ">
-            <img src="/images/logo-osd-mini-v2.png" alt="logo-page" className={`w-20 h-auto`} />
+            <img
+              src="/images/logo-osd-mini-v2.png"
+              alt="logo-page"
+              className={`w-20 h-auto`}
+            />
           </div>
         }
         placement="left"
@@ -100,7 +140,13 @@ const Navigation: React.FC<Prop> = ({ session, collapsed, setCollapsed, currentP
         open={open}
         width={250}
       >
-        <Menu mode="inline" selectedKeys={[currentPath]} style={{ height: 100, borderRight: 0 }} items={menulist} onClick={() => setOpen(!open)} />
+        <Menu
+          mode="inline"
+          selectedKeys={[currentPath]}
+          style={{ height: 100, borderRight: 0 }}
+          items={menulist}
+          onClick={() => setOpen(!open)}
+        />
       </Drawer>
     </>
   );

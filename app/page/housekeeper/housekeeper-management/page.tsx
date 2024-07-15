@@ -1,5 +1,5 @@
 "use client";
-import { Breadcrumb, Button, Card, Checkbox, Col, Form, Input, Row, Tabs, TabsProps } from "antd";
+import { Breadcrumb, Button, Card, Checkbox, Col, Divider, Form, Input, Row, Tabs, TabsProps } from "antd";
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
@@ -37,9 +37,9 @@ export default function Page() {
           ]}
         />
       </Col>
-      <Col span={24}>
+      <Divider orientation="left" orientationMargin="0">
         <div className="title-page-font">{`Housekeeper Management`}</div>
-      </Col>
+      </Divider>
       <Col span={24}>
         <div className=" grid-span-1 space-y-2">
           <Card>

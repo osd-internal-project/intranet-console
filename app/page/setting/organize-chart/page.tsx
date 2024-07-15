@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Breadcrumb, Card, Col, Row, Spin } from "antd";
+import { Breadcrumb, Card, Col, Divider, Row, Spin } from "antd";
 import OrganizeTree from "./components/organize-tree";
 import OrganizeManage from "./components/organize-manage";
 
@@ -28,7 +28,6 @@ export default function Page() {
                 title: <span>Home</span>,
               },
               {
-                href: "/page/setting",
                 title: <span>Setting</span>,
               },
               {
@@ -37,9 +36,9 @@ export default function Page() {
             ]}
           />
         </Col>
-        <Col span={24}>
+        <Divider orientation="left" orientationMargin="0">
           <div className="title-page-font">{`Organize Chart`}</div>
-        </Col>
+        </Divider>
         <Col span={24}>
           <div className="grid grid-cols-1 "></div>
           <div className="grid grid-cols-1 md:grid-cols-2">

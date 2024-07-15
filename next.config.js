@@ -4,7 +4,7 @@ const nextConfigServer = {
   env: {
     AUTH_SECRET_KEY: "n5yaP7ynm0Qf/JhIJVLXmfQH0zr+YgKwk0TdWo9EFwo=",
     ORGANIZED_ID: "9c41d38b-1f39-42b4-800f-7e719f8a988e",
-    BACKEND_CRM_URL: "http://localhost:4005/api",
+    BACKEND_CRM_URL: "http://192.168.31.181:8949/api",
     BACKEND_INTRANET_URL: "http://192.168.31.181:8947/api",
     BACKEND_STOCK_URL: "http://192.168.31.181:8946/api",
     BACKEND_REPORT_URL: "http://192.168.31.181:8948/api",
@@ -31,4 +31,4 @@ const nextConfigLocal = {
   reactStrictMode: false,
   output: "standalone",
 };
-module.exports = nextConfigLocal;
+module.exports = nextConfigServer;

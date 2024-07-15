@@ -73,6 +73,7 @@ export default function MainLayout({
     const menulist = MenuSiderWithModule(session?.rulelist);
     const currentPath = pathname.split("/")[2];
     const currentPathSub = pathname.split("/")[3];
+
     if (currentPath) {
       // console.log(currentPath, `${currentPath}/${currentPathSub}`)
       if (!pageWithoutMenu.includes(currentPath)) {
@@ -114,6 +115,7 @@ export default function MainLayout({
           </div>
           <Menu
             mode="inline"
+            selectedKeys={[currentPath, `${currentPath}/${currentPathSub}`]}
             defaultSelectedKeys={[
               currentPath,
               `${currentPath}/${currentPathSub}`,

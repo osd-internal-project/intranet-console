@@ -130,6 +130,12 @@ const BranchAddressComponent: React.FC<props> = ({
       // width: "200px",
     },
     {
+      key: "zipCode",
+      dataIndex: "zipCode",
+      title: "รหัสไปรษณีย์",
+      // width: "200px",
+    },
+    {
       key: "id",
       dataIndex: "id",
       title: "",

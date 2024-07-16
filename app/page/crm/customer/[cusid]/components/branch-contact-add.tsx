@@ -94,16 +94,16 @@ const BranchContactAddComponent: React.FC<props> = ({
             <Input maxLength={150} />
           </Form.Item>
           <Form.Item label="เบอร์มือถือ" name={"phone"}>
-            <Input maxLength={5} />
+            <Input maxLength={20} />
           </Form.Item>
           <Form.Item label="เบอร์ออฟฟิศ" name={"officePhone"}>
             <Input maxLength={150} />
           </Form.Item>
           <Form.Item label="เบอร์แฟกซ์" name={"fax"}>
-            <Input maxLength={5} />
+            <Input maxLength={20} />
           </Form.Item>
           <Form.Item label="อีเมล" name={"email"}>
-            <Input maxLength={150} />
+            <Input maxLength={50} />
           </Form.Item>
           <Form.Item label="วันเกิด" name={"birthday"}>
             <DatePicker format={"DD/MM/YYYY"} />

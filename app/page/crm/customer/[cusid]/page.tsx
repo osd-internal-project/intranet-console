@@ -130,6 +130,7 @@ export default function CustomerDetailPage() {
   async function onFinishEdit(data: ITCustomerForm): Promise<void> {
     let form = {
       ...data,
+      ...(data.registration && { registration: Number(data.registration) }),
       updatedById: session?.user.userId,
       updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
     };

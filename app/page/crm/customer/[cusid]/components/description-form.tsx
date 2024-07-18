@@ -239,7 +239,6 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   <Form.Item
                     label={<b>Status</b>}
                     valuePropName="checked"
-                    initialValue={true}
                     name={"activeStatus"}
                   >
                     <Switch

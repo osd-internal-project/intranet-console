@@ -60,6 +60,7 @@ const MaCarBook: React.FC = () => {
 
     const existingMa = await maCarBookServices.getMaCarBookQuery(userIdData);
     console.log(existingMa);
+
     return existingMa.some((ma: any) => {
       console.log(ma);
       return (
@@ -156,6 +157,7 @@ const MaCarBook: React.FC = () => {
     try {
       const maCar = await maCarBookServices.getMaCarQuery();
       setMaCarData(maCar);
+      console.log(maCar);
 
       setloading(false);
     } catch (error) {

@@ -263,7 +263,7 @@ const ManageCarStatus = () => {
           </Form.Item>
 
           <Form.Item
-            label="ระดับของน้ำมัน"
+            label="ระดับน้ำมันรถ"
             name="carPetrol"
             rules={[{ required: true, message: "กรุณาเลือกระดับน้ำมัน!" }]}
           >

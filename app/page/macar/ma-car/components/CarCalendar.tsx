@@ -71,6 +71,7 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
         return "Unknown Status";
     }
   };
+
   const onSelectEventCalendar = (event: CustomEvent) => {
     const ma = maFetchCalendar.find((b) => b.id === event.id);
     if (ma) {
@@ -159,9 +160,6 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
                 <Form.Item label="จำนวนผู้ใช้รถ" name="carBookUsers">
                   <Input className="read-only-input" disabled />
                 </Form.Item>
-                <Form.Item label="ระดับน้ำมัน" name="carPetrol">
-                  <Input className="read-only-input" disabled />
-                </Form.Item>
                 <Form.Item label="รายละเอียด" name="detail">
                   <TextArea className="read-only-input" disabled />
                 </Form.Item>
@@ -177,10 +175,10 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
                 </Form.Item>
                 {selectedMa.carBookApprovedStatus !== "process" && (
                   <>
-                    <Form.Item label="ผู้แก้ไข" name="updatedByName">
+                    <Form.Item label="ผู้อนุมัติ" name="carBookApprovedByName">
                       <Input className="read-only-input" disabled />
                     </Form.Item>
-                    <Form.Item label="วันที่แก้ไข" name="updatedAt">
+                    <Form.Item label="วันที่อนุมัติ" name="carBookApprovedDate">
                       <Input className="read-only-input" disabled />
                     </Form.Item>
                   </>

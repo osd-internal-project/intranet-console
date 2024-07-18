@@ -16,6 +16,7 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+
     findMaCarBook: async (skip: number, take: number) => {
       return await axiosInstance
         .get(`${baseUrlApiMaCarBook}?take=${take}&skip=${skip}`)
@@ -27,6 +28,7 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+
     createMaCarBook: async (body: any) => {
       return await axiosInstance
         .post(`${baseUrlApiMaCarBook}`, body)
@@ -51,6 +53,7 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+
     deleteMaCarBook: async (carId: any) => {
       console.log(carId);
 
@@ -64,6 +67,7 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+
     getMaCarQuery: async () => {
       return await axiosInstance
         .get(`${baseUrlApiMaCar}`)
@@ -75,6 +79,7 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+
     updateMaCar: async (body: any) => {
       return await axiosInstance
         .patch(`${baseUrlApiMaCar}/${body.carId}`, body)
@@ -86,6 +91,7 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+
     createMaCar: async (body: any) => {
       return await axiosInstance
         .post(`${baseUrlApiMaCar}`, body)
@@ -97,6 +103,7 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+
     deleteMaCar: async (carId: any) => {
       console.log(`${baseUrlApiMaCar}/${carId}`);
       return await axiosInstance

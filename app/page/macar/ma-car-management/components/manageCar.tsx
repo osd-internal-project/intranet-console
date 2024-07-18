@@ -23,14 +23,12 @@ import {
 } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../services/manage-car.service";
 import dayjs, { Dayjs } from "dayjs";
-import { useForm } from "antd/es/form/Form";
 import { useSession } from "next-auth/react";
 import isBetween from "dayjs/plugin/isBetween";
-import MaCarBook from "../../ma-car-booking/components/maCarBooking";
 
 dayjs.extend(isBetween);
 
-interface CarType {
+interface MaCarType {
   id: string;
   carId: string;
   carName: string;
@@ -59,23 +57,27 @@ const ManageCar: React.FC = () => {
   const intraAuth = useAxiosIntranet();
   const [isModaMa, setIsModaMa] = useState(false);
   const [form] = Form.useForm();
-  const [modalEditMa, setModalEditMa] = useState(false);
+  const [modalEditMaCarBook, setModalEditMa] = useState(false);
   const [modalApproveMa, setModalApproveMa] = useState(false);
   const [carBookApprovedStatus, setMaCarBookStatus] = useState("");
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [createdById, setcreatedById] = useState<string | null>(null);
   const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
   const [currentMaId, setCurrentMaId] = useState<string | null>(null);
-  const [maData, setMaData] = useState<CarType[]>([]);
+  const [maData, setMaData] = useState<MaCarType[]>([]);
   const manageCarServices = ManageCarServices(intraAuth);
   const { data: session } = useSession();
-  const [loading, setloading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
     total: 0,
   });
-  const columns: TableProps<CarType>["columns"] = [
+  // const sortedData = [...maData].sort(
+  //   (a, b) => dayjs(b.updatedAt).valueOf() - dayjs(a.updatedAt).valueOf()
+  // );
+  // console.log(sortedData);
+
+  const columns: TableProps<MaCarType>["columns"] = [
     {
       title: "ลำดับ",
       dataIndex: "no",
@@ -133,8 +135,6 @@ const ManageCar: React.FC = () => {
       width: "100px",
       align: "center",
       render: (status: string) => (
-        // <>
-        //   {console.log(status)}
         <Tag
           color={
             status === "process"
@@ -151,7 +151,7 @@ const ManageCar: React.FC = () => {
             : status === "Approve"
             ? "อนุมัติสำเร็จ"
             : status === "Cancel"
-            ? "ยกเลิกการจอง"
+            ? "ไม่อนุมัติ"
             : ""}
         </Tag>
         // </>
@@ -172,14 +172,20 @@ const ManageCar: React.FC = () => {
             okText="ใช่"
             cancelText="ไม่"
           >
-            <a>ลบ</a>
+            <a style={{ color: "red" }}>ลบ</a>
           </Popconfirm>
-          <a onClick={() => showModalApproveMa(record)}>อนุมัติ</a>
+          <a
+            onClick={() => showModalApprove(record)}
+            style={{ color: "green" }}
+          >
+            อนุมัติ
+          </a>
         </Space>
       ),
     },
   ];
-  const showModalEditMa = (record: CarType) => {
+
+  const showModalEditMa = (record: MaCarType) => {
     if (record.carBookApprovedStatus === "Approve") {
       message.warning("ไม่สามารถแก้ไขการจองที่อนุมัติแล้วได้");
       return;
@@ -192,17 +198,19 @@ const ManageCar: React.FC = () => {
     });
     setModalEditMa(true);
   };
+
   const changePagination = (page: TablePaginationConfig) => {
     setPagination({ ...page });
-    setloading(true);
+    setLoading(true);
   };
-  const showModalApproveMa = (record: CarType) => {
+
+  const showModalApprove = (record: MaCarType) => {
     setMaCarBookStatus(record.carBookApprovedStatus);
     setCurrentMaId(record.id);
     setModalApproveMa(true);
   };
 
-  const handleApproveBookingCancel = () => {
+  const handleApproveBooking = () => {
     setModalApproveMa(false);
   };
 
@@ -219,11 +227,12 @@ const ManageCar: React.FC = () => {
       message.error("ลบข้อมูลการจองไม่สำเร็จ");
     }
   };
+
   const handleEditMaCancel = () => {
     setModalEditMa(false);
   };
 
-  const updatedMa: FormProps<CarType>["onFinish"] = async (values) => {
+  const updatedMa: FormProps<MaCarType>["onFinish"] = async (values) => {
     setSubmitLoading(true);
 
     if (currentMaId === null) {
@@ -240,7 +249,7 @@ const ManageCar: React.FC = () => {
         updatedByName,
         ...restValues
       } = values;
-      console.log(values);
+
       const updatedStartDate = carBookStartDate.toISOString();
       const updatedEndDate = carBookEndDate.toISOString();
 
@@ -255,30 +264,7 @@ const ManageCar: React.FC = () => {
         setSubmitLoading(false);
         return;
       }
-      const existingMa = await manageCarServices.getMaCarBookQuery();
 
-      const hasOverlap = existingMa.some((ma: CarType) => {
-        if (ma.carName === carName && ma.id !== currentMaId) {
-          const existingStart = dayjs(ma.carBookStartDate);
-          const existingEnd = dayjs(ma.carBookEndDate);
-          const newStart = dayjs(updatedStartDate);
-          const newEnd = dayjs(updatedEndDate);
-          return (
-            newStart.isBetween(existingStart, existingEnd, null, "[)") ||
-            newEnd.isBetween(existingStart, existingEnd, null, "(]") ||
-            existingStart.isBetween(newStart, newEnd, null, "[)") ||
-            existingEnd.isBetween(newStart, newEnd, null, "(]")
-          );
-        }
-        return false;
-      });
-      if (hasOverlap) {
-        message.error(
-          "ไม่สามารถแก้ไขการจองนี้ได้เนื่องจากมีการจองห้องนี้ในช่วงเวลานี้แล้ว"
-        );
-        setSubmitLoading(false);
-        return;
-      }
       const updatedMa = {
         ...restValues,
         id: currentMaId,
@@ -298,11 +284,8 @@ const ManageCar: React.FC = () => {
       message.error("แก้ไขการจองไม่สำเร็จ");
       setSubmitLoading(false);
     }
+    setLoading(true);
   };
-
-  // const handleCancel = () => {
-  //   setIsModaMa(false);
-  // };
 
   const fetchData = async () => {
     const skip: number =
@@ -341,6 +324,7 @@ const ManageCar: React.FC = () => {
       };
 
       await manageCarServices.updateMaCarBook(updatedApproveMa);
+      console.log(onFinishCancel);
 
       setModalApproveMa(false);
       fetchData();
@@ -353,7 +337,7 @@ const ManageCar: React.FC = () => {
     }
   };
 
-  const onFinishApprove: FormProps<CarType>["onFinish"] = async () => {
+  const onFinishApprove: FormProps<MaCarType>["onFinish"] = async () => {
     setSubmitLoading(true);
 
     try {
@@ -376,19 +360,24 @@ const ManageCar: React.FC = () => {
     } finally {
       setSubmitLoading(false);
     }
+    setLoading(false);
   };
-  const onFinishFailed: FormProps<CarType>["onFinishFailed"] = (errorInfo) => {
+
+  const onFinishFailed: FormProps<MaCarType>["onFinishFailed"] = (
+    errorInfo
+  ) => {
     console.log("Failed:", errorInfo);
   };
+
   useEffect(() => {
-    if (loading === true) fetchData();
+    if (loading) fetchData();
   }, [loading]);
 
   return (
     <>
       <Modal
         title="แก้ไขข้อมูลการจอง"
-        open={modalEditMa}
+        open={modalEditMaCarBook}
         onCancel={handleEditMaCancel}
         footer={null}
         width={1000}
@@ -402,14 +391,10 @@ const ManageCar: React.FC = () => {
           onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
-          {/* <Form.Item<CarType> name="maId" hidden> */}
-          <Form.Item<CarType> hidden>
-            <Input />
-          </Form.Item>
           <Divider orientation="left">ข้อมูลผู้จอง</Divider>
           <Row gutter={16}>
             <Col span={8}>
-              <Form.Item<CarType>
+              <Form.Item<MaCarType>
                 label="ชื่อผู้จอง"
                 name="createdByName"
                 rules={[{ required: true, message: "กรุณากรอกชื่อผู้จอง!" }]}
@@ -421,7 +406,7 @@ const ManageCar: React.FC = () => {
           <Divider orientation="left">ข้อมูลการจอง</Divider>
           <Row gutter={16}>
             <Col span={8}>
-              <Form.Item<CarType>
+              <Form.Item<MaCarType>
                 label="ชื่อรถ"
                 name="carName"
                 rules={[{ required: true, message: "กรุณาเลือกรถ" }]}
@@ -436,7 +421,7 @@ const ManageCar: React.FC = () => {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<CarType>
+              <Form.Item<MaCarType>
                 label="วันที่เริ่มการจอง"
                 name="carBookStartDate"
                 rules={[
@@ -447,7 +432,7 @@ const ManageCar: React.FC = () => {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<CarType>
+              <Form.Item<MaCarType>
                 label="วันที่สิ้นสุดการจอง"
                 name="carBookEndDate"
                 rules={[
@@ -459,17 +444,17 @@ const ManageCar: React.FC = () => {
             </Col>
 
             <Col span={8}>
-              <Form.Item<CarType> label="หมายเหตุ" name="note">
+              <Form.Item<MaCarType> label="หมายเหตุ" name="note">
                 <Input placeholder="หมายเหตุ" />
               </Form.Item>
             </Col>
           </Row>
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Row justify="end">
+            <Row justify="end" gutter={16}>
               <Button
                 type="default"
                 onClick={handleEditMaCancel}
-                style={{ marginRight: 8 }}
+                style={{ marginRight: "16px" }}
               >
                 ยกเลิก
               </Button>
@@ -484,7 +469,7 @@ const ManageCar: React.FC = () => {
         width={400}
         title="อนุมัติการจองรถ"
         open={modalApproveMa}
-        onCancel={handleApproveBookingCancel}
+        onCancel={handleApproveBooking}
         footer={null}
       >
         <p>ยืนยันอนุมัติการจองรถ</p>
@@ -499,10 +484,11 @@ const ManageCar: React.FC = () => {
         >
           <Row justify="end">
             <Button
-              type="primary"
+              type="default"
               onClick={onFinishCancel}
               disabled={carBookApprovedStatus === "Cancel"}
               loading={submitLoading}
+              style={{ marginRight: "16px" }}
             >
               ไม่อนุมัติ
             </Button>
@@ -520,6 +506,7 @@ const ManageCar: React.FC = () => {
       <Table
         columns={columns}
         dataSource={maData}
+        // dataSource={sortedData}
         rowKey="id"
         pagination={pagination}
         onChange={changePagination}

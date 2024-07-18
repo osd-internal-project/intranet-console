@@ -71,19 +71,10 @@ const columns: TableProps<CarType>["columns"] = [
       ),
   },
   {
-    // title: "รายละเอียด",
     title: <div style={{ textAlign: "center" }}>รายละเอียด</div>,
     dataIndex: "detail",
     key: "detail",
-    // align: "center",
   },
-  // {
-  //   title: "หมายเหตุ",
-  //   dataIndex: "note",
-  //   key: "note",
-  //   align: "center",
-  //   render: (text) => (text ? text : "-"),
-  // },
 ];
 
 const CarStatus = () => {
@@ -96,7 +87,7 @@ const CarStatus = () => {
   }, []);
 
   const fetchData = async () => {
-    const maresponse = await maCarServices.getMasterCarQuery();
+    const maresponse = await maCarServices.getMaCarQuery();
     const MaCar: CarType[] = maresponse.map((item: any, index: number) => ({
       ...item,
       key: index.toString(),

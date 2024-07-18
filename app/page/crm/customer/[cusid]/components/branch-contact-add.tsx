@@ -84,7 +84,11 @@ const BranchContactAddComponent: React.FC<props> = ({
         }}
       >
         <div className="grid md:grid-cols-4">
-          <Form.Item label="ชื่อ" name={"name"}>
+          <Form.Item
+            label="ชื่อ"
+            name={"name"}
+            rules={[{ required: true, message: "กรุณากรอกชื่อ" }]}
+          >
             <Input maxLength={10} />
           </Form.Item>
           <Form.Item label="ชื่อเล่น" name={"nickName"}>

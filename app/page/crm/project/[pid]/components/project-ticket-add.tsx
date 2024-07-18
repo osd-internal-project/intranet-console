@@ -109,7 +109,11 @@ const ProjectTicketAddComponent: React.FC<props> = ({
         // layout="vertical"
       >
         <div className="gap-3">
-          <Form.Item label="Title" name={"ticketTitle"}>
+          <Form.Item
+            label="Title"
+            name={"ticketTitle"}
+            rules={[{ required: true, message: "กรุณาเลือก Title" }]}
+          >
             <Input maxLength={100} />
           </Form.Item>
           <Form.Item label="Request Date" name={"requestDate"}>
@@ -121,7 +125,11 @@ const ProjectTicketAddComponent: React.FC<props> = ({
           <Form.Item label="Appointment Date" name={"appointmentDate"}>
             <DatePicker className=" w-full" format={"DD/MM/YYYY"} />
           </Form.Item>
-          <Form.Item label="Assign To" name={"assignId"}>
+          <Form.Item
+            label="Assign To"
+            name={"assignId"}
+            rules={[{ required: true, message: "กรุณาเลือก Assign To" }]}
+          >
             <Select
               className=" w-full"
               allowClear

@@ -632,30 +632,4 @@ export const MaCarIcon = (
     />
   </svg>
 );
-export const chevronIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="1.2em"
-    height="1.2em"
-    viewBox="0 0 24 24"
-  >
-    <g transform="translate(24 0) scale(-1 1)">
-      <path
-        stroke="currentColor"
-        strokeDasharray="8"
-        strokeDashoffset="8"
-        strokeLinecap="round"
-        strokeWidth="1.2"
-        d="M9 12L14 7M9 12L14 17"
-        fill="currentColor"
-      >
-        <animate
-          fill="freeze"
-          attributeName="stroke-dashoffset"
-          dur="0.3s"
-          values="8;0"
-        />
-      </path>
-    </g>
-  </svg>
-);
+

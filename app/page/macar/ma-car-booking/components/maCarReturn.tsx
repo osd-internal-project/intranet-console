@@ -6,12 +6,14 @@ import {
   Row,
   Col,
   Space,
+  Select,
   Modal,
   Form,
   Input,
   Divider,
   message,
   DatePicker,
+  InputNumber,
 } from "antd";
 import type { TableProps, FormProps } from "antd";
 import dayjs from "dayjs";
@@ -26,7 +28,7 @@ interface MaCarType {
   carName: string;
   carPetrol: string;
   detail: string;
-  status: string;
+  status: boolean;
   createdAt: Date;
   createdById: string;
   createdByName: string;
@@ -40,15 +42,46 @@ interface MaCarType {
   carBookEndDate: Date;
   carBookTitle: string;
   carBookApprovedStatus: string;
+  //
+  carMile: number;
 }
+
+interface MaCarWrapupType {
+  id: number;
+  carWrapupId: string; // รหัส Wrapup ของรถ
+  carId: string; // รหัสของรถที่เชื่อมโยงกับ Wrapup
+  carName: string; // ชื่อของรถ
+  typeId: number; // รหัสประเภทของรถ
+  typeName: string; // ชื่อประเภทของรถ
+  vender: string; // ยี่ห้อของรถ
+  cost: number; // ราคาของรถ (ใช้ number ใน TypeScript)
+  detail: string; // รายละเอียดเพิ่มเติมเกี่ยวกับ Wrapup ของรถ
+  wrapupMiles: string; // จำนวนไมล์ที่รถเคยใช้ในช่วงเวลา Wrapup
+  dateStart: Date; // วันที่เริ่มต้นของช่วง Wrapup (ใช้ Date ใน TypeScript)
+  dateEnd: Date; // วันที่สิ้นสุดของช่วง Wrapup (ใช้ Date ใน TypeScript)
+  remark: string; // ข้อความหมายเหตุเพิ่มเติมเกี่ยวกับ Wrapup ของรถ
+  createdAt: Date; // วันที่และเวลาที่เริ่มต้นของการสร้างข้อมูล Wrapup
+  updatedAt?: Date; // วันที่และเวลาที่ปรับปรุงข้อมูล Wrapup ล่าสุด (ใช้ Date | undefined ใน TypeScript)
+  carBookApprovedStatus: string; // สถานะการอนุมัติของการจองรถ
+}
+
 const MaCarReturn = () => {
   const intraAuth = useAxiosIntranet();
   const [formBookData] = Form.useForm();
+  const [formWrapup] = Form.useForm();
   const { data: session } = useSession();
+  const [currentMaId, setCurrentMaId] = useState<string | null>(null);
+  const [currentMaBookId, setCurrentMaBookId] = useState<number | null>(null);
   const [modalEditReturn, setModalEditReturn] = useState(false);
   const [modalEditDetail, setModalEditDetail] = useState(false);
   const maCarBookServices = MaCarBookServices(intraAuth);
+  const [maCarData, setMaCarData] = useState<[]>([]);
   const [maData, setMaData] = useState<MaCarType[]>([]);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [maCarWrapupData, setMaCarWrapupData] = useState<MaCarWrapupType[]>([]);
+
+  console.log(maCarWrapupData);
+  console.log(maCarData);
 
   const columns: TableProps<MaCarType>["columns"] = [
     {
@@ -139,11 +172,9 @@ const MaCarReturn = () => {
       title: "รายละเอียด",
       width: "150px",
       align: "center",
-      render: (_, record) => (
+      render: (_: any, record: MaCarType) => (
         <Space size="middle">
-          <a onClick={() => showModalDetail(record)} style={{ color: "bule" }}>
-            รายละเอียดการจองรถ
-          </a>
+          <a onClick={() => showModalDetail(record)}>รายละเอียดการจองรถ</a>
         </Space>
       ),
     },
@@ -151,7 +182,7 @@ const MaCarReturn = () => {
       title: "จัดการ",
       width: "110px",
       align: "center",
-      render: (_, record) => (
+      render: (_: any, record: any) => (
         <Space size="middle">
           {record.carBookApprovedStatus === "Approve" ? (
             <a onClick={() => showModalReturn(record)}>คืนรถ</a>
@@ -167,15 +198,18 @@ const MaCarReturn = () => {
     },
   ];
 
-  const showModalReturn = (record: MaCarType) => {
-    formBookData.setFieldsValue({
+  const showModalReturn = (record: MaCarWrapupType) => {
+    console.log(record);
+    setCurrentMaId(record.carId);
+    setCurrentMaBookId(record.id);
+    formWrapup.setFieldsValue({
       ...record,
-
-      carBookStartDate: dayjs(record.carBookStartDate),
-      carBookEndDate: dayjs(record.carBookEndDate),
+      carBookStartDate: dayjs(record.dateStart),
+      carBookEndDate: dayjs(record.dateEnd),
     });
     setModalEditReturn(true);
   };
+
   const handleModalReturn = () => {
     setModalEditReturn(false);
   };
@@ -189,8 +223,49 @@ const MaCarReturn = () => {
       carBookEndDate: dayjs(record.carBookEndDate),
     });
   };
+
   const handleModalDetail = () => {
     setModalEditDetail(false);
+  };
+
+  const updatedMaCarReturn: FormProps<MaCarType>["onFinish"] = async (
+    values
+  ) => {
+    setSubmitLoading(true);
+    console.log(values);
+    if (currentMaId && currentMaBookId) {
+      try {
+        const { ...restValues } = values;
+        const updatedMaCar = {
+          ...restValues,
+
+          carMile: values.carMile,
+          carPetrol: values.carPetrol,
+          status: values.status === true,
+          updatedAt: dayjs().toISOString(),
+          updatedById: session?.user.userId,
+          updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+          // carBookApprovedStatus: "Return",
+        };
+        const maCarBook = {
+          carBookApprovedStatus: "Return",
+        };
+
+        await maCarBookServices.updateMaCar(currentMaId, updatedMaCar);
+        message.success("คืนรถสำเร็จ");
+
+        await maCarBookServices.updateMaCarBook(currentMaBookId, maCarBook);
+
+        fetchData();
+        handleModalReturn();
+        setSubmitLoading(false);
+        formWrapup.resetFields();
+      } catch (error) {
+        message.error("คืนรถไม่สำเร็จ");
+        setSubmitLoading(false);
+      }
+    }
+    setModalEditReturn(false);
   };
 
   const fetchData = async () => {
@@ -201,6 +276,13 @@ const MaCarReturn = () => {
 
       const maresponse = await maCarBookServices.getMaCarBookQuery(userIdData);
       console.log(maresponse);
+
+      const maCarWrapupData = await maCarBookServices.getMaCarWrapupQuery();
+      setMaCarWrapupData(maCarWrapupData);
+      console.log(maCarWrapupData);
+
+      const maCarData = await maCarBookServices.getMaCarQuery();
+      setMaCarData(maCarData);
 
       const MaCar: MaCarType[] = maresponse.map((item: any, index: number) => ({
         ...item,
@@ -226,25 +308,74 @@ const MaCarReturn = () => {
         width={1000}
       >
         <Form
-          form={formBookData}
+          form={formWrapup}
           layout="vertical"
           name="edit_ma"
           initialValues={{ remember: true }}
-          // onFinish={updatedMaCarBook}
-          // onFinishFailed={onFinishFailed}
+          onFinish={updatedMaCarReturn}
+          // onFinishFailed={onFinishFailedReturn}
           autoComplete="off"
         >
           <Divider orientation="left">ข้อมูลการคืนรถ</Divider>
-
-          <Divider orientation="left">ข้อมูลผู้จอง</Divider>
           <Row gutter={8}>
             <Col span={6}>
               <Form.Item<MaCarType>
-                name="createdByName"
-                label="ชื่อผู้จอง"
-                rules={[{ required: true, message: "กรุณากรอกชื่อผู้จอง" }]}
+                name="carName"
+                label="ชื่อรถ"
+                rules={[{ required: true, message: "กรุณากรอกชื่อรถ" }]}
               >
-                <Input disabled placeholder="กรอกชื่อผู้จอง" />
+                <Input disabled placeholder="กรอกชื่อรถ" />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item<MaCarType>
+                name="carMile"
+                label="เลขไมล์รถ"
+                rules={[{ required: true, message: "กรุณากรอกเลขไมล์รถ" }]}
+              >
+                <InputNumber placeholder="กรอกเลขไมล์รถ" />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item<MaCarType>
+                label="ระดับน้ำมันรถ"
+                name="carPetrol"
+                rules={[{ required: true, message: "กรุณาเลือกระดับน้ำมัน!" }]}
+              >
+                <Select placeholder="เลือกระดับน้ำมัน">
+                  <Select.Option value="high">มาก</Select.Option>
+                  <Select.Option value="medium">ปานกลาง</Select.Option>
+                  <Select.Option value="low">น้อย</Select.Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item
+                label="สถานะของรถ"
+                name="status"
+                rules={[{ required: true, message: "กรุณาเลือกสถานะรถ!" }]}
+              >
+                <Select placeholder="เลือกสถานะรถ">
+                  <Select.Option value={true}>ใช้งานได้ปกติ</Select.Option>
+                  <Select.Option value={false}>
+                    ไม่สามารถใช้งานได้
+                  </Select.Option>
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+
+          {/* <Divider orientation="left">ข้อมูลผู้จอง</Divider>
+          <Row gutter={8}>
+            <Col span={6}>
+              <Form.Item<MaCarWrapupType>
+                name="typeName"
+                label="ชื่อประเภทของรถ"
+                rules={[
+                  { required: true, message: "กรุณากรอกชื่อประเภทของรถ" },
+                ]}
+              >
+                <Input disabled placeholder="กรอกชื่อประเภทของรถ" />
               </Form.Item>
             </Col>
           </Row>
@@ -253,7 +384,7 @@ const MaCarReturn = () => {
 
           <Row gutter={16}>
             <Col span={6}>
-              <Form.Item<MaCarType>
+              <Form.Item<MaCarWrapupType>
                 name="carName"
                 label="ชื่อรถ"
                 rules={[{ required: true, message: "กรุณาเลือกรถ" }]}
@@ -262,39 +393,39 @@ const MaCarReturn = () => {
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item<MaCarType>
-                name="carBookTitle"
-                label="วัตถุประสงค์การใช้งาน"
-                rules={[
-                  { required: true, message: "กรุณากรอกวัตถุประสงค์การใช้งาน" },
-                ]}
+              <Form.Item<MaCarWrapupType>
+                name="vender"
+                label="ยี่ห้อของรถ"
+                rules={[{ required: true, message: "กรุณากรอกยี่ห้อของรถ" }]}
               >
                 <Input disabled placeholder="กรอกวัตถุประสงค์การใช้งาน" />
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item<MaCarType>
-                name="carBookPlace"
-                label="สถานที่ไป"
-                rules={[{ required: true, message: "กรุณากรอกสถานที่ไป" }]}
+              <Form.Item<MaCarWrapupType>
+                name="detail"
+                label="รายละเอียด"
+                rules={[{ required: true, message: "กรุณากรอกรายละเอียด" }]}
               >
-                <Input disabled placeholder="กรอกสถานที่ไป" />
+                <Input disabled placeholder="กรอกรายละเอียด" />
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item<MaCarType>
-                name="carBookProvince"
-                label="จังหวัด"
-                rules={[{ required: true, message: "กรุณากรอกจังหวัด" }]}
+              <Form.Item<MaCarWrapupType>
+                name="wrapupMiles"
+                label="จำนวนไมล์ที่ใช้"
+                rules={[
+                  { required: true, message: "กรุณากรอกจำนวนไมล์ที่ใช้" },
+                ]}
               >
-                <Input disabled placeholder="กรอกจังหวัด" />
+                <Input disabled placeholder="กรอกจำนวนไมล์ที่ใช้" />
               </Form.Item>
             </Col>
           </Row>
           <Row gutter={24}>
             <Col span={6}>
-              <Form.Item<MaCarType>
-                name="carBookUsers"
+              <Form.Item<MaCarWrapupType>
+                name="remark"
                 label="จำนวนผู้ใช้"
                 rules={[{ required: true, message: "กรุณากรอกจำนวนผู้ใช้" }]}
               >
@@ -302,8 +433,8 @@ const MaCarReturn = () => {
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item<MaCarType>
-                name="carBookStartDate"
+              <Form.Item<MaCarWrapupType>
+                name="wrapupMiles"
                 label="วันที่เริ่มการจอง"
                 rules={[
                   { required: true, message: "กรุณาเลือกวันที่เริ่มจอง!" },
@@ -319,7 +450,7 @@ const MaCarReturn = () => {
             </Col>
             <Col span={6}>
               <Form.Item
-                name="carBookEndDate"
+                name="endDate"
                 label="วันที่สิ้นสุดการจอง"
                 rules={[{ required: true, message: "กรุณาเลือกวันที่สิ้นสุด" }]}
               >
@@ -331,8 +462,7 @@ const MaCarReturn = () => {
                 />
               </Form.Item>
             </Col>
-          </Row>
-
+          </Row> */}
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Row justify="end" gutter={16}>
               <Button
@@ -342,8 +472,8 @@ const MaCarReturn = () => {
               >
                 ยกเลิก
               </Button>
-              {/* <Button type="primary" htmlType="submit" loading={submitLoading}> */}
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" loading={submitLoading}>
+                {/* <Button type="primary" htmlType="submit"> */}
                 ตกลง
               </Button>
             </Row>

@@ -67,6 +67,8 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
         return <Tag color="blue">กำลังรออนุมัติ</Tag>;
       case "Cancel":
         return <Tag color="red">ยกเลิกการจอง</Tag>;
+      case "Return":
+        return <Tag color="gray">คืนรถสำเร็จ</Tag>;
       default:
         return "Unknown Status";
     }

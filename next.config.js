@@ -31,4 +31,4 @@ const nextConfigLocal = {
   reactStrictMode: false,
   output: "standalone",
 };
-module.exports = nextConfigServer;
+module.exports = nextConfigLocal;

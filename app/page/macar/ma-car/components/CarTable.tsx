@@ -146,6 +146,10 @@ const MaCarTable: React.FC<props> = ({
             color = "red";
             text = "ไม่อนุมัติ";
             break;
+          case "Return":
+            color = "yellow";
+            text = "คืนรถสำเร็จ";
+            break;
           default:
             color = "default";
             text = "Unknown Status";

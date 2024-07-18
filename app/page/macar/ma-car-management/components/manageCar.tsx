@@ -293,6 +293,8 @@ const ManageCar: React.FC = () => {
     const take: number = Number(pagination.pageSize);
     try {
       const masterCar = await manageCarServices.getMaCarBookQuery();
+      console.log(masterCar);
+      
       const maCarActive = masterCar.filter(
         (car: any) => car.carsStatus === true
       );

@@ -84,6 +84,24 @@ const DescriptionCustomerForm: React.FC<props> = ({
                       ? projectDescription.duration
                       : "-"}
                   </div>
+                  <div className=" font-bold pl-3 pr-3 text-right">
+                    ชื่อลูกค้า :
+                  </div>
+                  <div className=" col-span-2 md:col-span-1 text-slate-500">
+                    {projectDescription.customerBranch.customerDetail
+                      .firstNameTh ||
+                    projectDescription.customerBranch.customerDetail.lastNameTh
+                      ? `${projectDescription.customerBranch.customerDetail.firstNameTh} ${projectDescription.customerBranch.customerDetail.lastNameTh}`
+                      : "-"}
+                  </div>
+                  <div className=" font-bold pl-3 pr-3 text-right">สาขา :</div>
+                  <div className=" col-span-2 md:col-span-1 text-slate-500">
+                    {projectDescription.customerBranch.branchName
+                      ? projectDescription.customerBranch.branchName
+                      : "-"}
+                  </div>
+                  <div className=" font-bold pl-3 pr-3 text-right"></div>
+                  <div className=" col-span-2 md:col-span-1 text-slate-500"></div>
                   {contactDescription ? (
                     <div className=" grid  grid-cols-3 md:grid-cols-6 gap-2  md:col-span-6">
                       <div className=" font-bold pl-3 pr-3 text-right">
@@ -159,12 +177,12 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   <div className=" col-span-2 md:col-span-1 text-slate-500">
                     {projectDescription.projectManagerName}
                   </div>
-                  <div className=" font-bold pl-3  pr-3 text-right ">
+                  {/* <div className=" font-bold pl-3  pr-3 text-right ">
                     Sale Manager :
-                  </div>
-                  <div className=" col-span-2 md:col-span-1 text-slate-500">
+                  </div> */}
+                  {/* <div className=" col-span-2 md:col-span-1 text-slate-500">
                     {projectDescription.saleManagerName}
-                  </div>
+                  </div> */}
                   <div className=" font-bold pl-3  pr-3 text-right ">
                     Sale :
                   </div>

@@ -113,6 +113,7 @@ export default function AddProjectPage() {
         };
       }
     }
+    delete data["customerId"];
     await crmServices
       .createProject(data)
       .then((data) => {

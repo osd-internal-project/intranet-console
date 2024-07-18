@@ -70,13 +70,25 @@ const ProjectTaskEditComponent: React.FC<props> = ({
         onFinish={onFinishEdit}
         autoComplete="off"
       >
-        <Form.Item label="Task Title" name={"taskTitle"}>
+        <Form.Item
+          label="Task Title"
+          name={"taskTitle"}
+          rules={[{ required: true, message: "กรุณาเลือก Task Title" }]}
+        >
           <Input maxLength={100} />
         </Form.Item>
-        <Form.Item label="Start Date" name={"startDate"}>
+        <Form.Item
+          label="Start Date"
+          name={"startDate"}
+          rules={[{ required: true, message: "กรุณาเลือก Start Date" }]}
+        >
           <DatePicker format={"DD/MM/YYYY"} />
         </Form.Item>
-        <Form.Item label="End Date" name={"endDate"}>
+        <Form.Item
+          label="End Date"
+          name={"endDate"}
+          rules={[{ required: true, message: "กรุณาเลือก End Date" }]}
+        >
           <DatePicker format={"DD/MM/YYYY"} />
         </Form.Item>
 

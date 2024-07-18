@@ -291,9 +291,15 @@ export default function CustomerDetailPage() {
     let form = {};
     let title = "";
     let content = <></>;
-    if (status === "inprogress") {
+    if (status === "inprogress" && action === "receive") {
       title = "Receive Ticket";
       content = <>ยืนยันการรับงาน ?</>;
+      form = {
+        receiveDate: new Date(),
+      };
+    } else if (status === "inprogress" && action === "resume") {
+      title = "Resume Ticket";
+      content = <>ยืนยันการคืนงาน ?</>;
       form = {
         receiveDate: new Date(),
       };

@@ -165,7 +165,7 @@ const CreateProjectForm: React.FC<props> = ({
         </Form.Item>
         <Form.Item
           label="Customer"
-          // name={"customerId"}
+          name={"customerId"}
           rules={[{ required: true, message: "กรุณาเลือก Customer" }]}
         >
           <Select
@@ -301,7 +301,7 @@ const CreateProjectForm: React.FC<props> = ({
               }))}
             />
           </Form.Item>
-          <Form.Item label="Contact" name={"contactId"}>
+          <Form.Item label="ผู้ติดต่อ" name={"contactId"}>
             <Select
               allowClear
               disabled={branchList.length > 0 ? false : true}
@@ -315,7 +315,11 @@ const CreateProjectForm: React.FC<props> = ({
             <TextArea />
           </Form.Item>
         </div>
-        <Form.Item label="Sale" name={"saleId"}>
+        <Form.Item
+          label="Sale"
+          name={"saleId"}
+          rules={[{ required: true, message: "กรุณาเลือก " }]}
+        >
           <Select
             disabled={saleList.length > 0 ? false : true}
             allowClear
@@ -326,30 +330,8 @@ const CreateProjectForm: React.FC<props> = ({
             }))}
           />
         </Form.Item>
-        {/* <Form.Item label="Related Group" name="relatedGroupId">
-          <TreeSelect
-            multiple
-            allowClear
-            showSearch={false}
-            style={{ width: "100%" }}
-            treeDefaultExpandAll
-            onChange={onChangeGroupSelect}
-            placeholder="Please select"
-            treeData={groupOption}
-          />
-        </Form.Item>
-        <Form.Item label="Related Users" name="relatedUsersId">
-          <Select
-            allowClear
-            mode="multiple"
-            showSearch={true}
-            options={usersFormGroup.map((user) => ({
-              label: `${user.firstNameTh} ${user.lastNameTh}`,
-              value: user.userId,
-            }))}
-          />
-        </Form.Item> */}
-        <Form.Item label="Sale Manager" name={"saleManagerId"}>
+
+        {/* <Form.Item label="Sale Manager" name={"saleManagerId"}>
           <Select
             allowClear
             showSearch
@@ -359,8 +341,12 @@ const CreateProjectForm: React.FC<props> = ({
               label: `${user.firstNameTh} ${user.lastNameTh}`,
             }))}
           />
-        </Form.Item>
-        <Form.Item label="Project Manager" name={"projectManagerId"}>
+        </Form.Item> */}
+        <Form.Item
+          label="Project Manager"
+          name={"projectManagerId"}
+          rules={[{ required: true, message: "กรุณาเลือก " }]}
+        >
           <Select
             allowClear
             showSearch

@@ -306,6 +306,11 @@ export const MenuSider: MenuItem[] = [
         label: `Project `,
         // rule: "crm-p-s",
       },
+      {
+        key: `crm/ticket`,
+        label: `Ticket `,
+        rule: "crm-t-s",
+      },
     ],
   },
   {
@@ -327,11 +332,6 @@ export const MenuSider: MenuItem[] = [
         key: `macar/ma-car-management`,
         // icon: chevronIcon,
         label: `Ma car Management`,
-      },
-      {
-        key: `crm/ticket`,
-        label: `Ticket `,
-        rule: "crm-t-s",
       },
     ],
   },

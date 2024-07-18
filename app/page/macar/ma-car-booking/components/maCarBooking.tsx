@@ -16,57 +16,50 @@ import {
   TablePaginationConfig,
 } from "antd";
 import { MaCarBookServices } from "../services/ma-car-book.service";
-import { useForm } from "antd/es/form/Form";
 import { useSession } from "next-auth/react";
 
 interface MaCarType {
-  id: string; // รหัส
-  carId: string; // รหัสรถ
-  carName: string; // ชื่อรถ
-  carPetrol: string; // ระดับน้ำมัน
-  detail: string; // รายละเอียด
-  remark: string; //
-  status: string; // สถานะ
-  createdAt: Date; // วันที่สร้าง
-  createdById: string; // รหัสผู้สร้าง
-  createdByName: string; // ชื่อผู้สร้าง
-  updatedAt: Date; // วันที่แก้ไขล่าสุด
-  updatedById: string; // รหัสผู้แก้ไข
-  updatedByName: string; // ชื่อผู้แก้ไข
-  carBookProvince: string; // จังหวัดที่จองรถ
-  carBookPlace: string; // สถานที่จองรถ
-  carBookUsers: number; // จำนวนผู้ใช้ที่จองรถ
-  carBookStartDate: Date; // วันที่เริ่มการจองรถ
-  carBookEndDate: Date; // วันที่สิ้นสุดการจองรถ
+  id: string;
+  carId: string;
+  carName: string;
+  carPetrol: string;
+  detail: string;
+  remark: string;
+  status: string;
+  createdAt: Date;
+  createdById: string;
+  createdByName: string;
+  updatedAt: Date;
+  updatedById: string;
+  updatedByName: string;
+  carBookProvince: string;
+  carBookPlace: string;
+  carBookUsers: number;
+  carBookStartDate: Date;
+  carBookEndDate: Date;
   carBookTitle: string;
-  // carBookStartDate: string; // วันที่เริ่มการจองรถ   71,91
-  // carBookEndDate: string; // วันที่สิ้นสุดการจองรถ
-  carBookApprovedDate?: Date; // วันที่อนุมัติการจองรถ (อาจจะไม่มีในกรณีที่ยังไม่ได้อนุมัติ)
-  carBookApprovedById?: string; // รหัสผู้อนุมัติการจองรถ (อาจจะไม่มีในกรณีที่ยังไม่ได้อนุมัติ)
-  carBookApprovedByName?: string; // ชื่อผู้อนุมัติการจองรถ (อาจจะไม่มีในกรณีที่ยังไม่ได้อนุมัติ)
+  carBookApprovedDate?: Date;
+  carBookApprovedById?: string;
+  carBookApprovedByName?: string;
 }
 
 const MaCarBook: React.FC = () => {
   const { data: session } = useSession();
-  // const [isModaMa, setIsModaMa] = useState(false);
   const intraAuth = useAxiosIntranet();
   const maCarBookServices = MaCarBookServices(intraAuth);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
   const [form] = Form.useForm();
   const [loading, setloading] = useState<boolean>(true);
-  const [pagination, setPagination] = useState<TablePaginationConfig>({
-    current: 1,
-    pageSize: 10,
-    total: 0,
-  });
 
   const checkMaCarBookConflict = async (
     carName: string,
     carBookStartDate: Date,
     carBookEndDate: Date
   ) => {
-    const existingMa = await maCarBookServices.getMaCarQuery();
+    const userIdData = session?.user.userId;
+
+    const existingMa = await maCarBookServices.getMaCarBookQuery(userIdData);
     console.log(existingMa);
     return existingMa.some((ma: any) => {
       console.log(ma);
@@ -83,12 +76,8 @@ const MaCarBook: React.FC = () => {
   };
 
   const createMaCarBook: FormProps<MaCarType>["onFinish"] = async (values) => {
-    console.log(values);
-
-    const carSelected = maCarData.findLast((car) => car.carId === values.carId);
-
     setSubmitLoading(true);
-    const carName = values.carName as string;
+    const carSelected = maCarData.findLast((car) => car.carId === values.carId);
     const carBookStartDate = values.carBookStartDate as Date;
     const carBookEndDate = values.carBookEndDate as Date;
     const today = new Date();
@@ -104,7 +93,6 @@ const MaCarBook: React.FC = () => {
     }
 
     const data = {
-      // carName: values.carName,
       carId: values.carId,
       carName: carSelected?.carName,
       createdById: session?.user.userId,
@@ -122,31 +110,31 @@ const MaCarBook: React.FC = () => {
     try {
       const conflict = await checkMaCarBookConflict(
         carSelected?.carName ? carSelected?.carName : "",
-        // carName,
         carBookStartDate,
         carBookEndDate
       );
+      console.log(conflict);
+
       if (conflict) {
         message.error(
-          "ห้องนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่."
+          "รถนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่."
         );
         setSubmitLoading(false);
         return;
       }
 
       const maCarBook = await maCarBookServices.createMaCarBook(data);
-      console.log(maCarBook);
       if (maCarBook) {
-        message.success("จองห้องสำเร็จ");
+        message.success("จองรถสำเร็จ");
         form.resetFields();
-        // setIsModalma(false);
       } else {
-        message.error("จองห้องไม่สำเร็จ");
+        message.error("จองรถไม่สำเร็จ");
       }
+
       setSubmitLoading(false);
       fetchData();
     } catch (error) {
-      message.error("จองห้องไม่สำเร็จ");
+      message.error("จองรถไม่สำเร็จ");
       setSubmitLoading(false);
     }
   };
@@ -160,9 +148,6 @@ const MaCarBook: React.FC = () => {
   };
 
   const fetchData = async () => {
-    const skip: number =
-      (Number(pagination.current) - 1) * Number(pagination.pageSize);
-    const take: number = Number(pagination.pageSize);
     form.setFieldsValue({
       createdByName: `${session?.user.firstNameTh || ""} ${
         session?.user.lastNameTh || ""
@@ -180,7 +165,7 @@ const MaCarBook: React.FC = () => {
   };
 
   useEffect(() => {
-    if (loading === true) fetchData();
+    if (loading) fetchData();
   }, [loading]);
 
   return (
@@ -192,10 +177,7 @@ const MaCarBook: React.FC = () => {
       onFinishFailed={onFinishFailed}
       autoComplete="off"
     >
-      <Col span={24}></Col>
-      <Col span={24}>
-        <Divider orientation="left">ข้อมูลผู้จอง</Divider>
-      </Col>
+      <Divider orientation="left">ข้อมูลผู้จอง</Divider>
       <Row gutter={16}>
         <Col span={8}>
           <Form.Item<MaCarType>
@@ -208,15 +190,14 @@ const MaCarBook: React.FC = () => {
         </Col>
       </Row>
 
-      <Col span={24}>
-        <Divider orientation="left">ข้อมูลการจองรถ</Divider>
-      </Col>
+      <Divider orientation="left">ข้อมูลการจองรถ</Divider>
+
       <Row gutter={16}>
         <Col span={8}>
           <Form.Item<MaCarType>
             name="carId"
             label="ชื่อรถ"
-            rules={[{ required: true, message: "กรุณากรอกชื่อรถ" }]}
+            rules={[{ required: true, message: "กรุณาเลือกรถ" }]}
           >
             <Select placeholder="โปรดเลือกรถ" style={{ width: "100%" }}>
               {maCarData.map((car, index) => (

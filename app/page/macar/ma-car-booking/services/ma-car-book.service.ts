@@ -16,9 +16,10 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getMaCarBookQuery: async () => {
+
+    getMaCarBookQuery: async (body: any) => {
       return await axiosInstance
-        .get(`${baseUrlApiMaCarBook}`)
+        .get(`${baseUrlApiMaCarBook}/${body}`)
         .then((res) => {
           return res.data;
         })
@@ -27,6 +28,7 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+
     findMaCarBook: async (skip: number, take: number) => {
       return await axiosInstance
         .get(`${baseUrlApiMaCarBook}?take=${take}&skip=${skip}`)

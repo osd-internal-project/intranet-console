@@ -230,6 +230,19 @@ export default function CustomerDetailPage() {
         };
       }
     }
+    if (form.assignId) {
+      const selected = usersList.findLast(
+        (user) => user.userId === form.assignId
+      );
+      if (selected) {
+        form = {
+          ...form,
+          assignName: `${selected.firstNameTh ? selected.firstNameTh : ""} ${
+            selected.lastNameTh ? selected.firstNameTh : ""
+          }`,
+        };
+      }
+    }
     if (form.channelTypeId) {
       const selected = ticketConfigs.channelTypeList.findLast(
         (config) => config.id === form.channelTypeId

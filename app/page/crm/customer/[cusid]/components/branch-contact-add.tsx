@@ -94,21 +94,21 @@ const BranchContactAddComponent: React.FC<props> = ({
             <Input maxLength={150} />
           </Form.Item>
           <Form.Item label="เบอร์มือถือ" name={"phone"}>
-            <Input maxLength={5} />
+            <Input maxLength={20} />
           </Form.Item>
           <Form.Item label="เบอร์ออฟฟิศ" name={"officePhone"}>
             <Input maxLength={150} />
           </Form.Item>
           <Form.Item label="เบอร์แฟกซ์" name={"fax"}>
-            <Input maxLength={5} />
+            <Input maxLength={20} />
           </Form.Item>
           <Form.Item label="อีเมล" name={"email"}>
-            <Input maxLength={150} />
+            <Input maxLength={50} />
           </Form.Item>
           <Form.Item label="วันเกิด" name={"birthday"}>
             <DatePicker format={"DD/MM/YYYY"} />
           </Form.Item>
-          <Form.Item
+          {/* <Form.Item
             label={"Status"}
             valuePropName="checked"
             initialValue={true}
@@ -119,7 +119,7 @@ const BranchContactAddComponent: React.FC<props> = ({
               unCheckedChildren={"Not Active"}
               checkedChildren={"Active"}
             />
-          </Form.Item>
+          </Form.Item> */}
         </div>
         <div className=" flex justify-end space-x-2">
           <Button type="primary" htmlType="submit">

@@ -20,7 +20,7 @@ import {
   Table,
   Tag,
 } from "antd";
-import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 const { RangePicker } = DatePicker;
 export interface props {
   onSearch: (form: object) => void;
@@ -41,8 +41,8 @@ const ProjectTicketFilterComponent: React.FC<props> = ({
       search = {
         ...search,
         dueDate: {
-          gte: new Date(values.dueDate[0]).toISOString(),
-          lte: new Date(values.dueDate[1]).toISOString(),
+          gte: dayjs(values.dueDate[0]).startOf("day").toISOString(),
+          lte: dayjs(values.dueDate[1]).endOf("day").toISOString(),
         },
       };
       0;
@@ -50,9 +50,9 @@ const ProjectTicketFilterComponent: React.FC<props> = ({
     if (values.createdAt) {
       search = {
         ...search,
-        dueDate: {
-          gte: new Date(values.createdAt[0]).toISOString(),
-          lte: new Date(values.createdAt[1]).toISOString(),
+        createdAt: {
+          gte: dayjs(values.createdAt[0]).startOf("day").toISOString(),
+          lte: dayjs(values.createdAt[1]).endOf("day").toISOString(),
         },
       };
     }

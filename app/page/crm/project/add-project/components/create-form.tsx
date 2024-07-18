@@ -96,9 +96,10 @@ const CreateProjectForm: React.FC<props> = ({
           endDate = startDate;
         }
       }
-      const diff = endDate.diff(startDate);
-      const diffDuration = moment.duration(diff);
-      form.setFieldValue("duration", diffDuration.days());
+      const diff = endDate.diff(startDate, "days");
+      // const diffDuration = moment.duration(diff);
+      // console.log(diff);
+      form.setFieldValue("duration", diff + 1);
     } else {
       form.setFieldValue("duration", 0);
     }
@@ -159,7 +160,7 @@ const CreateProjectForm: React.FC<props> = ({
             }}
           />
         </Form.Item>
-        <Form.Item label="Dularion" name={"duration"}>
+        <Form.Item label="Duration" name={"duration"}>
           <Input readOnly className=" w-20" />
         </Form.Item>
         <Form.Item

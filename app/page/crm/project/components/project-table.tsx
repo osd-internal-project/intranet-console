@@ -49,9 +49,9 @@ const ProjectTableComponent: React.FC<props> = ({
 }): React.ReactElement => {
   const customerColumns: TableColumnsType<ITProject> = [
     {
-      key: "projectCode",
-      dataIndex: "projectCode",
-      title: "Project Code",
+      key: "id",
+      dataIndex: "id",
+      title: "No.",
       width: "200px",
       align: "center",
       render: (data: Date, record: ITProject, index: number) =>

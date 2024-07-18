@@ -7,6 +7,7 @@ import {
   DatePicker,
   Form,
   Input,
+  InputNumber,
   Select,
   Switch,
 } from "antd";
@@ -155,6 +156,15 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   </Form.Item>
                   <Form.Item label={<b>วันที่จดทะเบียน</b>} name={"regisDate"}>
                     <DatePicker format={"DD/MM/YYYY"} className=" w-full" />
+                  </Form.Item>
+                  <Form.Item label={<b>ทุนจดทะเบียน</b>} name={"registration"}>
+                    <InputNumber
+                      min={0}
+                      className=" w-full"
+                      formatter={(value) =>
+                        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      }
+                    />
                   </Form.Item>
                   <Form.Item label={<b>Type</b>} name={"customerTypeId"}>
                     <Select

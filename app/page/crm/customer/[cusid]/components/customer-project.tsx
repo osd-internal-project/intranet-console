@@ -27,9 +27,9 @@ const BranchComponent: React.FC<props> = ({
 }): React.ReactElement => {
   const customerColumns: TableColumnsType<ITProject> = [
     {
-      key: "projectCode",
-      dataIndex: "projectCode",
-      title: "Project Code",
+      key: "id",
+      dataIndex: "No.",
+      title: "No.",
       width: "200px",
       align: "center",
       render: (data: Date, record: ITProject, index: number) => index + 1,

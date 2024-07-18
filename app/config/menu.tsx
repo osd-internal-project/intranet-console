@@ -13,7 +13,6 @@ import {
   stockIcon,
   contactListIcon,
   macarIcon,
-  chevronIcon,
 } from "@/components/icon";
 import { icons } from "antd/es/image/PreviewGroup";
 
@@ -335,12 +334,7 @@ export const MenuSider: MenuItem[] = [
       },
     ],
   },
-  {
-    key: "carre-serve",
-    icon: contactListIcon,
-    label: `CarReserve`,
-    // rule: "carreserve",
-  },
+
 
   // {
   //   key: `stock-management`,

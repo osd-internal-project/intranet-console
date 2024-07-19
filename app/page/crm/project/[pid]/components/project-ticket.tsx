@@ -107,7 +107,12 @@ const TicketComponent: React.FC<props> = ({
       title: "Created By",
       width: "200px",
     },
-
+    {
+      key: "assignName",
+      dataIndex: "assignName",
+      title: "Assign To",
+      width: "200px",
+    },
     {
       key: "id",
       dataIndex: "id",

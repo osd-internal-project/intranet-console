@@ -231,11 +231,19 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                     <div className=" font-bold pl-3 pr-3 text-right">
                       Appointment Date :
                     </div>
-                    <div className=" col-span-2 md:col-span-5">
+                    <div className=" col-span-2 md:col-span-1">
                       {ticketSelectedDetail.appointmentDate
                         ? dateToStringThNoTime(
                             ticketSelectedDetail.appointmentDate
                           )
+                        : ""}
+                    </div>
+                    <div className=" font-bold pl-3 pr-3 text-right">
+                      Assign To :
+                    </div>
+                    <div className=" col-span-2 md:col-span-3">
+                      {ticketSelectedDetail.assignName
+                        ? ticketSelectedDetail.assignName
                         : ""}
                     </div>
                     {/* <div className=" md:col-span-2  sm:h"> </div> */}

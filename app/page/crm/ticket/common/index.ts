@@ -108,7 +108,7 @@ export type ITProjectTicket = {
   id: number;
   status: string;
   createdAt?: Date;
-
+  assignName?: string;
   receiveDate?: Date;
   finishDate?: Date;
   completeDate?: Date;

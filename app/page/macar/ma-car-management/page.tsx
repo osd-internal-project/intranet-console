@@ -3,9 +3,8 @@ import { Breadcrumb, Card, Col, Divider, Row, Tabs, TabsProps } from "antd";
 import React from "react";
 import ManageCar from "./components/manageCar";
 import ManageCarStatus from "./components/manageCarStatus";
-import { MaCarIcon } from "../../../../components/icon";
-import MasterType from "./components/status-car/masterType"
-import WarpupmaCar from "./components/status-car/WarpupmaCar"
+import MasterType from "./components/status-car/masterType";
+import WarpupmaCar from "./components/status-car/WarpupmaCar";
 const ManageMaCar = () => {
   const items: TabsProps["items"] = [
     {
@@ -46,26 +45,12 @@ const ManageMaCar = () => {
             ]}
           />
         </Col>
-        <Divider
-          orientation="left"
-          orientationMargin="0"
-          // style={{ backgroundColor: "#6CB4EE", color: "#EEEEEE" }}
-          // style={{ backgroundColor: "#6CB4EE" }}
-        >
-          {/* <div
-            className="title-page-font"
-            style={{ display: "flex", alignItems: "center" }}
-          >
-            {MaCarIcon}
-            <span style={{ marginLeft: "8px" }}>จองรถออนไลน์</span>
-          </div> */}
-
+        <Divider orientation="left" orientationMargin="0">
           <div
             className="title-page-font"
             style={{ display: "flex", alignItems: "left" }}
           >
-            <span style={{ marginRight: "8px"}} >Ma Car Management</span>
-            {/* {MaCarIcon} */}
+            <span style={{ marginRight: "8px" }}>Ma Car Management</span>
           </div>
         </Divider>
         <Col span={24}>

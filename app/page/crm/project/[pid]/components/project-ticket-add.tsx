@@ -119,7 +119,11 @@ const ProjectTicketAddComponent: React.FC<props> = ({
           <Form.Item label="Request Date" name={"requestDate"}>
             <DatePicker className=" w-full" format={"DD/MM/YYYY"} />
           </Form.Item>
-          <Form.Item label="Due Date" name={"dueDate"}>
+          <Form.Item
+            label="Due Date"
+            name={"dueDate"}
+            rules={[{ required: true, message: "กรุณาเลือก Due Date" }]}
+          >
             <DatePicker className=" w-full" format={"DD/MM/YYYY"} />
           </Form.Item>
           <Form.Item label="Appointment Date" name={"appointmentDate"}>

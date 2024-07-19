@@ -234,15 +234,17 @@ export default function CustomerDetailPage() {
       const selected = usersList.findLast(
         (user) => user.userId === form.assignId
       );
+
       if (selected) {
         form = {
           ...form,
           assignName: `${selected.firstNameTh ? selected.firstNameTh : ""} ${
-            selected.lastNameTh ? selected.firstNameTh : ""
+            selected.lastNameTh ? selected.lastNameTh : ""
           }`,
         };
       }
     }
+
     if (form.channelTypeId) {
       const selected = ticketConfigs.channelTypeList.findLast(
         (config) => config.id === form.channelTypeId

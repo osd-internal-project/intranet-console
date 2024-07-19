@@ -8,19 +8,13 @@ import {
   Space,
   Modal,
   Form,
-  Input,
-  Divider,
   message,
-  Select,
-  DatePicker,
   Popconfirm,
   TablePaginationConfig,
 } from "antd";
+import { DeleteIcon, ApproveIcon } from "@/components/icon";
 import type { TableProps, FormProps } from "antd";
-import {
-  useAxiosIntranet,
-  useAxiosUser,
-} from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../services/manage-car.service";
 import dayjs, { Dayjs } from "dayjs";
 import { useSession } from "next-auth/react";
@@ -57,7 +51,6 @@ const ManageCar: React.FC = () => {
   const intraAuth = useAxiosIntranet();
   const [isModaMa, setIsModaMa] = useState(false);
   const [form] = Form.useForm();
-  const [modalEditMaCarBook, setModalEditMa] = useState(false);
   const [modalApproveMa, setModalApproveMa] = useState(false);
   const [carBookApprovedStatus, setMaCarBookStatus] = useState("");
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -72,11 +65,6 @@ const ManageCar: React.FC = () => {
     pageSize: 10,
     total: 0,
   });
-  // const sortedData = [...maData].sort(
-  //   (a, b) => dayjs(b.updatedAt).valueOf() - dayjs(a.updatedAt).valueOf()
-  // );
-  // console.log(sortedData);
-
   const columns: TableProps<MaCarType>["columns"] = [
     {
       title: "ลำดับ",
@@ -96,7 +84,6 @@ const ManageCar: React.FC = () => {
       width: "150px",
       align: "center",
     },
-
     {
       title: "วันที่จอง",
       key: "createdAt",
@@ -169,39 +156,27 @@ const ManageCar: React.FC = () => {
       align: "center",
       render: (_, record) => (
         <Space size="middle">
-          <a onClick={() => showModalEditMa(record)}>แก้ไข</a>
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
             onConfirm={() => handleDeleteMa(record.id)}
             okText="ใช่"
             cancelText="ไม่"
           >
-            <a style={{ color: "red" }}>ลบ</a>
+            <a>
+              {" "}
+              <DeleteIcon width="24" height="24" />{" "}
+            </a>
           </Popconfirm>
           <a
             onClick={() => showModalApprove(record)}
             style={{ color: "green" }}
           >
-            อนุมัติ
+            <ApproveIcon strokeColor="blue" width="2rem" height="2rem" />
           </a>
         </Space>
       ),
     },
   ];
-
-  const showModalEditMa = (record: MaCarType) => {
-    if (record.carBookApprovedStatus === "Approve") {
-      message.warning("ไม่สามารถแก้ไขการจองที่อนุมัติแล้วได้");
-      return;
-    }
-    setCurrentMaId(record.id);
-    form.setFieldsValue({
-      ...record,
-      carBookStartDate: dayjs(record.carBookStartDate),
-      carBookEndDate: dayjs(record.carBookEndDate),
-    });
-    setModalEditMa(true);
-  };
 
   const changePagination = (page: TablePaginationConfig) => {
     setPagination({ ...page });
@@ -230,10 +205,6 @@ const ManageCar: React.FC = () => {
     } catch (error) {
       message.error("ลบข้อมูลการจองไม่สำเร็จ");
     }
-  };
-
-  const handleEditMaCancel = () => {
-    setModalEditMa(false);
   };
 
   const updatedMa: FormProps<MaCarType>["onFinish"] = async (values) => {
@@ -283,7 +254,6 @@ const ManageCar: React.FC = () => {
       fetchData();
       message.success("แก้ไขการจองสำเร็จ");
       setSubmitLoading(false);
-      setModalEditMa(false);
     } catch (error) {
       message.error("แก้ไขการจองไม่สำเร็จ");
       setSubmitLoading(false);
@@ -297,12 +267,10 @@ const ManageCar: React.FC = () => {
     const take: number = Number(pagination.pageSize);
     try {
       const masterCar = await manageCarServices.getMaCarBookQuery();
-      console.log(masterCar);
 
       const maCarActive = masterCar.filter(
         (car: any) => car.carsStatus === true
       );
-      console.log(masterCar.carId);
 
       setMaCarData(maCarActive);
       const ma = await manageCarServices.findMaCarBook(skip, take);
@@ -384,96 +352,6 @@ const ManageCar: React.FC = () => {
   return (
     <>
       <Modal
-        title="แก้ไขข้อมูลการจอง"
-        open={modalEditMaCarBook}
-        onCancel={handleEditMaCancel}
-        footer={null}
-        width={1000}
-      >
-        <Form
-          form={form}
-          layout="vertical"
-          name="edit_ma"
-          initialValues={{ remember: true }}
-          onFinish={updatedMa}
-          onFinishFailed={onFinishFailed}
-          autoComplete="off"
-        >
-          <Divider orientation="left">ข้อมูลผู้จอง</Divider>
-          <Row gutter={16}>
-            <Col span={8}>
-              <Form.Item<MaCarType>
-                label="ชื่อผู้จอง"
-                name="createdByName"
-                rules={[{ required: true, message: "กรุณากรอกชื่อผู้จอง!" }]}
-              >
-                <Input disabled placeholder="กรอกชื่อผู้จอง" />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Divider orientation="left">ข้อมูลการจอง</Divider>
-          <Row gutter={16}>
-            <Col span={8}>
-              <Form.Item<MaCarType>
-                label="ชื่อรถ"
-                name="carName"
-                rules={[{ required: true, message: "กรุณาเลือกรถ" }]}
-              >
-                <Select placeholder="โปรดเลือกรถ">
-                  {maCarData.map((car) => (
-                    <Select.Option key={car.carName} value={car.carName}>
-                      {car.carName}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item<MaCarType>
-                label="วันที่เริ่มการจอง"
-                name="carBookStartDate"
-                rules={[
-                  { required: true, message: "กรุณากรอกวันที่เริ่มการจอง!" },
-                ]}
-              >
-                <DatePicker showTime style={{ width: "100%" }} />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item<MaCarType>
-                label="วันที่สิ้นสุดการจอง"
-                name="carBookEndDate"
-                rules={[
-                  { required: true, message: "กรุณากรอกวันที่สิ้นสุดการจอง!" },
-                ]}
-              >
-                <DatePicker showTime style={{ width: "100%" }} />
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item<MaCarType> label="หมายเหตุ" name="note">
-                <Input placeholder="หมายเหตุ" />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Row justify="end" gutter={16}>
-              <Button
-                type="default"
-                onClick={handleEditMaCancel}
-                style={{ marginRight: "16px" }}
-              >
-                ยกเลิก
-              </Button>
-              <Button type="primary" htmlType="submit" loading={submitLoading}>
-                ตกลง
-              </Button>
-            </Row>
-          </Form.Item>
-        </Form>
-      </Modal>
-      <Modal
         width={400}
         title="อนุมัติการจองรถ"
         open={modalApproveMa}
@@ -514,7 +392,6 @@ const ManageCar: React.FC = () => {
       <Table
         columns={columns}
         dataSource={maData}
-        // dataSource={sortedData}
         rowKey="id"
         pagination={pagination}
         onChange={changePagination}

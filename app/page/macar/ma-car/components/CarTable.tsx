@@ -17,6 +17,7 @@ import {
   TablePaginationConfig,
 } from "antd";
 import type { FormProps, TableProps } from "antd";
+import { DeleteIcon, EditIcon } from "@/components/icon";
 import dayjs from "dayjs";
 import { MaCarServices } from "../services/ma-car.service";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -89,7 +90,7 @@ const MaCarTable: React.FC<props> = ({
       key: "carName",
       title: "ชื่อรถ",
       dataIndex: "carName",
-      width: "150px",
+      width: "200px",
       align: "center",
     },
     {
@@ -147,8 +148,7 @@ const MaCarTable: React.FC<props> = ({
             text = "ไม่อนุมัติ";
             break;
           case "Return":
-            // color = "yellow";
-            color = "#748698 ";
+            color = "#748698";
             text = "คืนรถสำเร็จ";
             break;
           default:
@@ -175,14 +175,24 @@ const MaCarTable: React.FC<props> = ({
       align: "center",
       render: (_, record) => (
         <Space size="middle">
-          <a onClick={() => showModalEditMaCarBook(record)}>แก้ไข</a>
+          <a
+            onClick={() => showModalEditMaCarBook(record)}
+            role="button"
+            aria-label="Edit"
+            style={{ cursor: "pointer" }}
+          >
+            <EditIcon width="24" height="24" />
+          </a>
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
             onConfirm={() => handleDeleteMa(record.id)}
             okText="ใช่"
             cancelText="ไม่"
           >
-            <a style={{ color: "red" }}>ลบ</a>
+            <a>
+              {" "}
+              <DeleteIcon />{" "}
+            </a>
           </Popconfirm>
         </Space>
       ),
@@ -191,7 +201,11 @@ const MaCarTable: React.FC<props> = ({
 
   const showModalEditMaCarBook = (record: MaCarType) => {
     if (record.carBookApprovedStatus === "Approve") {
-      message.warning("ไม่สามารถแก้ไขการจองที่อนุมัติแล้วได้");
+      message.warning("ไม่สามารถแก้ไขการจองที่อนุมัติได้");
+      return;
+    }
+    if (record.carBookApprovedStatus === "Return") {
+      message.warning("ไม่สามารถแก้ไขการจองที่คืนรถได้");
       return;
     }
     setCurrentMaId(record.id);
@@ -306,7 +320,6 @@ const MaCarTable: React.FC<props> = ({
           name="edit_ma"
           initialValues={{ remember: true }}
           onFinish={updatedMaCarBook}
-          // onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           <Row gutter={16}>

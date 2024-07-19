@@ -3,9 +3,6 @@ import { Breadcrumb, Card, Col, Divider, Row, Tabs, TabsProps } from "antd";
 import React from "react";
 import MaCarBook from "./components/maCarBooking";
 import MaCarReturn from "./components/maCarReturn";
-// import MaCarDetails from "./components/maCarDetails";
-import MaCarHistory from "./components/maCarHistory";
-import { MaCarIcon } from "../../../../components/icon";
 
 const MaCarBooking = () => {
   const items: TabsProps["items"] = [
@@ -18,16 +15,6 @@ const MaCarBooking = () => {
       key: "2",
       label: "การคืนรถ",
       children: <MaCarReturn />,
-    },
-    // {
-    //   key: "3",
-    //   label: "รายละเอียดรถยนต์",
-    //   children: <MaCarDetails />,
-    // },
-    {
-      key: "4",
-      label: "ประวัติการดำเนินการ",
-      children: <MaCarHistory />,
     },
   ];
   return (
@@ -46,25 +33,12 @@ const MaCarBooking = () => {
             ]}
           />
         </Col>
-        <Divider
-          orientation="left"
-          orientationMargin="0"
-          // style={{ backgroundColor: "#6CB4EE", color: "#EEEEEE" }}
-        >
-          {/* <div
-            className="title-page-font"
-            style={{ display: "flex", alignItems: "center" }}
-          >
-            {MaCarIcon}
-            <span style={{ marginLeft: "8px" }}>จองรถออนไลน์</span>
-          </div> */}
-
+        <Divider orientation="left" orientationMargin="0">
           <div
             className="title-page-font"
             style={{ display: "flex", alignItems: "left" }}
           >
             <span style={{ marginRight: "8px" }}>Ma Car Book</span>
-            {/* {MaCarIcon} */}
           </div>
         </Divider>
         <Col span={24}>

@@ -15,6 +15,7 @@ import {
   Popconfirm,
   InputNumber,
 } from "antd";
+import { DeleteIcon, EditIcon } from "@/components/icon";
 import type { TableProps, FormProps } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../services/manage-car.service";
@@ -99,7 +100,6 @@ const ManageCarStatus = () => {
       align: "center",
     },
     {
-      // title: "รายละเอียด",
       title: <div style={{ textAlign: "center" }}>รายละเอียด</div>,
       dataIndex: "detail",
       key: "detail",
@@ -109,14 +109,24 @@ const ManageCarStatus = () => {
       align: "center",
       render: (_, record) => (
         <Space size="middle">
-          <a onClick={() => showModalEditMaCar(record)}>แก้ไข</a>
+          <a
+            onClick={() => showModalEditMaCar(record)}
+            role="button"
+            aria-label="Edit"
+            style={{ cursor: "pointer" }}
+          >
+            <EditIcon width="24" height="24" />
+          </a>
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
             onConfirm={() => handleDeleteCarStatus(record.carId)}
             okText="ใช่"
             cancelText="ไม่"
           >
-            <a style={{ color: "red" }}>ลบ</a>
+            <a>
+              {" "}
+              <DeleteIcon />{" "}
+            </a>
           </Popconfirm>
         </Space>
       ),
@@ -315,23 +325,6 @@ const ManageCarStatus = () => {
           </Form.Item>
         </Form>
       </Modal>
-      <Table columns={columns} dataSource={maData} />
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginRight: "50px",
-          marginTop: "10px",
-        }}
-      >
-        <Button
-          type="primary"
-          onClick={showModalCreateMaCar}
-          style={{ width: "120px" }}
-        >
-          เพิ่มรถ
-        </Button>
-      </div>
 
       <Modal
         title="เพิ่มรถ"
@@ -422,6 +415,24 @@ const ManageCarStatus = () => {
           </Form.Item>
         </Form>
       </Modal>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginRight: "50px",
+          marginTop: "10px",
+          marginBottom: "20px",
+        }}
+      >
+        <Button
+          type="primary"
+          onClick={showModalCreateMaCar}
+          style={{ width: "120px" }}
+        >
+          เพิ่มรถ
+        </Button>
+      </div>
+      <Table columns={columns} dataSource={maData} />
     </>
   );
 };

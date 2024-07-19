@@ -1,13 +1,12 @@
-
-import React from 'react';
+import React from "react";
 import * as XLSX from 'xlsx';
-import {  FileExcelFilled } from '@ant-design/icons';
-import { log } from 'console';
-import { MaCar } from './WarpupmaCar';
+import { FileExcelFilled } from "@ant-design/icons";
+import { log } from "console";
+import { MaCar } from "./WarpupmaCar";
 
 interface ExportExcelProps {
   // datatype: any[];
-  datamacar:any[];
+  datamacar: any[];
 }
 
 const ExportExcel: React.FC<ExportExcelProps> = ({ datamacar}) => {
@@ -43,14 +42,18 @@ const ExportExcel: React.FC<ExportExcelProps> = ({ datamacar}) => {
     //     remark: dataItem.remark,
     //   };
     });
-    
+
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.json_to_sheet(transdata);
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-    XLSX.writeFile(workbook, 'DataExport.xlsx');
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    XLSX.writeFile(workbook, "DataExport.xlsx");
   };
 
-  return <a onClick={handleExport} style={{color:'black'}}><FileExcelFilled /> Export Excel</a>;
+  return (
+    <a onClick={handleExport} style={{ color: "black" }}>
+      <FileExcelFilled /> Export Excel
+    </a>
+  );
 };
 
 export default ExportExcel;

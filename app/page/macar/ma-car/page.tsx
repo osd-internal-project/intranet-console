@@ -104,14 +104,8 @@ const MaCar: React.FC = () => {
       setMaCarData(maCar);
 
       const createdById = session?.user.userId;
-      const skip = 0;
-      const take = 10;
 
-      const maCarBook = await maCarServices.findMaCarBook(
-        // skip,
-        // take,
-        createdById
-      );
+      const maCarBook = await maCarServices.findMaCarBook(createdById);
 
       const maCalender = await maCarServices.getMaCarBookQuery(createdById);
 

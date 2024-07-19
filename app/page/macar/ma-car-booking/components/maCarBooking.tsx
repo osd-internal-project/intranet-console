@@ -157,8 +157,6 @@ const MaCarBook: React.FC = () => {
     try {
       const maCar = await maCarBookServices.getMaCarQuery();
       setMaCarData(maCar);
-      console.log(maCar);
-
       setloading(false);
     } catch (error) {
       console.error("Error fetching data:", error);

@@ -14,9 +14,7 @@ import {
 } from "antd";
 import { DeleteIcon, ApproveIcon } from "@/components/icon";
 import type { TableProps, FormProps } from "antd";
-import {
-  useAxiosIntranet,
-} from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../services/manage-car.service";
 import dayjs, { Dayjs } from "dayjs";
 import { useSession } from "next-auth/react";
@@ -269,12 +267,10 @@ const ManageCar: React.FC = () => {
     const take: number = Number(pagination.pageSize);
     try {
       const masterCar = await manageCarServices.getMaCarBookQuery();
-      console.log(masterCar);
 
       const maCarActive = masterCar.filter(
         (car: any) => car.carsStatus === true
       );
-      console.log(masterCar.carId);
 
       setMaCarData(maCarActive);
       const ma = await manageCarServices.findMaCarBook(skip, take);

@@ -41,16 +41,10 @@ export const MaCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-
-    // findMaCarBook,
-    // findMaCarBook: async (skip: number, take: number, body: any) => {
     findMaCarBook: async (body: any) => {
       return await axiosInstance
-        // .get(`${baseUrlApiMaCarBook}/${body}?take=${take}&skip=${skip}`)
         .get(`${baseUrlApiMaCarBook}/${body}`)
-
         .then((res) => {
-          console.log(body);
           return res.data;
         })
         .catch((err) => {

@@ -433,13 +433,17 @@ const MaCarReturn = () => {
           </Row>
 
           <Row gutter={16}>
-            <Col span={6}>
+            <Col span={12}>
               <Form.Item
                 name="detail"
                 label="รายละเอียด"
                 rules={[{ required: true, message: "กรุณากรอกรายละเอียด" }]}
               >
-                <Input disabled placeholder="กรอกรายละเอียด" />
+                <Input.TextArea
+                  rows={2}
+                  disabled
+                  placeholder="กรอกรายละเอียด"
+                />
               </Form.Item>
             </Col>
           </Row>

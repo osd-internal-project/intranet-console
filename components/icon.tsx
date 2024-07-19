@@ -584,9 +584,9 @@ export const macarIcon = (
     <path
       fill="none"
       stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="32"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="32"
       d="M469.71 234.6c-7.33-9.73-34.56-16.43-46.08-33.94s-20.95-55.43-50.27-70S288 112 256 112s-88 4-117.36 18.63s-38.75 52.52-50.27 70s-38.75 24.24-46.08 33.97S29.8 305.84 32.94 336s9 48 9 48h86c14.08 0 18.66-5.29 47.46-8c31.6-3 62.6-4 80.6-4s50 1 81.58 4c28.8 2.73 33.53 8 47.46 8h85s5.86-17.84 9-48s-2.04-91.67-9.33-101.4M400 384h56v16h-56zm-344 0h56v16H56z"
     />
     <path
@@ -596,9 +596,9 @@ export const macarIcon = (
     <path
       fill="none"
       stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="32"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="32"
       d="M432 192h16m-384 0h16m-2 19s46.35-12 178-12s178 12 178 12"
     />
   </svg>
@@ -613,9 +613,9 @@ export const MaCarIcon = (
     <path
       fill="none"
       stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="32"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="32"
       d="M469.71 234.6c-7.33-9.73-34.56-16.43-46.08-33.94s-20.95-55.43-50.27-70S288 112 256 112s-88 4-117.36 18.63s-38.75 52.52-50.27 70s-38.75 24.24-46.08 33.97S29.8 305.84 32.94 336s9 48 9 48h86c14.08 0 18.66-5.29 47.46-8c31.6-3 62.6-4 80.6-4s50 1 81.58 4c28.8 2.73 33.53 8 47.46 8h85s5.86-17.84 9-48s-2.04-91.67-9.33-101.4M400 384h56v16h-56zm-344 0h56v16H56z"
     />
     <path
@@ -625,37 +625,11 @@ export const MaCarIcon = (
     <path
       fill="none"
       stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="32"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="32"
       d="M432 192h16m-384 0h16m-2 19s46.35-12 178-12s178 12 178 12"
     />
   </svg>
 );
-export const chevronIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="1.2em"
-    height="1.2em"
-    viewBox="0 0 24 24"
-  >
-    <g transform="translate(24 0) scale(-1 1)">
-      <path
-        stroke="currentColor"
-        stroke-dasharray="8"
-        stroke-dashoffset="8"
-        stroke-linecap="round"
-        stroke-width="1.2"
-        d="M9 12L14 7M9 12L14 17"
-        fill="currentColor"
-      >
-        <animate
-          fill="freeze"
-          attributeName="stroke-dashoffset"
-          dur="0.3s"
-          values="8;0"
-        />
-      </path>
-    </g>
-  </svg>
-);
+

@@ -7,6 +7,7 @@ import {
   DatePicker,
   Form,
   Input,
+  InputNumber,
   Select,
   Switch,
 } from "antd";
@@ -114,49 +115,101 @@ const DescriptionCustomerForm: React.FC<props> = ({
                     )}
                   </div>
 
-                  <Form.Item label={<b>รหัส</b>} name={"customerCode"}>
+                  <Form.Item
+                    label={<b>รหัส</b>}
+                    name={"customerCode"}
+                    rules={[{ required: true, message: "Please Enter" }]}
+                  >
                     <Input placeholder="Enter Text" maxLength={50} />
                   </Form.Item>
                   <Form.Item
                     label={<b>อ้างอิงรหัสลูกค้า</b>}
                     name={"referenceCode"}
+                    rules={[{ required: true, message: "Please Enter" }]}
                   >
                     <Input placeholder="Enter Text" maxLength={50} readOnly />
                   </Form.Item>
                   <Form.Item
                     label={<b>Department Code</b>}
                     name={"departmentCode"}
+                    rules={[{ required: true, message: "Please Enter" }]}
                   >
                     <Input placeholder="Enter Text" maxLength={50} />
                   </Form.Item>
-                  <Form.Item label={<b>คำนำหน้า TH</b>} name={"prefixTh"}>
+                  <Form.Item
+                    label={<b>คำนำหน้า TH</b>}
+                    name={"prefixTh"}
+                    rules={[{ required: true, message: "Please Enter" }]}
+                  >
                     <Input placeholder="Enter Text" maxLength={10} />
                   </Form.Item>
-                  <Form.Item label={<b>ชื่อ TH</b>} name={"firstNameTh"}>
+                  <Form.Item
+                    label={<b>ชื่อ TH</b>}
+                    name={"firstNameTh"}
+                    rules={[{ required: true, message: "Please Enter" }]}
+                  >
                     <Input placeholder="Enter Text" maxLength={200} />
                   </Form.Item>
-                  <Form.Item label={<b>นามสกุล TH</b>} name={"lastNameTh"}>
+                  <Form.Item
+                    label={<b>นามสกุล TH</b>}
+                    name={"lastNameTh"}
+                    rules={[{ required: true, message: "Please Enter" }]}
+                  >
                     <Input placeholder="Enter Text" maxLength={200} />
                   </Form.Item>
-                  <Form.Item label={<b>คำนำหน้า EN</b>} name={"prefixEn"}>
+                  <Form.Item
+                    label={<b>คำนำหน้า EN</b>}
+                    name={"prefixEn"}
+                    rules={[{ required: true, message: "Please Enter" }]}
+                  >
                     <Input placeholder="Enter Text" maxLength={10} />
                   </Form.Item>
-                  <Form.Item label={<b>ชื่อ EN</b>} name={"firstNameEn"}>
+                  <Form.Item
+                    label={<b>ชื่อ EN</b>}
+                    name={"firstNameEn"}
+                    rules={[{ required: true, message: "Please Enter" }]}
+                  >
                     <Input placeholder="Enter Text" maxLength={200} />
                   </Form.Item>
-                  <Form.Item label={<b>นามสกุล EN</b>} name={"lastNameEn"}>
+                  <Form.Item
+                    label={<b>นามสกุล EN</b>}
+                    name={"lastNameEn"}
+                    rules={[{ required: true, message: "Please Enter" }]}
+                  >
                     <Input placeholder="Enter Text" maxLength={200} />
                   </Form.Item>
                   <Form.Item
                     label={<b>เลขที่ทะเบียนบริษัท</b>}
                     name={"companyRegisNumber"}
+                    rules={[{ required: true, message: "Please Enter" }]}
                   >
                     <Input placeholder="Enter Text" />
                   </Form.Item>
-                  <Form.Item label={<b>วันที่จดทะเบียน</b>} name={"regisDate"}>
+                  <Form.Item
+                    label={<b>วันที่จดทะเบียน</b>}
+                    name={"regisDate"}
+                    rules={[{ required: true, message: "Please Enter" }]}
+                  >
                     <DatePicker format={"DD/MM/YYYY"} className=" w-full" />
                   </Form.Item>
-                  <Form.Item label={<b>Type</b>} name={"customerTypeId"}>
+                  <Form.Item
+                    label={<b>ทุนจดทะเบียน</b>}
+                    name={"registration"}
+                    rules={[{ required: true, message: "Please Enter" }]}
+                  >
+                    <InputNumber
+                      min={0}
+                      className=" w-full"
+                      formatter={(value) =>
+                        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      }
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    label={<b>Type</b>}
+                    name={"customerTypeId"}
+                    rules={[{ required: true, message: "Please Enter" }]}
+                  >
                     <Select
                       placeholder="Please Choose"
                       options={customerTypes.map((data) => ({
@@ -168,6 +221,7 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   <Form.Item
                     label={<b>กลุ่มลูกค้า</b>}
                     name={"customerGroupId"}
+                    rules={[{ required: true, message: "Please Enter" }]}
                   >
                     <Select
                       placeholder="Please Choose"
@@ -177,7 +231,11 @@ const DescriptionCustomerForm: React.FC<props> = ({
                       }))}
                     />
                   </Form.Item>
-                  <Form.Item label={<b>Grade</b>} name={"grade"}>
+                  <Form.Item
+                    label={<b>Grade</b>}
+                    name={"grade"}
+                    rules={[{ required: true, message: "Please Enter" }]}
+                  >
                     <Select
                       style={{ color: "#000", opacity: 1 }}
                       placeholder="Please Choose "
@@ -194,6 +252,7 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   <Form.Item
                     label={<b>ผู้รับผิดชอบ</b>}
                     name={"responsibleSelect"}
+                    rules={[{ required: true, message: "Please Enter" }]}
                   >
                     <Select
                       mode="multiple"
@@ -229,7 +288,6 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   <Form.Item
                     label={<b>Status</b>}
                     valuePropName="checked"
-                    initialValue={true}
                     name={"activeStatus"}
                   >
                     <Switch

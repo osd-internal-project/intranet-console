@@ -35,6 +35,7 @@ const CustomerFilterComponent: React.FC<props> = ({
   onSearch,
 }): React.ReactElement => {
   async function onFinishFilter(values: any): Promise<void> {
+    console.log(values);
     let search = {};
     if (values.refcode) {
       search = { ...search, refcode: values.refcode };
@@ -42,7 +43,7 @@ const CustomerFilterComponent: React.FC<props> = ({
     if (values.customername) {
       search = { ...search, customername: values.customername };
     }
-    if (values.activestatus) {
+    if (values.activestatus !== null || values.activestatus !== undefined) {
       search = { ...search, activestatus: values.activestatus };
     }
     onSearch(search);
@@ -64,7 +65,7 @@ const CustomerFilterComponent: React.FC<props> = ({
               autoComplete="off"
             >
               <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-                <Form.Item name={"refcode"} label={"รหัสรหัสอ้างอิงลูกค้า"}>
+                <Form.Item name={"refcode"} label={"รหัสอ้างอิงลูกค้า"}>
                   <Input />
                 </Form.Item>
                 <Form.Item name={"customername"} label={"ชื่อ"}>

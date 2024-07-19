@@ -62,9 +62,9 @@ const ProjectFilterComponent: React.FC<props> = ({
               // form={filterForm}
             >
               <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-                <Form.Item name={"projectcode"} label={"Project Code"}>
+                {/* <Form.Item name={"projectcode"} label={"Project Code"}>
                   <Input />
-                </Form.Item>
+                </Form.Item> */}
                 <Form.Item name={"projectname"} label={"Project Name"}>
                   <Input />
                 </Form.Item>

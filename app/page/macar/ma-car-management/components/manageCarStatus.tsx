@@ -103,12 +103,9 @@ const ManageCarStatus = () => {
       title: <div style={{ textAlign: "center" }}>รายละเอียด</div>,
       dataIndex: "detail",
       key: "detail",
-      align: "center",
     },
     {
       title: "จัดการ",
-      dataIndex: "manage",
-      key: "manage",
       align: "center",
       render: (_, record) => (
         <Space size="middle">
@@ -119,7 +116,7 @@ const ManageCarStatus = () => {
             okText="ใช่"
             cancelText="ไม่"
           >
-            <a>ลบ</a>
+            <a style={{ color: "red" }}>ลบ</a>
           </Popconfirm>
         </Space>
       ),
@@ -266,7 +263,7 @@ const ManageCarStatus = () => {
           </Form.Item>
 
           <Form.Item
-            label="ระดับของน้ำมัน"
+            label="ระดับน้ำมันรถ"
             name="carPetrol"
             rules={[{ required: true, message: "กรุณาเลือกระดับน้ำมัน!" }]}
           >

@@ -230,6 +230,19 @@ export default function CustomerDetailPage() {
         };
       }
     }
+    if (form.assignId) {
+      const selected = usersList.findLast(
+        (user) => user.userId === form.assignId
+      );
+      if (selected) {
+        form = {
+          ...form,
+          assignName: `${selected.firstNameTh ? selected.firstNameTh : ""} ${
+            selected.lastNameTh ? selected.firstNameTh : ""
+          }`,
+        };
+      }
+    }
     if (form.channelTypeId) {
       const selected = ticketConfigs.channelTypeList.findLast(
         (config) => config.id === form.channelTypeId
@@ -349,9 +362,15 @@ export default function CustomerDetailPage() {
     let form = {};
     let title = "";
     let content = <></>;
-    if (status === "inprogress") {
+    if (status === "inprogress" && action === "receive") {
       title = "Receive Ticket";
       content = <>ยืนยันการรับงาน ?</>;
+      form = {
+        receiveDate: new Date(),
+      };
+    } else if (status === "inprogress" && action === "resume") {
+      title = "Resume Ticket";
+      content = <>ยืนยันการคืนงาน ?</>;
       form = {
         receiveDate: new Date(),
       };
@@ -439,7 +458,7 @@ export default function CustomerDetailPage() {
       type = "Hold";
       detail = "Hold";
     } else if (action === "resume") {
-      type = "Resume";
+      type = "";
       detail = "Resume";
     } else if (action === "close") {
       type = "Complete";

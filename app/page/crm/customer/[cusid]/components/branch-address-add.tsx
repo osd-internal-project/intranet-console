@@ -102,7 +102,7 @@ const BranchAddressAddComponent: React.FC<props> = ({
             <Input maxLength={150} />
           </Form.Item>
           <Form.Item label="หมู่ที่" name={"village"}>
-            <Input maxLength={5} />
+            <Input maxLength={10} />
           </Form.Item>
           <Form.Item label="ถนน" name={"road"}>
             <Input maxLength={150} />
@@ -113,10 +113,18 @@ const BranchAddressAddComponent: React.FC<props> = ({
           <Form.Item label="อำเภอ" name={"district"}>
             <Input maxLength={150} />
           </Form.Item>
-          <Form.Item label="จังหวัด" name={"province"} required={true}>
+          <Form.Item
+            label="จังหวัด"
+            name={"province"}
+            rules={[{ required: true, message: "กรุณากรอกจังหวัด" }]}
+          >
             <Input maxLength={150} />
           </Form.Item>
-          <Form.Item label="รหัสไปรษณีย์" name={"zipCode"} required={true}>
+          <Form.Item
+            label="รหัสไปรษณีย์"
+            name={"zipCode"}
+            rules={[{ required: true, message: "กรุณากรอกรหัสไปรษณีย์" }]}
+          >
             <Input maxLength={10} />
           </Form.Item>
         </div>

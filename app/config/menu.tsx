@@ -13,7 +13,6 @@ import {
   stockIcon,
   contactListIcon,
   macarIcon,
-  chevronIcon,
 } from "@/components/icon";
 import { icons } from "antd/es/image/PreviewGroup";
 
@@ -294,17 +293,22 @@ export const MenuSider: MenuItem[] = [
     key: "crm",
     icon: contactListIcon,
     label: `CRM`,
-    // rule: "crm-s",
+    rule: "crm-s",
     children: [
       {
         key: `crm/customer`,
         label: `Customer`,
-        // rule: "crm-c-s",
+        rule: "crm-c-s",
       },
       {
         key: `crm/project`,
         label: `Project `,
-        // rule: "crm-p-s",
+        rule: "crm-p-s",
+      },
+      {
+        key: `crm/ticket`,
+        label: `Ticket `,
+        rule: "crm-t-s",
       },
     ],
   },
@@ -328,14 +332,7 @@ export const MenuSider: MenuItem[] = [
         // icon: chevronIcon,
         label: `Ma car Management`,
       },
-      
     ],
-  },
-  {
-    key: "carre-serve",
-    icon: contactListIcon,
-    label: `CarReserve`,
-    // rule: "carreserve",
   },
 
   // {

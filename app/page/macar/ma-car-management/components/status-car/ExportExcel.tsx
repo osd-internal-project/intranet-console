@@ -14,15 +14,34 @@ const ExportExcel: React.FC<ExportExcelProps> = ({ datamacar}) => {
     
     
     const handleExport = () => {
+      const transdata = datamacar.map((dataItem) => {
+        return {
+          vender: dataItem.vender,
+          typeName: dataItem.typeName,
+          carName: dataItem.carName,
+          wrapupMiles: dataItem.wrapupMiles,
+          cost: dataItem.cost,
+          dateStart: new Date(dataItem.dateStart),
+          dateEnd: new Date(dataItem.dateEnd),
+          remark: dataItem.remark,
+        };
     
-    console.log(datamacar);
+    // console.log(datamacar);
     
-    const transdata = datamacar.map((dataItem, index) => {
-      // const macItem = datamacar[index] || {}; // หาก `datamacar` มีน้อยกว่าก็จะใช้ค่าเริ่มต้นเป็น object ว่าง
-      return {
-        ...dataItem,
-        status: dataItem.status ? 'ใช้งานได้ตามปกติ' : 'ไม่สามารถใช้งานได้',
-      };
+    // const transdata = datamacar.map((dataItem, index) => {
+    //   // const macItem = datamacar[index] || {}; // หาก `datamacar` มีน้อยกว่าก็จะใช้ค่าเริ่มต้นเป็น object ว่าง
+    //   return {
+        
+    //     vender: dataItem.vender,
+    //     typeName: dataItem.typeName,
+    //     carName: dataItem.carName,
+    //     wrapupMiles: dataItem.wrapupMiles,
+    //     detail: dataItem.detail,
+    //     cost: dataItem.cost,
+    //     dateStart: new Date(dataItem.dateStart),
+    //     dateEnd: new Date(dataItem.dateEnd),
+    //     remark: dataItem.remark,
+    //   };
     });
     
     const workbook = XLSX.utils.book_new();

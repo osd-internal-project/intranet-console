@@ -99,7 +99,7 @@ const TicketComponent: React.FC<props> = ({
       dataIndex: "createdAt",
       title: "Create Date",
       width: "200px",
-      render: (data: Date) => dateToStringThNoTime(data),
+      render: (data: Date) => (data ? dateToStringThNoTime(data) : ""),
     },
     {
       key: "createdByName",
@@ -118,7 +118,7 @@ const TicketComponent: React.FC<props> = ({
       dataIndex: "dueDate",
       title: "Due Date",
       width: "200px",
-      render: (data: Date) => dateToStringThNoTime(data),
+      render: (data: Date) => (data ? dateToStringThNoTime(data) : ""),
     },
     {
       key: "id",

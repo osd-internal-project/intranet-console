@@ -632,4 +632,83 @@ export const MaCarIcon = (
     />
   </svg>
 );
+import React from "react";
 
+const DeleteIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="2rem"
+    height="2rem"
+    viewBox="0 0 72 72"
+  >
+    <path
+      fill="red"
+      d="M51.76 17H20.153v37.65c0 4.06 3.29 5.62 7.35 5.62H44.41c4.06 0 7.35-1.56 7.35-5.62zM31 16v-4h10v4"
+    />
+    <path fill="white" d="M51 37v20.621L48.3 60H33z" />
+    <path fill="red" d="M17 16h38v4H17z" />
+    <path
+      fill="none"
+      stroke="black"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeMiterlimit="10"
+      strokeWidth="1.2"
+      d="M31 16v-4h10v4m10 9v31a4 4 0 0 1-4 4H25a4 4 0 0 1-4-4V25m-4-9h38v4H17zm24 12.25V55M31 28.25V55"
+    />
+  </svg>
+);
+export { DeleteIcon };
+
+interface EditIconProps extends React.SVGProps<SVGSVGElement> {
+  fill?: string;
+}
+
+const EditIcon: React.FC<EditIconProps> = ({ fill = "blue", ...props }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1.8rem"
+    height="1.8rem"
+    viewBox="0 0 24 24"
+  >
+    <path
+      fill="blue"
+      fillRule="evenodd"
+      d="M14 3v1.2H4.2v15.6h15.6V10H21v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm5.86-.254a.5.5 0 0 1 .706 0l.706.705a.5.5 0 0 1 0 .706l-9.51 9.51l-2.317 1.295a.3.3 0 0 1-.406-.41l1.312-2.296z"
+    />
+  </svg>
+);
+export { EditIcon };
+interface ApproveIconProps extends React.SVGProps<SVGSVGElement> {
+  strokeColor?: string;
+  width?: string;
+  height?: string;
+}
+
+// Define the ApproveIcon component
+const ApproveIcon: React.FC<ApproveIconProps> = ({
+  strokeColor = "green",
+  width = "1.8rem",
+  height = "1.8rem",
+  ...props
+}) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1.8rem"
+    height="1.8rem"
+    viewBox="0 0 24 24"
+  >
+    <g
+      fill="none"
+      stroke="green"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.2"
+    >
+      <circle cx="12" cy="12" r="9" />
+      <path d="M8 12L11 15L16 10" />
+    </g>
+  </svg>
+);
+
+export { ApproveIcon };

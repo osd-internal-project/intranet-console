@@ -44,11 +44,17 @@ interface MaCarType {
   carBookApprovedStatus: string;
   carMile: number;
   maCar: MaCarDetailType;
+  maCarWrapup: MaCarWrapupDetailType;
 }
-
 interface MaCarDetailType {
   carMile: number;
   carPetrol: string;
+  maCarWrapup: MaCarWrapupDetailType;
+}
+interface MaCarWrapupDetailType {
+  carMile: number;
+  carPetrol: string;
+  vender: string;
 }
 
 const MaCarReturn = () => {
@@ -65,6 +71,8 @@ const MaCarReturn = () => {
   const [maData, setMaData] = useState<MaCarType[]>([]);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [oldCarMile, setOldCarMile] = useState<number>(0);
+
+  console.log(maData);
 
   const columns: TableProps<MaCarType>["columns"] = [
     {
@@ -84,13 +92,6 @@ const MaCarReturn = () => {
       align: "center",
     },
     {
-      title: "ไอดี",
-      dataIndex: "id",
-      key: "id",
-      width: "50px",
-      align: "center",
-    },
-    {
       title: "ชื่อ-นามสกุล",
       dataIndex: "createdByName",
       key: "createdByName",
@@ -101,7 +102,7 @@ const MaCarReturn = () => {
       title: "วันที่ใช้งาน",
       dataIndex: "carBookStartDate",
       key: "carBookStartDate",
-      width: "150px",
+      width: "200px",
       align: "center",
       render: (_, record) => (
         <span>
@@ -257,57 +258,6 @@ const MaCarReturn = () => {
     }
     setModalEditReturn(false);
   };
-
-  // const updatedMaCarReturn: FormProps<MaCarType>["onFinish"] = async (
-  //   values
-  // ) => {
-  //   // ...
-  //   if (currentMaId && currentMaBookId) {
-  //     try {
-  //       const { oldCarMile, ...restValues } = values; // ดึงค่า oldCarMile และค่าอื่น ๆ จาก values
-
-  //       console.log(oldCarMile); // แสดงค่า oldCarMile ที่ถูกดึงมา
-
-  //       if (values.carMile > oldCarMile) {
-  //         // ทำตามเงื่อนไขเมื่อ values.carMile มากกว่า oldCarMile
-  //         const updatedMaCar = {
-  //           ...restValues,
-  //           carMile: values.carMile,
-  //           carPetrol: values.carPetrol,
-  //           status: values.status === true,
-  //           updatedAt: dayjs().toISOString(),
-  //           updatedById: session?.user.userId,
-  //           updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
-  //         };
-
-  //         const maCarBook = {
-  //           carBookApprovedStatus: "Return",
-  //         };
-
-  //         // อัปเดตข้อมูลรถและบันทึกการคืนรถ
-  //         await maCarBookServices.updateMaCar(currentMaId, updatedMaCar);
-  //         message.success("คืนรถสำเร็จ");
-
-  //         await maCarBookServices.updateMaCarBook(currentMaBookId, maCarBook);
-
-  //         fetchData(); // ดึงข้อมูลใหม่
-  //         handleModalReturn(); // ปิด Modal
-  //         setSubmitLoading(false); // เซ็ตค่า loading เป็น false
-  //         formWrapup.resetFields(); // รีเซ็ตค่าฟอร์ม
-  //       } else {
-  //         // หาก values.carMile ไม่มากกว่า oldCarMile ให้แสดงข้อความผิดพลาด
-  //         message.error("กรุณากรอกเลขไมล์รถใหม่ที่มากกว่าเลขไมล์รถเก่า");
-  //         setSubmitLoading(false); // เซ็ตค่า loading เป็น false
-  //       }
-  //     } catch (error) {
-  //       message.error("คืนรถไม่สำเร็จ");
-  //       setSubmitLoading(false); // เซ็ตค่า loading เป็น false
-  //     }
-  //   }
-
-  //   setModalEditReturn(false); // ปิด Modal แก้ไขการคืนรถ
-  // };
-
   const fetchData = async () => {
     try {
       const userIdData = session?.user.userId;
@@ -316,10 +266,6 @@ const MaCarReturn = () => {
 
       const maresponse = await maCarBookServices.getMaCarBookQuery(userIdData);
       console.log(maresponse);
-
-      // const maCarWrapupData = await maCarBookServices.getMaCarWrapupQuery();
-      // setMaCarWrapupData(maCarWrapupData);
-      // console.log(maCarWrapupData);
 
       const maCarData = await maCarBookServices.getMaCarQuery();
       setMaCarData(maCarData);
@@ -351,7 +297,6 @@ const MaCarReturn = () => {
           form={formWrapup}
           layout="vertical"
           name="edit_ma"
-          // initialValues={{ remember: true }}
           onFinish={updatedMaCarReturn}
           autoComplete="off"
         >
@@ -426,9 +371,9 @@ const MaCarReturn = () => {
                 <Input disabled placeholder="กรอกชื่อประเภทของรถ" />
               </Form.Item>
             </Col>
-          </Row>
+          </Row> */}
 
-          <Divider orientation="left">ข้อมูลการจองรถ</Divider>
+          {/* <Divider orientation="left">ข้อมูลการจองรถ</Divider>
 
           <Row gutter={16}>
             <Col span={6}>
@@ -495,8 +440,8 @@ const MaCarReturn = () => {
                   style={{ width: "100%" }}
                 />
               </Form.Item>
-            </Col>
-            <Col span={6}>
+            </Col> */}
+          {/* <Col span={6}>
               <Form.Item
                 name="endDate"
                 label="วันที่สิ้นสุดการจอง"

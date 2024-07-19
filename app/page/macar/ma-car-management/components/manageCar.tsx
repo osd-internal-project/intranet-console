@@ -143,6 +143,8 @@ const ManageCar: React.FC = () => {
               ? "green"
               : status === "Cancel"
               ? "red"
+              : status === "Return"
+              ? "#748698 "
               : undefined
           }
         >
@@ -152,6 +154,8 @@ const ManageCar: React.FC = () => {
             ? "อนุมัติสำเร็จ"
             : status === "Cancel"
             ? "ไม่อนุมัติ"
+            : status === "Return"
+            ? "คืนรถสำเร็จ"
             : ""}
         </Tag>
         // </>
@@ -294,10 +298,12 @@ const ManageCar: React.FC = () => {
     try {
       const masterCar = await manageCarServices.getMaCarBookQuery();
       console.log(masterCar);
-      
+
       const maCarActive = masterCar.filter(
         (car: any) => car.carsStatus === true
       );
+      console.log(masterCar.carId);
+
       setMaCarData(maCarActive);
       const ma = await manageCarServices.findMaCarBook(skip, take);
       setPagination({ ...pagination, total: ma.count });

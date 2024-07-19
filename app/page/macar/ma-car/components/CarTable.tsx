@@ -81,16 +81,16 @@ const MaCarTable: React.FC<props> = ({
       dataIndex: "no",
       width: "50px",
       align: "center",
-      // render: (id: number, record: any, index: number) =>
-      //   pagination.current && pagination.pageSize
-      //     ? (pagination.current - 1) * pagination.pageSize + (index + 1)
-      //     : "",
+      render: (id: number, record: any, index: number) =>
+        pagination.current && pagination.pageSize
+          ? (pagination.current - 1) * pagination.pageSize + (index + 1)
+          : "",
     },
     {
       key: "carName",
       title: "ชื่อรถ",
       dataIndex: "carName",
-      width: "150px",
+      width: "200px",
       align: "center",
     },
     {
@@ -148,7 +148,7 @@ const MaCarTable: React.FC<props> = ({
             text = "ไม่อนุมัติ";
             break;
           case "Return":
-            color = "#748698 ";
+            color = "#748698";
             text = "คืนรถสำเร็จ";
             break;
           default:

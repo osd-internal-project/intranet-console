@@ -100,7 +100,6 @@ const ManageCarStatus = () => {
       align: "center",
     },
     {
-      // title: "รายละเอียด",
       title: <div style={{ textAlign: "center" }}>รายละเอียด</div>,
       dataIndex: "detail",
       key: "detail",

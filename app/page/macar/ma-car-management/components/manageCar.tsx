@@ -16,7 +16,6 @@ import { DeleteIcon, ApproveIcon } from "@/components/icon";
 import type { TableProps, FormProps } from "antd";
 import {
   useAxiosIntranet,
-  useAxiosUser,
 } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../services/manage-car.service";
 import dayjs, { Dayjs } from "dayjs";
@@ -87,7 +86,6 @@ const ManageCar: React.FC = () => {
       width: "150px",
       align: "center",
     },
-
     {
       title: "วันที่จอง",
       key: "createdAt",
@@ -398,7 +396,6 @@ const ManageCar: React.FC = () => {
       <Table
         columns={columns}
         dataSource={maData}
-        // dataSource={sortedData}
         rowKey="id"
         pagination={pagination}
         onChange={changePagination}

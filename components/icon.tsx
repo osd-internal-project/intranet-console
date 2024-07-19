@@ -1,3 +1,5 @@
+import React from "react";
+
 export const buldingIcon = (
   <svg width="15" height="15" viewBox="0 0 24 24">
     <path
@@ -632,7 +634,6 @@ export const MaCarIcon = (
     />
   </svg>
 );
-import React from "react";
 
 const DeleteIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg

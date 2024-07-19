@@ -86,6 +86,19 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+
+    getMaCarMileQuery: async () => {
+      return await axiosInstance
+        .get(`${baseUrlApiMaCar}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+
     updateMaCar: async (carId: string, body: any) => {
       return await axiosInstance
         .patch(`${baseUrlApiMaCar}/${carId}`, body)

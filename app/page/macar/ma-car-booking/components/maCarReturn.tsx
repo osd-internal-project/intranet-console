@@ -23,7 +23,7 @@ import { useForm } from "antd/es/form/Form";
 import { useSession } from "next-auth/react";
 
 interface MaCarType {
-  id: string;
+  id: number;
   carId: string;
   carName: string;
   carPetrol: string;
@@ -42,27 +42,13 @@ interface MaCarType {
   carBookEndDate: Date;
   carBookTitle: string;
   carBookApprovedStatus: string;
-  //
   carMile: number;
+  maCar: MaCarDetailType;
 }
 
-interface MaCarWrapupType {
-  id: number;
-  carWrapupId: string; // รหัส Wrapup ของรถ
-  carId: string; // รหัสของรถที่เชื่อมโยงกับ Wrapup
-  carName: string; // ชื่อของรถ
-  typeId: number; // รหัสประเภทของรถ
-  typeName: string; // ชื่อประเภทของรถ
-  vender: string; // ยี่ห้อของรถ
-  cost: number; // ราคาของรถ (ใช้ number ใน TypeScript)
-  detail: string; // รายละเอียดเพิ่มเติมเกี่ยวกับ Wrapup ของรถ
-  wrapupMiles: string; // จำนวนไมล์ที่รถเคยใช้ในช่วงเวลา Wrapup
-  dateStart: Date; // วันที่เริ่มต้นของช่วง Wrapup (ใช้ Date ใน TypeScript)
-  dateEnd: Date; // วันที่สิ้นสุดของช่วง Wrapup (ใช้ Date ใน TypeScript)
-  remark: string; // ข้อความหมายเหตุเพิ่มเติมเกี่ยวกับ Wrapup ของรถ
-  createdAt: Date; // วันที่และเวลาที่เริ่มต้นของการสร้างข้อมูล Wrapup
-  updatedAt?: Date; // วันที่และเวลาที่ปรับปรุงข้อมูล Wrapup ล่าสุด (ใช้ Date | undefined ใน TypeScript)
-  carBookApprovedStatus: string; // สถานะการอนุมัติของการจองรถ
+interface MaCarDetailType {
+  carMile: number;
+  carPetrol: string;
 }
 
 const MaCarReturn = () => {
@@ -78,10 +64,7 @@ const MaCarReturn = () => {
   const [maCarData, setMaCarData] = useState<[]>([]);
   const [maData, setMaData] = useState<MaCarType[]>([]);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [maCarWrapupData, setMaCarWrapupData] = useState<MaCarWrapupType[]>([]);
-
-  console.log(maCarWrapupData);
-  console.log(maCarData);
+  const [oldCarMile, setOldCarMile] = useState<number>(0);
 
   const columns: TableProps<MaCarType>["columns"] = [
     {
@@ -182,7 +165,7 @@ const MaCarReturn = () => {
       title: "จัดการ",
       width: "110px",
       align: "center",
-      render: (_: any, record: any) => (
+      render: (_: any, record: MaCarType) => (
         <Space size="middle">
           {record.carBookApprovedStatus === "Approve" ? (
             <a onClick={() => showModalReturn(record)}>คืนรถ</a>
@@ -198,15 +181,22 @@ const MaCarReturn = () => {
     },
   ];
 
-  const showModalReturn = (record: MaCarWrapupType) => {
-    console.log(record);
+  const showModalReturn = (record: MaCarType) => {
     setCurrentMaId(record.carId);
     setCurrentMaBookId(record.id);
+
     formWrapup.setFieldsValue({
-      ...record,
-      carBookStartDate: dayjs(record.dateStart),
-      carBookEndDate: dayjs(record.dateEnd),
+      carMile: record.maCar.carMile,
+      carPetrol: record.maCar.carPetrol,
+      status: record.status,
+      carName: record.carName,
     });
+
+    setOldCarMile(record.maCar.carMile);
+
+    console.log(record.maCar.carMile);
+
+    console.log(record);
     setModalEditReturn(true);
   };
 
@@ -245,8 +235,8 @@ const MaCarReturn = () => {
           updatedAt: dayjs().toISOString(),
           updatedById: session?.user.userId,
           updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
-          // carBookApprovedStatus: "Return",
         };
+
         const maCarBook = {
           carBookApprovedStatus: "Return",
         };
@@ -268,6 +258,56 @@ const MaCarReturn = () => {
     setModalEditReturn(false);
   };
 
+  // const updatedMaCarReturn: FormProps<MaCarType>["onFinish"] = async (
+  //   values
+  // ) => {
+  //   // ...
+  //   if (currentMaId && currentMaBookId) {
+  //     try {
+  //       const { oldCarMile, ...restValues } = values; // ดึงค่า oldCarMile และค่าอื่น ๆ จาก values
+
+  //       console.log(oldCarMile); // แสดงค่า oldCarMile ที่ถูกดึงมา
+
+  //       if (values.carMile > oldCarMile) {
+  //         // ทำตามเงื่อนไขเมื่อ values.carMile มากกว่า oldCarMile
+  //         const updatedMaCar = {
+  //           ...restValues,
+  //           carMile: values.carMile,
+  //           carPetrol: values.carPetrol,
+  //           status: values.status === true,
+  //           updatedAt: dayjs().toISOString(),
+  //           updatedById: session?.user.userId,
+  //           updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+  //         };
+
+  //         const maCarBook = {
+  //           carBookApprovedStatus: "Return",
+  //         };
+
+  //         // อัปเดตข้อมูลรถและบันทึกการคืนรถ
+  //         await maCarBookServices.updateMaCar(currentMaId, updatedMaCar);
+  //         message.success("คืนรถสำเร็จ");
+
+  //         await maCarBookServices.updateMaCarBook(currentMaBookId, maCarBook);
+
+  //         fetchData(); // ดึงข้อมูลใหม่
+  //         handleModalReturn(); // ปิด Modal
+  //         setSubmitLoading(false); // เซ็ตค่า loading เป็น false
+  //         formWrapup.resetFields(); // รีเซ็ตค่าฟอร์ม
+  //       } else {
+  //         // หาก values.carMile ไม่มากกว่า oldCarMile ให้แสดงข้อความผิดพลาด
+  //         message.error("กรุณากรอกเลขไมล์รถใหม่ที่มากกว่าเลขไมล์รถเก่า");
+  //         setSubmitLoading(false); // เซ็ตค่า loading เป็น false
+  //       }
+  //     } catch (error) {
+  //       message.error("คืนรถไม่สำเร็จ");
+  //       setSubmitLoading(false); // เซ็ตค่า loading เป็น false
+  //     }
+  //   }
+
+  //   setModalEditReturn(false); // ปิด Modal แก้ไขการคืนรถ
+  // };
+
   const fetchData = async () => {
     try {
       const userIdData = session?.user.userId;
@@ -277,9 +317,9 @@ const MaCarReturn = () => {
       const maresponse = await maCarBookServices.getMaCarBookQuery(userIdData);
       console.log(maresponse);
 
-      const maCarWrapupData = await maCarBookServices.getMaCarWrapupQuery();
-      setMaCarWrapupData(maCarWrapupData);
-      console.log(maCarWrapupData);
+      // const maCarWrapupData = await maCarBookServices.getMaCarWrapupQuery();
+      // setMaCarWrapupData(maCarWrapupData);
+      // console.log(maCarWrapupData);
 
       const maCarData = await maCarBookServices.getMaCarQuery();
       setMaCarData(maCarData);
@@ -311,15 +351,14 @@ const MaCarReturn = () => {
           form={formWrapup}
           layout="vertical"
           name="edit_ma"
-          initialValues={{ remember: true }}
+          // initialValues={{ remember: true }}
           onFinish={updatedMaCarReturn}
-          // onFinishFailed={onFinishFailedReturn}
           autoComplete="off"
         >
           <Divider orientation="left">ข้อมูลการคืนรถ</Divider>
           <Row gutter={8}>
             <Col span={6}>
-              <Form.Item<MaCarType>
+              <Form.Item
                 name="carName"
                 label="ชื่อรถ"
                 rules={[{ required: true, message: "กรุณากรอกชื่อรถ" }]}
@@ -328,16 +367,25 @@ const MaCarReturn = () => {
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item<MaCarType>
+              <Form.Item
                 name="carMile"
                 label="เลขไมล์รถ"
-                rules={[{ required: true, message: "กรุณากรอกเลขไมล์รถ" }]}
+                rules={[
+                  {
+                    validator: (_, value) => {
+                      if (value > oldCarMile) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(new Error("กรุณากรอกเลขไมล์รถ"));
+                    },
+                  },
+                ]}
               >
                 <InputNumber placeholder="กรอกเลขไมล์รถ" />
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item<MaCarType>
+              <Form.Item
                 label="ระดับน้ำมันรถ"
                 name="carPetrol"
                 rules={[{ required: true, message: "กรุณาเลือกระดับน้ำมัน!" }]}
@@ -474,7 +522,7 @@ const MaCarReturn = () => {
               </Button>
               <Button type="primary" htmlType="submit" loading={submitLoading}>
                 {/* <Button type="primary" htmlType="submit"> */}
-                ตกลง
+                คืนรถ
               </Button>
             </Row>
           </Form.Item>

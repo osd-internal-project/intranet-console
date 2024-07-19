@@ -28,7 +28,9 @@ const columns: TableProps<DataType>['columns'] = [
         dataIndex: 'roomsStatus',
         key: 'roomsStatus',
         render: (status: boolean) => (
-            status ? <Tag color="green">ใช้งานได้ปกติ</Tag> : <Tag color="red">ไม่สามารถใช้งานได้</Tag>
+            status 
+            ? <Tag style={{scale:'120%',fontStyle:'bold',backgroundColor:'#00FF00',textAlign:'center'}}>ใช้งานได้ปกติ</Tag> 
+            : <Tag style={{scale:'120%',fontStyle:'bold',backgroundColor:'#FF6347',textAlign:'center'}}>ไม่สามารถใช้งานได้</Tag>
         ),
     },
     {

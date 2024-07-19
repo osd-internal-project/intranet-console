@@ -369,7 +369,7 @@ const ManageRoom: React.FC = () => {
                             <Form.Item<BookingType>
                                 label="ชื่อห้อง"
                                 name="roomName"
-                                rules={[{ required: true, message: 'กรุณาเลือกห้องประชุม' }]}
+                                rules={[{ required: true, message: 'กรุณาเลือกห้องประชุม!' }]}
                             >
                                 <Select placeholder="โปรดเลือกห้องประชุม">
                                     {masterRoomData.map(room => (

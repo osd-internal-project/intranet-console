@@ -309,30 +309,26 @@ export const MenuSider: MenuItem[] = [
     ],
   },
   {
-    key: "ma-cars",
+    key: "maCar",
     icon: macarIcon,
     label: `Ma Car`,
     children: [
       {
-        key: `macar/ma-car`,
+        key: `maCar/ma-car`,
         // icon: chevronIcon,
         label: `Ma car`,
       },
       {
-        key: `macar/ma-car-booking`,
+        key: `maCar/ma-car-booking`,
         // icon: chevronIcon,
         label: `Ma car Booking`,
       },
       {
-        key: `macar/ma-car-management`,
+        key: `maCar/ma-car-management`,
         // icon: chevronIcon,
         label: `Ma car Management`,
       },
-      {
-        key: `crm/ticket`,
-        label: `Ticket `,
-        rule: "crm-t-s",
-      },
+      
     ],
   },
   {

@@ -4,7 +4,8 @@ import React from "react";
 import ManageCar from "./components/manageCar";
 import ManageCarStatus from "./components/manageCarStatus";
 import { MaCarIcon } from "../../../../components/icon";
-
+import MasterType from "./components/status-car/masterType"
+import WarpupmaCar from "./components/status-car/WarpupmaCar"
 const ManageMaCar = () => {
   const items: TabsProps["items"] = [
     {
@@ -16,6 +17,16 @@ const ManageMaCar = () => {
       key: "2",
       label: "จัดการรถ",
       children: <ManageCarStatus />,
+    },
+    {
+      key: "3",
+      label: "การตรวจเช็ค",
+      children: <MasterType />,
+    },
+    {
+      key: "4",
+      label: "เช็คสภาพรถ",
+      children: <WarpupmaCar />,
     },
   ];
 
@@ -53,7 +64,7 @@ const ManageMaCar = () => {
             className="title-page-font"
             style={{ display: "flex", alignItems: "left" }}
           >
-            <span style={{ marginRight: "8px" }}>Ma Car Management</span>
+            <span style={{ marginRight: "8px"}} >Ma Car Management</span>
             {/* {MaCarIcon} */}
           </div>
         </Divider>

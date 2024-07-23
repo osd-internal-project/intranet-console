@@ -458,7 +458,6 @@ const MaCarReturn = () => {
                 ยกเลิก
               </Button>
               <Button type="primary" htmlType="submit" loading={submitLoading}>
-                {/* <Button type="primary" htmlType="submit"> */}
                 คืนรถ
               </Button>
             </Row>
@@ -544,7 +543,7 @@ const MaCarReturn = () => {
                 <Input disabled placeholder="กรอกจำนวนผู้ใช้" />
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col span={8}>
               <Form.Item<MaCarType>
                 name="carBookStartDate"
                 label="วันที่เริ่มการจอง"
@@ -560,7 +559,7 @@ const MaCarReturn = () => {
                 />
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col span={8}>
               <Form.Item
                 name="carBookEndDate"
                 label="วันที่สิ้นสุดการจอง"

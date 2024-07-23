@@ -30,7 +30,7 @@ const columns: TableProps<CarType>["columns"] = [
     title: "ชื่อรถ",
     dataIndex: "carName",
     key: "carName",
-    width: "200px",
+    width: "250px",
     align: "center",
   },
 

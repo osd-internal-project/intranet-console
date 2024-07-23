@@ -19,6 +19,8 @@ import {
 import type { FormProps, TableProps } from "antd";
 import { DeleteIcon, EditIcon } from "@/components/icon";
 import dayjs from "dayjs";
+import XLSX from "xlsx";
+import ShareMaCarBook from "../share-ma-car-book/share-xlsx";
 import { MaCarServices } from "../services/ma-car.service";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useSession } from "next-auth/react";
@@ -276,10 +278,6 @@ const MaCarTable: React.FC<props> = ({
         return;
       }
 
-      // const userIdData = session?.user.userId;
-
-      // const existingMa = await maCarServices.getMaCarBookQuery(userIdData);
-
       const maCarBookData = {
         ...restValues,
         id: currentMaId,
@@ -449,6 +447,11 @@ const MaCarTable: React.FC<props> = ({
           </Form.Item>
         </Form>
       </Modal>
+      <Row>
+        <Col md={12}>
+          <ShareMaCarBook data={maFetchData} />
+        </Col>
+      </Row>
       <Table
         columns={columns}
         dataSource={maFetchData}
@@ -456,6 +459,7 @@ const MaCarTable: React.FC<props> = ({
         onChange={changePagination}
         pagination={pagination}
         loading={loading}
+        style={{ marginTop: "15px" }}
       />
     </>
   );

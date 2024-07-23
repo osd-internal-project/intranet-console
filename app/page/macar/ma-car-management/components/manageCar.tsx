@@ -81,13 +81,13 @@ const ManageCar: React.FC = () => {
       title: "ชื่อรถ",
       dataIndex: "carName",
       key: "carName",
-      width: "150px",
+      width: "200px",
       align: "center",
     },
     {
       title: "วันที่จอง",
       key: "createdAt",
-      width: "250px",
+      width: "200px",
       align: "center",
       render: (_, record) => (
         <span>

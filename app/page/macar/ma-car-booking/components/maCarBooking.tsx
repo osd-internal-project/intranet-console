@@ -13,9 +13,11 @@ import {
   Divider,
   Select,
   DatePicker,
+  InputNumber,
 } from "antd";
 import { MaCarBookServices } from "../services/ma-car-book.service";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 interface MaCarType {
   id: string;
@@ -50,6 +52,7 @@ const MaCarBook: React.FC = () => {
   const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
   const [form] = Form.useForm();
   const [loading, setloading] = useState<boolean>(true);
+  // const [formData, setFormData] = useState<{ [key: string]: any }>({});
 
   const checkMaCarBookConflict = async (
     carName: string,
@@ -163,6 +166,30 @@ const MaCarBook: React.FC = () => {
     }
   };
 
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = e.target;
+  //   form.setFieldsValue({ [name]: value });
+  //   setSubmitLoading(false);
+  // };
+
+  // const isFormValid = () => {
+  //   try {
+  //     form.validateFields();
+  //     return true;
+  //   } catch {
+  //     return false;
+  //   }
+  // };
+
+  // const handleSubmit = () => {
+  //   if (isFormValid()) {
+  //     form.submit();
+  //   } else {
+  //     message.error("กรุณากรอกข้อมูลการจองรถ");
+  //   }
+  //   setSubmitLoading(false);
+  // };
+
   useEffect(() => {
     if (loading) fetchData();
   }, [loading]);
@@ -171,7 +198,7 @@ const MaCarBook: React.FC = () => {
     <Form
       form={form}
       layout="vertical"
-      initialValues={{ remember: true }}
+      // initialValues={{ remember: true }}
       onFinish={createMaCarBook}
       onFinishFailed={onFinishFailed}
       autoComplete="off"
@@ -242,7 +269,7 @@ const MaCarBook: React.FC = () => {
             label="จำนวนผู้ใช้"
             rules={[{ required: true, message: "กรุณากรอกจำนวนผู้ใช้" }]}
           >
-            <Input placeholder="กรอกจำนวนผู้ใช้" />
+            <InputNumber placeholder="กรอกจำนวนผู้ใช้" />
           </Form.Item>
         </Col>
       </Row>
@@ -288,9 +315,27 @@ const MaCarBook: React.FC = () => {
       </Row>
       <Col span={24} style={{ textAlign: "center" }}>
         <Form.Item>
-          <Button type="primary" htmlType="submit" loading={submitLoading}>
+          {/* <Link href="/page/macar/ma-car"> */}
+          <Button
+            type="primary"
+            htmlType="submit"
+            // disabled={!isFormValid()}
+            loading={submitLoading}
+          >
             ทำการจองรถ
           </Button>
+          {/* </Link> */}
+
+          {/* <Link href={isFormValid() ? "/page/macar/ma-car" : "#"} passHref>
+            <Button
+              type="primary"
+              htmlType="button"
+              onClick={handleSubmit}
+              loading={submitLoading}
+            >
+              ทำการจองรถ
+            </Button>
+          </Link> */}
         </Form.Item>
       </Col>
     </Form>

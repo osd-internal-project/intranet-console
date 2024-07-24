@@ -5,29 +5,6 @@ export const MaCarServices = (axiosInstance: AxiosInstance) => {
   const baseUrlApiMaCar = "/ma-car";
   const baseUrlApiOrganizeChart = "/organize-chart";
 
-  // const findMaCarBook = async (
-  //   skip: number,
-  //   take: number,
-  //   userIdData: string | undefined
-  // ) => {
-  //   const queryParams = new URLSearchParams({
-  //     take: take.toString(),
-  //     skip: skip.toString(),
-  //   });
-
-  //   const url = `${baseUrlApiMaCarBook}/${userIdData ?? ""}?${queryParams.toString()}`;
-
-  //   console.log(url);
-
-  //   try {
-  //     const response = await axiosInstance.get(url);
-  //     console.log(response);
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error(error);
-  //     return [];
-  //   }
-  // };
 
   return {
     getMaCarBookQuery: async (body: any) => {

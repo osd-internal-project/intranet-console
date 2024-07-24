@@ -29,6 +29,19 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    findOneMaCarBook: async (body: any) => {
+      return await axiosInstance
+        .get(`${baseUrlApiMaCarBook}/${body}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+
+
     createMaCarBook: async (body: any) => {
       return await axiosInstance
         .post(`${baseUrlApiMaCarBook}`, body)

@@ -9,7 +9,6 @@ import {
   Modal,
   Form,
   Input,
-  Divider,
   Tag,
   message,
   Popconfirm,
@@ -37,6 +36,11 @@ interface MaCarType {
   updatedAt?: Date;
   updatedById?: string;
   updatedByName?: string;
+  maCarBook: MaCarBookType;
+}
+interface MaCarBookType {
+  id: number;
+  status: boolean;
 }
 
 const ManageCarStatus = () => {
@@ -44,6 +48,7 @@ const ManageCarStatus = () => {
   const [form] = useForm();
   const manageCarServices = ManageCarServices(intraAuth);
   const [maData, setMaData] = useState<MaCarType[]>([]);
+  const [maCarBookData, setmaCarBookData] = useState<MaCarBookType[]>([]);
   const [currentMaId, setCurrentMaId] = useState<string | null>(null);
   const [modalEditMaCar, setModalEditMaCar] = useState(false);
   const [modalCreateMaCar, setModalCreateMaCar] = useState(false);
@@ -159,7 +164,6 @@ const ManageCarStatus = () => {
     const carName = values.carName as string;
 
     const maCarCreateData = {
-      // id: id
       carId: values.carId,
       carName: carName,
       carPetrol: values.carPetrol,
@@ -169,8 +173,10 @@ const ManageCarStatus = () => {
       createdById: session?.user.userId,
       createdByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
     };
+
     try {
       const response = await manageCarServices.createMaCar(maCarCreateData);
+
       if (response) {
         message.success("เพิ่มรถสำเร็จ");
         form.resetFields();
@@ -219,12 +225,13 @@ const ManageCarStatus = () => {
         updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
       };
       await manageCarServices.updateMaCar(updatedMaCar);
-      message.success("แก้ไขข้อมูลห้องสำเร็จ");
+
+      message.success("แก้ไขข้อมูลรถสำเร็จ");
 
       handleEditMaCarCancel();
       setSubmitLoading(true);
     } catch (error) {
-      message.error("แก้ไขข้อมูลห้องไม่สำเร็จ");
+      message.error("แก้ไขข้อมูลรถไม่สำเร็จ");
     }
   };
 
@@ -237,6 +244,7 @@ const ManageCarStatus = () => {
         key: index.toString(),
       }));
       setMaData(MaCar);
+
       setSubmitLoading(false);
     } catch (error) {
       message.error("Failed to fetch car data");
@@ -382,7 +390,7 @@ const ManageCarStatus = () => {
               name="carMile"
               rules={[{ required: true, message: "กรุณากรอกเลขไมล์รถ!" }]}
             >
-              <InputNumber placeholder="กรอกเลขไมล์รถ" />
+              <InputNumber placeholder="กรอกเลขไมล์รถ" min={0} />
             </Form.Item>
           </Col>
           <Col span={24}>

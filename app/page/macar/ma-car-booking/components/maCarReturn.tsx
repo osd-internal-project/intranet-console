@@ -187,7 +187,6 @@ const MaCarReturn: React.FC<props> = ({
     setModalEditDetail(true);
     formBookData.setFieldsValue({
       ...record,
-
       carBookStartDate: dayjs(record.carBookStartDate),
       carBookEndDate: dayjs(record.carBookEndDate),
     });
@@ -268,7 +267,7 @@ const MaCarReturn: React.FC<props> = ({
               rules={[
                 {
                   validator: (_, value) => {
-                    if (value > oldCarMile) {
+                    if (value >= oldCarMile) {
                       return Promise.resolve();
                     }
                     return Promise.reject(new Error("กรุณากรอกเลขไมล์รถ"));

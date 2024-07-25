@@ -39,10 +39,10 @@ const MaCarBooking: React.FC = () => {
       label: "ทำการจองรถ",
       children: (
         <MaCarBook
-        // maCarData={maCarData}
-        // loading={loading}
-        // setLoading={setLoading}
-        // form={form}
+          maCarData={maCarData}
+         
+          setLoading={setLoading}
+          
         />
       ),
     },

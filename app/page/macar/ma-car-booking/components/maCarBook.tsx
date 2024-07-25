@@ -20,28 +20,26 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { MaCarType, MaCarBookType } from "../../common/index";
 
-// export interface props {
-//   maCarData: any[];
-//   loading: boolean;
-//   form: any;
-//   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-// }
+export interface props {
+  maCarData: MaCarType[];
 
-// const MaCarBook: React.FC<props> = ({
-//   maCarData,
-//   setLoading,
-//   loading,
-// }: any): React.ReactElement => {
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-const MaCarBook = () => {
+const MaCarBook: React.FC<props> = ({
+  maCarData,
+  setLoading,
+}: any): React.ReactElement => {
   const router = useRouter();
   const { data: session } = useSession();
   const intraAuth = useAxiosIntranet();
   const maCarBookServices = MaCarBookServices(intraAuth);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [maCarDataa, setMaCarDataa] = useState<MaCarType[]>([]);
+  const [selectedCar, setSelectedCar] = useState<any[]>([]);
+  const [carName, setCarName] = useState<MaCarType[]>([]);
+
   const [form] = Form.useForm();
-  const [Loading, setLoading] = useState<boolean>(true);
 
   const checkMaCarBookConflict = async (
     carName: string,
@@ -70,11 +68,9 @@ const MaCarBook = () => {
     values
   ) => {
     setSubmitLoading(true);
-    const carSelected = maCarDataa.findLast(
-      (car) => car.carId === values.carId
-    );
-    // console.log(carSelected);
-    // console.log(maCarDataa);
+    const carSelected = [...maCarData]
+      .reverse()
+      .find((car) => car.carId === values.carId);
 
     const carBookStartDate = values.carBookStartDate as Date;
     const carBookEndDate = values.carBookEndDate as Date;
@@ -131,7 +127,6 @@ const MaCarBook = () => {
       }
 
       setSubmitLoading(false);
-      fetchData();
     } catch (error) {
       message.error("จองรถไม่สำเร็จ");
       setSubmitLoading(false);
@@ -147,25 +142,21 @@ const MaCarBook = () => {
     console.log("Failed:", errorInfo);
   };
 
-  const fetchData = async () => {
-    form.setFieldsValue({
-      createdByName: `${session?.user.firstNameTh || ""} ${
-        session?.user.lastNameTh || ""
-      }`,
-    });
-
-    try {
-      const maCar = await maCarBookServices.getMaCarQuery();
-      setMaCarDataa(maCar);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+  const maCarBookName = () => {
+    const createdByName = `${session?.user.firstNameTh || ""} ${
+      session?.user.lastNameTh || ""
+    }`;
+    return createdByName;
   };
 
   useEffect(() => {
-    if (Loading) fetchData();
-  }, [Loading]);
+    if (maCarData) {
+      setCarName(maCarData);
+    }
+    form.setFieldsValue({
+      createdByName: maCarBookName(),
+    });
+  }, [maCarData]);
 
   return (
     <Form
@@ -198,7 +189,7 @@ const MaCarBook = () => {
             rules={[{ required: true, message: "กรุณาเลือกรถ" }]}
           >
             <Select placeholder="โปรดเลือกรถ" style={{ width: "100%" }}>
-              {maCarDataa.map((car, index) => (
+              {carName.map((car, index) => (
                 <Select.Option key={index} value={car.carId}>
                   {car.carName}
                 </Select.Option>

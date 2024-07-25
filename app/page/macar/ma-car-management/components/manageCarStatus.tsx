@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Select,
   Table,
@@ -13,6 +13,7 @@ import {
   message,
   Popconfirm,
   InputNumber,
+  TablePaginationConfig,
 } from "antd";
 import { DeleteIcon, EditIcon } from "@/components/icon";
 import type { TableProps, FormProps } from "antd";
@@ -21,34 +22,28 @@ import { ManageCarServices } from "../services/manage-car.service";
 import { useForm } from "antd/es/form/Form";
 import { useSession } from "next-auth/react";
 import dayjs from "dayjs";
+import { MaCarType } from "../../common/index";
 
-interface MaCarType {
-  id: number;
-  carId: string;
-  carName: string;
-  carPetrol: string;
-  carMile: number;
-  detail: string;
-  status: boolean;
-  createdAt: Date;
-  createdById?: string;
-  createdByName?: string;
-  updatedAt?: Date;
-  updatedById?: string;
-  updatedByName?: string;
-  maCarBook: MaCarBookType;
-}
-interface MaCarBookType {
-  id: number;
-  status: boolean;
+export interface props {
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  maCarData: any[];
+  // pagination: TablePaginationConfig;
+  // changePagination: (pagination: TablePaginationConfig) => void;
 }
 
-const ManageCarStatus = () => {
+const ManageCarStatus: React.FC<props> = ({
+  setLoading,
+  loading,
+  maCarData,
+}: // pagination,
+// changePagination,
+any): React.ReactElement => {
+  // const ManageCarStatus = () => {
   const intraAuth = useAxiosIntranet();
   const [form] = useForm();
   const manageCarServices = ManageCarServices(intraAuth);
   const [maData, setMaData] = useState<MaCarType[]>([]);
-  const [maCarBookData, setmaCarBookData] = useState<MaCarBookType[]>([]);
   const [currentMaId, setCurrentMaId] = useState<string | null>(null);
   const [modalEditMaCar, setModalEditMaCar] = useState(false);
   const [modalCreateMaCar, setModalCreateMaCar] = useState(false);
@@ -145,18 +140,27 @@ const ManageCarStatus = () => {
 
   const showModalEditMaCar = (record: MaCarType) => {
     setCurrentMaId(record.carId);
+    setSubmitLoading(false);
 
     form.setFieldsValue(record);
     setModalEditMaCar(true);
+
+    // setLoading(true);
   };
 
   const showModalCreateMaCar = () => {
     setModalCreateMaCar(true);
+    setSubmitLoading(false);
     form.resetFields();
+    // setLoading(true);
   };
+
   const handleCancelCreateMaCar = () => {
     form.resetFields();
     setModalCreateMaCar(false);
+    setSubmitLoading(true);
+
+    // setLoading(true);
   };
 
   const createMaCar: FormProps<MaCarType>["onFinish"] = async (values) => {
@@ -185,13 +189,15 @@ const ManageCarStatus = () => {
         message.error("เพิ่มรถไม่สำเร็จ");
       }
 
-      setSubmitLoading(false);
-      fetchData();
+      // setSubmitLoading(false);
+      // fetchData();
+      // setLoading(true);
     } catch (error) {
       message.error("เพิ่มรถไม่สำเร็จ");
       setSubmitLoading(false);
     }
     setModalCreateMaCar(false);
+    setLoading(true);
   };
 
   const onFinishFailed: FormProps<MaCarType>["onFinishFailed"] = (
@@ -205,10 +211,12 @@ const ManageCarStatus = () => {
     try {
       await manageCarServices.deleteMaCar(carId);
       setMaData(maData.filter((item) => item.carId !== carId));
-      message.success("ลบการจองสำเร็จ");
+      message.success("ลบรถสำเร็จ");
     } catch (error) {
-      message.error("ลบการจองไม่สำเร็จ");
+      message.error("ลบรถไม่สำเร็จ");
+      setSubmitLoading(false);
     }
+    setLoading(true);
   };
 
   const updatedCar: FormProps<MaCarType>["onFinish"] = async (values) => {
@@ -229,31 +237,12 @@ const ManageCarStatus = () => {
       message.success("แก้ไขข้อมูลรถสำเร็จ");
 
       handleEditMaCarCancel();
-      setSubmitLoading(true);
+      setSubmitLoading(false);
     } catch (error) {
       message.error("แก้ไขข้อมูลรถไม่สำเร็จ");
     }
+    setLoading(true);
   };
-
-  const fetchData = async () => {
-    try {
-      const maresponse = await manageCarServices.getMaCarQuery();
-      const MaCar: MaCarType[] = maresponse.map((item: any, index: number) => ({
-        ...item,
-
-        key: index.toString(),
-      }));
-      setMaData(MaCar);
-
-      setSubmitLoading(false);
-    } catch (error) {
-      message.error("Failed to fetch car data");
-    }
-  };
-
-  useEffect(() => {
-    if (submitLoading) fetchData();
-  }, [submitLoading]);
 
   return (
     <>
@@ -267,7 +256,6 @@ const ManageCarStatus = () => {
         <Form
           form={form}
           name="edit_macar"
-          initialValues={{ remember: true }}
           onFinish={updatedCar}
           autoComplete="off"
           layout="vertical"
@@ -307,7 +295,7 @@ const ManageCarStatus = () => {
             name="carMile"
             rules={[{ required: true, message: "กรุณากรอกเลขไมค์รถ!" }]}
           >
-            <InputNumber placeholder="เลขไมค์รถ" />
+            <InputNumber style={{ width: "100%" }} placeholder="เลขไมค์รถ" />
           </Form.Item>
           <Form.Item
             label="รายละเอียดรถ"
@@ -432,7 +420,8 @@ const ManageCarStatus = () => {
           เพิ่มรถ
         </Button>
       </div>
-      <Table columns={columns} dataSource={maData} />
+
+      <Table columns={columns} dataSource={maCarData} loading={loading} />
     </>
   );
 };

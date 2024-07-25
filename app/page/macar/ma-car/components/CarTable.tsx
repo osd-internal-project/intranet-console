@@ -15,42 +15,17 @@ import {
   DatePicker,
   Popconfirm,
   TablePaginationConfig,
+  InputNumber,
 } from "antd";
 import type { FormProps, TableProps } from "antd";
 import { DeleteIcon, EditIcon } from "@/components/icon";
 import dayjs from "dayjs";
-import XLSX from "xlsx";
 import ShareMaCarBook from "../share-ma-car-book/share-xlsx";
 import { MaCarServices } from "../services/ma-car.service";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
-
-interface MaCarBookType {
-  id: string;
-  carId: string;
-  carName: string;
-  carPetrol: string;
-  detail: string;
-  remark: string;
-  status: string;
-  createdAt: Date;
-  createdById: string;
-  createdByName: string;
-  updatedAt: Date;
-  updatedById: string;
-  updatedByName: string;
-  carBookProvince: string;
-  carBookPlace: string;
-  carBookUsers: number;
-  carBookStartDate: Date;
-  carBookEndDate: Date;
-  carBookTitle: string;
-  carBookApprovedDate?: Date;
-  carBookApprovedById?: string;
-  carBookApprovedByName?: string;
-  carBookApprovedStatus: string;
-}
+import { useRouter } from "next/navigation";
+import { MaCarBookType } from "../../common/index";
 
 export interface props {
   loading: boolean;
@@ -71,13 +46,14 @@ const MaCarBookTable: React.FC<props> = ({
 }: any): React.ReactElement => {
   const { data: session } = useSession();
   const [form] = Form.useForm();
+  const router = useRouter();
   const intraAuth = useAxiosIntranet();
   const maCarServices = MaCarServices(intraAuth);
   const [modalEditMaCarBook, setModalEditMa] = useState(false);
-  const [currentMaCarBookId, setCurrentMaCarBookId] = useState<string | null>(
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [currentMaCarBookId, setCurrentMaCarBookId] = useState<number | null>(
     null
   );
-  const [submitLoading, setSubmitLoading] = useState(false);
 
   const columns: TableProps<MaCarBookType>["columns"] = [
     {
@@ -168,7 +144,6 @@ const MaCarBookTable: React.FC<props> = ({
       width: "150px",
       align: "center",
     },
-
     {
       title: "จัดการ",
       key: "note",
@@ -226,7 +201,7 @@ const MaCarBookTable: React.FC<props> = ({
     setModalEditMa(false);
   };
 
-  const handleDeleteMa = async (id: string) => {
+  const handleDeleteMa = async (id: any) => {
     setSubmitLoading(true);
     try {
       const res = await maCarServices.deleteMaCarBook(id);
@@ -259,13 +234,14 @@ const MaCarBookTable: React.FC<props> = ({
       const {
         carBookStartDate,
         carBookEndDate,
-        carName,
         updatedById,
+        carName,
         updatedByName,
         ...restValues
       } = values;
 
       const updatedStartDate = carBookStartDate.toISOString();
+
       const updatedEndDate = carBookEndDate.toISOString();
 
       const today = new Date();
@@ -274,8 +250,36 @@ const MaCarBookTable: React.FC<props> = ({
         setSubmitLoading(false);
         return;
       }
+
       if (new Date(updatedEndDate) < new Date(updatedStartDate)) {
         message.error("วันที่สิ้นสุดการจองต้องหลังวันที่เริ่มการจอง");
+        setSubmitLoading(false);
+        return;
+      }
+
+      const existingMaCarBook = await maCarServices.getMaCarBookAllQuery();
+
+      const hasOverlap = existingMaCarBook.some((maCar: MaCarBookType) => {
+        if (maCar.carName === carName && maCar.id !== carSelected) {
+          const existingStart = dayjs(maCar.carBookStartDate);
+          const existingEnd = dayjs(maCar.carBookEndDate);
+          const newStart = dayjs(updatedStartDate);
+          const newEnd = dayjs(updatedEndDate);
+
+          return (
+            newStart.isBetween(existingStart, existingEnd, null, "[)") ||
+            newEnd.isBetween(existingStart, existingEnd, null, "(]") ||
+            existingStart.isBetween(newStart, newEnd, null, "[)") ||
+            existingEnd.isBetween(newStart, newEnd, null, "(]")
+          );
+        }
+        return false;
+      });
+
+      if (hasOverlap) {
+        message.error(
+          "ไม่สามารถแก้ไขการจองนี้ได้เนื่องจากมีการจองรถคันนี้ในช่วงเวลานี้แล้ว"
+        );
         setSubmitLoading(false);
         return;
       }
@@ -303,6 +307,10 @@ const MaCarBookTable: React.FC<props> = ({
       setSubmitLoading(false);
     }
     setLoading(true);
+  };
+
+  const handleReturnCar = () => {
+    router.push("/page/macar/ma-car-booking/");
   };
 
   return (
@@ -387,7 +395,10 @@ const MaCarBookTable: React.FC<props> = ({
                 label="จำนวนผู้ใช้"
                 rules={[{ required: true, message: "กรุณากรอกจำนวนผู้ใช้" }]}
               >
-                <Input placeholder="กรอกจำนวนผู้ใช้" />
+                <InputNumber
+                  style={{ width: "100%" }}
+                  placeholder="กรอกจำนวนผู้ใช้"
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -463,9 +474,12 @@ const MaCarBookTable: React.FC<props> = ({
           }}
         >
           {" "}
-          <Link href="/page/macar/ma-car-booking/">
+          {/* <Link href="/page/macar/ma-car-booking/">
             <Button>คืนรถ</Button>
-          </Link>
+          </Link> */}
+          <Button type="primary" onClick={handleReturnCar}>
+            คืนรถ
+          </Button>
         </Col>
       </Row>
       <Table

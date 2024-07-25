@@ -5,11 +5,21 @@ export const MaCarServices = (axiosInstance: AxiosInstance) => {
   const baseUrlApiMaCar = "/ma-car";
   const baseUrlApiOrganizeChart = "/organize-chart";
 
-
   return {
     getMaCarBookQuery: async (body: any) => {
       return await axiosInstance
         .get(`${baseUrlApiMaCarBook}/${body}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    getMaCarBookAllQuery: async () => {
+      return await axiosInstance
+        .get(`${baseUrlApiMaCarBook}`)
         .then((res) => {
           return res.data;
         })

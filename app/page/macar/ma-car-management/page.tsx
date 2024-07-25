@@ -1,21 +1,69 @@
 "use client";
-import { Breadcrumb, Card, Col, Divider, Row, Tabs, TabsProps } from "antd";
-import React from "react";
+import {
+  Breadcrumb,
+  Card,
+  Col,
+  Divider,
+  Row,
+  Tabs,
+  TabsProps,
+  TablePaginationConfig,
+} from "antd";
+import React, { useEffect, useState } from "react";
 import ManageCar from "./components/manageCar";
 import ManageCarStatus from "./components/manageCarStatus";
 import MasterType from "./components/status-car/masterType";
 import WarpupmaCar from "./components/status-car/WarpupmaCar";
+import { ManageCarServices } from "./services/manage-car.service";
+import { MaCarBookType, MaCarType } from "./../common/index";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+
 const ManageMaCar = () => {
+  const intraAuth = useAxiosIntranet();
+  const manageCarServices = ManageCarServices(intraAuth);
+  const [maCarBookData, setMaCarBookData] = useState<MaCarBookType[]>([]);
+  const [maCarData, setmaCarData] = useState<MaCarType[]>([]);
+
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
+
+  const changePagination = (page: TablePaginationConfig) => {
+    setPagination({ ...page });
+    setLoading(true);
+  };
+
   const items: TabsProps["items"] = [
     {
       key: "1",
       label: "จัดการการจองรถ",
-      children: <ManageCar />,
+      children: (
+        <ManageCar
+          maCarBookData={maCarBookData}
+          loading={loading}
+          setLoading={setLoading}
+          pagination={pagination}
+          // changePagination={changePagination}
+        />
+      ),
     },
     {
       key: "2",
       label: "จัดการรถ",
-      children: <ManageCarStatus />,
+      children: (
+        <ManageCarStatus
+          maCarData={maCarData}
+          loading={loading}
+          setLoading={setLoading}
+          // pagination={pagination}
+          // changePagination={changePagination}
+        />
+      ),
     },
     {
       key: "3",
@@ -28,6 +76,27 @@ const ManageMaCar = () => {
       children: <WarpupmaCar />,
     },
   ];
+
+  const fetchData = async () => {
+    const skip: number =
+      (Number(pagination.current) - 1) * Number(pagination.pageSize);
+    const take: number = Number(pagination.pageSize);
+    try {
+      const MaCarBook = await manageCarServices.findMaCarBook(skip, take);
+      setMaCarBookData(MaCarBook);
+
+      const MaCar = await manageCarServices.getMaCarQuery();
+      setmaCarData(MaCar);
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Failed to fetch data", error);
+    }
+  };
+
+  useEffect(() => {
+    if (loading) fetchData();
+  }, [loading]);
 
   return (
     <>

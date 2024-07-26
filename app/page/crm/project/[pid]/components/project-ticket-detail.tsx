@@ -255,7 +255,7 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                     </div>
                     <div className=" col-span-2 md:col-span-4"></div>
                     <div className="md:col-span-1  font-bold pl-3 pr-3 text-right">
-                      Attend Files
+                      Attach Files
                     </div>
                     <div className=" col-span-2 md:col-span-5">
                       {rules.ruleTicketRequestFilesEdit ? (
@@ -702,7 +702,7 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
           },
           {
             key: "histoeryLogs",
-            label: "Histoery Logs",
+            label: "History Logs",
             children: (
               <TicketHistoryTableComponent
                 ticketHistoryLogs={

@@ -118,84 +118,112 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   <Form.Item
                     label={<b>รหัส</b>}
                     name={"customerCode"}
-                    rules={[{ required: true, message: "Please Enter" }]}
+                    rules={[{ required: true, message: "Plese Enter" }]}
                   >
-                    <Input placeholder="Enter Text" maxLength={50} />
+                    <Input
+                      placeholder={isEdit ? "Enter Text" : ""}
+                      maxLength={50}
+                    />
                   </Form.Item>
                   <Form.Item
                     label={<b>อ้างอิงรหัสลูกค้า</b>}
                     name={"referenceCode"}
-                    rules={[{ required: true, message: "Please Enter" }]}
+                    rules={[{ required: true, message: "Plese Enter" }]}
                   >
-                    <Input placeholder="Enter Text" maxLength={50} readOnly />
+                    <Input
+                      placeholder={isEdit ? "Enter Text" : ""}
+                      maxLength={50}
+                      readOnly
+                    />
                   </Form.Item>
                   <Form.Item
                     label={<b>Department Code</b>}
                     name={"departmentCode"}
-                    rules={[{ required: true, message: "Please Enter" }]}
+                    rules={[{ required: true, message: "Plese Enter" }]}
                   >
-                    <Input placeholder="Enter Text" maxLength={50} />
+                    <Input
+                      placeholder={isEdit ? "Enter Text" : ""}
+                      maxLength={50}
+                    />
                   </Form.Item>
                   <Form.Item
                     label={<b>คำนำหน้า TH</b>}
                     name={"prefixTh"}
-                    rules={[{ required: true, message: "Please Enter" }]}
+                    rules={[{ required: true, message: "Plese Enter" }]}
                   >
-                    <Input placeholder="Enter Text" maxLength={10} />
+                    <Input
+                      placeholder={isEdit ? "Enter Text" : ""}
+                      maxLength={10}
+                    />
                   </Form.Item>
                   <Form.Item
                     label={<b>ชื่อ TH</b>}
                     name={"firstNameTh"}
-                    rules={[{ required: true, message: "Please Enter" }]}
+                    rules={[{ required: true, message: "Plese Enter" }]}
                   >
-                    <Input placeholder="Enter Text" maxLength={200} />
+                    <Input
+                      placeholder={isEdit ? "Enter Text" : ""}
+                      maxLength={200}
+                    />
                   </Form.Item>
                   <Form.Item
                     label={<b>นามสกุล TH</b>}
                     name={"lastNameTh"}
-                    rules={[{ required: true, message: "Please Enter" }]}
+                    rules={[{ required: true, message: "Plese Enter" }]}
                   >
-                    <Input placeholder="Enter Text" maxLength={200} />
+                    <Input
+                      placeholder={isEdit ? "Enter Text" : ""}
+                      maxLength={200}
+                    />
                   </Form.Item>
                   <Form.Item
                     label={<b>คำนำหน้า EN</b>}
                     name={"prefixEn"}
-                    rules={[{ required: true, message: "Please Enter" }]}
+                    rules={[{ required: true, message: "Plese Enter" }]}
                   >
-                    <Input placeholder="Enter Text" maxLength={10} />
+                    <Input
+                      placeholder={isEdit ? "Enter Text" : ""}
+                      maxLength={10}
+                    />
                   </Form.Item>
                   <Form.Item
                     label={<b>ชื่อ EN</b>}
                     name={"firstNameEn"}
-                    rules={[{ required: true, message: "Please Enter" }]}
+                    rules={[{ required: true, message: "Plese Enter" }]}
                   >
-                    <Input placeholder="Enter Text" maxLength={200} />
+                    <Input
+                      placeholder={isEdit ? "Enter Text" : ""}
+                      maxLength={200}
+                    />
                   </Form.Item>
                   <Form.Item
                     label={<b>นามสกุล EN</b>}
                     name={"lastNameEn"}
-                    rules={[{ required: true, message: "Please Enter" }]}
+                    rules={[{ required: true, message: "Plese Enter" }]}
                   >
-                    <Input placeholder="Enter Text" maxLength={200} />
+                    <Input
+                      placeholder={isEdit ? "Enter Text" : ""}
+                      maxLength={200}
+                    />
                   </Form.Item>
                   <Form.Item
                     label={<b>เลขที่ทะเบียนบริษัท</b>}
                     name={"companyRegisNumber"}
-                    rules={[{ required: true, message: "Please Enter" }]}
+                    rules={[{ required: true, message: "Plese Enter" }]}
                   >
-                    <Input placeholder="Enter Text" />
+                    <Input placeholder={isEdit ? "Enter Text" : ""} />
                   </Form.Item>
                   <Form.Item
                     label={<b>วันที่จดทะเบียน</b>}
                     name={"regisDate"}
-                    rules={[{ required: true, message: "Please Enter" }]}
+                    rules={[{ required: true, message: "Plese Enter" }]}
                   >
                     <DatePicker format={"DD/MM/YYYY"} className=" w-full" />
                   </Form.Item>
                   <Form.Item
                     label={<b>ทุนจดทะเบียน</b>}
                     name={"registration"}
-                    rules={[{ required: true, message: "Please Enter" }]}
+                    rules={[{ required: true, message: "Plese Enter" }]}
                   >
                     <InputNumber
                       min={0}
@@ -208,10 +236,10 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   <Form.Item
                     label={<b>Type</b>}
                     name={"customerTypeId"}
-                    rules={[{ required: true, message: "Please Enter" }]}
+                    rules={[{ required: true, message: "Plese Enter" }]}
                   >
                     <Select
-                      placeholder="Please Choose"
+                      placeholder={isEdit ? "Plese Choose" : ""}
                       options={customerTypes.map((data) => ({
                         value: data.id,
                         label: data.name,
@@ -221,10 +249,10 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   <Form.Item
                     label={<b>กลุ่มลูกค้า</b>}
                     name={"customerGroupId"}
-                    rules={[{ required: true, message: "Please Enter" }]}
+                    rules={[{ required: true, message: "Plese Enter" }]}
                   >
                     <Select
-                      placeholder="Please Choose"
+                      placeholder={isEdit ? "Plese Choose" : ""}
                       options={customerGroup.map((data) => ({
                         value: data.id,
                         label: data.name,
@@ -234,11 +262,11 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   <Form.Item
                     label={<b>Grade</b>}
                     name={"grade"}
-                    rules={[{ required: true, message: "Please Enter" }]}
+                    rules={[{ required: true, message: "Plese Enter" }]}
                   >
                     <Select
                       style={{ color: "#000", opacity: 1 }}
-                      placeholder="Please Choose "
+                      placeholder="Plese Choose "
                       options={[
                         { value: "A" },
                         { value: "B" },
@@ -252,12 +280,12 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   <Form.Item
                     label={<b>ผู้รับผิดชอบ</b>}
                     name={"responsibleId"}
-                    rules={[{ required: true, message: "Please Enter" }]}
+                    rules={[{ required: true, message: "Plese Enter" }]}
                   >
                     <Select
                       mode="multiple"
                       allowClear
-                      placeholder="Please Choose"
+                      placeholder={isEdit ? "Plese Choose" : ""}
                       options={customerResponsibles.map((data) => ({
                         value: data.userId,
                         label: `${data.firstNameTh} ${data.lastNameTh}`,
@@ -266,7 +294,7 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   </Form.Item>
                   {/* <Form.Item label={<b>ผู้รับผิดชอบ</b>} name={"responsibleId"}>
                   <Select
-                    placeholder="Please Choose"
+                    placeholder={isEdit ? "Plese Choose" : ""}
                     options={[
                       { value: "11", label: "user1" },
                       { value: "22", label: "user2" },
@@ -278,7 +306,7 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   name={"thirdPartyId"}
                 >
                   <Select
-                    placeholder="Please Choose"
+                    placeholder={isEdit ? "Plese Choose" : ""}
                     options={[
                       { value: "11", label: "user1" },
                       { value: "22", label: "user2" },
@@ -297,16 +325,16 @@ const DescriptionCustomerForm: React.FC<props> = ({
                     />
                   </Form.Item>
                   <Form.Item label={<b>โทรศัพท์</b>} name={"notiPhone"}>
-                    <Input placeholder="Enter Text" />
+                    <Input placeholder={isEdit ? "Enter Text" : ""} />
                   </Form.Item>
                   <Form.Item label={<b>แฟกซ์</b>} name={"notiFax"}>
-                    <Input placeholder="Enter Text" />
+                    <Input placeholder={isEdit ? "Enter Text" : ""} />
                   </Form.Item>
                   <Form.Item label={<b>อีเมล์</b>} name={"notiEmail"}>
-                    <Input placeholder="Enter Text" />
+                    <Input placeholder={isEdit ? "Enter Text" : ""} />
                   </Form.Item>
                   <Form.Item label={<b>Map</b>} name={"notiMap"}>
-                    <Input placeholder="Enter Text" />
+                    <Input placeholder={isEdit ? "Enter Text" : ""} />
                   </Form.Item>
                   <div className=" md:col-span-4">
                     <Form.Item

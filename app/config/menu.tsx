@@ -45,13 +45,14 @@ export const MenuSider: MenuItem[] = [
   {
     key: "home",
     label: "Home",
+    rule: "h-s",
     icon: <HomeOutlined />,
   },
   {
     key: "internal-info",
     icon: organizeChart,
     label: `Internal Info`,
-    rule: "m-s",
+    rule: "ii-s",
     children: [
       {
         key: `internal-info/organization-chart`,
@@ -180,6 +181,7 @@ export const MenuSider: MenuItem[] = [
     key: "3",
     icon: bookingIcon,
     label: "Booking Room",
+    rule: "br-s",
     children: [
       {
         key: `bookingroom/booking-room`,
@@ -316,6 +318,7 @@ export const MenuSider: MenuItem[] = [
     key: "macar",
     icon: macarIcon,
     label: `Ma Car`,
+    rule: "mac-s",
     children: [
       {
         key: `macar/ma-car`,

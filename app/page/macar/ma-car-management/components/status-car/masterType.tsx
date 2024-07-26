@@ -227,7 +227,7 @@ const masterType: React.FC = () => {
         </div>
 
         <Modal
-          width={1000}
+          width={350}
           title="การจัดการประเภทรถ"
           open={isModalOpen1}
           onOk={handleOk}
@@ -305,7 +305,7 @@ const masterType: React.FC = () => {
         </Modal>
 
         <Modal
-          width={600}
+          width={350}
           title="การแก้ไขบำรุงการรักษา"
           open={modalEditMaCarType}
           onOk={handleOk1edit}

@@ -125,7 +125,7 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
     },
     updateMaCarType: async (body: any) => {
       return await axiosInstance
-        .patch(`${baseUrlApiMaCarTpye}/${body.carId}`, body)
+        .patch(`${baseUrlApiMaCarTpye}/${body.id}`, body)
         .then((res) => {
           return res.data;
         })

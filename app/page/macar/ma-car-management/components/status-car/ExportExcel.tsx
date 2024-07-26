@@ -30,40 +30,45 @@ const ExportExcel: React.FC<ExportExcelProps> = ({ datamacar }) => {
     const transdataWithPageInfo: any[] = [];
 
     for (let i = 0; i < transdata.length; i += chunkSize) {
-      const pageNumber = (i / chunkSize) + 1;
+      const pageNumber = i / chunkSize + 1;
       transdataWithPageInfo.push(...transdata.slice(i, i + chunkSize));
     }
 
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.json_to_sheet(transdataWithPageInfo);
 
-    const range = XLSX.utils.decode_range(worksheet['!ref']!);
-    worksheet['!freezePane'] = { ySplit: 1, topLeftCell: "A1", activePane: "bottomLeft", state: "frozen" };
-    worksheet['!ref'] = XLSX.utils.encode_range(range);
+    const range = XLSX.utils.decode_range(worksheet["!ref"]!);
+    worksheet["!freezePane"] = {
+      ySplit: 1,
+      topLeftCell: "A1",
+      activePane: "bottomLeft",
+      state: "frozen",
+    };
+    worksheet["!ref"] = XLSX.utils.encode_range(range);
 
     const columnWidths = [
-      { wpx: 50  }, 
-      { wpx: 365 }, 
-      { wpx: 235 }, 
-      { wpx: 60  }, 
-      { wpx: 150 }, 
-      { wpx: 200 }, 
-      { wpx: 320 }, 
-      { wpx: 90  }, 
-      { wpx: 180 }, 
-      { wpx: 180 }, 
-      { wpx: 115 }, 
-      { wpx: 130 }, 
+      { wpx: 50 },
+      { wpx: 365 },
+      { wpx: 235 },
+      { wpx: 60 },
+      { wpx: 150 },
+      { wpx: 200 },
+      { wpx: 320 },
+      { wpx: 90 },
+      { wpx: 180 },
+      { wpx: 180 },
+      { wpx: 115 },
+      { wpx: 130 },
     ];
 
-    worksheet['!cols'] = columnWidths;
+    worksheet["!cols"] = columnWidths;
 
-    Object.keys(worksheet).forEach(key => {
-      if (key[0] !== '!') {
+    Object.keys(worksheet).forEach((key) => {
+      if (key[0] !== "!") {
         if (!worksheet[key].s) worksheet[key].s = {};
         worksheet[key].s.alignment = {
-          horizontal: 'center',
-          vertical: 'center'
+          horizontal: "center",
+          vertical: "center",
         };
       }
     });

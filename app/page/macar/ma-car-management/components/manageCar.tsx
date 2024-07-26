@@ -152,19 +152,22 @@ any): React.ReactElement => {
             onConfirm={() => handleDeleteMa(record.id)}
             okText="ใช่"
             cancelText="ไม่"
-          ><Tooltip title="ลบ">
-            <a>
-              {" "}
-              <DeleteIcon width="24" height="24" />{" "}
-            </a></Tooltip>
-          </Popconfirm><Tooltip title="อนุมัติ">
-          <a
-            onClick={() => showModalApprove(record)}
-            style={{ color: "green" }}
           >
-            <ApproveIcon strokeColor="blue" width="2rem" height="2rem" />
-            
-          </a></Tooltip>
+            <Tooltip title="ลบ">
+              <a>
+                {" "}
+                <DeleteIcon width="24" height="24" />{" "}
+              </a>
+            </Tooltip>
+          </Popconfirm>
+          <Tooltip title="อนุมัติ">
+            <a
+              onClick={() => showModalApprove(record)}
+              style={{ color: "green" }}
+            >
+              <ApproveIcon strokeColor="blue" width="2rem" height="2rem" />
+            </a>
+          </Tooltip>
         </Space>
       ),
     },

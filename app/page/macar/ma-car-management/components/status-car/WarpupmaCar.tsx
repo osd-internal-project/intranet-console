@@ -16,7 +16,7 @@ import {
   InputNumber,
   Tag,
   Switch,
-  Tooltip
+  Tooltip,
 } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../../services/manage-car.service";
@@ -26,10 +26,10 @@ import { useSession } from "next-auth/react";
 import MaCar from "../../../ma-car/page";
 import { Decimal } from "@prisma/client/runtime/library";
 import dayjs from "dayjs";
-import type { TableProps} from "antd";
-import { DeleteIcon, ApproveIcon, EditIcon} from "@/components/icon";
+import type { TableProps } from "antd";
+import { DeleteIcon, ApproveIcon, EditIcon } from "@/components/icon";
 import { log } from "console";
-import { EyeOutlined } from '@ant-design/icons';
+import { EyeOutlined } from "@ant-design/icons";
 export interface MaCarType {
   id: number;
   typeName: string;
@@ -42,7 +42,7 @@ export interface MaCarType {
 
 export interface MaCar {
   id: number;
-  carId:string;
+  carId: string;
   carName: string;
   carPetrol: string;
   carMile: number;
@@ -105,7 +105,6 @@ const WarpupmaCar = () => {
   const [selectedCar, setSelectedCar] = useState<string>("");
   const [mileage, setMileage] = useState<number | undefined>(undefined);
 
-  
   useEffect(() => {
     fetchData();
     fetchDataType();
@@ -115,7 +114,7 @@ const WarpupmaCar = () => {
   const fetchData = async () => {
     try {
       const maresponse = await manageCarServices.getMaCarQuery();
-      setMaCar(maresponse)
+      setMaCar(maresponse);
       const optionsmaResponsema = maresponse.map((event: MaCar) => {
         return {
           value: event.carName,
@@ -136,9 +135,6 @@ const WarpupmaCar = () => {
     form.setFieldsValue({ wrapupMiles: carmilesData?.carMile });
     console.log(carmilesData);
   };
-
-  
-  
 
   const handleMileageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMileage(Number(e.target.value));
@@ -174,15 +170,14 @@ const WarpupmaCar = () => {
       message.error("Failed to fetch car data");
     }
   };
-  
-  
-  
-  const createMaCarWarpup: FormProps<MaCarwarpup>["onFinish"] = async (values) => {
-    const carIdData = maCar.findLast((car)=> car.carId === values.carId)
-    console.log(`${carIdData}`);
-    
-    const maCarCreateDataWarpup = {
 
+  const createMaCarWarpup: FormProps<MaCarwarpup>["onFinish"] = async (
+    values
+  ) => {
+    const carIdData = maCar.findLast((car) => car.carId === values.carId);
+    console.log(`${carIdData}`);
+
+    const maCarCreateDataWarpup = {
       data: {
         carId: values.carId,
         vender: values.vender,
@@ -198,7 +193,9 @@ const WarpupmaCar = () => {
       },
     };
     try {
-      const response = await manageCarServices.createMaCarWarpup(maCarCreateDataWarpup);
+      const response = await manageCarServices.createMaCarWarpup(
+        maCarCreateDataWarpup
+      );
       if (response) {
         message.success("เพิ่มรถสำเร็จ");
         form.resetFields();
@@ -213,7 +210,9 @@ const WarpupmaCar = () => {
     }
   };
 
-  const updatedCarWrpup: FormProps<MaCarwarpup>["onFinish"] = async (values) => {
+  const updatedCarWrpup: FormProps<MaCarwarpup>["onFinish"] = async (
+    values
+  ) => {
     setSubmitLoading(true);
     try {
       const updateMaCarWarpup = {
@@ -227,7 +226,10 @@ const WarpupmaCar = () => {
         dateEnd: new Date(values.dateEnd),
         remark: values.remark,
       };
-      await manageCarServices.updateMaCarWarpup(formchange.getFieldValue("carWrapupId"), updateMaCarWarpup);
+      await manageCarServices.updateMaCarWarpup(
+        formchange.getFieldValue("carWrapupId"),
+        updateMaCarWarpup
+      );
       message.success("แก้ไขข้อมูลห้องสำเร็จ");
       fetchDataWarpup();
       handleEditMaCarCancelWarpup();
@@ -237,14 +239,19 @@ const WarpupmaCar = () => {
     }
   };
 
-  const updatedchecksubmit: FormProps<MaCarwarpup>["onFinish"] = async (values) => {
+  const updatedchecksubmit: FormProps<MaCarwarpup>["onFinish"] = async (
+    values
+  ) => {
     setSubmitLoading(true);
     try {
       const updateMaCarWarpup = {
         status: !values.status,
       };
-      
-      await manageCarServices.updateMaCarWarpup(formchange.getFieldValue("carWrapupId"), updateMaCarWarpup);
+
+      await manageCarServices.updateMaCarWarpup(
+        formchange.getFieldValue("carWrapupId"),
+        updateMaCarWarpup
+      );
       message.success("การเช็คสำเร็จ");
       setSubmitLoading(false);
       setIsmodlasubmit(false);
@@ -267,7 +274,7 @@ const WarpupmaCar = () => {
     form.resetFields();
   };
 
-  const detailswarpup = (record: MaCarwarpup) =>{
+  const detailswarpup = (record: MaCarwarpup) => {
     formdetail.setFieldsValue({
       ...record,
       dateStart: dayjs(record.dateStart),
@@ -316,11 +323,11 @@ const WarpupmaCar = () => {
     index: index + 1,
   }));
 
-  const columns : TableProps<MaCarwarpup>["columns"] = [
+  const columns: TableProps<MaCarwarpup>["columns"] = [
     {
-      title: 'ลำดับ',
-      dataIndex: 'index',
-      key: 'index',
+      title: "ลำดับ",
+      dataIndex: "index",
+      key: "index",
       align: "center",
       width: "20px",
     },
@@ -341,7 +348,6 @@ const WarpupmaCar = () => {
       dataIndex: "detail",
       key: "detail",
       width: "200px",
-      
     },
     {
       title: "สถานที่เช็คสภาพ",
@@ -382,13 +388,15 @@ const WarpupmaCar = () => {
       dataIndex: "remark",
       key: "remark",
       align: "center",
-      render:(_: any, record: MaCarwarpup)=>(
+      render: (_: any, record: MaCarwarpup) => (
         <a onClick={() => detailswarpup(record)}>
-           <Tooltip title="View">
-            <EyeOutlined style={{ fontSize: '24px', color: '#08c', cursor: 'pointer' }} />
+          <Tooltip title="View">
+            <EyeOutlined
+              style={{ fontSize: "24px", color: "#08c", cursor: "pointer" }}
+            />
           </Tooltip>
         </a>
-      )
+      ),
     },
     {
       title: "สถานะ",
@@ -396,10 +404,11 @@ const WarpupmaCar = () => {
       key: "status",
       align: "center",
       width: "30px",
-      render: (status: boolean) => (
-            status 
-            ? <Tag color="blue">รอการเช็ค</Tag> 
-            : <Tag color="green">เช็คแล้ว</Tag>
+      render: (status: boolean) =>
+        status ? (
+          <Tag color="blue">รอการเช็ค</Tag>
+        ) : (
+          <Tag color="green">เช็คแล้ว</Tag>
         ),
     },
     {
@@ -411,48 +420,65 @@ const WarpupmaCar = () => {
       render: (_: any, record: MaCarwarpup) => (
         <Space size="middle">
           <Tooltip title="แก้ไข">
-          <a onClick={() => showModalEditMaCarWarpup(record)}>
-            <EditIcon />
-         </a></Tooltip>
-         <Popconfirm
+            <a onClick={() => showModalEditMaCarWarpup(record)}>
+              <EditIcon />
+            </a>
+          </Tooltip>
+          <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
             onConfirm={() => handleDeletemaCarWarpup(record.carWrapupId)}
             okText="ยืนยัน"
             cancelText="ยกเลิก"
-          ><a>
-            <Tooltip title="ลบ">
-          {" "}
-          <DeleteIcon width="20" height="20" />{" "}</Tooltip>
-        </a>
+          >
+            <a>
+              <Tooltip title="ลบ">
+                {" "}
+                <DeleteIcon width="20" height="20" />{" "}
+              </Tooltip>
+            </a>
           </Popconfirm>
           <Tooltip title="การเช็ค">
-          <a
-            onClick={() => modalopensubmit(record)}
-          >
-            <ApproveIcon strokeColor="blue" width="1rem" height="1rem" />
-          </a></Tooltip>
+            <a onClick={() => modalopensubmit(record)}>
+              <ApproveIcon strokeColor="blue" width="1rem" height="1rem" />
+            </a>
+          </Tooltip>
         </Space>
       ),
     },
   ];
 
   return (
-    <><div>
+    <>
+      <div>
         <div>
-          <Button style={{ float: 'left', margin: '10px',padding:" 20px 30px 20px 30px",fontSize:"16px" }} 
+          <Button
+            style={{
+              float: "left",
+              margin: "10px",
+              padding: " 20px 30px 20px 30px",
+              fontSize: "16px",
+            }}
             type="primary"
             onClick={modalopencreate}
           >
             เพิ่มข้อมูลตรวจสภาพรถ
           </Button>
-        
-        <div style={{ float: 'right', margin: '10px' ,padding:" 20px 30px 20px 30px",fontSize:"16px" }}>
-          <ExportExcel datamacar={dataWithKey} />
-        </div>
+
+          <div
+            style={{
+              float: "right",
+              margin: "10px",
+              padding: " 20px 30px 20px 30px",
+              fontSize: "16px",
+            }}
+          >
+            <ExportExcel datamacar={dataWithKey} />
+          </div>
         </div>
       </div>
-      <Table 
-        dataSource={dataWithKey} columns={columns}
+      <Table
+        dataSource={dataWithKey}
+        columns={columns}
         rowKey="id"
         bordered
         pagination={{ pageSize: 10 }}
@@ -464,7 +490,6 @@ const WarpupmaCar = () => {
         footer={null}
         destroyOnClose
       >
-        
         <Form
           form={form}
           onFinish={createMaCarWarpup}
@@ -476,10 +501,13 @@ const WarpupmaCar = () => {
             label="ชื่อรถ"
             rules={[{ required: true, message: "กรุณาเลือกชื่อรถ" }]}
           >
-            <Select placeholder="โปรดเลือกรถ" style={{ width: "100%" }} onChange={handleSelectChange}  >
+            <Select
+              placeholder="โปรดเลือกรถ"
+              style={{ width: "100%" }}
+              onChange={handleSelectChange}
+            >
               {maCar.map((car, index) => (
-                <Select.Option 
-                key={index} value={car.carId}>
+                <Select.Option key={index} value={car.carId}>
                   {car.carName}
                 </Select.Option>
               ))}
@@ -491,19 +519,21 @@ const WarpupmaCar = () => {
             rules={[{ required: true, message: "กรุณาเลือกประเภทการตรวจสภาพ" }]}
           >
             <Select>
-            {maDataTypeOptions
-              .filter(option => {
-                const type = maDataType.find(type => type.typeName === option.label);
-                return type && type.status;
-              })
-              .map(option => (
-                <Select.Option key={option.value} value={option.value}>
-                  {option.label}
-                </Select.Option>
-              ))}
-          </Select>
+              {maDataTypeOptions
+                .filter((option) => {
+                  const type = maDataType.find(
+                    (type) => type.typeName === option.label
+                  );
+                  return type && type.status;
+                })
+                .map((option) => (
+                  <Select.Option key={option.value} value={option.value}>
+                    {option.label}
+                  </Select.Option>
+                ))}
+            </Select>
           </Form.Item>
-          <Form.Item 
+          <Form.Item
             name="wrapupMiles"
             label="เลขไมล์"
             rules={[
@@ -519,9 +549,8 @@ const WarpupmaCar = () => {
                 },
               },
             ]}
-            
           >
-            <InputNumber changeOnWheel value={mileage}/>
+            <InputNumber changeOnWheel value={mileage} />
           </Form.Item>
           <Form.Item
             name="vender"
@@ -547,7 +576,9 @@ const WarpupmaCar = () => {
           <Form.Item
             name="detail"
             label="รายละเอียดการตรวจสภาพ"
-            rules={[{ required: true, message: "กรุณากรอกรายละเอียดการตรวจสภาพ" }]}
+            rules={[
+              { required: true, message: "กรุณากรอกรายละเอียดการตรวจสภาพ" },
+            ]}
           >
             <Input.TextArea rows={4} />
           </Form.Item>
@@ -599,7 +630,7 @@ const WarpupmaCar = () => {
             label="ชื่อรถ"
             rules={[{ required: true, message: "กรุณาเลือกชื่อรถ" }]}
           >
-            <Select options={maDataOptions} disabled/>
+            <Select options={maDataOptions} disabled />
           </Form.Item>
           <Form.Item
             name="typeName"
@@ -607,17 +638,19 @@ const WarpupmaCar = () => {
             rules={[{ required: true, message: "กรุณาเลือกประเภทการตรวจสภาพ" }]}
           >
             <Select>
-            {maDataTypeOptions
-              .filter(option => {
-                const type = maDataType.find(type => type.typeName === option.label);
-                return type && type.status;
-              })
-              .map(option => (
-                <Select.Option key={option.value} value={option.value}>
-                  {option.label}
-                </Select.Option>
-              ))}
-          </Select>
+              {maDataTypeOptions
+                .filter((option) => {
+                  const type = maDataType.find(
+                    (type) => type.typeName === option.label
+                  );
+                  return type && type.status;
+                })
+                .map((option) => (
+                  <Select.Option key={option.value} value={option.value}>
+                    {option.label}
+                  </Select.Option>
+                ))}
+            </Select>
           </Form.Item>
           <Form.Item
             name="wrapupMiles"
@@ -636,7 +669,10 @@ const WarpupmaCar = () => {
               },
             ]}
           >
-            <Input onChange={handleMileageChange} value={mileage !== undefined ? mileage : ""}  />
+            <Input
+              onChange={handleMileageChange}
+              value={mileage !== undefined ? mileage : ""}
+            />
           </Form.Item>
           <Form.Item
             name="vender"
@@ -662,7 +698,9 @@ const WarpupmaCar = () => {
           <Form.Item
             name="detail"
             label="รายละเอียดการตรวจสภาพ"
-            rules={[{ required: true, message: "กรุณากรอกรายละเอียดการตรวจสภาพ" }]}
+            rules={[
+              { required: true, message: "กรุณากรอกรายละเอียดการตรวจสภาพ" },
+            ]}
           >
             <Input.TextArea rows={4} />
           </Form.Item>
@@ -700,32 +738,33 @@ const WarpupmaCar = () => {
         onCancel={handleclosesubmit}
         footer={null}
         destroyOnClose
-        style={{textAlign:'center'}}
-        ><div style={{fontSize:'18px',textAlign:'center'}}>
-          เช็คสภาพแล้ว ใช่ หรือ ไม่ ? 
+        style={{ textAlign: "center" }}
+      >
+        <div style={{ fontSize: "18px", textAlign: "center" }}>
+          เช็คสภาพแล้ว ใช่ หรือ ไม่ ?
         </div>
-          <Form
-          form={formchange}
-          onFinish={updatedchecksubmit}
-        >
-        <Form.Item name="carWrapupId" noStyle>
-          <Input type="hidden" />
-        </Form.Item>
-        <Form.Item name="status" valuePropName="checked">
-          <Switch style={{visibility: 'hidden' }} />
-        </Form.Item>
-        <Form.Item>
-        <Space style={{ margin:"-60px 0 -60px 0",padding:"10px 0 0 0",display: "flex", justifyContent: "center" }}>
+        <Form form={formchange} onFinish={updatedchecksubmit}>
+          <Form.Item name="carWrapupId" noStyle>
+            <Input type="hidden" />
+          </Form.Item>
+          <Form.Item name="status" valuePropName="checked">
+            <Switch style={{ visibility: "hidden" }} />
+          </Form.Item>
+          <Form.Item>
+            <Space
+              style={{
+                margin: "-60px 0 -60px 0",
+                padding: "10px 0 0 0",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
               <Button onClick={handleclosesubmit}>ไม่</Button>
-              <Button 
-                type="primary" 
-                htmlType="submit" 
-                loading={submitLoading}
-                >
+              <Button type="primary" htmlType="submit" loading={submitLoading}>
                 ใช่
               </Button>
             </Space>
-        </Form.Item>
+          </Form.Item>
         </Form>
       </Modal>
       <Modal
@@ -735,17 +774,22 @@ const WarpupmaCar = () => {
         onCancel={handledetail}
         footer={null}
         destroyOnClose
-        style={{textAlign:'center'}}
-        >
-          <Form
-            form={formdetail}
-            >
-            <Form.Item<MaCarwarpup> name="remark" >
-              <Input.TextArea style={{fontSize:"16px", userSelect: 'none', pointerEvents: 'none',}} rows={12}  readOnly/>
-            </Form.Item>
+        style={{ textAlign: "center" }}
+      >
+        <Form form={formdetail}>
+          <Form.Item<MaCarwarpup> name="remark">
+            <Input.TextArea
+              style={{
+                fontSize: "16px",
+                userSelect: "none",
+                pointerEvents: "none",
+              }}
+              rows={12}
+              readOnly
+            />
+          </Form.Item>
         </Form>
       </Modal>
-      
     </>
   );
 };

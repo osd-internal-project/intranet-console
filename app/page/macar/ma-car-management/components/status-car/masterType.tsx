@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import moment from 'moment';
+import moment from "moment";
 import {
   Table,
   ConfigProvider,
@@ -20,7 +20,7 @@ import { ManageCarServices } from "../../services/manage-car.service";
 import { useForm } from "antd/es/form/Form";
 import ExportExcel from "./ExportExcel";
 import { useSession } from "next-auth/react";
-import { DeleteIcon, ApproveIcon,EditIcon } from "@/components/icon";
+import { DeleteIcon, ApproveIcon, EditIcon } from "@/components/icon";
 export interface MaCarType {
   id: number;
   typeName: string;
@@ -159,13 +159,14 @@ const masterType: React.FC = () => {
     {
       title: "ชื่อ",
       dataIndex: "createdByName",
-      key: "createdByName", 
+      key: "createdByName",
     },
     {
       title: "เวลาการสร้าง",
       dataIndex: "createdAt",
       key: "createdAt",
-      render: (createdAt: Date) => moment(createdAt).format('YYYY-MM-DD HH:mm A')
+      render: (createdAt: Date) =>
+        moment(createdAt).format("YYYY-MM-DD HH:mm A"),
     },
 
     {
@@ -174,7 +175,7 @@ const masterType: React.FC = () => {
       key: "status",
       render: (status: boolean) =>
         status ? (
-          <Tag  color="green">เปิดการมอง</Tag>
+          <Tag color="green">เปิดการมอง</Tag>
         ) : (
           <Tag color="red">ปิดการมอง</Tag>
         ),
@@ -184,21 +185,24 @@ const masterType: React.FC = () => {
       dataIndex: "manage",
       key: "manage",
       render: (record: number, row: any, index: number) => (
-        <Space size="middle"><Tooltip title="แก้ไข">
-          <a onClick={() => showModalEditMaCarType(row)}>
-            
-            <EditIcon width="24" height="24" />{" "}
-          </a></Tooltip>
+        <Space size="middle">
+          <Tooltip title="แก้ไข">
+            <a onClick={() => showModalEditMaCarType(row)}>
+              <EditIcon width="24" height="24" />{" "}
+            </a>
+          </Tooltip>
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
             onConfirm={() => handleDeletemaCar(row.id)}
             okText="ใช่"
             cancelText="ไม่"
-          ><Tooltip title="ลบ">
-            <a>
-            {" "}
-              <DeleteIcon width="24" height="24" />{" "}
-            </a></Tooltip>
+          >
+            <Tooltip title="ลบ">
+              <a>
+                {" "}
+                <DeleteIcon width="24" height="24" />{" "}
+              </a>
+            </Tooltip>
           </Popconfirm>
         </Space>
       ),
@@ -211,13 +215,16 @@ const masterType: React.FC = () => {
         <div>
           <Button
             type="primary"
-            style={{ margin: "10px 0 20px 0" ,padding:" 20px 30px 20px 30px ",fontSize:"16px"}}
+            style={{
+              margin: "10px 0 20px 0",
+              padding: " 20px 30px 20px 30px ",
+              fontSize: "16px",
+            }}
             onClick={showModal}
           >
             สร้างประเภทตรวจสภาพ
-        </Button>
+          </Button>
         </div>
-        
 
         <Modal
           width={1000}
@@ -246,7 +253,7 @@ const masterType: React.FC = () => {
               name="typeName"
               label={"ประเภทการบำรุงรักษา :"}
             >
-              <Input size="large"  />
+              <Input size="large" />
             </Form.Item>
             <Form.Item<MaCarType>
               style={{
@@ -335,7 +342,7 @@ const masterType: React.FC = () => {
               name="typeName"
               label={"ประเภทการบำรุงรักษา :"}
             >
-              <Input size="large"  />
+              <Input size="large" />
             </Form.Item>
             <Form.Item<MaCarType>
               style={{
@@ -385,8 +392,7 @@ const masterType: React.FC = () => {
           </Form>
         </Modal>
       </div>
-        <Table dataSource={maCarData} columns={columns} />
-      
+      <Table dataSource={maCarData} columns={columns} />
     </div>
   );
 };

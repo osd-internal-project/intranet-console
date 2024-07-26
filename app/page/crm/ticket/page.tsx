@@ -394,7 +394,7 @@ export default function CustomerDetailPage() {
       detail = summaryForm.getFieldValue("summary");
     } else if (action === "deleteFile") {
       type = "Update Progress Info";
-      detail = "Delete Attend File";
+      detail = "Delete Attach File";
     }
     const form: ITTicketHistoryLogForm = {
       customerProjectTicketId: ticketId,

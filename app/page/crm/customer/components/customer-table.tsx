@@ -136,7 +136,9 @@ const CustomerTableComponent: React.FC<props> = ({
       title: "ผู้รับผิดชอบ",
       width: "200px",
       render: (value: { uid: string; name: string }[]) =>
-        value.map((data, index) => <div key={index}>{data.name}</div>),
+        value
+          ? value.map((data, index) => <div key={index}>{data.name}</div>)
+          : "",
     },
     {
       key: "customerCode",

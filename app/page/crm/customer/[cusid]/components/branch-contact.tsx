@@ -119,7 +119,7 @@ const BranchContactComponent: React.FC<props> = ({
       dataIndex: "birthday",
       title: "วันเกิด",
       // width: "200px",
-      render: (data: Date) => dateToStringThNoTime(data),
+      render: (data: Date) => (data ? dateToStringThNoTime(data) : ""),
     },
     // {
     //   key: "activeStatus",

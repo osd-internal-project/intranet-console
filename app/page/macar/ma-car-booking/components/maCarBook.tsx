@@ -13,43 +13,33 @@ import {
   Divider,
   Select,
   DatePicker,
+  InputNumber,
 } from "antd";
 import { MaCarBookServices } from "../services/ma-car-book.service";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { MaCarType, MaCarBookType } from "../../common/index";
 
-interface MaCarType {
-  id: string;
-  carId: string;
-  carName: string;
-  carPetrol: string;
-  detail: string;
-  remark: string;
-  status: string;
-  createdAt: Date;
-  createdById: string;
-  createdByName: string;
-  updatedAt: Date;
-  updatedById: string;
-  updatedByName: string;
-  carBookProvince: string;
-  carBookPlace: string;
-  carBookUsers: number;
-  carBookStartDate: Date;
-  carBookEndDate: Date;
-  carBookTitle: string;
-  carBookApprovedDate?: Date;
-  carBookApprovedById?: string;
-  carBookApprovedByName?: string;
+export interface props {
+  maCarData: MaCarType[];
+
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const MaCarBook: React.FC = () => {
+const MaCarBook: React.FC<props> = ({
+  maCarData,
+  setLoading,
+}: any): React.ReactElement => {
+  const router = useRouter();
   const { data: session } = useSession();
   const intraAuth = useAxiosIntranet();
   const maCarBookServices = MaCarBookServices(intraAuth);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
+  const [maCarDataa, setMaCarDataa] = useState<MaCarType[]>([]);
+  const [selectedCar, setSelectedCar] = useState<any[]>([]);
+  const [carName, setCarName] = useState<MaCarType[]>([]);
+
   const [form] = Form.useForm();
-  const [loading, setloading] = useState<boolean>(true);
 
   const checkMaCarBookConflict = async (
     carName: string,
@@ -62,7 +52,6 @@ const MaCarBook: React.FC = () => {
     console.log(existingMa);
 
     return existingMa.some((ma: any) => {
-      console.log(ma);
       return (
         ma.carName === carName &&
         ((new Date(carBookStartDate) >= new Date(ma.carBookStartDate) &&
@@ -75,9 +64,14 @@ const MaCarBook: React.FC = () => {
     });
   };
 
-  const createMaCarBook: FormProps<MaCarType>["onFinish"] = async (values) => {
+  const createMaCarBook: FormProps<MaCarBookType>["onFinish"] = async (
+    values
+  ) => {
     setSubmitLoading(true);
-    const carSelected = maCarData.findLast((car) => car.carId === values.carId);
+    const carSelected = [...maCarData]
+      .reverse()
+      .find((car) => car.carId === values.carId);
+
     const carBookStartDate = values.carBookStartDate as Date;
     const carBookEndDate = values.carBookEndDate as Date;
     const today = new Date();
@@ -107,13 +101,13 @@ const MaCarBook: React.FC = () => {
       carBookApprovedStatus: "process",
       remark: values.remark || null,
     };
+
     try {
       const conflict = await checkMaCarBookConflict(
         carSelected?.carName ? carSelected?.carName : "",
         carBookStartDate,
         carBookEndDate
       );
-      console.log(conflict);
 
       if (conflict) {
         message.error(
@@ -127,51 +121,47 @@ const MaCarBook: React.FC = () => {
       if (maCarBook) {
         message.success("จองรถสำเร็จ");
         form.resetFields();
+        router.push("/page/macar/ma-car");
       } else {
         message.error("จองรถไม่สำเร็จ");
       }
 
       setSubmitLoading(false);
-      fetchData();
     } catch (error) {
       message.error("จองรถไม่สำเร็จ");
       setSubmitLoading(false);
     }
+    setLoading(true);
   };
 
   const { TextArea } = Input;
 
-  const onFinishFailed: FormProps<MaCarType>["onFinishFailed"] = (
+  const onFinishFailed: FormProps<MaCarBookType>["onFinishFailed"] = (
     errorInfo
   ) => {
     console.log("Failed:", errorInfo);
   };
 
-  const fetchData = async () => {
-    form.setFieldsValue({
-      createdByName: `${session?.user.firstNameTh || ""} ${
-        session?.user.lastNameTh || ""
-      }`,
-    });
-
-    try {
-      const maCar = await maCarBookServices.getMaCarQuery();
-      setMaCarData(maCar);
-      setloading(false);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+  const maCarBookName = () => {
+    const createdByName = `${session?.user.firstNameTh || ""} ${
+      session?.user.lastNameTh || ""
+    }`;
+    return createdByName;
   };
 
   useEffect(() => {
-    if (loading) fetchData();
-  }, [loading]);
+    if (maCarData) {
+      setCarName(maCarData);
+    }
+    form.setFieldsValue({
+      createdByName: maCarBookName(),
+    });
+  }, [maCarData]);
 
   return (
     <Form
       form={form}
       layout="vertical"
-      initialValues={{ remember: true }}
       onFinish={createMaCarBook}
       onFinishFailed={onFinishFailed}
       autoComplete="off"
@@ -193,13 +183,13 @@ const MaCarBook: React.FC = () => {
 
       <Row gutter={16}>
         <Col span={8}>
-          <Form.Item<MaCarType>
+          <Form.Item<MaCarBookType>
             name="carId"
             label="ชื่อรถ"
             rules={[{ required: true, message: "กรุณาเลือกรถ" }]}
           >
             <Select placeholder="โปรดเลือกรถ" style={{ width: "100%" }}>
-              {maCarData.map((car, index) => (
+              {carName.map((car, index) => (
                 <Select.Option key={index} value={car.carId}>
                   {car.carName}
                 </Select.Option>
@@ -208,7 +198,7 @@ const MaCarBook: React.FC = () => {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item<MaCarType>
+          <Form.Item<MaCarBookType>
             name="carBookTitle"
             label="วัตถุประสงค์การใช้งาน"
             rules={[
@@ -219,7 +209,7 @@ const MaCarBook: React.FC = () => {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item<MaCarType>
+          <Form.Item<MaCarBookType>
             name="carBookPlace"
             label="สถานที่ไป"
             rules={[{ required: true, message: "กรุณากรอกสถานที่ไป" }]}
@@ -228,7 +218,7 @@ const MaCarBook: React.FC = () => {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item<MaCarType>
+          <Form.Item<MaCarBookType>
             name="carBookProvince"
             label="จังหวัด"
             rules={[{ required: true, message: "กรุณากรอกจังหวัด" }]}
@@ -237,18 +227,23 @@ const MaCarBook: React.FC = () => {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item<MaCarType>
+          <Form.Item<MaCarBookType>
             name="carBookUsers"
             label="จำนวนผู้ใช้"
             rules={[{ required: true, message: "กรุณากรอกจำนวนผู้ใช้" }]}
           >
-            <Input placeholder="กรอกจำนวนผู้ใช้" />
+            <InputNumber
+              style={{ width: "100%" }}
+              placeholder="กรอกจำนวนผู้ใช้"
+              max={12}
+              min={1}
+            />
           </Form.Item>
         </Col>
       </Row>
       <Row gutter={24}>
         <Col span={8}>
-          <Form.Item<MaCarType>
+          <Form.Item<MaCarBookType>
             name="carBookStartDate"
             label="วันที่เริ่มการจอง"
             rules={[{ required: true, message: "กรุณาเลือกวันที่เริ่มจอง!" }]}

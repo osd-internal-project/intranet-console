@@ -13,14 +13,10 @@ import {
   Divider,
   TablePaginationConfig,
 } from "antd";
-
-import { MaCarIcon } from "../../../../components/icon";
 import CalendarComponent from "./components/CarCalendar";
-// import CarComponent from "./components/car";
 import MaCarTable from "./components/CarTable";
-import CarStatusComponent from "./components/CarStatus";
+import CarStatus from "./components/CarStatus";
 import { MaCarServices } from "./services/ma-car.service";
-import { useForm } from "antd/es/form/Form";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
@@ -55,7 +51,6 @@ const MaCar: React.FC = () => {
   const [maFetchData, setMaFetchData] = useState([]);
   const [maFetchCalendar, setMaFetchCalendar] = useState([]);
   const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
-
   const [loading, setLoading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -91,7 +86,13 @@ const MaCar: React.FC = () => {
     {
       key: "3",
       label: "สถานะรถ",
-      children: <CarStatusComponent />,
+      children: (
+        <CarStatus
+        maCarData={maCarData}
+        setLoading={setLoading}
+
+        />
+      ),
     },
   ];
 
@@ -102,6 +103,13 @@ const MaCar: React.FC = () => {
     try {
       const maCar = await maCarServices.getMaCarQuery();
       setMaCarData(maCar);
+
+      // const maresponse = await maCarServices.getMaCarQuery();
+      // const MaCar: MaCarType[] = maresponse.map((item: any, index: number) => ({
+      //   ...item,
+      //   key: index.toString(),
+      // }));
+      // setmaCarData(MaCar);
 
       const createdById = session?.user.userId;
 

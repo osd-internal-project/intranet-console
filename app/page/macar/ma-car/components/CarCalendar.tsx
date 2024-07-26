@@ -9,38 +9,13 @@ import {
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useForm } from "antd/es/form/Form";
 import { CaretRightOutlined } from "@ant-design/icons";
+import { MaCarBookCalendarType } from "../../common/index";
 
 const localizer = momentLocalizer(moment);
 const { TextArea } = Input;
 
-interface MaCarType {
-  id: string;
-  carId: string;
-  carName: string;
-  carPetrol: string;
-  detail: string;
-  carBookApprovedStatus: string;
-  createdAt: Date;
-  createdById: string;
-  createdByName: string;
-  updatedAt: Date;
-  updatedById: string;
-  updatedByName: string;
-  carBookProvince: string;
-  carBookPlace: string;
-  carBookUsers: number;
-  carBookStartDate: Date;
-  carBookEndDate: Date;
-  approveDate: string;
-  carBookApprovedDate?: Date;
-  carBookApprovedById?: string;
-  carBookApprovedByName?: string;
-  description: string;
-  userName: string;
-}
-
 interface Props {
-  maFetchCalendar: MaCarType[];
+  maFetchCalendar: MaCarBookCalendarType[];
 }
 
 interface CustomEvent extends RbcEvent {
@@ -51,7 +26,9 @@ interface CustomEvent extends RbcEvent {
 }
 
 const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
-  const [selectedMa, setSelectedMa] = useState<MaCarType | null>(null);
+  const [selectedMa, setSelectedMa] = useState<MaCarBookCalendarType | null>(
+    null
+  );
   const [carBookApprovedStatusModalDetail, setStatusModalDetail] =
     useState(false);
   const [formUpdate] = useForm();
@@ -94,7 +71,7 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
     <>
       <Calendar<CustomEvent>
         localizer={localizer}
-        events={maFetchCalendar.map((ma: MaCarType) => ({
+        events={maFetchCalendar.map((ma: MaCarBookCalendarType) => ({
           id: ma.id,
           title: ma.carName,
           start: new Date(ma.carBookStartDate),

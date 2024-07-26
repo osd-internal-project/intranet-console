@@ -6,6 +6,7 @@ import type {
   TableColumnsType,
   TableColumnType,
 } from "antd";
+import dayjs from "dayjs";
 import {
   Badge,
   Button,
@@ -83,7 +84,7 @@ const CreateProjectForm: React.FC<props> = ({
   const calculateDuration = (type: string) => {
     let startDate = form.getFieldValue("startDate");
     let endDate = form.getFieldValue("endDate");
-
+    console.log(1);
     if (startDate && endDate) {
       if (startDate.valueOf() > endDate.valueOf()) {
         if (type === "start") {
@@ -96,7 +97,9 @@ const CreateProjectForm: React.FC<props> = ({
           endDate = startDate;
         }
       }
-      const diff = endDate.diff(startDate, "days");
+      const diff = dayjs(endDate)
+        .endOf("day")
+        .diff(dayjs(startDate).endOf("day"), "days");
       // const diffDuration = moment.duration(diff);
       // console.log(diff);
       form.setFieldValue("duration", diff + 1);

@@ -15,39 +15,17 @@ import {
   DatePicker,
   Popconfirm,
   TablePaginationConfig,
+  InputNumber,
 } from "antd";
 import type { FormProps, TableProps } from "antd";
 import { DeleteIcon, EditIcon } from "@/components/icon";
 import dayjs from "dayjs";
+import ShareMaCarBook from "../share-ma-car-book/share-xlsx";
 import { MaCarServices } from "../services/ma-car.service";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useSession } from "next-auth/react";
-
-interface MaCarType {
-  id: string;
-  carId: string;
-  carName: string;
-  carPetrol: string;
-  detail: string;
-  remark: string;
-  status: string;
-  createdAt: Date;
-  createdById: string;
-  createdByName: string;
-  updatedAt: Date;
-  updatedById: string;
-  updatedByName: string;
-  carBookProvince: string;
-  carBookPlace: string;
-  carBookUsers: number;
-  carBookStartDate: Date;
-  carBookEndDate: Date;
-  carBookTitle: string;
-  carBookApprovedDate?: Date;
-  carBookApprovedById?: string;
-  carBookApprovedByName?: string;
-  carBookApprovedStatus: string;
-}
+import { useRouter } from "next/navigation";
+import { MaCarBookType } from "../../common/index";
 
 export interface props {
   loading: boolean;
@@ -58,7 +36,7 @@ export interface props {
   maCarData: any[];
 }
 
-const MaCarTable: React.FC<props> = ({
+const MaCarBookTable: React.FC<props> = ({
   changePagination,
   pagination,
   maFetchData,
@@ -68,17 +46,18 @@ const MaCarTable: React.FC<props> = ({
 }: any): React.ReactElement => {
   const { data: session } = useSession();
   const [form] = Form.useForm();
+  const router = useRouter();
   const intraAuth = useAxiosIntranet();
   const maCarServices = MaCarServices(intraAuth);
   const [modalEditMaCarBook, setModalEditMa] = useState(false);
-  const [currentMaId, setCurrentMaId] = useState<string | null>(null);
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [currentMaCarBookId, setCurrentMaCarBookId] = useState<number | null>(
+    null
+  );
 
-  const columns: TableProps<MaCarType>["columns"] = [
+  const columns: TableProps<MaCarBookType>["columns"] = [
     {
-      key: "no",
       title: "ลำดับ",
-      dataIndex: "no",
       width: "50px",
       align: "center",
       render: (id: number, record: any, index: number) =>
@@ -133,7 +112,6 @@ const MaCarTable: React.FC<props> = ({
       render: (status: string) => {
         let color = "";
         let text = "";
-
         switch (status) {
           case "process":
             color = "blue";
@@ -166,7 +144,6 @@ const MaCarTable: React.FC<props> = ({
       width: "150px",
       align: "center",
     },
-
     {
       title: "จัดการ",
       key: "note",
@@ -199,7 +176,7 @@ const MaCarTable: React.FC<props> = ({
     },
   ];
 
-  const showModalEditMaCarBook = (record: MaCarType) => {
+  const showModalEditMaCarBook = (record: MaCarBookType) => {
     if (record.carBookApprovedStatus === "Approve") {
       message.warning("ไม่สามารถแก้ไขการจองที่อนุมัติได้");
       return;
@@ -208,7 +185,7 @@ const MaCarTable: React.FC<props> = ({
       message.warning("ไม่สามารถแก้ไขการจองที่คืนรถได้");
       return;
     }
-    setCurrentMaId(record.id);
+    setCurrentMaCarBookId(record.id);
     form.setFieldsValue({
       ...record,
       carBookStartDate: dayjs(record.carBookStartDate),
@@ -224,7 +201,7 @@ const MaCarTable: React.FC<props> = ({
     setModalEditMa(false);
   };
 
-  const handleDeleteMa = async (id: string) => {
+  const handleDeleteMa = async (id: any) => {
     setSubmitLoading(true);
     try {
       const res = await maCarServices.deleteMaCarBook(id);
@@ -239,10 +216,12 @@ const MaCarTable: React.FC<props> = ({
     setLoading(true);
   };
 
-  const updatedMaCarBook: FormProps<MaCarType>["onFinish"] = async (values) => {
+  const updatedMaCarBook: FormProps<MaCarBookType>["onFinish"] = async (
+    values
+  ) => {
     setSubmitLoading(true);
 
-    if (currentMaId === null) {
+    if (currentMaCarBookId === null) {
       message.error("No ma selected for update");
       return;
     }
@@ -255,13 +234,14 @@ const MaCarTable: React.FC<props> = ({
       const {
         carBookStartDate,
         carBookEndDate,
-        carName,
         updatedById,
+        carName,
         updatedByName,
         ...restValues
       } = values;
 
       const updatedStartDate = carBookStartDate.toISOString();
+
       const updatedEndDate = carBookEndDate.toISOString();
 
       const today = new Date();
@@ -270,19 +250,43 @@ const MaCarTable: React.FC<props> = ({
         setSubmitLoading(false);
         return;
       }
+
       if (new Date(updatedEndDate) < new Date(updatedStartDate)) {
         message.error("วันที่สิ้นสุดการจองต้องหลังวันที่เริ่มการจอง");
         setSubmitLoading(false);
         return;
       }
 
-      // const userIdData = session?.user.userId;
+      const existingMaCarBook = await maCarServices.getMaCarBookAllQuery();
 
-      // const existingMa = await maCarServices.getMaCarBookQuery(userIdData);
+      const hasOverlap = existingMaCarBook.some((maCar: MaCarBookType) => {
+        if (maCar.carName === carName && maCar.id !== carSelected) {
+          const existingStart = dayjs(maCar.carBookStartDate);
+          const existingEnd = dayjs(maCar.carBookEndDate);
+          const newStart = dayjs(updatedStartDate);
+          const newEnd = dayjs(updatedEndDate);
+
+          return (
+            newStart.isBetween(existingStart, existingEnd, null, "[)") ||
+            newEnd.isBetween(existingStart, existingEnd, null, "(]") ||
+            existingStart.isBetween(newStart, newEnd, null, "[)") ||
+            existingEnd.isBetween(newStart, newEnd, null, "(]")
+          );
+        }
+        return false;
+      });
+
+      if (hasOverlap) {
+        message.error(
+          "ไม่สามารถแก้ไขการจองนี้ได้เนื่องจากมีการจองรถคันนี้ในช่วงเวลานี้แล้ว"
+        );
+        setSubmitLoading(false);
+        return;
+      }
 
       const maCarBookData = {
         ...restValues,
-        id: currentMaId,
+        id: currentMaCarBookId,
         carName: carSelected?.carName,
         carBookStartDate: updatedStartDate,
         carBookEndDate: updatedEndDate,
@@ -305,6 +309,10 @@ const MaCarTable: React.FC<props> = ({
     setLoading(true);
   };
 
+  const handleReturnCar = () => {
+    router.push("/page/macar/ma-car-booking/");
+  };
+
   return (
     <>
       <Modal
@@ -324,7 +332,7 @@ const MaCarTable: React.FC<props> = ({
         >
           <Row gutter={16}>
             <Col span={8}>
-              <Form.Item<MaCarType>
+              <Form.Item<MaCarBookType>
                 name="createdByName"
                 label="ชื่อผู้จอง"
                 rules={[{ required: true, message: "กรุณากรอกชื่อผู้จอง" }]}
@@ -338,7 +346,7 @@ const MaCarTable: React.FC<props> = ({
 
           <Row gutter={16}>
             <Col span={8}>
-              <Form.Item<MaCarType>
+              <Form.Item<MaCarBookType>
                 name="carId"
                 label="ชื่อรถ"
                 rules={[{ required: true, message: "กรุณาเลือกรถ" }]}
@@ -353,7 +361,7 @@ const MaCarTable: React.FC<props> = ({
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<MaCarType>
+              <Form.Item<MaCarBookType>
                 name="carBookTitle"
                 label="วัตถุประสงค์การใช้งาน"
                 rules={[
@@ -364,7 +372,7 @@ const MaCarTable: React.FC<props> = ({
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<MaCarType>
+              <Form.Item<MaCarBookType>
                 name="carBookPlace"
                 label="สถานที่ไป"
                 rules={[{ required: true, message: "กรุณากรอกสถานที่ไป" }]}
@@ -373,7 +381,7 @@ const MaCarTable: React.FC<props> = ({
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<MaCarType>
+              <Form.Item<MaCarBookType>
                 name="carBookProvince"
                 label="จังหวัด"
                 rules={[{ required: true, message: "กรุณากรอกจังหวัด" }]}
@@ -382,18 +390,21 @@ const MaCarTable: React.FC<props> = ({
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<MaCarType>
+              <Form.Item<MaCarBookType>
                 name="carBookUsers"
                 label="จำนวนผู้ใช้"
                 rules={[{ required: true, message: "กรุณากรอกจำนวนผู้ใช้" }]}
               >
-                <Input placeholder="กรอกจำนวนผู้ใช้" />
+                <InputNumber
+                  style={{ width: "100%" }}
+                  placeholder="กรอกจำนวนผู้ใช้"
+                />
               </Form.Item>
             </Col>
           </Row>
           <Row gutter={24}>
             <Col span={8}>
-              <Form.Item<MaCarType>
+              <Form.Item<MaCarBookType>
                 name="carBookStartDate"
                 label="วันที่เริ่มการจอง"
                 rules={[
@@ -449,6 +460,28 @@ const MaCarTable: React.FC<props> = ({
           </Form.Item>
         </Form>
       </Modal>
+
+      <Row gutter={[18, 18]}>
+        <Col md={18}>
+          <ShareMaCarBook data={maFetchData} />
+        </Col>
+        <Col
+          md={6}
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
+          {" "}
+          {/* <Link href="/page/macar/ma-car-booking/">
+            <Button>คืนรถ</Button>
+          </Link> */}
+          <Button type="primary" onClick={handleReturnCar}>
+            คืนรถ
+          </Button>
+        </Col>
+      </Row>
       <Table
         columns={columns}
         dataSource={maFetchData}
@@ -456,9 +489,10 @@ const MaCarTable: React.FC<props> = ({
         onChange={changePagination}
         pagination={pagination}
         loading={loading}
+        style={{ marginTop: "15px" }}
       />
     </>
   );
 };
 
-export default MaCarTable;
+export default MaCarBookTable;

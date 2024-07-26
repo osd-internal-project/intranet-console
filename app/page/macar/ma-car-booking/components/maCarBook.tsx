@@ -47,7 +47,6 @@ const MaCarBook: React.FC<props> = ({
     const userIdData = session?.user.userId;
 
     const existingMa = await maCarBookServices.getMaCarBookQuery(userIdData);
-    console.log(existingMa);
 
     return existingMa.some((ma: any) => {
       return (

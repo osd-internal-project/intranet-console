@@ -168,7 +168,7 @@ const ManageCar: React.FC<props> = ({
             <ApproveIcon strokeColor="blue" width="2rem" height="2rem" />
           </a>
           {record.carBookApprovedStatus === "Return" ? (
-            <a onClick={() => showModalReturn(record)}>รับคืนรถ</a>
+            <a onClick={() => showModalReturn(record)}> รับคืนรถ</a>
           ) : record.carBookApprovedStatus === "Completed" ? (
             <span style={{ color: "grey" }}>รับคืนแล้ว</span>
           ) : (

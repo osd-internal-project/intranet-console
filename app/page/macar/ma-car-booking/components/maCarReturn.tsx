@@ -184,16 +184,12 @@ const MaCarReturn: React.FC<props> = ({
     setModalEditDetail(true);
 
     formBookData.setFieldsValue({
-      // ...record,
-
-      // carBookStartDate: dayjs(record.carBookStartDate),
-      // carBookEndDate: dayjs(record.carBookEndDate),
-
+      ...record,
+      carBookStartDate: dayjs(record.carBookStartDate),
+      carBookEndDate: dayjs(record.carBookEndDate),
       maCarName: record.maCar.carName,
-
       carName: record.maCar.carName,
       status: record.maCar.status,
-
       carMile: record.maCar.carMile,
       carPetrol: record.maCar.carPetrol,
       returnNotifAt: dayjs(record.returnNotifAt),
@@ -202,13 +198,6 @@ const MaCarReturn: React.FC<props> = ({
       returnAt: dayjs(record.returnAt),
       carName1: record.carName,
     });
-    console.log(record.maCar.carName);
-    console.log(record.maCar.status);
-
-    // console.log(car);
-    // console.log(record.maCar.carName);
-    // console.log(record.maCar.carMile);
-    // setMaCarName(record.maCar.carName);
   };
 
   const handleModalDetail = () => {

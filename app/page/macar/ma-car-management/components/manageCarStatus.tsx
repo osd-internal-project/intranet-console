@@ -215,7 +215,6 @@ any): React.ReactElement => {
 
   const updatedCar: FormProps<MaCarType>["onFinish"] = async (values) => {
     setSubmitLoading(true);
-    console.log(values);
 
     try {
       const { ...restValues } = values;

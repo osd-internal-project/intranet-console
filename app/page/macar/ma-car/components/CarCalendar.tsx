@@ -69,7 +69,6 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
     const ma = maFetchCalendar.find((b) => b.id === event.id);
     if (ma) {
       setSelectedMa(ma);
-      console.log(ma);
 
       formUpdate.setFieldsValue({
         ...ma,

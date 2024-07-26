@@ -111,7 +111,6 @@ const masterType: React.FC = () => {
 
   const updatedCarType: FormProps<MaCarType>["onFinish"] = async (values) => {
     setSubmitLoading(true);
-    console.log(values);
 
     try {
       const updateMaCarType = {

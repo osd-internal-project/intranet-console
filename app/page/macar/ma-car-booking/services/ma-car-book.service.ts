@@ -42,7 +42,6 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
         });
     },
     createMaCarBook: async (body: any) => {
-      console.log(body);
       return await axiosInstance
         .post(`${baseUrlApiMaCarBook}`, body)
         .then((res) => {

@@ -13,6 +13,7 @@ import {
   message,
   Popconfirm,
   InputNumber,
+  Tooltip,
   TablePaginationConfig,
 } from "antd";
 import { DeleteIcon, EditIcon } from "@/components/icon";
@@ -109,24 +110,28 @@ any): React.ReactElement => {
       align: "center",
       render: (_, record) => (
         <Space size="middle">
-          <a
-            onClick={() => showModalEditMaCar(record)}
-            role="button"
-            aria-label="Edit"
-            style={{ cursor: "pointer" }}
-          >
-            <EditIcon width="24" height="24" />
-          </a>
+          <Tooltip title="แก้ไข">
+            <a
+              onClick={() => showModalEditMaCar(record)}
+              role="button"
+              aria-label="Edit"
+              style={{ cursor: "pointer" }}
+            >
+              <EditIcon width="24" height="24" />
+            </a>
+          </Tooltip>
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
             onConfirm={() => handleDeleteCarStatus(record.carId)}
             okText="ใช่"
             cancelText="ไม่"
           >
-            <a>
-              {" "}
-              <DeleteIcon />{" "}
-            </a>
+            <Tooltip title="ลบ">
+              <a>
+                {" "}
+                <DeleteIcon />{" "}
+              </a>
+            </Tooltip>
           </Popconfirm>
         </Space>
       ),
@@ -141,26 +146,20 @@ any): React.ReactElement => {
   const showModalEditMaCar = (record: MaCarType) => {
     setCurrentMaId(record.carId);
     setSubmitLoading(false);
-
     form.setFieldsValue(record);
     setModalEditMaCar(true);
-
-    // setLoading(true);
   };
 
   const showModalCreateMaCar = () => {
     setModalCreateMaCar(true);
     setSubmitLoading(false);
     form.resetFields();
-    // setLoading(true);
   };
 
   const handleCancelCreateMaCar = () => {
     form.resetFields();
     setModalCreateMaCar(false);
     setSubmitLoading(true);
-
-    // setLoading(true);
   };
 
   const createMaCar: FormProps<MaCarType>["onFinish"] = async (values) => {
@@ -184,14 +183,9 @@ any): React.ReactElement => {
       if (response) {
         message.success("เพิ่มรถสำเร็จ");
         form.resetFields();
-        // setIsModalBooking(false);
       } else {
         message.error("เพิ่มรถไม่สำเร็จ");
       }
-
-      // setSubmitLoading(false);
-      // fetchData();
-      // setLoading(true);
     } catch (error) {
       message.error("เพิ่มรถไม่สำเร็จ");
       setSubmitLoading(false);
@@ -221,7 +215,6 @@ any): React.ReactElement => {
 
   const updatedCar: FormProps<MaCarType>["onFinish"] = async (values) => {
     setSubmitLoading(true);
-    console.log(values);
 
     try {
       const { ...restValues } = values;
@@ -415,7 +408,12 @@ any): React.ReactElement => {
         <Button
           type="primary"
           onClick={showModalCreateMaCar}
-          style={{ width: "120px" }}
+          style={{
+            float: "right",
+            margin: "10px",
+            padding: " 20px 30px 20px 30px",
+            fontSize: "18px",
+          }}
         >
           เพิ่มรถ
         </Button>

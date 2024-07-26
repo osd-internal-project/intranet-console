@@ -19,36 +19,37 @@ import CarStatus from "./components/CarStatus";
 import { MaCarServices } from "./services/ma-car.service";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { MaCarType, MaCarBookType } from "./../common/index";
 
-type MaCarType = {
-  id: string;
-  carId: string;
-  carName: string;
-  carPetrol: string;
-  detail: string;
-  status: string;
-  createdAt: Date;
-  createdById: string;
-  createdByName: string;
-  updatedAt: Date;
-  updatedById: string;
-  updatedByName: string;
-  carBookProvince: string;
-  carBookPlace: string;
-  carBookUsers: number;
-  carBookStartDate: Date;
-  carBookEndDate: Date;
-  approveDate: string;
-  carBookApprovedDate?: Date;
-  carBookApprovedById?: string;
-  carBookApprovedByName?: string;
-};
+// type MaCarType = {
+//   id: string;
+//   carId: string;
+//   carName: string;
+//   carPetrol: string;
+//   detail: string;
+//   status: string;
+//   createdAt: Date;
+//   createdById: string;
+//   createdByName: string;
+//   updatedAt: Date;
+//   updatedById: string;
+//   updatedByName: string;
+//   carBookProvince: string;
+//   carBookPlace: string;
+//   carBookUsers: number;
+//   carBookStartDate: Date;
+//   carBookEndDate: Date;
+//   approveDate: string;
+//   carBookApprovedDate?: Date;
+//   carBookApprovedById?: string;
+//   carBookApprovedByName?: string;
+// };
 
 const MaCar: React.FC = () => {
   const { data: session } = useSession();
   const intraAuth = useAxiosIntranet();
   const maCarServices = MaCarServices(intraAuth);
-  const [maFetchData, setMaFetchData] = useState([]);
+  const [maCarBookData, setMaCarBookData] = useState<MaCarBookType[]>([]);
   const [maFetchCalendar, setMaFetchCalendar] = useState([]);
   const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -74,7 +75,7 @@ const MaCar: React.FC = () => {
       label: "แสดงข้อมูลแบบตาราง",
       children: (
         <MaCarTable
-          maFetchData={maFetchData}
+          maCarBookData={maCarBookData}
           pagination={pagination}
           changePagination={changePagination}
           loading={loading}
@@ -86,13 +87,7 @@ const MaCar: React.FC = () => {
     {
       key: "3",
       label: "สถานะรถ",
-      children: (
-        <CarStatus
-        maCarData={maCarData}
-        setLoading={setLoading}
-
-        />
-      ),
+      children: <CarStatus maCarData={maCarData} setLoading={setLoading} />,
     },
   ];
 
@@ -117,7 +112,7 @@ const MaCar: React.FC = () => {
 
       const maCalender = await maCarServices.getMaCarBookQuery(createdById);
 
-      setMaFetchData(maCarBook);
+      setMaCarBookData(maCarBook);
       setMaFetchCalendar(maCalender);
       setPagination({ ...pagination, total: maCarBook.count });
 

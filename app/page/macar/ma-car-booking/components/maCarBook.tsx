@@ -35,8 +35,6 @@ const MaCarBook: React.FC<props> = ({
   const intraAuth = useAxiosIntranet();
   const maCarBookServices = MaCarBookServices(intraAuth);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [maCarDataa, setMaCarDataa] = useState<MaCarType[]>([]);
-  const [selectedCar, setSelectedCar] = useState<any[]>([]);
   const [carName, setCarName] = useState<MaCarType[]>([]);
 
   const [form] = Form.useForm();
@@ -49,7 +47,6 @@ const MaCarBook: React.FC<props> = ({
     const userIdData = session?.user.userId;
 
     const existingMa = await maCarBookServices.getMaCarBookQuery(userIdData);
-    console.log(existingMa);
 
     return existingMa.some((ma: any) => {
       return (

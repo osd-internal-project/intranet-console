@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { Modal, Tag, Form, Input, DatePicker, Collapse } from "antd";
+import {
+  Modal,
+  Tag,
+  Form,
+  Input,
+  DatePicker,
+  Collapse,
+  Row,
+  Col,
+  TimePicker,
+} from "antd";
 import moment from "moment";
 import {
   Calendar,
@@ -19,7 +29,7 @@ interface Props {
 }
 
 interface CustomEvent extends RbcEvent {
-  id: string;
+  id: number;
   carBookApprovedStatus: string;
   description: string;
   userName: string;
@@ -32,19 +42,23 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
   const [carBookApprovedStatusModalDetail, setStatusModalDetail] =
     useState(false);
   const [formUpdate] = useForm();
+
   const onCancelModalDetail = () => {
     setStatusModalDetail(false);
     setSelectedMa(null);
   };
+
   const renderStatusTag = (status: string) => {
     switch (status) {
-      case "Approve":
-        return <Tag color="green">อนุมัติสำเร็จ</Tag>;
       case "process":
         return <Tag color="blue">กำลังรออนุมัติ</Tag>;
+      case "Approve":
+        return <Tag color="green">อนุมัติแล้ว</Tag>;
       case "Cancel":
         return <Tag color="red">ยกเลิกการจอง</Tag>;
       case "Return":
+        return <Tag color="orange">แจ้งคืนรถแล้ว</Tag>;
+      case "Completed":
         return <Tag color="#748698">คืนรถสำเร็จ</Tag>;
       default:
         return "Unknown Status";
@@ -55,6 +69,7 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
     const ma = maFetchCalendar.find((b) => b.id === event.id);
     if (ma) {
       setSelectedMa(ma);
+
       formUpdate.setFieldsValue({
         ...ma,
         carBookStartDate: moment(ma.carBookStartDate),
@@ -89,6 +104,8 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
               : event.carBookApprovedStatus === "Cancel"
               ? "#D24545"
               : event.carBookApprovedStatus === "Return"
+              ? "orange"
+              : event.carBookApprovedStatus === "Completed"
               ? "#748698"
               : "#2196F3";
           return {
@@ -99,12 +116,16 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
       <Modal
         title="รายละเอียดการจอง"
         visible={carBookApprovedStatusModalDetail}
-        width={750}
+        width={500}
         onCancel={onCancelModalDetail}
         footer={null}
       >
         {selectedMa && (
-          <Form form={formUpdate} labelCol={{ span: 4 }}>
+          <Form
+            form={formUpdate}
+            labelCol={{ span: 6 }}
+            wrapperCol={{ span: 18 }}
+          >
             <Collapse
               bordered={false}
               defaultActiveKey={["1", "2", "3"]}
@@ -116,22 +137,43 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
                 <Form.Item label="ชื่อรถ" name="carName">
                   <Input className="read-only-input" disabled />
                 </Form.Item>
-                <Form.Item label="เริ่มวันที่" name="carBookStartDate">
+
+                <Form.Item label="วันที่เริ่มจอง" name="carBookStartDate">
                   <DatePicker
-                    showTime={false}
-                    format="DD-MM-YYYY HH:mm"
+                    format="DD-MM-YYYY"
                     disabled
                     className="read-only-input"
+                    style={{ width: "100%" }}
                   />
                 </Form.Item>
-                <Form.Item label="สิ้นสุดวันที่" name="carBookEndDate">
-                  <DatePicker
-                    showTime={false}
-                    format="DD-MM-YYYY HH:mm"
+
+                <Form.Item label="เวลาเริ่มจอง" name="carBookStartTime">
+                  <TimePicker
+                    format="HH:mm"
                     disabled
                     className="read-only-input"
+                    style={{ width: "100%" }}
                   />
                 </Form.Item>
+
+                <Form.Item label="วันที่สิ้นสุดการจอง" name="carBookEndDate">
+                  <DatePicker
+                    format="DD-MM-YYYY"
+                    disabled
+                    className="read-only-input"
+                    style={{ width: "100%" }}
+                  />
+                </Form.Item>
+
+                <Form.Item label="เวลาสิ้นสุดการจอง" name="carBookEndTime">
+                  <TimePicker
+                    format="HH:mm"
+                    disabled
+                    className="read-only-input"
+                    style={{ width: "100%" }}
+                  />
+                </Form.Item>
+
                 <Form.Item label="จังหวัดที่จอดรถ" name="carBookProvince">
                   <Input className="read-only-input" disabled />
                 </Form.Item>
@@ -145,11 +187,13 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
                   <TextArea className="read-only-input" disabled />
                 </Form.Item>
               </Collapse.Panel>
+
               <Collapse.Panel header="ข้อมูลผู้จอง" key="2">
                 <Form.Item label="ชื่อผู้จอง" name="createdByName">
                   <Input className="read-only-input" disabled />
                 </Form.Item>
               </Collapse.Panel>
+
               <Collapse.Panel header="สถานะ" key="3">
                 <Form.Item label="สถานะ">
                   {renderStatusTag(selectedMa.carBookApprovedStatus)}

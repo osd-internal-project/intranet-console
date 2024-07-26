@@ -11,6 +11,7 @@ import {
   message,
   Popconfirm,
   TablePaginationConfig,
+  Tooltip,
 } from "antd";
 import { DeleteIcon, ApproveIcon } from "@/components/icon";
 import type { TableProps, FormProps } from "antd";
@@ -153,10 +154,12 @@ const ManageCar: React.FC<props> = ({
             okText="ใช่"
             cancelText="ไม่"
           >
-            <a>
-              {" "}
-              <DeleteIcon width="24" height="24" />{" "}
-            </a>
+            <Tooltip title="ลบ">
+              <a>
+                {" "}
+                <DeleteIcon width="24" height="24" />{" "}
+              </a>
+            </Tooltip>
           </Popconfirm>
           <a
             onClick={() => showModalApproveBook(record)}

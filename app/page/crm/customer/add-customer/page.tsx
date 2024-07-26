@@ -73,22 +73,20 @@ export default function AddCustomerPage() {
       }
     }
 
-    if (form.responsibleSelect && form.responsibleSelect.length > 0) {
-      const responsibleSelected = customerResponsibles
-        .filter((user) => form.responsibleSelect?.includes(user.userId))
+    if (form.responsibleId && form.responsibleId.length > 0) {
+      const responsibleIded = customerResponsibles
+        .filter((user) => form.responsibleId?.includes(user.userId))
         .map((user) => ({
           uid: user.userId,
           name: `${user.firstNameTh} ${user.lastNameTh}`,
         }));
-      if (responsibleSelected) {
+      if (responsibleIded) {
         createForm = {
           ...createForm,
-          responsible: responsibleSelected,
+          responsibleId: form.responsibleId,
+          responsible: responsibleIded,
         };
       }
-    }
-    if (createForm.hasOwnProperty("responsibleSelect")) {
-      delete createForm["responsibleSelect"];
     }
     crmServices
       .create(createForm)

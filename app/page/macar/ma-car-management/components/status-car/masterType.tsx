@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import moment from 'moment';
+import moment from "moment";
 import {
   Table,
   ConfigProvider,
@@ -13,13 +13,14 @@ import {
   message,
   Form,
   FormProps,
+  Tooltip,
 } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../../services/manage-car.service";
 import { useForm } from "antd/es/form/Form";
 import ExportExcel from "./ExportExcel";
 import { useSession } from "next-auth/react";
-
+import { DeleteIcon, ApproveIcon, EditIcon } from "@/components/icon";
 export interface MaCarType {
   id: number;
   typeName: string;
@@ -114,7 +115,7 @@ const masterType: React.FC = () => {
 
     try {
       const updateMaCarType = {
-        id: formEdit.getFieldValue('id'),
+        id: values?.id,
         typeName: values?.typeName,
         detail: values?.detail,
         status: values?.status,
@@ -158,13 +159,14 @@ const masterType: React.FC = () => {
     {
       title: "ชื่อ",
       dataIndex: "createdByName",
-      key: "createdByName", 
+      key: "createdByName",
     },
     {
-      title: "เวลา",
+      title: "เวลาการสร้าง",
       dataIndex: "createdAt",
       key: "createdAt",
-      render: (createdAt: Date) => moment(createdAt).format('YYYY-MM-DD HH:mm')
+      render: (createdAt: Date) =>
+        moment(createdAt).format("YYYY-MM-DD HH:mm A"),
     },
 
     {
@@ -173,25 +175,9 @@ const masterType: React.FC = () => {
       key: "status",
       render: (status: boolean) =>
         status ? (
-          <Tag color="green"
-            // style={{
-            //   scale: "120%",
-            //   fontStyle: "bold",
-            //   backgroundColor: "#00FF00",
-            // }}
-          >
-            เปิดการมอง
-          </Tag>
+          <Tag color="green">เปิดการมอง</Tag>
         ) : (
-          <Tag color="red"
-            // style={{
-            //   scale: "120%",
-            //   fontStyle: "bold",
-            //   backgroundColor: "#FF6347",
-            // }}
-          >
-            ปิดการมอง
-          </Tag>
+          <Tag color="red">ปิดการมอง</Tag>
         ),
     },
     {
@@ -200,14 +186,23 @@ const masterType: React.FC = () => {
       key: "manage",
       render: (record: number, row: any, index: number) => (
         <Space size="middle">
-          <Button onClick={() => showModalEditMaCarType(row)}>แก้ไข</Button>
+          <Tooltip title="แก้ไข">
+            <a onClick={() => showModalEditMaCarType(row)}>
+              <EditIcon width="24" height="24" />{" "}
+            </a>
+          </Tooltip>
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
             onConfirm={() => handleDeletemaCar(row.id)}
             okText="ใช่"
             cancelText="ไม่"
           >
-            <Button type="primary"> ลบ</Button>
+            <Tooltip title="ลบ">
+              <a>
+                {" "}
+                <DeleteIcon width="24" height="24" />{" "}
+              </a>
+            </Tooltip>
           </Popconfirm>
         </Space>
       ),
@@ -217,16 +212,22 @@ const masterType: React.FC = () => {
   return (
     <div>
       <div className="value">
-        <Button
-          type="primary"
-          style={{ margin: "0 0 0 0" }}
-          onClick={showModal}
-        >
-          สร้างข้อมูลรถ
-        </Button>
+        <div>
+          <Button
+            type="primary"
+            style={{
+              margin: "10px 0 20px 0",
+              padding: " 20px 30px 20px 30px ",
+              fontSize: "16px",
+            }}
+            onClick={showModal}
+          >
+            สร้างประเภทตรวจสภาพ
+          </Button>
+        </div>
 
         <Modal
-          width={1000}
+          width={350}
           title="การจัดการประเภทรถ"
           open={isModalOpen1}
           onOk={handleOk}
@@ -252,7 +253,7 @@ const masterType: React.FC = () => {
               name="typeName"
               label={"ประเภทการบำรุงรักษา :"}
             >
-              <Input size="large" placeholder="ประเภทการบำรุงรักษา" />
+              <Input size="large" />
             </Form.Item>
             <Form.Item<MaCarType>
               style={{
@@ -304,8 +305,8 @@ const masterType: React.FC = () => {
         </Modal>
 
         <Modal
-          width={1000}
-          title="การแก้ไขประเภทรถ"
+          width={350}
+          title="การแก้ไขบำรุงการรักษา"
           open={modalEditMaCarType}
           onOk={handleOk1edit}
           onCancel={handleCancel1edit}
@@ -328,9 +329,9 @@ const masterType: React.FC = () => {
                 width: "450px",
               }}
               name="id"
-              label={"ไอดี"}
+              label={"ID :"}
             >
-              <Input size="large" placeholder="ประเภทการบำรุงรักษา" />
+              <Input size="large" disabled />
             </Form.Item>
             <Form.Item<MaCarType>
               style={{
@@ -341,7 +342,7 @@ const masterType: React.FC = () => {
               name="typeName"
               label={"ประเภทการบำรุงรักษา :"}
             >
-              <Input size="large" placeholder="ประเภทการบำรุงรักษา" />
+              <Input size="large" />
             </Form.Item>
             <Form.Item<MaCarType>
               style={{
@@ -391,8 +392,7 @@ const masterType: React.FC = () => {
           </Form>
         </Modal>
       </div>
-        <Table dataSource={maCarData} columns={columns} />
-      
+      <Table dataSource={maCarData} columns={columns} />
     </div>
   );
 };

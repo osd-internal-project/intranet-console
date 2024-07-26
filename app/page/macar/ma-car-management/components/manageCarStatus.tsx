@@ -13,6 +13,7 @@ import {
   message,
   Popconfirm,
   InputNumber,
+  Tooltip,
   TablePaginationConfig,
 } from "antd";
 import { DeleteIcon, EditIcon } from "@/components/icon";
@@ -109,24 +110,28 @@ any): React.ReactElement => {
       align: "center",
       render: (_, record) => (
         <Space size="middle">
-          <a
-            onClick={() => showModalEditMaCar(record)}
-            role="button"
-            aria-label="Edit"
-            style={{ cursor: "pointer" }}
-          >
-            <EditIcon width="24" height="24" />
-          </a>
+          <Tooltip title="แก้ไข">
+            <a
+              onClick={() => showModalEditMaCar(record)}
+              role="button"
+              aria-label="Edit"
+              style={{ cursor: "pointer" }}
+            >
+              <EditIcon width="24" height="24" />
+            </a>
+          </Tooltip>
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
             onConfirm={() => handleDeleteCarStatus(record.carId)}
             okText="ใช่"
             cancelText="ไม่"
           >
-            <a>
-              {" "}
-              <DeleteIcon />{" "}
-            </a>
+            <Tooltip title="ลบ">
+              <a>
+                {" "}
+                <DeleteIcon />{" "}
+              </a>
+            </Tooltip>
           </Popconfirm>
         </Space>
       ),
@@ -404,7 +409,12 @@ any): React.ReactElement => {
         <Button
           type="primary"
           onClick={showModalCreateMaCar}
-          style={{ width: "120px" }}
+          style={{
+            float: "right",
+            margin: "10px",
+            padding: " 20px 30px 20px 30px",
+            fontSize: "18px",
+          }}
         >
           เพิ่มรถ
         </Button>

@@ -91,8 +91,14 @@ export default function CustomerDetailPage() {
       const responsibles = await userServices.findOrganizeUserByUserId(
         session?.user.userId
       );
-      if (responsibles && responsibles.length > 0) {
-        setCustomerResponsibles(responsibles);
+
+      if (session?.user.userId) {
+        const responsibles = await userServices.findSaleUserBySalePermission(
+          session?.user.userId
+        );
+        if (responsibles && responsibles.length > 0) {
+          setCustomerResponsibles(responsibles);
+        }
       }
     }
 
@@ -109,7 +115,7 @@ export default function CustomerDetailPage() {
     descriptionForm.setFieldsValue({
       ...customerDetail,
       regisDate: regisDate,
-      responsibleSelect: customerDetail.responsible?.map((data) => data.uid),
+      responsibleId: customerDetail.responsible?.map((data) => data.uid),
     });
     setIsEdit(false);
   };
@@ -157,17 +163,18 @@ export default function CustomerDetailPage() {
         };
       }
     }
-    if (form.responsibleSelect && form.responsibleSelect.length > 0) {
-      const responsibleSelected = customerResponsibles
-        .filter((user) => form.responsibleSelect?.includes(user.userId))
+    if (form.responsibleId && form.responsibleId.length > 0) {
+      const responsibleIded = customerResponsibles
+        .filter((user) => form.responsibleId?.includes(user.userId))
         .map((user) => ({
           uid: user.userId,
           name: `${user.firstNameTh} ${user.lastNameTh}`,
         }));
-      if (responsibleSelected) {
+      if (responsibleIded) {
         updateForm = {
           ...updateForm,
-          responsible: responsibleSelected,
+          responsibleId: form.responsibleId,
+          responsible: responsibleIded,
         };
       }
     }
@@ -182,9 +189,7 @@ export default function CustomerDetailPage() {
     //     };
     //   }
     // }
-    if (updateForm.hasOwnProperty("responsibleSelect")) {
-      delete updateForm["responsibleSelect"];
-    }
+
     await crmServices
       .update(+params.cusid, updateForm)
       .then((res) => {

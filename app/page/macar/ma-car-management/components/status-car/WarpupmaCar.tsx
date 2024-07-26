@@ -13,6 +13,10 @@ import {
   Form,
   FormProps,
   DatePicker,
+  InputNumber,
+  Tag,
+  Switch,
+  Tooltip,
 } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../../services/manage-car.service";
@@ -22,7 +26,10 @@ import { useSession } from "next-auth/react";
 import MaCar from "../../../ma-car/page";
 import { Decimal } from "@prisma/client/runtime/library";
 import dayjs from "dayjs";
-
+import type { TableProps } from "antd";
+import { DeleteIcon, ApproveIcon, EditIcon } from "@/components/icon";
+import { log } from "console";
+import { EyeOutlined } from "@ant-design/icons";
 export interface MaCarType {
   id: number;
   typeName: string;
@@ -40,7 +47,6 @@ export interface MaCar {
   carPetrol: string;
   carMile: number;
   detail: string;
-  status: boolean;
   createdAt: Date;
   createdById?: string;
   createdByName?: string;
@@ -65,11 +71,13 @@ export interface MaCarwarpup {
   remark: string;
   createdAt: string;
   updatedAt: string;
+  status: boolean;
 }
 const WarpupmaCar = () => {
   const intraAuth = useAxiosIntranet();
   const [form] = useForm();
   const [formchange] = useForm();
+  const [formdetail] = useForm();
   const manageCarServices = ManageCarServices(intraAuth);
   const [maData, setMaData] = useState<MaCar[]>([]);
   const [maDataOptions, setMaDataOptions] = useState<
@@ -88,10 +96,15 @@ const WarpupmaCar = () => {
 
   const [maDataWarpup, setMaDataWarpup] = useState<MaCarwarpup[]>([]);
   const [IsmodlaOpencreate, setIsmodlaOpencreate] = useState(false);
+  const [Ismodlasubmit, setIsmodlasubmit] = useState(false);
   const [IsmodlaOpenupdate, setIsmodlaOpenupdate] = useState(false);
+  const [Ismodladetail, setIsmodladetail] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [modalEditMaCarWarpup, setModalEditMaCarWarpup] = useState(false);
-  const { data: session } = useSession();
+  const [maCar, setMaCar] = useState<MaCarwarpup[]>([]);
+  const [selectedCar, setSelectedCar] = useState<string>("");
+  const [mileage, setMileage] = useState<number | undefined>(undefined);
+
   useEffect(() => {
     fetchData();
     fetchDataType();
@@ -101,6 +114,7 @@ const WarpupmaCar = () => {
   const fetchData = async () => {
     try {
       const maresponse = await manageCarServices.getMaCarQuery();
+      setMaCar(maresponse);
       const optionsmaResponsema = maresponse.map((event: MaCar) => {
         return {
           value: event.carName,
@@ -112,6 +126,18 @@ const WarpupmaCar = () => {
     } catch (error) {
       message.error("Failed to fetch car data");
     }
+  };
+
+  const handleSelectChange = (value: string) => {
+    setSelectedCar(value);
+    const carmilesData = maData.find((car) => car.carId === value);
+    setMileage(carmilesData?.carMile);
+    form.setFieldsValue({ wrapupMiles: carmilesData?.carMile });
+    console.log(carmilesData);
+  };
+
+  const handleMileageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMileage(Number(e.target.value));
   };
 
   const fetchDataType = async () => {
@@ -130,15 +156,12 @@ const WarpupmaCar = () => {
     }
   };
 
-  // console.log(maDataTypeOptions);
-
   const fetchDataWarpup = async () => {
     try {
       const maresponse = await manageCarServices.getMaCarQueryWarpup();
       const MaCarWarpup: MaCarwarpup[] = maresponse.map(
         (item: any, index: number) => ({
           ...item,
-
           key: index.toString(),
         })
       );
@@ -151,15 +174,17 @@ const WarpupmaCar = () => {
   const createMaCarWarpup: FormProps<MaCarwarpup>["onFinish"] = async (
     values
   ) => {
-    console.log(values);
+    const carIdData = maCar.findLast((car) => car.carId === values.carId);
+    console.log(`${carIdData}`);
 
     const maCarCreateDataWarpup = {
       data: {
+        carId: values.carId,
         vender: values.vender,
         carWrapupId: values.carWrapupId,
         typeName: values.typeName,
-        carName: values.carName,
-        wrapupMiles: values.wrapupMiles,
+        carName: carIdData?.carName,
+        wrapupMiles: new String(values.wrapupMiles),
         detail: values.detail,
         cost: values.cost,
         dateStart: values.dateStart,
@@ -177,23 +202,24 @@ const WarpupmaCar = () => {
       } else {
         message.error("เพิ่มรถไม่สำเร็จ");
       }
-
       setSubmitLoading(false);
-      fetchData();
+      fetchDataWarpup();
     } catch (error) {
       message.error("เพิ่มรถไม่สำเร็จ");
       setSubmitLoading(false);
     }
   };
 
-  const updatedCarWrpup: FormProps<MaCarwarpup>["onFinish"] = async (values) => {
+  const updatedCarWrpup: FormProps<MaCarwarpup>["onFinish"] = async (
+    values
+  ) => {
     setSubmitLoading(true);
     try {
       const updateMaCarWarpup = {
         vender: values.vender,
         typeName: values.typeName,
         carName: values.carName,
-        wrapupMiles: values.wrapupMiles,
+        wrapupMiles: new String(values.wrapupMiles),
         detail: values.detail,
         cost: values.cost,
         dateStart: new Date(values.dateStart),
@@ -205,8 +231,7 @@ const WarpupmaCar = () => {
         updateMaCarWarpup
       );
       message.success("แก้ไขข้อมูลห้องสำเร็จ");
-
-      fetchData();
+      fetchDataWarpup();
       handleEditMaCarCancelWarpup();
       setSubmitLoading(false);
     } catch (error) {
@@ -214,9 +239,28 @@ const WarpupmaCar = () => {
     }
   };
 
-  const handleDeletemaCarWarpup = async (carWrapupId: number) => {
-    console.log(carWrapupId);
+  const updatedchecksubmit: FormProps<MaCarwarpup>["onFinish"] = async (
+    values
+  ) => {
+    setSubmitLoading(true);
+    try {
+      const updateMaCarWarpup = {
+        status: !values.status,
+      };
 
+      await manageCarServices.updateMaCarWarpup(
+        formchange.getFieldValue("carWrapupId"),
+        updateMaCarWarpup
+      );
+      message.success("การเช็คสำเร็จ");
+      setSubmitLoading(false);
+      setIsmodlasubmit(false);
+    } catch (error) {
+      message.error("การเช็คไม่สำเร็จ");
+    }
+  };
+
+  const handleDeletemaCarWarpup = async (carWrapupId: string) => {
     try {
       await manageCarServices.deleteMaCarWarpup(carWrapupId);
       message.success("ลบการจองสำเร็จ");
@@ -230,6 +274,15 @@ const WarpupmaCar = () => {
     form.resetFields();
   };
 
+  const detailswarpup = (record: MaCarwarpup) => {
+    formdetail.setFieldsValue({
+      ...record,
+      dateStart: dayjs(record.dateStart),
+      dateEnd: dayjs(record.dateEnd),
+    });
+    setIsmodladetail(true);
+  };
+
   const showModalEditMaCarWarpup = (record: MaCarwarpup) => {
     formchange.setFieldsValue({
       ...record,
@@ -238,7 +291,6 @@ const WarpupmaCar = () => {
     });
     setIsmodlaOpenupdate(true);
   };
-
   const modalopencreate = () => {
     setIsmodlaOpencreate(true);
   };
@@ -246,258 +298,500 @@ const WarpupmaCar = () => {
     setIsmodlaOpencreate(false);
   };
 
-  const modalopenupdate = () => {
-    setIsmodlaOpenupdate(true);
+  const modalopensubmit = (record: MaCarwarpup) => {
+    formchange.setFieldsValue({
+      ...record,
+      dateStart: dayjs(record.dateStart),
+      dateEnd: dayjs(record.dateEnd),
+    });
+    setIsmodlasubmit(true);
+  };
+  const handleclosesubmit = () => {
+    setIsmodlasubmit(false);
   };
   const handlecloseupdate = () => {
     setIsmodlaOpenupdate(false);
   };
 
-  const columns = [
+  const handledetail = () => {
+    setIsmodladetail(false);
+  };
+
+  const dataWithKey = maDataWarpup.map((item, index) => ({
+    ...item,
+    key: index + 1,
+    index: index + 1,
+  }));
+
+  const columns: TableProps<MaCarwarpup>["columns"] = [
     {
       title: "ลำดับ",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "index",
+      key: "index",
+      align: "center",
+      width: "20px",
     },
     {
       title: "ชื่อรถ",
       dataIndex: "carName",
       key: "carName",
+      width: "180px",
     },
     {
-      title: "ประเภทการตรวจสภาพ",
+      title: "ประเภทตรวจสภาพ",
       dataIndex: "typeName",
       key: "typeName",
+      width: "140px",
     },
     {
-      title: "รายละเอียดการตรวจสภาพ",
+      title: "รายละเอียดการตรวจ",
       dataIndex: "detail",
       key: "detail",
+      width: "200px",
     },
     {
-      title: "สถานที่การเช็คสภาพ",
+      title: "สถานที่เช็คสภาพ",
       dataIndex: "vender",
       key: "vender",
+      width: "200px",
+    },
+    {
+      title: "เลขไมล์",
+      dataIndex: "wrapupMiles",
+      key: "wrapupMiles",
+      align: "center",
+      render: (textmiles: number) => new Intl.NumberFormat().format(textmiles),
     },
     {
       title: "ราคา",
       dataIndex: "cost",
       key: "cost",
+      align: "center",
       render: (text: number) => new Intl.NumberFormat().format(text),
     },
     {
-      title: "เวลาเริ่มต้น",
+      title: "วันที่ระบุ",
       dataIndex: "dateStart",
       key: "dateStart",
-      render: (createdAt: Date) => moment(createdAt).format("YYYY-MM-DD"),
+      width: "40px",
+      render: (createdAt: Date) => moment(createdAt).format("YYYY/MM/DD"),
     },
     {
-      title: "เวลาต่อไป",
+      title: "วันตรวจสภาพ",
       dataIndex: "dateEnd",
       key: "dateEnd",
-      render: (createdAt: Date) => moment(createdAt).format("YYYY-MM-DD"),
+      width: "40px",
+      render: (createdAt: Date) => moment(createdAt).format("YYYY/MM/DD"),
     },
     {
-      title: "การอนุมัติ",
-      dataIndex: "vender",
-      key: "vender",
+      title: "หมายเหตุ",
+      dataIndex: "remark",
+      key: "remark",
+      align: "center",
+      render: (_: any, record: MaCarwarpup) => (
+        <a onClick={() => detailswarpup(record)}>
+          <Tooltip title="View">
+            <EyeOutlined
+              style={{ fontSize: "24px", color: "#08c", cursor: "pointer" }}
+            />
+          </Tooltip>
+        </a>
+      ),
     },
     {
-      title: "การจัดการ",
-      dataIndex: "manage",
-      key: "manage",
-      render: (record: number, row: any, index: number) => (
+      title: "สถานะ",
+      dataIndex: "status",
+      key: "status",
+      align: "center",
+      width: "30px",
+      render: (status: boolean) =>
+        status ? (
+          <Tag color="blue">รอการเช็ค</Tag>
+        ) : (
+          <Tag color="green">เช็คแล้ว</Tag>
+        ),
+    },
+    {
+      title: "ตัวเลือก",
+      dataIndex: "",
+      key: "x",
+      width: "50px",
+      align: "center",
+      render: (_: any, record: MaCarwarpup) => (
         <Space size="middle">
-          <Button onClick={() => showModalEditMaCarWarpup(row)}>แก้ไข</Button>
+          <Tooltip title="แก้ไข">
+            <a onClick={() => showModalEditMaCarWarpup(record)}>
+              <EditIcon />
+            </a>
+          </Tooltip>
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
-            onConfirm={() => handleDeletemaCarWarpup(row.carWrapupId)}
-            okText="ใช่"
-            cancelText="ไม่"
-          >
-            <Button type="link" danger>
-              ลบ
-            </Button>
-          </Popconfirm>
-          <Popconfirm
-            title="เมื้่อกดอนุมัติแล้วคุณจะไม่สามารถแก้ไขได้อีก ยืนยันหรือยกเลิก ?"
-            // onConfirm={() => handleDeletemaCarWarpup(row.carWrapupId)}
-            okText="อนุมิตื"
+            onConfirm={() => handleDeletemaCarWarpup(record.carWrapupId)}
+            okText="ยืนยัน"
             cancelText="ยกเลิก"
           >
-            <Button type="link">อนุมัติ</Button>
+            <a>
+              <Tooltip title="ลบ">
+                {" "}
+                <DeleteIcon width="20" height="20" />{" "}
+              </Tooltip>
+            </a>
           </Popconfirm>
+          <Tooltip title="การเช็ค">
+            <a onClick={() => modalopensubmit(record)}>
+              <ApproveIcon strokeColor="blue" width="1rem" height="1rem" />
+            </a>
+          </Tooltip>
         </Space>
       ),
     },
   ];
 
-  // const feustion = [ ...maData, ...maDataType ]
   return (
-    <div>
-      <h1  style={{margin:'10px 10px 10px 10px', display:'flex-inline',justifyItems:'end'}}>
-        <ExportExcel datamacar={maDataWarpup} />
-      
+    <>
+      <div>
+        <div>
+          <Button
+            style={{
+              float: "left",
+              margin: "10px",
+              padding: " 20px 30px 20px 30px",
+              fontSize: "16px",
+            }}
+            type="primary"
+            onClick={modalopencreate}
+          >
+            เพิ่มข้อมูลตรวจสภาพรถ
+          </Button>
 
-      
-      </h1>
-      <Button style={{margin:"0 0 0 auto"}} type="primary" onClick={modalopencreate}>
-        สร้างการตรวจสภาพรถ
-      </Button>
+          <div
+            style={{
+              float: "right",
+              margin: "10px",
+              padding: " 20px 30px 20px 30px",
+              fontSize: "16px",
+            }}
+          >
+            <ExportExcel datamacar={dataWithKey} />
+          </div>
+        </div>
+      </div>
+      <Table
+        dataSource={dataWithKey}
+        columns={columns}
+        rowKey="id"
+        bordered
+        pagination={{ pageSize: 10 }}
+      />
       <Modal
-        width={1000}
-        title="สร้างการตรวจสภาพรถ"
+        title="เพิ่มข้อมูลตรวจสภาพรถ"
         open={IsmodlaOpencreate}
-        onOk={handleclosecreate}
         onCancel={handleclosecreate}
         footer={null}
+        destroyOnClose
       >
         <Form
-          name="basic"
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
-          initialValues={{ remember: true }}
-          onFinish={createMaCarWarpup}
-          autoComplete="off"
-          layout="vertical"
           form={form}
+          onFinish={createMaCarWarpup}
+          layout="vertical"
+          initialValues={{ wrapupMiles: mileage }}
         >
-          <Form.Item<MaCarwarpup> label="หมายเลขการตรวจบำรุง" name="typeId">
-            <Input placeholder="" />
-          </Form.Item>
-          <Form.Item<MaCarwarpup>
-            label="ประเภทการบำรุงตรวจสภาพ"
-            name="typeName"
+          <Form.Item
+            name="carId"
+            label="ชื่อรถ"
+            rules={[{ required: true, message: "กรุณาเลือกชื่อรถ" }]}
           >
-            <Select placeholder="เลือกการแสดง" options={maDataTypeOptions} />
+            <Select
+              placeholder="โปรดเลือกรถ"
+              style={{ width: "100%" }}
+              onChange={handleSelectChange}
+            >
+              {maCar.map((car, index) => (
+                <Select.Option key={index} value={car.carId}>
+                  {car.carName}
+                </Select.Option>
+              ))}
+            </Select>
           </Form.Item>
-          <Form.Item<MaCarwarpup> label="ชื่อรถ :" name="carName">
-            <Select placeholder="เลือกการแสดง" options={maDataOptions} />
+          <Form.Item
+            name="typeName"
+            label="ประเภทการตรวจสภาพ"
+            rules={[{ required: true, message: "กรุณาเลือกประเภทการตรวจสภาพ" }]}
+          >
+            <Select>
+              {maDataTypeOptions
+                .filter((option) => {
+                  const type = maDataType.find(
+                    (type) => type.typeName === option.label
+                  );
+                  return type && type.status;
+                })
+                .map((option) => (
+                  <Select.Option key={option.value} value={option.value}>
+                    {option.label}
+                  </Select.Option>
+                ))}
+            </Select>
           </Form.Item>
-          <Form.Item<MaCarwarpup> label="เลขไมล์ตรวจสภาพ :" name="wrapupMiles">
-            <Input placeholder="ระบุเลขไมล์รถ" />
+          <Form.Item
+            name="wrapupMiles"
+            label="เลขไมล์"
+            rules={[
+              { required: true, message: "กรุณากรอกเลขไมล์" },
+              {
+                validator: async (_, value) => {
+                  const selectedCar = maData.find(
+                    (car) => car.carName === form.getFieldValue("carId")
+                  );
+                  if (selectedCar && value < selectedCar.carMile) {
+                    throw new Error("เลขไมล์ต้องไม่น้อยกว่าเลขไมล์เดิม");
+                  }
+                },
+              },
+            ]}
+          >
+            <InputNumber changeOnWheel value={mileage} />
           </Form.Item>
-          <Form.Item<MaCarwarpup> label="หมายเหตุ :" name="detail">
-            <Input placeholder="" />
+          <Form.Item
+            name="vender"
+            label="สถานที่การเช็คสภาพ"
+            rules={[{ required: true, message: "กรุณากรอกสถานที่การเช็คสภาพ" }]}
+          >
+            <Input />
           </Form.Item>
-          <Form.Item<MaCarwarpup> label="สถานที่ :" name="vender">
-            <Input placeholder="" />
+          <Form.Item
+            name="cost"
+            label="ราคา"
+            rules={[{ required: true, message: "กรุณากรอกราคา" }]}
+          >
+            <InputNumber
+              style={{ width: "100%" }}
+              formatter={(value) =>
+                `฿ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
+              parser={(value) => value!.replace(/\฿\s?|(,*)/g, "") as any}
+              changeOnWheel
+            />
           </Form.Item>
-          <Form.Item<MaCarwarpup> label="ราคา :" name="cost">
-            <Input placeholder="" />
+          <Form.Item
+            name="detail"
+            label="รายละเอียดการตรวจสภาพ"
+            rules={[
+              { required: true, message: "กรุณากรอกรายละเอียดการตรวจสภาพ" },
+            ]}
+          >
+            <Input.TextArea rows={4} />
           </Form.Item>
-          <Form.Item<MaCarwarpup> label="วันที่บันทึก :" name="dateStart">
-            <DatePicker />
+          <Form.Item
+            name="dateStart"
+            label="เวลาเริ่มต้น"
+            rules={[{ required: true, message: "กรุณาเลือกเวลาเริ่มต้น" }]}
+          >
+            <DatePicker style={{ width: "100%" }} />
           </Form.Item>
-          <Form.Item<MaCarwarpup> label="วันตรวจสภาพ :" name="dateEnd">
-            <DatePicker />
+          <Form.Item
+            name="dateEnd"
+            label="เวลาสิ้นสุด"
+            rules={[{ required: true, message: "กรุณาเลือกเวลาสิ้นสุด" }]}
+          >
+            <DatePicker style={{ width: "100%" }} />
           </Form.Item>
-          <Form.Item<MaCarwarpup> label="รายละเอียดรถ(พิเศษ)" name="remark">
-            <Input placeholder="" />
+          <Form.Item name="remark" label="หมายเหตุ">
+            <Input.TextArea rows={2} />
           </Form.Item>
-          <div className="flex justify-end w-full">
-            <Form.Item>
-              <Button
-                type="default"
-                onClick={handleclosecreate}
-                style={{ marginRight: 8 }}
-              >
-                ยกเลิก
-              </Button>
-            </Form.Item>
-            <Form.Item>
+          <Form.Item>
+            <Space style={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button onClick={handleclosecreate}>ยกเลิก</Button>
               <Button type="primary" htmlType="submit" loading={submitLoading}>
-                ตกลง
+                บันทึก
               </Button>
-            </Form.Item>
-          </div>
+            </Space>
+          </Form.Item>
         </Form>
       </Modal>
-      {IsmodlaOpenupdate ? (
-        <Modal
-          width={1000}
-          title="สร้างการตรวจสภาพรถ"
-          open={IsmodlaOpenupdate}
-          onOk={modalopenupdate}
-          onCancel={handlecloseupdate}
-          footer={null}
+      <Modal
+        title="แก้ไขข้อมูลตรวจสภาพรถ"
+        open={IsmodlaOpenupdate}
+        onCancel={handlecloseupdate}
+        footer={null}
+        destroyOnClose
+      >
+        <Form
+          form={formchange}
+          onFinish={updatedCarWrpup}
+          layout="vertical"
+          initialValues={{
+            wrapupMiles: 0,
+            cost: 0,
+          }}
         >
-          <Form
-            name="basic"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            onFinish={updatedCarWrpup}
-            autoComplete="off"
-            layout="vertical"
-            form={formchange}
+          <Form.Item
+            name="carName"
+            label="ชื่อรถ"
+            rules={[{ required: true, message: "กรุณาเลือกชื่อรถ" }]}
           >
-            <Form.Item<MaCarwarpup> label="หมายเลขการตรวจบำรุง" name="typeId">
-              <Input placeholder="" disabled />
-            </Form.Item>
-            <Form.Item<MaCarwarpup>
-              label="หมายเลขการตรวจบำรุง"
-              name="carWrapupId"
+            <Select options={maDataOptions} disabled />
+          </Form.Item>
+          <Form.Item
+            name="typeName"
+            label="ประเภทการตรวจสภาพ"
+            rules={[{ required: true, message: "กรุณาเลือกประเภทการตรวจสภาพ" }]}
+          >
+            <Select>
+              {maDataTypeOptions
+                .filter((option) => {
+                  const type = maDataType.find(
+                    (type) => type.typeName === option.label
+                  );
+                  return type && type.status;
+                })
+                .map((option) => (
+                  <Select.Option key={option.value} value={option.value}>
+                    {option.label}
+                  </Select.Option>
+                ))}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name="wrapupMiles"
+            label="เลขไมล์"
+            rules={[
+              { required: true, message: "กรุณากรอกเลขไมล์" },
+              {
+                validator: async (_, value) => {
+                  const selectedCar = maData.find(
+                    (car) => car.carName === formchange.getFieldValue("carName")
+                  );
+                  if (selectedCar && value < selectedCar.carMile) {
+                    throw new Error("เลขไมล์ต้องไม่น้อยกว่าเลขไมล์เดิม");
+                  }
+                },
+              },
+            ]}
+          >
+            <Input
+              onChange={handleMileageChange}
+              value={mileage !== undefined ? mileage : ""}
+            />
+          </Form.Item>
+          <Form.Item
+            name="vender"
+            label="สถานที่การเช็คสภาพ"
+            rules={[{ required: true, message: "กรุณากรอกสถานที่การเช็คสภาพ" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="cost"
+            label="ราคา"
+            rules={[{ required: true, message: "กรุณากรอกราคา" }]}
+          >
+            <InputNumber
+              style={{ width: "100%" }}
+              formatter={(value) =>
+                `฿ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
+              parser={(value) => value!.replace(/\฿\s?|(,*)/g, "") as any}
+              changeOnWheel
+            />
+          </Form.Item>
+          <Form.Item
+            name="detail"
+            label="รายละเอียดการตรวจสภาพ"
+            rules={[
+              { required: true, message: "กรุณากรอกรายละเอียดการตรวจสภาพ" },
+            ]}
+          >
+            <Input.TextArea rows={4} />
+          </Form.Item>
+          <Form.Item
+            name="dateStart"
+            label="เวลาเริ่มต้น"
+            rules={[{ required: true, message: "กรุณาเลือกเวลาเริ่มต้น" }]}
+          >
+            <DatePicker style={{ width: "100%" }} />
+          </Form.Item>
+          <Form.Item
+            name="dateEnd"
+            label="เวลาสิ้นสุด"
+            rules={[{ required: true, message: "กรุณาเลือกเวลาสิ้นสุด" }]}
+          >
+            <DatePicker style={{ width: "100%" }} />
+          </Form.Item>
+          <Form.Item name="remark" label="หมายเหตุ">
+            <Input.TextArea rows={2} />
+          </Form.Item>
+          <Form.Item>
+            <Space style={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button onClick={handlecloseupdate}>ยกเลิก</Button>
+              <Button type="primary" htmlType="submit" loading={submitLoading}>
+                บันทึก
+              </Button>
+            </Space>
+          </Form.Item>
+        </Form>
+      </Modal>
+      <Modal
+        title="เพิ่มข้อมูลตรวจสภาพรถ"
+        width={300}
+        open={Ismodlasubmit}
+        onCancel={handleclosesubmit}
+        footer={null}
+        destroyOnClose
+        style={{ textAlign: "center" }}
+      >
+        <div style={{ fontSize: "18px", textAlign: "center" }}>
+          เช็คสภาพแล้ว ใช่ หรือ ไม่ ?
+        </div>
+        <Form form={formchange} onFinish={updatedchecksubmit}>
+          <Form.Item name="carWrapupId" noStyle>
+            <Input type="hidden" />
+          </Form.Item>
+          <Form.Item name="status" valuePropName="checked">
+            <Switch style={{ visibility: "hidden" }} />
+          </Form.Item>
+          <Form.Item>
+            <Space
+              style={{
+                margin: "-60px 0 -60px 0",
+                padding: "10px 0 0 0",
+                display: "flex",
+                justifyContent: "center",
+              }}
             >
-              <Input placeholder="" disabled />
-            </Form.Item>
-            <Form.Item<MaCarwarpup>
-              label="ประเภทการบำรุงตรวจสภาพ"
-              name="typeName"
-            >
-              <Select placeholder="เลือกการแสดง" options={maDataTypeOptions} />
-            </Form.Item>
-            <Form.Item<MaCarwarpup> label="ชื่อรถ :" name="carName">
-              <Select placeholder="เลือกการแสดง" options={maDataOptions} />
-            </Form.Item>
-            <Form.Item<MaCarwarpup>
-              label="เลขไมล์ตรวจสภาพ :"
-              name="wrapupMiles"
-            >
-              <Input placeholder="ระบุเลขไมล์รถ" />
-            </Form.Item>
-            <Form.Item<MaCarwarpup> label="หมายเหตุ :" name="detail">
-              <Input placeholder="" />
-            </Form.Item>
-            <Form.Item<MaCarwarpup> label="สถานที่ :" name="vender">
-              <Input placeholder="" />
-            </Form.Item>
-            <Form.Item<MaCarwarpup> label="ราคา :" name="cost">
-              <Input placeholder="" />
-            </Form.Item>
-            <Form.Item<MaCarwarpup> label="วันที่บันทึก :" name={"dateStart"}>
-              <DatePicker format={"DD/MM/YYYY"} />
-            </Form.Item>
-            <Form.Item<MaCarwarpup> label="วันตรวจสภาพ :" name={"dateEnd"}>
-              <DatePicker format={"DD/MM/YYYY"} />
-            </Form.Item>
-            <Form.Item<MaCarwarpup> label="รายละเอียดรถ(พิเศษ)" name="remark">
-              <Input placeholder="" />
-            </Form.Item>
-            <div className="flex justify-end w-full">
-              <Form.Item>
-                <Button
-                  type="default"
-                  onClick={handlecloseupdate}
-                  style={{ marginRight: 8 }}
-                >
-                  ยกเลิก
-                </Button>
-              </Form.Item>
-              <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={submitLoading}
-                >
-                  ตกลง
-                </Button>
-              </Form.Item>
-            </div>
-          </Form>
-        </Modal>
-      ) : null}
-      <Table columns={columns} dataSource={maDataWarpup} />
-    </div>
+              <Button onClick={handleclosesubmit}>ไม่</Button>
+              <Button type="primary" htmlType="submit" loading={submitLoading}>
+                ใช่
+              </Button>
+            </Space>
+          </Form.Item>
+        </Form>
+      </Modal>
+      <Modal
+        title="หมายเหตุ (รายละเอียด)"
+        width={600}
+        open={Ismodladetail}
+        onCancel={handledetail}
+        footer={null}
+        destroyOnClose
+        style={{ textAlign: "center" }}
+      >
+        <Form form={formdetail}>
+          <Form.Item<MaCarwarpup> name="remark">
+            <Input.TextArea
+              style={{
+                fontSize: "16px",
+                userSelect: "none",
+                pointerEvents: "none",
+              }}
+              rows={12}
+              readOnly
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </>
   );
 };
+
 export default WarpupmaCar;

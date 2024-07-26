@@ -1,6 +1,29 @@
 import React, { useState } from "react";
-import type { BadgeProps, CalendarProps, TableColumnsType, TableColumnType, UploadFile, UploadProps } from "antd";
-import { Badge, Button, Calendar, Card, DatePicker, Divider, Form, Input, message, Modal, Select, Switch, Table, Tag, Upload } from "antd";
+import type {
+  BadgeProps,
+  CalendarProps,
+  TableColumnsType,
+  TableColumnType,
+  UploadFile,
+  UploadProps,
+} from "antd";
+import {
+  Badge,
+  Button,
+  Calendar,
+  Card,
+  DatePicker,
+  Divider,
+  Form,
+  Input,
+  message,
+  Modal,
+  Select,
+  Switch,
+  Table,
+  Tag,
+  Upload,
+} from "antd";
 import type { Dayjs } from "dayjs";
 import { ColumnType } from "antd/es/table";
 import { dateToStringTh, dateToStringThNoTime } from "@/app/utils/format";
@@ -10,11 +33,18 @@ import { UploadOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/es/upload";
 
 export interface props {
-  updateMa: (data: ITMaUpdateForm, attendFiles: UploadFile[], imageFiles: UploadFile[]) => void;
+  updateMa: (
+    data: ITMaUpdateForm,
+    attendFiles: UploadFile[],
+    imageFiles: UploadFile[]
+  ) => void;
   maTypes: ITMaType[];
 }
 
-const MaDescriptionComponent: React.FC<props> = ({ maTypes, updateMa }): React.ReactElement => {
+const MaDescriptionComponent: React.FC<props> = ({
+  maTypes,
+  updateMa,
+}): React.ReactElement => {
   const [checkNextTask, setCheckNextTask] = useState<boolean>(false);
   const [imageFiles, setImageFiles] = useState<UploadFile[]>([]);
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
@@ -26,7 +56,9 @@ const MaDescriptionComponent: React.FC<props> = ({ maTypes, updateMa }): React.R
     }
     return false;
   };
-  const handleChangeImageFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
+  const handleChangeImageFiles: UploadProps["onChange"] = async ({
+    fileList: newFileList,
+  }) => {
     return setImageFiles(newFileList);
   };
   const beforeUploadAttendFiles = (file: RcFile) => {
@@ -36,7 +68,9 @@ const MaDescriptionComponent: React.FC<props> = ({ maTypes, updateMa }): React.R
     }
     return false;
   };
-  const handleChangeAttendFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
+  const handleChangeAttendFiles: UploadProps["onChange"] = async ({
+    fileList: newFileList,
+  }) => {
     return setAttendFiles(newFileList);
   };
   function handleUpdateMa(values: ITMaUpdateForm): void {
@@ -48,10 +82,24 @@ const MaDescriptionComponent: React.FC<props> = ({ maTypes, updateMa }): React.R
       <h2>ผลการดำเนินการ</h2>
       <Form layout="vertical" onFinish={handleUpdateMa}>
         <div className=" grid grid-cols-3">
-          <Form.Item name={"actionDate"} label={"วันที่ดำเนินการ"} rules={[{ required: true, message: "กรุณาเลือก วันที่ดำเนินการ" }]}>
-            <DatePicker className=" w-10/12" showTime={true} format={"DD/MM/YYYY HH:mm"} />
+          <Form.Item
+            name={"actionDate"}
+            label={"วันที่ดำเนินการ"}
+            rules={[{ required: true, message: "กรุณาเลือก วันที่ดำเนินการ" }]}
+          >
+            <DatePicker
+              className=" w-10/12"
+              showTime={true}
+              format={"DD/MM/YYYY HH:mm"}
+            />
           </Form.Item>
-          <Form.Item name={"maStatus"} label={"สถานะการดำเนินการ"} rules={[{ required: true, message: "กรุณาเลือก สถานะการดำเนินการ" }]}>
+          <Form.Item
+            name={"maStatus"}
+            label={"สถานะการดำเนินการ"}
+            rules={[
+              { required: true, message: "กรุณาเลือก สถานะการดำเนินการ" },
+            ]}
+          >
             <Select
               options={[
                 { label: "ดำเนินการเสร็จสิ้น", value: "success" },
@@ -60,11 +108,25 @@ const MaDescriptionComponent: React.FC<props> = ({ maTypes, updateMa }): React.R
               placeholder="กรุณาเลือก สถานะการดำเนินการ"
             />
           </Form.Item>
-          <Form.Item name={"solution"} label={"สรุปผลการดำเนินการ"} className=" col-span-3">
-            <TextArea rows={4} placeholder="maxLength is 255" maxLength={255} showCount={true} />
+          <Form.Item
+            name={"solution"}
+            label={"สรุปผลการดำเนินการ"}
+            className=" col-span-3"
+          >
+            <TextArea
+              rows={4}
+              placeholder="maxLength is 255"
+              maxLength={255}
+              showCount={true}
+            />
           </Form.Item>
 
-          <Form.Item className="md:col-span-3" label="Upload Images" valuePropName="fileList" extra="เฉพาะ PNG และ JPEG ">
+          <Form.Item
+            className="md:col-span-3"
+            label="Upload Images"
+            valuePropName="fileList"
+            extra="เฉพาะ PNG และ JPEG "
+          >
             <Upload
               accept="image/png, image/jpeg"
               fileList={imageFiles}
@@ -77,8 +139,18 @@ const MaDescriptionComponent: React.FC<props> = ({ maTypes, updateMa }): React.R
               <Button icon={<UploadOutlined />}>Click to upload</Button>
             </Upload>
           </Form.Item>
-          <Form.Item className="md:col-span-3" label="Upload Attend Files" valuePropName="fileList">
-            <Upload fileList={attendFiles} onChange={handleChangeAttendFiles} beforeUpload={beforeUploadAttendFiles} multiple={true} maxCount={10}>
+          <Form.Item
+            className="md:col-span-3"
+            label="Upload Attach Files"
+            valuePropName="fileList"
+          >
+            <Upload
+              fileList={attendFiles}
+              onChange={handleChangeAttendFiles}
+              beforeUpload={beforeUploadAttendFiles}
+              multiple={true}
+              maxCount={10}
+            >
               <Button icon={<UploadOutlined />}>Click to upload</Button>
             </Upload>
           </Form.Item>
@@ -98,21 +170,55 @@ const MaDescriptionComponent: React.FC<props> = ({ maTypes, updateMa }): React.R
         {checkNextTask ? (
           <Card className=" mb-2">
             <div className="grid  grid-cols-1 md:grid-cols-3 gap-2">
-              <Form.Item name={["nextTask", "maTypeId"]} label={"ประเภท MA"} rules={[{ required: true, message: "กรุณาเลือก ประเภท MA" }]}>
-                <Select options={maTypes ? maTypes.map((type) => ({ value: type.id, label: type.name })) : []} />
+              <Form.Item
+                name={["nextTask", "maTypeId"]}
+                label={"ประเภท MA"}
+                rules={[{ required: true, message: "กรุณาเลือก ประเภท MA" }]}
+              >
+                <Select
+                  options={
+                    maTypes
+                      ? maTypes.map((type) => ({
+                          value: type.id,
+                          label: type.name,
+                        }))
+                      : []
+                  }
+                />
               </Form.Item>
 
-              <Form.Item name={["nextTask", "maName"]} label={"ชื่อ MA"} rules={[{ required: true, message: "กรุณากรอกชื่อ MA" }]}>
+              <Form.Item
+                name={["nextTask", "maName"]}
+                label={"ชื่อ MA"}
+                rules={[{ required: true, message: "กรุณากรอกชื่อ MA" }]}
+              >
                 <Input />
               </Form.Item>
-              <Form.Item name={["nextTask", "maDate"]} label={"วันนัดหมาย"} rules={[{ required: true, message: "กรุณาเลือกวันนัดหมาย" }]}>
-                <DatePicker showTime={true} className=" w-full" format={"DD/MM/YYYY HH:mm"} />
+              <Form.Item
+                name={["nextTask", "maDate"]}
+                label={"วันนัดหมาย"}
+                rules={[{ required: true, message: "กรุณาเลือกวันนัดหมาย" }]}
+              >
+                <DatePicker
+                  showTime={true}
+                  className=" w-full"
+                  format={"DD/MM/YYYY HH:mm"}
+                />
               </Form.Item>
               <Form.Item name={["nextTask", "contact"]} label={"ผู้นัดหมาย"}>
                 <Input />
               </Form.Item>
-              <Form.Item labelCol={{}} name={["nextTask", "detail"]} label={"เนื้อหา"} className="md:col-span-3">
-                <TextArea placeholder="maxLength is 255" maxLength={255} showCount={true} />
+              <Form.Item
+                labelCol={{}}
+                name={["nextTask", "detail"]}
+                label={"เนื้อหา"}
+                className="md:col-span-3"
+              >
+                <TextArea
+                  placeholder="maxLength is 255"
+                  maxLength={255}
+                  showCount={true}
+                />
               </Form.Item>
             </div>
           </Card>

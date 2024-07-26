@@ -19,13 +19,13 @@ const ExportExcel: React.FC<ExportExcelProps> = ({ datamacar }) => {
         สถานที่เช็คสภาพ: dataItem.vender,
         รายละเอียดการตรวจ: dataItem.detail,
         ราคา: dataItem.cost,
-        วันที่ระบุ: new Date(dataItem.dateStart).toLocaleString(),
-        วันตรวจสภาพ: new Date(dataItem.dateEnd).toLocaleString(),
+        วันที่ระบุ: new Date(dataItem.dateStart).toISOString().split('T')[0],
+        วันตรวจสภาพ: new Date(dataItem.dateEnd).toISOString().split('T')[0],
         หมายเหตุ: dataItem.remark,
         สถานะการตรวจเช็ค: dataItem.status ? "รอการเช็ค" : "เช็คแล้ว",
       };
     });
-
+    
     const chunkSize = 10;
     const transdataWithPageInfo: any[] = [];
 
@@ -40,7 +40,7 @@ const ExportExcel: React.FC<ExportExcelProps> = ({ datamacar }) => {
     const range = XLSX.utils.decode_range(worksheet["!ref"]!);
     worksheet["!freezePane"] = {
       ySplit: 1,
-      topLeftCell: "A1",
+      topLeftCell: "A2",
       activePane: "bottomLeft",
       state: "frozen",
     };
@@ -62,16 +62,6 @@ const ExportExcel: React.FC<ExportExcelProps> = ({ datamacar }) => {
     ];
 
     worksheet["!cols"] = columnWidths;
-
-    Object.keys(worksheet).forEach((key) => {
-      if (key[0] !== "!") {
-        if (!worksheet[key].s) worksheet[key].s = {};
-        worksheet[key].s.alignment = {
-          horizontal: "center",
-          vertical: "center",
-        };
-      }
-    });
 
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
     XLSX.writeFile(workbook, "DataExport.xlsx");

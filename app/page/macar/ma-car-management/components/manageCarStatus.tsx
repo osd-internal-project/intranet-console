@@ -141,26 +141,20 @@ any): React.ReactElement => {
   const showModalEditMaCar = (record: MaCarType) => {
     setCurrentMaId(record.carId);
     setSubmitLoading(false);
-
     form.setFieldsValue(record);
     setModalEditMaCar(true);
-
-    // setLoading(true);
   };
 
   const showModalCreateMaCar = () => {
     setModalCreateMaCar(true);
     setSubmitLoading(false);
     form.resetFields();
-    // setLoading(true);
   };
 
   const handleCancelCreateMaCar = () => {
     form.resetFields();
     setModalCreateMaCar(false);
     setSubmitLoading(true);
-
-    // setLoading(true);
   };
 
   const createMaCar: FormProps<MaCarType>["onFinish"] = async (values) => {
@@ -184,14 +178,9 @@ any): React.ReactElement => {
       if (response) {
         message.success("เพิ่มรถสำเร็จ");
         form.resetFields();
-        // setIsModalBooking(false);
       } else {
         message.error("เพิ่มรถไม่สำเร็จ");
       }
-
-      // setSubmitLoading(false);
-      // fetchData();
-      // setLoading(true);
     } catch (error) {
       message.error("เพิ่มรถไม่สำเร็จ");
       setSubmitLoading(false);

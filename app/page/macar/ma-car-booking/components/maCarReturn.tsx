@@ -14,6 +14,7 @@ import {
   message,
   DatePicker,
   InputNumber,
+  TimePicker,
 } from "antd";
 import type { TableProps, FormProps } from "antd";
 import dayjs from "dayjs";
@@ -21,6 +22,7 @@ import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { MaCarBookServices } from "../services/ma-car-book.service";
 import { useSession } from "next-auth/react";
 import { MaCarType, MaCarBookType, MaCarWrapupType } from "../../common/index";
+import TextArea from "antd/es/input/TextArea";
 export interface props {
   maCarBookData: any[];
   loading: boolean;
@@ -89,7 +91,7 @@ const MaCarReturn: React.FC<props> = ({
       align: "center",
     },
     {
-      title: "สถานะการคืนรถ",
+      title: "สถานะการใช้งาน",
       dataIndex: "carBookApprovedStatus",
       key: "carBookApprovedStatus",
       width: "100px",
@@ -104,13 +106,17 @@ const MaCarReturn: React.FC<props> = ({
             break;
           case "Approve":
             color = "green";
-            text = "อนุมัติให้ใช้รถ";
+            text = "อนุมัติแล้ว";
             break;
           case "Cancel":
             color = "red";
             text = "ไม่อนุมัติให้ใช้รถ";
             break;
           case "Return":
+            color = "orange";
+            text = "แจ้งคืนรถแล้ว";
+            break;
+          case "Completed":
             color = "#748698";
             text = "คืนรถสำเร็จ";
             break;
@@ -124,34 +130,32 @@ const MaCarReturn: React.FC<props> = ({
     },
     {
       title: "รายละเอียด",
-      width: "150px",
+      width: "120px",
       align: "center",
       render: (_: any, record: MaCarBookType) => (
         <Space size="middle">
-          <a onClick={() => showModalDetail(record)}>รายละเอียดการจองรถ</a>
+          <a onClick={() => showModalDetail(record)}>รายละเอียด</a>
         </Space>
       ),
     },
     {
       title: "จัดการ",
-      width: "110px",
+      width: "120px",
       align: "center",
       render: (_: any, record: MaCarBookType) => (
         <Space size="middle">
           {record.carBookApprovedStatus === "Approve" ? (
-            <a onClick={() => showModalReturn(record)}>คืนรถ</a>
-          ) : // <a onClick={() => showModalReturn(record)}>
-          //   <MaCarReturnIcon
-          //     style={{ cursor: "pointer" }}
-          //     aria-label="Return Car"
-          //   />
-          // </a>
-          record.carBookApprovedStatus === "Return" ? (
+            <a onClick={() => showModalReturn(record)}>แจ้งคืนรถ</a>
+          ) : record.carBookApprovedStatus === "Return" ? (
+            <span style={{ color: "grey" }}>แจ้งคืนรถแล้ว</span>
+          ) : record.carBookApprovedStatus === "Completed" ? (
             <span style={{ color: "grey" }}>คืนรถสำเร็จ</span>
+          ) : record.carBookApprovedStatus === "Cancel" ? (
+            <span style={{ color: "grey" }}>ไม่สามารถแจ้งคืนรถได้</span>
           ) : record.carBookApprovedStatus === "process" ? (
-            <span style={{ color: "grey" }}>ไม่สามารถคืนรถได้</span>
+            <span style={{ color: "grey" }}>ไม่สามารถแจ้งคืนรถได้</span>
           ) : (
-            <span style={{ color: "grey" }}>ไม่สามารถคืนรถได้</span>
+            <span style={{ color: "grey" }}>ไม่สามารถแจ้งคืนรถได้</span>
           )}
         </Space>
       ),
@@ -162,21 +166,14 @@ const MaCarReturn: React.FC<props> = ({
     setModalEditReturn(true);
     setCurrentMaId(record.carId);
     setCurrentMaBookId(record.id);
+    setOldCarMile(record.maCar.carMile);
+
     formReturn.setFieldsValue({
       carName: record.maCar.carName,
       carMile: record.maCar.carMile,
       carPetrol: record.maCar.carPetrol,
       status: record.maCar.status,
-      // typeName: record.maCar.maCarWrapup[0]?.typeName,
-      // vender: record.maCar.maCarWrapup[0]?.vender,
-      // detail: record.maCar.maCarWrapup[0]?.detail,
-      // wrapupMiles: record.maCar.maCarWrapup[0]?.wrapupMiles,
-      // dateStart: record.maCar.maCarWrapup[0]?.dateStart
-      //   ? dayjs(record.maCar.maCarWrapup[0]?.dateStart)
-      //   : null,
     });
-
-    setOldCarMile(record.maCar.carMile);
   };
 
   const handleModalReturn = () => {
@@ -185,11 +182,33 @@ const MaCarReturn: React.FC<props> = ({
 
   const showModalDetail = (record: MaCarBookType) => {
     setModalEditDetail(true);
+
     formBookData.setFieldsValue({
-      ...record,
-      carBookStartDate: dayjs(record.carBookStartDate),
-      carBookEndDate: dayjs(record.carBookEndDate),
+      // ...record,
+
+      // carBookStartDate: dayjs(record.carBookStartDate),
+      // carBookEndDate: dayjs(record.carBookEndDate),
+
+      maCarName: record.maCar.carName,
+
+      carName: record.maCar.carName,
+      status: record.maCar.status,
+
+      carMile: record.maCar.carMile,
+      carPetrol: record.maCar.carPetrol,
+      returnNotifAt: dayjs(record.returnNotifAt),
+      carBookApprovedStatus: record.carBookApprovedStatus,
+      recipientName: record.recipientName,
+      returnAt: dayjs(record.returnAt),
+      carName1: record.carName,
     });
+    console.log(record.maCar.carName);
+    console.log(record.maCar.status);
+
+    // console.log(car);
+    // console.log(record.maCar.carName);
+    // console.log(record.maCar.carMile);
+    // setMaCarName(record.maCar.carName);
   };
 
   const handleModalDetail = () => {
@@ -204,7 +223,6 @@ const MaCarReturn: React.FC<props> = ({
         const { ...restValues } = values;
         const updatedMaCar = {
           ...restValues,
-
           carMile: values.carMile,
           carPetrol: values.carPetrol,
           status: values.status === true,
@@ -215,12 +233,14 @@ const MaCarReturn: React.FC<props> = ({
 
         const maCarBook = {
           carBookApprovedStatus: "Return",
+          returnNotifAt: dayjs().toISOString(),
+          // recipientId: session?.user.userId,
+          // recipientName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
         };
+        await maCarBookServices.updateMaCarBook(currentMaBookId, maCarBook);
 
         await maCarBookServices.updateMaCar(currentMaId, updatedMaCar);
         message.success("คืนรถสำเร็จ");
-
-        await maCarBookServices.updateMaCarBook(currentMaBookId, maCarBook);
         handleModalReturn();
         setSubmitLoading(false);
         formReturn.resetFields();
@@ -245,7 +265,7 @@ const MaCarReturn: React.FC<props> = ({
         <Form
           form={formReturn}
           layout="vertical"
-          name="edit_ma"
+          // name="edit_ma"
           onFinish={updatedMaCarReturn}
           autoComplete="off"
         >
@@ -308,47 +328,6 @@ const MaCarReturn: React.FC<props> = ({
           </Col>
           {/* </Row> */}
 
-          {/* <Divider orientation="left">ข้อมูลการตรวจสภาพรถ</Divider>
-          <Row gutter={8}>
-            <Col span={6}>
-              <Form.Item name="typeName" label="ชื่อประเภทของรถ">
-                <Input disabled placeholder="กรอกชื่อประเภทของรถ" />
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item name="dateStart" label="วันที่ตรวจสภาพรถ">
-                <DatePicker
-                  disabled
-                  placeholder="กรอกวันที่ตรวจสภาพรถ"
-                  showTime
-                  style={{ width: "100%" }}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item name="vender" label="ผู้จำหน่ายรถ">
-                <Input disabled placeholder="กรอกวัตถุประสงค์การใช้งาน" />
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item name="wrapupMiles" label="จำนวนไมล์ตรวจสภาพรถ">
-                <Input disabled placeholder="กรอกจำนวนไมล์ตรวจสภาพรถ" />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item name="detail" label="รายละเอียด">
-                <Input.TextArea
-                  rows={2}
-                  disabled
-                  placeholder="กรอกรายละเอียด"
-                />
-              </Form.Item>
-            </Col>
-          </Row> */}
-
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Row justify="end" gutter={16}>
               <Button
@@ -367,7 +346,7 @@ const MaCarReturn: React.FC<props> = ({
       </Modal>
 
       <Modal
-        title="รายละเอียดการจองรถ"
+        title="รายละเอียด"
         open={modalEditDetail}
         onCancel={handleModalDetail}
         footer={null}
@@ -376,7 +355,6 @@ const MaCarReturn: React.FC<props> = ({
         <Form
           form={formBookData}
           layout="vertical"
-          name="edit_ma"
           initialValues={{ remember: true }}
           autoComplete="off"
         >
@@ -397,11 +375,7 @@ const MaCarReturn: React.FC<props> = ({
 
           <Row gutter={16}>
             <Col span={6}>
-              <Form.Item<MaCarBookType>
-                name="carName"
-                label="ชื่อรถ"
-                rules={[{ required: true, message: "กรุณาเลือกรถ" }]}
-              >
+              <Form.Item name="carName1" label="ชื่อรถ">
                 <Input disabled placeholder="กรุณาเลือกรถ" />
               </Form.Item>
             </Col>
@@ -409,19 +383,12 @@ const MaCarReturn: React.FC<props> = ({
               <Form.Item<MaCarBookType>
                 name="carBookTitle"
                 label="วัตถุประสงค์การใช้งาน"
-                rules={[
-                  { required: true, message: "กรุณากรอกวัตถุประสงค์การใช้งาน" },
-                ]}
               >
                 <Input disabled placeholder="กรอกวัตถุประสงค์การใช้งาน" />
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item<MaCarBookType>
-                name="carBookPlace"
-                label="สถานที่ไป"
-                rules={[{ required: true, message: "กรุณากรอกสถานที่ไป" }]}
-              >
+              <Form.Item<MaCarBookType> name="carBookPlace" label="สถานที่ไป">
                 <Input disabled placeholder="กรอกสถานที่ไป" />
               </Form.Item>
             </Col>
@@ -445,32 +412,181 @@ const MaCarReturn: React.FC<props> = ({
                 <Input disabled placeholder="กรอกจำนวนผู้ใช้" />
               </Form.Item>
             </Col>
+            <Col span={6}>
+              <Form.Item name="remark" label="หมายเหตุ">
+                <TextArea disabled placeholder="กรอกหมายเหตุ" rows={2} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name="detail" label="รายละเอียด">
+                <TextArea disabled placeholder="กรอกรายละเอียด" rows={2} />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={24}>
+            <Col span={6}>
+              <Form.Item name="carBookStartDate" label="วันที่เริ่มการจอง">
+                <DatePicker
+                  disabled
+                  format="DD-MM-YYYY"
+                  placeholder="กรอกวันที่เริ่มการจอง"
+                  style={{ width: "100%" }}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="carBookStartDate" label="เวลาเริ่มการจอง">
+                <TimePicker
+                  disabled
+                  format="HH:mm"
+                  placeholder="กรอกเวลาเริ่มการจอง"
+                  style={{ width: "100%" }}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="carBookEndDate" label="วันที่สิ้นสุดการจอง">
+                <DatePicker
+                  disabled
+                  format="DD-MM-YYYY"
+                  placeholder="กรอกวันที่สิ้นสุดการจอง"
+                  style={{ width: "100%" }}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item
+                name="carBookEndDate"
+                label="เวลาสิ้นสุดการจอง"
+                rules={[
+                  { required: true, message: "กรุณาเลือกเวลาสิ้นสุดการจอง!" },
+                ]}
+              >
+                <TimePicker
+                  disabled
+                  format="HH:mm"
+                  placeholder="กรอกเวลาสิ้นสุดการจอง"
+                  style={{ width: "100%" }}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Divider orientation="left">ข้อมูลการคืนรถ</Divider>
+
+          <Row gutter={24}>
             <Col span={8}>
-              <Form.Item<MaCarBookType>
-                name="carBookStartDate"
-                label="วันที่เริ่มการจอง"
+              <Form.Item<MaCarType>
+                name="status"
+                label="สถานนะรถ"
+                rules={[{ required: true, message: "สถานนะรถ" }]}
+              >
+                <Select disabled placeholder="รออนุมัติรับคืนรถ">
+                  <Select.Option value={true}>ใช้งานได้ปกติ</Select.Option>
+                  <Select.Option value={false}>
+                    ไม่สามารถใช้งานได้
+                  </Select.Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item name="carMile" label="เลขไมล์รถ">
+                <InputNumber
+                  disabled
+                  style={{ width: "100%" }}
+                  placeholder="รออนุมัติรับคืนรถ"
+                />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item name="carPetrol" label="ระดับนํ้ามันรถ">
+                <Select disabled placeholder="รออนุมัติรับคืนรถ">
+                  <Select.Option value="high">มาก</Select.Option>
+                  <Select.Option value="medium">ปานกลาง</Select.Option>
+                  <Select.Option value="low">น้อย</Select.Option>
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={24}>
+            <Col span={8}>
+              <Form.Item
+                name="returnNotifAt"
+                label="วันที่แจ้งคืน"
                 rules={[
                   { required: true, message: "กรุณาเลือกวันที่เริ่มจอง!" },
                 ]}
               >
                 <DatePicker
                   disabled
-                  placeholder="กรอกวันที่เริ่มการจอง"
-                  showTime
+                  format="DD-MM-YYYY"
+                  placeholder="รออนุมัติรับคืนรถ"
                   style={{ width: "100%" }}
                 />
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item
-                name="carBookEndDate"
-                label="วันที่สิ้นสุดการจอง"
-                rules={[{ required: true, message: "กรุณาเลือกวันที่สิ้นสุด" }]}
+                name="returnNotifAt"
+                label="เวลาแจ้งคืน"
+                rules={[{ required: true, message: "กรุณาเลือกเวลาเริ่มจอง!" }]}
+              >
+                <TimePicker
+                  disabled
+                  format="HH:mm"
+                  placeholder="รออนุมัติรับคืนรถ"
+                  style={{ width: "100%" }}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                name="carBookApprovedStatus"
+                label="สถานนะการคืนรถ"
+                // rules={[{ required: true, message: "กรอกสถานนะการคืนรถ!" }]}
+              >
+                <Select disabled placeholder="รออนุมัติรับคืนรถ">
+                  <Select.Option value="process">กำลังรออนุมัติ</Select.Option>
+                  <Select.Option value="Approve">อนุมัติแล้ว</Select.Option>
+                  <Select.Option value="Cancel">ยกเลิกการจอง</Select.Option>
+                  <Select.Option value="Return">แจ้งคืนรถแล้ว</Select.Option>
+                  <Select.Option value="Completed">คืนรถสำเร็จ</Select.Option>
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={24}>
+            <Col span={8}>
+              <Form.Item name="recipientName" label="ผู้รับคืนรถ">
+                <Input disabled placeholder="รออนุมัติรับคืนรถ" />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                name="returnAt"
+                label="วันที่แจ้งคืน"
+                rules={[
+                  { required: true, message: "กรุณาเลือกวันที่เริ่มจอง!" },
+                ]}
               >
                 <DatePicker
                   disabled
-                  placeholder="กรอกวันที่สิ้นสุดการจอง"
-                  showTime
+                  format="DD-MM-YYYY"
+                  placeholder="กรอกวันที่เริ่มการจอง"
+                  style={{ width: "100%" }}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                name="returnAt"
+                label="เวลาแจ้งคืน"
+                rules={[{ required: true, message: "กรุณาเลือกเวลาเริ่มจอง!" }]}
+              >
+                <TimePicker
+                  disabled
+                  format="HH:mm"
+                  placeholder="กรอกเวลาเริ่มการจอง"
                   style={{ width: "100%" }}
                 />
               </Form.Item>

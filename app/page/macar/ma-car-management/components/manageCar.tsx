@@ -36,26 +36,17 @@ const ManageCar: React.FC<props> = ({
   loading,
   maCarBookData,
   pagination,
-}: // changePagination,
-any): React.ReactElement => {
-  // const ManageCar: React.FC = () => {
+}: any): React.ReactElement => {
   const intraAuth = useAxiosIntranet();
-  const [isModaMa, setIsModaMa] = useState(false);
   const [form] = Form.useForm();
   const [modalApproveMa, setModalApproveMa] = useState(false);
+  const [modalReturn, setModalReturn] = useState(false);
   const [carBookApprovedStatus, setMaCarBookStatus] = useState("");
   const [submitLoading, setSubmitLoading] = useState(false);
-  // const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
   const [currentMaId, setCurrentMaId] = useState<number | null>(null);
   const [maData, setMaData] = useState<MaCarBookType[]>([]);
   const manageCarServices = ManageCarServices(intraAuth);
   const { data: session } = useSession();
-  // const [loading, setLoading] = useState<boolean>(true);
-  // const [pagination, setPagination] = useState<TablePaginationConfig>({
-  //   current: 1,
-  //   pageSize: 10,
-  //   total: 0,
-  // });
 
   const columns: TableProps<MaCarBookType>["columns"] = [
     {
@@ -121,6 +112,8 @@ any): React.ReactElement => {
               : status === "Cancel"
               ? "red"
               : status === "Return"
+              ? "orange"
+              : status === "Completed"
               ? "#748698 "
               : undefined
           }
@@ -128,11 +121,13 @@ any): React.ReactElement => {
           {status === "process"
             ? "กำลังรออนุมัติ"
             : status === "Approve"
-            ? "อนุมัติสำเร็จ"
+            ? "อนุมัติแล้ว"
             : status === "Cancel"
             ? "ไม่อนุมัติ"
             : status === "Return"
-            ? "คืนรถสำเร็จ"
+            ? "แจ้งคืนรถแล้ว"
+            : status === "Completed"
+            ? "รับคืนรถสำเร็จ"
             : ""}
         </Tag>
         // </>
@@ -142,10 +137,16 @@ any): React.ReactElement => {
       title: "จัดการ",
       key: "note",
       dataIndex: "note",
-      width: "150px",
+      width: "200px",
       align: "center",
-      render: (_, record) => (
-        <Space size="middle">
+      render: (_: any, record: MaCarBookType) => (
+        <Space
+          size="middle"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
             onConfirm={() => handleDeleteMa(record.id)}
@@ -158,24 +159,41 @@ any): React.ReactElement => {
             </a>
           </Popconfirm>
           <a
-            onClick={() => showModalApprove(record)}
+            onClick={() => showModalApproveBook(record)}
             style={{ color: "green" }}
           >
             <ApproveIcon strokeColor="blue" width="2rem" height="2rem" />
           </a>
+          {record.carBookApprovedStatus === "Return" ? (
+            <a onClick={() => showModalReturn(record)}>รับคืนรถ</a>
+          ) : record.carBookApprovedStatus === "Completed" ? (
+            <span style={{ color: "grey" }}>รับคืนแล้ว</span>
+          ) : (
+            <span style={{ color: "grey" }}>รอแจ้งคืนรถ</span>
+          )}
         </Space>
       ),
     },
   ];
 
-  const showModalApprove = (record: MaCarBookType) => {
+  const showModalApproveBook = (record: MaCarBookType) => {
+    setModalApproveMa(true);
     setMaCarBookStatus(record.carBookApprovedStatus);
     setCurrentMaId(record.id);
-    setModalApproveMa(true);
   };
 
-  const handleApproveBooking = () => {
+  const handleApproveBook = () => {
     setModalApproveMa(false);
+  };
+
+  const showModalReturn = (record: MaCarBookType) => {
+    setModalReturn(true);
+    setMaCarBookStatus(record.carBookApprovedStatus);
+    setCurrentMaId(record.id);
+  };
+
+  const handleReturn = () => {
+    setModalReturn(false);
   };
 
   const handleDeleteMa = async (id: number) => {
@@ -206,7 +224,6 @@ any): React.ReactElement => {
       };
 
       await manageCarServices.updateMaCarBook(updatedApproveMa);
-      console.log(onFinishCancel);
 
       setModalApproveMa(false);
 
@@ -235,11 +252,35 @@ any): React.ReactElement => {
       await manageCarServices.updateMaCarBook(updatedApproveMa);
 
       setModalApproveMa(false);
-
       message.success("อนุมัติการจองสำเร็จ");
       setSubmitLoading(false);
     } catch (error) {
       message.error("อนุมัติการจองไม่สำเร็จ");
+    } finally {
+      setSubmitLoading(false);
+    }
+    setLoading(true);
+  };
+
+  const onFinishReturn: FormProps<MaCarBookType>["onFinish"] = async () => {
+    setSubmitLoading(true);
+
+    try {
+      const updatedReturn = {
+        id: currentMaId,
+        recipientId: session?.user.userId,
+        recipientName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+        carBookApprovedStatus: "Completed",
+        returnAt: dayjs(),
+      };
+
+      await manageCarServices.updateMaCarBook(updatedReturn);
+
+      setModalReturn(false);
+      message.success("รับคืนรถสำเร็จ");
+      setSubmitLoading(false);
+    } catch (error) {
+      message.error("รับคืนรถไม่สำเร็จ");
     } finally {
       setSubmitLoading(false);
     }
@@ -256,20 +297,16 @@ any): React.ReactElement => {
     <>
       <Modal
         width={400}
-        title="อนุมัติการจองรถ"
+        title="การอนุมัติการจองรถ"
         open={modalApproveMa}
-        onCancel={handleApproveBooking}
+        onCancel={handleApproveBook}
         footer={null}
       >
-        <p>ยืนยันอนุมัติการจองรถ</p>
+        {/* <p>ยืนยันอนุมัติการจองรถ</p> */}
         <Form
           form={form}
-          layout="vertical"
-          name="edit_macarbook"
-          initialValues={{ remember: true }}
           onFinish={onFinishApprove}
           onFinishFailed={onFinishFailed}
-          autoComplete="off"
         >
           <Row justify="end">
             <Button
@@ -277,7 +314,7 @@ any): React.ReactElement => {
               onClick={onFinishCancel}
               disabled={carBookApprovedStatus === "Cancel"}
               loading={submitLoading}
-              style={{ marginRight: "16px" }}
+              style={{ marginRight: "16px", marginTop: "16px" }}
             >
               ไม่อนุมัติ
             </Button>
@@ -286,20 +323,41 @@ any): React.ReactElement => {
               htmlType="submit"
               disabled={carBookApprovedStatus === "Approve"}
               loading={submitLoading}
+              style={{ marginTop: "16px" }}
             >
               อนุมัติ
             </Button>
           </Row>
         </Form>
       </Modal>
-      <Table
-        columns={columns}
-        dataSource={maCarBookData}
-        rowKey="id"
-        // pagination={pagination}
-        loading={loading}
-        // onChange={changePagination}
-      />
+
+      <Modal
+        width={400}
+        title="การรับคืนรถ"
+        open={modalReturn}
+        onCancel={handleReturn}
+        footer={null}
+      >
+        <Form
+          form={form}
+          onFinish={onFinishReturn}
+          // onFinishFailed={onFinishFailed}
+        >
+          <Row justify="end">
+            <Button
+              type="primary"
+              htmlType="submit"
+              disabled={carBookApprovedStatus === "Completed"}
+              loading={submitLoading}
+              style={{ marginRight: "16px", marginTop: "16px" }}
+            >
+              รับคืน
+            </Button>
+          </Row>
+        </Form>
+      </Modal>
+
+      <Table columns={columns} dataSource={maCarBookData} loading={loading} />
     </>
   );
 };

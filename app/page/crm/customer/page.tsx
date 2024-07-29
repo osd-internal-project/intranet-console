@@ -86,7 +86,6 @@ export default function MaTaskPage() {
                 title: <span>Home</span>,
               },
               {
-                href: "/page/customer",
                 title: <span>CRM</span>,
               },
               {

@@ -29,7 +29,7 @@ const MenuNav: MenuProps["items"] = [
       <Link
         href={"#"}
         onClick={async () => {
-          signOut();
+          signOut({ callbackUrl: "/signin" });
         }}
       >
         Sign Out

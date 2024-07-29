@@ -95,7 +95,7 @@ const MaCarBook: React.FC<props> = ({
       carBookEndDate: values.carBookEndDate,
       detail: values.detail,
       carBookTitle: values.carBookTitle,
-      carBookApprovedStatus: "process",
+      carBookApprovedStatus: "Process",
       remark: values.remark || null,
     };
 

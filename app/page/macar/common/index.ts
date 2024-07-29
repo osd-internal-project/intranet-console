@@ -46,6 +46,7 @@ export interface MaCarBookType {
   returnNotifAt: Date;
   returnAt: Date;
   maCar: MaCarType;
+  carSelected: string;
 }
 
 export interface MaCarBookCalendarType {

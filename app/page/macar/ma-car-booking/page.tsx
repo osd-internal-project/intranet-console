@@ -18,6 +18,7 @@ import { useSession } from "next-auth/react";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { MaCarBookServices } from "./services/ma-car-book.service";
 import { MaCarType, MaCarBookType } from "./../common/index";
+import { useSearchParams } from "next/navigation";
 
 const MaCarBooking: React.FC = () => {
   const { data: session } = useSession();
@@ -32,19 +33,15 @@ const MaCarBooking: React.FC = () => {
     pageSize: 10,
     total: 0,
   });
+  const searchParams = useSearchParams();
+
+  const action = searchParams.get("action");
 
   const items: TabsProps["items"] = [
     {
       key: "1",
       label: "ทำการจองรถ",
-      children: (
-        <MaCarBook
-          maCarData={maCarData}
-         
-          setLoading={setLoading}
-          
-        />
-      ),
+      children: <MaCarBook maCarData={maCarData} setLoading={setLoading} />,
     },
 
     {
@@ -121,7 +118,7 @@ const MaCarBooking: React.FC = () => {
         <Col span={24}>
           <div className="grid-span-1 space-y-2">
             <Card>
-              <Tabs defaultActiveKey="1" items={items} />
+              <Tabs defaultActiveKey={action ?? "1"} items={items} />
             </Card>
           </div>
         </Col>

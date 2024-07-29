@@ -5,7 +5,7 @@ import { MaCarType } from "../../common/index";
 
 export interface props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  maCarData: any[];
+  maCarData: MaCarType[];
 }
 
 const CarStatus: React.FC<props> = ({

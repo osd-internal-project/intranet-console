@@ -100,7 +100,7 @@ const MaCarReturn: React.FC<props> = ({
         let color = "";
         let text = "";
         switch (status) {
-          case "process":
+          case "Process":
             color = "blue";
             text = "กำลังจองรถ";
             break;
@@ -110,7 +110,7 @@ const MaCarReturn: React.FC<props> = ({
             break;
           case "Cancel":
             color = "red";
-            text = "ไม่อนุมัติให้ใช้รถ";
+            text = "ยกเลิกการจองนี้แล้ว";
             break;
           case "Return":
             color = "orange";
@@ -119,6 +119,10 @@ const MaCarReturn: React.FC<props> = ({
           case "Completed":
             color = "#748698";
             text = "คืนรถสำเร็จ";
+            break;
+          case "DisapProved":
+            color = "yellow";
+            text = "ไม่อนุมัติ";
             break;
           default:
             color = "default";
@@ -151,8 +155,10 @@ const MaCarReturn: React.FC<props> = ({
           ) : record.carBookApprovedStatus === "Completed" ? (
             <span style={{ color: "grey" }}>คืนรถสำเร็จ</span>
           ) : record.carBookApprovedStatus === "Cancel" ? (
-            <span style={{ color: "grey" }}>ไม่สามารถแจ้งคืนรถได้</span>
-          ) : record.carBookApprovedStatus === "process" ? (
+            <span style={{ color: "grey" }}>ยกเลิกการจองนี้ไปแล้ว</span>
+          ) : record.carBookApprovedStatus === "DisapProved" ? (
+            <span style={{ color: "grey" }}>ไม่อนุมัติการจองรถ</span>
+          ) : record.carBookApprovedStatus === "Process" ? (
             <span style={{ color: "grey" }}>ไม่สามารถแจ้งคืนรถได้</span>
           ) : (
             <span style={{ color: "grey" }}>ไม่สามารถแจ้งคืนรถได้</span>
@@ -223,8 +229,6 @@ const MaCarReturn: React.FC<props> = ({
         const maCarBook = {
           carBookApprovedStatus: "Return",
           returnNotifAt: dayjs().toISOString(),
-          // recipientId: session?.user.userId,
-          // recipientName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
         };
         await maCarBookServices.updateMaCarBook(currentMaBookId, maCarBook);
 
@@ -254,12 +258,11 @@ const MaCarReturn: React.FC<props> = ({
         <Form
           form={formReturn}
           layout="vertical"
-          // name="edit_ma"
           onFinish={updatedMaCarReturn}
           autoComplete="off"
         >
           <Divider orientation="left">ข้อมูลการคืนรถ</Divider>
-          {/* <Row gutter={8}> */}
+
           <Col span={24}>
             <Form.Item
               name="carName"
@@ -315,7 +318,6 @@ const MaCarReturn: React.FC<props> = ({
               </Select>
             </Form.Item>
           </Col>
-          {/* </Row> */}
 
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Row justify="end" gutter={16}>
@@ -535,7 +537,7 @@ const MaCarReturn: React.FC<props> = ({
                 // rules={[{ required: true, message: "กรอกสถานนะการคืนรถ!" }]}
               >
                 <Select disabled placeholder="รออนุมัติรับคืนรถ">
-                  <Select.Option value="process">กำลังรออนุมัติ</Select.Option>
+                  <Select.Option value="Process">กำลังรออนุมัติ</Select.Option>
                   <Select.Option value="Approve">อนุมัติแล้ว</Select.Option>
                   <Select.Option value="Cancel">ยกเลิกการจอง</Select.Option>
                   <Select.Option value="Return">แจ้งคืนรถแล้ว</Select.Option>

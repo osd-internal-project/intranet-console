@@ -13,19 +13,19 @@ import {
   message,
   Select,
   DatePicker,
-  Popconfirm,
   TablePaginationConfig,
   InputNumber,
   TimePicker,
+  Tooltip,
+  Popconfirm,
 } from "antd";
 import type { FormProps, TableProps } from "antd";
-import { DeleteIcon, EditIcon } from "@/components/icon";
+import { EditIcon } from "@/components/icon";
 import dayjs from "dayjs";
 import ShareMaCarBook from "../share-ma-car-book/share-xlsx";
 import { MaCarServices } from "../services/ma-car.service";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { MaCarBookType } from "../../common/index";
 
 export interface props {
@@ -47,7 +47,6 @@ const MaCarBookTable: React.FC<props> = ({
 }: any): React.ReactElement => {
   const { data: session } = useSession();
   const [form] = Form.useForm();
-  const router = useRouter();
   const intraAuth = useAxiosIntranet();
   const maCarServices = MaCarServices(intraAuth);
   const [modalEditMaCarBook, setModalEditMa] = useState(false);
@@ -61,7 +60,7 @@ const MaCarBookTable: React.FC<props> = ({
       title: "ลำดับ",
       width: "50px",
       align: "center",
-      render: (id: number, record: any, index: number) =>
+      render: (_: any, __: any, index: number) =>
         pagination.current && pagination.pageSize
           ? (pagination.current - 1) * pagination.pageSize + (index + 1)
           : "",
@@ -114,20 +113,24 @@ const MaCarBookTable: React.FC<props> = ({
         let color = "";
         let text = "";
         switch (status) {
-          case "process":
+          case "Process":
             color = "blue";
             text = "กำลังรออนุมัติ";
+            break;
+          case "Cancel":
+            color = "red";
+            text = "ยกเลิกการจอง";
             break;
           case "Approve":
             color = "green";
             text = "อนุมัติแล้ว";
             break;
-          case "Cancel":
-            color = "red";
+          case "DisapProved":
+            color = "orange";
             text = "ไม่อนุมัติ";
             break;
           case "Return":
-            color = "orange";
+            color = "yellow";
             text = "แจ้งคืนรถแล้ว";
             break;
           case "Completed":
@@ -157,24 +160,26 @@ const MaCarBookTable: React.FC<props> = ({
       align: "center",
       render: (_, record) => (
         <Space size="middle">
-          <a
-            onClick={() => showModalEditMaCarBook(record)}
-            role="button"
-            aria-label="Edit"
-            style={{ cursor: "pointer" }}
-          >
-            <EditIcon width="24" height="24" />
-          </a>
+          <Tooltip title="แก้ไข">
+            <a
+              onClick={() => showModalEditMaCarBook(record)}
+              role="button"
+              aria-label="Edit"
+              style={{ cursor: "pointer" }}
+            >
+              <EditIcon width="24" height="24" />
+            </a>
+          </Tooltip>
+
           <Popconfirm
-            title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
-            onConfirm={() => handleDeleteMa(record.id)}
+            title="คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการจองนี้?"
+            onConfirm={() => handleCancelMa(record)}
             okText="ใช่"
             cancelText="ไม่"
           >
-            <a>
-              {" "}
-              <DeleteIcon />{" "}
-            </a>
+            <Tooltip title="ยกเลิกการจอง">
+              <a>ยกเลิกการจอง</a>
+            </Tooltip>
           </Popconfirm>
         </Space>
       ),
@@ -194,6 +199,15 @@ const MaCarBookTable: React.FC<props> = ({
       message.warning("ไม่สามารถแก้ไขการจองที่คืนรถได้");
       return;
     }
+    if (record.carBookApprovedStatus === "DisapProved") {
+      message.warning("ไม่สามารถแก้ไขการจองที่ไม่อนุมัติได้");
+      return;
+    }
+    if (record.carBookApprovedStatus === "Cancel") {
+      message.warning("ไม่สามารถแก้ไขการจองที่ยกเลิกได้");
+      return;
+    }
+
     setCurrentMaCarBookId(record.id);
     form.setFieldsValue({
       ...record,
@@ -204,32 +218,58 @@ const MaCarBookTable: React.FC<props> = ({
     setLoading(true);
   };
 
+  const handleCancelMa = async (record: MaCarBookType) => {
+    setSubmitLoading(true);
+
+    if (record.carBookApprovedStatus === "Approve") {
+      message.warning("ไม่สามารถยกเลิกการจองที่อนุมัติได้");
+      return;
+    }
+    if (record.carBookApprovedStatus === "Return") {
+      message.warning("ไม่สามารถยกเลิกการจองที่แจ้งคืนรถได้");
+      return;
+    }
+    if (record.carBookApprovedStatus === "Completed") {
+      message.warning("ไม่สามารถยกเลิกการจองที่คืนรถได้");
+      return;
+    }
+    if (record.carBookApprovedStatus === "DisapProved") {
+      message.warning("ไม่สามารถยกเลิกการจองที่ไม่อนุมัติได้");
+      return;
+    }
+    if (record.carBookApprovedStatus === "Cancel") {
+      message.warning("ยกเลิกการจองนี้ไปแล้ว");
+      return;
+    }
+
+    try {
+      const updatedApproveMa = {
+        id: record.id,
+        carBookApprovedById: session?.user.userId,
+        carBookApprovedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+        carBookApprovedStatus: "Cancel",
+        carBookApprovedDate: dayjs().toISOString(),
+      };
+      await maCarServices.updateMaCarBook(updatedApproveMa);
+      message.success("ยกเลิกการจองสำเร็จ");
+    } catch (error) {
+      message.error("ยกเลิกการจองไม่สำเร็จ");
+    } finally {
+      setSubmitLoading(false);
+    }
+    setLoading(true);
+  };
+
   const { TextArea } = Input;
 
   const handleEditMaCancel = () => {
     setModalEditMa(false);
   };
 
-  const handleDeleteMa = async (id: any) => {
-    setSubmitLoading(true);
-    try {
-      const res = await maCarServices.deleteMaCarBook(id);
-      if (!res) {
-        message.error("ลบข้อมูลการจองไม่สำเร็จ");
-      }
-      message.success("ลบข้อมูลการจองสำเร็จ");
-      setSubmitLoading(false);
-    } catch (error) {
-      message.error("ลบข้อมูลการจองไม่สำเร็จ");
-    }
-    setLoading(true);
-  };
-
   const updatedMaCarBook: FormProps<MaCarBookType>["onFinish"] = async (
     values
   ) => {
     setSubmitLoading(true);
-
     if (currentMaCarBookId === null) {
       message.error("No ma selected for update");
       return;
@@ -240,14 +280,8 @@ const MaCarBookTable: React.FC<props> = ({
     );
 
     try {
-      const {
-        carBookStartDate,
-        carBookEndDate,
-        updatedById,
-        carName,
-        updatedByName,
-        ...restValues
-      } = values;
+      const { carBookStartDate, carBookEndDate, carName, ...restValues } =
+        values;
 
       const updatedStartDate = carBookStartDate.toISOString();
 
@@ -266,37 +300,10 @@ const MaCarBookTable: React.FC<props> = ({
         return;
       }
 
-      const existingMaCarBook = await maCarServices.getMaCarBookAllQuery();
-
-      const hasOverlap = existingMaCarBook.some((maCar: MaCarBookType) => {
-        if (maCar.carName === carName && maCar.id !== carSelected) {
-          const existingStart = dayjs(maCar.carBookStartDate);
-          const existingEnd = dayjs(maCar.carBookEndDate);
-          const newStart = dayjs(updatedStartDate);
-          const newEnd = dayjs(updatedEndDate);
-
-          return (
-            newStart.isBetween(existingStart, existingEnd, null, "[)") ||
-            newEnd.isBetween(existingStart, existingEnd, null, "(]") ||
-            existingStart.isBetween(newStart, newEnd, null, "[)") ||
-            existingEnd.isBetween(newStart, newEnd, null, "(]")
-          );
-        }
-        return false;
-      });
-
-      if (hasOverlap) {
-        message.error(
-          "ไม่สามารถแก้ไขการจองนี้ได้เนื่องจากมีการจองรถคันนี้ในช่วงเวลานี้แล้ว"
-        );
-        setSubmitLoading(false);
-        return;
-      }
-
       const maCarBookData = {
         ...restValues,
         id: currentMaCarBookId,
-        carName: carSelected?.carName,
+        carName: carSelected.carName,
         carBookStartDate: updatedStartDate,
         carBookEndDate: updatedEndDate,
         carBookTitle: values.carBookTitle,
@@ -318,10 +325,6 @@ const MaCarBookTable: React.FC<props> = ({
     setLoading(true);
   };
 
-  const handleReturnCar = () => {
-    router.push("/page/macar/ma-car-booking/");
-  };
-
   return (
     <>
       <Modal
@@ -335,7 +338,6 @@ const MaCarBookTable: React.FC<props> = ({
           form={form}
           layout="vertical"
           name="edit_ma"
-          initialValues={{ remember: true }}
           onFinish={updatedMaCarBook}
           autoComplete="off"
         >
@@ -407,12 +409,14 @@ const MaCarBookTable: React.FC<props> = ({
                 <InputNumber
                   style={{ width: "100%" }}
                   placeholder="กรอกจำนวนผู้ใช้"
+                  min={1}
+                  max={12}
                 />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item name="remark" label="หมายเหตุ">
-                <TextArea placeholder="กรอกหมายเหตุ" rows={2} />
+              <Form.Item name="detail" label="รายยละเอียด">
+                <TextArea placeholder="กรอกรายยละเอียด" rows={2} />
               </Form.Item>
             </Col>
           </Row>
@@ -426,6 +430,7 @@ const MaCarBookTable: React.FC<props> = ({
                 ]}
               >
                 <DatePicker
+                  disabled
                   format="DD-MM-YYYY"
                   placeholder="กรอกวันที่เริ่มการจอง"
                   style={{ width: "100%" }}
@@ -439,6 +444,7 @@ const MaCarBookTable: React.FC<props> = ({
                 rules={[{ required: true, message: "กรุณาเลือกเวลาเริ่มจอง!" }]}
               >
                 <TimePicker
+                  disabled
                   format="HH:mm"
                   placeholder="กรอกเวลาเริ่มการจอง"
                   style={{ width: "100%" }}
@@ -454,6 +460,7 @@ const MaCarBookTable: React.FC<props> = ({
                 ]}
               >
                 <DatePicker
+                  disabled
                   format="DD-MM-YYYY"
                   placeholder="กรอกวันที่สิ้นสุดการจอง"
                   style={{ width: "100%" }}
@@ -469,17 +476,11 @@ const MaCarBookTable: React.FC<props> = ({
                 ]}
               >
                 <TimePicker
+                  disabled
                   format="HH:mm"
                   placeholder="กรอกเวลาสิ้นสุดการจอง"
                   style={{ width: "100%" }}
                 />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={24}>
-            <Col span={16}>
-              <Form.Item name="detail" label="รายยละเอียด">
-                <TextArea placeholder="กรอกรายยละเอียด" rows={2} />
               </Form.Item>
             </Col>
           </Row>
@@ -499,7 +500,6 @@ const MaCarBookTable: React.FC<props> = ({
           </Form.Item>
         </Form>
       </Modal>
-
       <Row gutter={[18, 18]}>
         <Col md={18}>
           <ShareMaCarBook data={maCarBookData} />
@@ -511,11 +511,7 @@ const MaCarBookTable: React.FC<props> = ({
             justifyContent: "flex-end",
             alignItems: "center",
           }}
-        >
-          <Button type="primary" onClick={handleReturnCar}>
-            คืนรถ
-          </Button>
-        </Col>
+        ></Col>
       </Row>
       <Table
         columns={columns}

@@ -21,10 +21,10 @@ import { DeleteIcon, ApproveIcon } from "@/components/icon";
 import type { TableProps, FormProps } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../services/manage-car.service";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import isBetween from "dayjs/plugin/isBetween";
-import { MaCarType, MaCarBookType } from "../../common/index";
+import { MaCarBookType } from "../../common/index";
 
 dayjs.extend(isBetween);
 
@@ -33,7 +33,6 @@ export interface props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   maCarBookData: any[];
   pagination: TablePaginationConfig;
-  // changePagination: (pagination: TablePaginationConfig) => void;
 }
 
 const ManageCar: React.FC<props> = ({
@@ -59,7 +58,7 @@ const ManageCar: React.FC<props> = ({
       title: "ลำดับ",
       width: "50px",
       align: "center",
-      render: (id: number, record: any, index: number) =>
+      render: (_: any, __: any, index: number) =>
         pagination.current && pagination.pageSize
           ? (pagination.current - 1) * pagination.pageSize + (index + 1)
           : "",
@@ -161,7 +160,7 @@ const ManageCar: React.FC<props> = ({
           <Tooltip title="อนุมัติ">
             <a
               onClick={() => showModalApproveBook(record)}
-              style={{ color: "green", width: "50px", textAlign: "center" }} // กำหนดความกว้างและจัดข้อความให้อยู่กลาง
+              style={{ color: "green", width: "50px", textAlign: "center" }}
             >
               <ApproveIcon />
             </a>
@@ -197,9 +196,7 @@ const ManageCar: React.FC<props> = ({
             okText="ใช่"
             cancelText="ไม่"
           >
-            {/* <Tooltip title="ยกเลิกการจอง"> */}
             <a style={{ width: "100px", textAlign: "center" }}>ยกเลิกการจอง</a>
-            {/* </Tooltip> */}
           </Popconfirm>
         </Space>
       ),
@@ -249,22 +246,14 @@ const ManageCar: React.FC<props> = ({
   };
 
   const handleCancelMa = async (record: MaCarBookType) => {
-    setSubmitLoading(true);
+    setSubmitLoading(false);
 
-    if (record.carBookApprovedStatus === "Approve") {
-      message.warning("ไม่สามารถยกเลิกการจองที่อนุมัติได้");
-      return;
-    }
     if (record.carBookApprovedStatus === "Return") {
       message.warning("ไม่สามารถยกเลิกการจองที่แจ้งคืนรถได้");
       return;
     }
     if (record.carBookApprovedStatus === "Completed") {
       message.warning("ไม่สามารถยกเลิกการจองที่คืนรถได้");
-      return;
-    }
-    if (record.carBookApprovedStatus === "DisapProved") {
-      message.warning("ไม่สามารถยกเลิกการจองที่ไม่อนุมัติได้");
       return;
     }
     if (record.carBookApprovedStatus === "Cancel") {
@@ -282,6 +271,7 @@ const ManageCar: React.FC<props> = ({
       };
       await manageCarServices.updateMaCarBook(updatedApproveMa);
       message.success("ยกเลิกการจองสำเร็จ");
+      setSubmitLoading(false);
     } catch (error) {
       message.error("ยกเลิกการจองไม่สำเร็จ");
     } finally {
@@ -291,7 +281,25 @@ const ManageCar: React.FC<props> = ({
   };
 
   const onFinishCancel = async () => {
-    setSubmitLoading(true);
+    setSubmitLoading(false);
+
+    if (carBookApprovedStatus === "Return") {
+      message.warning("ไม่สามารถไม่อนุมัติการจองที่แจ้งคืนรถได้");
+      return;
+    }
+    if (carBookApprovedStatus === "Completed") {
+      message.warning("ไม่สามารถไม่อนุมัติการจองที่คืนรถได้");
+      return;
+    }
+    if (carBookApprovedStatus === "DisapProved") {
+      message.warning("ไม่อนุมัติการจองนี้ไปแล้ว");
+      return;
+    }
+    if (carBookApprovedStatus === "Cancel") {
+      message.warning("ไม่สามารถไม่อนุมัติการจองที่ยกเลิกได้ได้");
+      return;
+    }
+    setModalApproveMa(false);
 
     try {
       const updatedApproveMa = {
@@ -317,7 +325,23 @@ const ManageCar: React.FC<props> = ({
   };
 
   const onFinishApprove: FormProps<MaCarBookType>["onFinish"] = async () => {
-    setSubmitLoading(true);
+    setSubmitLoading(false);
+    if (carBookApprovedStatus === "Approve") {
+      message.warning("อนุมัติการจองนี้ไปแล้ว");
+      return;
+    }
+    if (carBookApprovedStatus === "Return") {
+      message.warning("ไม่สามารถอนุมัติการจองที่แจ้งคืนรถได้");
+      return;
+    }
+    if (carBookApprovedStatus === "Completed") {
+      message.warning("ไม่สามารถอนุมัติการจองที่คืนรถได้");
+      return;
+    }
+    if (carBookApprovedStatus === "Cancel") {
+      message.warning("ไม่สามารถอนุมัติการจองที่ยกเลิกได้ได้");
+      return;
+    }
 
     try {
       const updatedApproveMa = {
@@ -355,7 +379,6 @@ const ManageCar: React.FC<props> = ({
 
       await manageCarServices.updateMaCarBook(updatedReturn);
 
-      setModalReturn(false);
       message.success("รับคืนรถสำเร็จ");
       setSubmitLoading(false);
     } catch (error) {

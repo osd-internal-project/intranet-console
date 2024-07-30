@@ -22,7 +22,6 @@ import { MaCarType, MaCarBookType } from "../../common/index";
 
 export interface props {
   maCarData: MaCarType[];
-
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -65,12 +64,15 @@ const MaCarBook: React.FC<props> = ({
     values
   ) => {
     setSubmitLoading(true);
+
     const carSelected = [...maCarData]
       .reverse()
       .find((car) => car.carId === values.carId);
 
     const carBookStartDate = values.carBookStartDate as Date;
+
     const carBookEndDate = values.carBookEndDate as Date;
+    
     const today = new Date();
     if (new Date(carBookStartDate) < today) {
       message.error("ไม่สามารถจองในวันที่ผ่านมาได้");
@@ -106,12 +108,14 @@ const MaCarBook: React.FC<props> = ({
         carBookEndDate
       );
 
-      if (conflict) {
-        message.error(
-          "รถนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่."
-        );
-        setSubmitLoading(false);
-        return;
+      if (carSelected?.carBookApprovedStatus === "Process") {
+        if (conflict) {
+          message.error(
+            "รถนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่."
+          );
+          setSubmitLoading(false);
+          return;
+        }
       }
 
       const maCarBook = await maCarBookServices.createMaCarBook(data);

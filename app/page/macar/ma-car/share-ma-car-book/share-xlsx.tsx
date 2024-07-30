@@ -9,6 +9,7 @@ interface ShareMaCarBookProps {
 }
 
 const ShareMaCarBook: React.FC<ShareMaCarBookProps> = ({ data }) => {
+
   const handleOnExport = () => {
     const transdata = data.map((dataItem) => ({
       ชื่อรถ: dataItem.carName,
@@ -38,6 +39,7 @@ const ShareMaCarBook: React.FC<ShareMaCarBookProps> = ({ data }) => {
     }));
 
     const workbook = XLSX.utils.book_new();
+    
     const worksheet = XLSX.utils.json_to_sheet(transdata);
 
     const colWidths = [

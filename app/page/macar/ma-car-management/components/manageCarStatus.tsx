@@ -14,7 +14,6 @@ import {
   Popconfirm,
   InputNumber,
   Tooltip,
-  TablePaginationConfig,
 } from "antd";
 import { DeleteIcon, EditIcon } from "@/components/icon";
 import type { TableProps, FormProps } from "antd";

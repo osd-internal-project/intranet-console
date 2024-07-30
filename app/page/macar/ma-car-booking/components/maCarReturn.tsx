@@ -403,11 +403,6 @@ const MaCarReturn: React.FC<props> = ({
                 <Input disabled placeholder="กรอกจำนวนผู้ใช้" />
               </Form.Item>
             </Col>
-            <Col span={6}>
-              <Form.Item name="remark" label="หมายเหตุ">
-                <TextArea disabled placeholder="กรอกหมายเหตุ" rows={2} />
-              </Form.Item>
-            </Col>
             <Col span={12}>
               <Form.Item name="detail" label="รายละเอียด">
                 <TextArea disabled placeholder="กรอกรายละเอียด" rows={2} />

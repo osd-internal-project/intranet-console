@@ -37,8 +37,10 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
   const [selectedMa, setSelectedMa] = useState<MaCarBookCalendarType | null>(
     null
   );
+  
   const [carBookApprovedStatusModalDetail, setStatusModalDetail] =
     useState(false);
+
   const [formUpdate] = useForm();
 
   const onCancelModalDetail = () => {
@@ -112,6 +114,7 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
           };
         }}
       />
+
       <Modal
         title="รายละเอียดการจอง"
         open={carBookApprovedStatusModalDetail}

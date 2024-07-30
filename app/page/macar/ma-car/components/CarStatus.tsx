@@ -12,6 +12,7 @@ const CarStatus: React.FC<props> = ({
   maCarData,
   setLoading,
 }: any): React.ReactElement => {
+  
   const columns: TableProps<MaCarType>["columns"] = [
     {
       title: "ลำดับ",
@@ -28,7 +29,6 @@ const CarStatus: React.FC<props> = ({
       width: "250px",
       align: "center",
     },
-
     {
       title: "ระดับนํ้ามัน",
       dataIndex: "carPetrol",

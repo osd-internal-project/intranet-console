@@ -21,7 +21,7 @@ import { DeleteIcon, ApproveIcon } from "@/components/icon";
 import type { TableProps, FormProps } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../services/manage-car.service";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import isBetween from "dayjs/plugin/isBetween";
 import { MaCarBookType } from "../../common/index";
@@ -58,7 +58,7 @@ const ManageCar: React.FC<props> = ({
       title: "ลำดับ",
       width: "50px",
       align: "center",
-      render: (id: number, record: any, index: number) =>
+      render: (_: any, __: any, index: number) =>
         pagination.current && pagination.pageSize
           ? (pagination.current - 1) * pagination.pageSize + (index + 1)
           : "",

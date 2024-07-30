@@ -30,8 +30,6 @@ export interface props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   maCarData: any[];
   pagination: TablePaginationConfig;
-
-  
 }
 
 const ManageCarStatus: React.FC<props> = ({
@@ -39,8 +37,7 @@ const ManageCarStatus: React.FC<props> = ({
   loading,
   maCarData,
   pagination,
-}:
-any): React.ReactElement => {
+}: any): React.ReactElement => {
   const intraAuth = useAxiosIntranet();
   const [form] = useForm();
   const manageCarServices = ManageCarServices(intraAuth);
@@ -320,7 +317,7 @@ any): React.ReactElement => {
 
       <Modal
         title="เพิ่มรถ"
-        visible={modalCreateMaCar}
+        open={modalCreateMaCar}
         onCancel={handleCancelCreateMaCar}
         footer={null}
         width={500}
@@ -399,6 +396,7 @@ any): React.ReactElement => {
           </Form.Item>
         </Form>
       </Modal>
+
       <div
         style={{
           display: "flex",

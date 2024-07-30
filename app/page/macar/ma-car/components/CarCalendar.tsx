@@ -50,14 +50,16 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
 
   const renderStatusTag = (status: string) => {
     switch (status) {
-      case "process":
+      case "Process":
         return <Tag color="blue">กำลังรออนุมัติ</Tag>;
       case "Approve":
         return <Tag color="green">อนุมัติแล้ว</Tag>;
       case "Cancel":
         return <Tag color="red">ยกเลิกการจอง</Tag>;
+      case "DisapProved":
+        return <Tag color="orange">ไม่อนุมัติ</Tag>;
       case "Return":
-        return <Tag color="orange">แจ้งคืนรถแล้ว</Tag>;
+        return <Tag color="yellow">แจ้งคืนรถแล้ว</Tag>;
       case "Completed":
         return <Tag color="#748698">คืนรถสำเร็จ</Tag>;
       default:
@@ -86,25 +88,34 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
     <>
       <Calendar<CustomEvent>
         localizer={localizer}
-        events={maFetchCalendar.map((ma: MaCarBookCalendarType) => ({
-          id: ma.id,
-          title: ma.carName,
-          start: new Date(ma.carBookStartDate),
-          end: new Date(ma.carBookEndDate),
-          carBookApprovedStatus: ma.carBookApprovedStatus,
-          description: ma.description,
-          userName: ma.userName,
-        }))}
+        events={maFetchCalendar
+          .filter(
+            (ma: MaCarBookCalendarType) =>
+              ma.carBookApprovedStatus === "Approve" ||
+              ma.carBookApprovedStatus === "Process"
+          )
+          .map((ma: MaCarBookCalendarType) => ({
+            id: ma.id,
+            title: ma.carName,
+            start: new Date(ma.carBookStartDate),
+            end: new Date(ma.carBookEndDate),
+            carBookApprovedStatus: ma.carBookApprovedStatus,
+            description: ma.description,
+            userName: ma.userName,
+          }))}
         style={{ height: 500 }}
         onSelectEvent={onSelectEventCalendar}
         eventPropGetter={(event: CustomEvent) => {
+          console.log("Event:", event);
           const backgroundColor =
             event.carBookApprovedStatus === "Approve"
-              ? "#4CAF50"
+              ? "green"
               : event.carBookApprovedStatus === "Cancel"
-              ? "#D24545"
-              : event.carBookApprovedStatus === "Return"
+              ? "red"
+              : event.carBookApprovedStatus === "DisapProved"
               ? "orange"
+              : event.carBookApprovedStatus === "Return"
+              ? "yellow"
               : event.carBookApprovedStatus === "Completed"
               ? "#748698"
               : "#2196F3";
@@ -115,7 +126,7 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
       />
       <Modal
         title="รายละเอียดการจอง"
-        visible={carBookApprovedStatusModalDetail}
+        open={carBookApprovedStatusModalDetail}
         width={500}
         onCancel={onCancelModalDetail}
         footer={null}
@@ -147,7 +158,7 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
                   />
                 </Form.Item>
 
-                <Form.Item label="เวลาเริ่มจอง" name="carBookStartTime">
+                <Form.Item label="เวลาเริ่มจอง" name="carBookStartDate">
                   <TimePicker
                     format="HH:mm"
                     disabled
@@ -165,7 +176,7 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
                   />
                 </Form.Item>
 
-                <Form.Item label="เวลาสิ้นสุดการจอง" name="carBookEndTime">
+                <Form.Item label="เวลาสิ้นสุดการจอง" name="carBookEndDate">
                   <TimePicker
                     format="HH:mm"
                     disabled
@@ -198,7 +209,7 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
                 <Form.Item label="สถานะ">
                   {renderStatusTag(selectedMa.carBookApprovedStatus)}
                 </Form.Item>
-                {selectedMa.carBookApprovedStatus !== "process" && (
+                {selectedMa.carBookApprovedStatus !== "Process" && (
                   <>
                     <Form.Item label="ผู้อนุมัติ" name="carBookApprovedByName">
                       <Input className="read-only-input" disabled />

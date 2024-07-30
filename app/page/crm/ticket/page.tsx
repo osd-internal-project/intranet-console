@@ -255,12 +255,11 @@ export default function CustomerDetailPage() {
         message.success("อัพเดท Ticket สำเร็จ");
         await onSaveHistoryLogs(ticketId, "update");
         await onShowModalProjectTicketDetail(ticketId);
+        setloading(true);
       })
       .catch(() => {
         message.error("ผิดพลาด กรุณาลองใหม่");
       });
-
-    setloading(true);
   }
 
   async function saveRequestTicketFile(
@@ -357,11 +356,11 @@ export default function CustomerDetailPage() {
             message.success("อัพเดท Ticket สำเร็จ");
             await onSaveHistoryLogs(ticketId, action);
             await onShowModalProjectTicketDetail(ticketId);
+            setloading(true);
           })
           .catch(() => {
             message.error("ผิดพลาด กรุณาลองใหม่");
           });
-        setloading(true);
       },
     });
   }

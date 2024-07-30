@@ -406,9 +406,9 @@ any): React.ReactElement => {
           onClick={showModalCreateMaCar}
           style={{
             float: "right",
-            margin: "10px",
-            padding: " 20px 30px 20px 30px",
-            fontSize: "18px",
+            margin: "5px",
+            padding: " 15px 20px 15px 20px",
+            fontSize: "16px",
           }}
         >
           เพิ่มรถ

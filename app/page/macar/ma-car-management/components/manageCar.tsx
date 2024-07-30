@@ -12,6 +12,10 @@ import {
   Popconfirm,
   TablePaginationConfig,
   Tooltip,
+  Select,
+  InputNumber,
+  Divider,
+  Input,
 } from "antd";
 import { DeleteIcon, ApproveIcon } from "@/components/icon";
 import type { TableProps, FormProps } from "antd";
@@ -39,13 +43,14 @@ const ManageCar: React.FC<props> = ({
   pagination,
 }: any): React.ReactElement => {
   const intraAuth = useAxiosIntranet();
+  const [formReturn] = Form.useForm();
   const [form] = Form.useForm();
   const [modalApproveMa, setModalApproveMa] = useState(false);
   const [modalReturn, setModalReturn] = useState(false);
   const [carBookApprovedStatus, setMaCarBookStatus] = useState("");
   const [submitLoading, setSubmitLoading] = useState(false);
   const [currentMaId, setCurrentMaId] = useState<number | null>(null);
-  const [maData, setMaData] = useState<MaCarBookType[]>([]);
+  const [maBookData, setMaCarBookData] = useState<MaCarBookType[]>([]);
   const manageCarServices = ManageCarServices(intraAuth);
   const { data: session } = useSession();
 
@@ -106,24 +111,28 @@ const ManageCar: React.FC<props> = ({
       render: (status: string) => (
         <Tag
           color={
-            status === "process"
+            status === "Process"
               ? "blue"
-              : status === "Approve"
-              ? "green"
               : status === "Cancel"
               ? "red"
-              : status === "Return"
+              : status === "Approve"
+              ? "green"
+              : status === "DisapProved"
               ? "orange"
+              : status === "Return"
+              ? "yellow"
               : status === "Completed"
               ? "#748698 "
               : undefined
           }
         >
-          {status === "process"
+          {status === "Process"
             ? "กำลังรออนุมัติ"
+            : status === "Cancel"
+            ? "ยกเลิกการจอง"
             : status === "Approve"
             ? "อนุมัติแล้ว"
-            : status === "Cancel"
+            : status === "DisapProved"
             ? "ไม่อนุมัติ"
             : status === "Return"
             ? "แจ้งคืนรถแล้ว"
@@ -131,14 +140,13 @@ const ManageCar: React.FC<props> = ({
             ? "รับคืนรถสำเร็จ"
             : ""}
         </Tag>
-        // </>
       ),
     },
     {
       title: "จัดการ",
       key: "note",
       dataIndex: "note",
-      width: "200px",
+      width: "280px",
       align: "center",
       render: (_: any, record: MaCarBookType) => (
         <Space
@@ -146,8 +154,19 @@ const ManageCar: React.FC<props> = ({
           style={{
             display: "flex",
             justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
           }}
         >
+          <Tooltip title="อนุมัติ">
+            <a
+              onClick={() => showModalApproveBook(record)}
+              style={{ color: "green", width: "50px", textAlign: "center" }} // กำหนดความกว้างและจัดข้อความให้อยู่กลาง
+            >
+              <ApproveIcon />
+            </a>
+          </Tooltip>
+
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
             onConfirm={() => handleDeleteMa(record.id)}
@@ -155,25 +174,33 @@ const ManageCar: React.FC<props> = ({
             cancelText="ไม่"
           >
             <Tooltip title="ลบ">
-              <a>
-                {" "}
-                <DeleteIcon width="24" height="24" />{" "}
+              <a style={{ color: "red", width: "50px", textAlign: "center" }}>
+                <DeleteIcon />
               </a>
             </Tooltip>
           </Popconfirm>
-          <a
-            onClick={() => showModalApproveBook(record)}
-            style={{ color: "green" }}
+
+          <div style={{ width: "120px", textAlign: "center" }}>
+            {" "}
+            {record.carBookApprovedStatus === "Return" ? (
+              <a onClick={() => showModalReturn(record)}>รับคืนรถ</a>
+            ) : record.carBookApprovedStatus === "Completed" ? (
+              <span style={{ color: "grey" }}>รับคืนแล้ว</span>
+            ) : (
+              <span style={{ color: "grey" }}>รอแจ้งคืนรถ</span>
+            )}
+          </div>
+
+          <Popconfirm
+            title="คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการจองนี้?"
+            onConfirm={() => handleCancelMa(record)}
+            okText="ใช่"
+            cancelText="ไม่"
           >
-            <ApproveIcon strokeColor="blue" width="2rem" height="2rem" />
-          </a>
-          {record.carBookApprovedStatus === "Return" ? (
-            <a onClick={() => showModalReturn(record)}> รับคืนรถ</a>
-          ) : record.carBookApprovedStatus === "Completed" ? (
-            <span style={{ color: "grey" }}>รับคืนแล้ว</span>
-          ) : (
-            <span style={{ color: "grey" }}>รอแจ้งคืนรถ</span>
-          )}
+            {/* <Tooltip title="ยกเลิกการจอง"> */}
+            <a style={{ width: "100px", textAlign: "center" }}>ยกเลิกการจอง</a>
+            {/* </Tooltip> */}
+          </Popconfirm>
         </Space>
       ),
     },
@@ -193,6 +220,13 @@ const ManageCar: React.FC<props> = ({
     setModalReturn(true);
     setMaCarBookStatus(record.carBookApprovedStatus);
     setCurrentMaId(record.id);
+    formReturn.setFieldsValue({
+      carName: record.maCar.carName,
+      carMile: record.maCar.carMile,
+      carPetrol: record.maCar.carPetrol,
+      status: record.maCar.status,
+      createdByName: record.createdByName,
+    });
   };
 
   const handleReturn = () => {
@@ -204,12 +238,54 @@ const ManageCar: React.FC<props> = ({
 
     try {
       await manageCarServices.deleteMaCarBook(id);
-      setMaData(maData.filter((item) => item.id !== id));
+      setMaCarBookData(maBookData.filter((item) => item.id !== id));
 
       message.success("ลบข้อมูลการจองสำเร็จ");
       setSubmitLoading(false);
     } catch (error) {
       message.error("ลบข้อมูลการจองไม่สำเร็จ");
+    }
+    setLoading(true);
+  };
+
+  const handleCancelMa = async (record: MaCarBookType) => {
+    setSubmitLoading(true);
+
+    if (record.carBookApprovedStatus === "Approve") {
+      message.warning("ไม่สามารถยกเลิกการจองที่อนุมัติได้");
+      return;
+    }
+    if (record.carBookApprovedStatus === "Return") {
+      message.warning("ไม่สามารถยกเลิกการจองที่แจ้งคืนรถได้");
+      return;
+    }
+    if (record.carBookApprovedStatus === "Completed") {
+      message.warning("ไม่สามารถยกเลิกการจองที่คืนรถได้");
+      return;
+    }
+    if (record.carBookApprovedStatus === "DisapProved") {
+      message.warning("ไม่สามารถยกเลิกการจองที่ไม่อนุมัติได้");
+      return;
+    }
+    if (record.carBookApprovedStatus === "Cancel") {
+      message.warning("ยกเลิกการจองนี้ไปแล้ว");
+      return;
+    }
+
+    try {
+      const updatedApproveMa = {
+        id: record.id,
+        carBookApprovedById: session?.user.userId,
+        carBookApprovedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+        carBookApprovedStatus: "Cancel",
+        carBookApprovedDate: dayjs().toISOString(),
+      };
+      await manageCarServices.updateMaCarBook(updatedApproveMa);
+      message.success("ยกเลิกการจองสำเร็จ");
+    } catch (error) {
+      message.error("ยกเลิกการจองไม่สำเร็จ");
+    } finally {
+      setSubmitLoading(false);
     }
     setLoading(true);
   };
@@ -222,15 +298,15 @@ const ManageCar: React.FC<props> = ({
         id: currentMaId,
         carBookApprovedById: session?.user.userId,
         carBookApprovedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
-        carBookApprovedStatus: "Cancel",
+        carBookApprovedStatus: "DisapProved",
         carBookApprovedDate: dayjs(),
       };
 
       await manageCarServices.updateMaCarBook(updatedApproveMa);
 
       setModalApproveMa(false);
+      message.success("ไม่อนุมัติการจองสำเร็จ");
 
-      message.success("อนุมัติการจองสำเร็จ");
       setSubmitLoading(false);
     } catch (error) {
       message.error("อนุมัติการจองไม่สำเร็จ");
@@ -305,7 +381,6 @@ const ManageCar: React.FC<props> = ({
         onCancel={handleApproveBook}
         footer={null}
       >
-        {/* <p>ยืนยันอนุมัติการจองรถ</p> */}
         <Form
           form={form}
           onFinish={onFinishApprove}
@@ -315,7 +390,7 @@ const ManageCar: React.FC<props> = ({
             <Button
               type="default"
               onClick={onFinishCancel}
-              disabled={carBookApprovedStatus === "Cancel"}
+              disabled={carBookApprovedStatus === "DisapProved"}
               loading={submitLoading}
               style={{ marginRight: "16px", marginTop: "16px" }}
             >
@@ -335,28 +410,90 @@ const ManageCar: React.FC<props> = ({
       </Modal>
 
       <Modal
-        width={400}
+        width={500}
         title="การรับคืนรถ"
         open={modalReturn}
         onCancel={handleReturn}
         footer={null}
       >
         <Form
-          form={form}
+          form={formReturn}
           onFinish={onFinishReturn}
-          // onFinishFailed={onFinishFailed}
+          layout="vertical"
+          autoComplete="off"
         >
-          <Row justify="end">
-            <Button
-              type="primary"
-              htmlType="submit"
-              disabled={carBookApprovedStatus === "Completed"}
-              loading={submitLoading}
-              style={{ marginRight: "16px", marginTop: "16px" }}
+          <Divider orientation="left">ข้อมูลการคืนรถ</Divider>
+
+          <Col span={24}>
+            <Form.Item
+              name="carName"
+              label="ชื่อรถ"
+              rules={[{ required: true, message: "กรุณากรอกชื่อรถ" }]}
             >
-              รับคืน
-            </Button>
-          </Row>
+              <Input disabled placeholder="กรอกชื่อรถ" />
+            </Form.Item>
+          </Col>
+
+          <Col span={24}>
+            <Form.Item name="createdByName" label="ชื่อผู้คืนรถ">
+              <Input disabled placeholder="กรอกชื่อ" />
+            </Form.Item>
+          </Col>
+
+          <Col span={24}>
+            <Form.Item name="carMile" label="เลขไมล์รถ">
+              <InputNumber
+                disabled
+                style={{ width: "100%" }}
+                placeholder="กรอกเลขไมล์รถ"
+              />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item
+              label="ระดับน้ำมันรถ"
+              name="carPetrol"
+              rules={[{ required: true, message: "กรุณาเลือกระดับน้ำมัน!" }]}
+            >
+              <Select placeholder="เลือกระดับน้ำมัน" disabled>
+                <Select.Option value="high">มาก</Select.Option>
+                <Select.Option value="medium">ปานกลาง</Select.Option>
+                <Select.Option value="low">น้อย</Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item
+              label="สถานะของรถ"
+              name="status"
+              rules={[{ required: true, message: "กรุณาเลือกสถานะรถ!" }]}
+            >
+              <Select placeholder="เลือกสถานะรถ" disabled>
+                <Select.Option value={true}>ใช้งานได้ปกติ</Select.Option>
+                <Select.Option value={false}>ไม่สามารถใช้งานได้</Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
+
+          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+            <Row justify="end" gutter={16}>
+              <Button
+                type="default"
+                onClick={handleReturn}
+                style={{ marginRight: "16px" }}
+              >
+                ยกเลิก
+              </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                disabled={carBookApprovedStatus === "Completed"}
+                loading={submitLoading}
+              >
+                รับคืนรถ
+              </Button>
+            </Row>
+          </Form.Item>
         </Form>
       </Modal>
 

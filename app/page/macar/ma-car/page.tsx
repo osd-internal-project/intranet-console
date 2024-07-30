@@ -19,31 +19,8 @@ import CarStatus from "./components/CarStatus";
 import { MaCarServices } from "./services/ma-car.service";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { MaCarType, MaCarBookType } from "../common/index";
-
-// type MaCarType = {
-//   id: string;
-//   carId: string;
-//   carName: string;
-//   carPetrol: string;
-//   detail: string;
-//   status: string;
-//   createdAt: Date;
-//   createdById: string;
-//   createdByName: string;
-//   updatedAt: Date;
-//   updatedById: string;
-//   updatedByName: string;
-//   carBookProvince: string;
-//   carBookPlace: string;
-//   carBookUsers: number;
-//   carBookStartDate: Date;
-//   carBookEndDate: Date;
-//   approveDate: string;
-//   carBookApprovedDate?: Date;
-//   carBookApprovedById?: string;
-//   carBookApprovedByName?: string;
-// };
+import { MaCarType, MaCarBookType } from "./../common/index";
+import { useRouter } from "next/navigation";
 
 const MaCar: React.FC = () => {
   const { data: session } = useSession();
@@ -53,6 +30,7 @@ const MaCar: React.FC = () => {
   const [maFetchCalendar, setMaFetchCalendar] = useState([]);
   const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const router = useRouter();
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -98,13 +76,6 @@ const MaCar: React.FC = () => {
     try {
       const maCar = await maCarServices.getMaCarQuery();
       setMaCarData(maCar);
-
-      // const maresponse = await maCarServices.getMaCarQuery();
-      // const MaCar: MaCarType[] = maresponse.map((item: any, index: number) => ({
-      //   ...item,
-      //   key: index.toString(),
-      // }));
-      // setmaCarData(MaCar);
 
       const createdById = session?.user.userId;
 
@@ -153,9 +124,13 @@ const MaCar: React.FC = () => {
         <Col span={24}>
           <div className="grid-span-1 space-y-2">
             <Card>
-              <div className="flex justify-end">
-                <Link href="/page/macar/ma-car-booking">
-                  <Button type="primary"> ทำการจองรถ</Button>
+              <div className="flex justify-end space-x-4">
+                {" "}
+                <Link href="/page/macar/ma-car-booking?action=1">
+                  <Button type="primary">ทำการจองรถ</Button>
+                </Link>
+                <Link href="/page/macar/ma-car-booking?action=2">
+                  <Button type="primary">คืนรถ</Button>
                 </Link>
               </div>
 

@@ -1,20 +1,11 @@
 import React from "react";
 import * as XLSX from "xlsx";
 import { Button } from "antd";
+import { MaCarBookType } from "../../common/index";
+import { ExcelIcon } from "@/components/icon";
 
-interface MaCarType {
-  carName: string;
-  detail: string;
-  remark: string;
-  status: string;
-  createdByName: string;
-  carBookStartDate: Date;
-  carBookEndDate: Date;
-  carBookApprovedByName?: string;
-  carBookApprovedStatus: string;
-}
 interface ShareMaCarBookProps {
-  data: MaCarType[];
+  data: MaCarBookType[];
 }
 
 const ShareMaCarBook: React.FC<ShareMaCarBookProps> = ({ data }) => {
@@ -23,7 +14,7 @@ const ShareMaCarBook: React.FC<ShareMaCarBookProps> = ({ data }) => {
       ชื่อรถ: dataItem.carName,
       ชื่อผู้จอง: dataItem.createdByName,
       วันที่เริ่มจอง: new Date(dataItem.carBookStartDate).toLocaleDateString(),
-      วันที่สิ้ดสุดการจอง: new Date(
+      วันที่สิ้นสุดการจอง: new Date(
         dataItem.carBookEndDate
       ).toLocaleDateString(),
       เวลาที่เริ่มจอง: new Date(dataItem.carBookStartDate).toLocaleTimeString(
@@ -34,7 +25,7 @@ const ShareMaCarBook: React.FC<ShareMaCarBookProps> = ({ data }) => {
           second: "2-digit",
         }
       ),
-      เวลาที่สิ้ดสุดเริ่มจอง: new Date(
+      เวลาที่สิ้นสุดการจอง: new Date(
         dataItem.carBookEndDate
       ).toLocaleTimeString("en-US", {
         hour: "2-digit",
@@ -48,17 +39,41 @@ const ShareMaCarBook: React.FC<ShareMaCarBookProps> = ({ data }) => {
 
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.json_to_sheet(transdata);
+
+    const colWidths = [
+      { wch: 20 },
+      { wch: 20 },
+      { wch: 15 },
+      { wch: 15 },
+      { wch: 15 },
+      { wch: 15 },
+      { wch: 15 },
+      { wch: 20 },
+      { wch: 30 },
+    ];
+
+    worksheet["!cols"] = colWidths;
+
     XLSX.utils.book_append_sheet(workbook, worksheet, "การจองรถ");
     XLSX.writeFile(workbook, "การจองรถ.xlsx");
   };
 
   return (
     <Button
-      type="primary"
+      type="text"
       onClick={handleOnExport}
-      style={{ marginRight: "8px", marginTop: "10", marginBottom: "10" }}
+      style={{
+        marginRight: "8px",
+        marginTop: "10px",
+        marginBottom: "10px",
+        border: "none",
+        backgroundColor: "transparent",
+        color: "inherit",
+        padding: 0,
+      }}
+      icon={<ExcelIcon width="1.5rem" height="1.5rem" />}
     >
-      To Excel
+      Export Excel
     </Button>
   );
 };

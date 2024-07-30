@@ -29,18 +29,14 @@ export interface props {
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   maCarData: any[];
-  // pagination: TablePaginationConfig;
-  // changePagination: (pagination: TablePaginationConfig) => void;
 }
 
 const ManageCarStatus: React.FC<props> = ({
   setLoading,
   loading,
   maCarData,
-}: // pagination,
-// changePagination,
+}:
 any): React.ReactElement => {
-  // const ManageCarStatus = () => {
   const intraAuth = useAxiosIntranet();
   const [form] = useForm();
   const manageCarServices = ManageCarServices(intraAuth);

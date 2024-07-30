@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import moment from "moment";
 import {
   Table,
-  ConfigProvider,
   Input,
   Tag,
   Button,
@@ -18,9 +17,8 @@ import {
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../../services/manage-car.service";
 import { useForm } from "antd/es/form/Form";
-import ExportExcel from "./ExportExcel";
 import { useSession } from "next-auth/react";
-import { DeleteIcon, ApproveIcon, EditIcon } from "@/components/icon";
+import { DeleteIcon, EditIcon } from "@/components/icon";
 export interface MaCarType {
   id: number;
   typeName: string;

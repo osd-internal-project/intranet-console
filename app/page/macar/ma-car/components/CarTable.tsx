@@ -500,6 +500,7 @@ const MaCarBookTable: React.FC<props> = ({
           </Form.Item>
         </Form>
       </Modal>
+
       <Row gutter={[18, 18]}>
         <Col md={18}>
           <ShareMaCarBook data={maCarBookData} />
@@ -513,6 +514,7 @@ const MaCarBookTable: React.FC<props> = ({
           }}
         ></Col>
       </Row>
+      
       <Table
         columns={columns}
         dataSource={maCarBookData}

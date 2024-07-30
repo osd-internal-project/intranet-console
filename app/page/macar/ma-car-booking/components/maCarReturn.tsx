@@ -576,6 +576,7 @@ const MaCarReturn: React.FC<props> = ({
           </Row>
         </Form>
       </Modal>
+
       <Table columns={columns} dataSource={maCarBookData} loading={loading} />
     </>
   );

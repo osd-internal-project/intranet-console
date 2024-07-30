@@ -33,7 +33,7 @@ export interface props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   maCarBookData: any[];
   pagination: TablePaginationConfig;
-  // changePagination: (pagination: TablePaginationConfig) => void;
+  changePagination: (pagination: TablePaginationConfig) => void;
 }
 
 const ManageCar: React.FC<props> = ({
@@ -59,7 +59,7 @@ const ManageCar: React.FC<props> = ({
       title: "ลำดับ",
       width: "50px",
       align: "center",
-      render: (id: number, record: any, index: number) =>
+      render: (_: any, __: any, index: number) =>
         pagination.current && pagination.pageSize
           ? (pagination.current - 1) * pagination.pageSize + (index + 1)
           : "",
@@ -197,9 +197,7 @@ const ManageCar: React.FC<props> = ({
             okText="ใช่"
             cancelText="ไม่"
           >
-            {/* <Tooltip title="ยกเลิกการจอง"> */}
             <a style={{ width: "100px", textAlign: "center" }}>ยกเลิกการจอง</a>
-            {/* </Tooltip> */}
           </Popconfirm>
         </Space>
       ),
@@ -251,10 +249,6 @@ const ManageCar: React.FC<props> = ({
   const handleCancelMa = async (record: MaCarBookType) => {
     setSubmitLoading(true);
 
-    if (record.carBookApprovedStatus === "Approve") {
-      message.warning("ไม่สามารถยกเลิกการจองที่อนุมัติได้");
-      return;
-    }
     if (record.carBookApprovedStatus === "Return") {
       message.warning("ไม่สามารถยกเลิกการจองที่แจ้งคืนรถได้");
       return;
@@ -282,6 +276,7 @@ const ManageCar: React.FC<props> = ({
       };
       await manageCarServices.updateMaCarBook(updatedApproveMa);
       message.success("ยกเลิกการจองสำเร็จ");
+      setSubmitLoading(false);
     } catch (error) {
       message.error("ยกเลิกการจองไม่สำเร็จ");
     } finally {

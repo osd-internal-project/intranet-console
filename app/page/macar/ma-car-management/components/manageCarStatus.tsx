@@ -29,12 +29,16 @@ export interface props {
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   maCarData: any[];
+  pagination: TablePaginationConfig;
+
+  
 }
 
 const ManageCarStatus: React.FC<props> = ({
   setLoading,
   loading,
   maCarData,
+  pagination,
 }:
 any): React.ReactElement => {
   const intraAuth = useAxiosIntranet();
@@ -53,7 +57,10 @@ any): React.ReactElement => {
       dataIndex: "id",
       key: "id",
       align: "center",
-      render: (_, __, index) => <>{index + 1}</>,
+      render: (_: any, __: any, index: number) =>
+        pagination.current && pagination.pageSize
+          ? (pagination.current - 1) * pagination.pageSize + (index + 1)
+          : "",
     },
     {
       title: "ชื่อรถ",

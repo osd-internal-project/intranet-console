@@ -48,7 +48,7 @@ const ManageMaCar = () => {
           loading={loading}
           setLoading={setLoading}
           pagination={pagination}
-          // changePagination={changePagination}
+          changePagination={changePagination}
         />
       ),
     },
@@ -60,8 +60,7 @@ const ManageMaCar = () => {
           maCarData={maCarData}
           loading={loading}
           setLoading={setLoading}
-          // pagination={pagination}
-          // changePagination={changePagination}
+          pagination={pagination}
         />
       ),
     },

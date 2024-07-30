@@ -106,12 +106,14 @@ const MaCarBook: React.FC<props> = ({
         carBookEndDate
       );
 
-      if (conflict) {
-        message.error(
-          "รถนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่."
-        );
-        setSubmitLoading(false);
-        return;
+      if (carSelected?.carBookApprovedStatus === "Process") {
+        if (conflict) {
+          message.error(
+            "รถนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่."
+          );
+          setSubmitLoading(false);
+          return;
+        }
       }
 
       const maCarBook = await maCarBookServices.createMaCarBook(data);

@@ -22,13 +22,11 @@ import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../../services/manage-car.service";
 import { useForm } from "antd/es/form/Form";
 import ExportExcel from "./ExportExcel";
-import { useSession } from "next-auth/react";
 import MaCar from "../../../ma-car/page";
 import { Decimal } from "@prisma/client/runtime/library";
 import dayjs from "dayjs";
 import type { TableProps } from "antd";
 import { DeleteIcon, ApproveIcon, EditIcon } from "@/components/icon";
-import { log } from "console";
 import { EyeOutlined } from "@ant-design/icons";
 export interface MaCarType {
   id: number;
@@ -71,7 +69,7 @@ export interface MaCarwarpup {
   remark: string;
   createdAt: string;
   updatedAt: string;
-  status: boolean;
+  status?: boolean;
 }
 const WarpupmaCar = () => {
   const intraAuth = useAxiosIntranet();
@@ -133,7 +131,6 @@ const WarpupmaCar = () => {
     const carmilesData = maData.find((car) => car.carId === value);
     setMileage(carmilesData?.carMile);
     form.setFieldsValue({ wrapupMiles: carmilesData?.carMile });
-    console.log(carmilesData);
   };
 
   const handleMileageChange = (e: React.ChangeEvent<HTMLInputElement>) => {

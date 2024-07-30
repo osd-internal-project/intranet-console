@@ -19,7 +19,7 @@ import CarStatus from "./components/CarStatus";
 import { MaCarServices } from "./services/ma-car.service";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { MaCarType, MaCarBookType } from "./../common/index";
+import { MaCarType, MaCarBookType } from "../common/index";
 
 // type MaCarType = {
 //   id: string;

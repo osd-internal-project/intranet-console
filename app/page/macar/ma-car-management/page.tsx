@@ -15,7 +15,7 @@ import ManageCarStatus from "./components/manageCarStatus";
 import MasterType from "./components/status-car/masterType";
 import WarpupmaCar from "./components/status-car/WarpupmaCar";
 import { ManageCarServices } from "./services/manage-car.service";
-import { MaCarBookType, MaCarType } from "./../common/index";
+import { MaCarBookType, MaCarType } from "../common/index";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 
 const ManageMaCar = () => {

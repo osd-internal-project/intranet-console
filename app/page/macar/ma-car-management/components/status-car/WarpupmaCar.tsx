@@ -17,11 +17,12 @@ import {
   Tag,
   Switch,
   Tooltip,
+  Checkbox,
 } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../../services/manage-car.service";
 import { useForm } from "antd/es/form/Form";
-import ExportExcel from "./ExportExcel";
+import ExportExcel from "./components/ExportExcel";
 import MaCar from "../../../ma-car/page";
 import { Decimal } from "@prisma/client/runtime/library";
 import dayjs from "dayjs";
@@ -76,6 +77,10 @@ const WarpupmaCar = () => {
   const [form] = useForm();
   const [formchange] = useForm();
   const [formdetail] = useForm();
+  const handleSubmit = (status: boolean | null) => {
+    formchange.setFieldsValue({ status });
+    formchange.submit();
+  };
   const manageCarServices = ManageCarServices(intraAuth);
   const [maData, setMaData] = useState<MaCar[]>([]);
   const [maDataOptions, setMaDataOptions] = useState<
@@ -102,6 +107,7 @@ const WarpupmaCar = () => {
   const [maCar, setMaCar] = useState<MaCarwarpup[]>([]);
   const [selectedCar, setSelectedCar] = useState<string>("");
   const [mileage, setMileage] = useState<number | undefined>(undefined);
+  const [checkedValue, setCheckedValue] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -163,6 +169,7 @@ const WarpupmaCar = () => {
         })
       );
       setMaDataWarpup(MaCarWarpup);
+      setSubmitLoading(false);
     } catch (error) {
       message.error("Failed to fetch car data");
     }
@@ -187,6 +194,7 @@ const WarpupmaCar = () => {
         dateStart: values.dateStart,
         dateEnd: values.dateEnd,
         remark: values.remark,
+        status: null,
       },
     };
     try {
@@ -199,6 +207,7 @@ const WarpupmaCar = () => {
       } else {
         message.error("เพิ่มรถไม่สำเร็จ");
       }
+      setIsmodlaOpencreate(false);
       setSubmitLoading(false);
       fetchDataWarpup();
     } catch (error) {
@@ -228,6 +237,7 @@ const WarpupmaCar = () => {
         updateMaCarWarpup
       );
       message.success("แก้ไขข้อมูลห้องสำเร็จ");
+
       fetchDataWarpup();
       handleEditMaCarCancelWarpup();
       setSubmitLoading(false);
@@ -242,7 +252,7 @@ const WarpupmaCar = () => {
     setSubmitLoading(true);
     try {
       const updateMaCarWarpup = {
-        status: !values.status,
+        status: values.status,
       };
 
       await manageCarServices.updateMaCarWarpup(
@@ -252,6 +262,7 @@ const WarpupmaCar = () => {
       message.success("การเช็คสำเร็จ");
       setSubmitLoading(false);
       setIsmodlasubmit(false);
+      fetchDataWarpup();
     } catch (error) {
       message.error("การเช็คไม่สำเร็จ");
     }
@@ -261,6 +272,7 @@ const WarpupmaCar = () => {
     try {
       await manageCarServices.deleteMaCarWarpup(carWrapupId);
       message.success("ลบการจองสำเร็จ");
+      fetchDataWarpup();
     } catch (error) {
       message.error("ลบการจองไม่สำเร็จ");
     }
@@ -402,10 +414,12 @@ const WarpupmaCar = () => {
       align: "center",
       width: "30px",
       render: (status: boolean) =>
-        status ? (
-          <Tag color="blue">รอการเช็ค</Tag>
-        ) : (
+        status === null ? (
+          <Tag color="blue">รอตรวจสภาพ</Tag>
+        ) : status === true ? (
           <Tag color="green">เช็คแล้ว</Tag>
+        ) : (
+          <Tag color="red">ยกเลิกการเช็ค</Tag>
         ),
     },
     {
@@ -414,33 +428,49 @@ const WarpupmaCar = () => {
       key: "x",
       width: "50px",
       align: "center",
-      render: (_: any, record: MaCarwarpup) => (
-        <Space size="middle">
-          <Tooltip title="แก้ไข">
-            <a onClick={() => showModalEditMaCarWarpup(record)}>
-              <EditIcon />
-            </a>
-          </Tooltip>
-          <Popconfirm
-            title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
-            onConfirm={() => handleDeletemaCarWarpup(record.carWrapupId)}
-            okText="ยืนยัน"
-            cancelText="ยกเลิก"
-          >
-            <a>
+      render: (_: any, record: MaCarwarpup) => {
+        const isEditable = record.status === null;
+        return (
+          <Space size="middle">
+            <Tooltip title="แก้ไข">
+              <a
+                onClick={() => isEditable && showModalEditMaCarWarpup(record)}
+                style={{
+                  pointerEvents: isEditable ? "auto" : "none",
+                  visibility: isEditable ? "visible" : "hidden",
+                  color: isEditable ? "inherit" : "gray",
+                }}
+              >
+                <EditIcon />
+              </a>
+            </Tooltip>
+            <Popconfirm
+              title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
+              onConfirm={() => handleDeletemaCarWarpup(record.carWrapupId)}
+              okText="ยืนยัน"
+              cancelText="ยกเลิก"
+            >
               <Tooltip title="ลบ">
-                {" "}
-                <DeleteIcon width="20" height="20" />{" "}
+                <a>
+                  <DeleteIcon width="20" height="20" />
+                </a>
               </Tooltip>
-            </a>
-          </Popconfirm>
-          <Tooltip title="การเช็ค">
-            <a onClick={() => modalopensubmit(record)}>
-              <ApproveIcon strokeColor="blue" width="1rem" height="1rem" />
-            </a>
-          </Tooltip>
-        </Space>
-      ),
+            </Popconfirm>
+            <Tooltip title="การเช็ค">
+              <a
+                onClick={() => isEditable && modalopensubmit(record)}
+                style={{
+                  pointerEvents: isEditable ? "auto" : "none",
+                  visibility: isEditable ? "visible" : "hidden",
+                  color: isEditable ? "inherit" : "gray",
+                }}
+              >
+                <ApproveIcon strokeColor="blue" width="1rem" height="1rem" />
+              </a>
+            </Tooltip>
+          </Space>
+        );
+      },
     },
   ];
 
@@ -730,7 +760,7 @@ const WarpupmaCar = () => {
       </Modal>
       <Modal
         title="เพิ่มข้อมูลตรวจสภาพรถ"
-        width={300}
+        width={410}
         open={Ismodlasubmit}
         onCancel={handleclosesubmit}
         footer={null}
@@ -738,27 +768,31 @@ const WarpupmaCar = () => {
         style={{ textAlign: "center" }}
       >
         <div style={{ fontSize: "18px", textAlign: "center" }}>
-          เช็คสภาพแล้ว ใช่ หรือ ไม่ ?
+          ยืนยันการเช็คสภาพ
         </div>
         <Form form={formchange} onFinish={updatedchecksubmit}>
           <Form.Item name="carWrapupId" noStyle>
             <Input type="hidden" />
           </Form.Item>
-          <Form.Item name="status" valuePropName="checked">
-            <Switch style={{ visibility: "hidden" }} />
-          </Form.Item>
-          <Form.Item>
+
+          <Form.Item name="status">
             <Space
               style={{
-                margin: "-60px 0 -60px 0",
+                margin: "0px 0 -60px 0",
                 padding: "10px 0 0 0",
                 display: "flex",
                 justifyContent: "center",
               }}
             >
-              <Button onClick={handleclosesubmit}>ไม่</Button>
-              <Button type="primary" htmlType="submit" loading={submitLoading}>
-                ใช่
+              <Button danger type="primary" onClick={() => handleSubmit(false)}>
+                ยกเลิกการตรวจ
+              </Button>
+              <Button
+                type="primary"
+                style={{ background: "green" }}
+                onClick={() => handleSubmit(true)}
+              >
+                เช็คสภาพแล้ว
               </Button>
             </Space>
           </Form.Item>

@@ -17,7 +17,7 @@ import MaCarReturn from "./components/maCarReturn";
 import { useSession } from "next-auth/react";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { MaCarBookServices } from "./services/ma-car-book.service";
-import { MaCarType, MaCarBookType } from "./../common/index";
+import { MaCarType, MaCarBookType } from "../common/index";
 import { useSearchParams } from "next/navigation";
 
 const MaCarBooking: React.FC = () => {

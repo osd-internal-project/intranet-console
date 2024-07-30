@@ -13,12 +13,14 @@ import {
   Form,
   FormProps,
   Tooltip,
+  Switch,
 } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../../services/manage-car.service";
 import { useForm } from "antd/es/form/Form";
 import { useSession } from "next-auth/react";
 import { DeleteIcon, EditIcon } from "@/components/icon";
+import ExportExcel from "./components/ExportMatype";
 export interface MaCarType {
   id: number;
   typeName: string;
@@ -133,6 +135,7 @@ const masterType: React.FC = () => {
       await maCarServices.deleteMaCarType(id);
       setmaCarData(maCarData.filter((item) => item.id !== id));
       message.success("ลบการจองสำเร็จ");
+      fetchData();
     } catch (error) {
       message.error("ลบการจองไม่สำเร็จ");
     }
@@ -213,16 +216,27 @@ const masterType: React.FC = () => {
           <Button
             type="primary"
             style={{
-              margin: "10px 0 20px 0",
+              margin: "10px 0 20px 10px",
               padding: " 20px 30px 20px 30px ",
               fontSize: "16px",
             }}
             onClick={showModal}
           >
             สร้างประเภทตรวจสภาพ
-          </Button>
+          </Button><div
+            style={{
+              float: "right",
+              margin: "10px",
+              padding: " 20px 30px 20px 30px",
+              fontSize: "16px",
+            }}
+          >
+            <ExportExcel datamacartype={maCarData} />
+          </div>
+          
+          
         </div>
-
+            
         <Modal
           width={350}
           title="การจัดการประเภทรถ"
@@ -272,10 +286,11 @@ const masterType: React.FC = () => {
               name="status"
               label={"สถานะ :"}
             >
-              <Select placeholder="เลือกการแสดง">
-                <Select.Option value={true}>เปิดการมอง</Select.Option>
-                <Select.Option value={false}>ปิดการมอง</Select.Option>
-              </Select>
+              <Switch
+                checkedChildren="เปิดการมอง"
+                unCheckedChildren="ปิดการมอง"
+                defaultChecked
+              />
             </Form.Item>
             <div className="flex justify-end w-full">
               <Form.Item>
@@ -361,10 +376,11 @@ const masterType: React.FC = () => {
               name="status"
               label={"สถานะ :"}
             >
-              <Select placeholder="เลือกการแสดง">
-                <Select.Option value={true}>เปิดการมอง</Select.Option>
-                <Select.Option value={false}>ปิดการมอง</Select.Option>
-              </Select>
+              <Switch
+                checkedChildren="เปิดการมอง"
+                unCheckedChildren="ปิดการมอง"
+                defaultChecked
+              />
             </Form.Item>
             <div className="flex justify-end w-full">
               <Form.Item>

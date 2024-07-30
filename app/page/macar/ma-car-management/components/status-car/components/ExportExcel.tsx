@@ -1,7 +1,6 @@
 import React from "react";
 import * as XLSX from "xlsx";
 import { FileExcelFilled } from "@ant-design/icons";
-import { MaCar } from "./WarpupmaCar";
 
 interface ExportExcelProps {
   datamacar: any[];
@@ -22,7 +21,11 @@ const ExportExcel: React.FC<ExportExcelProps> = ({ datamacar }) => {
         วันที่ระบุ: new Date(dataItem.dateStart).toISOString().split('T')[0],
         วันตรวจสภาพ: new Date(dataItem.dateEnd).toISOString().split('T')[0],
         หมายเหตุ: dataItem.remark,
-        สถานะการตรวจเช็ค: dataItem.status ? "รอการเช็ค" : "เช็คแล้ว",
+        สถานะการตรวจเช็ค: dataItem.status === true 
+        ? "เช็คแล้ว" 
+        : dataItem.status === false 
+        ? "ยกเลิกการเช็ค" 
+        : "รอตรวจสภาพ",
       };
     });
     
@@ -64,12 +67,12 @@ const ExportExcel: React.FC<ExportExcelProps> = ({ datamacar }) => {
     worksheet["!cols"] = columnWidths;
 
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-    XLSX.writeFile(workbook, "DataExport.xlsx");
+    XLSX.writeFile(workbook, "DataMacarwarpup.xlsx");
   };
 
   return (
     <a onClick={handleExport} style={{ color: "black" }}>
-      <FileExcelFilled /> Export Excel
+      <FileExcelFilled /> Download data
     </a>
   );
 };

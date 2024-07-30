@@ -24,7 +24,7 @@ import { ManageCarServices } from "../services/manage-car.service";
 import dayjs, { Dayjs } from "dayjs";
 import { useSession } from "next-auth/react";
 import isBetween from "dayjs/plugin/isBetween";
-import { MaCarType, MaCarBookType } from "../../common/index";
+import { MaCarBookType } from "../../common/index";
 
 dayjs.extend(isBetween);
 
@@ -33,7 +33,6 @@ export interface props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   maCarBookData: any[];
   pagination: TablePaginationConfig;
-  // changePagination: (pagination: TablePaginationConfig) => void;
 }
 
 const ManageCar: React.FC<props> = ({
@@ -161,7 +160,7 @@ const ManageCar: React.FC<props> = ({
           <Tooltip title="อนุมัติ">
             <a
               onClick={() => showModalApproveBook(record)}
-              style={{ color: "green", width: "50px", textAlign: "center" }} // กำหนดความกว้างและจัดข้อความให้อยู่กลาง
+              style={{ color: "green", width: "50px", textAlign: "center" }}
             >
               <ApproveIcon />
             </a>

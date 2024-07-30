@@ -20,7 +20,6 @@ import { MaCarServices } from "./services/ma-car.service";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { MaCarType, MaCarBookType } from "./../common/index";
-import { useRouter } from "next/navigation";
 
 const MaCar: React.FC = () => {
   const { data: session } = useSession();
@@ -30,7 +29,6 @@ const MaCar: React.FC = () => {
   const [maFetchCalendar, setMaFetchCalendar] = useState([]);
   const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const router = useRouter();
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,

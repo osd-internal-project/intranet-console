@@ -6,8 +6,6 @@ import {
   Input,
   DatePicker,
   Collapse,
-  Row,
-  Col,
   TimePicker,
 } from "antd";
 import moment from "moment";
@@ -108,17 +106,7 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
         eventPropGetter={(event: CustomEvent) => {
           console.log("Event:", event);
           const backgroundColor =
-            event.carBookApprovedStatus === "Approve"
-              ? "green"
-              : event.carBookApprovedStatus === "Cancel"
-              ? "red"
-              : event.carBookApprovedStatus === "DisapProved"
-              ? "orange"
-              : event.carBookApprovedStatus === "Return"
-              ? "yellow"
-              : event.carBookApprovedStatus === "Completed"
-              ? "#748698"
-              : "#2196F3";
+            event.carBookApprovedStatus === "Approve" ? "#4CAF50" : "#2196F3";
           return {
             style: { backgroundColor, color: "#fff", fontSize: 10 },
           };

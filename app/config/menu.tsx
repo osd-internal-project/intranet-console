@@ -315,21 +315,21 @@ export const MenuSider: MenuItem[] = [
     ],
   },
   {
-    key: "maCar",
+    key: "macar",
     icon: macarIcon,
     label: `Ma Car`,
     rule: "mac-s",
     children: [
       {
-        key: `maCar/ma-car`,
+        key: `macar/ma-car`,
         label: `Ma car`,
       },
       {
-        key: `maCar/ma-car-booking`,
+        key: `macar/ma-car-booking`,
         label: `Ma car Booking`,
       },
       {
-        key: `maCar/ma-car-management`,
+        key: `macar/ma-car-management`,
         label: `Ma car Management`,
       },
     ],

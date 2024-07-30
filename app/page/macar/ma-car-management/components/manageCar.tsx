@@ -77,8 +77,8 @@ const ManageCar: React.FC<props> = ({
       align: "center",
       render: (_, record) => (
         <span>
-          {dayjs(record.carBookStartDate).format("YYYY-MM-DD")} -{" "}
-          {dayjs(record.carBookEndDate).format("YYYY-MM-DD")}
+          {dayjs(record.carBookStartDate).format("DD-MM-YYYY")} -{" "}
+          {dayjs(record.carBookEndDate).format("DD-MM-YYYY")}
         </span>
       ),
     },

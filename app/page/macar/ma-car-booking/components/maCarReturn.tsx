@@ -531,11 +531,7 @@ const MaCarReturn: React.FC<props> = ({
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item
-                name="carBookApprovedStatus"
-                label="สถานนะการคืนรถ"
-                // rules={[{ required: true, message: "กรอกสถานนะการคืนรถ!" }]}
-              >
+              <Form.Item name="carBookApprovedStatus" label="สถานนะการคืนรถ">
                 <Select disabled placeholder="รออนุมัติรับคืนรถ">
                   <Select.Option value="Process">กำลังรออนุมัติ</Select.Option>
                   <Select.Option value="Approve">อนุมัติแล้ว</Select.Option>

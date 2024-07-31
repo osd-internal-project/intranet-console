@@ -14,6 +14,7 @@ import {
   Popconfirm,
   InputNumber,
   Tooltip,
+  TablePaginationConfig,
 } from "antd";
 import { DeleteIcon, EditIcon } from "@/components/icon";
 import type { TableProps, FormProps } from "antd";
@@ -28,6 +29,8 @@ export interface props {
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   maCarData: any[];
+  pagination: TablePaginationConfig;
+
 }
 
 const ManageCarStatus: React.FC<props> = ({
@@ -35,6 +38,7 @@ const ManageCarStatus: React.FC<props> = ({
   loading,
   maCarData,
   pagination,
+  
 }: any): React.ReactElement => {
   const intraAuth = useAxiosIntranet();
   const [form] = useForm();

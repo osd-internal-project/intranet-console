@@ -6,8 +6,6 @@ import {
   Input,
   DatePicker,
   Collapse,
-  Row,
-  Col,
   TimePicker,
 } from "antd";
 import moment from "moment";
@@ -39,8 +37,10 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
   const [selectedMa, setSelectedMa] = useState<MaCarBookCalendarType | null>(
     null
   );
+  
   const [carBookApprovedStatusModalDetail, setStatusModalDetail] =
     useState(false);
+
   const [formUpdate] = useForm();
 
   const onCancelModalDetail = () => {
@@ -106,24 +106,14 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
         style={{ height: 500 }}
         onSelectEvent={onSelectEventCalendar}
         eventPropGetter={(event: CustomEvent) => {
-          console.log("Event:", event);
           const backgroundColor =
-            event.carBookApprovedStatus === "Approve"
-              ? "green"
-              : event.carBookApprovedStatus === "Cancel"
-              ? "red"
-              : event.carBookApprovedStatus === "DisapProved"
-              ? "orange"
-              : event.carBookApprovedStatus === "Return"
-              ? "yellow"
-              : event.carBookApprovedStatus === "Completed"
-              ? "#748698"
-              : "#2196F3";
+            event.carBookApprovedStatus === "Approve" ? "#4CAF50" : "#2196F3";
           return {
             style: { backgroundColor, color: "#fff", fontSize: 10 },
           };
         }}
       />
+
       <Modal
         title="รายละเอียดการจอง"
         open={carBookApprovedStatusModalDetail}

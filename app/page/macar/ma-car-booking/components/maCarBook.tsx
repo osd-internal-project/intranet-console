@@ -19,10 +19,8 @@ import { MaCarBookServices } from "../services/ma-car-book.service";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { MaCarType, MaCarBookType } from "../../common/index";
-
 export interface props {
   maCarData: MaCarType[];
-
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -36,38 +34,60 @@ const MaCarBook: React.FC<props> = ({
   const maCarBookServices = MaCarBookServices(intraAuth);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [carName, setCarName] = useState<MaCarType[]>([]);
-
   const [form] = Form.useForm();
 
   const checkMaCarBookConflict = async (
     carName: string,
     carBookStartDate: Date,
     carBookEndDate: Date
-  ) => {
+  ): Promise<boolean> => {
     const userIdData = session?.user.userId;
+
+    if (!userIdData) {
+      console.error("User ID is not available");
+      return false;
+    }
 
     const existingMa = await maCarBookServices.getMaCarBookQuery(userIdData);
 
-    return existingMa.some((ma: any) => {
-      return (
-        ma.carName === carName &&
-        ((new Date(carBookStartDate) >= new Date(ma.carBookStartDate) &&
-          new Date(carBookStartDate) < new Date(ma.carBookEndDate)) ||
-          (new Date(carBookEndDate) > new Date(ma.carBookStartDate) &&
-            new Date(carBookEndDate) <= new Date(ma.carBookEndDate)) ||
-          (new Date(carBookStartDate) <= new Date(ma.carBookStartDate) &&
-            new Date(carBookEndDate) >= new Date(ma.carBookEndDate)))
-      );
-    });
+    const isOverlapping = (
+      start1: Date,
+      end1: Date,
+      start2: Date,
+      end2: Date
+    ): boolean => {
+      return start1 < end2 && end1 > start2;
+    };
+    return existingMa.some(
+      (ma: {
+        carName: string;
+        carBookStartDate: Date;
+        carBookEndDate: Date;
+      }) => {
+        if (ma.carName !== carName) return false;
+
+        const maStartDate = new Date(ma.carBookStartDate);
+
+        const maEndDate = new Date(ma.carBookEndDate);
+
+        return isOverlapping(
+          carBookStartDate,
+          carBookEndDate,
+          maStartDate,
+          maEndDate
+        );
+      }
+    );
   };
 
   const createMaCarBook: FormProps<MaCarBookType>["onFinish"] = async (
     values
   ) => {
     setSubmitLoading(true);
+
     const carSelected = [...maCarData]
       .reverse()
-      .find((car) => car.carId === values.carId);
+      .find((car): car is any => car.carId === values.carId);
 
     const carBookStartDate = values.carBookStartDate as Date;
     const carBookEndDate = values.carBookEndDate as Date;
@@ -100,18 +120,24 @@ const MaCarBook: React.FC<props> = ({
     };
 
     try {
-      const conflict = await checkMaCarBookConflict(
-        carSelected?.carName ? carSelected?.carName : "",
-        carBookStartDate,
-        carBookEndDate
-      );
-
-      if (conflict) {
-        message.error(
-          "รถนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่."
+      if (carSelected) {
+        const hasProcessStatus = carSelected.maCarBook.some(
+          (item: MaCarBookType) => item.carBookApprovedStatus === "Process"
         );
-        setSubmitLoading(false);
-        return;
+        if (hasProcessStatus) {
+          const conflict = await checkMaCarBookConflict(
+            carSelected.carName || "",
+            carBookStartDate,
+            carBookEndDate
+          );
+          if (conflict) {
+            message.error(
+              "รถนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่."
+            );
+            setSubmitLoading(false);
+            return;
+          }
+        }
       }
 
       const maCarBook = await maCarBookServices.createMaCarBook(data);

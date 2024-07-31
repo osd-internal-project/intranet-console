@@ -54,7 +54,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
     },
 
     updateMaCarBook: async (body: any) => {
-      console.log(body);
       return await axiosInstance
         .patch(`${baseUrlApiMaCarBook}/${body.id}`, body)
         .then((res) => {

@@ -29,14 +29,17 @@ export interface props {
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   maCarData: any[];
+  pagination: TablePaginationConfig;
+
 }
 
 const ManageCarStatus: React.FC<props> = ({
   setLoading,
   loading,
   maCarData,
-}:
-any): React.ReactElement => {
+  pagination,
+  
+}: any): React.ReactElement => {
   const intraAuth = useAxiosIntranet();
   const [form] = useForm();
   const manageCarServices = ManageCarServices(intraAuth);
@@ -53,7 +56,10 @@ any): React.ReactElement => {
       dataIndex: "id",
       key: "id",
       align: "center",
-      render: (_, __, index) => <>{index + 1}</>,
+      render: (_: any, __: any, index: number) =>
+        pagination.current && pagination.pageSize
+          ? (pagination.current - 1) * pagination.pageSize + (index + 1)
+          : "",
     },
     {
       title: "ชื่อรถ",
@@ -313,7 +319,7 @@ any): React.ReactElement => {
 
       <Modal
         title="เพิ่มรถ"
-        visible={modalCreateMaCar}
+        open={modalCreateMaCar}
         onCancel={handleCancelCreateMaCar}
         footer={null}
         width={500}
@@ -392,6 +398,7 @@ any): React.ReactElement => {
           </Form.Item>
         </Form>
       </Modal>
+
       <div
         style={{
           display: "flex",

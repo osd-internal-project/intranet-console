@@ -23,12 +23,15 @@ import { useForm } from "antd/es/form/Form";
 import { useSession } from "next-auth/react";
 import dayjs from "dayjs";
 import { MaCarType } from "../../common/index";
+import { TablePaginationConfig } from 'antd';
+
 
 export interface props {
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   maCarData: any[];
   pagination: TablePaginationConfig;
+
 }
 
 const ManageCarStatus: React.FC<props> = ({

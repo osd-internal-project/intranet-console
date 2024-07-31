@@ -15,9 +15,7 @@ import {
   DatePicker,
   InputNumber,
   Tag,
-  Switch,
   Tooltip,
-  Checkbox,
 } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../../services/manage-car.service";
@@ -107,7 +105,7 @@ const WarpupmaCar = () => {
   const [maCar, setMaCar] = useState<MaCarwarpup[]>([]);
   const [selectedCar, setSelectedCar] = useState<string>("");
   const [mileage, setMileage] = useState<number | undefined>(undefined);
-  const [checkedValue, setCheckedValue] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -326,7 +324,15 @@ const WarpupmaCar = () => {
     setIsmodladetail(false);
   };
 
-  const dataWithKey = maDataWarpup.map((item, index) => ({
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredData = maDataWarpup.filter(MaCarwarpup =>
+    MaCarwarpup.carName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const dataWithKey = filteredData.map((item, index) => ({
     ...item,
     key: index + 1,
     index: index + 1,
@@ -490,7 +496,19 @@ const WarpupmaCar = () => {
           >
             เพิ่มข้อมูลตรวจสภาพรถ
           </Button>
-
+          <Input
+            type="text"
+            value={searchTerm}
+            onChange={handleInputChange}
+            placeholder="ค้นหารถ"
+            style={{
+              float: "left",
+              width:"300px",
+              margin: "16px 0",
+              
+              fontSize: "16px",
+            }}
+          />
           <div
             style={{
               float: "right",

@@ -51,7 +51,6 @@ const ManageMaCar = () => {
           maCarData={maCarData}
           loading={loading}
           setLoading={setLoading}
-          pagination={pagination}
         />
       ),
     },

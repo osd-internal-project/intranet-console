@@ -19,10 +19,8 @@ import { MaCarBookServices } from "../services/ma-car-book.service";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { MaCarType, MaCarBookType } from "../../common/index";
-
 export interface props {
   maCarData: MaCarType[];
-
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -36,7 +34,6 @@ const MaCarBook: React.FC<props> = ({
   const maCarBookServices = MaCarBookServices(intraAuth);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [carName, setCarName] = useState<MaCarType[]>([]);
-
   const [form] = Form.useForm();
 
   const checkMaCarBookConflict = async (
@@ -87,9 +84,10 @@ const MaCarBook: React.FC<props> = ({
     values
   ) => {
     setSubmitLoading(true);
+
     const carSelected = [...maCarData]
       .reverse()
-      .find((car) => car.carId === values.carId);
+      .find((car): car is any => car.carId === values.carId);
 
     const carBookStartDate = values.carBookStartDate as Date;
     const carBookEndDate = values.carBookEndDate as Date;
@@ -122,21 +120,23 @@ const MaCarBook: React.FC<props> = ({
     };
 
     try {
-      
-
-      if (carSelected.carBookApprovedStatus === "Process") {
-        const conflict = await checkMaCarBookConflict(
-          carSelected.carName || "",
-          carBookStartDate,
-          carBookEndDate
+      if (carSelected) {
+        const hasProcessStatus = carSelected.maCarBook.some(
+          (item: MaCarBookType) => item.carBookApprovedStatus === "Process"
         );
-
-        if (conflict) {
-          message.error(
-            "รถนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่."
+        if (hasProcessStatus) {
+          const conflict = await checkMaCarBookConflict(
+            carSelected.carName || "",
+            carBookStartDate,
+            carBookEndDate
           );
-          setSubmitLoading(false);
-          return;
+          if (conflict) {
+            message.error(
+              "รถนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่."
+            );
+            setSubmitLoading(false);
+            return;
+          }
         }
       }
 
@@ -154,7 +154,6 @@ const MaCarBook: React.FC<props> = ({
       message.error("จองรถไม่สำเร็จ");
       setSubmitLoading(false);
     }
-
     setLoading(true);
   };
 

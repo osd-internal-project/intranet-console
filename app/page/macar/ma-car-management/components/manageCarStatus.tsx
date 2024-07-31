@@ -28,7 +28,6 @@ export interface props {
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   maCarData: any[];
-  pagination: TablePaginationConfig;
 }
 
 const ManageCarStatus: React.FC<props> = ({

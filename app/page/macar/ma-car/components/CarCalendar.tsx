@@ -106,7 +106,6 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
         style={{ height: 500 }}
         onSelectEvent={onSelectEventCalendar}
         eventPropGetter={(event: CustomEvent) => {
-          console.log("Event:", event);
           const backgroundColor =
             event.carBookApprovedStatus === "Approve" ? "#4CAF50" : "#2196F3";
           return {

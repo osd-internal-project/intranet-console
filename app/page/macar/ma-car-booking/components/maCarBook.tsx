@@ -19,7 +19,6 @@ import { MaCarBookServices } from "../services/ma-car-book.service";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { MaCarType, MaCarBookType } from "../../common/index";
-
 export interface props {
   maCarData: MaCarType[];
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -35,7 +34,6 @@ const MaCarBook: React.FC<props> = ({
   const maCarBookServices = MaCarBookServices(intraAuth);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [carName, setCarName] = useState<MaCarType[]>([]);
-
   const [form] = Form.useForm();
 
   const checkMaCarBookConflict = async (
@@ -43,9 +41,7 @@ const MaCarBook: React.FC<props> = ({
     carBookStartDate: Date,
     carBookEndDate: Date
   ) => {
-    const userIdData = session?.user.userId;
-
-    const existingMa = await maCarBookServices.getMaCarBookQuery(userIdData);
+    const existingMa = await maCarBookServices.getMaCarBookCheck();
 
     return existingMa.some((ma: any) => {
       return (
@@ -67,12 +63,18 @@ const MaCarBook: React.FC<props> = ({
 
     const carSelected = [...maCarData]
       .reverse()
-      .find((car) => car.carId === values.carId);
+      .find((car): car is any => car.carId === values.carId);
+
+    console.log(carSelected);
+
+    console.log(
+      carSelected.maCarBook.some(
+        (item: MaCarBookType) => item.carBookApprovedStatus === "Process"
+      )
+    );
 
     const carBookStartDate = values.carBookStartDate as Date;
-
     const carBookEndDate = values.carBookEndDate as Date;
-    
     const today = new Date();
     if (new Date(carBookStartDate) < today) {
       message.error("ไม่สามารถจองในวันที่ผ่านมาได้");
@@ -102,21 +104,63 @@ const MaCarBook: React.FC<props> = ({
     };
 
     try {
-      const conflict = await checkMaCarBookConflict(
-        carSelected?.carName ? carSelected?.carName : "",
-        carBookStartDate,
-        carBookEndDate
-      );
-
-      if (carSelected?.carBookApprovedStatus === "Process") {
-        if (conflict) {
-          message.error(
-            "รถนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่."
+      if (carSelected) {
+        // const hasProcessStatus = carSelected.maCarBook.some(
+        //   (item: MaCarBookType) => item.carBookApprovedStatus === "Cancel"
+        // );
+        const hasProcessStatus = carSelected.maCarBook.some(
+          (item: MaCarBookType) => item.carBookApprovedStatus === "Process"
+        );
+        if (hasProcessStatus) {
+          const conflict = await checkMaCarBookConflict(
+            carSelected.carName || "",
+            carBookStartDate,
+            carBookEndDate
           );
-          setSubmitLoading(false);
-          return;
+          if (conflict) {
+            message.error(
+              "รถนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่."
+            );
+            setSubmitLoading(false);
+            return;
+          }
         }
       }
+
+      // if (maCarData) {
+      //   const hasCancelStatus = maCarData.some((car: MaCarType) =>
+      //     car.maCarBook.some(
+      //       (book: MaCarBookType) => book.carBookApprovedStatus !== "Cancel"
+      //     )
+      //   );
+
+      //   const hasProcessStatus = maCarData.some((car: MaCarType) =>
+      //     car.maCarBook.some(
+      //       (book: MaCarBookType) => book.carBookApprovedStatus === "Process"
+      //     )
+      //   );
+
+      //   if (hasCancelStatus) {
+      //     // ถ้ามีสถานะ "Cancel" ให้ข้ามการตรวจสอบความขัดแย้ง
+      //     console.log("มีสถานะ 'Cancel' อยู่, ข้ามการตรวจสอบความขัดแย้ง");
+      //     return;
+      //   }
+
+      //   if (hasProcessStatus) {
+      //     const conflict = await checkMaCarBookConflict(
+      //       carSelected.carName || "",
+      //       carBookStartDate,
+      //       carBookEndDate
+      //     );
+      //     if (conflict) {
+      //       message.error(
+      //         "รถนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่."
+      //       );
+      //       setSubmitLoading(false);
+      //       return;
+      //     }
+      //   }
+      // }
 
       const maCarBook = await maCarBookServices.createMaCarBook(data);
       if (maCarBook) {
@@ -252,6 +296,7 @@ const MaCarBook: React.FC<props> = ({
             <DatePicker
               placeholder="กรอกวันที่เริ่มการจอง"
               showTime
+              format="DD/MM/YYYY HH:mm"
               style={{ width: "100%" }}
             />
           </Form.Item>
@@ -265,6 +310,7 @@ const MaCarBook: React.FC<props> = ({
             <DatePicker
               placeholder="กรอกวันที่สิ้นสุดการจอง"
               showTime
+              format="DD/MM/YYYY HH:mm"
               style={{ width: "100%" }}
             />
           </Form.Item>

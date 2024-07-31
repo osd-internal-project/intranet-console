@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Table,
   Tag,
@@ -245,10 +245,7 @@ const MaCarBookTable: React.FC<props> = ({
     try {
       const updatedApproveMa = {
         id: record.id,
-        carBookApprovedById: session?.user.userId,
-        carBookApprovedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
         carBookApprovedStatus: "Cancel",
-        carBookApprovedDate: dayjs().toISOString(),
       };
       await maCarServices.updateMaCarBook(updatedApproveMa);
       message.success("ยกเลิกการจองสำเร็จ");
@@ -514,7 +511,7 @@ const MaCarBookTable: React.FC<props> = ({
           }}
         ></Col>
       </Row>
-      
+
       <Table
         columns={columns}
         dataSource={maCarBookData}

@@ -78,60 +78,28 @@ const CreateCustomerForm: React.FC<props> = ({
           <Input placeholder="Enter Text" maxLength={50} />
         </Form.Item>
 
-        <Form.Item
-          label="อ้างอิงรหัสลูกค้า"
-          name={"referenceCode"}
-          rules={[{ required: true, message: "Please Enter" }]}
-        >
+        <Form.Item label="อ้างอิงรหัสลูกค้า" name={"referenceCode"}>
           <Input placeholder="Enter Text" maxLength={50} />
         </Form.Item>
-        <Form.Item
-          label="Department Code"
-          name={"departmentCode"}
-          rules={[{ required: true, message: "Please Enter" }]}
-        >
+        <Form.Item label="Department Code" name={"departmentCode"}>
           <Input placeholder="Enter Text" maxLength={50} />
         </Form.Item>
-        <Form.Item
-          label="คำนำหน้า TH"
-          name={"prefixTh"}
-          rules={[{ required: true, message: "Please Enter" }]}
-        >
+        <Form.Item label="คำนำหน้า TH" name={"prefixTh"}>
           <Input placeholder="Enter Text" maxLength={10} />
         </Form.Item>
-        <Form.Item
-          label="ชื่อ TH"
-          name={"firstNameTh"}
-          rules={[{ required: true, message: "Please Enter" }]}
-        >
+        <Form.Item label="ชื่อ TH" name={"firstNameTh"}>
           <Input placeholder="Enter Text" maxLength={200} />
         </Form.Item>
-        <Form.Item
-          label="นามสกุล TH"
-          name={"lastNameTh"}
-          rules={[{ required: true, message: "Please Enter" }]}
-        >
+        <Form.Item label="นามสกุล TH" name={"lastNameTh"}>
           <Input placeholder="Enter Text" maxLength={200} />
         </Form.Item>
-        <Form.Item
-          label="คำนำหน้า EN"
-          name={"prefixEn"}
-          rules={[{ required: true, message: "Please Enter" }]}
-        >
+        <Form.Item label="คำนำหน้า EN" name={"prefixEn"}>
           <Input placeholder="Enter Text" maxLength={10} />
         </Form.Item>
-        <Form.Item
-          label="ชื่อ EN"
-          name={"firstNameEn"}
-          rules={[{ required: true, message: "Please Enter" }]}
-        >
+        <Form.Item label="ชื่อ EN" name={"firstNameEn"}>
           <Input placeholder="Enter Text" maxLength={200} />
         </Form.Item>
-        <Form.Item
-          label="นามสกุล EN"
-          name={"lastNameEn"}
-          rules={[{ required: true, message: "Please Enter" }]}
-        >
+        <Form.Item label="นามสกุล EN" name={"lastNameEn"}>
           <Input placeholder="Enter Text" maxLength={200} />
         </Form.Item>
         {/* <Form.Item
@@ -149,25 +117,16 @@ const CreateCustomerForm: React.FC<props> = ({
         {/* <Form.Item label="สาขา" name={"branchName"}>
           <Input placeholder="Enter Text" />
         </Form.Item> */}
-        <Form.Item
-          label="เลขที่ทะเบียนบริษัท"
-          name={"companyRegisNumber"}
-          rules={[{ required: true, message: "Please Enter" }]}
-        >
+        <Form.Item label="เลขที่ทะเบียนบริษัท" name={"companyRegisNumber"}>
           <Input placeholder="Enter Text" maxLength={20} />
         </Form.Item>
         <Form.Item
           label="วันที่จดทะเบียน"
-          name={"regisDate"}
           rules={[{ required: true, message: "Please Enter" }]}
         >
           <DatePicker format={"DD/MM/YYYY"} className=" w-full" />
         </Form.Item>
-        <Form.Item
-          label="ทุนจดทะเบียน"
-          name={"registration"}
-          rules={[{ required: true, message: "Please Enter" }]}
-        >
+        <Form.Item label="ทุนจดทะเบียน" name={"registration"}>
           <InputNumber
             min={0}
             className=" w-full"
@@ -176,11 +135,7 @@ const CreateCustomerForm: React.FC<props> = ({
             }
           />
         </Form.Item>
-        <Form.Item
-          label="Type"
-          name={"customerTypeId"}
-          rules={[{ required: true, message: "Please Select" }]}
-        >
+        <Form.Item label="Type" name={"customerTypeId"}>
           <Select
             placeholder="Please Choose"
             options={customerTypes.map((data) => ({
@@ -189,11 +144,7 @@ const CreateCustomerForm: React.FC<props> = ({
             }))}
           />
         </Form.Item>
-        <Form.Item
-          label="กลุ่มลูกค้า"
-          name={"customerGroupId"}
-          rules={[{ required: true, message: "Please Select" }]}
-        >
+        <Form.Item label="กลุ่มลูกค้า" name={"customerGroupId"}>
           <Select
             placeholder="Please Choose"
             options={customerGroup.map((data) => ({
@@ -202,11 +153,7 @@ const CreateCustomerForm: React.FC<props> = ({
             }))}
           />
         </Form.Item>
-        <Form.Item
-          label="Grade"
-          name={"grade"}
-          rules={[{ required: true, message: "Please Select" }]}
-        >
+        <Form.Item label="Grade" name={"grade"}>
           <Select
             placeholder="Please Choose "
             options={[
@@ -219,11 +166,7 @@ const CreateCustomerForm: React.FC<props> = ({
           />
         </Form.Item>
         <Form.Item name={"responsible"} hidden></Form.Item>
-        <Form.Item
-          label="ผู้รับผิดชอบ"
-          name={"responsibleId"}
-          rules={[{ required: true, message: "Please Select" }]}
-        >
+        <Form.Item label="ผู้รับผิดชอบ" name={"responsibleId"}>
           <Select
             mode="multiple"
             allowClear

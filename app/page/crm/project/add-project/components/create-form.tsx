@@ -262,9 +262,11 @@ const CreateProjectForm: React.FC<props> = ({
                   address.alley ? address.alley : "-"
                 } หมู่ที่ ${address.village ? address.village : "-"} ถนน ${
                   address.road ? address.road : "-"
-                } ตำบล ${
+                } ตำบล/แขวง ${
                   address.subDistrict ? address.subDistrict : "-"
-                } อำเภอ ${address.district ? address.district : "-"} จังหวัด ${
+                } อำเภอ/เขต ${
+                  address.district ? address.district : "-"
+                } จังหวัด ${
                   address.province ? address.province : "-"
                 } รหัสไปรษณีย์ ${
                   address.houseNumber ? address.houseNumber : "-"
@@ -294,9 +296,11 @@ const CreateProjectForm: React.FC<props> = ({
                   address.alley ? address.alley : "-"
                 } หมู่ที่ ${address.village ? address.village : "-"} ถนน ${
                   address.road ? address.road : "-"
-                } ตำบล ${
+                } ตำบล/แขวง ${
                   address.subDistrict ? address.subDistrict : "-"
-                } อำเภอ ${address.district ? address.district : "-"} จังหวัด ${
+                } อำเภอ/เขต ${
+                  address.district ? address.district : "-"
+                } จังหวัด ${
                   address.province ? address.province : "-"
                 } รหัสไปรษณีย์ ${
                   address.houseNumber ? address.houseNumber : "-"

@@ -114,13 +114,13 @@ const BranchAddressComponent: React.FC<props> = ({
     {
       key: "subDistrict",
       dataIndex: "subDistrict",
-      title: "ตำบล",
+      title: "ตำบล/แขวง",
       // width: "200px",
     },
     {
       key: "district",
       dataIndex: "district",
-      title: "อำเภอ",
+      title: "อำเภอ/เขต",
       // width: "200px",
     },
     {

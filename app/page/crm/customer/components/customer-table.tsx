@@ -141,8 +141,8 @@ const CustomerTableComponent: React.FC<props> = ({
           : "",
     },
     {
-      key: "customerCode",
-      dataIndex: "customerCode",
+      key: "companyRegisNumber",
+      dataIndex: "companyRegisNumber",
       title: "เลขทะเบียนบริษัท",
       width: "200px",
     },
@@ -160,27 +160,27 @@ const CustomerTableComponent: React.FC<props> = ({
         </div>
       ),
     },
-    // {
-    //   key: "id",
-    //   dataIndex: "id",
-    //   title: "ดำเนินการ",
-    //   width: "200px",
-    //   align: "center",
-    //   render: (id: number, record: ITCustomer, index: number) => (
-    //     <div className="space-x-1" key={index}>
-    //       {/* <Button type="link" onClick={() => showModalEdit(record)}>
-    //         {editIcon}
-    //       </Button> */}
-    //       {rules.ruleCustomerDelete ? (
-    //         <Button type="link" onClick={() => showModalDelete(id)} danger>
-    //           {deleteIcon}
-    //         </Button>
-    //       ) : (
-    //         <></>
-    //       )}
-    //     </div>
-    //   ),
-    // },
+    {
+      key: "id",
+      dataIndex: "id",
+      title: "ดำเนินการ",
+      width: "200px",
+      align: "center",
+      render: (id: number, record: ITCustomer, index: number) => (
+        <div className="space-x-1" key={index}>
+          {/* <Button type="link" onClick={() => showModalEdit(record)}>
+            {editIcon}
+          </Button> */}
+          {rules.ruleCustomerDelete ? (
+            <Button type="link" onClick={() => showModalDelete(id)} danger>
+              {deleteIcon}
+            </Button>
+          ) : (
+            <></>
+          )}
+        </div>
+      ),
+    },
   ];
 
   return (

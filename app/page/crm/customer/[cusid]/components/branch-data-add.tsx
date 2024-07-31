@@ -121,7 +121,7 @@ const BranchAddComponent: React.FC<props> = ({
                     <Form.Item label="ตำบล" name={[field.name, "subDistrict"]}>
                       <Input maxLength={150} />
                     </Form.Item>
-                    <Form.Item label="อำเภอ" name={[field.name, "district"]}>
+                    <Form.Item label="อำเภอ/เขต" name={[field.name, "district"]}>
                       <Input maxLength={150} />
                     </Form.Item>
                     <Form.Item label="จังหวัด" name={[field.name, "province"]}>

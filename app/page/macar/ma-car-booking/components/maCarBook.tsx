@@ -40,44 +40,20 @@ const MaCarBook: React.FC<props> = ({
     carName: string,
     carBookStartDate: Date,
     carBookEndDate: Date
-  ): Promise<boolean> => {
-    const userIdData = session?.user.userId;
+  ) => {
+    const existingMa = await maCarBookServices.getMaCarBookCheck();
 
-    if (!userIdData) {
-      console.error("User ID is not available");
-      return false;
-    }
-
-    const existingMa = await maCarBookServices.getMaCarBookQuery(userIdData);
-
-    const isOverlapping = (
-      start1: Date,
-      end1: Date,
-      start2: Date,
-      end2: Date
-    ): boolean => {
-      return start1 < end2 && end1 > start2;
-    };
-    return existingMa.some(
-      (ma: {
-        carName: string;
-        carBookStartDate: Date;
-        carBookEndDate: Date;
-      }) => {
-        if (ma.carName !== carName) return false;
-
-        const maStartDate = new Date(ma.carBookStartDate);
-
-        const maEndDate = new Date(ma.carBookEndDate);
-
-        return isOverlapping(
-          carBookStartDate,
-          carBookEndDate,
-          maStartDate,
-          maEndDate
-        );
-      }
-    );
+    return existingMa.some((ma: any) => {
+      return (
+        ma.carName === carName &&
+        ((new Date(carBookStartDate) >= new Date(ma.carBookStartDate) &&
+          new Date(carBookStartDate) < new Date(ma.carBookEndDate)) ||
+          (new Date(carBookEndDate) > new Date(ma.carBookStartDate) &&
+            new Date(carBookEndDate) <= new Date(ma.carBookEndDate)) ||
+          (new Date(carBookStartDate) <= new Date(ma.carBookStartDate) &&
+            new Date(carBookEndDate) >= new Date(ma.carBookEndDate)))
+      );
+    });
   };
 
   const createMaCarBook: FormProps<MaCarBookType>["onFinish"] = async (
@@ -88,6 +64,14 @@ const MaCarBook: React.FC<props> = ({
     const carSelected = [...maCarData]
       .reverse()
       .find((car): car is any => car.carId === values.carId);
+
+    console.log(carSelected);
+
+    console.log(
+      carSelected.maCarBook.some(
+        (item: MaCarBookType) => item.carBookApprovedStatus === "Process"
+      )
+    );
 
     const carBookStartDate = values.carBookStartDate as Date;
     const carBookEndDate = values.carBookEndDate as Date;
@@ -121,6 +105,9 @@ const MaCarBook: React.FC<props> = ({
 
     try {
       if (carSelected) {
+        // const hasProcessStatus = carSelected.maCarBook.some(
+        //   (item: MaCarBookType) => item.carBookApprovedStatus === "Cancel"
+        // );
         const hasProcessStatus = carSelected.maCarBook.some(
           (item: MaCarBookType) => item.carBookApprovedStatus === "Process"
         );
@@ -139,6 +126,41 @@ const MaCarBook: React.FC<props> = ({
           }
         }
       }
+
+      // if (maCarData) {
+      //   const hasCancelStatus = maCarData.some((car: MaCarType) =>
+      //     car.maCarBook.some(
+      //       (book: MaCarBookType) => book.carBookApprovedStatus !== "Cancel"
+      //     )
+      //   );
+
+      //   const hasProcessStatus = maCarData.some((car: MaCarType) =>
+      //     car.maCarBook.some(
+      //       (book: MaCarBookType) => book.carBookApprovedStatus === "Process"
+      //     )
+      //   );
+
+      //   if (hasCancelStatus) {
+      //     // ถ้ามีสถานะ "Cancel" ให้ข้ามการตรวจสอบความขัดแย้ง
+      //     console.log("มีสถานะ 'Cancel' อยู่, ข้ามการตรวจสอบความขัดแย้ง");
+      //     return;
+      //   }
+
+      //   if (hasProcessStatus) {
+      //     const conflict = await checkMaCarBookConflict(
+      //       carSelected.carName || "",
+      //       carBookStartDate,
+      //       carBookEndDate
+      //     );
+      //     if (conflict) {
+      //       message.error(
+      //         "รถนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่."
+      //       );
+      //       setSubmitLoading(false);
+      //       return;
+      //     }
+      //   }
+      // }
 
       const maCarBook = await maCarBookServices.createMaCarBook(data);
       if (maCarBook) {
@@ -274,6 +296,7 @@ const MaCarBook: React.FC<props> = ({
             <DatePicker
               placeholder="กรอกวันที่เริ่มการจอง"
               showTime
+              format="DD/MM/YYYY HH:mm"
               style={{ width: "100%" }}
             />
           </Form.Item>
@@ -287,6 +310,7 @@ const MaCarBook: React.FC<props> = ({
             <DatePicker
               placeholder="กรอกวันที่สิ้นสุดการจอง"
               showTime
+              format="DD/MM/YYYY HH:mm"
               style={{ width: "100%" }}
             />
           </Form.Item>

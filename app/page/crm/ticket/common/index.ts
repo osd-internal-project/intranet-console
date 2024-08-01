@@ -59,6 +59,7 @@ export type ITBranchContact = { id: number } & ITBranchContactForm;
 
 export type ITProjectCreateForm = {
   projectName: string;
+  productName?: string;
   startDate: Date;
   endDate: Date;
   duration: number;

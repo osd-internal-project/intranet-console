@@ -34,17 +34,15 @@ interface CustomEvent extends RbcEvent {
 }
 
 const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
+  const [formUpdate] = useForm();
+  const [modalMaCarBookDetail, setModalMaCarBookDetail] =
+    useState(false);
   const [selectedMa, setSelectedMa] = useState<MaCarBookCalendarType | null>(
     null
   );
 
-  const [carBookApprovedStatusModalDetail, setStatusModalDetail] =
-    useState(false);
-
-  const [formUpdate] = useForm();
-
   const onCancelModalDetail = () => {
-    setStatusModalDetail(false);
+    setModalMaCarBookDetail(false);
     setSelectedMa(null);
   };
 
@@ -80,7 +78,7 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
           ? moment(maCarCalendar.approveDate).format("DD-MM-YYYY HH:mm")
           : undefined,
       });
-      setStatusModalDetail(true);
+      setModalMaCarBookDetail(true);
     }
   };
 
@@ -116,7 +114,7 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
 
       <Modal
         title="รายละเอียดการจอง"
-        open={carBookApprovedStatusModalDetail}
+        open={modalMaCarBookDetail}
         width={500}
         onCancel={onCancelModalDetail}
         footer={null}

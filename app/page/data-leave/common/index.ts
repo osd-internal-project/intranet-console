@@ -22,7 +22,6 @@ export interface ITypetypeleaveUpadte {
   data: {
     descriptionLeave: string;
     forwardLeave: string;
-
     limitLeaveFour: string;
     limitLeaveOne: string;
     limitLeaveThree: string;
@@ -50,7 +49,13 @@ export interface IDataUser {
   lastNameTh?: string;
   ownerGroup?: {};
   phoneNumber?: string;
-  position?: { id?: number; posId?: number; nameTh?: string; nameEn?: string; createdAt?: string };
+  position?: {
+    id?: number;
+    posId?: number;
+    nameTh?: string;
+    nameEn?: string;
+    createdAt?: string;
+  };
   userId?: string;
   username?: string;
   userMapOrganizeChart?: any;
@@ -106,20 +111,20 @@ export interface ITypeDataLeave {
   dataLeaveFiles?: [];
   id?: number;
   userId?: string;
-  firstName?: string;
+  firstName: string;
   lastName?: string;
   positionId?: number;
   position?: string;
   typeId?: number;
   typeName?: string;
-  startDate: Date | null;
+  startDate: Date;
   startTime?: string;
-  endDate?: Date | null;
+  endDate: Date;
   endTime?: string;
   leaveHour?: number;
   detail?: string;
   phoneNumber?: string;
-  status?: string;
+  status: string;
   approvedDate?: Date;
   userApproved?: string;
   attrachFile?: string;
@@ -127,6 +132,8 @@ export interface ITypeDataLeave {
   updatedAt?: Date;
   ownerId?: string;
   ownerName?: string;
+  description: string;
+  userName: string;
 }
 
 export interface ITypeDataLeaveCreate {

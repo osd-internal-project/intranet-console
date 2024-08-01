@@ -65,13 +65,13 @@ const MaCarBook: React.FC<props> = ({
       .reverse()
       .find((car): car is any => car.carId === values.carId);
 
-    console.log(carSelected);
+    console.log(carSelected.status);
 
-    console.log(
-      carSelected.maCarBook.some(
-        (item: MaCarBookType) => item.carBookApprovedStatus === "Process"
-      )
-    );
+    if (carSelected.status === false) {
+      message.warning("รถคันนี้ไม่พร้อมใช้งาน");
+      setSubmitLoading(false);
+      return;
+    }
 
     const carBookStartDate = values.carBookStartDate as Date;
     const carBookEndDate = values.carBookEndDate as Date;
@@ -86,7 +86,6 @@ const MaCarBook: React.FC<props> = ({
       setSubmitLoading(false);
       return;
     }
-
     const data = {
       carId: values.carId,
       carName: carSelected?.carName,
@@ -105,9 +104,6 @@ const MaCarBook: React.FC<props> = ({
 
     try {
       if (carSelected) {
-        // const hasProcessStatus = carSelected.maCarBook.some(
-        //   (item: MaCarBookType) => item.carBookApprovedStatus === "Cancel"
-        // );
         const hasProcessStatus = carSelected.maCarBook.some(
           (item: MaCarBookType) => item.carBookApprovedStatus === "Process"
         );
@@ -126,42 +122,6 @@ const MaCarBook: React.FC<props> = ({
           }
         }
       }
-
-      // if (maCarData) {
-      //   const hasCancelStatus = maCarData.some((car: MaCarType) =>
-      //     car.maCarBook.some(
-      //       (book: MaCarBookType) => book.carBookApprovedStatus !== "Cancel"
-      //     )
-      //   );
-
-      //   const hasProcessStatus = maCarData.some((car: MaCarType) =>
-      //     car.maCarBook.some(
-      //       (book: MaCarBookType) => book.carBookApprovedStatus === "Process"
-      //     )
-      //   );
-
-      //   if (hasCancelStatus) {
-      //     // ถ้ามีสถานะ "Cancel" ให้ข้ามการตรวจสอบความขัดแย้ง
-      //     console.log("มีสถานะ 'Cancel' อยู่, ข้ามการตรวจสอบความขัดแย้ง");
-      //     return;
-      //   }
-
-      //   if (hasProcessStatus) {
-      //     const conflict = await checkMaCarBookConflict(
-      //       carSelected.carName || "",
-      //       carBookStartDate,
-      //       carBookEndDate
-      //     );
-      //     if (conflict) {
-      //       message.error(
-      //         "รถนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่."
-      //       );
-      //       setSubmitLoading(false);
-      //       return;
-      //     }
-      //   }
-      // }
-
       const maCarBook = await maCarBookServices.createMaCarBook(data);
       if (maCarBook) {
         message.success("จองรถสำเร็จ");

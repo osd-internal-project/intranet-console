@@ -41,6 +41,12 @@ const BranchComponent: React.FC<props> = ({
       width: "200px",
     },
     {
+      key: "productName",
+      dataIndex: "productName",
+      title: "Product Name",
+      width: "200px",
+    },
+    {
       key: "branchName",
       dataIndex: ["customerBranch", "branchName"],
       title: "Branch",

@@ -29,6 +29,17 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    getMaCarBookCheck: async () => {
+      return await axiosInstance
+        .get(`${baseUrlApiMaCarBook}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
 
     findMaCarBook: async (skip: number, take: number) => {
       return await axiosInstance

@@ -102,7 +102,7 @@ const MaCarReturn: React.FC<props> = ({
         switch (status) {
           case "Process":
             color = "blue";
-            text = "กำลังจองรถ";
+            text = "กำลังรออนุมัติ";
             break;
           case "Approve":
             color = "green";

@@ -337,8 +337,9 @@ const masterType: React.FC = () => {
             <Form.Item<MaCarType>
               style={{
                 textAlign: "left",
-                margin: "0 0 10px 0",
+                margin: "0 0 -80px 0",
                 width: "450px",
+                visibility:"hidden",
               }}
               name="id"
               label={"ID :"}

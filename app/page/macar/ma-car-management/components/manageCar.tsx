@@ -232,7 +232,6 @@ const ManageCar: React.FC<props> = ({
 
   const handleDeleteMa = async (id: number) => {
     setSubmitLoading(true);
-
     try {
       await manageCarServices.deleteMaCarBook(id);
       setMaCarBookData(maBookData.filter((item) => item.id !== id));
@@ -262,14 +261,12 @@ const ManageCar: React.FC<props> = ({
     }
 
     try {
-      const updatedApproveMa = {
+      const updatedCancelMa = {
         id: record.id,
-        carBookApprovedById: session?.user.userId,
-        carBookApprovedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
         carBookApprovedStatus: "Cancel",
-        carBookApprovedDate: dayjs().toISOString(),
+       
       };
-      await manageCarServices.updateMaCarBook(updatedApproveMa);
+      await manageCarServices.updateMaCarBook(updatedCancelMa);
       message.success("ยกเลิกการจองสำเร็จ");
       setSubmitLoading(false);
     } catch (error) {
@@ -378,7 +375,7 @@ const ManageCar: React.FC<props> = ({
       };
 
       await manageCarServices.updateMaCarBook(updatedReturn);
-
+      setModalReturn(false);
       message.success("รับคืนรถสำเร็จ");
       setSubmitLoading(false);
     } catch (error) {

@@ -60,6 +60,12 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   <div className=" col-span-2 md:col-span-5 text-slate-500">
                     {projectDescription.projectName}
                   </div>
+                  <div className=" font-bold pl-3  pr-3 text-right ">
+                    Product Name :
+                  </div>
+                  <div className=" col-span-2 md:col-span-5 text-slate-500">
+                    {projectDescription.productName}
+                  </div>
                   <div className=" font-bold pl-3 pr-3 text-right">
                     Start Date :{" "}
                   </div>

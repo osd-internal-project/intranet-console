@@ -342,6 +342,14 @@ export const MenuSider: MenuItem[] = [
     // rule: "inc-s",
     
   },
+  {
+    key: "handbook",
+    icon: macarIcon,
+    label: `Handbook`,
+    
+    // rule: "inc-s",
+    
+  },
 
   // {
   //   key: `stock-management`,

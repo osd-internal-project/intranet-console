@@ -10,6 +10,7 @@ export default function Main() {
   return (
     <div className="flex justify-center items-center h-screen">
       <Spin />
+      
     </div>
   );
 }

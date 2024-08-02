@@ -63,6 +63,9 @@ export const CalendarDetail: React.FC<Props> = ({
         createAt: dataLeaveCalendar.createdAt
           ? dateToStringThNoTime(dataLeaveCalendar.createdAt)
           : "-",
+        approvedDate: dataLeaveCalendar.approvedDate
+          ? dateToStringThNoTime(dataLeaveCalendar.approvedDate)
+          : "-",
         phoneNumber: dataLeaveCalendar.phoneNumber,
         userApproved: dataLeaveCalendar.userApproved,
         dataLeaveFiles: dataLeaveCalendar.dataLeaveFiles,
@@ -90,7 +93,7 @@ export const CalendarDetail: React.FC<Props> = ({
         onSelectEvent={onSelectEventCalendar}
         eventPropGetter={(event: CustomEvent) => {
           const backgroundColor =
-            event.status === "Approve" ? "#4CAF50" : "#2196F3";
+            event.status === "approved" ? "#4CAF50" : "#2196F3";
           return {
             style: { backgroundColor, color: "#fff", fontSize: 10 },
           };

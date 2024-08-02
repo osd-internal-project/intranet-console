@@ -1,7 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { TableDetail } from "./components/table-detail";
-import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, message } from "antd";
+import {
+  Breadcrumb,
+  Card,
+  Col,
+  Divider,
+  Form,
+  Modal,
+  Row,
+  message,
+} from "antd";
 import { useRouter } from "next/navigation";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../services/index.service";
@@ -33,14 +42,40 @@ export default function Page() {
     Modal.confirm({
       title: <>{type === "cancel" ? "Cancel " : "Approved"}</>,
       icon: <ExclamationCircleFilled />,
-      content: <>{type === "cancel" ? "Are you sure you want to cancel this ?" : "Are you sure you want to Approved this ?"}</>,
+      content: (
+        <>
+          {type === "cancel"
+            ? "Are you sure you want to cancel this ?"
+            : "Are you sure you want to Approved this ?"}
+        </>
+      ),
       okText: "Confirm",
-      okButtonProps: { type: "primary", danger: true },
+      okButtonProps: {
+        type: "primary",
+        style: {
+          backgroundColor: type === "cancel" ? "#ff4d4f" : "#1890ff", 
+          borderColor: type === "cancel" ? "#ff4d4f" : "#1890ff", 
+          color: "white", 
+        },
+      },
       cancelText: "Cancel",
+      cancelButtonProps: {
+        style: {
+          backgroundColor: "#f0f0f0", 
+          borderColor: "#d9d9d9", 
+          color: "#000", 
+        },
+      },
       onOk: async () => {
-        const res = await dataleaveservice.approvedDataLeave(type, id, session?.user);
+        const res = await dataleaveservice.approvedDataLeave(
+          type,
+          id,
+          session?.user
+        );
         if (res) {
-          type === "cancel" ? message.error("cancel success") : message.success("approved success");
+          type === "cancel"
+            ? message.error("cancel success")
+            : message.success("approved success");
           setLoading(true);
         }
       },
@@ -87,8 +122,12 @@ export default function Page() {
             setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
             openModalDetail={openModalDetail}
             formdetail={formdetail}
-            onFinishUpdate={(type: string, id: number) => onFinishUpdate(type, id)}
-            downloadFile={(id: number, filename: string) => downloadFile(id, filename)}
+            onFinishUpdate={(type: string, id: number) =>
+              onFinishUpdate(type, id)
+            }
+            downloadFile={(id: number, filename: string) =>
+              downloadFile(id, filename)
+            }
           />
         </Card>
       </div>

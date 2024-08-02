@@ -9,7 +9,11 @@ export interface props {
   typeLeaveTableAll: any;
 }
 
-export const TableOnlineDetailLeave: React.FC<props> = ({ typeLeaveTable, params, typeLeaveTableAll }): React.ReactElement => {
+export const TableOnlineDetailLeave: React.FC<props> = ({
+  typeLeaveTable,
+  params,
+  typeLeaveTableAll,
+}): React.ReactElement => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: TableColumnsType<ITypetypeleave> = [
@@ -65,17 +69,28 @@ export const TableOnlineDetailLeave: React.FC<props> = ({ typeLeaveTable, params
       title: "รวม",
       render: (values: string, row: any, index: number) => {
         if (row.typeId === params.typeId) {
-          return Number(values) + params.lengthDate > row.limitLeaveLastResult ? (
+          return Number(values) + params.lengthDate >
+            row.limitLeaveLastResult ? (
             <div className="flex justify-center">
-              <Tag className="w-full flex justify-center" color="orange-inverse">{`${(row.haveLeft + params.lengthDate).toString()} วัน (${(
+              <Tag
+                className="w-full flex justify-center"
+                color="orange-inverse"
+              >{`${(row.haveLeft + params.lengthDate).toString()} วัน (${(
                 Number(values) + params.lengthTime
               ).toString()} ชม.)`}</Tag>
             </div>
           ) : (
             <div className="flex justify-center">
-              <Tag className="w-full flex justify-center" color={params.startDate && params.endDate ? "green-inverse" : undefined}>{`${(
-                row.haveLeft + params.lengthDate
-              ).toString()} วัน (${(Number(values) + params.lengthTime).toString()} ชม.)`}</Tag>
+              <Tag
+                className="w-full flex justify-center"
+                color={
+                  params.startDate && params.endDate
+                    ? "green-inverse"
+                    : undefined
+                }
+              >{`${(row.haveLeft + params.lengthDate).toString()} วัน (${(
+                Number(values) + params.lengthTime
+              ).toString()} ชม.)`}</Tag>
             </div>
           );
         } else {
@@ -90,7 +105,12 @@ export const TableOnlineDetailLeave: React.FC<props> = ({ typeLeaveTable, params
   ];
 
   const columnsDetail: TableColumnsType<ITypetypeleave> = [
-    { key: "id", dataIndex: "id", title: "ลำดับ", render: (values: string, row: ITypetypeleave, index: number) => index + 1 },
+    {
+      key: "id",
+      dataIndex: "id",
+      title: "ลำดับ",
+      render: (values: string, row: ITypetypeleave, index: number) => index + 1,
+    },
     { key: "typeName", dataIndex: "typeName", title: "ประเภทการลา" },
     {
       key: "limitLeave",
@@ -105,18 +125,28 @@ export const TableOnlineDetailLeave: React.FC<props> = ({ typeLeaveTable, params
       dataIndex: "forwardLeave",
       title: "เงื่อนไขการลา",
       render: (values: number, row: ITypetypeleave, index: number) => {
-        return values ? <Typography>{`ลาล่วงหน้า ${values} วัน`} </Typography> : <Typography>{`สามารถลาย้อนหลังได้`}</Typography>;
+        return values ? (
+          <Typography>{`ลาล่วงหน้า ${values} วัน`} </Typography>
+        ) : (
+          <Typography>{`สามารถลาย้อนหลังได้`}</Typography>
+        );
       },
     },
   ];
   const rowClassName = (record: any) => {
-    return typeLeaveTableAll.some((e: any) => record.id === e.masterTypeleaveId) ? "disabled-row" : "";
+    return typeLeaveTableAll.some((e: any) => record.id === e.masterTypeleaveId)
+      ? "disabled-row"
+      : "";
   };
   return (
     <>
       <Card
         className="w-full grid grid-cols-1 gap-y-2 mt-2"
-        title={<div className="flex justify-center w-full">{`ประวัติการลาปี ${dayjs(new Date()).format("YYYY")}`}</div>}
+        title={
+          <div className="flex justify-center w-full">{`ประวัติการลาปี ${dayjs(
+            new Date()
+          ).format("YYYY")}`}</div>
+        }
       >
         <Table
           size="small"

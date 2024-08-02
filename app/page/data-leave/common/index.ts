@@ -132,8 +132,8 @@ export interface ITypeDataLeave {
   updatedAt?: Date;
   ownerId?: string;
   ownerName?: string;
-  description: string;
-  userName: string;
+  // description: string;
+  // userName: string;
 }
 
 export interface ITypeDataLeaveCreate {

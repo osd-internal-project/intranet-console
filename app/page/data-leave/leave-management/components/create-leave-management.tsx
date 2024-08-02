@@ -21,8 +21,19 @@ export const CreateLeaveManagement: React.FC<props> = ({
 }): React.ReactElement => {
   return (
     <div>
-      <Modal title="Add" open={openModal} onOk={() => setOpenModal(false)} onCancel={() => setOpenModal(false)} footer={false}>
-        <Form layout="vertical" form={formcreate} autoComplete="off" onFinish={onFinishCreate}>
+      <Modal
+        title="Add"
+        open={openModal}
+        onOk={() => setOpenModal(false)}
+        onCancel={() => setOpenModal(false)}
+        footer={false}
+      >
+        <Form
+          layout="vertical"
+          form={formcreate}
+          autoComplete="off"
+          onFinish={onFinishCreate}
+        >
           <Row gutter={[8, 8]}>
             <Col span={24}>
               <Form.Item name="masterTypeleaveId" hidden>
@@ -30,7 +41,16 @@ export const CreateLeaveManagement: React.FC<props> = ({
               </Form.Item>
             </Col>
             <Col span={24}>
-              <Form.Item label="รายชื่อพนักงาน :" name="userId" rules={[{ required: true, message: "กรุณากรอกจำนวนวันลา (อายุงานน้อยกว่า 1 ปี)" }]}>
+              <Form.Item
+                label="รายชื่อพนักงาน :"
+                name="userId"
+                rules={[
+                  {
+                    required: true,
+                    message: "กรุณากรอกจำนวนวันลา (อายุงานน้อยกว่า 1 ปี)",
+                  },
+                ]}
+              >
                 <Select options={getdataUser} placeholder={`Please Select`} />
               </Form.Item>
             </Col>

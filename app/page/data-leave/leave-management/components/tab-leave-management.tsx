@@ -9,7 +9,10 @@ export interface props {
   onFinishDel: (event: number) => void;
 }
 
-export const TabeLeavManagement: React.FC<props> = ({ getdataUserByTypeId, onFinishDel }): React.ReactElement => {
+export const TabeLeavManagement: React.FC<props> = ({
+  getdataUserByTypeId,
+  onFinishDel,
+}): React.ReactElement => {
   const columns: any = [
     { key: "id", title: "ID", dataIndex: "id" },
     {
@@ -47,7 +50,12 @@ export const TabeLeavManagement: React.FC<props> = ({ getdataUserByTypeId, onFin
   ];
   return (
     <div>
-      <Table size="small" dataSource={getdataUserByTypeId} columns={columns} rowKey={(e: any) => e.id} />
+      <Table
+        size="small"
+        dataSource={getdataUserByTypeId}
+        columns={columns}
+        rowKey={(e: any) => e.id}
+      />
     </div>
   );
 };

@@ -36,6 +36,7 @@
     "react-big-calendar": "^1.12.2",
     "react-calendar": "^5.0.0",
     "react-dom": "^18",
+    "react-dropzone": "^14.2.3",
     "react-organizational-chart": "^2.2.1",
     "recharts": "^2.12.6",
     "sheetjs-style": "^0.15.8",

@@ -67,6 +67,14 @@ export interface ISelect {
   label: string;
 }
 
+export interface IDepartMent {
+  id: number;        
+  departId: number;   
+  departName: string; 
+  createdAt?: Date;  
+  updatedAt?: Date; 
+}
+
 export interface ITypetypeleave {
   createdAt: Date;
   descriptionLeave: string;
@@ -133,7 +141,6 @@ export interface ITypeDataLeave {
   ownerId?: string;
   ownerName?: string;
   description?: string;
-  // userName: string;
 }
 
 export interface ITypeDataLeaveCreate {

@@ -4,6 +4,7 @@ import { Button, Col, Form, Input, Modal, Row, Space, Table, Tag } from "antd";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { deleteIcon, editIcon } from "@/components/icon";
 import { PaperClipOutlined } from "@ant-design/icons";
+import ExportDataLeaveAll from "../../common/export-excel";
 
 export interface props {
   dataLeaveUser: ITypeDataLeave[];
@@ -11,6 +12,7 @@ export interface props {
   openModalDetail: boolean;
   formdetail: any;
   onFinishUpdate: (type: string, id: number) => void;
+  onFinishDelete: (type: string, id: number) => void;
   downloadFile: (id: number, filename: string) => void;
 }
 
@@ -20,6 +22,7 @@ export const TableDetail: React.FC<props> = ({
   openModalDetail,
   formdetail,
   onFinishUpdate,
+  onFinishDelete,
   downloadFile,
 }): React.ReactElement => {
   const columns: any = [
@@ -117,6 +120,18 @@ export const TableDetail: React.FC<props> = ({
                   {deleteIcon} {`Cancel`}
                 </Button>
               </Col>
+              <Col>
+                <Button
+                  size="small"
+                  type="primary"
+                  onClick={() => {
+                    onFinishDelete("delete", row?.id ? row?.id : 0);
+                  }}
+                  danger
+                >
+                  {deleteIcon} {`Delete`}
+                </Button>
+              </Col>
             </Row>
           </>
         );
@@ -125,6 +140,20 @@ export const TableDetail: React.FC<props> = ({
   ];
   return (
     <div>
+      {/* ExportDataLeaveAll */}
+      <Row gutter={[18, 18]}>
+        <Col md={18}>
+          <ExportDataLeaveAll data={dataLeaveUser} />
+        </Col>
+        <Col
+          md={6}
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        ></Col>
+      </Row>
       <Table dataSource={dataLeaveUser} columns={columns} size="small" />
       <Modal
         title=""

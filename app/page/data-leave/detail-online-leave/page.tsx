@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { TableDetail } from "./components/table-detail";
 import { CalendarDetail } from "./components/calendar-detail";
+import { DepartmentTableDetail } from "./components/department-table-details";
+import { DepartmentCalendarDetail } from "./components/department-calendar-details";
 import {
   Breadcrumb,
   Card,
@@ -55,6 +57,36 @@ export default function Page() {
       label: "Calendar",
       children: (
         <CalendarDetail
+          dataLeaveUser={dataLeaveUser}
+          downloadFile={(id: number, filename: string) =>
+            downloadFile(id, filename)
+          }
+        />
+      ),
+    },
+    {
+      key: "3",
+      label: "Department Detail",
+      children: (
+        <DepartmentTableDetail
+          dataLeaveUser={dataLeaveUser}
+          setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
+          openModalDetail={openModalDetail}
+          formdetail={formdetail}
+          onFinishUpdate={(type: string, id: number) =>
+            onFinishUpdate(type, id)
+          }
+          downloadFile={(id: number, filename: string) =>
+            downloadFile(id, filename)
+          }
+        />
+      ),
+    },
+    {
+      key: "4",
+      label: "Department Calendar",
+      children: (
+        <DepartmentCalendarDetail
           dataLeaveUser={dataLeaveUser}
           downloadFile={(id: number, filename: string) =>
             downloadFile(id, filename)

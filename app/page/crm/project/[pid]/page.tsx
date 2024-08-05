@@ -373,9 +373,6 @@ export default function CustomerDetailPage() {
     } else if (status === "inprogress" && action === "resume") {
       title = "Resume Ticket";
       content = <>ยืนยันการคืนงาน ?</>;
-      form = {
-        receiveDate: new Date(),
-      };
     } else if (status === "hold") {
       title = "Hold Ticket";
       content = <>ยืนยันการ Hold ?</>;

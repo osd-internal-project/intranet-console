@@ -340,13 +340,22 @@ export const MenuSider: MenuItem[] = [
     icon: macarIcon,
     label: `Infomation`,
     // rule: "inc-s",
-    
+    children: [
+    {
+      key: `information/information-data`,
+      label: `information Data`,
+    },
+    {
+      key: `information/information-management`,
+      label: `information management`,
+    },
+  ]
   },
   {
     key: "handbook",
     icon: macarIcon,
     label: `Handbook`,
-    
+
     // rule: "inc-s",
     
   },

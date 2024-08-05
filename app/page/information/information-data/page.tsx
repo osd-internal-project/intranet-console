@@ -1,27 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import { AntDesignOutlined } from "@ant-design/icons";
-import {
-  Select,
-  Table,
-  Space,
-  Button,
-  Row,
-  Col,
-  Modal,
-  Form,
-  Input,
-  Tag,
-  message,
-  Popconfirm,
-  InputNumber,
-  Tooltip,
-  Card,
-  Pagination,
-} from "antd";
+import { Button, Row, Col, Modal, Input, Card, Pagination } from "antd";
 
 const dataform: React.FC = () => {
-  const [news, setNews] = useState([]);
+  const [news, setNews] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedNews, setSelectedNews] = useState(null);
@@ -40,7 +22,7 @@ const dataform: React.FC = () => {
     setCurrentPage(page);
   };
 
-  const showModal = (newsItem: string) => {
+  const showModal = (newsItem: any) => {
     setSelectedNews(newsItem);
     setIsModalVisible(true);
   };
@@ -58,38 +40,22 @@ const dataform: React.FC = () => {
           fontSize: "32px",
           fontStyle: "initial",
           borderBottom: "2px solid black",
-        }}
-      >
+        }}>
         ข้อมูลข่าวสาร
       </h1>
       <div style={{ display: "inline-block" }}>
-        <Button
-          style={{ margin: "10px 0 0 10px" }}
-          type="primary"
-          onClick={addNews}
-        >
+        <Button style={{ margin: "10px 0 0 10px" }} type="primary" onClick={addNews}>
           {" "}
           สร้างหน้าข่าวสาร
         </Button>
-        <Input
-          style={{ margin: "10px 0 0 10px" }}
-          placeholder="ค้นหาข่าวสาร"
-        ></Input>
+        <Input style={{ margin: "10px 0 0 10px" }} placeholder="ค้นหาข่าวสาร"></Input>
       </div>
 
-      <Card
-        title="ข่าวเเละกิจกรรมล่าสุด"
-        bordered={false}
-        className="text-center"
-      >
+      <Card title="ข่าวเเละกิจกรรมล่าสุด" bordered={false} className="text-center">
         <Row gutter={16}>
           {currentNews.map((item, index) => (
             <Col key={index} span={8}>
-              <Card
-                style={{ margin: "20px 0 0 0", border: "1px solid black" }}
-                hoverable
-                onClick={() => showModal(item)}
-              >
+              <Card style={{ margin: "20px 0 0 0", border: "1px solid black" }} hoverable onClick={() => showModal(item)}>
                 {item}
               </Card>
             </Col>
@@ -107,14 +73,13 @@ const dataform: React.FC = () => {
 
       <Modal
         title="รายละเอียดข่าวสาร"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={handleCancel}
         footer={[
           <Button key="close" onClick={handleCancel}>
             ปิด
           </Button>,
-        ]}
-      >
+        ]}>
         <p>{selectedNews}</p>
       </Modal>
     </div>

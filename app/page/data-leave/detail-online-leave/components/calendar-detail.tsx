@@ -86,7 +86,7 @@ export const CalendarDetail: React.FC<Props> = ({
           start: new Date(dataLeaveCalendar.startDate),
           end: new Date(dataLeaveCalendar.endDate),
           status: dataLeaveCalendar.status,
-          description: dataLeaveCalendar.description,
+          description: dataLeaveCalendar?.description || "",
           userName: dataLeaveCalendar.typeName,
         }))}
         style={{ height: 500 }}

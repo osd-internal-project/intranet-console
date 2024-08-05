@@ -318,7 +318,7 @@ export const MenuSider: MenuItem[] = [
     key: "macar",
     icon: macarIcon,
     label: `Ma Car`,
-    // rule: "mac-s",
+    rule: "mac-s",
     children: [
       {
         key: `macar/ma-car`,
@@ -333,31 +333,29 @@ export const MenuSider: MenuItem[] = [
         label: `Ma car Management`,
       },
     ],
-    
   },
   {
     key: "information",
     icon: macarIcon,
     label: `Infomation`,
-    // rule: "inc-s",
+    rule: "inc-s",
     children: [
-    {
-      key: `information/information-data`,
-      label: `information Data`,
-    },
-    {
-      key: `information/information-management`,
-      label: `information management`,
-    },
-  ]
+      {
+        key: `information/information-data`,
+        label: `information Data`,
+      },
+      {
+        key: `information/information-management`,
+        label: `information management`,
+      },
+    ],
   },
   {
     key: "handbook",
     icon: macarIcon,
     label: `Handbook`,
 
-    // rule: "inc-s",
-    
+    rule: "inc-s",
   },
 
   // {

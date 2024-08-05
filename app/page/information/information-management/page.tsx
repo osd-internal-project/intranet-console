@@ -1,6 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import { AntDesignOutlined } from "@ant-design/icons";
+import type { TableProps, FormProps } from "antd";
+import ImageUpload from "./components/ImageUpload";
+import Creaatenews from "./components/createnews"
+import Newoption from "./components/newoption";
+import Tablenews from "./components/tableNews"
 import {
   Select,
   Table,
@@ -18,9 +23,31 @@ import {
   Tooltip,
   Card,
   Pagination,
+  TabsProps,
+  Tabs,
 } from "antd";
-
 const Infomation_management: React.FC = () => {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [submitLoading, setSubmitLoading] = useState(true);
+
+  const items: TabsProps["items"] = [
+    {
+      key: "1",
+      label: "สร้างข้อมูลข่าว",
+      children: <Creaatenews/>,
+    },
+    {
+      key: "2",
+      label: "ประเภทของข่าวสาร",
+      children: <Newoption/>,
+    },
+    {
+      key: "3",
+      label: "ตารางข้อมูลข่าวสาร",
+      children: <Tablenews/>,
+    },
+  ];
+
   return (
     <div style={{ backgroundColor: "#FFFFFF" }}>
       <h1
@@ -31,31 +58,16 @@ const Infomation_management: React.FC = () => {
           borderBottom: "2px solid black",
         }}
       >
-        ข้อมูลข่าวสาร
+        การจัดการข้อมูลข่าวสาร
       </h1>
-      <div style={{ display: "inline-block" }}>
-        <Button style={{ margin: "10px 0 0 10px" }} type="primary">
-          {" "}
-          สร้างหน้าข่าวสาร1
-        </Button>
-        <Button style={{ margin: "10px 0 0 10px" }} type="primary">
-          {" "}
-          สร้างหน้าข่าวสาร2
-        </Button>
-        <Button style={{ margin: "10px 0 0 10px" }} type="primary">
-          {" "}
-          สร้างหน้าข่าวสาร3
-        </Button>
-        <Button style={{ margin: "10px 0 0 10px" }} type="primary">
-          {" "}
-          สร้างหน้าข่าวสาร4
-        </Button>
-
-        <Input
-          style={{ margin: "10px 0 0 10px" }}
-          placeholder="ค้นหาข่าวสาร"
-        ></Input>
-      </div>
+      <Col span={24}>
+        <div className="grid-span-1 space-y-2">
+          <Card>
+            <Tabs defaultActiveKey="1" items={items} />
+          </Card>
+        </div>
+      </Col>
+      
     </div>
   );
 };

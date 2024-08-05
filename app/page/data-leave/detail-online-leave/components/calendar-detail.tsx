@@ -69,7 +69,7 @@ export const CalendarDetail: React.FC<Props> = ({ dataLeaveUser, downloadFile })
           start: new Date(dataLeaveCalendar.startDate),
           end: new Date(dataLeaveCalendar.endDate),
           status: dataLeaveCalendar.status,
-          description: dataLeaveCalendar.description,
+          description: dataLeaveCalendar?.description ? dataLeaveCalendar?.description : "",
           userName: dataLeaveCalendar.typeName,
         }))}
         style={{ height: 500 }}

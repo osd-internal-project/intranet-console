@@ -34,17 +34,15 @@ interface CustomEvent extends RbcEvent {
 }
 
 const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
+  const [formUpdate] = useForm();
+  const [modalMaCarBookDetail, setModalMaCarBookDetail] =
+    useState(false);
   const [selectedMa, setSelectedMa] = useState<MaCarBookCalendarType | null>(
     null
   );
-  
-  const [carBookApprovedStatusModalDetail, setStatusModalDetail] =
-    useState(false);
-
-  const [formUpdate] = useForm();
 
   const onCancelModalDetail = () => {
-    setStatusModalDetail(false);
+    setModalMaCarBookDetail(false);
     setSelectedMa(null);
   };
 
@@ -68,19 +66,19 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
   };
 
   const onSelectEventCalendar = (event: CustomEvent) => {
-    const ma = maFetchCalendar.find((b) => b.id === event.id);
-    if (ma) {
-      setSelectedMa(ma);
+    const maCarCalendar = maFetchCalendar.find((b) => b.id === event.id);
+    if (maCarCalendar) {
+      setSelectedMa(maCarCalendar);
 
       formUpdate.setFieldsValue({
-        ...ma,
-        carBookStartDate: moment(ma.carBookStartDate),
-        carBookEndDate: moment(ma.carBookEndDate),
-        approveDate: ma.approveDate
-          ? moment(ma.approveDate).format("DD-MM-YYYY HH:mm")
+        ...maCarCalendar,
+        carBookStartDate: moment(maCarCalendar.carBookStartDate),
+        carBookEndDate: moment(maCarCalendar.carBookEndDate),
+        approveDate: maCarCalendar.approveDate
+          ? moment(maCarCalendar.approveDate).format("DD-MM-YYYY HH:mm")
           : undefined,
       });
-      setStatusModalDetail(true);
+      setModalMaCarBookDetail(true);
     }
   };
 
@@ -90,18 +88,18 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
         localizer={localizer}
         events={maFetchCalendar
           .filter(
-            (ma: MaCarBookCalendarType) =>
-              ma.carBookApprovedStatus === "Approve" ||
-              ma.carBookApprovedStatus === "Process"
+            (maCarCalendar: MaCarBookCalendarType) =>
+              maCarCalendar.carBookApprovedStatus === "Approve" ||
+              maCarCalendar.carBookApprovedStatus === "Process"
           )
-          .map((ma: MaCarBookCalendarType) => ({
-            id: ma.id,
-            title: ma.carName,
-            start: new Date(ma.carBookStartDate),
-            end: new Date(ma.carBookEndDate),
-            carBookApprovedStatus: ma.carBookApprovedStatus,
-            description: ma.description,
-            userName: ma.userName,
+          .map((maCarCalendar: MaCarBookCalendarType) => ({
+            id: maCarCalendar.id,
+            title: maCarCalendar.carName,
+            start: new Date(maCarCalendar.carBookStartDate),
+            end: new Date(maCarCalendar.carBookEndDate),
+            carBookApprovedStatus: maCarCalendar.carBookApprovedStatus,
+            description: maCarCalendar.description,
+            userName: maCarCalendar.userName,
           }))}
         style={{ height: 500 }}
         onSelectEvent={onSelectEventCalendar}
@@ -116,7 +114,7 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
 
       <Modal
         title="รายละเอียดการจอง"
-        open={carBookApprovedStatusModalDetail}
+        open={modalMaCarBookDetail}
         width={500}
         onCancel={onCancelModalDetail}
         footer={null}

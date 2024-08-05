@@ -98,7 +98,7 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar }) => {
             />
             <Modal
                 title="รายละเอียดการจอง"
-                visible={statusModalDetail}
+                open={statusModalDetail}
                 width={750}
                 onCancel={onCancelModalDetail}
                 footer={null}

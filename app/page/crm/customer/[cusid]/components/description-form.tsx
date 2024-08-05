@@ -189,11 +189,7 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   <Form.Item label={<b>วันที่จดทะเบียน</b>} name={"regisDate"}>
                     <DatePicker format={"DD/MM/YYYY"} className=" w-full" />
                   </Form.Item>
-                  <Form.Item
-                    label={<b>ทุนจดทะเบียน</b>}
-                    name={"registration"}
-                    rules={[{ required: true, message: "Plese Enter" }]}
-                  >
+                  <Form.Item label={<b>ทุนจดทะเบียน</b>} name={"registration"}>
                     <InputNumber
                       min={0}
                       className=" w-full"
@@ -237,7 +233,11 @@ const DescriptionCustomerForm: React.FC<props> = ({
                     />
                   </Form.Item>
                   <Form.Item name={"responsible"} hidden></Form.Item>
-                  <Form.Item label={<b>ผู้รับผิดชอบ</b>} name={"responsibleId"}>
+                  <Form.Item
+                    label={<b>ผู้รับผิดชอบ</b>}
+                    name={"responsibleId"}
+                    rules={[{ required: true, message: "กรุณาเลือก" }]}
+                  >
                     <Select
                       mode="multiple"
                       allowClear

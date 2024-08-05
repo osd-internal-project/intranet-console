@@ -1,7 +1,17 @@
 "use client";
 import { UploadOutlined } from "@ant-design/icons";
 import React, { useEffect } from "react";
-import { Button, Card, DatePicker, Form, Input, Select, Switch, Upload, UploadFile } from "antd";
+import {
+  Button,
+  Card,
+  DatePicker,
+  Form,
+  Input,
+  Select,
+  Switch,
+  Upload,
+  UploadFile,
+} from "antd";
 import dayjs from "dayjs";
 import { IDataUser, ISelect, ITypeDataLeaveCreate } from "../../common";
 import { RcFile } from "antd/es/upload";
@@ -57,7 +67,14 @@ export const CreateOnlineLeave: React.FC<props> = ({
   return (
     <div>
       <Card className="w-full grid grid-cols-1 gap-y-2 mt-2">
-        <Form size="small" form={createdataleaveForm} className=" grid grid-cols-1" layout="vertical" autoComplete="off" onFinish={onfinishCreate}>
+        <Form
+          size="small"
+          form={createdataleaveForm}
+          className=" grid grid-cols-1"
+          layout="vertical"
+          autoComplete="off"
+          onFinish={onfinishCreate}
+        >
           <div className=" col-span-1 md:col-span-1 ml-5 justify-end flex">
             <Form.Item label={`วันที่ `} name={`createdAt`} layout="horizontal">
               <DatePicker defaultValue={dayjs(new Date())} disabled />
@@ -102,7 +119,12 @@ export const CreateOnlineLeave: React.FC<props> = ({
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`ประเภทการลา :`} name={`type_id`} required>
-              <Select placeholder={`ประเภทการลา`} options={getTypeLeaveOption} onChange={(e) => onChangeParams(e, "type")} allowClear />
+              <Select
+                placeholder={`ประเภทการลา`}
+                options={getTypeLeaveOption}
+                onChange={(e) => onChangeParams(e, "type")}
+                allowClear
+              />
             </Form.Item>
           </div>
           <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
@@ -127,7 +149,8 @@ export const CreateOnlineLeave: React.FC<props> = ({
               </Form.Item>
             </div>
           </div>
-          {dayjs(getStartDate).format("YYYY-MM-DD") === dayjs(getEndDate).format("YYYY-MM-DD") && getEndDate ? (
+          {dayjs(getStartDate).format("YYYY-MM-DD") ===
+            dayjs(getEndDate).format("YYYY-MM-DD") && getEndDate ? (
             <>
               <div className="w-full grid grid-cols-3 gap-y-2 mt-2">
                 <div className=" col-span-3 md:col-span-1 ml-5">
@@ -145,13 +168,29 @@ export const CreateOnlineLeave: React.FC<props> = ({
                 {!checkSwitch ? (
                   <>
                     <div className=" col-span-3 md:col-span-1 ml-5">
-                      <Form.Item label={`เวลาเริ่มต้น :`} name={"startTime"} required>
-                        <DatePicker picker="time" className="w-full" onChange={(e: any) => onChangeParams(e, "startTime")} />
+                      <Form.Item
+                        label={`เวลาเริ่มต้น :`}
+                        name={"startTime"}
+                        required
+                      >
+                        <DatePicker
+                          picker="time"
+                          className="w-full"
+                          onChange={(e: any) => onChangeParams(e, "startTime")}
+                        />
                       </Form.Item>
                     </div>
                     <div className=" col-span-3 md:col-span-1 ml-5">
-                      <Form.Item label={`เวลาสิ้นสุด :`} name={"endTime"} required>
-                        <DatePicker picker="time" className="w-full" onChange={(e: any) => onChangeParams(e, "endTime")} />
+                      <Form.Item
+                        label={`เวลาสิ้นสุด :`}
+                        name={"endTime"}
+                        required
+                      >
+                        <DatePicker
+                          picker="time"
+                          className="w-full"
+                          onChange={(e: any) => onChangeParams(e, "endTime")}
+                        />
                       </Form.Item>
                     </div>
                   </>
@@ -167,7 +206,11 @@ export const CreateOnlineLeave: React.FC<props> = ({
           </div>
           <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
             <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`เบอร์โทรศัพท์ :`} name={"phoneNumber"} required>
+              <Form.Item
+                label={`เบอร์โทรศัพท์ :`}
+                name={"phoneNumber"}
+                required
+              >
                 <Input placeholder="เบอร์โทรศัพท์" />
               </Form.Item>
             </div>

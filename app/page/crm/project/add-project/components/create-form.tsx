@@ -139,6 +139,11 @@ const CreateProjectForm: React.FC<props> = ({
             <Input placeholder="Enter Text" />
           </Form.Item>
         </div>
+        <div className=" md:col-span-3">
+          <Form.Item label="Product Name" name={"productName"}>
+            <Input placeholder="Enter Text" />
+          </Form.Item>
+        </div>
         <Form.Item
           label="Start Date"
           name={"startDate"}

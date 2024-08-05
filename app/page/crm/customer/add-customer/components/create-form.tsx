@@ -166,7 +166,11 @@ const CreateCustomerForm: React.FC<props> = ({
           />
         </Form.Item>
         <Form.Item name={"responsible"} hidden></Form.Item>
-        <Form.Item label="ผู้รับผิดชอบ" name={"responsibleId"}>
+        <Form.Item
+          label="ผู้รับผิดชอบ"
+          name={"responsibleId"}
+          rules={[{ required: true, message: "กรุณาเลือก" }]}
+        >
           <Select
             mode="multiple"
             allowClear

@@ -132,7 +132,7 @@ export interface ITypeDataLeave {
   updatedAt?: Date;
   ownerId?: string;
   ownerName?: string;
-  // description: string;
+  description: string;
   // userName: string;
 }
 

@@ -1,8 +1,21 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, Tabs, message } from "antd";
+import {
+  Breadcrumb,
+  Card,
+  Col,
+  Divider,
+  Form,
+  Modal,
+  Row,
+  Tabs,
+  message,
+} from "antd";
 import { ISelect, ITpyeUser, ITypetypeleave } from "../common";
-import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
+import {
+  useAxiosIntranet,
+  useAxiosUser,
+} from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../services/index.service";
 import { TabeLeavManagement } from "./components/tab-leave-management";
 import { CreateLeaveManagement } from "./components/create-leave-management";
@@ -16,11 +29,9 @@ const page = () => {
   const [getdataTypeLeave, setdataTypeLeave] = useState<ITypetypeleave[]>([]);
   const [getdataUser, setdataUser] = useState<ISelect[]>([]);
   const [getdataUserByTypeId, setdataUserByTypeId] = useState<ITpyeUser[]>([]);
-
   const [getLoading, setLoading] = useState<boolean>(true);
   const [getSearch, setSearch] = useState<any>();
   const [openModal, setOpenModal] = useState<boolean>(false);
-
   const [formcreate] = Form.useForm();
 
   useEffect(() => {
@@ -47,9 +58,11 @@ const page = () => {
 
   const loadDataUser = async () => {
     const res = await dataleaveserviceIntra.getdataUserByTypeLeaveId(getSearch);
-    const lasresult = res.typeLeaveDisabledMap.map((event: { user: ITpyeUser }) => {
-      return event.user;
-    });
+    const lasresult = res.typeLeaveDisabledMap.map(
+      (event: { user: ITpyeUser }) => {
+        return event.user;
+      }
+    );
     setdataUserByTypeId(lasresult);
     setLoading(false);
   };
@@ -76,7 +89,9 @@ const page = () => {
         },
       },
       onOk: async () => {
-        const result = await dataleaveserviceIntra.createTypeLeaveDisabled(event);
+        const result = await dataleaveserviceIntra.createTypeLeaveDisabled(
+          event
+        );
         if (result) {
           message.success(`Add success`);
           formcreate.resetFields();
@@ -99,7 +114,9 @@ const page = () => {
       okButtonProps: { type: "primary", danger: true },
       cancelText: "Cancel",
       onOk: async () => {
-        const dataResult = await dataleaveserviceIntra.deleteTypeLeaveDisabled(event);
+        const dataResult = await dataleaveserviceIntra.deleteTypeLeaveDisabled(
+          event
+        );
         if (dataResult) {
           message.success(`Delete success`);
           setLoading(true);
@@ -148,7 +165,10 @@ const page = () => {
                       openModal={openModal}
                       formcreate={formcreate}
                     />
-                    <TabeLeavManagement getdataUserByTypeId={getdataUserByTypeId} onFinishDel={(e: number) => onFinishDel(e)} />
+                    <TabeLeavManagement
+                      getdataUserByTypeId={getdataUserByTypeId}
+                      onFinishDel={(e: number) => onFinishDel(e)}
+                    />
                   </div>
                 ),
               };

@@ -1,7 +1,19 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { TableDetail } from "./components/table-detail";
-import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, message } from "antd";
+import { CalendarDetail } from "./components/calendar-detail";
+import {
+  Breadcrumb,
+  Card,
+  Col,
+  Tabs,
+  Divider,
+  Form,
+  Modal,
+  Row,
+  TabsProps,
+  message,
+} from "antd";
 import { useRouter } from "next/navigation";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../services/index.service";
@@ -17,14 +29,49 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(true);
   const [dataLeaveUser, setDataLeaveUser] = useState<ITypeDataLeave[]>([]);
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
-
   const [formdetail] = Form.useForm();
+
+  const items: TabsProps["items"] = [
+    {
+      key: "1",
+      label: "Detail",
+      children: (
+        <TableDetail
+          dataLeaveUser={dataLeaveUser}
+          setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
+          openModalDetail={openModalDetail}
+          formdetail={formdetail}
+          onFinishUpdate={(type: string, id: number) =>
+            onFinishUpdate(type, id)
+          }
+          downloadFile={(id: number, filename: string) =>
+            downloadFile(id, filename)
+          }
+        />
+      ),
+    },
+    {
+      key: "2",
+      label: "Calendar",
+      children: (
+        <CalendarDetail
+          dataLeaveUser={dataLeaveUser}
+          downloadFile={(id: number, filename: string) =>
+            downloadFile(id, filename)
+          }
+        />
+      ),
+    },
+  ];
+
   useEffect(() => {
     if (loading) loadData();
   }, [loading]);
 
   const loadData = async () => {
-    const res = await dataleaveservice.getdataLeaveByuserID(session?.user.userId as string);
+    const res = await dataleaveservice.getdataLeaveByuserID(
+      session?.user.userId as string
+    );
     setDataLeaveUser(res);
     setLoading(false);
   };
@@ -33,14 +80,26 @@ export default function Page() {
     Modal.confirm({
       title: <>{type === "cancel" ? "Cancel " : "Approved"}</>,
       icon: <ExclamationCircleFilled />,
-      content: <>{type === "cancel" ? "Are you sure you want to cancel this ?" : "Are you sure you want to Approved this ?"}</>,
+      content: (
+        <>
+          {type === "cancel"
+            ? "Are you sure you want to cancel this ?"
+            : "Are you sure you want to Approved this ?"}
+        </>
+      ),
       okText: "Confirm",
       okButtonProps: { type: "primary", danger: true },
       cancelText: "Cancel",
       onOk: async () => {
-        const res = await dataleaveservice.approvedDataLeave(type, id, session?.user);
+        const res = await dataleaveservice.approvedDataLeave(
+          type,
+          id,
+          session?.user
+        );
         if (res) {
-          type === "cancel" ? message.error("cancel success") : message.success("approved success");
+          type === "cancel"
+            ? message.error("cancel success")
+            : message.success("approved success");
           setLoading(true);
         }
       },
@@ -82,14 +141,7 @@ export default function Page() {
       </Divider>
       <div className="w-full">
         <Card>
-          <TableDetail
-            dataLeaveUser={dataLeaveUser}
-            setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
-            openModalDetail={openModalDetail}
-            formdetail={formdetail}
-            onFinishUpdate={(type: string, id: number) => onFinishUpdate(type, id)}
-            downloadFile={(id: number, filename: string) => downloadFile(id, filename)}
-          />
+          <Tabs defaultActiveKey="1" items={items} />
         </Card>
       </div>
     </Row>

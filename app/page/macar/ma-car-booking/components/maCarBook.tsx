@@ -43,15 +43,15 @@ const MaCarBook: React.FC<props> = ({
   ) => {
     const existingMa = await maCarBookServices.getMaCarBookCheck();
 
-    return existingMa.some((ma: any) => {
+    return existingMa.some((record: any) => {
       return (
-        ma.carName === carName &&
-        ((new Date(carBookStartDate) >= new Date(ma.carBookStartDate) &&
-          new Date(carBookStartDate) < new Date(ma.carBookEndDate)) ||
-          (new Date(carBookEndDate) > new Date(ma.carBookStartDate) &&
-            new Date(carBookEndDate) <= new Date(ma.carBookEndDate)) ||
-          (new Date(carBookStartDate) <= new Date(ma.carBookStartDate) &&
-            new Date(carBookEndDate) >= new Date(ma.carBookEndDate)))
+        record.carName === carName &&
+        ((new Date(carBookStartDate) >= new Date(record.carBookStartDate) &&
+          new Date(carBookStartDate) < new Date(record.carBookEndDate)) ||
+          (new Date(carBookEndDate) > new Date(record.carBookStartDate) &&
+            new Date(carBookEndDate) <= new Date(record.carBookEndDate)) ||
+          (new Date(carBookStartDate) <= new Date(record.carBookStartDate) &&
+            new Date(carBookEndDate) >= new Date(record.carBookEndDate)))
       );
     });
   };

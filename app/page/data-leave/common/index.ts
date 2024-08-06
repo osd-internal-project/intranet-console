@@ -66,13 +66,17 @@ export interface ISelect {
   value: string | number;
   label: string;
 }
+export interface ISelectDepartMent {
+  value: string | number;
+  label: string;
+}
 
 export interface IDepartMent {
-  id: number;        
-  departId: number;   
-  departName: string; 
-  createdAt?: Date;  
-  updatedAt?: Date; 
+  id: number;
+  departId: number;
+  departName: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface ITypetypeleave {
@@ -107,6 +111,7 @@ export interface ITpyeUser {
   password: string;
   phoneNumber: string;
   positionId: number;
+  departId: number;
   refreshToken: string;
   startWork: Date;
   updatedAt: Date;
@@ -123,6 +128,8 @@ export interface ITypeDataLeave {
   lastName?: string;
   positionId?: number;
   position?: string;
+  departId?: number;
+  departName?: string;
   typeId?: number;
   typeName?: string;
   startDate: Date;
@@ -150,6 +157,8 @@ export interface ITypeDataLeaveCreate {
   lastNameTh: string;
   posId: number;
   position: string;
+  depart_id: number;
+  departName: string;
   type_id: number;
   typeName: string;
   startDate: Date;

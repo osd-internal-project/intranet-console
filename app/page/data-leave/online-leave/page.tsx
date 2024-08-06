@@ -22,6 +22,8 @@ import {
   ITypeDataLeave,
   ITypetypeleave,
   ITypeDataLeaveCreate,
+  IDepartMent,
+  ISelectDepartMent,
 } from "../common";
 import { CreateOnlineLeave } from "./components/create-online-leave";
 import { TableOnlineDetailLeave } from "./components/table-online-detail-leave";
@@ -50,6 +52,9 @@ export default function Page() {
   const [dataLeaveUserById, setDataLeaveByUserId] = useState<ITypetypeleave[]>(
     []
   );
+  const [getDepartmentById, setResDepartMent] = useState<ISelectDepartMent[]>(
+    []
+  );
   const [getStartDate, setStartDate] = useState<Date>();
   const [getEndDate, setEndDate] = useState<Date>();
   const [checkSwitch, setCheckSwitch] = useState<boolean>(false);
@@ -57,6 +62,7 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(true);
   const [params, setParams] = useState<any>({
     typeId: null,
+    departId: null,
     startDate: null,
     endDate: null,
     startTime: null,
@@ -64,7 +70,6 @@ export default function Page() {
     lengthDate: 0,
     lengthTime: 0,
   });
-  // const data = dataLeaveUserById.find((option: ITypetypeleave) => option.id === id);
 
   const [createdataleaveForm] = useForm();
 
@@ -91,8 +96,13 @@ export default function Page() {
       session?.user.userId as string
     );
     const resTableDepartMent = await dataleaveservice.findDetailDepartment();
-    // console.log(resTableDepartMent);
+    const departmentOptions = resTableDepartMent.map((event: IDepartMent) => {
+      return { value: event.departId, label: event.departName };
+    });
+    const resDataDepartmentId = await dataleaveservice.getdataDepartmentId();
+    // console.log(resDataDepartmentId);
 
+    setResDepartMent(departmentOptions);
     setDataLeaveByUserId(dataLeaveUserId);
     setLoading(false);
     setUserOwner(resOwner);
@@ -114,6 +124,9 @@ export default function Page() {
   const onChangeParams = (value: string, type: string) => {
     if (type === "type") {
       setParams((e: any) => ({ ...e, typeId: value }));
+    }
+    if (type === "depart") {
+      setParams((e: any) => ({ ...e, departId: value }));
     }
     if (type === "startDate") {
       setParams((e: any) => ({ ...e, startDate: value }));
@@ -176,6 +189,9 @@ export default function Page() {
     const selectedOption = getTypeLeaveOption.find(
       (option) => option.value === values.type_id
     );
+    const selecteddepart = getDepartmentById.find(
+      (option) => option.value === values.depart_id
+    );
     const totalDays =
       startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
     const totalHours =
@@ -188,6 +204,8 @@ export default function Page() {
       lastName: values.lastNameTh,
       positionId: values.posId,
       position: values.position,
+      departId: values.depart_id,
+      departName: selecteddepart ? selecteddepart.label : undefined,
       typeId: values.type_id,
       typeName: selectedOption ? selectedOption.label : undefined,
       startDate: values.startDate,
@@ -226,6 +244,7 @@ export default function Page() {
       },
       onOk: async () => {
         const result = await dataleaveservice.createDataLeave(condition);
+        console.log(condition);
         if (result) {
           if (attendFiles.length > 0) {
             attendFiles.forEach(async (file) => {
@@ -275,6 +294,7 @@ export default function Page() {
           <CreateOnlineLeave
             getUser={getUser}
             getTypeLeaveOption={getTypeLeaveOption}
+            getDepartmentById={getDepartmentById}
             onfinishCreate={(e: ITypeDataLeaveCreate) => onfinishCreate(e)}
             createdataleaveForm={createdataleaveForm}
             setStartDate={(e: Date) => setStartDate(e)}

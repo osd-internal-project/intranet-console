@@ -41,7 +41,7 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({
 
   const onCancelModalDetail = () => {
     setModalDataLeaveDetail(false);
-    // setDataLeaveUsers(null);
+    
   };
 
   const onSelectEventCalendar = (event: CustomEvent) => {

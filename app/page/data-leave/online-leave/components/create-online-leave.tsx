@@ -13,11 +13,18 @@ import {
   UploadFile,
 } from "antd";
 import dayjs from "dayjs";
-import { IDataUser, ISelect, ITypeDataLeaveCreate } from "../../common";
+import {
+  IDataUser,
+  IDepartMent,
+  ISelect,
+  ISelectDepartMent,
+  ITypeDataLeaveCreate,
+} from "../../common";
 import { RcFile } from "antd/es/upload";
 export interface props {
   getUser?: IDataUser | null;
   getTypeLeaveOption: ISelect[];
+  getDepartmentById: ISelectDepartMent[];
   onfinishCreate: (values: ITypeDataLeaveCreate) => void;
   createdataleaveForm: any;
   setStartDate: (values: Date) => void;
@@ -35,6 +42,7 @@ export interface props {
 export const CreateOnlineLeave: React.FC<props> = ({
   getUser,
   getTypeLeaveOption,
+  getDepartmentById,
   onfinishCreate,
   createdataleaveForm,
   setStartDate,
@@ -63,6 +71,9 @@ export const CreateOnlineLeave: React.FC<props> = ({
     };
     getdatauser();
   }, [getUserOwner]);
+
+  // console.log(getDepartmentById);
+  // console.log(getTypeLeaveOption);
 
   return (
     <div>
@@ -120,14 +131,14 @@ export const CreateOnlineLeave: React.FC<props> = ({
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item
               label={`แผนก :`}
-              name={``}
+              name={`depart_id`}
               required
               rules={[{ required: true, message: "กรุณาเลือกแผนก" }]}
             >
               <Select
                 placeholder={`แผนก`}
-                // options={getTypeLeaveOption}
-                onChange={(e) => onChangeParams(e, "type")}
+                options={getDepartmentById}
+                onChange={(e) => onChangeParams(e, "depart")}
                 allowClear
               />
             </Form.Item>

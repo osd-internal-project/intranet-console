@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import { Button, Row, Col, Modal, Input, Card, Pagination } from "antd";
+import { Button, Row, Col, Modal, Input, Card, Pagination,Tabs ,TabsProps} from "antd";
+import Newsshow from "./components/shownews"
 
 const dataform: React.FC = () => {
   const [news, setNews] = useState<any[]>([]);
@@ -8,29 +9,15 @@ const dataform: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedNews, setSelectedNews] = useState(null);
 
-  const addNews = () => {
-    const newNews = `ข่าวที่ ${news.length + 1}`;
-    setNews([...news, newNews]);
-  };
-
-  const newsPerPage = 12;
-  const indexOfLastNews = currentPage * newsPerPage;
-  const indexOfFirstNews = indexOfLastNews - newsPerPage;
-  const currentNews = news.slice(indexOfFirstNews, indexOfLastNews);
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const showModal = (newsItem: any) => {
-    setSelectedNews(newsItem);
-    setIsModalVisible(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-    setSelectedNews(null);
-  };
+  const items: TabsProps["items"] = [
+    {
+      key: "1",
+      label: "สร้างข้อมูลข่าว",
+      children: <Newsshow/>,
+    },
+  ];
+  
+  // while 
 
   return (
     <div style={{ backgroundColor: "#FFFFFF" }}>
@@ -43,45 +30,14 @@ const dataform: React.FC = () => {
         }}>
         ข้อมูลข่าวสาร
       </h1>
-      <div style={{ display: "inline-block" }}>
-        <Button style={{ margin: "10px 0 0 10px" }} type="primary" onClick={addNews}>
-          {" "}
-          สร้างหน้าข่าวสาร
-        </Button>
-        <Input style={{ margin: "10px 0 0 10px" }} placeholder="ค้นหาข่าวสาร"></Input>
-      </div>
-
-      <Card title="ข่าวเเละกิจกรรมล่าสุด" bordered={false} className="text-center">
-        <Row gutter={16}>
-          {currentNews.map((item, index) => (
-            <Col key={index} span={8}>
-              <Card style={{ margin: "20px 0 0 0", border: "1px solid black" }} hoverable onClick={() => showModal(item)}>
-                {item}
-              </Card>
-            </Col>
-          ))}
-        </Row>
-        <Pagination
-          align="center"
-          current={currentPage}
-          pageSize={newsPerPage}
-          total={news.length}
-          onChange={handlePageChange}
-          style={{ marginTop: "20px" }}
-        />
-      </Card>
-
-      <Modal
-        title="รายละเอียดข่าวสาร"
-        open={isModalVisible}
-        onCancel={handleCancel}
-        footer={[
-          <Button key="close" onClick={handleCancel}>
-            ปิด
-          </Button>,
-        ]}>
-        <p>{selectedNews}</p>
-      </Modal>
+      <Col span={24}>
+          <div className="grid-span-1 space-y-2">
+            <Card>
+              <Tabs defaultActiveKey="1" items={items} />
+            </Card>
+          </div>
+        </Col>
+      
     </div>
   );
 };

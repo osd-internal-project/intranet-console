@@ -23,6 +23,7 @@ import {
   TabsProps,
   Tabs,
 } from "antd";
+const { TextArea } = Input;
 const Infomation_management: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [submitLoading, setSubmitLoading] = useState(true);
@@ -45,7 +46,7 @@ const Infomation_management: React.FC = () => {
             ประเภทข่าวสาร :<Input style={{ margin: "0 0 0 10px" }}></Input>
           </Form.Item>
           <Form.Item>
-            เนื้อหาข่าวสาร :<Input style={{ margin: "0 0 0 10px" }}></Input>
+            เนื้อหาข่าวสาร :<TextArea style={{ margin: "0 0 0 10px" }}></TextArea>
           </Form.Item>
           <Form.Item>
             วันที่เผยแพร่ :<Input style={{ margin: "0 0 0 10px" }}></Input>

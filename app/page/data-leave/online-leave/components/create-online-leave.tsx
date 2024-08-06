@@ -13,11 +13,18 @@ import {
   UploadFile,
 } from "antd";
 import dayjs from "dayjs";
-import { IDataUser, ISelect, ITypeDataLeaveCreate } from "../../common";
+import {
+  IDataUser,
+  IDepartMent,
+  ISelect,
+  ISelectDepartMent,
+  ITypeDataLeaveCreate,
+} from "../../common";
 import { RcFile } from "antd/es/upload";
 export interface props {
   getUser?: IDataUser | null;
   getTypeLeaveOption: ISelect[];
+  getDepartmentById: ISelectDepartMent[];
   onfinishCreate: (values: ITypeDataLeaveCreate) => void;
   createdataleaveForm: any;
   setStartDate: (values: Date) => void;
@@ -35,6 +42,7 @@ export interface props {
 export const CreateOnlineLeave: React.FC<props> = ({
   getUser,
   getTypeLeaveOption,
+  getDepartmentById,
   onfinishCreate,
   createdataleaveForm,
   setStartDate,
@@ -63,6 +71,9 @@ export const CreateOnlineLeave: React.FC<props> = ({
     };
     getdatauser();
   }, [getUserOwner]);
+
+  // console.log(getDepartmentById);
+  // console.log(getTypeLeaveOption);
 
   return (
     <div>
@@ -118,7 +129,27 @@ export const CreateOnlineLeave: React.FC<props> = ({
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`ประเภทการลา :`} name={`type_id`} required>
+            <Form.Item
+              label={`แผนก :`}
+              name={`depart_id`}
+              required
+              rules={[{ required: true, message: "กรุณาเลือกแผนก" }]}
+            >
+              <Select
+                placeholder={`แผนก`}
+                options={getDepartmentById}
+                onChange={(e) => onChangeParams(e, "depart")}
+                allowClear
+              />
+            </Form.Item>
+          </div>
+          <div className=" col-span-3 md:col-span-1 ml-5">
+            <Form.Item
+              label={`ประเภทการลา :`}
+              name={`type_id`}
+              required
+              rules={[{ required: true, message: "กรุณาเลือกประเภทการลา" }]}
+            >
               <Select
                 placeholder={`ประเภทการลา`}
                 options={getTypeLeaveOption}
@@ -129,7 +160,12 @@ export const CreateOnlineLeave: React.FC<props> = ({
           </div>
           <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
             <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`ตั้งแต่วันที่ :`} name={`startDate`} required>
+              <Form.Item
+                label={`ตั้งแต่วันที่ :`}
+                name={`startDate`}
+                required
+                rules={[{ required: true, message: "กรุณาเลือกวันที่เริ่มลา" }]}
+              >
                 <DatePicker
                   className="w-full"
                   onChange={(e: any) => {
@@ -139,7 +175,14 @@ export const CreateOnlineLeave: React.FC<props> = ({
               </Form.Item>
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`ถึงวันที่ :`} name={`endDate`} required>
+              <Form.Item
+                label={`ถึงวันที่ :`}
+                name={`endDate`}
+                required
+                rules={[
+                  { required: true, message: "กรุณาเลือกวันที่สิ้นสุดการลา" },
+                ]}
+              >
                 <DatePicker
                   className="w-full"
                   onChange={(e: any) => {

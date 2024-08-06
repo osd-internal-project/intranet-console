@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import ManageHandbook from "./manageHandbook/managehandBook";
+import Tablehandbook from "./manageHandbook/tablehandbook";
 import {
   Button,
   Row,
@@ -23,7 +24,12 @@ const dataform: React.FC = () => {
   const items: TabsProps["items"] = [
     {
       key: "1",
-      label: "สร้างบะหมี่เกี้ยวหมูสับ",
+      label: "file PDF",
+      children: <Tablehandbook />,
+    },
+    {
+      key: "2",
+      label: "เพิ่มข้อมูล PDF",
       children: <ManageHandbook />,
     },
   ];

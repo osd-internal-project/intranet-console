@@ -1,5 +1,10 @@
 import { AxiosInstance } from "axios";
-import { Filtertypeleave, ITpyeUser, ITypeDataLeave, ITypeDataLeaveCreate } from "../common";
+import {
+  Filtertypeleave,
+  ITpyeUser,
+  ITypeDataLeave,
+  ITypeDataLeaveCreate,
+} from "../common";
 const DataLeaveService = (axiosInstance: AxiosInstance) => {
   const baseUrl = "/master-type-leave";
   const baseUrlTypeleave = "/master-type-leave";
@@ -7,6 +12,7 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
   const baseUrlUser = "/user";
   const baseUrlDataLeave = "/data-leave";
   const baseUrlDataLeaveFile = "/data-leave-file";
+  const basrUrIDepartment = "/department";
 
   return {
     getdataAll: async () => {
@@ -228,6 +234,46 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
     deleteTypeLeaveDisabled: async (event: number) => {
       return await axiosInstance
         .delete(`${baseUrlTypeleaveMap}/${event}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
+    deleteDataLeave: async (id: number) => {
+      return await axiosInstance
+        .delete(`${baseUrlDataLeave}/${id}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+
+    findDetailDepartment: async () => {
+      return await axiosInstance
+        .get(`${basrUrIDepartment}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    getdataDepartmentId: async () => {
+      const condition = {
+        select: {
+          departId: true,
+        },
+      };
+      return await axiosInstance
+        .post(`${basrUrIDepartment}/conditionId`, {
+          condition: condition,
+        })
         .then((res) => {
           return res.data;
         })

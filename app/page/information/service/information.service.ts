@@ -1,82 +1,82 @@
 import { AxiosInstance } from "axios";
 
-export const ManageCarServices = (axiosInstance: AxiosInstance) => {
-  const baseUrlApihandbookFile = "/handbookFile";
+export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
+  // const baseUrlApihandbookFile = "/handbookFile";
   const baseUrlApiinformationNews = "/informationNews";
   const baseUrlApinewsImage = "/newsImage";
   const baseUrlApinewsType = "/newsType";
 
   return {
-    gethandbookFileQuery: async () => {
-      return await axiosInstance
-        .get(`${baseUrlApihandbookFile}`)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
-    findhandbookFile: async (skip: number, take: number) => {
-      return await axiosInstance
-        .get(`${baseUrlApihandbookFile}?take=${take}&skip=${skip}`)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
-    findOnehandbookFile: async (body: any) => {
-      return await axiosInstance
-        .get(`${baseUrlApihandbookFile}/${body}`)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
+    // gethandbookFileQuery: async () => {
+    //   return await axiosInstance
+    //     .get(`${baseUrlApihandbookFile}`)
+    //     .then((res) => {
+    //       return res.data;
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //       return [];
+    //     });
+    // },
+    // findhandbookFile: async (skip: number, take: number) => {
+    //   return await axiosInstance
+    //     .get(`${baseUrlApihandbookFile}?take=${take}&skip=${skip}`)
+    //     .then((res) => {
+    //       return res.data;
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //       return [];
+    //     });
+    // },
+    // findOnehandbookFile: async (body: any) => {
+    //   return await axiosInstance
+    //     .get(`${baseUrlApihandbookFile}/${body}`)
+    //     .then((res) => {
+    //       return res.data;
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //       return [];
+    //     });
+    // },
 
-    createhandbookFile: async (body: any) => {
-      return await axiosInstance
-        .post(`${baseUrlApihandbookFile}`, body)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
+    // createhandbookFile: async (body: any) => {
+    //   return await axiosInstance
+    //     .post(`${baseUrlApihandbookFile}`, body)
+    //     .then((res) => {
+    //       return res.data;
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //       return [];
+    //     });
+    // },
 
-    updatehandbookFile: async (body: any) => {
-      return await axiosInstance
-        .patch(`${baseUrlApihandbookFile}/${body.id}`, body)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
-    deletehandbookFile: async (carId: any) => {
-      console.log(carId);
+    // updatehandbookFile: async (body: any) => {
+    //   return await axiosInstance
+    //     .patch(`${baseUrlApihandbookFile}/${body.id}`, body)
+    //     .then((res) => {
+    //       return res.data;
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //       return [];
+    //     });
+    // },
+    // deletehandbookFile: async (carId: any) => {
+    //   console.log(carId);
 
-      return await axiosInstance
-        .delete(`${baseUrlApihandbookFile}/${carId}`)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
+    //   return await axiosInstance
+    //     .delete(`${baseUrlApihandbookFile}/${carId}`)
+    //     .then((res) => {
+    //       return res.data;
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //       return [];
+    //     });
+    // },
 
 
     getinformationNewsQuery: async () => {

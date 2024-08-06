@@ -65,7 +65,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         });
     },
     deleteMaCarBook: async (carId: any) => {
-      console.log(carId);
 
       return await axiosInstance
         .delete(`${baseUrlApiMaCarBook}/${carId}`)

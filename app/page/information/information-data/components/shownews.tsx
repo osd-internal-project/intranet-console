@@ -1,6 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { AntDesignOutlined } from "@ant-design/icons";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { ManageinformationNewsServices } from "../../service/information.service";
+import { useForm } from "antd/es/form/Form";
 import {
   Select,
   Table,
@@ -19,11 +22,47 @@ import {
   Card,
   Pagination,
 } from "antd";
+export interface informationNews {
+  newsId: Number;
+  newsName: String;
+  content: String;
+  newsType: String;
+  author: String;
+  phblishedAt: String;
+  updatedAt: String;
+  status: boolean;
+}
 const managementNews: React.FC = () => {
   const [news, setNews] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedNews, setSelectedNews] = useState(null);
+
+  const intraAuth = useAxiosIntranet();
+  const [informationNews, setinformationNews] = useState<informationNews[]>([]);
+  const manageinformationNewsServices = ManageinformationNewsServices(intraAuth);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [form] = useForm();
+
+  useEffect(() => {
+    fetchDatainformationNews();
+  }, []);
+
+  const fetchDatainformationNews = async () => {
+    try {
+      const maresponse = await manageinformationNewsServices.getinformationNewsQuery();
+      const informationNews: informationNews[] = maresponse.map(
+        (item: any, index: number) => ({
+          ...item,
+          key: index.toString(),
+        })
+      );
+      setinformationNews(informationNews);
+      setSubmitLoading(false);
+    } catch (error) {
+      message.error("Failed to fetch car data");
+    }
+  };
 
   const addNews = () => {
     const newNews = `ข่าวที่ ${news.length + 1}`;

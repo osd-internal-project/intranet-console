@@ -1,11 +1,30 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Col, Divider, Modal, Row, UploadFile, message } from "antd";
+import {
+  Breadcrumb,
+  Col,
+  Divider,
+  Modal,
+  Row,
+  UploadFile,
+  message,
+} from "antd";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
-import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
+import {
+  useAxiosIntranet,
+  useAxiosUser,
+} from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../services/index.service";
-import { IDataUser, ISelect, ITypeDataLeave, ITypetypeleave, ITypeDataLeaveCreate } from "../common";
+import {
+  IDataUser,
+  ISelect,
+  ITypeDataLeave,
+  ITypetypeleave,
+  ITypeDataLeaveCreate,
+  IDepartMent,
+  ISelectDepartMent,
+} from "../common";
 import { CreateOnlineLeave } from "./components/create-online-leave";
 import { TableOnlineDetailLeave } from "./components/table-online-detail-leave";
 import { ExclamationCircleFilled } from "@ant-design/icons";
@@ -20,13 +39,22 @@ export default function Page() {
   const dataleaveservice = DataLeaveService(Auth);
   const dataleaveserviceUser = DataLeaveService(AuthUser);
   const { data: session } = useSession();
-  const [getUser, setUser] = useState<IDataUser | null>(session ? session.user : null);
+  const [getUser, setUser] = useState<IDataUser | null>(
+    session ? session.user : null
+  );
   const [getUserOwner, setUserOwner] = useState<IDataUser | null>({});
   const [getTypeLeaveOption, setTypeLeaveOption] = useState<ISelect[]>([]);
   const [getTypeLeave, setTypeLeave] = useState<ITypetypeleave[]>([]);
   const [typeLeaveTable, setTypeLeaveTable] = useState<ITypetypeleave[]>([]);
-  const [typeLeaveTableAll, setTypeLeaveTableAll] = useState<ITypetypeleave[]>([]);
-  const [dataLeaveUserById, setDataLeaveByUserId] = useState<ITypetypeleave[]>([]);
+  const [typeLeaveTableAll, setTypeLeaveTableAll] = useState<ITypetypeleave[]>(
+    []
+  );
+  const [dataLeaveUserById, setDataLeaveByUserId] = useState<ITypetypeleave[]>(
+    []
+  );
+  const [getDepartmentById, setResDepartMent] = useState<ISelectDepartMent[]>(
+    []
+  );
   const [getStartDate, setStartDate] = useState<Date>();
   const [getEndDate, setEndDate] = useState<Date>();
   const [checkSwitch, setCheckSwitch] = useState<boolean>(false);
@@ -34,6 +62,7 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(true);
   const [params, setParams] = useState<any>({
     typeId: null,
+    departId: null,
     startDate: null,
     endDate: null,
     startTime: null,
@@ -41,8 +70,6 @@ export default function Page() {
     lengthDate: 0,
     lengthTime: 0,
   });
-  console.log(dataLeaveUserById);
-  console.log(dataLeaveUserById.some((item: any) => item.userId));
 
   const [createdataleaveForm] = useForm();
 
@@ -52,16 +79,30 @@ export default function Page() {
 
   const loadDataTypeLeave = async () => {
     const res = await dataleaveservice.getdataAll();
-    console.log(res);
 
-    const resOwner = await dataleaveserviceUser.getOwnerGroupsByPositionId(getUser?.userMapOrganizeChart[0]?.positionId);
-    const resTableDeatilTypeLeave = await dataleaveservice.findDetailTypeLeaveByUserId(getUser?.userId);
-    const resTableUserTypeLeave = await dataleaveservice.findUserByUserId(getUser?.userId);
+    const resOwner = await dataleaveserviceUser.getOwnerGroupsByPositionId(
+      getUser?.userMapOrganizeChart[0]?.positionId
+    );
+    const resTableDeatilTypeLeave =
+      await dataleaveservice.findDetailTypeLeaveByUserId(getUser?.userId);
+    const resTableUserTypeLeave = await dataleaveservice.findUserByUserId(
+      getUser?.userId
+    );
     // const resTableDeatilTypeLeaveAll = await dataleaveservice.getdataTypeLeaveAll({});
     const options = res.map((event: ITypetypeleave) => {
       return { value: event.typeId, label: event.typeName };
     });
-    const dataLeaveUserId = await dataleaveservice.getdataLeaveByuserID(session?.user.userId as string);
+    const dataLeaveUserId = await dataleaveservice.getdataLeaveByuserID(
+      session?.user.userId as string
+    );
+    const resTableDepartMent = await dataleaveservice.findDetailDepartment();
+    const departmentOptions = resTableDepartMent.map((event: IDepartMent) => {
+      return { value: event.departId, label: event.departName };
+    });
+    const resDataDepartmentId = await dataleaveservice.getdataDepartmentId();
+    // console.log(resDataDepartmentId);
+
+    setResDepartMent(departmentOptions);
     setDataLeaveByUserId(dataLeaveUserId);
     setLoading(false);
     setUserOwner(resOwner);
@@ -83,6 +124,9 @@ export default function Page() {
   const onChangeParams = (value: string, type: string) => {
     if (type === "type") {
       setParams((e: any) => ({ ...e, typeId: value }));
+    }
+    if (type === "depart") {
+      setParams((e: any) => ({ ...e, departId: value }));
     }
     if (type === "startDate") {
       setParams((e: any) => ({ ...e, startDate: value }));
@@ -106,7 +150,8 @@ export default function Page() {
   const checklenghtDay = async (value1: any, value2: any) => {
     const startDate = value1 ? dayjs(value1).startOf("day") : null;
     const endDate = value2 ? dayjs(value2).endOf("day") : null;
-    const totalDays = startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
+    const totalDays =
+      startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
     setParams((e: any) => ({
       ...e,
       lengthDate: totalDays != "0" ? Number(totalDays) : checkSwitch ? 1 : 0,
@@ -115,32 +160,52 @@ export default function Page() {
   const checklenghtTime = async (value1: any, value2: any) => {
     const startTime = value1 ? dayjs(value1, "HH:mm") : null;
     const endTime = value2 ? dayjs(value2, "HH:mm") : null;
-    const totalHours = startTime && endTime ? endTime.diff(startTime, "hour", true).toFixed(1) : 0;
+    const totalHours =
+      startTime && endTime
+        ? endTime.diff(startTime, "hour", true).toFixed(1)
+        : 0;
     setParams((e: any) => ({
       ...e,
       lengthTime: totalHours != 0 ? Number(totalHours) : 1,
     }));
   };
 
-  const handleChangeAttendFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
+  const handleChangeAttendFiles: UploadProps["onChange"] = async ({
+    fileList: newFileList,
+  }) => {
     return setAttendFiles(newFileList);
   };
 
   const onfinishCreate = (values: ITypeDataLeaveCreate) => {
     const dataLeaveByUserId = dataLeaveUserById;
-    const startDate = values.startDate ? dayjs(values.startDate).startOf("day") : null;
+    const startDate = values.startDate
+      ? dayjs(values.startDate).startOf("day")
+      : null;
     const endDate = values.endDate ? dayjs(values.endDate).endOf("day") : null;
-    const startTime = values.startTime ? dayjs(values.startTime, "HH:mm") : null;
+    const startTime = values.startTime
+      ? dayjs(values.startTime, "HH:mm")
+      : null;
     const endTime = values.endTime ? dayjs(values.endTime, "HH:mm") : null;
-    const selectedOption = getTypeLeaveOption.find((option) => option.value === values.type_id);
-    const totalDays = startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
-    const totalHours = startTime && endTime ? endTime.diff(startTime, "hour", true).toFixed(1) : 0;
+    const selectedOption = getTypeLeaveOption.find(
+      (option) => option.value === values.type_id
+    );
+    const selecteddepart = getDepartmentById.find(
+      (option) => option.value === values.depart_id
+    );
+    const totalDays =
+      startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
+    const totalHours =
+      startTime && endTime
+        ? endTime.diff(startTime, "hour", true).toFixed(1)
+        : 0;
     const base: ITypeDataLeave = {
       userId: values.userId,
       firstName: values.firstNameTh,
       lastName: values.lastNameTh,
       positionId: values.posId,
       position: values.position,
+      departId: values.depart_id,
+      departName: selecteddepart ? selecteddepart.label : undefined,
       typeId: values.type_id,
       typeName: selectedOption ? selectedOption.label : undefined,
       startDate: values.startDate,
@@ -157,7 +222,10 @@ export default function Page() {
       ...(values.time_start_check
         ? { leaveHour: 8 }
         : {
-            leaveHour: values.startTime && values.endTime ? Number(totalHours) : Number(totalDays) * 8,
+            leaveHour:
+              values.startTime && values.endTime
+                ? Number(totalHours)
+                : Number(totalDays) * 8,
             startTime: values.startTime,
             endTime: values.endTime,
           }),
@@ -176,6 +244,7 @@ export default function Page() {
       },
       onOk: async () => {
         const result = await dataleaveservice.createDataLeave(condition);
+        console.log(condition);
         if (result) {
           if (attendFiles.length > 0) {
             attendFiles.forEach(async (file) => {
@@ -225,6 +294,7 @@ export default function Page() {
           <CreateOnlineLeave
             getUser={getUser}
             getTypeLeaveOption={getTypeLeaveOption}
+            getDepartmentById={getDepartmentById}
             onfinishCreate={(e: ITypeDataLeaveCreate) => onfinishCreate(e)}
             createdataleaveForm={createdataleaveForm}
             setStartDate={(e: Date) => setStartDate(e)}
@@ -241,7 +311,11 @@ export default function Page() {
           />
         </Col>
         <Col span={12}>
-          <TableOnlineDetailLeave typeLeaveTable={typeLeaveTable} params={params} typeLeaveTableAll={typeLeaveTableAll} />
+          <TableOnlineDetailLeave
+            typeLeaveTable={typeLeaveTable}
+            params={params}
+            typeLeaveTableAll={typeLeaveTableAll}
+          />
         </Col>
       </Row>
     </div>

@@ -53,17 +53,17 @@ export default function Page() {
       okButtonProps: {
         type: "primary",
         style: {
-          backgroundColor: type === "cancel" ? "#ff4d4f" : "#1890ff", 
-          borderColor: type === "cancel" ? "#ff4d4f" : "#1890ff", 
-          color: "white", 
+          backgroundColor: type === "cancel" ? "#ff4d4f" : "#1890ff",
+          borderColor: type === "cancel" ? "#ff4d4f" : "#1890ff",
+          color: "white",
         },
       },
       cancelText: "Cancel",
       cancelButtonProps: {
         style: {
-          backgroundColor: "#f0f0f0", 
-          borderColor: "#d9d9d9", 
-          color: "#000", 
+          backgroundColor: "#f0f0f0",
+          borderColor: "#d9d9d9",
+          color: "#000",
         },
       },
       onOk: async () => {
@@ -79,6 +79,44 @@ export default function Page() {
           setLoading(true);
         }
       },
+      onCancel() {
+        setLoading(true);
+      },
+    });
+  };
+
+  const onFinishDelete = (type: string, id: number) => {
+    Modal.confirm({
+      title: <>{type === "delete" ? "Delete" : "Delete"}</>,
+      icon: <ExclamationCircleFilled />,
+      content: "Are you sure you want to delete this ?",
+      okText: "Confirm",
+      okButtonProps: {
+        type: "primary",
+        style: { backgroundColor: "#ff4d4f", borderColor: "#ff4d4f" },
+      },
+      cancelText: "Cancel",
+      cancelButtonProps: {
+        style: {
+          backgroundColor: "#f0f0f0",
+          borderColor: "#d9d9d9",
+          color: "#000",
+        },
+      },
+      onOk: async () => {
+        try {
+          const res = await dataleaveservice.deleteDataLeave(id);
+          if (res) {
+            message.success("Delete success");
+          } else {
+            message.error("Delete failed");
+          }
+          setLoading(true);
+        } catch (error) {
+          message.error("Delete failed");
+        }
+      },
+
       onCancel() {
         setLoading(true);
       },
@@ -124,6 +162,9 @@ export default function Page() {
             formdetail={formdetail}
             onFinishUpdate={(type: string, id: number) =>
               onFinishUpdate(type, id)
+            }
+            onFinishDelete={(type: string, id: number) =>
+              onFinishDelete(type, id)
             }
             downloadFile={(id: number, filename: string) =>
               downloadFile(id, filename)

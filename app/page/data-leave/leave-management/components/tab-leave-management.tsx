@@ -50,6 +50,7 @@ export const TabeLeavManagement: React.FC<props> = ({
   ];
   return (
     <div>
+      
       <Table
         size="small"
         dataSource={getdataUserByTypeId}

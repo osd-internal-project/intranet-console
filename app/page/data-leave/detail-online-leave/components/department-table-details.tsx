@@ -6,7 +6,7 @@ import { deleteIcon } from "@/components/icon";
 import { PaperClipOutlined } from "@ant-design/icons";
 
 export interface props {
-  dataLeaveUser: ITypeDataLeave[];
+  departmentId: ITypeDataLeave[];
   setOpenModalDetail: (e: boolean) => void;
   openModalDetail: boolean;
   formdetail: any;
@@ -15,11 +15,11 @@ export interface props {
 }
 
 export const DepartmentTableDetail: React.FC<props> = ({
-  dataLeaveUser,
   setOpenModalDetail,
   openModalDetail,
   formdetail,
   onFinishUpdate,
+  departmentId,
   downloadFile,
 }): React.ReactElement => {
   const columns: any = [
@@ -115,7 +115,7 @@ export const DepartmentTableDetail: React.FC<props> = ({
   ];
   return (
     <div>
-      <Table dataSource={dataLeaveUser} columns={columns} size="small" />
+      <Table dataSource={departmentId} columns={columns} size="small" />
       <Modal
         title=""
         open={openModalDetail}

@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../services/index.service";
 import { useSession } from "next-auth/react";
-import { ITypeDataLeave } from "../common";
+import { IDepartMent, ITypeDataLeave } from "../common";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 
 export default function Page() {
@@ -30,6 +30,10 @@ export default function Page() {
   const { data: session } = useSession();
   const [loading, setLoading] = useState<boolean>(true);
   const [dataLeaveUser, setDataLeaveUser] = useState<ITypeDataLeave[]>([]);
+  const [departmentId, setDataLeaveDepartmentId] = useState<ITypeDataLeave[]>(
+    []
+  );
+  const [dataId, setdataId] = useState<ITypeDataLeave[]>([]);
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
   const [formdetail] = Form.useForm();
 
@@ -69,7 +73,7 @@ export default function Page() {
       label: "Department Detail",
       children: (
         <DepartmentTableDetail
-          dataLeaveUser={dataLeaveUser}
+          departmentId={departmentId}
           setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
           openModalDetail={openModalDetail}
           formdetail={formdetail}
@@ -87,7 +91,8 @@ export default function Page() {
       label: "Department Calendar",
       children: (
         <DepartmentCalendarDetail
-          dataLeaveUser={dataLeaveUser}
+      
+          departmentId={departmentId}
           downloadFile={(id: number, filename: string) =>
             downloadFile(id, filename)
           }
@@ -104,8 +109,21 @@ export default function Page() {
     const res = await dataleaveservice.getdataLeaveByuserID(
       session?.user.userId as string
     );
+    const dataDepartId = session?.user.departmentId as number;
+
+    const resDataLeaveDepartId = await dataleaveservice.getdataLeaveDepartById(
+      dataDepartId
+    );
+
+    setDataLeaveDepartmentId(resDataLeaveDepartId);
     setDataLeaveUser(res);
     setLoading(false);
+  };
+
+  const dataDepartId = (m: ITypeDataLeave) => {
+    const data = m.departId as number;
+    const resDataLeaveDepartId = dataleaveservice.getdataLeaveDepartId(data);
+    // setdataId(resDataLeaveDepartId);
   };
 
   const onFinishUpdate = (type: string, id: number) => {

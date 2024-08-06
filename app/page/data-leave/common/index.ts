@@ -118,6 +118,7 @@ export interface ITpyeUser {
   userId: string;
   username: string;
   typeid?: number;
+  
 }
 
 export interface ITypeDataLeave {

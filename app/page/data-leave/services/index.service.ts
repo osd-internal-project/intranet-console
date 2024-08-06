@@ -82,6 +82,37 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    getdataLeaveDepartById: async (dataDepartId: number) => {
+      const condition = {
+        where: { departId: dataDepartId },
+        orderBy: { id: "asc" },
+      };
+      return await axiosInstance
+        .post(`${baseUrlDataLeave}/condition`, {
+          condition: condition,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
+    getdataLeaveDepartId: async (data: number) => {
+      const departId = {
+        where: { data: data },
+      };
+      return await axiosInstance
+        .post(`${baseUrlDataLeave}/departId`, {
+          departId: departId,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
     getdataUserByTypeLeaveId: async (id: ITpyeUser) => {
       const condition = {
         where: {

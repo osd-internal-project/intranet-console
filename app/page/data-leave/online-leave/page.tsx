@@ -71,6 +71,8 @@ export default function Page() {
     lengthTime: 0,
   });
 
+  
+
   const [createdataleaveForm] = useForm();
 
   useEffect(() => {
@@ -99,9 +101,6 @@ export default function Page() {
     const departmentOptions = resTableDepartMent.map((event: IDepartMent) => {
       return { value: event.departId, label: event.departName };
     });
-    const resDataDepartmentId = await dataleaveservice.getdataDepartmentId();
-    // console.log(resDataDepartmentId);
-
     setResDepartMent(departmentOptions);
     setDataLeaveByUserId(dataLeaveUserId);
     setLoading(false);

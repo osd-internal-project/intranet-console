@@ -10,6 +10,7 @@ declare module "next-auth" {
       phoneNumber: string;
       email: string;
       ownerGroup: string;
+      departmentId: number;
     };
     rulelist: string[];
     grouplist: string[];

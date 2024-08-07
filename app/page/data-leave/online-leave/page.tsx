@@ -62,7 +62,7 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(true);
   const [params, setParams] = useState<any>({
     typeId: null,
-    departId: null,
+    // departId: null,
     startDate: null,
     endDate: null,
     startTime: null,
@@ -70,8 +70,6 @@ export default function Page() {
     lengthDate: 0,
     lengthTime: 0,
   });
-
-  
 
   const [createdataleaveForm] = useForm();
 
@@ -124,9 +122,9 @@ export default function Page() {
     if (type === "type") {
       setParams((e: any) => ({ ...e, typeId: value }));
     }
-    if (type === "depart") {
-      setParams((e: any) => ({ ...e, departId: value }));
-    }
+    // if (type === "depart") {
+    //   setParams((e: any) => ({ ...e, departId: value }));
+    // }
     if (type === "startDate") {
       setParams((e: any) => ({ ...e, startDate: value }));
     } else if (type === "endDate" && params.startDate) {
@@ -175,7 +173,31 @@ export default function Page() {
     return setAttendFiles(newFileList);
   };
 
-  const onfinishCreate = (values: ITypeDataLeaveCreate) => {
+  const checkMaCarBookConflict = async (
+    userId: string,
+    startDate: Date,
+    endDate: Date
+  ) => {
+    const existingDataLeave = await dataleaveservice.getdataLeaveAll();
+
+    return existingDataLeave.some((record: any) => {
+      return (
+        record.userId === userId &&
+        ((new Date(startDate) >= new Date(record.startDate) &&
+          new Date(startDate) < new Date(record.endDate)) ||
+          (new Date(endDate) > new Date(record.startDate) &&
+            new Date(endDate) <= new Date(record.endDate)) ||
+          (new Date(startDate) <= new Date(record.startDate) &&
+            new Date(endDate) >= new Date(record.endDate)))
+      );
+    });
+  };
+
+  const onfinishCreate = async (values: ITypeDataLeaveCreate) => {
+    const userId = values.userId as string;
+    const leaveStartDate = values.startDate;
+    const leaveEndDate = values.endDate;
+
     const dataLeaveByUserId = dataLeaveUserById;
     const startDate = values.startDate
       ? dayjs(values.startDate).startOf("day")
@@ -197,6 +219,21 @@ export default function Page() {
       startTime && endTime
         ? endTime.diff(startTime, "hour", true).toFixed(1)
         : 0;
+
+    const dataLeaveStartDate = values.startDate as Date;
+    const dataLeaveEndDate = values.endDate as Date;
+    const today = new Date();
+    if (new Date(dataLeaveStartDate) < today) {
+      message.error("ไม่สามารถลาในวันที่ผ่านมาได้");
+
+      return;
+    }
+    if (new Date(dataLeaveEndDate) < new Date(dataLeaveStartDate)) {
+      message.error("วันที่สิ้นสุดการลาต้องหลังวันที่เริ่มการลา");
+
+      return;
+    }
+
     const base: ITypeDataLeave = {
       userId: values.userId,
       firstName: values.firstNameTh,
@@ -216,56 +253,70 @@ export default function Page() {
       ownerName: values.ownerName,
     };
 
-    const condition: ITypeDataLeave = {
-      ...base,
-      ...(values.time_start_check
-        ? { leaveHour: 8 }
-        : {
-            leaveHour:
-              values.startTime && values.endTime
-                ? Number(totalHours)
-                : Number(totalDays) * 8,
-            startTime: values.startTime,
-            endTime: values.endTime,
-          }),
-    };
-    Modal.confirm({
-      title: "Add ",
-      icon: <ExclamationCircleFilled />,
-      content: "Are you sure you want to add this ?",
-      okText: "Confirm",
-      cancelText: "Cancel",
-      okButtonProps: {
-        style: {
-          backgroundColor: "#00a1df",
-          borderColor: "#00a1df",
+    try {
+      const conflict = await checkMaCarBookConflict(
+        userId,
+        leaveStartDate,
+        leaveEndDate
+      );
+      if (conflict) {
+        message.error("คุณลาในช่วงเวลานี้แล้ว กรุณาเลือกช่วงเวลาใหม่.");
+
+        return;
+      }
+      const condition: ITypeDataLeave = {
+        ...base,
+        ...(values.time_start_check
+          ? { leaveHour: 8 }
+          : {
+              leaveHour:
+                values.startTime && values.endTime
+                  ? Number(totalHours)
+                  : Number(totalDays) * 8,
+              startTime: values.startTime,
+              endTime: values.endTime,
+            }),
+      };
+
+      Modal.confirm({
+        title: "Add ",
+        icon: <ExclamationCircleFilled />,
+        content: "Are you sure you want to add this ?",
+        okText: "Confirm",
+        cancelText: "Cancel",
+        okButtonProps: {
+          style: {
+            backgroundColor: "#00a1df",
+            borderColor: "#00a1df",
+          },
         },
-      },
-      onOk: async () => {
-        const result = await dataleaveservice.createDataLeave(condition);
-        console.log(condition);
-        if (result) {
-          if (attendFiles.length > 0) {
-            attendFiles.forEach(async (file) => {
-              const formData: any = new FormData();
-              formData.append("type", "attend");
-              formData.append("files", file.originFileObj);
-              await dataleaveservice.uploadFiles(result.id, formData);
-            });
+
+        onOk: async () => {
+          const result = await dataleaveservice.createDataLeave(condition);
+          console.log(condition);
+          if (result) {
+            if (attendFiles.length > 0) {
+              attendFiles.forEach(async (file) => {
+                const formData: any = new FormData();
+                formData.append("type", "attend");
+                formData.append("files", file.originFileObj);
+                await dataleaveservice.uploadFiles(result.id, formData);
+              });
+            }
+            message.success(`Add success`);
+            createdataleaveForm.resetFields();
+            setStartDate(undefined);
+            setEndDate(undefined);
+            setCheckSwitch(false);
+            setLoading(true);
+            router.push("/page/data-leave/detail-online-leave");
           }
-          message.success(`Add success`);
-          createdataleaveForm.resetFields();
-          setStartDate(undefined);
-          setEndDate(undefined);
-          setCheckSwitch(false);
-          setLoading(true);
-          router.push("/page/data-leave/detail-online-leave");
-        }
-      },
-      onCancel() {
-        setLoading(false);
-      },
-    });
+        },
+        onCancel() {
+          setLoading(false);
+        },
+      });
+    } catch (err) {}
   };
 
   return getUserOwner ? (

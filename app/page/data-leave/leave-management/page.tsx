@@ -49,7 +49,7 @@ const page = () => {
     });
     setdataTypeLeave(resTypeLeave);
     setdataUser(options);
-    setLoading(false);
+    setLoading(true);
   };
 
   useEffect(() => {
@@ -64,7 +64,7 @@ const page = () => {
       }
     );
     setdataUserByTypeId(lasresult);
-    setLoading(false);
+    setLoading(true);
   };
 
   function handdleChangeTab(typeId: string): void {
@@ -100,12 +100,12 @@ const page = () => {
         }
       },
       onCancel() {
-        setLoading(false);
+        setLoading(true);
       },
     });
   };
 
-  const onFinishDel = (event: number) => {
+  const onFinishDel = (e: number) => {
     Modal.confirm({
       title: "Delete this unit",
       icon: <ExclamationCircleFilled />,
@@ -115,7 +115,7 @@ const page = () => {
       cancelText: "Cancel",
       onOk: async () => {
         const dataResult = await dataleaveserviceIntra.deleteTypeLeaveDisabled(
-          event
+          e
         );
         if (dataResult) {
           message.success(`Delete success`);
@@ -123,7 +123,7 @@ const page = () => {
         }
       },
       onCancel() {
-        setLoading(false);
+        setLoading(true);
       },
     });
   };

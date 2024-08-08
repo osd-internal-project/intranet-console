@@ -11,7 +11,12 @@ import {
   Tabs,
   message,
 } from "antd";
-import { ISelect, ITpyeUser, ITypetypeleave } from "../common";
+import {
+  ISelect,
+  ITpyeUser,
+  ITypetypeleave,
+  ITypeDataleaveMap,
+} from "../common";
 import {
   useAxiosIntranet,
   useAxiosUser,
@@ -32,6 +37,9 @@ const page = () => {
   const [getLoading, setLoading] = useState<boolean>(true);
   const [getSearch, setSearch] = useState<any>();
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [dataTypeLeaveMap, setDataTypeLeaveMap] = useState<ITypeDataleaveMap[]>(
+    []
+  );
   const [formcreate] = Form.useForm();
 
   useEffect(() => {
@@ -47,6 +55,8 @@ const page = () => {
         label: `${event.firstNameTh} ${event.lastNameTh}`,
       };
     });
+    const TypeLeaveMap = await dataleaveserviceIntra.getdataTypeLeaveMap();
+    setDataTypeLeaveMap(TypeLeaveMap);
     setdataTypeLeave(resTypeLeave);
     setdataUser(options);
     setLoading(true);
@@ -59,10 +69,15 @@ const page = () => {
   const loadDataUser = async () => {
     const res = await dataleaveserviceIntra.getdataUserByTypeLeaveId(getSearch);
     const lasresult = res.typeLeaveDisabledMap.map(
-      (event: { user: ITpyeUser }) => {
-        return event.user;
+      (event: { id: ITypeDataleaveMap; user: ITpyeUser }) => {
+        return {
+          user: event.user, 
+          id: event.id,     
+        };
       }
     );
+    console.log(lasresult);
+
     setdataUserByTypeId(lasresult);
     setLoading(true);
   };
@@ -105,7 +120,7 @@ const page = () => {
     });
   };
 
-  const onFinishDel = (e: number) => {
+  const onFinishDel = (id: number) => {
     Modal.confirm({
       title: "Delete this unit",
       icon: <ExclamationCircleFilled />,
@@ -115,7 +130,7 @@ const page = () => {
       cancelText: "Cancel",
       onOk: async () => {
         const dataResult = await dataleaveserviceIntra.deleteTypeLeaveDisabled(
-          e
+          id
         );
         if (dataResult) {
           message.success(`Delete success`);
@@ -167,6 +182,7 @@ const page = () => {
                     />
                     <TabeLeavManagement
                       getdataUserByTypeId={getdataUserByTypeId}
+                      dataTypeLeaveMap={dataTypeLeaveMap}
                       onFinishDel={(e: number) => onFinishDel(e)}
                     />
                   </div>

@@ -98,21 +98,21 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getdataLeaveDepartId: async (data: number) => {
-      const departId = {
-        where: { data: data },
-      };
-      return await axiosInstance
-        .post(`${baseUrlDataLeave}/departId`, {
-          departId: departId,
-        })
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          return [];
-        });
-    },
+    // getdataLeaveDepartId: async (data: number) => {
+    //   const departId = {
+    //     where: { data: data },
+    //   };
+    //   return await axiosInstance
+    //     .post(`${baseUrlDataLeave}/departId`, {
+    //       departId: departId,
+    //     })
+    //     .then((res) => {
+    //       return res.data;
+    //     })
+    //     .catch((err) => {
+    //       return [];
+    //     });
+    // },
     getdataUserByTypeLeaveId: async (id: ITpyeUser) => {
       const condition = {
         where: {
@@ -121,6 +121,7 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
         select: {
           typeLeaveDisabledMap: {
             select: {
+              id: true,
               user: true,
             },
           },
@@ -187,7 +188,21 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-
+    getdataTypeLeaveMap: async () => {
+      const condition = {
+        // orderBy: { id: "asc" },
+      };
+      return await axiosInstance
+        .post(`${baseUrlTypeleaveMap}/condition`, {
+          condition: condition,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
     createTypeLeaveDisabled: async (event: ITpyeUser) => {
       const condition = {
         data: {
@@ -205,6 +220,7 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+
     createDataLeave: async (event: ITypeDataLeave) => {
       const condition = {
         data: {
@@ -262,13 +278,15 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
         })
         .catch((err) => console.log(err));
     },
-    deleteTypeLeaveDisabled: async (event: number) => {
+    // deleteTypeLeaveDisabled: async (event: number) => {
+    deleteTypeLeaveDisabled: async (id: number) => {
       return await axiosInstance
-        .delete(`${baseUrlTypeleaveMap}/${event}`)
+        .delete(`${baseUrlTypeleaveMap}/${id}`)
         .then((res) => {
           return res.data;
         })
         .catch((err) => {
+          console.log(err);
           return [];
         });
     },

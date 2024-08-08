@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect } from "react";
 import moment from "moment";
 import {
   Button,
@@ -12,7 +12,8 @@ import {
   Tabs,
   TabsProps,
   Table,
-  TableProps,message,
+  TableProps,
+  message,
 } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManagehandbookFileServices } from "../service/handbook.service";
@@ -32,6 +33,7 @@ const Tablehandbook: React.FC = () => {
   const managehandbookFileServices = ManagehandbookFileServices(intraAuth);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [form] = useForm();
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetchDataHandbook();
@@ -39,7 +41,8 @@ const Tablehandbook: React.FC = () => {
 
   const fetchDataHandbook = async () => {
     try {
-      const maresponse = await managehandbookFileServices.gethandbookFileQuery();
+      const maresponse =
+        await managehandbookFileServices.gethandbookFileQuery();
       const handbookFile: handbookFile[] = maresponse.map(
         (item: any, index: number) => ({
           ...item,
@@ -52,6 +55,15 @@ const Tablehandbook: React.FC = () => {
       message.error("Failed to fetch car data");
     }
   };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredData = handbookFile.filter((handbookFile) =>
+    handbookFile.fileName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const columns: TableProps<handbookFile>["columns"] = [
     {
       title: "ลำดับ",
@@ -87,9 +99,21 @@ const Tablehandbook: React.FC = () => {
   ];
   return (
     <div>
-      ยังไม่เสร็จเด้อวัยรุ่น
+      <div style={{ fontSize: "16px" }}>
+        ค้นหาข่าวสาร :
+        <Input
+          type="text"
+          value={searchTerm}
+          onChange={handleInputChange}
+          placeholder="ค้นหาข่าวสาร"
+          style={{
+            margin: "10px 0 10px 10px",
+            width: "300px",
+          }}
+        />
+      </div>
       <Table
-        dataSource={handbookFile}
+        dataSource={filteredData}
         columns={columns}
         rowKey="id"
         bordered

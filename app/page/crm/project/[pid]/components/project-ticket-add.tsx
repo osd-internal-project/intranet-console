@@ -19,7 +19,7 @@ import {
   ITSelectUsers,
   ITTicketConfigs,
 } from "../../common";
-import { CloseOutlined, UploadOutlined } from "@ant-design/icons";
+import {  UploadOutlined } from "@ant-design/icons";
 
 import { RcFile } from "antd/es/upload";
 import { useForm } from "antd/es/form/Form";

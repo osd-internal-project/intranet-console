@@ -1,61 +1,72 @@
-// ImageUpload.tsx
-import React, { useCallback, useState } from "react";
-import { useDropzone } from "react-dropzone";
+import React, { useState } from 'react';
+import { UploadOutlined } from '@ant-design/icons';
+import { Button, message, Upload } from 'antd';
+import type { GetProp, UploadFile, UploadProps } from 'antd';
 
-interface ImageUploadProps {
-  onFilesUpload: (files: File[]) => void;
-}
+type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
-const ImageUpload: React.FC<ImageUploadProps> = ({ onFilesUpload }) => {
-  const [previews, setPreviews] = useState<string[]>([]);
+const App: React.FC = () => {
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [uploading, setUploading] = useState(false);
 
-  const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      if (acceptedFiles.length > 3) {
-        alert("You can only upload up to 3 images at a time.");
-        return;
-      }
-      const newPreviews = acceptedFiles.map((file) =>
-        URL.createObjectURL(file)
-      );
-      setPreviews(newPreviews);
-      onFilesUpload(acceptedFiles);
+  const handleUpload = () => {
+    const formData = new FormData();
+    fileList.forEach((file) => {
+      formData.append('files[]', file as FileType);
+    });
+    setUploading(true);
+    // You can use any AJAX library you like
+    fetch('https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload', {
+      method: 'POST',
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then(() => {
+        setFileList([]);
+        message.success('upload successfully.');
+      })
+      .catch(() => {
+        message.error('upload failed.');
+      })
+      .finally(() => {
+        setUploading(false);
+      });
+  };
+
+  const props: UploadProps = {
+    onRemove: (file) => {
+      const index = fileList.indexOf(file);
+      const newFileList = fileList.slice();
+      newFileList.splice(index, 1);
+      setFileList(newFileList);
     },
-    [onFilesUpload]
-  );
-
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    // accept: "image/*",
-    multiple: true,
-  });
+    beforeUpload: (file) => {
+      if (fileList.length >= 3) {
+        message.error('You can only upload up to 3 files.');
+        return false;
+      }
+      setFileList([...fileList, file]);
+      return false;
+    },
+    fileList,
+  };
 
   return (
-    <div 
-      {...getRootProps()}
-      style={{margin:"10px 0 0 10px ",
-        border: "1px dashed gray",
-        padding: "30px",
-        textAlign: "center",
-      }}
-    >
-      <input {...getInputProps()} />
-      {previews.length > 0 ? (
-        <div>
-          {previews.map((preview, index) => (
-            <img
-              key={index}
-              src={preview}
-              alt={`Preview ${index + 1}`}
-              style={{ maxWidth: "100%", maxHeight: "150px", margin: "10px" }}
-            />
-          ))}
-        </div>
-      ) : (
-        <p>Drag 'n' drop up to 3 images here, or click to select them</p>
-      )}
-    </div>
+    <>
+      <Upload {...props}>
+        <Button icon={<UploadOutlined />}>Select File</Button>
+      </Upload>
+      <Button
+        type="primary"
+        onClick={handleUpload}
+        disabled={fileList.length === 0}
+        loading={uploading}
+        style={{ marginTop: 16 }}
+      >
+        {uploading ? 'Uploading' : 'Start Upload'}
+      </Button>
+    </>
   );
 };
 
-export default ImageUpload;
+export default App;

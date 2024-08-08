@@ -1,84 +1,12 @@
 import { AxiosInstance } from "axios";
 
 export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
-  // const baseUrlApihandbookFile = "/handbookFile";
   const baseUrlApiinformationNews = "/informationNews";
   const baseUrlApinewsImage = "/newsImage";
   const baseUrlApinewsType = "/newsType";
 
   return {
-    // gethandbookFileQuery: async () => {
-    //   return await axiosInstance
-    //     .get(`${baseUrlApihandbookFile}`)
-    //     .then((res) => {
-    //       return res.data;
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //       return [];
-    //     });
-    // },
-    // findhandbookFile: async (skip: number, take: number) => {
-    //   return await axiosInstance
-    //     .get(`${baseUrlApihandbookFile}?take=${take}&skip=${skip}`)
-    //     .then((res) => {
-    //       return res.data;
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //       return [];
-    //     });
-    // },
-    // findOnehandbookFile: async (body: any) => {
-    //   return await axiosInstance
-    //     .get(`${baseUrlApihandbookFile}/${body}`)
-    //     .then((res) => {
-    //       return res.data;
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //       return [];
-    //     });
-    // },
-
-    // createhandbookFile: async (body: any) => {
-    //   return await axiosInstance
-    //     .post(`${baseUrlApihandbookFile}`, body)
-    //     .then((res) => {
-    //       return res.data;
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //       return [];
-    //     });
-    // },
-
-    // updatehandbookFile: async (body: any) => {
-    //   return await axiosInstance
-    //     .patch(`${baseUrlApihandbookFile}/${body.id}`, body)
-    //     .then((res) => {
-    //       return res.data;
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //       return [];
-    //     });
-    // },
-    // deletehandbookFile: async (carId: any) => {
-    //   console.log(carId);
-
-    //   return await axiosInstance
-    //     .delete(`${baseUrlApihandbookFile}/${carId}`)
-    //     .then((res) => {
-    //       return res.data;
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //       return [];
-    //     });
-    // },
-
-
+    
     getinformationNewsQuery: async () => {
       return await axiosInstance
         .get(`${baseUrlApiinformationNews}`)
@@ -92,7 +20,7 @@ export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
     },
     updateinformationNews: async (body: any) => {
       return await axiosInstance
-        .patch(`${baseUrlApiinformationNews}/${body.carId}`, body)
+        .patch(`${baseUrlApiinformationNews}/${body.newsId}`, body)
         .then((res) => {
           return res.data;
         })
@@ -185,9 +113,9 @@ export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    updatenewsType: async (carWrapupId: string, body: any) => {
+    updatenewsType: async (body: any) => {
       return await axiosInstance
-        .patch(`${baseUrlApinewsType}/${carWrapupId}`, body)
+        .patch(`${baseUrlApinewsType}/${body.idType}`, body)
         .then((res) => {
           return res.data;
         })
@@ -207,10 +135,10 @@ export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    deletenewsType: async (carId: any) => {
-      console.log(`${baseUrlApinewsType}/${carId}`);
+    deletenewsType: async (idType: any) => {
+      console.log(`${baseUrlApinewsType}/${idType}`);
       return await axiosInstance
-        .delete(`${baseUrlApinewsType}/${carId}`)
+        .delete(`${baseUrlApinewsType}/${idType}`)
         .then((res) => {
           return res.data;
         })

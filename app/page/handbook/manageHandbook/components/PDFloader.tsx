@@ -2,7 +2,20 @@ import React, { useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import { Viewer } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
-
+import {
+  Button,
+  Row,
+  Col,
+  Modal,
+  Input,
+  Card,
+  Pagination,
+  Tabs,
+  TabsProps,
+  Table,
+  TableProps,
+  message,
+} from "antd";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const PdfViewer: React.FC = () => {
@@ -21,6 +34,7 @@ const PdfViewer: React.FC = () => {
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
+    message.success("UPLOAD สำเร็จสำเร็จ")
   };
 
   const downloadFile = () => {
@@ -43,16 +57,16 @@ const PdfViewer: React.FC = () => {
             <Document
               file={fileUrl}
               onLoadSuccess={onDocumentLoadSuccess}
-              onLoadError={(error) =>
-                console.error("Error loading PDF:", error)
-              }
+              onLoadError={message.error("UPLOAD ไม่สำเร็จ")}
             >
               {Array.from(new Array(numPages), (el, index) => (
                 <Page key={`page_${index + 1}`} pageNumber={index + 1} />
               ))}
             </Document>
           </div>
-          <button onClick={downloadFile}>Download PDF</button>
+          <Button type="primary" onClick={downloadFile}>
+            Download PDF
+          </Button>
         </>
       )}
     </div>

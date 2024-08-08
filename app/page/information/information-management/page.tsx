@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { AntDesignOutlined } from "@ant-design/icons";
 import type { TableProps, FormProps } from "antd";
-import ImageUpload from "./components/ImageUpload";
 import Creaatenews from "./components/createnews"
 import Newoption from "./components/newoption";
 import Tablenews from "./components/tableNews"
@@ -27,9 +26,6 @@ import {
   Tabs,
 } from "antd";
 const Infomation_management: React.FC = () => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [submitLoading, setSubmitLoading] = useState(true);
-
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -46,6 +42,7 @@ const Infomation_management: React.FC = () => {
       label: "ตารางข้อมูลข่าวสาร",
       children: <Tablenews/>,
     },
+    
   ];
 
   return (

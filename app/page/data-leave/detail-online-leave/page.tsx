@@ -119,13 +119,6 @@ export default function Page() {
     setDataLeaveUser(res);
     setLoading(false);
   };
-
-  const dataDepartId = (m: ITypeDataLeave) => {
-    const data = m.departId as number;
-    const resDataLeaveDepartId = dataleaveservice.getdataLeaveDepartId(data);
-    // setdataId(resDataLeaveDepartId);
-  };
-
   const onFinishUpdate = (type: string, id: number) => {
     Modal.confirm({
       title: <>{type === "cancel" ? "Cancel " : "Approved"}</>,

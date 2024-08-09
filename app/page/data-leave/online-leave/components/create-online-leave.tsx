@@ -17,14 +17,14 @@ import {
   IDataUser,
   IDepartMent,
   ISelect,
-  ISelectDepartMent,
+  ISelectDepartment,
   ITypeDataLeaveCreate,
 } from "../../common";
 import { RcFile } from "antd/es/upload";
 export interface props {
   getUser?: IDataUser | null;
   getTypeLeaveOption: ISelect[];
-  getDepartmentById: ISelectDepartMent[];
+  getDepartmentById: ISelectDepartment[];
   onfinishCreate: (values: ITypeDataLeaveCreate) => void;
   createdataleaveForm: any;
   setStartDate: (values: Date) => void;

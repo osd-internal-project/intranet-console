@@ -23,7 +23,7 @@ import {
   ITypetypeleave,
   ITypeDataLeaveCreate,
   IDepartMent,
-  ISelectDepartMent,
+  ISelectDepartment,
 } from "../common";
 import { CreateOnlineLeave } from "./components/create-online-leave";
 import { TableOnlineDetailLeave } from "./components/table-online-detail-leave";
@@ -52,7 +52,7 @@ export default function Page() {
   const [dataLeaveUserById, setDataLeaveByUserId] = useState<ITypetypeleave[]>(
     []
   );
-  const [getDepartmentById, setResDepartMent] = useState<ISelectDepartMent[]>(
+  const [getDepartmentById, setResDepartMent] = useState<ISelectDepartment[]>(
     []
   );
   const [getStartDate, setStartDate] = useState<Date>();

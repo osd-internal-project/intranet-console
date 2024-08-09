@@ -9,7 +9,6 @@ export interface props {
   setOpenModal: (event: boolean) => void;
   openModal: boolean;
   formcreate: any;
-  
 }
 
 export const CreateLeaveManagement: React.FC<props> = ({

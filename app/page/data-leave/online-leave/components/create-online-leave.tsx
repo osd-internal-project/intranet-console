@@ -72,9 +72,6 @@ export const CreateOnlineLeave: React.FC<props> = ({
     getdatauser();
   }, [getUserOwner]);
 
-  // console.log(getDepartmentById);
-  // console.log(getTypeLeaveOption);
-
   return (
     <div>
       <Card className="w-full grid grid-cols-1 gap-y-2 mt-2">

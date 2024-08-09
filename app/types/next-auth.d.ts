@@ -11,11 +11,15 @@ declare module "next-auth" {
       email: string;
       ownerGroup: string;
       departmentId: number;
+      typeLeaveDisabledMap: [ItypeLeaveDisabledMap];
     };
     rulelist: string[];
     grouplist: string[];
     accessToken: string;
     refreshToken: string;
     error?: string;
+  }
+  interface ItypeLeaveDisabledMap {
+    userId: number;
   }
 }

@@ -94,6 +94,8 @@ const page = () => {
   }
 
   const onFinishCreate = (event: ITpyeUser) => {
+    console.log(event);
+
     Modal.confirm({
       title: "Add ",
       icon: <ExclamationCircleFilled />,

@@ -24,6 +24,8 @@ import {
   ITypeDataLeaveCreate,
   IDepartMent,
   ISelectDepartment,
+  ITypeDataleaveMap,
+  ITpyeUser,
 } from "../common";
 import { CreateOnlineLeave } from "./components/create-online-leave";
 import { TableOnlineDetailLeave } from "./components/table-online-detail-leave";
@@ -52,6 +54,9 @@ export default function Page() {
   const [dataLeaveUserById, setDataLeaveByUserId] = useState<ITypetypeleave[]>(
     []
   );
+  const [dataexistingLeave, setDataexistingLeave] = useState<ITypetypeleave[]>(
+    []
+  );
   const [getDepartmentById, setResDepartMent] = useState<ISelectDepartment[]>(
     []
   );
@@ -70,7 +75,6 @@ export default function Page() {
     lengthDate: 0,
     lengthTime: 0,
   });
-
   const [createdataleaveForm] = useForm();
 
   useEffect(() => {
@@ -207,6 +211,23 @@ export default function Page() {
     return false;
   };
 
+  const checkLeaveCancel = async (type_id: number) => {
+    const user_id = session?.user.typeLeaveDisabledMap[0].userId;
+    const existingLeave = await dataleaveservice.getdataTypeLeaveMap(user_id);
+    return existingLeave.some((record: any) => {
+      return record.masterTypeleaveId === type_id;
+    });
+  };
+
+  const checkDataLeaveCancel = async (type_id: number) => {
+    const conflict = await checkLeaveCancel(type_id);
+    if (conflict) {
+      message.error("คุณไม่สามารถลาประเภทลานี้ได้!");
+      return true;
+    }
+    return false;
+  };
+
   const onfinishCreate = async (values: ITypeDataLeaveCreate) => {
     const userId = values.userId as string;
     const leaveStartDate = values.startDate as Date;
@@ -272,9 +293,19 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
           };
+
+          if (await checkDataLeaveCancel(type_id)) {
+            return;
+          }
+
           try {
-            if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate))
+            if (
+              await checkLeaveConflict(userId, leaveStartDate, leaveEndDate)
+            ) {
+              console.log("เช็คลาซั้า");
+
               return;
+            }
 
             const condition: ITypeDataLeave = {
               ...base,
@@ -305,7 +336,7 @@ export default function Page() {
                 const result = await dataleaveservice.createDataLeave(
                   condition
                 );
-                console.log(condition);
+
                 if (result) {
                   if (attendFiles.length > 0) {
                     attendFiles.forEach(async (file) => {
@@ -369,6 +400,11 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
           };
+
+          if (await checkDataLeaveCancel(type_id)) {
+            return;
+          }
+
           try {
             if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate))
               return;
@@ -461,6 +497,11 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
           };
+
+          if (await checkDataLeaveCancel(type_id)) {
+            return;
+          }
+
           try {
             if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate))
               return;
@@ -553,6 +594,11 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
           };
+
+          if (await checkDataLeaveCancel(type_id)) {
+            return;
+          }
+
           try {
             if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate))
               return;
@@ -646,6 +692,11 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
           };
+
+          if (await checkDataLeaveCancel(type_id)) {
+            return;
+          }
+
           try {
             if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate))
               return;

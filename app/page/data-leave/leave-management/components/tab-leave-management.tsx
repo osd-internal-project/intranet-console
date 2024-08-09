@@ -6,14 +6,14 @@ import { deleteIcon } from "@/components/icon";
 
 export interface props {
   getdataUserByTypeId: ITpyeUser[];
-  dataTypeLeaveMap: ITypeDataleaveMap[];
   onFinishDel: (event: number) => void;
+ 
 }
 
 export const TabeLeavManagement: React.FC<props> = ({
   getdataUserByTypeId,
-  dataTypeLeaveMap,
   onFinishDel,
+ 
 }): React.ReactElement => {
   const columns: any = [
     {
@@ -35,7 +35,6 @@ export const TabeLeavManagement: React.FC<props> = ({
     {
       key: "id",
       title: "ACTIVE",
-      // dataIndex: "id",
       align: "center",
       width: "100px",
       render: (row: any, event: number, index: number) => {
@@ -47,8 +46,6 @@ export const TabeLeavManagement: React.FC<props> = ({
                 danger
                 onClick={() => {
                   onFinishDel(row.id);
-                  console.log(row.id);
-                  // console.log(row);
                 }}
               >
                 {deleteIcon}

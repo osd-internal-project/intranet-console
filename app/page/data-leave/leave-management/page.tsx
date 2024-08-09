@@ -8,6 +8,7 @@ import {
   Form,
   Modal,
   Row,
+  Spin,
   Tabs,
   message,
 } from "antd";
@@ -35,61 +36,63 @@ const page = () => {
   const [getdataUser, setdataUser] = useState<ISelect[]>([]);
   const [getdataUserByTypeId, setdataUserByTypeId] = useState<ITpyeUser[]>([]);
   const [getLoading, setLoading] = useState<boolean>(true);
-  const [getSearch, setSearch] = useState<any>();
-  const [openModal, setOpenModal] = useState<boolean>(false);
-  const [dataTypeLeaveMap, setDataTypeLeaveMap] = useState<ITypeDataleaveMap[]>(
-    []
+  const [getSearch, setSearch] = useState<{ typeid: string } | undefined>(
+    undefined
   );
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const [formcreate] = Form.useForm();
 
   useEffect(() => {
-    if (getLoading) loadDataTypeLeave();
+    if (getLoading) {
+      loadDataTypeLeave();
+    }
   }, [getLoading]);
 
   const loadDataTypeLeave = async () => {
-    const resTypeLeave = await dataleaveserviceIntra.getdataTypeLeaveAll({});
-    const resUser = await dataleaveserviceUser.getdataUserAll();
-    const options = resUser.map((event: ITpyeUser) => {
-      return {
+    try {
+      const resTypeLeave = await dataleaveserviceIntra.getdataTypeLeaveAll({});
+      const resUser = await dataleaveserviceUser.getdataUserAll();
+      const options = resUser.map((event: ITpyeUser) => ({
         value: event.id,
         label: `${event.firstNameTh} ${event.lastNameTh}`,
-      };
-    });
-    const TypeLeaveMap = await dataleaveserviceIntra.getdataTypeLeaveMap();
-    setDataTypeLeaveMap(TypeLeaveMap);
-    setdataTypeLeave(resTypeLeave);
-    setdataUser(options);
-    setLoading(true);
+      }));
+      setdataTypeLeave(resTypeLeave);
+      setSearch({ typeid: options[0].value });
+      setdataUser(options);
+    } catch (error) {
+      console.error("Error loading type leave or user data:", error);
+    } finally {
+    }
   };
 
   useEffect(() => {
-    if (getSearch) loadDataUser();
-  }, [getSearch, getLoading]);
+    if (getSearch) {
+      loadDataUser(getSearch);
+    } else {
+      setdataUserByTypeId([]);
+    }
+  }, [getSearch]);
 
-  const loadDataUser = async () => {
-    const res = await dataleaveserviceIntra.getdataUserByTypeLeaveId(getSearch);
-    const lasresult = res.typeLeaveDisabledMap.map(
-      (event: { id: ITypeDataleaveMap; user: ITpyeUser }) => {
-        return {
-          user: event.user, 
-          id: event.id,     
-        };
-      }
-    );
-    console.log(lasresult);
-
-    setdataUserByTypeId(lasresult);
-    setLoading(true);
+  const loadDataUser = async (search: { typeid: string }) => {
+    try {
+      const res = await dataleaveserviceIntra.getdataUserByTypeLeaveId(search);
+      const lasresult = res.typeLeaveDisabledMap.map(
+        (event: { id: ITypeDataleaveMap; user: ITpyeUser }) => ({
+          user: event.user,
+          id: event.id,
+        })
+      );
+      setdataUserByTypeId(lasresult);
+    } catch (error) {
+      console.error("Error loading user data by type:", error);
+    } finally {
+    }
   };
 
-  function handdleChangeTab(typeId: string): void {
-    if (typeId === "0") {
-      setSearch({ typeid: {} });
-    } else {
-      setSearch({ typeid: typeId });
-    }
-    setLoading(true);
+  function handleChangeTab(typeId: string): void {
+    setSearch(typeId === "0" ? undefined : { typeid: typeId });
   }
+
   const onFinishCreate = (event: ITpyeUser) => {
     Modal.confirm({
       title: "Add ",
@@ -104,42 +107,64 @@ const page = () => {
         },
       },
       onOk: async () => {
-        const result = await dataleaveserviceIntra.createTypeLeaveDisabled(
-          event
-        );
-        if (result) {
-          message.success(`Add success`);
-          formcreate.resetFields();
-          setOpenModal(false);
-          setLoading(true);
+        try {
+          const result = await dataleaveserviceIntra.createTypeLeaveDisabled(
+            event
+          );
+          if (result) {
+            message.success("Add success");
+            formcreate.resetFields();
+            setOpenModal(false);
+            if (getSearch) {
+              setSearch(
+                getSearch.typeid === "0"
+                  ? undefined
+                  : { typeid: getSearch.typeid }
+              );
+            } else {
+              setSearch(undefined);
+            }
+          }
+        } catch (error) {
+          message.error("Failed to add data.");
+        } finally {
         }
       },
-      onCancel() {
-        setLoading(true);
-      },
+      onCancel() {},
     });
   };
-
   const onFinishDel = (id: number) => {
     Modal.confirm({
       title: "Delete this unit",
       icon: <ExclamationCircleFilled />,
-      content: "Are you sure you want to delete this ?",
+      content: "Are you sure you want to delete this?",
       okText: "Confirm",
       okButtonProps: { type: "primary", danger: true },
       cancelText: "Cancel",
       onOk: async () => {
-        const dataResult = await dataleaveserviceIntra.deleteTypeLeaveDisabled(
-          id
-        );
-        if (dataResult) {
-          message.success(`Delete success`);
-          setLoading(true);
+        try {
+          const dataResult =
+            await dataleaveserviceIntra.deleteTypeLeaveDisabled(id);
+          if (dataResult) {
+            message.success("Delete success");
+            setLoading(true);
+            if (getSearch) {
+              setSearch(
+                getSearch.typeid === "0"
+                  ? undefined
+                  : { typeid: getSearch.typeid }
+              );
+            } else {
+              setSearch(undefined);
+            }
+          }
+        } catch (error) {
+          message.error("Failed to delete data.");
+        } finally {
+          setLoading(false);
         }
       },
-      onCancel() {
-        setLoading(true);
-      },
+      onCancel() {},
     });
   };
   return (
@@ -163,13 +188,14 @@ const page = () => {
       <div className="w-full">
         <Card>
           <Tabs
+            defaultActiveKey={getSearch?.typeid ? getSearch.typeid : ""}
             tabPosition={"left"}
-            onChange={handdleChangeTab}
-            destroyInactiveTabPane={true}
+            onChange={handleChangeTab}
+            destroyInactiveTabPane={false}
             items={getdataTypeLeave.map((type, i) => {
               return {
                 label: `${type.typeName}`,
-                key: String(type.id),
+                key: String(type.typeId),
                 children: (
                   <div className=" space-y-3">
                     <CreateLeaveManagement
@@ -182,7 +208,6 @@ const page = () => {
                     />
                     <TabeLeavManagement
                       getdataUserByTypeId={getdataUserByTypeId}
-                      dataTypeLeaveMap={dataTypeLeaveMap}
                       onFinishDel={(e: number) => onFinishDel(e)}
                     />
                   </div>

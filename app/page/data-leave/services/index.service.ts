@@ -113,10 +113,10 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
     //       return [];
     //     });
     // },
-    getdataUserByTypeLeaveId: async (id: ITpyeUser) => {
+    getdataUserByTypeLeaveId: async (search: { typeid: string }) => {
       const condition = {
         where: {
-          id: Number(id.typeid),
+          id: Number(search.typeid),
         },
         select: {
           typeLeaveDisabledMap: {

@@ -79,7 +79,7 @@ const ManagementNews: React.FC = () => {
         style={{
           textAlign: "center",
           fontSize: "36px",
-          backgroundImage: "linear-gradient(to right,#87CEFA, #AFEEEE,#87CEFA)",borderRadius:"10px"
+          // backgroundImage: "linear-gradient(to right,#87CEFA, #AFEEEE,#87CEFA)",borderRadius:"10px"
         }}
       >
         ข่าวกิจกรรมล่าสุด
@@ -101,7 +101,9 @@ const ManagementNews: React.FC = () => {
           {currentNews.map((item) => (
             <Col span={8} key={item.newsId.toString()}>
               <Card
-                style={{ margin: "20px 0 0 0", border: "3px solid #87CEFA" }}
+                style={{ margin: "20px 0 0 0", 
+                  // border: "3px solid #87CEFA" 
+                }}
                 hoverable
                 onClick={() => showModal(item)}
               >

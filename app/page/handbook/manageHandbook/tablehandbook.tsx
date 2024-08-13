@@ -24,6 +24,7 @@ export interface handbookFile {
   fileName: String;
   fileLocation: String;
   createdAt: String;
+  author: String;
   updatedAt: String;
   status: boolean;
 }
@@ -66,34 +67,34 @@ const Tablehandbook: React.FC = () => {
 
   const columns: TableProps<handbookFile>["columns"] = [
     {
-      title: "ลำดับ",
+      title: "ไอดี",
       dataIndex: "id",
       key: "id",
       align: "center",
       width: "20px",
     },
     {
-      title: "ชื่อรถ",
+      title: "ชื่อไฟล์",
       dataIndex: "fileName",
       key: "fileName",
       width: "180px",
     },
     {
-      title: "ประเภทตรวจสภาพ",
+      title: "ที่อยู่ข้อมูล",
       dataIndex: "fileLocation",
       key: "fileLocation",
       width: "140px",
     },
     {
-      title: "รายละเอียดการตรวจ",
+      title: "นำเข้าเวลา",
       dataIndex: "createdAt",
       key: "createdAt",
       width: "200px",
     },
     {
-      title: "สถานที่เช็คสภาพ",
-      dataIndex: "status",
-      key: "status",
+      title: "อัพโหลดโดย",
+      dataIndex: "author",
+      key: "author",
       width: "200px",
     },
   ];

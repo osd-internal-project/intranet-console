@@ -2,11 +2,10 @@ import { AxiosInstance } from "axios";
 
 export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
   const baseUrlApiinformationNews = "/informationNews";
-  const baseUrlApinewsImage = "/newsImage";
+  const baseUrlApinewsImage = "/news-image";
   const baseUrlApinewsType = "/newsType";
 
   return {
-    
     getinformationNewsQuery: async () => {
       return await axiosInstance
         .get(`${baseUrlApiinformationNews}`)
@@ -40,10 +39,10 @@ export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    deleteinformationNews: async (carId: any) => {
-      console.log(`${baseUrlApiinformationNews}/${carId}`);
+    deleteinformationNews: async (newsId: any) => {
+      console.log(`${baseUrlApiinformationNews}/${newsId}`);
       return await axiosInstance
-        .delete(`${baseUrlApiinformationNews}/${carId}`)
+        .delete(`${baseUrlApiinformationNews}/${newsId}`)
         .then((res) => {
           return res.data;
         })
@@ -52,7 +51,6 @@ export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-
 
     // ma car type
     getnewsImageQuery: async () => {
@@ -88,10 +86,17 @@ export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    deletenewsImage: async (carId: any) => {
-      console.log(`${baseUrlApinewsImage}/${carId}`);
+    uploadFiles: async (newsId: number, formData: FormData) => {
+      return axiosInstance.post(`${baseUrlApinewsImage}/${newsId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    },
+    deletenewsImage: async (imageId: any) => {
+      console.log(`${baseUrlApinewsImage}/${imageId}`);
       return await axiosInstance
-        .delete(`${baseUrlApinewsImage}/${carId}`)
+        .delete(`${baseUrlApinewsImage}/${imageId}`)
         .then((res) => {
           return res.data;
         })
@@ -100,7 +105,6 @@ export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-
 
     getnewsTypeQuery: async () => {
       return await axiosInstance

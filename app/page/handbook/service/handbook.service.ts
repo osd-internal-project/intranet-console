@@ -1,7 +1,7 @@
 import { AxiosInstance } from "axios";
 
 export const ManagehandbookFileServices = (axiosInstance: AxiosInstance) => {
-  const baseUrlApihandbookFile = "/handbookFile";
+  const baseUrlApihandbookFile = "/handbook-file";
 
   return {
     gethandbookFileQuery: async () => {
@@ -49,6 +49,13 @@ export const ManagehandbookFileServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    uploadFiles: async (id: number, formData: FormData) => {
+      return axiosInstance.post(`${baseUrlApihandbookFile}/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    },
 
     updatehandbookFile: async (body: any) => {
       return await axiosInstance
@@ -61,11 +68,11 @@ export const ManagehandbookFileServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    deletehandbookFile: async (carId: any) => {
-      console.log(carId);
+    deletehandbookFile: async (id: any) => {
+      console.log(id);
 
       return await axiosInstance
-        .delete(`${baseUrlApihandbookFile}/${carId}`)
+        .delete(`${baseUrlApihandbookFile}/${id}`)
         .then((res) => {
           return res.data;
         })

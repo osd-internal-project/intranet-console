@@ -2,11 +2,14 @@
 import React, { useState, useEffect } from "react";
 import { AntDesignOutlined } from "@ant-design/icons";
 import type { TableProps, FormProps } from "antd";
-import ImageUpload from "./ImageUpload";
 import { ManageinformationNewsServices } from "../../service/information.service";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useForm } from "antd/es/form/Form";
 import { useSession } from "next-auth/react";
+import { UploadOutlined } from "@ant-design/icons";
+import type { GetProp, UploadFile, UploadProps } from "antd";
+import { RcFile } from "antd/es/upload";
+import ImgCrop from "antd-img-crop";
 import {
   Select,
   Table,
@@ -27,7 +30,9 @@ import {
   TabsProps,
   Tabs,
   DatePicker,
+  Upload,
 } from "antd";
+import { log } from "console";
 
 export interface informationNews {
   newsId: Number;
@@ -40,13 +45,20 @@ export interface informationNews {
   status: boolean;
 }
 export interface newsImage {
-  imageId: Number;
-  newsId: Number;
+  imageId: number | undefined;
+  newsId: number | undefined;
   createdAt: String;
   updatedAt: String;
   fileimageName: String;
   fileimagePath: String;
+  onSaveimgnews: (
+    imageId: number | undefined,
+    newsId: number,
+    dataForm: newsImage,
+    attendFiles: UploadFile[]
+  ) => void;
 }
+
 export interface newsType {
   idType: Number;
   nameType: String;
@@ -56,10 +68,15 @@ export interface newsType {
 }
 const { TextArea } = Input;
 
-const Infomation_management: React.FC = () => {
+const Infomation_management: React.FC<newsImage> = ({
+  onSaveimgnews,
+  imageId,
+  newsId,
+}) => {
   const { data: session } = useSession();
   const [submitLoading, setSubmitLoading] = useState(true);
   const intraAuth = useAxiosIntranet();
+  const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [informationNews, setinformationNews] = useState<informationNews[]>([]);
   const [newsType, setnewsType] = useState<newsType[]>([]);
   const [newsTypeOptions, setnewsTypeOptions] = useState<
@@ -71,18 +88,17 @@ const Infomation_management: React.FC = () => {
   const manageinformationNewsServices =
     ManageinformationNewsServices(intraAuth);
   const [form] = useForm();
-
-  const handleFilesUpload = (files: File[]) => {
-    // คุณสามารถส่งไฟล์ไปยังเซิร์ฟเวอร์ของคุณได้ที่นี่
-  };
   useEffect(() => {
     fetchDatainformationNews();
     fetchDataType();
+    setAttendFiles([]);
   }, []);
 
-  const informationNewsCreateDatacreate: FormProps<
+  const informationNewsCreate: FormProps<
     informationNews & newsImage
   >["onFinish"] = async (values) => {
+    console.log(attendFiles);
+
     setSubmitLoading(true);
     // const carIdData = maCar.findLast((car) => car.carId === values.carId);
     // console.log(`${carIdData}`);
@@ -104,6 +120,19 @@ const Infomation_management: React.FC = () => {
         await manageinformationNewsServices.createinformationNews(
           informationNewsCreateData
         );
+      if (response && attendFiles.length > 0) {
+        await Promise.all(
+          attendFiles.map(async (file) => {
+            console.log(`${response.newsId}`);
+            const formData = new FormData();
+            formData.append("file", file.originFileObj as RcFile);
+            await manageinformationNewsServices.uploadFiles(
+              response.newsId,
+              formData
+            );
+          })
+        );
+      }
       if (response) {
         message.success("เพิ่มข่าวสารสำเร็จ");
         form.resetFields();
@@ -144,20 +173,29 @@ const Infomation_management: React.FC = () => {
         };
       });
       setnewsTypeOptions(optionsmaResponse);
-      setnewsType(maresponse)
+      setnewsType(maresponse);
     } catch (error) {
       message.error("Failed to fetch car data");
     }
   };
 
+  const handleChangeAttendFiles: UploadProps["onChange"] = async ({
+    fileList: newFileList,
+  }) => {
+    console.log(newFileList[0]);
+    return setAttendFiles(newFileList);
+  };
+  const beforeUploadAttendFiles = (file: RcFile) => {
+    if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
+      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
+      return false;
+    }
+    return false;
+  };
   return (
     <div style={{ backgroundColor: "#FFFFFF" }}>
       <div style={{ margin: " 10px 0 0 10px " }}>
-        <Form
-          form={form}
-          onFinish={informationNewsCreateDatacreate}
-          layout="vertical"
-        >
+        <Form form={form} onFinish={informationNewsCreate} layout="vertical">
           <Form.Item
             name="newsName"
             label="หัวข้อข่าวสาร"
@@ -199,19 +237,29 @@ const Infomation_management: React.FC = () => {
           >
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
-          <Form.Item
-            name="carId"
-            label="รูปอัพโหลด :"
-            style={{ margin: "10px 0 0 0", width: "500px" }}
-          >
-            <ImageUpload />
+          <Form.Item valuePropName="filelist">
+            <ImgCrop rotationSlider>
+              <Upload
+                // {...props}
+                // onPreview={onPreview}
+                fileList={attendFiles}
+                onChange={handleChangeAttendFiles}
+                beforeUpload={beforeUploadAttendFiles}
+                multiple={true}
+                maxCount={3}
+              >
+                <Button icon={<UploadOutlined />}>Select File</Button>
+              </Upload>
+            </ImgCrop>
           </Form.Item>
           <Form.Item>
             <Button
               type="primary"
-              htmlType="submit"
+              // onClick={handleUpload}
+              // disabled={fileList.length === 0}
               loading={submitLoading}
-              style={{ margin: "20px 0 0 0" }}
+              style={{ marginTop: 16 }}
+              htmlType="submit"
             >
               สร้างข่าวสาร
             </Button>

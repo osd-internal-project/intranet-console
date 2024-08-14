@@ -91,7 +91,6 @@ export default function Page() {
       label: "Department Calendar",
       children: (
         <DepartmentCalendarDetail
-      
           departmentId={departmentId}
           downloadFile={(id: number, filename: string) =>
             downloadFile(id, filename)
@@ -106,7 +105,7 @@ export default function Page() {
   }, [loading]);
 
   const loadData = async () => {
-    const res = await dataleaveservice.getdataLeaveByuserID(
+    const res = await dataleaveservice.getdataLeaveByuserId(
       session?.user.userId as string
     );
     const dataDepartId = session?.user.departmentId as number;

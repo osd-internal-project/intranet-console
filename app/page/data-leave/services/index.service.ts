@@ -45,7 +45,7 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getdataLeaveByuserID: async (userId: string) => {
+    getdataLeaveByuserId: async (userId: string) => {
       const condition = {
         where: { userId: userId },
         include: {

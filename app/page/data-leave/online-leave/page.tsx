@@ -24,8 +24,6 @@ import {
   ITypeDataLeaveCreate,
   IDepartMent,
   ISelectDepartment,
-  ITypeDataleaveMap,
-  ITpyeUser,
 } from "../common";
 import { CreateOnlineLeave } from "./components/create-online-leave";
 import { TableOnlineDetailLeave } from "./components/table-online-detail-leave";
@@ -41,9 +39,7 @@ export default function Page() {
   const dataleaveservice = DataLeaveService(Auth);
   const dataleaveserviceUser = DataLeaveService(AuthUser);
   const { data: session } = useSession();
-  const [getUser, setUser] = useState<IDataUser | null>(
-    session ? session.user : null
-  );
+  const [getUser] = useState<IDataUser | null>(session ? session.user : null);
   const [getUserOwner, setUserOwner] = useState<IDataUser | null>({});
   const [getTypeLeaveOption, setTypeLeaveOption] = useState<ISelect[]>([]);
   const [getTypeLeave, setTypeLeave] = useState<ITypetypeleave[]>([]);
@@ -52,9 +48,6 @@ export default function Page() {
     []
   );
   const [dataLeaveUserById, setDataLeaveByUserId] = useState<ITypetypeleave[]>(
-    []
-  );
-  const [dataexistingLeave, setDataexistingLeave] = useState<ITypetypeleave[]>(
     []
   );
   const [getDepartmentById, setResDepartMent] = useState<ISelectDepartment[]>(
@@ -67,7 +60,6 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(true);
   const [params, setParams] = useState<any>({
     typeId: null,
-    // departId: null,
     startDate: null,
     endDate: null,
     startTime: null,
@@ -83,7 +75,6 @@ export default function Page() {
 
   const loadDataTypeLeave = async () => {
     const res = await dataleaveservice.getdataAll();
-
     const resOwner = await dataleaveserviceUser.getOwnerGroupsByPositionId(
       getUser?.userMapOrganizeChart[0]?.positionId
     );
@@ -92,11 +83,10 @@ export default function Page() {
     const resTableUserTypeLeave = await dataleaveservice.findUserByUserId(
       getUser?.userId
     );
-    // const resTableDeatilTypeLeaveAll = await dataleaveservice.getdataTypeLeaveAll({});
     const options = res.map((event: ITypetypeleave) => {
       return { value: event.typeId, label: event.typeName };
     });
-    const dataLeaveUserId = await dataleaveservice.getdataLeaveByuserID(
+    const dataLeaveUserId = await dataleaveservice.getdataLeaveByuserId(
       session?.user.userId as string
     );
     const resTableDepartMent = await dataleaveservice.findDetailDepartment();
@@ -126,9 +116,6 @@ export default function Page() {
     if (type === "type") {
       setParams((e: any) => ({ ...e, typeId: value }));
     }
-    // if (type === "depart") {
-    //   setParams((e: any) => ({ ...e, departId: value }));
-    // }
     if (type === "startDate") {
       setParams((e: any) => ({ ...e, startDate: value }));
     } else if (type === "endDate" && params.startDate) {
@@ -171,6 +158,34 @@ export default function Page() {
       lengthTime: totalHours != 0 ? Number(totalHours) : 1,
     }));
   };
+
+  // const checklenghtTime = async (value1: any, value2: any) => {
+  //   if (!value1 || !value2) {
+  //     setParams((e: any) => ({
+  //       ...e,
+  //       lengthTime: 1,
+  //     }));
+  //     return;
+  //   }
+  //   const startTime = dayjs(value1, "HH:mm");
+  //   const endTime = dayjs(value2, "HH:mm");
+  //   if (!startTime.isValid() || !endTime.isValid()) {
+  //     setParams((e: any) => ({
+  //       ...e,
+  //       lengthTime: 1,
+  //     }));
+  //     return;
+  //   }
+  //   const totalHours =
+  //     endTime.isValid() && startTime.isValid()
+  //       ? endTime.diff(startTime, "hour", true).toFixed(1)
+  //       : 0;
+  //   setParams((e: any) => ({
+  //     ...e,
+  //     lengthTime: totalHours != "0" ? Number(totalHours) : 1,
+  //   }));
+  //   console.log(totalHours);
+  // };
 
   const handleChangeAttendFiles: UploadProps["onChange"] = async ({
     fileList: newFileList,
@@ -222,7 +237,7 @@ export default function Page() {
   const checkDataLeaveCancel = async (type_id: number) => {
     const conflict = await checkLeaveCancel(type_id);
     if (conflict) {
-      message.error("คุณไม่สามารถลาประเภทลานี้ได้!");
+      message.error("คุณไม่มีสิทธิลาประเภทการลานี้!");
       return true;
     }
     return false;
@@ -234,6 +249,8 @@ export default function Page() {
     const leaveEndDate = values.endDate as Date;
     const today = new Date() as Date;
     const type_id = values.type_id as number;
+    const LeaveHour = values.leaveHour;
+    console.log(LeaveHour);
 
     const twoDayAdvance = new Date(today);
     twoDayAdvance.setDate(today.getDate() + 2);
@@ -260,10 +277,15 @@ export default function Page() {
     );
     const totalDays =
       startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
-    const totalHours =
-      startTime && endTime
-        ? endTime.diff(startTime, "hour", true).toFixed(1)
-        : 0;
+    console.log(totalDays);
+
+    // const totalHours =
+    //   startTime && endTime
+    //     ? endTime.diff(startTime, "hour", true).toFixed(1)
+    //     : 0;
+    const totalHours = 4;
+
+    console.log(totalHours);
 
     if (new Date(leaveEndDate) < new Date(leaveStartDate)) {
       message.error("วันที่สิ้นสุดการลาต้องหลังวันที่เริ่มการลา");
@@ -293,7 +315,6 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
           };
-
           if (await checkDataLeaveCancel(type_id)) {
             return;
           }
@@ -302,8 +323,6 @@ export default function Page() {
             if (
               await checkLeaveConflict(userId, leaveStartDate, leaveEndDate)
             ) {
-              console.log("เช็คลาซั้า");
-
               return;
             }
 
@@ -316,10 +335,10 @@ export default function Page() {
                       values.startTime && values.endTime
                         ? Number(totalHours)
                         : Number(totalDays) * 8,
-                    startTime: values.startTime,
-                    endTime: values.endTime,
                   }),
             };
+            console.log(condition);
+
             Modal.confirm({
               title: "Add ",
               icon: <ExclamationCircleFilled />,
@@ -418,8 +437,6 @@ export default function Page() {
                       values.startTime && values.endTime
                         ? Number(totalHours)
                         : Number(totalDays) * 8,
-                    startTime: values.startTime,
-                    endTime: values.endTime,
                   }),
             };
             Modal.confirm({
@@ -515,8 +532,6 @@ export default function Page() {
                       values.startTime && values.endTime
                         ? Number(totalHours)
                         : Number(totalDays) * 8,
-                    startTime: values.startTime,
-                    endTime: values.endTime,
                   }),
             };
             Modal.confirm({
@@ -602,7 +617,6 @@ export default function Page() {
           try {
             if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate))
               return;
-
             const condition: ITypeDataLeave = {
               ...base,
               ...(values.time_start_check
@@ -612,8 +626,6 @@ export default function Page() {
                       values.startTime && values.endTime
                         ? Number(totalHours)
                         : Number(totalDays) * 8,
-                    startTime: values.startTime,
-                    endTime: values.endTime,
                   }),
             };
             Modal.confirm({
@@ -710,8 +722,6 @@ export default function Page() {
                       values.startTime && values.endTime
                         ? Number(totalHours)
                         : Number(totalDays) * 8,
-                    startTime: values.startTime,
-                    endTime: values.endTime,
                   }),
             };
             Modal.confirm({
@@ -797,19 +807,17 @@ export default function Page() {
     //     return;
     //   // }
 
-    //   const condition: ITypeDataLeave = {
-    //     ...base,
-    //     ...(values.time_start_check
-    //       ? { leaveHour: 8 }
-    //       : {
-    //           leaveHour:
-    //             values.startTime && values.endTime
-    //               ? Number(totalHours)
-    //               : Number(totalDays) * 8,
-    //           startTime: values.startTime,
-    //           endTime: values.endTime,
-    //         }),
-    //   };
+    // const condition: ITypeDataLeave = {
+    //   ...base,
+    //   ...(values.time_start_check
+    //     ? { leaveHour: 8 }
+    //     : {
+    //         leaveHour:
+    //           values.startTime && values.endTime
+    //             ? Number(totalHours)
+    //             : Number(totalDays) * 8,
+    //       }),
+    // };
 
     //   Modal.confirm({
     //     title: "Add ",

@@ -15,7 +15,6 @@ import {
 import dayjs from "dayjs";
 import {
   IDataUser,
-  IDepartMent,
   ISelect,
   ISelectDepartment,
   ITypeDataLeaveCreate,

@@ -12,6 +12,7 @@ import {
   Modal,
   message,
   Input,
+  Image,
 } from "antd";
 
 export interface informationNews {
@@ -128,8 +129,9 @@ const ManagementNews: React.FC = () => {
                 onClick={() => showModal(item)}
                 cover={
                   item.images.length > 0 && item.images[0]?.fileName ? (
-                    <img
+                    <Image
                       alt="news"
+                      crossOrigin="anonymous"
                       src={`http://localhost:4003/api/public/news-image/${item.images[0].fileName}`}
                       style={{ width: "100%", marginBottom: "20px" }}
                     />

@@ -39,7 +39,7 @@ export default function Page() {
   const dataleaveservice = DataLeaveService(Auth);
   const dataleaveserviceUser = DataLeaveService(AuthUser);
   const { data: session } = useSession();
-  const [getUser] = useState<IDataUser | null>(session ? session.user : null);
+  const [getUser] = useState<IDataUser | null>(session ? session?.user : null);
   const [getUserOwner, setUserOwner] = useState<IDataUser | null>({});
   const [getTypeLeaveOption, setTypeLeaveOption] = useState<ISelect[]>([]);
   const [getTypeLeave, setTypeLeave] = useState<ITypetypeleave[]>([]);
@@ -72,12 +72,17 @@ export default function Page() {
   useEffect(() => {
     if (loading) loadDataTypeLeave();
   }, [loading, params]);
+  console.log(session);
+  console.log(session?.user);
 
   const loadDataTypeLeave = async () => {
     const res = await dataleaveservice.getdataAll();
     const resOwner = await dataleaveserviceUser.getOwnerGroupsByPositionId(
       getUser?.userMapOrganizeChart[0]?.positionId
     );
+    // const resOwner = await dataleaveserviceUser.getOwnerGroupsByPositionId(
+    //   "5"
+    // );
     const resTableDeatilTypeLeave =
       await dataleaveservice.findDetailTypeLeaveByUserId(getUser?.userId);
     const resTableUserTypeLeave = await dataleaveservice.findUserByUserId(
@@ -243,14 +248,82 @@ export default function Page() {
     return false;
   };
 
+  const checkLeaveHour = async (type_id: number): Promise<boolean> => {
+    try {
+      const dataLeaveUserId = await dataleaveservice.getdataLeaveByuserId(
+        session?.user.userId as string
+      );
+      const hasLeave = dataLeaveUserId.some(
+        (record: any) => record.typeId === type_id
+      );
+      // const hasLeaveTypeid = dataLeaveUserId.map((hr: any) => hr.typeId);
+      if (hasLeave) {
+        const dataLeaveUserById = await dataleaveservice.getdataLeaveUserById(
+          type_id
+        );
+        let result: number;
+        if (type_id === 1) {
+          result = 240;
+        } else if (
+          type_id === 2 ||
+          type_id === 3 ||
+          type_id === 4 ||
+          type_id === 7 ||
+          type_id === 10
+        ) {
+          result = 24;
+        } else if (type_id === 5) {
+          result = 48;
+        } else if (type_id === 6) {
+          result = 784;
+        } else if (type_id === 8) {
+          result = 40;
+        } else if (type_id === 9 || type_id === 11) {
+          result = 120;
+        } else if (type_id === 12) {
+          result = 480;
+        } else if (type_id === 13) {
+          result = 1440;
+        } else {
+          result = 0;
+        }
+        if (Array.isArray(dataLeaveUserById)) {
+          const hasLeaveHour = dataLeaveUserById.map(
+            (leaveTime: any) => leaveTime.leaveHour
+          );
+          const totalLeaveHours = hasLeaveHour.reduce(
+            (total, hour) => total + (Number(hour) || 0),
+            0
+          );
+          if (totalLeaveHours < result) {
+            return false;
+          }
+          return totalLeaveHours;
+        }
+        return false;
+      }
+      return false;
+    } catch (error) {
+      console.error("เช็คจำนวนเวลาลาไม่ได้");
+      return false;
+    }
+  };
+
+  const checkDataLeaveHour = async (type_id: number): Promise<boolean> => {
+    const conflict = await checkLeaveHour(type_id);
+    if (conflict) {
+      message.error("คุณใช้วันลาหมดแล้ว");
+      return true;
+    }
+    return false;
+  };
+
   const onfinishCreate = async (values: ITypeDataLeaveCreate) => {
     const userId = values.userId as string;
     const leaveStartDate = values.startDate as Date;
     const leaveEndDate = values.endDate as Date;
     const today = new Date() as Date;
     const type_id = values.type_id as number;
-    const LeaveHour = values.leaveHour;
-    console.log(LeaveHour);
 
     const twoDayAdvance = new Date(today);
     twoDayAdvance.setDate(today.getDate() + 2);
@@ -277,16 +350,11 @@ export default function Page() {
     );
     const totalDays =
       startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
-    console.log(totalDays);
 
-    // const totalHours =
-    //   startTime && endTime
-    //     ? endTime.diff(startTime, "hour", true).toFixed(1)
-    //     : 0;
-    const totalHours = 4;
-
-    console.log(totalHours);
-
+    const totalHours =
+      startTime && endTime
+        ? endTime.diff(startTime, "hour", true).toFixed(1)
+        : 0;
     if (new Date(leaveEndDate) < new Date(leaveStartDate)) {
       message.error("วันที่สิ้นสุดการลาต้องหลังวันที่เริ่มการลา");
       return;
@@ -319,6 +387,10 @@ export default function Page() {
             return;
           }
 
+          if (await checkDataLeaveHour(type_id)) {
+            return;
+          }
+
           try {
             if (
               await checkLeaveConflict(userId, leaveStartDate, leaveEndDate)
@@ -337,8 +409,6 @@ export default function Page() {
                         : Number(totalDays) * 8,
                   }),
             };
-            console.log(condition);
-
             Modal.confirm({
               title: "Add ",
               icon: <ExclamationCircleFilled />,
@@ -421,6 +491,10 @@ export default function Page() {
           };
 
           if (await checkDataLeaveCancel(type_id)) {
+            return;
+          }
+
+          if (await checkDataLeaveHour(type_id)) {
             return;
           }
 
@@ -519,6 +593,10 @@ export default function Page() {
             return;
           }
 
+          if (await checkDataLeaveHour(type_id)) {
+            return;
+          }
+
           try {
             if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate))
               return;
@@ -614,6 +692,10 @@ export default function Page() {
             return;
           }
 
+          if (await checkDataLeaveHour(type_id)) {
+            return;
+          }
+
           try {
             if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate))
               return;
@@ -706,6 +788,10 @@ export default function Page() {
           };
 
           if (await checkDataLeaveCancel(type_id)) {
+            return;
+          }
+
+          if (await checkDataLeaveHour(type_id)) {
             return;
           }
 

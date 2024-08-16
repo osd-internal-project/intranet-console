@@ -179,29 +179,76 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       dataIndex: "typeName",
       title: "ประเภทการลา",
     },
+    // {
+    //   key: "haveLeft",
+    //   dataIndex: "haveLeft",
+    //   title: "ลามาแล้ว",
+    //   render: (value: number, row: ITypetypeleave) => (
+    //     <div className="flex justify-center">
+    //       <Tag className="w-full flex justify-center">
+    //         {`${value} วัน (${row.haveLeftHours || 0} ชม.)`}
+    //       </Tag>
+    //     </div>
+    //   ),
+    // },
     {
       key: "haveLeft",
       dataIndex: "haveLeft",
       title: "ลามาแล้ว",
-      render: (value: number, row: ITypetypeleave) => (
-        <div className="flex justify-center">
-          <Tag className="w-full flex justify-center">
-            {`${value} วัน (${row.haveLeftHours || 0} ชม.)`}
-          </Tag>
-        </div>
-      ),
+      render: (value: number, row: ITypetypeleave) => {
+        const calculateHours = (value: number): number => {
+          if (value % 1 === 0.5) {
+            return 4;
+          }
+          return row.haveLeftHours ?? 0;
+        };
+
+        const displayHours = calculateHours(value);
+        const wholeDays = Math.floor(value); // Round down to show only whole numbers
+
+        return (
+          <div className="flex justify-center">
+            <Tag className="w-full flex justify-center">
+              {`${wholeDays} วัน (${displayHours} ชม.)`}
+            </Tag>
+          </div>
+        );
+      },
     },
+    // {
+    //   key: "limitLeaveLastResult",
+    //   dataIndex: "limitLeaveLastResult",
+    //   title: "คงเหลือ",
+    //   render: (value: number, row: ITypetypeleave) => (
+    //     <div className="flex justify-center">
+    //       <Tag className="w-full flex justify-center">
+    //         {`${value} วัน (${"0" || 0} ชม.)`}
+    //       </Tag>
+    //     </div>
+    //   ),
+    // },
     {
       key: "limitLeaveLastResult",
       dataIndex: "limitLeaveLastResult",
       title: "คงเหลือ",
-      render: (value: number, row: ITypetypeleave) => (
-        <div className="flex justify-center">
-          <Tag className="w-full flex justify-center">
-            {`${value} วัน (${"0" || 0} ชม.)`}
-          </Tag>
-        </div>
-      ),
+      render: (value: number, row: ITypetypeleave) => {
+        const calculateHours = (value: number): number => {
+          if (value % 1 === 0.5) {
+            return 4;
+          }
+          return row.limitLeaveHours ?? 0;
+        };
+
+        const displayHours = calculateHours(value);
+        const wholeDays = Math.floor(value);
+        return (
+          <div className="flex justify-center">
+            <Tag className="w-full flex justify-center">
+              {`${wholeDays} วัน (${displayHours} ชม.)`}
+            </Tag>
+          </div>
+        );
+      },
     },
     {
       key: "id",
@@ -226,9 +273,13 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       title: "รวม",
       render: (value: number, row: ITypetypeleave) => {
         const isSelected = row.typeId === params.typeId;
-        const totalDays = value + (isSelected ? params.lengthDate : 0);
-        const totalHours =
-          (row.haveLeftHours || 0) + (isSelected ? params.lengthTime : 0);
+        const totalDays = Math.floor(
+          value + (isSelected ? params.lengthDate : 0)
+        ); // Round down to show whole numbers
+        const totalHours = Math.floor(
+          (row.haveLeftHours || 0) + (isSelected ? params.lengthTime : 0)
+        ); // Round down to show whole numbers
+
         const isOverLimit = totalDays > row.limitLeaveLastResult;
         const hasDateRange = params.startDate && params.endDate;
 

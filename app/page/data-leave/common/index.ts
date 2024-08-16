@@ -1,5 +1,6 @@
 export interface ITypetypeleave {
   haveLeftHours: number;
+  limitLeaveHours: number;
   limitLeaveLastResult: number;
   haveLeft: any;
   createdAt: Date;

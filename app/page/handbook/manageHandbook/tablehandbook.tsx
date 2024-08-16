@@ -18,14 +18,15 @@ import {
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManagehandbookFileServices } from "../service/handbook.service";
 import { useForm } from "antd/es/form/Form";
+import { useSession } from "next-auth/react";
 
 export interface handbookFile {
-  id: Number;
-  fileName: String;
-  fileLocation: String;
-  createdAt: String;
-  author: String;
-  updatedAt: String;
+  id: number;
+  fileName: string;
+  fileLocation: string;
+  createdAt: string;
+  author: string;
+  updatedAt: string;
   status: boolean;
 }
 const Tablehandbook: React.FC = () => {
@@ -35,7 +36,7 @@ const Tablehandbook: React.FC = () => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [form] = useForm();
   const [searchTerm, setSearchTerm] = useState("");
-
+  const { data: session } = useSession();
   useEffect(() => {
     fetchDataHandbook();
   }, []);
@@ -80,16 +81,11 @@ const Tablehandbook: React.FC = () => {
       width: "180px",
     },
     {
-      title: "ที่อยู่ข้อมูล",
-      dataIndex: "fileLocation",
-      key: "fileLocation",
-      width: "140px",
-    },
-    {
       title: "นำเข้าเวลา",
       dataIndex: "createdAt",
       key: "createdAt",
       width: "200px",
+      render: (createdAt: Date) => moment(createdAt).format("YYYY/MM/DD"),
     },
     {
       title: "อัพโหลดโดย",

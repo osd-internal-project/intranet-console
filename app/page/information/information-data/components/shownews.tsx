@@ -12,6 +12,7 @@ import {
   Modal,
   message,
   Input,
+  Carousel,
   Image,
 } from "antd";
 
@@ -130,6 +131,7 @@ const ManagementNews: React.FC = () => {
                 cover={
                   item.images.length > 0 && item.images[0]?.fileName ? (
                     <Image
+                      preview={false}
                       alt="news"
                       crossOrigin="anonymous"
                       src={`http://localhost:4003/api/public/news-image/${item.images[0].fileName}`}
@@ -155,6 +157,7 @@ const ManagementNews: React.FC = () => {
       </Card>
 
       <Modal
+        width={1000}
         title="รายละเอียดข่าวสาร"
         open={isModalVisible}
         onCancel={handleCancel}
@@ -166,20 +169,24 @@ const ManagementNews: React.FC = () => {
       >
         {selectedNews && (
           <div>
-            {selectedNews.images.length > 0 &&
-            selectedNews.images[0].fileName ? (
-              <img
-                alt="news"
-                src={`http://localhost:4003/api/public/news-image/${selectedNews.images[0].fileName}`}
-                style={{ width: "100%", marginBottom: "20px" }}
-              />
-            ) : null}
-            <p>
-              <strong>ชื่อข่าว:</strong> {selectedNews.newsName}
+            <p style={{ textAlign: "center", fontSize: "24px ", fontWeight: "bold"}}>
+              <strong></strong> {selectedNews.newsName}
             </p>
-            <p>
+            <p style={{  fontSize: "20px" }}>
               <strong>เนื้อหา:</strong> {selectedNews.content}
             </p>
+            {selectedNews.images.length > 0
+              ? selectedNews.images.map((image, index) => (
+                  <Image
+                    preview={false}
+                    key={index}
+                    crossOrigin="anonymous"
+                    alt="news"
+                    src={`http://localhost:4003/api/public/news-image/${image.fileName}`}
+                    style={{ width: "100%", marginBottom: "20px" }}
+                  />
+                ))
+              : null}
             <p>
               <strong>ผู้เขียน:</strong> {selectedNews.author}
             </p>

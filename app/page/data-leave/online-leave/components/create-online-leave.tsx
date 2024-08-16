@@ -1,12 +1,13 @@
 "use client";
 import { UploadOutlined } from "@ant-design/icons";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Card,
   DatePicker,
   Form,
   Input,
+  Radio,
   Select,
   Switch,
   Upload,
@@ -72,6 +73,19 @@ export const CreateOnlineLeave: React.FC<props> = ({
     };
     getdatauser();
   }, [getUserOwner]);
+
+  const [leaveTimeSlot, setLeaveTimeSlot] = useState<
+    "morning" | "afternoon" | undefined
+  >();
+
+  // Handle radio button change
+  const handleLeaveTimeSlotChange = (e: any) => {
+    setLeaveTimeSlot(e.target.value);
+  };
+
+  // function handleLeaveTimeSlotChange(e: RadioChangeEvent): void {
+  //   throw new Error("Function not implemented.");
+  // }
 
   return (
     <div>
@@ -190,7 +204,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
               </Form.Item>
             </div>
           </div>
-          {dayjs(getStartDate).format("YYYY-MM-DD") ===
+          {/* {dayjs(getStartDate).format("YYYY-MM-DD") ===
             dayjs(getEndDate).format("YYYY-MM-DD") && getEndDate ? (
             <>
               <div className="w-full grid grid-cols-3 gap-y-2 mt-2">
@@ -238,6 +252,23 @@ export const CreateOnlineLeave: React.FC<props> = ({
                 ) : null}
               </div>
             </>
+          ) : null} */}
+
+          {dayjs(getStartDate).format("YYYY-MM-DD") ===
+            dayjs(getEndDate).format("YYYY-MM-DD") && getEndDate ? (
+            <div className="w-full grid grid-cols-3 gap-y-2 mt-2">
+              <div className="col-span-3 md:col-span-1 ml-5">
+                <Form.Item label="ช่วงเวลา" name="leaveTimeSlot">
+                  <Radio.Group
+                    onChange={handleLeaveTimeSlotChange}
+                    value={leaveTimeSlot}
+                  >
+                    <Radio value="morning">ลาช่วงเช้า (8:30 - 12:30)</Radio>
+                    <Radio value="afternoon">ลาช่วงบ่าย (13:30 - 17:30)</Radio>
+                  </Radio.Group>
+                </Form.Item>
+              </div>
+            </div>
           ) : null}
 
           <div className=" col-span-3 md:col-span-1 ml-5">

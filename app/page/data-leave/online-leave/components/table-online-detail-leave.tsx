@@ -204,7 +204,7 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         };
 
         const displayHours = calculateHours(value);
-        const wholeDays = Math.floor(value); // Round down to show only whole numbers
+        const wholeDays = Math.floor(value); 
 
         return (
           <div className="flex justify-center">
@@ -275,11 +275,10 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         const isSelected = row.typeId === params.typeId;
         const totalDays = Math.floor(
           value + (isSelected ? params.lengthDate : 0)
-        ); // Round down to show whole numbers
+        ); 
         const totalHours = Math.floor(
           (row.haveLeftHours || 0) + (isSelected ? params.lengthTime : 0)
-        ); // Round down to show whole numbers
-
+        ); 
         const isOverLimit = totalDays > row.limitLeaveLastResult;
         const hasDateRange = params.startDate && params.endDate;
 

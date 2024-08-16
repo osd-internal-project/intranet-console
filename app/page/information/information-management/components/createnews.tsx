@@ -45,15 +45,15 @@ export interface informationNews {
   status: boolean;
 }
 export interface newsImage {
-  imageId: number | undefined;
-  newsId: number | undefined;
-  createdAt: String;
-  updatedAt: String;
-  fileimageName: String;
-  fileimagePath: String;
-  onSaveimgnews: (
+  imageId?: number | undefined;
+  newsIdimg?: number | undefined;
+  createdAt?: String;
+  updatedAt?: String;
+  fileimageName?: String;
+  fileimagePath?: String;
+  onSaveimgnews?: (
     imageId: number | undefined,
-    newsId: number,
+    newsIdimg: number,
     dataForm: newsImage,
     attendFiles: UploadFile[]
   ) => void;
@@ -69,9 +69,7 @@ export interface newsType {
 const { TextArea } = Input;
 
 const Infomation_management: React.FC<newsImage> = ({
-  onSaveimgnews,
-  imageId,
-  newsId,
+
 }) => {
   const { data: session } = useSession();
   const [submitLoading, setSubmitLoading] = useState(true);
@@ -105,13 +103,13 @@ const Infomation_management: React.FC<newsImage> = ({
 
     const informationNewsCreateData = {
       data: {
-        newsId: values.newsId,
+        newsId: values?.newsId,
         newsName: values.newsName,
         content: values.content,
         newsType: values.newsType,
         author: session?.user.username,
         phblishedAt: new Date().toISOString(),
-        updatedAt: values.updatedAt,
+        updatedAt: values?.updatedAt,
         status: values.status,
       },
     };
@@ -238,7 +236,6 @@ const Infomation_management: React.FC<newsImage> = ({
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item valuePropName="filelist">
-            <ImgCrop rotationSlider>
               <Upload
                 // {...props}
                 // onPreview={onPreview}
@@ -247,10 +244,10 @@ const Infomation_management: React.FC<newsImage> = ({
                 beforeUpload={beforeUploadAttendFiles}
                 multiple={true}
                 maxCount={3}
+                accept=".png,.jpg,.jpeg"
               >
                 <Button icon={<UploadOutlined />}>Select File</Button>
               </Upload>
-            </ImgCrop>
           </Form.Item>
           <Form.Item>
             <Button

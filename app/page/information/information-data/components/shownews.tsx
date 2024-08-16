@@ -3,7 +3,17 @@ import React, { useState, useEffect } from "react";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageinformationNewsServices } from "../../service/information.service";
 import { useForm } from "antd/es/form/Form";
-import { Button, Row, Col, Card, Pagination, Modal, message, Input } from "antd";
+import {
+  Button,
+  Row,
+  Col,
+  Card,
+  Pagination,
+  Modal,
+  message,
+  Input,
+  Image,
+} from "antd";
 
 export interface informationNews {
   newsId: Number;
@@ -11,9 +21,20 @@ export interface informationNews {
   content: String;
   newsType: String;
   author: String;
-  phblishedAt: String;
+  publishedAt: String;
   updatedAt: String;
   status: boolean;
+  images: newsImage[];
+}
+
+export interface newsImage {
+  imageId: Number;
+  newsId: Number;
+  createdAt: String;
+  updatedAt: String;
+  fileimageName: String;
+  fileimagePath: String;
+  fileName: string;
 }
 
 const ManagementNews: React.FC = () => {
@@ -23,7 +44,8 @@ const ManagementNews: React.FC = () => {
   const [selectedNews, setSelectedNews] = useState<informationNews | null>(
     null
   );
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+
   const intraAuth = useAxiosIntranet();
   const manageInformationNewsServices =
     ManageinformationNewsServices(intraAuth);
@@ -35,12 +57,14 @@ const ManagementNews: React.FC = () => {
 
   const fetchDatainformationNews = async () => {
     try {
-      const response =
+      const newsResponse =
         await manageInformationNewsServices.getinformationNewsQuery();
-      const informationNews: informationNews[] = response.map((item: any) => ({
+      const newsData: informationNews[] = newsResponse.map((item: any) => ({
         ...item,
+        images: item.newsImage,
       }));
-      setInformationNews(informationNews);
+
+      setInformationNews(newsData);
     } catch (error) {
       message.error("Failed to fetch news data");
     }
@@ -79,12 +103,11 @@ const ManagementNews: React.FC = () => {
         style={{
           textAlign: "center",
           fontSize: "36px",
-          // backgroundImage: "linear-gradient(to right,#87CEFA, #AFEEEE,#87CEFA)",borderRadius:"10px"
         }}
       >
         ข่าวกิจกรรมล่าสุด
       </div>
-      
+
       <Input
         type="text"
         value={searchTerm}
@@ -101,13 +124,21 @@ const ManagementNews: React.FC = () => {
           {currentNews.map((item) => (
             <Col span={8} key={item.newsId.toString()}>
               <Card
-                style={{ margin: "20px 0 0 0", 
-                  // border: "3px solid #87CEFA" 
-                }}
+                style={{ margin: "20px 0 0 0" }}
                 hoverable
                 onClick={() => showModal(item)}
+                cover={
+                  item.images.length > 0 && item.images[0]?.fileName ? (
+                    <Image
+                      alt="news"
+                      crossOrigin="anonymous"
+                      src={`http://localhost:4003/api/public/news-image/${item.images[0].fileName}`}
+                      style={{ width: "100%", marginBottom: "20px" }}
+                    />
+                  ) : null
+                }
               >
-                <p style={{fontSize:"20px"}}>{item.newsName}</p>
+                <p style={{ fontSize: "20px" }}>{item.newsName}</p>
                 <p>{item.author}</p>
               </Card>
             </Col>
@@ -135,6 +166,14 @@ const ManagementNews: React.FC = () => {
       >
         {selectedNews && (
           <div>
+            {selectedNews.images.length > 0 &&
+            selectedNews.images[0].fileName ? (
+              <img
+                alt="news"
+                src={`http://localhost:4003/api/public/news-image/${selectedNews.images[0].fileName}`}
+                style={{ width: "100%", marginBottom: "20px" }}
+              />
+            ) : null}
             <p>
               <strong>ชื่อข่าว:</strong> {selectedNews.newsName}
             </p>
@@ -145,7 +184,7 @@ const ManagementNews: React.FC = () => {
               <strong>ผู้เขียน:</strong> {selectedNews.author}
             </p>
             <p>
-              <strong>วันที่เผยแพร่:</strong> {selectedNews.phblishedAt}
+              <strong>วันที่เผยแพร่:</strong> {selectedNews.publishedAt}
             </p>
             <p>
               <strong>อัปเดตล่าสุด:</strong> {selectedNews.updatedAt}

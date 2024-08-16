@@ -68,8 +68,8 @@ const Tablehandbook: React.FC = () => {
   const columns: TableProps<handbookFile>["columns"] = [
     {
       title: "ไอดี",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "handbookid",
+      key: "handbookid",
       align: "center",
       width: "20px",
     },

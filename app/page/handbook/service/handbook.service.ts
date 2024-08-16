@@ -49,8 +49,8 @@ export const ManagehandbookFileServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    uploadFiles: async (id: number, formData: FormData) => {
-      return axiosInstance.post(`${baseUrlApihandbookFile}/${id}`, formData, {
+    uploadFiles: async (handbookid: number, formData: FormData) => {
+      return axiosInstance.post(`${baseUrlApihandbookFile}/${handbookid}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -59,7 +59,7 @@ export const ManagehandbookFileServices = (axiosInstance: AxiosInstance) => {
 
     updatehandbookFile: async (body: any) => {
       return await axiosInstance
-        .patch(`${baseUrlApihandbookFile}/${body.id}`, body)
+        .patch(`${baseUrlApihandbookFile}/${body.handbookid}`, body)
         .then((res) => {
           return res.data;
         })
@@ -68,11 +68,11 @@ export const ManagehandbookFileServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    deletehandbookFile: async (id: any) => {
-      console.log(id);
+    deletehandbookFile: async (handbookid: any) => {
+      console.log(handbookid);
 
       return await axiosInstance
-        .delete(`${baseUrlApihandbookFile}/${id}`)
+        .delete(`${baseUrlApihandbookFile}/${handbookid}`)
         .then((res) => {
           return res.data;
         })

@@ -64,6 +64,22 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    getdataLeaveUserById: async (type_id: number) => {
+      const condition = {
+        where: { typeId: type_id },
+       
+      };
+      return await axiosInstance
+        .post(`${baseUrlDataLeave}/condition`, {
+          condition: condition,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
     getdataLeaveAll: async () => {
       const condition = {
         include: {

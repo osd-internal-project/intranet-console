@@ -1,4 +1,6 @@
 export interface ITypetypeleave {
+  limitLeaveLastResult: number;
+  haveLeft: any;
   createdAt: Date;
   descriptionLeave: string;
   forwardLeave: string;

@@ -239,7 +239,14 @@ export const CreateOnlineLeave: React.FC<props> = ({
           ) : null}
 
           <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`วัตถุประสงค์การลา :`} name={`detail`} required>
+            <Form.Item
+              label={`วัตถุประสงค์การลา :`}
+              name={`detail`}
+              required
+              rules={[
+                { required: true, message: "กรุณากรอกวัตถุประสงค์การลา" },
+              ]}
+            >
               <Input.TextArea placeholder="วัตถุประสงค์การลา" />
             </Form.Item>
           </div>

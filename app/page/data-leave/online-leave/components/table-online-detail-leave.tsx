@@ -106,15 +106,84 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
   //   },
   // ];
 
+  // const columns: TableColumnsType<ITypetypeleave> = [
+  //   { key: "typeName", dataIndex: "typeName", title: "ประเภทการลา" },
+  //   {
+  //     key: "haveLeft",
+  //     dataIndex: "haveLeft",
+  //     title: "ลามาแล้ว",
+  //     render: (values: string, row: ITypetypeleave, index: number) => (
+  //       <div className="flex justify-center">
+  //         <Tag className="w-full flex justify-center">{`${values} วัน (${0} ชม.)`}</Tag>
+  //       </div>
+  //     ),
+  //   },
+  //   {
+  //     key: "limitLeaveLastResult",
+  //     dataIndex: "limitLeaveLastResult",
+  //     title: "คงเหลือ",
+  //     render: (values: string, row: ITypetypeleave, index: number) => (
+  //       <div className="flex justify-center">
+  //         <Tag className="w-full flex justify-center">{`${values} วัน (${0} ชม.)`}</Tag>
+  //       </div>
+  //     ),
+  //   },
+  //   {
+  //     key: "id",
+  //     dataIndex: "id",
+  //     title: "ลาครั้งนี้",
+  //     render: (values: string, row: ITypetypeleave, index: number) => {
+  //       const isSelected = row.typeId === params.typeId;
+  //       const days = isSelected ? params.lengthDate : 0;
+  //       const hours = isSelected ? params.lengthTime : 0;
+  //       return (
+  //         <div className="flex justify-center">
+  //           <Tag className="w-full flex justify-center">{`${days} วัน (${hours} ชม.)`}</Tag>
+  //         </div>
+  //       );
+  //     },
+  //   },
+  //   {
+  //     key: "total",
+  //     dataIndex: "total",
+  //     title: "รวม",
+  //     render: (values: string, row: ITypetypeleave, index: number) => {
+  //       const haveLeft = Number(row.haveLeft) || 0;
+  //       const isSelected = row.typeId === params.typeId;
+  //       const totalDays = haveLeft + (isSelected ? params.lengthDate : 0);
+  //       const totalHours =
+  //         (Number(values) || 0) + (isSelected ? params.lengthTime : 0);
+  //       const color =
+  //         totalDays > row.limitLeaveLastResult
+  //           ? "orange-inverse"
+  //           : params.startDate && params.endDate
+  //           ? "green-inverse"
+  //           : undefined;
+
+  //       return (
+  //         <div className="flex justify-center">
+  //           <Tag className="w-full flex justify-center" color={color}>
+  //             {`${totalDays} วัน (${totalHours} ชม.)`}
+  //           </Tag>
+  //         </div>
+  //       );
+  //     },
+  //   },
+  // ];
+
+  //***********************************************************
+
   const columns: TableColumnsType<ITypetypeleave> = [
     { key: "typeName", dataIndex: "typeName", title: "ประเภทการลา" },
     {
       key: "haveLeft",
       dataIndex: "haveLeft",
       title: "ลามาแล้ว",
-      render: (values: string, row: ITypetypeleave, index: number) => (
+      render: (value: number, row: ITypetypeleave) => (
         <div className="flex justify-center">
-          <Tag className="w-full flex justify-center">{`${values} วัน (${0} ชม.)`}</Tag>
+          <Tag className="w-full flex justify-center">{`${value} วัน (${
+            row.haveLeftHours || 0
+          } ชม.)`}</Tag>
         </div>
       ),
     },
@@ -122,9 +191,11 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       key: "limitLeaveLastResult",
       dataIndex: "limitLeaveLastResult",
       title: "คงเหลือ",
-      render: (values: string, row: ITypetypeleave, index: number) => (
+      render: (value: number, row: ITypetypeleave) => (
         <div className="flex justify-center">
-          <Tag className="w-full flex justify-center">{`${values} วัน (${0} ชม.)`}</Tag>
+          <Tag className="w-full flex justify-center">{`${value} วัน (${
+            row.limitLeaveLastResult || 0
+          } ชม.)`}</Tag>
         </div>
       ),
     },
@@ -132,7 +203,7 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       key: "id",
       dataIndex: "id",
       title: "ลาครั้งนี้",
-      render: (values: string, row: ITypetypeleave, index: number) => {
+      render: (value: string, row: ITypetypeleave) => {
         const isSelected = row.typeId === params.typeId;
         const days = isSelected ? params.lengthDate : 0;
         const hours = isSelected ? params.lengthTime : 0;
@@ -145,20 +216,25 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
     },
     {
       key: "total",
-      dataIndex: "total",
+      dataIndex: "haveLeft",
       title: "รวม",
-      render: (values: string, row: ITypetypeleave, index: number) => {
-        const haveLeft = Number(row.haveLeft) || 0;
+      render: (value: number, row: ITypetypeleave) => {
         const isSelected = row.typeId === params.typeId;
-        const totalDays = haveLeft + (isSelected ? params.lengthDate : 0);
+        const totalDays = value + (isSelected ? params.lengthDate : 0);
         const totalHours =
-          (Number(values) || 0) + (isSelected ? params.lengthTime : 0);
-        const color =
-          totalDays > row.limitLeaveLastResult
+          (row.haveLeftHours || 0) + (isSelected ? params.lengthTime : 0);
+
+        const isOverLimit = totalDays > row.limitLeaveLastResult;
+        const hasDateRange = params.startDate && params.endDate;
+
+        let color: string | undefined;
+        if (isSelected) {
+          color = isOverLimit
             ? "orange-inverse"
-            : params.startDate && params.endDate
+            : hasDateRange
             ? "green-inverse"
             : undefined;
+        }
 
         return (
           <div className="flex justify-center">

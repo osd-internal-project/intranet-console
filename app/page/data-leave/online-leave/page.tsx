@@ -72,7 +72,7 @@ export default function Page() {
   useEffect(() => {
     if (loading) loadDataTypeLeave();
   }, [loading, params]);
-  console.log(session);
+  // console.log(session);
   console.log(session?.user);
 
   const loadDataTypeLeave = async () => {

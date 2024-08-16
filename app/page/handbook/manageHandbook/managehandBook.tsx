@@ -84,6 +84,7 @@ const Managehandbook: React.FC = () => {
       },
     };
     console.log(values.handbookid);
+    console.log(session?.user.username);
 
     try {
       const response = await managehandbookFileServices.createhandbookFile(
@@ -148,17 +149,13 @@ const Managehandbook: React.FC = () => {
       key: "fileName",
       width: "180px",
     },
-    {
-      title: "ที่อยู่ข้อมูล",
-      dataIndex: "fileLocation",
-      key: "fileLocation",
-      width: "140px",
-    },
+    
     {
       title: "นำเข้าเวลา",
       dataIndex: "createdAt",
       key: "createdAt",
       width: "200px",
+      render: (createdAt: Date) => moment(createdAt).format("YYYY/MM/DD"),
     },
     {
       title: "การดาวโหลด",

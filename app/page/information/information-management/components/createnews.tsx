@@ -68,9 +68,7 @@ export interface newsType {
 }
 const { TextArea } = Input;
 
-const Infomation_management: React.FC<newsImage> = ({
-
-}) => {
+const Infomation_management: React.FC<newsImage> = ({}) => {
   const { data: session } = useSession();
   const [submitLoading, setSubmitLoading] = useState(true);
   const intraAuth = useAxiosIntranet();
@@ -98,8 +96,6 @@ const Infomation_management: React.FC<newsImage> = ({
     console.log(attendFiles);
 
     setSubmitLoading(true);
-    // const carIdData = maCar.findLast((car) => car.carId === values.carId);
-    // console.log(`${carIdData}`);
 
     const informationNewsCreateData = {
       data: {
@@ -109,7 +105,8 @@ const Infomation_management: React.FC<newsImage> = ({
         newsType: values.newsType,
         author: session?.user.username,
         phblishedAt: new Date().toISOString(),
-        updatedAt: values?.updatedAt,
+        updatedAt:
+          values !== null ? values.updatedAt : new Date().toISOString(),
         status: values.status,
       },
     };
@@ -236,24 +233,20 @@ const Infomation_management: React.FC<newsImage> = ({
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item valuePropName="filelist">
-              <Upload
-                // {...props}
-                // onPreview={onPreview}
-                fileList={attendFiles}
-                onChange={handleChangeAttendFiles}
-                beforeUpload={beforeUploadAttendFiles}
-                multiple={true}
-                maxCount={3}
-                accept=".png,.jpg,.jpeg"
-              >
-                <Button icon={<UploadOutlined />}>Select File</Button>
-              </Upload>
+            <Upload
+              fileList={attendFiles}
+              onChange={handleChangeAttendFiles}
+              beforeUpload={beforeUploadAttendFiles}
+              multiple={true}
+              maxCount={3}
+              accept=".png,.jpg,.jpeg"
+            >
+              <Button icon={<UploadOutlined />}>Select File</Button>
+            </Upload>
           </Form.Item>
           <Form.Item>
             <Button
               type="primary"
-              // onClick={handleUpload}
-              // disabled={fileList.length === 0}
               loading={submitLoading}
               style={{ marginTop: 16 }}
               htmlType="submit"

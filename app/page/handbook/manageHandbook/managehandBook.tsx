@@ -6,6 +6,7 @@ import type { GetProp, UploadFile, UploadProps } from "antd";
 import { RcFile } from "antd/es/upload";
 import { UploadOutlined } from "@ant-design/icons";
 import moment from "moment";
+import { useSession } from "next-auth/react";
 import {
   Button,
   Row,
@@ -22,13 +23,14 @@ import {
   Form,
   Space,
   Upload,
+  Switch,
 } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManagehandbookFileServices } from "../service/handbook.service";
 import { useForm } from "antd/es/form/Form";
 import { Anybody } from "next/font/google";
 export interface handbookFile {
-  id: Number;
+  handbookid: number;
   fileName: String;
   fileLocation: String;
   createdAt: String;
@@ -41,9 +43,10 @@ const Managehandbook: React.FC = () => {
   const [handbookFile, sethandbookFile] = useState<handbookFile[]>([]);
   const managehandbookFileServices = ManagehandbookFileServices(intraAuth);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [form] = useForm();
+  const [formupload] = useForm();
   const [showmodalupload, setshowmodalupload] = useState(false);
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
+  const { data: session } = useSession();
 
   useEffect(() => {
     fetchDataHandbook();
@@ -65,44 +68,50 @@ const Managehandbook: React.FC = () => {
       message.error("Failed to fetch car data");
     }
   };
-  const handbookfileCreate: FormProps<
-    handbookFile
-  >["onFinish"] = async (values) => {
+  const handbookfileCreate: FormProps<handbookFile>["onFinish"] = async (
+    values
+  ) => {
     console.log(attendFiles);
     setSubmitLoading(true);
     const handbookCreateData = {
       data: {
-        id:values?.id,
+        fileName: values?.fileName,
+        fileLocation: values?.fileLocation,
+        author: session?.user.username,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        status: values.status,
       },
     };
-    try {const response =
-      await managehandbookFileServices.createhandbookFile(handbookCreateData)
-    if (response && attendFiles.length > 0) {
-      await Promise.all(
-        attendFiles.map(async (file) => {
-          console.log(`${response.id}`);
-          const formData = new FormData();
-          formData.append("file", file.originFileObj as RcFile);
-          await managehandbookFileServices.uploadFiles(
-            response.id,
-            formData
-          );
-        })
+    console.log(values.handbookid);
+
+    try {
+      const response = await managehandbookFileServices.createhandbookFile(
+        handbookCreateData
       );
+      if (response && attendFiles.length > 0) {
+        await Promise.all(
+          attendFiles.map(async (file) => {
+            console.log(`${response.handbookid}`);
+            const formData = new FormData();
+            formData.append("file", file.originFileObj as RcFile);
+            await managehandbookFileServices.uploadFiles(response.handbookid, formData);
+          })
+        );
+      }
+      if (response) {
+        formupload.resetFields();
+        message.success("เพิ่มข่าวสารสำเร็จ");
+      } else {
+        message.error("เพิ่มข่าวสารไม่สำเร็จ");
+      }
+      setSubmitLoading(false);
+      fetchDataHandbook();
+      closecreate();
+    } catch (error) {
+      message.error("อัปโหลดไฟล์ไม่สำเร็จ");
+      setSubmitLoading(false);
     }
-    if (response) {
-      message.success("เพิ่มข่าวสารสำเร็จ");
-      form.resetFields();
-    } else {
-      message.error("เพิ่มข่าวสารไม่สำเร็จ");
-    }
-    setSubmitLoading(false);
-    fetchDataHandbook();
-  }
-  catch (error) {
-    message.error("อัปโหลดไฟล์ไม่สำเร็จ");
-    setSubmitLoading(false);
-  }
   };
 
   const handleChangeAttendFiles: UploadProps["onChange"] = async ({
@@ -128,8 +137,8 @@ const Managehandbook: React.FC = () => {
   const columns: TableProps<handbookFile>["columns"] = [
     {
       title: "ไอดี",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "handbookid",
+      key: "handbookid",
       align: "center",
       width: "20px",
     },
@@ -170,8 +179,8 @@ const Managehandbook: React.FC = () => {
         footer={null}
         destroyOnClose
       >
-        <Form onFinish={handbookfileCreate}>
-          <Form.Item>
+        <Form form={formupload} onFinish={handbookfileCreate} layout="vertical">
+          <Form.Item valuePropName="filelist">
             <Upload
               // {...props}
               // onPreview={onPreview}
@@ -179,11 +188,22 @@ const Managehandbook: React.FC = () => {
               onChange={handleChangeAttendFiles}
               beforeUpload={beforeUploadAttendFiles}
               multiple={true}
-              maxCount={3}
+              maxCount={1}
               accept=".pdf"
             >
               <Button icon={<UploadOutlined />}>Select File</Button>
             </Upload>
+          </Form.Item>
+          <Form.Item
+            name="status"
+            label="สถานะการมองเห็น"
+            style={{ width: "300px" }}
+          >
+            <Switch
+                checkedChildren="เปิดการมอง"
+                unCheckedChildren="ปิดการมอง"
+                defaultChecked
+              />
           </Form.Item>
           <Form.Item>
             <Space style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -205,7 +225,4 @@ const Managehandbook: React.FC = () => {
     </div>
   );
 };
-document.addEventListener("DOMContentLoaded", function () {
-  ReactDOM.render(<Managehandbook />, document.getElementById("root"));
-});
 export default Managehandbook;

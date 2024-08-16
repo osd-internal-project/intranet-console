@@ -1,5 +1,5 @@
 export interface handbookFile {
-  id: Number;
+  handbookid: Number;
   fileName: String;
   fileLocation: String;
   author: String;

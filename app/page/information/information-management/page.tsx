@@ -1,9 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import { AntDesignOutlined } from "@ant-design/icons";
-import type { TableProps, FormProps } from "antd";
 import Creaatenews from "./components/createnews"
-import Newoption from "./components/newoption";
+import Newoption from "./components/newoption"
 import Tablenews from "./components/tableNews"
 import {
   Select,

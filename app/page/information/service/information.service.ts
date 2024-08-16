@@ -52,7 +52,6 @@ export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
         });
     },
 
-    // ma car type
     getnewsImageQuery: async () => {
       return await axiosInstance
         .get(`${baseUrlApinewsImage}`)

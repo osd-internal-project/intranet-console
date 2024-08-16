@@ -67,8 +67,8 @@ export const CreateOnlineLeave: React.FC<props> = ({
         ownerName: `${getUserOwner?.firstNameTh} ${getUserOwner?.lastNameTh}`,
         ownerId: getUserOwner?.userId,
       });
-      console.log("ownerId:", getUser);
-      console.log("ownerId:", getUserOwner?.userId);
+      // console.log("ownerId:", getUserOwner);
+      // console.log("ownerId:", getUserOwner?.userId);
     };
     getdatauser();
   }, [getUserOwner]);

@@ -174,16 +174,20 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
   //***********************************************************
 
   const columns: TableColumnsType<ITypetypeleave> = [
-    { key: "typeName", dataIndex: "typeName", title: "ประเภทการลา" },
+    {
+      key: "typeName",
+      dataIndex: "typeName",
+      title: "ประเภทการลา",
+    },
     {
       key: "haveLeft",
       dataIndex: "haveLeft",
       title: "ลามาแล้ว",
       render: (value: number, row: ITypetypeleave) => (
         <div className="flex justify-center">
-          <Tag className="w-full flex justify-center">{`${value} วัน (${
-            row.haveLeftHours || 0
-          } ชม.)`}</Tag>
+          <Tag className="w-full flex justify-center">
+            {`${value} วัน (${row.haveLeftHours || 0} ชม.)`}
+          </Tag>
         </div>
       ),
     },
@@ -193,9 +197,9 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       title: "คงเหลือ",
       render: (value: number, row: ITypetypeleave) => (
         <div className="flex justify-center">
-          <Tag className="w-full flex justify-center">{`${value} วัน (${
-            row.limitLeaveLastResult || 0
-          } ชม.)`}</Tag>
+          <Tag className="w-full flex justify-center">
+            {`${value} วัน (${"0" || 0} ชม.)`}
+          </Tag>
         </div>
       ),
     },
@@ -209,7 +213,9 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         const hours = isSelected ? params.lengthTime : 0;
         return (
           <div className="flex justify-center">
-            <Tag className="w-full flex justify-center">{`${days} วัน (${hours} ชม.)`}</Tag>
+            <Tag className="w-full flex justify-center">
+              {`${days} วัน (${hours} ชม.)`}
+            </Tag>
           </div>
         );
       },
@@ -223,17 +229,16 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         const totalDays = value + (isSelected ? params.lengthDate : 0);
         const totalHours =
           (row.haveLeftHours || 0) + (isSelected ? params.lengthTime : 0);
-
         const isOverLimit = totalDays > row.limitLeaveLastResult;
         const hasDateRange = params.startDate && params.endDate;
 
         let color: string | undefined;
         if (isSelected) {
-          color = isOverLimit
-            ? "orange-inverse"
-            : hasDateRange
-            ? "green-inverse"
-            : undefined;
+          if (isOverLimit) {
+            color = "orange-inverse";
+          } else if (hasDateRange) {
+            color = "green-inverse";
+          }
         }
 
         return (

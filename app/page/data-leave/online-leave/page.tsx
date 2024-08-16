@@ -73,16 +73,14 @@ export default function Page() {
     if (loading) loadDataTypeLeave();
   }, [loading, params]);
   // console.log(session);
-  console.log(session?.user);
+  // console.log(session?.user);
+  // console.log(getUser);
 
   const loadDataTypeLeave = async () => {
     const res = await dataleaveservice.getdataAll();
     const resOwner = await dataleaveserviceUser.getOwnerGroupsByPositionId(
       getUser?.userMapOrganizeChart[0]?.positionId
     );
-    // const resOwner = await dataleaveserviceUser.getOwnerGroupsByPositionId(
-    //   "5"
-    // );
     const resTableDeatilTypeLeave =
       await dataleaveservice.findDetailTypeLeaveByUserId(getUser?.userId);
     const resTableUserTypeLeave = await dataleaveservice.findUserByUserId(

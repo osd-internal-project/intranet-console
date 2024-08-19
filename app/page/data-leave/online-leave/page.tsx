@@ -31,6 +31,7 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
 import { useRouter } from "next/navigation";
 import { RcFile, UploadProps } from "antd/es/upload";
+import { error } from "console";
 
 export default function Page() {
   const router = useRouter();
@@ -228,71 +229,245 @@ export default function Page() {
     return false;
   };
 
-  const checkLeaveHour = async (type_id: number): Promise<boolean> => {
+  // const checkLeaveHour = async (
+  //   type_id: number,
+  //   value: any
+  // ): Promise<boolean> => {
+
+  //   try {
+  //     const dataLeaveUserId = await dataleaveservice.getdataLeaveByuserId(
+  //       session?.user.userId as string
+  //     );
+  //     const hasLeave = dataLeaveUserId.some(
+  //       (record: any) => record.typeId === type_id
+  //     );
+  //     if (hasLeave) {
+  //       const dataLeaveUserById = await dataleaveservice.getdataLeaveUserById(
+  //         type_id
+  //       );
+
+  //       const dataHoru = dataLeaveUserById.map((ho: any) => {
+  //         const startDate = new Date(ho.startDate);
+  //         const endDate = new Date(ho.endDate);
+  //         const differenceInMilliseconds =
+  //           endDate.getTime() - startDate.getTime();
+  //         const differenceInDays = Math.ceil(
+  //           differenceInMilliseconds / (1000 * 60 * 60 * 24)
+  //         );
+  //         const differenceInHours = Math.ceil(
+  //           differenceInMilliseconds / (1000 * 60 * 60)
+  //         );
+  //         return {
+  //           startDate: startDate.toISOString().split("T")[0],
+  //           endDate: endDate.toISOString().split("T")[0],
+  //           differenceInDays,
+  //           differenceInHours,
+  //         };
+  //       });
+  //       const hoursOnly = dataHoru.map((item: any) => item.differenceInHours);
+
+  //       let result: number, resultDate: Date;
+
+  //       if (type_id === 1) {
+  //         result = 240;
+  //         resultDate = new Date();
+  //         resultDate.setHours(resultDate.getHours() + 240);
+  //       } else if (
+  //         type_id === 2 ||
+  //         type_id === 3 ||
+  //         type_id === 4 ||
+  //         type_id === 7 ||
+  //         type_id === 10
+  //       ) {
+  //         result = 24;
+  //         resultDate = new Date();
+  //         resultDate.setHours(resultDate.getHours() + 24);
+  //       } else if (type_id === 5) {
+  //         result = 48;
+  //         resultDate = new Date();
+  //         resultDate.setHours(resultDate.getHours() + 48);
+  //       } else if (type_id === 6) {
+  //         result = 784;
+  //         resultDate = new Date();
+  //         resultDate.setHours(resultDate.getHours() + 784);
+  //       } else if (type_id === 8) {
+  //         result = 40;
+  //         resultDate = new Date();
+  //         resultDate.setHours(resultDate.getHours() + 40);
+  //       } else if (type_id === 9 || type_id === 11) {
+  //         result = 120;
+  //         resultDate = new Date();
+  //         resultDate.setHours(resultDate.getHours() + 120);
+  //       } else if (type_id === 12) {
+  //         result = 480;
+  //         resultDate = new Date();
+  //         resultDate.setHours(resultDate.getHours() + 480);
+  //       } else if (type_id === 13) {
+  //         result = 1440;
+  //         resultDate = new Date();
+  //         resultDate.setHours(resultDate.getHours() + 1440);
+  //       } else {
+  //         result = 0;
+  //       }
+
+  //       if (Array.isArray(dataLeaveUserById)) {
+  //         const hasLeaveHour = dataLeaveUserById.map(
+  //           (leaveTime: any) => leaveTime.leaveHour
+  //         );
+  //         const totalHours = hoursOnly.reduce(
+  //           (accumulator: any, currentValue: any) => accumulator + currentValue,
+  //           0
+  //         );
+
+  //         if (totalHours < result) {
+  //           const totalLeaveHours = hasLeaveHour.reduce(
+  //             (total, hour) => total + (Number(hour) || 0),
+  //             0
+  //           );
+
+  //           if (totalLeaveHours < result) {
+  //             return false;
+  //           }
+  //           return totalLeaveHours;
+  //         }
+  //         return totalHours;
+  //       }
+
+  //       return false;
+  //     }
+  //     return false;
+  //   } catch (error) {
+  //     console.error("เช็คจำนวนเวลาลาไม่ได้");
+  //     return false;
+  //   }
+  // };
+
+  const checkLeaveHour = async (
+    type_id: number,
+    value: any
+  ): Promise<boolean> => {
     try {
-      const dataLeaveUserId = await dataleaveservice.getdataLeaveByuserId(
-        session?.user.userId as string
+      let resultId: number;
+      switch (type_id) {
+        case 1:
+          resultId = 240;
+          break;
+        case 2:
+        case 3:
+        case 4:
+        case 7:
+        case 10:
+          resultId = 24;
+          break;
+        case 5:
+          resultId = 48;
+          break;
+        case 6:
+          resultId = 784;
+          break;
+        case 8:
+          resultId = 40;
+          break;
+        case 9:
+        case 11:
+          resultId = 120;
+          break;
+        case 12:
+          resultId = 480;
+          break;
+        case 13:
+          resultId = 1440;
+          break;
+        default:
+          resultId = 0;
+      }
+      const dataLeaveUserById = await dataleaveservice.getdataLeaveUserById(
+        type_id
       );
-      const hasLeave = dataLeaveUserId.some(
-        (record: any) => record.typeId === type_id
+      const hasLeaveHour = dataLeaveUserById.map(
+        (leaveTime: any) => leaveTime.leaveHour
       );
-      // const hasLeaveTypeid = dataLeaveUserId.map((hr: any) => hr.typeId);
-      if (hasLeave) {
-        const dataLeaveUserById = await dataleaveservice.getdataLeaveUserById(
-          type_id
-        );
-        let result: number;
-        if (type_id === 1) {
-          result = 240;
-        } else if (
-          type_id === 2 ||
-          type_id === 3 ||
-          type_id === 4 ||
-          type_id === 7 ||
-          type_id === 10
-        ) {
-          result = 24;
-        } else if (type_id === 5) {
-          result = 48;
-        } else if (type_id === 6) {
-          result = 784;
-        } else if (type_id === 8) {
-          result = 40;
-        } else if (type_id === 9 || type_id === 11) {
-          result = 120;
-        } else if (type_id === 12) {
-          result = 480;
-        } else if (type_id === 13) {
-          result = 1440;
-        } else {
-          result = 0;
-        }
-        if (Array.isArray(dataLeaveUserById)) {
-          const hasLeaveHour = dataLeaveUserById.map(
-            (leaveTime: any) => leaveTime.leaveHour
-          );
-          const totalLeaveHours = hasLeaveHour.reduce(
-            (total, hour) => total + (Number(hour) || 0),
+      const totalLeaveHours = hasLeaveHour.reduce(
+        (total: any, hour: any) => total + (Number(hour) || 0),
+        0
+      );
+
+      if (totalLeaveHours < resultId) {
+        if (typeof value === "object" && value !== null) {
+          let totalHours = 0;
+
+          for (const any in value) {
+            if (value.hasOwnProperty(any)) {
+              const hour = value;
+
+              if (hour.startDate && hour.endDate) {
+                const startDate = new Date(hour.startDate);
+                const endDate = new Date(hour.endDate);
+
+                if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+                  const differenceInMilliseconds =
+                    endDate.getTime() - startDate.getTime();
+                  const differenceInHours =
+                    differenceInMilliseconds / (1000 * 60 * 60);
+
+                  totalHours = differenceInHours;
+                  console.log(differenceInHours);
+                } else {
+                  message.error("ตรวจสอบจำนวนเวลาลาไม่สำเร็จ");
+                }
+              } else {
+              }
+            }
+          }
+
+          const dataHoru = dataLeaveUserById.map((ho: any) => {
+            const startDate = new Date(ho.startDate);
+            const endDate = new Date(ho.endDate);
+            const differenceInMilliseconds =
+              endDate.getTime() - startDate.getTime();
+            const differenceInDays = Math.ceil(
+              differenceInMilliseconds / (1000 * 60 * 60 * 24)
+            );
+            const differenceInHours = Math.ceil(
+              differenceInMilliseconds / (1000 * 60 * 60)
+            );
+            return {
+              startDate: startDate.toISOString().split("T")[0],
+              endDate: endDate.toISOString().split("T")[0],
+              differenceInDays,
+              differenceInHours,
+            };
+          });
+          const hoursOnly = dataHoru.map((item: any) => item.differenceInHours);
+          const totalHour = hoursOnly.reduce(
+            (accumulator: any, currentValue: any) => accumulator + currentValue,
             0
           );
-          if (totalLeaveHours < result) {
-            return false;
-          }
-          return totalLeaveHours;
+          console.log("totalHour", totalHour);
+          console.log("totalHours", totalHours);
+
+          return totalHours >= totalHour;
+        } else {
+          return false;
         }
-        return false;
       }
-      return false;
+      return true;
     } catch (error) {
-      console.error("เช็คจำนวนเวลาลาไม่ได้");
+      console.error("Error checking leave hours:", error);
       return false;
     }
   };
 
-  const checkDataLeaveHour = async (type_id: number): Promise<boolean> => {
-    const conflict = await checkLeaveHour(type_id);
+  const checkDataLeaveHour = async (
+    type_id: number,
+    value: any
+  ): Promise<boolean> => {
+    const conflict = await checkLeaveHour(type_id, value);
     if (conflict) {
-      message.error("คุณใช้วันลาหมดแล้ว");
+      message.warning({
+        content: "คุณใช้สิทธิ์การลาประเภทนี้ครบหรือเกินจำนวนที่กำหนด",
+        duration: 5,
+      });
       return true;
     }
     return false;
@@ -335,6 +510,7 @@ export default function Page() {
       startTime && endTime
         ? endTime.diff(startTime, "hour", true).toFixed(1)
         : 0;
+
     if (new Date(leaveEndDate) < new Date(leaveStartDate)) {
       message.error("วันที่สิ้นสุดการลาต้องหลังวันที่เริ่มการลา");
       return;
@@ -367,7 +543,7 @@ export default function Page() {
             return;
           }
 
-          if (await checkDataLeaveHour(type_id)) {
+          if (await checkDataLeaveHour(type_id, values)) {
             return;
           }
 
@@ -474,7 +650,10 @@ export default function Page() {
             return;
           }
 
-          if (await checkDataLeaveHour(type_id)) {
+          // if (await checkDataLeaveHour(type_id)) {
+          //   return;
+          // }
+          if (await checkDataLeaveHour(type_id, values)) {
             return;
           }
 
@@ -573,7 +752,10 @@ export default function Page() {
             return;
           }
 
-          if (await checkDataLeaveHour(type_id)) {
+          // if (await checkDataLeaveHour(type_id)) {
+          //   return;
+          // }
+          if (await checkDataLeaveHour(type_id, values)) {
             return;
           }
 
@@ -672,7 +854,10 @@ export default function Page() {
             return;
           }
 
-          if (await checkDataLeaveHour(type_id)) {
+          // if (await checkDataLeaveHour(type_id)) {
+          //   return;
+          // }
+          if (await checkDataLeaveHour(type_id, values)) {
             return;
           }
 
@@ -771,7 +956,10 @@ export default function Page() {
             return;
           }
 
-          if (await checkDataLeaveHour(type_id)) {
+          // if (await checkDataLeaveHour(type_id)) {
+          //   return;
+          // }
+          if (await checkDataLeaveHour(type_id, values)) {
             return;
           }
 

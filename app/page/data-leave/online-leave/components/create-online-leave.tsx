@@ -292,6 +292,12 @@ export const CreateOnlineLeave: React.FC<props> = ({
                             label="เวลาเริ่มต้น :"
                             name="startTime"
                             required
+                            rules={[
+                              {
+                                required: true,
+                                message: "กรุณาเลือกเวลาที่เริ่มลา",
+                              },
+                            ]}
                           >
                             <TimePicker
                               className="w-full"
@@ -312,6 +318,12 @@ export const CreateOnlineLeave: React.FC<props> = ({
                             label="เวลาสิ้นสุด :"
                             name="endTime"
                             required
+                            rules={[
+                              {
+                                required: true,
+                                message: "กรุณาเลือกเวลาที่สิ้นสุดการลา",
+                              },
+                            ]}
                           >
                             <TimePicker
                               className="w-full"
@@ -336,6 +348,12 @@ export const CreateOnlineLeave: React.FC<props> = ({
                             label="เวลาเริ่มต้น :"
                             name="startTime"
                             required
+                            rules={[
+                              {
+                                required: true,
+                                message: "กรุณาเลือกเวลาที่เริ่มลา",
+                              },
+                            ]}
                           >
                             <TimePicker
                               className="w-full"
@@ -356,6 +374,12 @@ export const CreateOnlineLeave: React.FC<props> = ({
                             label="เวลาสิ้นสุด :"
                             name="endTime"
                             required
+                            rules={[
+                              {
+                                required: true,
+                                message: "กรุณาเลือกเวลาที่สิ้นสุดการลา",
+                              },
+                            ]}
                           >
                             <TimePicker
                               className="w-full"

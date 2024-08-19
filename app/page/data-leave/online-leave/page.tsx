@@ -9,7 +9,7 @@ import {
   UploadFile,
   message,
 } from "antd";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { useSession } from "next-auth/react";
 import {
   useAxiosIntranet,
@@ -68,12 +68,11 @@ export default function Page() {
     lengthTime: 0,
   });
   const [createdataleaveForm] = useForm();
+  const [time, setTime] = useState(dayjs("08:30", "HH:mm"));
 
   useEffect(() => {
     if (loading) loadDataTypeLeave();
   }, [loading, params]);
-  console.log(session?.user);
-  // console.log(getUser);
 
   const loadDataTypeLeave = async () => {
     const res = await dataleaveservice.getdataAll();
@@ -114,7 +113,8 @@ export default function Page() {
     return false;
   };
 
-  const onChangeParams = (value: string, type: string) => {
+  const onChangeParams = (value: Dayjs, type: string) => {
+    setTime(value);
     if (type === "type") {
       setParams((e: any) => ({ ...e, typeId: value }));
     }
@@ -134,6 +134,7 @@ export default function Page() {
     if (type === "endTime") {
       setParams((e: any) => ({ ...e, endTime: value }));
     }
+
     setLoading(true);
   };
 
@@ -160,34 +161,6 @@ export default function Page() {
       lengthTime: totalHours != 0 ? Number(totalHours) : 1,
     }));
   };
-
-  // const checklenghtTime = async (value1: any, value2: any) => {
-  //   if (!value1 || !value2) {
-  //     setParams((e: any) => ({
-  //       ...e,
-  //       lengthTime: 1,
-  //     }));
-  //     return;
-  //   }
-  //   const startTime = dayjs(value1, "HH:mm");
-  //   const endTime = dayjs(value2, "HH:mm");
-  //   if (!startTime.isValid() || !endTime.isValid()) {
-  //     setParams((e: any) => ({
-  //       ...e,
-  //       lengthTime: 1,
-  //     }));
-  //     return;
-  //   }
-  //   const totalHours =
-  //     endTime.isValid() && startTime.isValid()
-  //       ? endTime.diff(startTime, "hour", true).toFixed(1)
-  //       : 0;
-  //   setParams((e: any) => ({
-  //     ...e,
-  //     lengthTime: totalHours != "0" ? Number(totalHours) : 1,
-  //   }));
-  //   console.log(totalHours);
-  // };
 
   const handleChangeAttendFiles: UploadProps["onChange"] = async ({
     fileList: newFileList,
@@ -229,9 +202,19 @@ export default function Page() {
   };
 
   const checkLeaveCancel = async (type_id: number) => {
+    const typeLeaveDisabledMap = session?.user.typeLeaveDisabledMap;
+    if (!typeLeaveDisabledMap || !typeLeaveDisabledMap.length) {
+      return false;
+    }
     const user_id = session?.user.typeLeaveDisabledMap[0].userId;
     const existingLeave = await dataleaveservice.getdataTypeLeaveMap(user_id);
     return existingLeave.some((record: any) => {
+      if (
+        record.masterTypeleaveId === undefined ||
+        record.masterTypeleaveId === null
+      ) {
+        return false;
+      }
       return record.masterTypeleaveId === type_id;
     });
   };
@@ -983,6 +966,9 @@ export default function Page() {
             attendFiles={attendFiles}
             getUserOwner={getUserOwner}
             onChangeParams={onChangeParams}
+            params={params}
+            setParams={setParams}
+            time={time}
           />
         </Col>
         <Col span={12}>

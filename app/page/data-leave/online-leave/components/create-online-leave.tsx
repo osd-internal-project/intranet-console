@@ -10,10 +10,11 @@ import {
   Radio,
   Select,
   Switch,
+  TimePicker,
   Upload,
   UploadFile,
 } from "antd";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import {
   IDataUser,
   ISelect,
@@ -21,6 +22,7 @@ import {
   ITypeDataLeaveCreate,
 } from "../../common";
 import { RcFile } from "antd/es/upload";
+import form from "antd/es/form";
 export interface props {
   getUser?: IDataUser | null;
   getTypeLeaveOption: ISelect[];
@@ -37,7 +39,10 @@ export interface props {
   handleChangeAttendFiles: (e: any) => void;
   attendFiles: UploadFile[];
   getUserOwner: IDataUser | null;
-  onChangeParams: (value: string, type: string) => void;
+  onChangeParams: (value: Dayjs, type: string) => void;
+  setParams: (value: string, type: string) => void;
+  params: any;
+  time: any;
 }
 export const CreateOnlineLeave: React.FC<props> = ({
   getUser,
@@ -56,6 +61,9 @@ export const CreateOnlineLeave: React.FC<props> = ({
   attendFiles,
   getUserOwner,
   onChangeParams,
+  setParams,
+  params,
+  time,
 }): React.ReactElement => {
   useEffect(() => {
     const getdatauser = () => {
@@ -68,24 +76,18 @@ export const CreateOnlineLeave: React.FC<props> = ({
         ownerName: `${getUserOwner?.firstNameTh} ${getUserOwner?.lastNameTh}`,
         ownerId: getUserOwner?.userId,
       });
-      // console.log("ownerId:", getUserOwner);
-      // console.log("ownerId:", getUserOwner?.userId);
     };
     getdatauser();
   }, [getUserOwner]);
 
-  const [leaveTimeSlot, setLeaveTimeSlot] = useState<
-    "morning" | "afternoon" | undefined
-  >();
+  const { Option } = Select;
+  const [timeSlot, setTimeSlot] = useState("morning"); // Default to "morning"
 
-  // Handle radio button change
-  const handleLeaveTimeSlotChange = (e: any) => {
-    setLeaveTimeSlot(e.target.value);
-  };
-
-  // function handleLeaveTimeSlotChange(e: RadioChangeEvent): void {
-  //   throw new Error("Function not implemented.");
-  // }
+  const disabledTime = () => ({
+    disabledHours: () => [0, 16], // ล็อคชั่วโมง 0-7
+    disabledMinutes: () => [0, 1, 2, 3, 4], // ล็อคนาทีที่ 0-4
+    disabledSeconds: () => [55, 56, 57, 58, 59], // ล็อควินาทีที่ 55-59
+  });
 
   return (
     <div>
@@ -204,6 +206,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
               </Form.Item>
             </div>
           </div>
+
           {/* {dayjs(getStartDate).format("YYYY-MM-DD") ===
             dayjs(getEndDate).format("YYYY-MM-DD") && getEndDate ? (
             <>
@@ -254,22 +257,126 @@ export const CreateOnlineLeave: React.FC<props> = ({
             </>
           ) : null} */}
 
-          {dayjs(getStartDate).format("YYYY-MM-DD") ===
-            dayjs(getEndDate).format("YYYY-MM-DD") && getEndDate ? (
-            <div className="w-full grid grid-cols-3 gap-y-2 mt-2">
-              <div className="col-span-3 md:col-span-1 ml-5">
-                <Form.Item label="ช่วงเวลา" name="leaveTimeSlot">
-                  <Radio.Group
-                    onChange={handleLeaveTimeSlotChange}
-                    value={leaveTimeSlot}
-                  >
-                    <Radio value="morning">ลาช่วงเช้า (8:30 - 12:30)</Radio>
-                    <Radio value="afternoon">ลาช่วงบ่าย (13:30 - 17:30)</Radio>
-                  </Radio.Group>
-                </Form.Item>
+          <>
+            {dayjs(getStartDate).format("YYYY-MM-DD") ===
+              dayjs(getEndDate).format("YYYY-MM-DD") && getEndDate ? (
+              <div className="w-full grid grid-cols-4 gap-y-0.5 mt-0.5">
+                <div className="col-span-3 md:col-span-1 ml-5 mt-4">
+                  <Form.Item label="1 วัน" name="time_start_check">
+                    <Switch
+                      checkedChildren="ใช่"
+                      unCheckedChildren="ไม่"
+                      defaultChecked={false}
+                      onChange={(e: any) => setCheckSwitch(e)}
+                    />
+                  </Form.Item>
+                </div>
+                {!checkSwitch ? (
+                  <>
+                    <div className="col-span-3 md:col-span-1 ml-5 mt-4">
+                      <Form.Item label="ช่วงเวลา" name="timeSlot" required>
+                        <Select
+                          defaultValue="morning"
+                          onChange={(value) => setTimeSlot(value)}
+                        >
+                          <Option value="morning">ลาช่วงเช้า</Option>
+                          <Option value="afternoon">ลาช่วงบ่าย</Option>
+                        </Select>
+                      </Form.Item>
+                    </div>
+
+                    {timeSlot === "morning" && (
+                      <>
+                        <div className="col-span-3 md:col-span-1 ml-5 mt-4">
+                          <Form.Item
+                            label="เวลาเริ่มต้น :"
+                            name="startTime"
+                            required
+                          >
+                            <TimePicker
+                              className="w-full"
+                              disabledTime={disabledTime}
+                              format="HH:mm"
+                              hourStep={8}
+                              minuteStep={30}
+                              showNow={false}
+                              onChange={(e: any) =>
+                                onChangeParams(e, "startTime")
+                              }
+                              value={time}
+                            />
+                          </Form.Item>
+                        </div>
+                        <div className="col-span-3 md:col-span-1 ml-5 mt-4">
+                          <Form.Item
+                            label="เวลาสิ้นสุด :"
+                            name="endTime"
+                            required
+                          >
+                            <TimePicker
+                              className="w-full"
+                              onChange={(e: any) =>
+                                onChangeParams(e, "endTime")
+                              }
+                              disabledTime={disabledTime}
+                              format="HH:mm"
+                              hourStep={12}
+                              minuteStep={30}
+                              showNow={false}
+                            />
+                          </Form.Item>
+                        </div>
+                      </>
+                    )}
+
+                    {timeSlot === "afternoon" && (
+                      <>
+                        <div className="col-span-3 md:col-span-1 ml-5 mt-4">
+                          <Form.Item
+                            label="เวลาเริ่มต้น :"
+                            name="startTime"
+                            required
+                          >
+                            <TimePicker
+                              className="w-full"
+                              disabledTime={disabledTime}
+                              format="HH:mm"
+                              hourStep={13}
+                              minuteStep={30}
+                              showNow={false}
+                              onChange={(e: any) =>
+                                onChangeParams(e, "startTime")
+                              }
+                              value={time}
+                            />
+                          </Form.Item>
+                        </div>
+                        <div className="col-span-3 md:col-span-1 ml-5 mt-4">
+                          <Form.Item
+                            label="เวลาสิ้นสุด :"
+                            name="endTime"
+                            required
+                          >
+                            <TimePicker
+                              className="w-full"
+                              onChange={(e: any) =>
+                                onChangeParams(e, "endTime")
+                              }
+                              disabledTime={disabledTime}
+                              format="HH:mm"
+                              hourStep={17}
+                              minuteStep={30}
+                              showNow={false}
+                            />
+                          </Form.Item>
+                        </div>
+                      </>
+                    )}
+                  </>
+                ) : null}
               </div>
-            </div>
-          ) : null}
+            ) : null}
+          </>
 
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item

@@ -42,7 +42,6 @@ export interface props {
   onChangeParams: (value: Dayjs, type: string) => void;
   setParams: (value: string, type: string) => void;
   params: any;
-  time: any;
 }
 export const CreateOnlineLeave: React.FC<props> = ({
   getUser,
@@ -63,7 +62,6 @@ export const CreateOnlineLeave: React.FC<props> = ({
   onChangeParams,
   setParams,
   params,
-  time,
 }): React.ReactElement => {
   useEffect(() => {
     const getdatauser = () => {
@@ -81,12 +79,11 @@ export const CreateOnlineLeave: React.FC<props> = ({
   }, [getUserOwner]);
 
   const { Option } = Select;
-  const [timeSlot, setTimeSlot] = useState("morning"); // Default to "morning"
+  const [timeSlot, setTimeSlot] = useState("morning");
 
   const disabledTime = () => ({
-    disabledHours: () => [0, 16], // ล็อคชั่วโมง 0-7
-    disabledMinutes: () => [0, 1, 2, 3, 4], // ล็อคนาทีที่ 0-4
-    disabledSeconds: () => [55, 56, 57, 58, 59], // ล็อควินาทีที่ 55-59
+    disabledHours: () => [0, 16],
+    disabledMinutes: () => [0],
   });
 
   return (
@@ -258,7 +255,6 @@ export const CreateOnlineLeave: React.FC<props> = ({
                               onChange={(e: any) =>
                                 onChangeParams(e, "startTime")
                               }
-                              value={time}
                             />
                           </Form.Item>
                         </div>
@@ -314,7 +310,6 @@ export const CreateOnlineLeave: React.FC<props> = ({
                               onChange={(e: any) =>
                                 onChangeParams(e, "startTime")
                               }
-                              value={time}
                             />
                           </Form.Item>
                         </div>

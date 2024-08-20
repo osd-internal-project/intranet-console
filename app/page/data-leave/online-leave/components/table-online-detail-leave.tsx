@@ -166,6 +166,7 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       ? "disabled-row"
       : "";
   };
+  
   return (
     <>
       <Card

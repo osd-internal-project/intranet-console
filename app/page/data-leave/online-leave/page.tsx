@@ -69,7 +69,6 @@ export default function Page() {
     lengthTime: 0,
   });
   const [createdataleaveForm] = useForm();
-  const [time, setTime] = useState(dayjs("08:30", "HH:mm"));
 
   useEffect(() => {
     if (loading) loadDataTypeLeave();
@@ -115,7 +114,7 @@ export default function Page() {
   };
 
   const onChangeParams = (value: Dayjs, type: string) => {
-    setTime(value);
+   
     if (type === "type") {
       setParams((e: any) => ({ ...e, typeId: value }));
     }
@@ -1055,7 +1054,7 @@ export default function Page() {
             onChangeParams={onChangeParams}
             params={params}
             setParams={setParams}
-            time={time}
+          
           />
         </Col>
         <Col span={12}>

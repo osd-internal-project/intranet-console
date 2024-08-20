@@ -305,7 +305,6 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
         })
         .catch((err) => console.log(err));
     },
-    // deleteTypeLeaveDisabled: async (event: number) => {
     deleteTypeLeaveDisabled: async (id: number) => {
       return await axiosInstance
         .delete(`${baseUrlTypeleaveMap}/${id}`)

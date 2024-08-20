@@ -140,7 +140,6 @@ export const TableDetail: React.FC<props> = ({
   ];
   return (
     <div>
-      {/* ExportDataLeaveAll */}
       <Row gutter={[18, 18]}>
         <Col md={18}>
           <ExportDataLeaveAll data={dataLeaveUser} />

@@ -206,57 +206,6 @@ export const CreateOnlineLeave: React.FC<props> = ({
               </Form.Item>
             </div>
           </div>
-
-          {/* {dayjs(getStartDate).format("YYYY-MM-DD") ===
-            dayjs(getEndDate).format("YYYY-MM-DD") && getEndDate ? (
-            <>
-              <div className="w-full grid grid-cols-3 gap-y-2 mt-2">
-                <div className=" col-span-3 md:col-span-1 ml-5">
-                  <Form.Item label={`1 วัน`} name={`time_start_check`}>
-                    <Switch
-                      checkedChildren="ใช่"
-                      unCheckedChildren="ไม่"
-                      defaultChecked={false}
-                      onChange={(e: any) => {
-                        setCheckSwitch(e);
-                      }}
-                    />
-                  </Form.Item>
-                </div>
-                {!checkSwitch ? (
-                  <>
-                    <div className=" col-span-3 md:col-span-1 ml-5">
-                      <Form.Item
-                        label={`เวลาเริ่มต้น :`}
-                        name={"startTime"}
-                        required
-                      >
-                        <DatePicker
-                          picker="time"
-                          className="w-full"
-                          onChange={(e: any) => onChangeParams(e, "startTime")}
-                        />
-                      </Form.Item>
-                    </div>
-                    <div className=" col-span-3 md:col-span-1 ml-5">
-                      <Form.Item
-                        label={`เวลาสิ้นสุด :`}
-                        name={"endTime"}
-                        required
-                      >
-                        <DatePicker
-                          picker="time"
-                          className="w-full"
-                          onChange={(e: any) => onChangeParams(e, "endTime")}
-                        />
-                      </Form.Item>
-                    </div>
-                  </>
-                ) : null}
-              </div>
-            </>
-          ) : null} */}
-
           <>
             {dayjs(getStartDate).format("YYYY-MM-DD") ===
               dayjs(getEndDate).format("YYYY-MM-DD") && getEndDate ? (

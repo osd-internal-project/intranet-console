@@ -135,7 +135,7 @@ const ManagementNews: React.FC = () => {
                       alt="news"
                       crossOrigin="anonymous"
                       src={`http://localhost:4003/api/public/news-image/${item.images[0].fileName}`}
-                      style={{ width: "100%", marginBottom: "20px" }}
+                      style={{ width: "400px", height:"350px", marginBottom: "20px" }}
                     />
                   ) : null
                 }

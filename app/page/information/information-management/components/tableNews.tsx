@@ -37,6 +37,7 @@ import {
 import { EyeOutlined } from "@ant-design/icons";
 
 export interface informationNews {
+  [x: string]: any;
   newsId: number;
   newsName: string;
   content: string;
@@ -97,9 +98,6 @@ const Newoption: React.FC = () => {
     fetchDatanewimage();
   }, []);
 
-  // const handlePageChange = (page: number) => {
-  //   setCurrentPage(page);
-  // };
   const fetchDatainformationNews = async () => {
     try {
       const newsResponse =
@@ -218,16 +216,23 @@ const Newoption: React.FC = () => {
     }
   };
 
-  const handleDeleteNews = async (newsId: number) => {
+  const handleDeleteNews = async (record: informationNews) => {
     try {
       setSubmitLoading(true);
-
+      const responsefile = await manageinformationNewsServices.deletenewsImage(
+        record.newsImage[0].imageId ||
+        record.newsImage[1].imageId ||
+        record.newsImage[2].imageId 
+      );
       const response =
-        await manageinformationNewsServices.deleteinformationNews(newsId);
+        await manageinformationNewsServices.deleteinformationNews(
+          record.newsId
+        );
 
-      if (response) {
+      if (response && responsefile) {
         message.success("ลบข่าวสารสำเร็จ");
         fetchDatainformationNews();
+        fetchDatanewimage();
       } else {
         message.error("ลบข่าวสารไม่สำเร็จ");
       }
@@ -260,6 +265,7 @@ const Newoption: React.FC = () => {
       phblishedAt: dayjs(record.phblishedAt),
       updatedAt: dayjs(record.updatedAt),
     });
+    console.log(record.images);
 
     const existingFilesList: UploadFile[] = record.images.map(
       (image, index) => ({
@@ -269,7 +275,7 @@ const Newoption: React.FC = () => {
         url: `http://localhost:4003/api/public/news-image/${image.fileName}`,
       })
     );
-
+    console.log(existingFilesList);
     setExistingFiles(existingFilesList);
     setSelectedNews(record);
     setIsmodlaupdatedata(true);
@@ -371,7 +377,7 @@ const Newoption: React.FC = () => {
           </Tooltip>
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
-            onConfirm={() => handleDeleteNews(row.newsId)}
+            onConfirm={() => handleDeleteNews(row)}
             okText="ใช่"
             cancelText="ไม่"
           >
@@ -445,8 +451,6 @@ const Newoption: React.FC = () => {
             label="ชื่อประเภทข่าวสาร :"
             style={{
               width: "300px",
-              // visibility: "hidden",
-              // margin: "0 0 -60px 0",
             }}
           >
             <Input />

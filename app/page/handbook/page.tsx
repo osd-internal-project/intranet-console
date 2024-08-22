@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import ManageHandbook from "./manageHandbook/managehandBook";
 import Tablehandbook from "./manageHandbook/tablehandbook";
+import Optionhandbook from "./manageHandbook/optionhandbook";
 import {
   Button,
   Row,
@@ -31,6 +32,11 @@ const dataform: React.FC = () => {
       key: "2",
       label: "เพิ่มข้อมูล PDF",
       children: <ManageHandbook />,
+    },
+    {
+      key: "3",
+      label: "ประเภท PDF",
+      children: <Optionhandbook />,
     },
   ];
 

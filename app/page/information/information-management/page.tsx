@@ -32,13 +32,13 @@ const Infomation_management: React.FC = () => {
     },
     {
       key: "2",
-      label: "ประเภทของข่าวสาร",
-      children: <Newoption/>,
+      label: "ตารางข้อมูลข่าวสาร",
+      children: <Tablenews/>,
     },
     {
       key: "3",
-      label: "ตารางข้อมูลข่าวสาร",
-      children: <Tablenews/>,
+      label: "ประเภทของข่าวสาร",
+      children: <Newoption/>,
     },
     
   ];

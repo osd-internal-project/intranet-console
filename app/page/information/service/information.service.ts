@@ -40,7 +40,6 @@ export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
         });
     },
     deleteinformationNews: async (newsId: any) => {
-      console.log(`${baseUrlApiinformationNews}/${newsId}`);
       return await axiosInstance
         .delete(`${baseUrlApiinformationNews}/${newsId}`)
         .then((res) => {
@@ -86,7 +85,6 @@ export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
         });
     },
     uploadFiles: async (newsId: number, formData: FormData) => {
-      console.log(`${baseUrlApinewsImage}/${newsId}`);
       return axiosInstance.post(`${baseUrlApinewsImage}/${newsId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -95,8 +93,6 @@ export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
     },
 
     deletenewsImage: async (imageId: number) => {
-      console.log(imageId);
-
       return await axiosInstance
         .delete(`${baseUrlApinewsImage}/${imageId}`)
         .then((res) => {
@@ -107,7 +103,6 @@ export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-
     getnewsTypeQuery: async () => {
       return await axiosInstance
         .get(`${baseUrlApinewsType}`)

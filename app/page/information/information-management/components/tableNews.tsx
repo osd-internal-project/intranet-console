@@ -1,48 +1,43 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { AntDesignOutlined } from "@ant-design/icons";
 import type { TableProps, FormProps } from "antd";
 import { DeleteIcon, EditIcon } from "@/components/icon";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageinformationNewsServices } from "../../service/information.service";
 import { useForm } from "antd/es/form/Form";
 import { useSession } from "next-auth/react";
-import type { GetProp, UploadFile, UploadProps } from "antd";
+import type { UploadFile, UploadProps } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/es/upload";
 import { UploadFileStatus } from "antd/es/upload/interface";
 import dayjs from "dayjs";
+import weekday from "dayjs/plugin/weekday";
 import {
-  Select,
   Table,
   Space,
   Button,
-  Row,
-  Col,
   Modal,
   Form,
   Input,
-  Tag,
   message,
   Popconfirm,
-  InputNumber,
   Tooltip,
-  Card,
-  Pagination,
   Switch,
   DatePicker,
   Upload,
   Image,
+  Tag,
 } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
 
 export interface informationNews {
+  [x: string]: any;
   newsId: number;
   newsName: string;
   content: string;
   newsType: string;
   author: string;
-  phblishedAt: string;
+  phblishedAt: Date | string;
   updatedAt: Date | string;
   status: boolean;
   images: newsImage[];
@@ -79,7 +74,6 @@ const Newoption: React.FC = () => {
   const [newsType, setnewsType] = useState<newsType[]>([]);
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [existingFiles, setExistingFiles] = useState<UploadFile[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
   const [selectedNews, setSelectedNews] = useState<informationNews | null>(
     null
   );
@@ -97,9 +91,6 @@ const Newoption: React.FC = () => {
     fetchDatanewimage();
   }, []);
 
-  // const handlePageChange = (page: number) => {
-  //   setCurrentPage(page);
-  // };
   const fetchDatainformationNews = async () => {
     try {
       const newsResponse =
@@ -118,6 +109,7 @@ const Newoption: React.FC = () => {
     formdetail.setFieldsValue({
       ...record,
       phblishedAt: dayjs(record.phblishedAt),
+      updatedAt: dayjs(record.updatedAt),
     });
     setIsmodladetail(true);
   };
@@ -129,7 +121,7 @@ const Newoption: React.FC = () => {
 
     if (totalFilesCount > 3) {
       message.warning("คุณไม่สามารถอัปโหลดไฟล์เกิน 3 รูปได้");
-      return; // หยุดการดำเนินการหากจำนวนไฟล์เกิน
+      return;
     }
 
     setAttendFiles(newFileList);
@@ -151,19 +143,16 @@ const Newoption: React.FC = () => {
     }
   };
   const beforeUploadAttendFiles = (file: RcFile) => {
-    const totalFilesCount = existingFiles.length + attendFiles.length + 1; // บวก 1 เพื่อรวมไฟล์ใหม่ที่กำลังอัปโหลดด้วย
-
+    const totalFilesCount = existingFiles.length + attendFiles.length + 1;
     if (totalFilesCount > 3) {
       message.warning("คุณไม่สามารถอัปโหลดไฟล์เกิน 3 รูปได้");
-      return Upload.LIST_IGNORE; // ปฏิเสธการอัปโหลดไฟล์ใหม่
+      return Upload.LIST_IGNORE;
     }
-
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return Upload.LIST_IGNORE;
     }
-
-    return true; // อนุญาตให้อัปโหลดไฟล์ได้
+    return true;
   };
 
   const informationNewsUpdate: FormProps<
@@ -179,7 +168,7 @@ const Newoption: React.FC = () => {
       content: values.content,
       newsType: values.newsType,
       author: session?.user.username,
-      phblishedAt: values.phblishedAt,
+      phblishedAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       status: values.status,
     };
@@ -218,18 +207,32 @@ const Newoption: React.FC = () => {
     }
   };
 
-  const handleDeleteNews = async (newsId: number) => {
+  const handleDeleteNews = async (record: informationNews) => {
     try {
       setSubmitLoading(true);
 
-      const response =
-        await manageinformationNewsServices.deleteinformationNews(newsId);
+      const deleteImagePromises = record.newsImage.map(
+        (image: { imageId: number }) =>
+          manageinformationNewsServices.deletenewsImage(image.imageId)
+      );
 
-      if (response) {
-        message.success("ลบข่าวสารสำเร็จ");
-        fetchDatainformationNews();
+      const responsefile = await Promise.all(deleteImagePromises);
+
+      if (responsefile.every((res) => res)) {
+        const response =
+          await manageinformationNewsServices.deleteinformationNews(
+            record.newsId
+          );
+
+        if (response) {
+          message.success("ลบข่าวสารสำเร็จ");
+          fetchDatainformationNews();
+          fetchDatanewimage();
+        } else {
+          message.error("ลบข่าวสารไม่สำเร็จ");
+        }
       } else {
-        message.error("ลบข่าวสารไม่สำเร็จ");
+        message.error("ลบรูปภาพไม่สำเร็จ");
       }
     } catch (error) {
       message.error("ลบข่าวสารไม่สำเร็จ");
@@ -260,16 +263,15 @@ const Newoption: React.FC = () => {
       phblishedAt: dayjs(record.phblishedAt),
       updatedAt: dayjs(record.updatedAt),
     });
+    console.log(record.images);
 
-    const existingFilesList: UploadFile[] = record.images.map(
-      (image, index) => ({
-        uid: String(image.imageId),
-        name: image.fileimageName as string,
-        status: "done" as UploadFileStatus,
-        url: `http://localhost:4003/api/public/news-image/${image.fileName}`,
-      })
-    );
-
+    const existingFilesList: UploadFile[] = record.images.map((image) => ({
+      uid: String(image.imageId),
+      name: image.fileimageName as string,
+      status: "done" as UploadFileStatus,
+      url: `http://localhost:4003/api/public/news-image/${image.fileName}`,
+    }));
+    console.log(existingFilesList);
     setExistingFiles(existingFilesList);
     setSelectedNews(record);
     setIsmodlaupdatedata(true);
@@ -304,9 +306,11 @@ const Newoption: React.FC = () => {
     setSearchTerm(e.target.value);
   };
 
-  const filteredData = informationNews.filter((news) =>
-    news.newsName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredData = informationNews
+    .filter((news) =>
+      news.newsName.toLowerCase().includes(searchTerm.toLowerCase())||
+      news.newsType.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   const handledetail = () => {
     setSelectedNews(null);
@@ -359,6 +363,17 @@ const Newoption: React.FC = () => {
       width: "200px",
     },
     {
+      title: "การมองเห็น",
+      dataIndex: "status",
+      key: "status",
+      render: (status: boolean) =>
+        status ? (
+          <Tag color="green">เปิดการมอง</Tag>
+        ) : (
+          <Tag color="red">ปิดการมอง</Tag>
+        ),
+    },
+    {
       title: "การจัดการ",
       dataIndex: "manage",
       key: "manage",
@@ -371,7 +386,7 @@ const Newoption: React.FC = () => {
           </Tooltip>
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
-            onConfirm={() => handleDeleteNews(row.newsId)}
+            onConfirm={() => handleDeleteNews(row)}
             okText="ใช่"
             cancelText="ไม่"
           >
@@ -445,8 +460,6 @@ const Newoption: React.FC = () => {
             label="ชื่อประเภทข่าวสาร :"
             style={{
               width: "300px",
-              // visibility: "hidden",
-              // margin: "0 0 -60px 0",
             }}
           >
             <Input />

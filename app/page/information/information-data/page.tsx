@@ -1,23 +1,18 @@
 "use client";
-import React, { useState } from "react";
-import { Button, Row, Col, Modal, Input, Card, Pagination,Tabs ,TabsProps} from "antd";
-import Newsshow from "./components/shownews"
+import React from "react";
+import { Col, Card, Tabs, TabsProps } from "antd";
+import Newsshow from "./components/shownews";
 
 const dataform: React.FC = () => {
-  const [news, setNews] = useState<any[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedNews, setSelectedNews] = useState(null);
-
   const items: TabsProps["items"] = [
     {
       key: "1",
       label: "สร้างข้อมูลข่าว",
-      children: <Newsshow/>,
+      children: <Newsshow />,
     },
   ];
-  
-  // while 
+
+  // while
 
   return (
     <div style={{ backgroundColor: "#FFFFFF" }}>
@@ -27,17 +22,17 @@ const dataform: React.FC = () => {
           fontSize: "32px",
           fontStyle: "initial",
           borderBottom: "2px solid black",
-        }}>
+        }}
+      >
         ข้อมูลข่าวสาร
       </h1>
       <Col span={24}>
-          <div className="grid-span-1 space-y-2">
-            <Card>
-              <Tabs defaultActiveKey="1" items={items} />
-            </Card>
-          </div>
-        </Col>
-      
+        <div className="grid-span-1 space-y-2">
+          <Card>
+            <Tabs defaultActiveKey="1" items={items} />
+          </Card>
+        </div>
+      </Col>
     </div>
   );
 };

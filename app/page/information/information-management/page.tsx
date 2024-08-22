@@ -1,46 +1,26 @@
 "use client";
-import React, { useState } from "react";
-import Creaatenews from "./components/createnews"
-import Newoption from "./components/newoption"
-import Tablenews from "./components/tableNews"
-import {
-  Select,
-  Table,
-  Space,
-  Button,
-  Row,
-  Col,
-  Modal,
-  Form,
-  Input,
-  Tag,
-  message,
-  Popconfirm,
-  InputNumber,
-  Tooltip,
-  Card,
-  Pagination,
-  TabsProps,
-  Tabs,
-} from "antd";
+import React from "react";
+import Creaatenews from "./components/createnews";
+import Newoption from "./components/newoption";
+import Tablenews from "./components/tableNews";
+import { Col, Card, TabsProps, Tabs } from "antd";
 const Infomation_management: React.FC = () => {
   const items: TabsProps["items"] = [
     {
       key: "1",
       label: "สร้างข้อมูลข่าว",
-      children: <Creaatenews/>,
+      children: <Creaatenews />,
     },
     {
       key: "2",
-      label: "ประเภทของข่าวสาร",
-      children: <Newoption/>,
+      label: "ตารางข้อมูลข่าวสาร",
+      children: <Tablenews />,
     },
     {
       key: "3",
-      label: "ตารางข้อมูลข่าวสาร",
-      children: <Tablenews/>,
+      label: "ประเภทของข่าวสาร",
+      children: <Newoption />,
     },
-    
   ];
 
   return (
@@ -62,7 +42,6 @@ const Infomation_management: React.FC = () => {
           </Card>
         </div>
       </Col>
-      
     </div>
   );
 };

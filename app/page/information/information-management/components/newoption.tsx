@@ -1,29 +1,21 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { AntDesignOutlined } from "@ant-design/icons";
 import type { TableProps, FormProps } from "antd";
 import { DeleteIcon, EditIcon } from "@/components/icon";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageinformationNewsServices } from "../../service/information.service";
 import { useForm } from "antd/es/form/Form";
-import { useSession } from "next-auth/react";
 import {
-  Select,
   Table,
   Space,
   Button,
-  Row,
-  Col,
   Modal,
   Form,
   Input,
   Tag,
   message,
   Popconfirm,
-  InputNumber,
   Tooltip,
-  Card,
-  Pagination,
   Switch,
 } from "antd";
 export interface newType {
@@ -40,12 +32,11 @@ const Newoption: React.FC = () => {
   const manageinformationNewsServices =
     ManageinformationNewsServices(intraAuth);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const { data: session } = useSession();
   const [IsmodlaOpencreate, setIsmodlaOpencreate] = useState(false);
   const [modalEditnewType, setModalEditnewType] = useState(false);
   const [form] = useForm();
   const [formEdit] = useForm();
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   useEffect(() => {
     fetchDatanewType();
   }, []);
@@ -63,12 +54,11 @@ const Newoption: React.FC = () => {
       message.error("Failed to fetch car data");
     }
   };
+
   const newsTypeCreateDatacreate: FormProps<newType>["onFinish"] = async (
     values
   ) => {
     setSubmitLoading(true);
-    // const carIdData = maCar.findLast((car) => car.carId === values.carId);
-    // console.log(`${carIdData}`);
 
     const informationNewsCreateData = {
       data: {
@@ -131,7 +121,7 @@ const Newoption: React.FC = () => {
     setSearchTerm(e.target.value);
   };
 
-  const searthnews = newType.filter(newType =>
+  const searthnews = newType.filter((newType) =>
     newType.nameType.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -194,7 +184,6 @@ const Newoption: React.FC = () => {
               <EditIcon width="24" height="24" />{" "}
             </a>
           </Tooltip>
-          {/*  */}
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
             onConfirm={() => handleDeletenewType(row.idType)}
@@ -214,7 +203,6 @@ const Newoption: React.FC = () => {
   ];
   return (
     <div>
-      
       <div style={{ fontSize: "16px" }}>
         ค้นหาประเภทข่าว :
         <Input
@@ -226,13 +214,14 @@ const Newoption: React.FC = () => {
             margin: "10px 10px 10px 10px",
             width: "300px",
           }}
-        /><Button
-        type="primary"
-        style={{ margin: "10px 0 10px 5px" }}
-        onClick={modalopencreate}
-      >
-        สร้างประเภทข่าวสาร
-      </Button>
+        />
+        <Button
+          type="primary"
+          style={{ margin: "10px 0 10px 5px" }}
+          onClick={modalopencreate}
+        >
+          สร้างประเภทข่าวสาร
+        </Button>
       </div>
       <Modal
         title="เพิ่มข้อมูลตรวจสภาพรถ"

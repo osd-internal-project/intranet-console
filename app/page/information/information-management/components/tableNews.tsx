@@ -1,38 +1,32 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { AntDesignOutlined } from "@ant-design/icons";
 import type { TableProps, FormProps } from "antd";
 import { DeleteIcon, EditIcon } from "@/components/icon";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageinformationNewsServices } from "../../service/information.service";
 import { useForm } from "antd/es/form/Form";
 import { useSession } from "next-auth/react";
-import type { GetProp, UploadFile, UploadProps } from "antd";
+import type { UploadFile, UploadProps } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/es/upload";
 import { UploadFileStatus } from "antd/es/upload/interface";
 import dayjs from "dayjs";
+import weekday from "dayjs/plugin/weekday";
 import {
-  Select,
   Table,
   Space,
   Button,
-  Row,
-  Col,
   Modal,
   Form,
   Input,
-  Tag,
   message,
   Popconfirm,
-  InputNumber,
   Tooltip,
-  Card,
-  Pagination,
   Switch,
   DatePicker,
   Upload,
   Image,
+  Tag,
 } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
 
@@ -80,7 +74,6 @@ const Newoption: React.FC = () => {
   const [newsType, setnewsType] = useState<newsType[]>([]);
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [existingFiles, setExistingFiles] = useState<UploadFile[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
   const [selectedNews, setSelectedNews] = useState<informationNews | null>(
     null
   );
@@ -128,7 +121,7 @@ const Newoption: React.FC = () => {
 
     if (totalFilesCount > 3) {
       message.warning("คุณไม่สามารถอัปโหลดไฟล์เกิน 3 รูปได้");
-      return; // หยุดการดำเนินการหากจำนวนไฟล์เกิน
+      return;
     }
 
     setAttendFiles(newFileList);
@@ -150,19 +143,16 @@ const Newoption: React.FC = () => {
     }
   };
   const beforeUploadAttendFiles = (file: RcFile) => {
-    const totalFilesCount = existingFiles.length + attendFiles.length + 1; // บวก 1 เพื่อรวมไฟล์ใหม่ที่กำลังอัปโหลดด้วย
-
+    const totalFilesCount = existingFiles.length + attendFiles.length + 1;
     if (totalFilesCount > 3) {
       message.warning("คุณไม่สามารถอัปโหลดไฟล์เกิน 3 รูปได้");
-      return Upload.LIST_IGNORE; // ปฏิเสธการอัปโหลดไฟล์ใหม่
+      return Upload.LIST_IGNORE;
     }
-
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return Upload.LIST_IGNORE;
     }
-
-    return true; // อนุญาตให้อัปโหลดไฟล์ได้
+    return true;
   };
 
   const informationNewsUpdate: FormProps<
@@ -178,7 +168,7 @@ const Newoption: React.FC = () => {
       content: values.content,
       newsType: values.newsType,
       author: session?.user.username,
-      phblishedAt: values.phblishedAt,
+      phblishedAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       status: values.status,
     };
@@ -275,14 +265,12 @@ const Newoption: React.FC = () => {
     });
     console.log(record.images);
 
-    const existingFilesList: UploadFile[] = record.images.map(
-      (image, index) => ({
-        uid: String(image.imageId),
-        name: image.fileimageName as string,
-        status: "done" as UploadFileStatus,
-        url: `http://localhost:4003/api/public/news-image/${image.fileName}`,
-      })
-    );
+    const existingFilesList: UploadFile[] = record.images.map((image) => ({
+      uid: String(image.imageId),
+      name: image.fileimageName as string,
+      status: "done" as UploadFileStatus,
+      url: `http://localhost:4003/api/public/news-image/${image.fileName}`,
+    }));
     console.log(existingFilesList);
     setExistingFiles(existingFilesList);
     setSelectedNews(record);
@@ -318,9 +306,11 @@ const Newoption: React.FC = () => {
     setSearchTerm(e.target.value);
   };
 
-  const filteredData = informationNews.filter((news) =>
-    news.newsName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredData = informationNews
+    .filter((news) =>
+      news.newsName.toLowerCase().includes(searchTerm.toLowerCase())||
+      news.newsType.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   const handledetail = () => {
     setSelectedNews(null);
@@ -371,6 +361,17 @@ const Newoption: React.FC = () => {
       dataIndex: "author",
       key: "author",
       width: "200px",
+    },
+    {
+      title: "การมองเห็น",
+      dataIndex: "status",
+      key: "status",
+      render: (status: boolean) =>
+        status ? (
+          <Tag color="green">เปิดการมอง</Tag>
+        ) : (
+          <Tag color="red">ปิดการมอง</Tag>
+        ),
     },
     {
       title: "การจัดการ",

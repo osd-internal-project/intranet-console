@@ -1,39 +1,14 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { AntDesignOutlined } from "@ant-design/icons";
-import type { TableProps, FormProps } from "antd";
+import type { FormProps } from "antd";
 import { ManageinformationNewsServices } from "../../service/information.service";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useForm } from "antd/es/form/Form";
 import { useSession } from "next-auth/react";
 import { UploadOutlined } from "@ant-design/icons";
-import type { GetProp, UploadFile, UploadProps } from "antd";
+import type { UploadFile, UploadProps } from "antd";
 import { RcFile } from "antd/es/upload";
-import ImgCrop from "antd-img-crop";
-import {
-  Select,
-  Table,
-  Space,
-  Button,
-  Row,
-  Col,
-  Modal,
-  Form,
-  Input,
-  Tag,
-  message,
-  Popconfirm,
-  InputNumber,
-  Tooltip,
-  Card,
-  Pagination,
-  TabsProps,
-  Tabs,
-  DatePicker,
-  Upload,
-} from "antd";
-import { log } from "console";
-
+import { Select, Button, Form, Input, message, DatePicker, Upload } from "antd";
 export interface informationNews {
   newsId: Number;
   newsName: String;
@@ -66,7 +41,6 @@ export interface newsType {
   createAt: String;
   status: boolean;
 }
-const { TextArea } = Input;
 
 const Infomation_management: React.FC<newsImage> = ({}) => {
   const { data: session } = useSession();
@@ -84,19 +58,49 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
   const manageinformationNewsServices =
     ManageinformationNewsServices(intraAuth);
   const [form] = useForm();
+
   useEffect(() => {
     fetchDatainformationNews();
     fetchDataType();
     setAttendFiles([]);
   }, []);
 
+  const fetchDatainformationNews = async () => {
+    try {
+      const maresponse =
+        await manageinformationNewsServices.getinformationNewsQuery();
+      const informationNews: informationNews[] = maresponse.map(
+        (item: any, index: number) => ({
+          ...item,
+          key: index.toString(),
+        })
+      );
+      setinformationNews(informationNews);
+      setSubmitLoading(false);
+    } catch (error) {
+      message.error("Failed to fetch car data");
+    }
+  };
+
+  const fetchDataType = async () => {
+    try {
+      const maresponse = await manageinformationNewsServices.getnewsTypeQuery();
+      const optionsmaResponse = maresponse.map((event: newsType) => {
+        return {
+          value: event.nameType,
+          label: event.nameType,
+        };
+      });
+      setnewsTypeOptions(optionsmaResponse);
+      setnewsType(maresponse);
+    } catch (error) {
+      message.error("Failed to fetch car data");
+    }
+  };
   const informationNewsCreate: FormProps<
     informationNews & newsImage
   >["onFinish"] = async (values) => {
-    console.log(attendFiles);
-
     setSubmitLoading(true);
-
     const informationNewsCreateData = {
       data: {
         newsId: values?.newsId,
@@ -142,38 +146,6 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
       setSubmitLoading(false);
     }
   };
-  const fetchDatainformationNews = async () => {
-    try {
-      const maresponse =
-        await manageinformationNewsServices.getinformationNewsQuery();
-      const informationNews: informationNews[] = maresponse.map(
-        (item: any, index: number) => ({
-          ...item,
-          key: index.toString(),
-        })
-      );
-      setinformationNews(informationNews);
-      setSubmitLoading(false);
-    } catch (error) {
-      message.error("Failed to fetch car data");
-    }
-  };
-
-  const fetchDataType = async () => {
-    try {
-      const maresponse = await manageinformationNewsServices.getnewsTypeQuery();
-      const optionsmaResponse = maresponse.map((event: newsType) => {
-        return {
-          value: event.nameType,
-          label: event.nameType,
-        };
-      });
-      setnewsTypeOptions(optionsmaResponse);
-      setnewsType(maresponse);
-    } catch (error) {
-      message.error("Failed to fetch car data");
-    }
-  };
 
   const handleChangeAttendFiles: UploadProps["onChange"] = async ({
     fileList: newFileList,
@@ -181,6 +153,7 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
     console.log(newFileList[0]);
     return setAttendFiles(newFileList);
   };
+
   const beforeUploadAttendFiles = (file: RcFile) => {
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
@@ -188,6 +161,7 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
     }
     return false;
   };
+  
   return (
     <div style={{ backgroundColor: "#FFFFFF" }}>
       <div style={{ margin: " 10px 0 0 10px " }}>
@@ -234,7 +208,13 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item valuePropName="filelist">
-            <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginTop: "10px",
+              }}
+            >
               <Upload
                 listType="picture"
                 fileList={attendFiles}

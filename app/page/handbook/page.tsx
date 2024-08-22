@@ -1,27 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import ManageHandbook from "./manageHandbook/managehandBook";
 import Tablehandbook from "./manageHandbook/tablehandbook";
 import Optionhandbook from "./manageHandbook/optionhandbook";
-import {
-  Button,
-  Row,
-  Col,
-  Modal,
-  Input,
-  Card,
-  Pagination,
-  Tabs,
-  TabsProps,
-} from "antd";
-
+import { Col, Card, Tabs, TabsProps } from "antd";
 
 const dataform: React.FC = () => {
-  const [news, setNews] = useState<any[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedNews, setSelectedNews] = useState(null);
-
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -39,9 +23,6 @@ const dataform: React.FC = () => {
       children: <Optionhandbook />,
     },
   ];
-
-  // while
-
   return (
     <div style={{ backgroundColor: "#FFFFFF" }}>
       <h1

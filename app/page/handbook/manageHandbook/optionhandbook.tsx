@@ -1,29 +1,21 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { AntDesignOutlined } from "@ant-design/icons";
 import type { TableProps, FormProps } from "antd";
 import { DeleteIcon, EditIcon } from "@/components/icon";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManagehandbookFileServices } from "../service/handbook.service";
 import { useForm } from "antd/es/form/Form";
-import { useSession } from "next-auth/react";
 import {
-  Select,
   Table,
   Space,
   Button,
-  Row,
-  Col,
   Modal,
   Form,
   Input,
   Tag,
   message,
   Popconfirm,
-  InputNumber,
   Tooltip,
-  Card,
-  Pagination,
   Switch,
 } from "antd";
 export interface handbooktype {
@@ -63,7 +55,6 @@ const Newoption: React.FC = () => {
   const [handbookFile, sethandbookFile] = useState<handbookFile[]>([]);
   const managehandbookFileServices = ManagehandbookFileServices(intraAuth);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const { data: session } = useSession();
   const [IsmodlaOpencreate, setIsmodlaOpencreate] = useState(false);
   const [modalEditnewType, setModalEditnewType] = useState(false);
   const [form] = useForm();
@@ -110,7 +101,7 @@ const Newoption: React.FC = () => {
     try {
       const maresponse = await managehandbookFileServices.gethandbookQuery();
       const handbook: handbook[] = maresponse.map(
-        (item: any, index: number) => ({
+        (item: any) => ({
           ...item,
           images: item.handbookFile,
         })
@@ -125,9 +116,6 @@ const Newoption: React.FC = () => {
     values
   ) => {
     setSubmitLoading(true);
-    // const carIdData = maCar.findLast((car) => car.carId === values.carId);
-    // console.log(`${carIdData}`);
-
     const informationNewsCreateData = {
       data: {
         idhandtype: values.idhandtype,
@@ -160,7 +148,6 @@ const Newoption: React.FC = () => {
     values
   ) => {
     setSubmitLoading(true);
-
     try {
       const updatenewType = {
         idhandtype: values?.idhandtype,
@@ -248,7 +235,7 @@ const Newoption: React.FC = () => {
       dataIndex: "manage",
       key: "manage",
       align: "center",
-      render: (record: number, row: any, index: number) => (
+      render: (row: any) => (
         <Space size="middle">
           <Tooltip title="แก้ไข">
             <a onClick={() => showModalEditnewType(row)}>

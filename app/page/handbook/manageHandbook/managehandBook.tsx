@@ -1,8 +1,7 @@
 "use client";
-import ReactDOM from "react-dom";
 import React, { useState, useEffect } from "react";
 import type { FormProps } from "antd";
-import type { GetProp, UploadFile, UploadProps } from "antd";
+import type { UploadFile, UploadProps } from "antd";
 import { RcFile } from "antd/es/upload";
 import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
 import moment from "moment";
@@ -11,14 +10,8 @@ import { useSession } from "next-auth/react";
 import dayjs from "dayjs";
 import {
   Button,
-  Row,
-  Col,
   Modal,
   Input,
-  Card,
-  Pagination,
-  Tabs,
-  TabsProps,
   Image,
   Table,
   TableProps,
@@ -35,11 +28,8 @@ import {
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManagehandbookFileServices } from "../service/handbook.service";
 import { useForm } from "antd/es/form/Form";
-import { Anybody } from "next/font/google";
 import { newsType } from "../../information/common";
 import { UploadFileStatus } from "antd/es/upload/interface";
-import { create } from "domain";
-const { Option } = Select;
 export interface handbookFile {
   [x: string]: any;
   handbookid: number;
@@ -131,31 +121,6 @@ const Managehandbook: React.FC = () => {
     }
   };
 
-  const showModalinformationNews = async (record: handbook) => {
-    console.log(record);
-    console.log(record.images);
-
-    form.setFieldsValue({
-      ...record,
-      // createdAt: dayjs(record.createdAt),
-      updatedAt: dayjs(record.updatedAt),
-    });
-
-    const existingFilesList: UploadFile[] = record.images.map(
-      (images: { handbookid: any; fileName: string }) => ({
-        uid: String(images.handbookid),
-        name: images.fileName as string,
-        status: "done" as UploadFileStatus,
-        url: `http://localhost:4003/api/public/handbook-file/${images.fileName}`,
-      })
-    );
-    console.log(existingFilesList);
-
-    setExistingFiles(existingFilesList);
-    setSelectedhandbook(record);
-    setshowmodalupdate(true);
-  };
-
   const fetchDataHandbook = async () => {
     try {
       const maresponse = await managehandbookFileServices.gethandbookQuery();
@@ -187,7 +152,6 @@ const Managehandbook: React.FC = () => {
         status: values.status,
       },
     };
-
     try {
       const response = await managehandbookFileServices.createhandbook(
         handbookCreateData
@@ -223,13 +187,12 @@ const Managehandbook: React.FC = () => {
       setSubmitLoading(false);
     }
   };
+
   const handbookFileUpdate: FormProps<
     handbook & handbookFile
   >["onFinish"] = async (values) => {
     console.log(attendFiles);
-
     setSubmitLoading(true);
-
     const handbookFileUpdateData = {
       idbook: values?.idbook,
       fileName: values.fileName,
@@ -243,8 +206,6 @@ const Managehandbook: React.FC = () => {
       const response = await managehandbookFileServices.updatehandbook(
         handbookFileUpdateData
       );
-      console.log(response);
-
       if (response && attendFiles.length > 0) {
         await Promise.all(
           attendFiles.map(async (file) => {
@@ -278,11 +239,8 @@ const Managehandbook: React.FC = () => {
   };
 
   const handleDeletehandbook = async (record: handbook) => {
-    console.log(record);
-
     try {
       setSubmitLoading(true);
-
       const responsefile = await managehandbookFileServices.deletehandbookFile(
         record.handbookFile[0].handbookid
       );
@@ -307,6 +265,24 @@ const Managehandbook: React.FC = () => {
     }
   };
 
+  const showModalinformationNews = async (record: handbook) => {
+    form.setFieldsValue({
+      ...record,
+      createdAt: dayjs(record.createdAt),
+      updatedAt: dayjs(record.updatedAt),
+    });
+    const existingFilesList: UploadFile[] = record.images.map(
+      (images: { handbookid: any; fileName: string }) => ({
+        uid: String(images.handbookid),
+        name: images.fileName as string,
+        status: "done" as UploadFileStatus,
+        url: `http://localhost:4003/api/public/handbook-file/${images.fileName}`,
+      })
+    );
+    setExistingFiles(existingFilesList);
+    setSelectedhandbook(record);
+    setshowmodalupdate(true);
+  };
   const handleChangeAttendFiles: UploadProps["onChange"] = async ({
     fileList: newFileList,
   }) => {
@@ -315,27 +291,23 @@ const Managehandbook: React.FC = () => {
       message.warning("คุณไม่สามารถอัปโหลดไฟล์เกิน 1 ไฟล์ได้");
       return;
     }
-
     setAttendFiles(newFileList);
   };
+
   const beforeUploadAttendFiles = (file: RcFile) => {
     const totalFilesCount = existingFiles.length + attendFiles.length + 1;
-
     if (totalFilesCount > 1) {
       message.warning("คุณไม่สามารถอัปโหลดไฟล์เกิน 1 ไฟล์ได้");
       return Upload.LIST_IGNORE;
     }
-
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return Upload.LIST_IGNORE;
     }
-
     return true;
   };
 
   const handleDownload = (record: handbook) => {
-    
     if (record.handbookFile && record.handbookFile[0] && record.handbookFile[0].fileName) {
       window.open(
         `http://localhost:4003/api/public/handbook-file/${record.handbookFile[0].fileName}`,
@@ -344,7 +316,6 @@ const Managehandbook: React.FC = () => {
     } else {
       message.error("ไม่มีไฟล์ให้ดาวน์โหลด");
     }
-    
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -455,7 +426,6 @@ const Managehandbook: React.FC = () => {
       align: "center",
       render: (_record: number, row: any, _index: number) => (
         <Button
-          // type="primary"
           icon={<DownloadOutlined />}
           size="small"
           onClick={() => handleDownload(row)}
@@ -555,7 +525,6 @@ const Managehandbook: React.FC = () => {
           </Form.Item>
         </Form>
       </Modal>
-      {/* อัพเดท */}
       <Modal
         title="แก้ไขข้อมูลตรวจสภาพรถ"
         open={showmodalupdate}
@@ -569,7 +538,6 @@ const Managehandbook: React.FC = () => {
             label="ชื่อไฟล์ :"
             style={{
               width: "300px",
-              //  visibility: "hidden"
             }}
           >
             <Input />
@@ -673,7 +641,4 @@ const Managehandbook: React.FC = () => {
   );
 };
 export default Managehandbook;
-function setnewsTypeOptions(optionsmaResponse: any) {
-  throw new Error("Function not implemented.");
-}
 

@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageinformationNewsServices } from "../../service/information.service";
-import { useForm } from "antd/es/form/Form";
 import {
   Button,
   Row,
@@ -12,22 +11,19 @@ import {
   Modal,
   message,
   Input,
-  Carousel,
   Image,
 } from "antd";
-
 export interface informationNews {
   newsId: Number;
   newsName: String;
   content: String;
   newsType: String;
   author: String;
-  publishedAt: String;
+  phblishedAt: String;
   updatedAt: String;
   status: boolean;
   images: newsImage[];
 }
-
 export interface newsImage {
   imageId: Number;
   newsId: Number;
@@ -37,7 +33,6 @@ export interface newsImage {
   fileimagePath: String;
   fileName: string;
 }
-
 const ManagementNews: React.FC = () => {
   const [informationNews, setInformationNews] = useState<informationNews[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -46,12 +41,9 @@ const ManagementNews: React.FC = () => {
     null
   );
   const [searchTerm, setSearchTerm] = useState("");
-
   const intraAuth = useAxiosIntranet();
   const manageInformationNewsServices =
     ManageinformationNewsServices(intraAuth);
-  const [form] = useForm();
-
   useEffect(() => {
     fetchDatainformationNews();
   }, []);
@@ -64,7 +56,6 @@ const ManagementNews: React.FC = () => {
         ...item,
         images: item.newsImage,
       }));
-
       setInformationNews(newsData);
     } catch (error) {
       message.error("Failed to fetch news data");
@@ -75,7 +66,7 @@ const ManagementNews: React.FC = () => {
     setSearchTerm(e.target.value);
   };
 
-  const filteredData = informationNews.filter((news) =>
+  const filteredData = informationNews.filter((news) => news.status).filter((news)=>
     news.newsName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -92,12 +83,11 @@ const ManagementNews: React.FC = () => {
     setSelectedNews(newsItem);
     setIsModalVisible(true);
   };
-
   const handleCancel = () => {
     setIsModalVisible(false);
     setSelectedNews(null);
   };
-
+  
   return (
     <div>
       <div
@@ -135,7 +125,11 @@ const ManagementNews: React.FC = () => {
                       alt="news"
                       crossOrigin="anonymous"
                       src={`http://localhost:4003/api/public/news-image/${item.images[0].fileName}`}
-                      style={{ width: "400px", height:"350px", marginBottom: "20px" }}
+                      style={{
+                        width: "400px",
+                        height: "350px",
+                        marginBottom: "20px",
+                      }}
                     />
                   ) : null
                 }
@@ -169,10 +163,16 @@ const ManagementNews: React.FC = () => {
       >
         {selectedNews && (
           <div>
-            <p style={{ textAlign: "center", fontSize: "24px ", fontWeight: "bold"}}>
+            <p
+              style={{
+                textAlign: "center",
+                fontSize: "24px ",
+                fontWeight: "bold",
+              }}
+            >
               <strong></strong> {selectedNews.newsName}
             </p>
-            <p style={{  fontSize: "20px" }}>
+            <p style={{ fontSize: "20px" }}>
               <strong>เนื้อหา:</strong> {selectedNews.content}
             </p>
             {selectedNews.images.length > 0
@@ -191,7 +191,7 @@ const ManagementNews: React.FC = () => {
               <strong>ผู้เขียน:</strong> {selectedNews.author}
             </p>
             <p>
-              <strong>วันที่เผยแพร่:</strong> {selectedNews.publishedAt}
+              <strong>วันที่เผยแพร่:</strong> {selectedNews.phblishedAt}
             </p>
             <p>
               <strong>อัปเดตล่าสุด:</strong> {selectedNews.updatedAt}

@@ -4,30 +4,13 @@ import moment from "moment";
 import { DownloadOutlined } from "@ant-design/icons";
 import {
   Button,
-  Row,
-  Col,
-  Modal,
   Input,
-  Card,
-  Pagination,
-  Tabs,
-  TabsProps,
   Table,
   TableProps,
-  message,
-  Image,
-  Form,
-  Space,
-  Upload,
-  Switch,
-  Tooltip,
-  Popconfirm,
-  Select,
+  message
 } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManagehandbookFileServices } from "../service/handbook.service";
-import { useForm } from "antd/es/form/Form";
-import { useSession } from "next-auth/react";
 
 export interface handbookFile {
   id: number;
@@ -50,11 +33,9 @@ export interface handbook {
 }
 const Tablehandbook: React.FC = () => {
   const intraAuth = useAxiosIntranet();
-
   const [handbook, sethandbook] = useState<handbook[]>([]);
   const [handbookFile, sethandbookFile] = useState<handbookFile[]>([]);
   const managehandbookFileServices = ManagehandbookFileServices(intraAuth);
-  const [form] = useForm();
   const [searchTerm, setSearchTerm] = useState("");
   useEffect(() => {
     fetchDataHandbook();
@@ -111,24 +92,12 @@ const Tablehandbook: React.FC = () => {
   };
 
   const filteredData = handbook
-    .filter((handbook) => handbook.status) // กรองข้อมูลที่มี status เป็น true
+    .filter((handbook) => handbook.status)
     .filter(
       (handbook) =>
         handbook.fileName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         handbook.filetype.toLowerCase().includes(searchTerm.toLowerCase())
     );
-
-  // const handleDownload = (fileUrl: string, p0?: string) => {
-  //   console.log(fileUrl);
-
-  //   const link = document.createElement("a");
-  //   link.href = fileUrl;
-  //   link.setAttribute("download", ""); // ตั้งค่า download เพื่อให้บราวเซอร์ดาวน์โหลดไฟล์
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   document.body.removeChild(link);
-  // };
-
   const columns: TableProps<handbook>["columns"] = [
     {
       title: "ไอดี",
@@ -181,6 +150,7 @@ const Tablehandbook: React.FC = () => {
       ),
     },
   ];
+  
   function opencreate() {
     fetchDataHandbook();
     fetchDataHandbookfile();
@@ -216,6 +186,3 @@ const Tablehandbook: React.FC = () => {
   );
 };
 export default Tablehandbook;
-function generateUniqueId(): any {
-  throw new Error("Function not implemented.");
-}

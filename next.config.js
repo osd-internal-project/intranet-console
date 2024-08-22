@@ -48,4 +48,4 @@ const nextConfigLocal = {
   output: "standalone",
 };
 
-module.exports = nextConfigDomainServer;
+module.exports = nextConfigLocal;

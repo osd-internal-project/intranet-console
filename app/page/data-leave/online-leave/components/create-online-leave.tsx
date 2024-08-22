@@ -22,13 +22,14 @@ import {
   ITypeDataLeaveCreate,
 } from "../../common";
 import { RcFile } from "antd/es/upload";
+import { FormInstance } from "antd/lib";
 
 export interface props {
   getUser?: IDataUser | null;
   getTypeLeaveOption: ISelect[];
   getDepartmentById: ISelectDepartment[];
   onfinishCreate: (values: ITypeDataLeaveCreate) => void;
-  createdataleaveForm: any;
+  createdataleaveForm: FormInstance;
   setStartDate: (values: Date) => void;
   setEndDate: (values: Date) => void;
   setCheckSwitch: (values: boolean) => void;
@@ -72,7 +73,8 @@ export const CreateOnlineLeave: React.FC<props> = ({
       });
     };
     getdatauser();
-  }, [getUserOwner]);
+  }, [getUserOwner, checkSwitch]);
+
   const { Option } = Select;
   const [timeSlot, setTimeSlot] = useState("morning");
 
@@ -80,7 +82,6 @@ export const CreateOnlineLeave: React.FC<props> = ({
     disabledHours: () => [0, 16],
     disabledMinutes: () => [0],
   });
-  console.log(checkSwitch);
 
   return (
     <div>
@@ -211,6 +212,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
                       defaultChecked={false}
                       onChange={(e: any) => {
                         setCheckSwitch(e);
+                        onChangeParams(e, "endDate");
                       }}
                     />
                   </Form.Item>

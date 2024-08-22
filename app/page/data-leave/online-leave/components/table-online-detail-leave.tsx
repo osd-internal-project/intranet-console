@@ -69,14 +69,36 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         );
       },
     },
+    // {
+    //   key: "id",
+    //   dataIndex: "id",
+    //   title: "ลาครั้งนี้",
+    //   render: (value: string, row: ITypetypeleave) => {
+    //     const isSelected = row.typeId === params.typeId;
+    //     const days = isSelected ? params.lengthDate : 0;
+    //     console.log(params.lengthDate);
+
+    //     const hours = isSelected ? params.lengthTime : 0;
+    //     return (
+    //       <div className="flex justify-center">
+    //         <Tag className="w-full flex justify-center">
+    //           {`${days} วัน (${hours} ชม.)`}
+    //         </Tag>
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       key: "id",
       dataIndex: "id",
       title: "ลาครั้งนี้",
       render: (value: string, row: ITypetypeleave) => {
         const isSelected = row.typeId === params.typeId;
-        const days = isSelected ? params.lengthDate : 0;
-        const hours = isSelected ? params.lengthTime : 0;
+        let days = isSelected ? params.lengthDate : 0;
+        let hours = isSelected ? params.lengthTime : 0;
+        days = days < 0 ? 1 : days;
+        hours = hours < 0 ? 1 : hours;
+
         return (
           <div className="flex justify-center">
             <Tag className="w-full flex justify-center">
@@ -86,16 +108,61 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         );
       },
     },
+
+    // {
+    //   key: "total",
+    //   dataIndex: "haveLeft",
+    //   title: "รวม",
+    //   render: (value: number, row: ITypetypeleave) => {
+    //     const isSelected = row.typeId === params.typeId;
+    //     const totalDays = Math.floor(
+    //       value + (isSelected ? params.lengthDate : 0)
+    //     );
+    //     const totalHours = Math.floor(
+    //       (row.haveLeftHours || 0) + (isSelected ? params.lengthTime : 0)
+    //     );
+    //     const isOverLimit = totalDays > row.limitLeaveLastResult;
+    //     const hasDateRange = params.startDate && params.endDate;
+
+    //     let color: string | undefined;
+    //     if (isSelected) {
+    //       if (isOverLimit) {
+    //         color = "orange-inverse";
+    //       } else if (hasDateRange) {
+    //         color = "green-inverse";
+    //       }
+    //     }
+
+    //     const convertDaysToHours = (days: number): number => {
+    //       const decimalPart = days % 1;
+    //       return decimalPart > 0 ? 4 : 0;
+    //     };
+
+    //     const fractionalHours = convertDaysToHours(
+    //       value + (isSelected ? params.lengthDate : 0)
+    //     );
+    //     const displayedHours = totalHours + fractionalHours;
+
+    //     return (
+    //       <div className="flex justify-center">
+    //         <Tag className="w-full flex justify-center" color={color}>
+    //           {`${totalDays} วัน (${displayedHours} ชม.)`}
+    //         </Tag>
+    //       </div>
+    //     );
+    //   },
+    // },
+
     {
       key: "total",
       dataIndex: "haveLeft",
       title: "รวม",
       render: (value: number, row: ITypetypeleave) => {
         const isSelected = row.typeId === params.typeId;
-        const totalDays = Math.floor(
+        let totalDays = Math.floor(
           value + (isSelected ? params.lengthDate : 0)
         );
-        const totalHours = Math.floor(
+        let totalHours = Math.floor(
           (row.haveLeftHours || 0) + (isSelected ? params.lengthTime : 0)
         );
         const isOverLimit = totalDays > row.limitLeaveLastResult;
@@ -118,7 +185,9 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         const fractionalHours = convertDaysToHours(
           value + (isSelected ? params.lengthDate : 0)
         );
-        const displayedHours = totalHours + fractionalHours;
+        let displayedHours = totalHours + fractionalHours;
+        if (totalDays < 0) totalDays = Math.floor(value) + 1;
+        if (displayedHours < 0) displayedHours = totalHours + 8;
 
         return (
           <div className="flex justify-center">
@@ -166,7 +235,7 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       ? "disabled-row"
       : "";
   };
-  
+
   return (
     <>
       <Card

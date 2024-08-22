@@ -52,7 +52,7 @@ export default function Page() {
   );
   const [getStartDate, setStartDate] = useState<Date>();
   const [getEndDate, setEndDate] = useState<Date>();
-  const [checkSwitch, setCheckSwitch] = useState<boolean>();
+  const [checkSwitch, setCheckSwitch] = useState<boolean>(false);
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [params, setParams] = useState<any>({
@@ -136,9 +136,13 @@ export default function Page() {
       startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
     setParams((e: any) => ({
       ...e,
-      lengthDate: totalDays != "0" ? Number(totalDays) : checkSwitch ? 1 : 0,
+      lengthDate:
+        totalDays !== "0"
+          ? Number(totalDays)
+          : createdataleaveForm.getFieldValue("time_start_check")
+          ? 1
+          : 0,
     }));
-    setLoading(true);
   };
 
   const checklenghtTime = async (value1: any, value2: any) => {

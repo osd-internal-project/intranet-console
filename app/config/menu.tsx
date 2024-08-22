@@ -13,6 +13,7 @@ import {
   stockIcon,
   contactListIcon,
   macarIcon,
+  mindMappingIcon,
 } from "@/components/icon";
 import { icons } from "antd/es/image/PreviewGroup";
 
@@ -30,8 +31,7 @@ const MenuNav: MenuProps["items"] = [
         href={"#"}
         onClick={async () => {
           signOut({ callbackUrl: "/signin" });
-        }}
-      >
+        }}>
         Sign Out
       </Link>
     ),
@@ -336,9 +336,9 @@ export const MenuSider: MenuItem[] = [
   },
   {
     key: "information",
-    icon: macarIcon,
+    icon: mindMappingIcon,
     label: `Infomation`,
-    // rule: "inc-s",
+    rule: "ift-s",
     children: [
       {
         key: `information/information-data`,
@@ -352,10 +352,9 @@ export const MenuSider: MenuItem[] = [
   },
   {
     key: "handbook",
-    icon: macarIcon,
+    icon: mindMappingIcon,
     label: `Handbook`,
-
-    // rule: "inc-s",
+    rule: "hb-s",
   },
 
   // {

@@ -31,7 +31,6 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
 import { useRouter } from "next/navigation";
 import { RcFile, UploadProps } from "antd/es/upload";
-import { error } from "console";
 
 export default function Page() {
   const router = useRouter();
@@ -48,15 +47,12 @@ export default function Page() {
   const [typeLeaveTableAll, setTypeLeaveTableAll] = useState<ITypetypeleave[]>(
     []
   );
-  const [dataLeaveUserById, setDataLeaveByUserId] = useState<ITypetypeleave[]>(
-    []
-  );
   const [getDepartmentById, setResDepartMent] = useState<ISelectDepartment[]>(
     []
   );
   const [getStartDate, setStartDate] = useState<Date>();
   const [getEndDate, setEndDate] = useState<Date>();
-  const [checkSwitch, setCheckSwitch] = useState<boolean>(false);
+  const [checkSwitch, setCheckSwitch] = useState<boolean>();
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [params, setParams] = useState<any>({
@@ -87,15 +83,11 @@ export default function Page() {
     const options = res.map((event: ITypetypeleave) => {
       return { value: event.typeId, label: event.typeName };
     });
-    const dataLeaveUserId = await dataleaveservice.getdataLeaveByuserId(
-      session?.user.userId as string
-    );
     const resTableDepartMent = await dataleaveservice.findDetailDepartment();
     const departmentOptions = resTableDepartMent.map((event: IDepartMent) => {
       return { value: event.departId, label: event.departName };
     });
     setResDepartMent(departmentOptions);
-    setDataLeaveByUserId(dataLeaveUserId);
     setLoading(false);
     setUserOwner(resOwner);
     setTypeLeaveTable(resTableDeatilTypeLeave);
@@ -114,7 +106,6 @@ export default function Page() {
   };
 
   const onChangeParams = (value: Dayjs, type: string) => {
-   
     if (type === "type") {
       setParams((e: any) => ({ ...e, typeId: value }));
     }
@@ -147,6 +138,7 @@ export default function Page() {
       ...e,
       lengthDate: totalDays != "0" ? Number(totalDays) : checkSwitch ? 1 : 0,
     }));
+    setLoading(true);
   };
 
   const checklenghtTime = async (value1: any, value2: any) => {
@@ -1052,9 +1044,6 @@ export default function Page() {
             attendFiles={attendFiles}
             getUserOwner={getUserOwner}
             onChangeParams={onChangeParams}
-            params={params}
-            setParams={setParams}
-          
           />
         </Col>
         <Col span={12}>

@@ -22,7 +22,7 @@ import {
   ITypeDataLeaveCreate,
 } from "../../common";
 import { RcFile } from "antd/es/upload";
-import form from "antd/es/form";
+
 export interface props {
   getUser?: IDataUser | null;
   getTypeLeaveOption: ISelect[];
@@ -40,8 +40,6 @@ export interface props {
   attendFiles: UploadFile[];
   getUserOwner: IDataUser | null;
   onChangeParams: (value: Dayjs, type: string) => void;
-  setParams: (value: string, type: string) => void;
-  params: any;
 }
 export const CreateOnlineLeave: React.FC<props> = ({
   getUser,
@@ -60,8 +58,6 @@ export const CreateOnlineLeave: React.FC<props> = ({
   attendFiles,
   getUserOwner,
   onChangeParams,
-  setParams,
-  params,
 }): React.ReactElement => {
   useEffect(() => {
     const getdatauser = () => {
@@ -77,7 +73,6 @@ export const CreateOnlineLeave: React.FC<props> = ({
     };
     getdatauser();
   }, [getUserOwner]);
-
   const { Option } = Select;
   const [timeSlot, setTimeSlot] = useState("morning");
 
@@ -85,6 +80,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
     disabledHours: () => [0, 16],
     disabledMinutes: () => [0],
   });
+  console.log(checkSwitch);
 
   return (
     <div>
@@ -208,12 +204,14 @@ export const CreateOnlineLeave: React.FC<props> = ({
               dayjs(getEndDate).format("YYYY-MM-DD") && getEndDate ? (
               <div className="w-full grid grid-cols-4 gap-y-0.5 mt-0.5">
                 <div className="col-span-3 md:col-span-1 ml-5 mt-4">
-                  <Form.Item label="1 วัน" name="time_start_check">
+                  <Form.Item label="ลา 1 วัน" name="time_start_check">
                     <Switch
-                      checkedChildren="ใช่"
                       unCheckedChildren="ไม่"
+                      checkedChildren="ใช่"
                       defaultChecked={false}
-                      onChange={(e: any) => setCheckSwitch(e)}
+                      onChange={(e: any) => {
+                        setCheckSwitch(e);
+                      }}
                     />
                   </Form.Item>
                 </div>

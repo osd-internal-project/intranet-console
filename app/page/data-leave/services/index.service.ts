@@ -45,13 +45,29 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getdataLeaveByuserID: async (userId: string) => {
+    getdataLeaveByuserId: async (userId: string) => {
       const condition = {
         where: { userId: userId },
         include: {
           dataLeaveFiles: true,
         },
         orderBy: { id: "asc" },
+      };
+      return await axiosInstance
+        .post(`${baseUrlDataLeave}/condition`, {
+          condition: condition,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
+    getdataLeaveUserById: async (type_id: number) => {
+      const condition = {
+        where: { typeId: type_id },
+       
       };
       return await axiosInstance
         .post(`${baseUrlDataLeave}/condition`, {
@@ -82,14 +98,55 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getdataUserByTypeLeaveId: async (id: ITpyeUser) => {
+    getdataLeaveDepartById: async (dataDepartId: number) => {
+      const condition = {
+        where: { departId: dataDepartId },
+        orderBy: { id: "asc" },
+      };
+      return await axiosInstance
+        .post(`${baseUrlDataLeave}/condition`, {
+          condition: condition,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
+    getdataUserByTypeLeaveId: async (search: { typeid: string }) => {
       const condition = {
         where: {
-          id: Number(id.typeid),
+          id: Number(search.typeid),
         },
         select: {
           typeLeaveDisabledMap: {
             select: {
+              id: true,
+              user: true,
+            },
+          },
+        },
+        orderBy: { id: "asc" },
+      };
+      return await axiosInstance
+        .post(`${baseUrlTypeleave}/conditionId`, {
+          condition: condition,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
+
+    getdataUserByIdTypeLeave: async () => {
+      const condition = {
+        select: {
+          typeLeaveDisabledMap: {
+            select: {
+              id: true,
               user: true,
             },
           },
@@ -156,7 +213,23 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-
+    getdataTypeLeaveMap: async (user_id: any) => {
+      const condition = {
+        where: {
+          userId: user_id,
+        },
+      };
+      return await axiosInstance
+        .post(`${baseUrlTypeleaveMap}/condition`, {
+          condition: condition,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
     createTypeLeaveDisabled: async (event: ITpyeUser) => {
       const condition = {
         data: {
@@ -174,6 +247,7 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+
     createDataLeave: async (event: ITypeDataLeave) => {
       const condition = {
         data: {
@@ -231,13 +305,14 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
         })
         .catch((err) => console.log(err));
     },
-    deleteTypeLeaveDisabled: async (event: number) => {
+    deleteTypeLeaveDisabled: async (id: number) => {
       return await axiosInstance
-        .delete(`${baseUrlTypeleaveMap}/${event}`)
+        .delete(`${baseUrlTypeleaveMap}/${id}`)
         .then((res) => {
           return res.data;
         })
         .catch((err) => {
+          console.log(err);
           return [];
         });
     },

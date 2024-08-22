@@ -17,28 +17,54 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: TableColumnsType<ITypetypeleave> = [
-    { key: "typeName", dataIndex: "typeName", title: "ประเภทการลา" },
+    {
+      key: "typeName",
+      dataIndex: "typeName",
+      title: "ประเภทการลา",
+    },
     {
       key: "haveLeft",
       dataIndex: "haveLeft",
       title: "ลามาแล้ว",
-      render: (values: string, row: ITypetypeleave, index: number) => {
+      render: (value: number, row: ITypetypeleave) => {
+        const calculateHours = (value: number): number => {
+          if (value % 1 === 0.5) {
+            return 4;
+          }
+          return row.haveLeftHours ?? 0;
+        };
+
+        const displayHours = calculateHours(value);
+        const wholeDays = Math.floor(value);
+
         return (
           <div className="flex justify-center">
-            <Tag className="w-full flex justify-center">{`${values} วัน (${0} ชม.)`}</Tag>
+            <Tag className="w-full flex justify-center">
+              {`${wholeDays} วัน (${displayHours} ชม.)`}
+            </Tag>
           </div>
         );
       },
     },
-
     {
       key: "limitLeaveLastResult",
       dataIndex: "limitLeaveLastResult",
       title: "คงเหลือ",
-      render: (values: string, row: ITypetypeleave, index: number) => {
+      render: (value: number, row: ITypetypeleave) => {
+        const calculateHours = (value: number): number => {
+          if (value % 1 === 0.5) {
+            return 4;
+          }
+          return row.limitLeaveHours ?? 0;
+        };
+
+        const displayHours = calculateHours(value);
+        const wholeDays = Math.floor(value);
         return (
           <div className="flex justify-center">
-            <Tag className="w-full flex justify-center">{`${values} วัน (${0} ชม.)`}</Tag>
+            <Tag className="w-full flex justify-center">
+              {`${wholeDays} วัน (${displayHours} ชม.)`}
+            </Tag>
           </div>
         );
       },
@@ -47,59 +73,60 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       key: "id",
       dataIndex: "id",
       title: "ลาครั้งนี้",
-      render: (values: string, row: ITypetypeleave, index: number) => {
-        if (row.typeId === params.typeId) {
-          return (
-            <div className="flex justify-center">
-              <Tag className="w-full flex justify-center">{`${params.lengthDate} วัน (${params.lengthTime} ชม.)`}</Tag>
-            </div>
-          );
-        } else {
-          return (
-            <div className="flex justify-center">
-              <Tag className="w-full flex justify-center">{`${0} วัน (${0} ชม.)`}</Tag>
-            </div>
-          );
-        }
+      render: (value: string, row: ITypetypeleave) => {
+        const isSelected = row.typeId === params.typeId;
+        const days = isSelected ? params.lengthDate : 0;
+        const hours = isSelected ? params.lengthTime : 0;
+        return (
+          <div className="flex justify-center">
+            <Tag className="w-full flex justify-center">
+              {`${days} วัน (${hours} ชม.)`}
+            </Tag>
+          </div>
+        );
       },
     },
     {
-      key: "haveLeft",
+      key: "total",
       dataIndex: "haveLeft",
       title: "รวม",
-      render: (values: string, row: any, index: number) => {
-        if (row.typeId === params.typeId) {
-          return Number(values) + params.lengthDate >
-            row.limitLeaveLastResult ? (
-            <div className="flex justify-center">
-              <Tag
-                className="w-full flex justify-center"
-                color="orange-inverse"
-              >{`${(row.haveLeft + params.lengthDate).toString()} วัน (${(
-                Number(values) + params.lengthTime
-              ).toString()} ชม.)`}</Tag>
-            </div>
-          ) : (
-            <div className="flex justify-center">
-              <Tag
-                className="w-full flex justify-center"
-                color={
-                  params.startDate && params.endDate
-                    ? "green-inverse"
-                    : undefined
-                }
-              >{`${(row.haveLeft + params.lengthDate).toString()} วัน (${(
-                Number(values) + params.lengthTime
-              ).toString()} ชม.)`}</Tag>
-            </div>
-          );
-        } else {
-          return (
-            <div className="flex justify-center">
-              <Tag className="w-full flex justify-center">{`${row.haveLeft} วัน (${params.lengthTime} ชม.)`}</Tag>
-            </div>
-          );
+      render: (value: number, row: ITypetypeleave) => {
+        const isSelected = row.typeId === params.typeId;
+        const totalDays = Math.floor(
+          value + (isSelected ? params.lengthDate : 0)
+        );
+        const totalHours = Math.floor(
+          (row.haveLeftHours || 0) + (isSelected ? params.lengthTime : 0)
+        );
+        const isOverLimit = totalDays > row.limitLeaveLastResult;
+        const hasDateRange = params.startDate && params.endDate;
+
+        let color: string | undefined;
+        if (isSelected) {
+          if (isOverLimit) {
+            color = "orange-inverse";
+          } else if (hasDateRange) {
+            color = "green-inverse";
+          }
         }
+
+        const convertDaysToHours = (days: number): number => {
+          const decimalPart = days % 1;
+          return decimalPart > 0 ? 4 : 0;
+        };
+
+        const fractionalHours = convertDaysToHours(
+          value + (isSelected ? params.lengthDate : 0)
+        );
+        const displayedHours = totalHours + fractionalHours;
+
+        return (
+          <div className="flex justify-center">
+            <Tag className="w-full flex justify-center" color={color}>
+              {`${totalDays} วัน (${displayedHours} ชม.)`}
+            </Tag>
+          </div>
+        );
       },
     },
   ];
@@ -133,11 +160,13 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       },
     },
   ];
+
   const rowClassName = (record: any) => {
     return typeLeaveTableAll.some((e: any) => record.id === e.masterTypeleaveId)
       ? "disabled-row"
       : "";
   };
+  
   return (
     <>
       <Card

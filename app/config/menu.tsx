@@ -338,7 +338,7 @@ export const MenuSider: MenuItem[] = [
     key: "information",
     icon: macarIcon,
     label: `Infomation`,
-    rule: "inc-s",
+    // rule: "inc-s",
     children: [
       {
         key: `information/information-data`,
@@ -355,7 +355,7 @@ export const MenuSider: MenuItem[] = [
     icon: macarIcon,
     label: `Handbook`,
 
-    rule: "inc-s",
+    // rule: "inc-s",
   },
 
   // {

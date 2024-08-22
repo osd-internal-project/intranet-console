@@ -144,7 +144,7 @@ const MaCarReturn: React.FC<props> = ({
     },
     {
       title: "จัดการ",
-      width: "120px",
+      width: "150px",
       align: "center",
       render: (_: any, record: MaCarBookType) => (
         <Space size="middle">

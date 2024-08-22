@@ -65,8 +65,6 @@ const MaCarBook: React.FC<props> = ({
       .reverse()
       .find((car): car is any => car.carId === values.carId);
 
-    console.log(carSelected.status);
-
     if (carSelected.status === false) {
       message.warning("รถคันนี้ไม่พร้อมใช้งาน");
       setSubmitLoading(false);
@@ -81,7 +79,7 @@ const MaCarBook: React.FC<props> = ({
       setSubmitLoading(false);
       return;
     }
-    if (new Date(carBookStartDate) < new Date(carBookStartDate)) {
+    if (new Date(carBookEndDate) < new Date(carBookStartDate)) {
       message.error("วันที่สิ้นสุดการจองต้องหลังวันที่เริ่มการจอง");
       setSubmitLoading(false);
       return;

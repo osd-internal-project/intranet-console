@@ -6,7 +6,7 @@ import { deleteIcon } from "@/components/icon";
 import { PaperClipOutlined } from "@ant-design/icons";
 
 export interface props {
-  dataLeaveUser: ITypeDataLeave[];
+  departmentId: ITypeDataLeave[];
   setOpenModalDetail: (e: boolean) => void;
   openModalDetail: boolean;
   formdetail: any;
@@ -15,11 +15,11 @@ export interface props {
 }
 
 export const DepartmentTableDetail: React.FC<props> = ({
-  dataLeaveUser,
   setOpenModalDetail,
   openModalDetail,
   formdetail,
   onFinishUpdate,
+  departmentId,
   downloadFile,
 }): React.ReactElement => {
   const columns: any = [
@@ -42,7 +42,6 @@ export const DepartmentTableDetail: React.FC<props> = ({
       dataIndex: "id",
       title: "Fullname",
       render: (e: string, row: ITypeDataLeave) => {
-        // const days: any = row?.leaveHour && row?.leaveHour > 8 ? Math.floor(row?.leaveHour / 8) : row?.leaveHour;
         const base = {
           name: `${row.firstName} ${row.lastName}`,
           createAt: row.createdAt ? dateToStringThNoTime(row.createdAt) : "-",
@@ -90,32 +89,11 @@ export const DepartmentTableDetail: React.FC<props> = ({
       dataIndex: "",
       title: "Active",
       align: "center",
-      //   render: (e: string, row: ITypeDataLeave, index: number) => {
-      //     return (
-      //       <>
-      //         <Row gutter={[8, 8]} className="flex justify-center">
-      //           <Col>
-      //             <Button
-      //               size="small"
-      //               type="primary"
-      //               onClick={() => {
-      //                 onFinishUpdate("cancel", row?.id ? row?.id : 0);
-      //               }}
-      //               disabled={row.approvedDate ? true : false}
-      //               danger
-      //             >
-      //               {deleteIcon} {`Cancel`}
-      //             </Button>
-      //           </Col>
-      //         </Row>
-      //       </>
-      //     );
-      //   },
     },
   ];
   return (
     <div>
-      <Table dataSource={dataLeaveUser} columns={columns} size="small" />
+      <Table dataSource={departmentId} columns={columns} size="small" />
       <Modal
         title=""
         open={openModalDetail}

@@ -1,4 +1,8 @@
 export interface ITypetypeleave {
+  haveLeftHours: number;
+  limitLeaveHours: number;
+  limitLeaveLastResult: number;
+  haveLeft: any;
   createdAt: Date;
   descriptionLeave: string;
   forwardLeave: string;
@@ -66,7 +70,7 @@ export interface ISelect {
   value: string | number;
   label: string;
 }
-export interface ISelectDepartMent {
+export interface ISelectDepartment {
   value: string | number;
   label: string;
 }
@@ -117,7 +121,12 @@ export interface ITpyeUser {
   updatedAt: Date;
   userId: string;
   username: string;
-  typeid?: number;
+  typeid: number;
+  user: users;
+}
+export interface users {
+  firstNameTh: string;
+  lastNameTh: string;
 }
 
 export interface ITypeDataLeave {
@@ -177,4 +186,10 @@ export interface ITypeDataLeaveCreate {
   time_start_check: boolean;
   ownerId?: string;
   ownerName?: string;
+}
+
+export interface ITypeDataleaveMap {
+  id: number;
+  userId: number;
+  masterTypeleaveId: number;
 }

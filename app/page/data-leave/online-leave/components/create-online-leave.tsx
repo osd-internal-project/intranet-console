@@ -1,30 +1,32 @@
 "use client";
 import { UploadOutlined } from "@ant-design/icons";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Card,
   DatePicker,
   Form,
   Input,
+  Radio,
   Select,
   Switch,
+  TimePicker,
   Upload,
   UploadFile,
 } from "antd";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import {
   IDataUser,
-  IDepartMent,
   ISelect,
-  ISelectDepartMent,
+  ISelectDepartment,
   ITypeDataLeaveCreate,
 } from "../../common";
 import { RcFile } from "antd/es/upload";
+
 export interface props {
   getUser?: IDataUser | null;
   getTypeLeaveOption: ISelect[];
-  getDepartmentById: ISelectDepartMent[];
+  getDepartmentById: ISelectDepartment[];
   onfinishCreate: (values: ITypeDataLeaveCreate) => void;
   createdataleaveForm: any;
   setStartDate: (values: Date) => void;
@@ -37,7 +39,7 @@ export interface props {
   handleChangeAttendFiles: (e: any) => void;
   attendFiles: UploadFile[];
   getUserOwner: IDataUser | null;
-  onChangeParams: (value: string, type: string) => void;
+  onChangeParams: (value: Dayjs, type: string) => void;
 }
 export const CreateOnlineLeave: React.FC<props> = ({
   getUser,
@@ -71,9 +73,14 @@ export const CreateOnlineLeave: React.FC<props> = ({
     };
     getdatauser();
   }, [getUserOwner]);
+  const { Option } = Select;
+  const [timeSlot, setTimeSlot] = useState("morning");
 
-  // console.log(getDepartmentById);
-  // console.log(getTypeLeaveOption);
+  const disabledTime = () => ({
+    disabledHours: () => [0, 16],
+    disabledMinutes: () => [0],
+  });
+  console.log(checkSwitch);
 
   return (
     <div>
@@ -192,15 +199,15 @@ export const CreateOnlineLeave: React.FC<props> = ({
               </Form.Item>
             </div>
           </div>
-          {dayjs(getStartDate).format("YYYY-MM-DD") ===
-            dayjs(getEndDate).format("YYYY-MM-DD") && getEndDate ? (
-            <>
-              <div className="w-full grid grid-cols-3 gap-y-2 mt-2">
-                <div className=" col-span-3 md:col-span-1 ml-5">
-                  <Form.Item label={`1 วัน`} name={`time_start_check`}>
+          <>
+            {dayjs(getStartDate).format("YYYY-MM-DD") ===
+              dayjs(getEndDate).format("YYYY-MM-DD") && getEndDate ? (
+              <div className="w-full grid grid-cols-4 gap-y-0.5 mt-0.5">
+                <div className="col-span-3 md:col-span-1 ml-5 mt-4">
+                  <Form.Item label="ลา 1 วัน" name="time_start_check">
                     <Switch
-                      checkedChildren="ใช่"
                       unCheckedChildren="ไม่"
+                      checkedChildren="ใช่"
                       defaultChecked={false}
                       onChange={(e: any) => {
                         setCheckSwitch(e);
@@ -210,40 +217,142 @@ export const CreateOnlineLeave: React.FC<props> = ({
                 </div>
                 {!checkSwitch ? (
                   <>
-                    <div className=" col-span-3 md:col-span-1 ml-5">
-                      <Form.Item
-                        label={`เวลาเริ่มต้น :`}
-                        name={"startTime"}
-                        required
-                      >
-                        <DatePicker
-                          picker="time"
-                          className="w-full"
-                          onChange={(e: any) => onChangeParams(e, "startTime")}
-                        />
+                    <div className="col-span-3 md:col-span-1 ml-5 mt-4">
+                      <Form.Item label="ช่วงเวลา" name="timeSlot" required>
+                        <Select
+                          defaultValue="morning"
+                          onChange={(value) => setTimeSlot(value)}
+                        >
+                          <Option value="morning">ลาช่วงเช้า</Option>
+                          <Option value="afternoon">ลาช่วงบ่าย</Option>
+                        </Select>
                       </Form.Item>
                     </div>
-                    <div className=" col-span-3 md:col-span-1 ml-5">
-                      <Form.Item
-                        label={`เวลาสิ้นสุด :`}
-                        name={"endTime"}
-                        required
-                      >
-                        <DatePicker
-                          picker="time"
-                          className="w-full"
-                          onChange={(e: any) => onChangeParams(e, "endTime")}
-                        />
-                      </Form.Item>
-                    </div>
+
+                    {timeSlot === "morning" && (
+                      <>
+                        <div className="col-span-3 md:col-span-1 ml-5 mt-4">
+                          <Form.Item
+                            label="เวลาเริ่มต้น :"
+                            name="startTime"
+                            required
+                            rules={[
+                              {
+                                required: true,
+                                message: "กรุณาเลือกเวลาที่เริ่มลา",
+                              },
+                            ]}
+                          >
+                            <TimePicker
+                              className="w-full"
+                              disabledTime={disabledTime}
+                              format="HH:mm"
+                              hourStep={8}
+                              minuteStep={30}
+                              showNow={false}
+                              onChange={(e: any) =>
+                                onChangeParams(e, "startTime")
+                              }
+                            />
+                          </Form.Item>
+                        </div>
+                        <div className="col-span-3 md:col-span-1 ml-5 mt-4">
+                          <Form.Item
+                            label="เวลาสิ้นสุด :"
+                            name="endTime"
+                            required
+                            rules={[
+                              {
+                                required: true,
+                                message: "กรุณาเลือกเวลาที่สิ้นสุดการลา",
+                              },
+                            ]}
+                          >
+                            <TimePicker
+                              className="w-full"
+                              onChange={(e: any) =>
+                                onChangeParams(e, "endTime")
+                              }
+                              disabledTime={disabledTime}
+                              format="HH:mm"
+                              hourStep={12}
+                              minuteStep={30}
+                              showNow={false}
+                            />
+                          </Form.Item>
+                        </div>
+                      </>
+                    )}
+
+                    {timeSlot === "afternoon" && (
+                      <>
+                        <div className="col-span-3 md:col-span-1 ml-5 mt-4">
+                          <Form.Item
+                            label="เวลาเริ่มต้น :"
+                            name="startTime"
+                            required
+                            rules={[
+                              {
+                                required: true,
+                                message: "กรุณาเลือกเวลาที่เริ่มลา",
+                              },
+                            ]}
+                          >
+                            <TimePicker
+                              className="w-full"
+                              disabledTime={disabledTime}
+                              format="HH:mm"
+                              hourStep={13}
+                              minuteStep={30}
+                              showNow={false}
+                              onChange={(e: any) =>
+                                onChangeParams(e, "startTime")
+                              }
+                            />
+                          </Form.Item>
+                        </div>
+                        <div className="col-span-3 md:col-span-1 ml-5 mt-4">
+                          <Form.Item
+                            label="เวลาสิ้นสุด :"
+                            name="endTime"
+                            required
+                            rules={[
+                              {
+                                required: true,
+                                message: "กรุณาเลือกเวลาที่สิ้นสุดการลา",
+                              },
+                            ]}
+                          >
+                            <TimePicker
+                              className="w-full"
+                              onChange={(e: any) =>
+                                onChangeParams(e, "endTime")
+                              }
+                              disabledTime={disabledTime}
+                              format="HH:mm"
+                              hourStep={17}
+                              minuteStep={30}
+                              showNow={false}
+                            />
+                          </Form.Item>
+                        </div>
+                      </>
+                    )}
                   </>
                 ) : null}
               </div>
-            </>
-          ) : null}
+            ) : null}
+          </>
 
           <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`วัตถุประสงค์การลา :`} name={`detail`} required>
+            <Form.Item
+              label={`วัตถุประสงค์การลา :`}
+              name={`detail`}
+              required
+              rules={[
+                { required: true, message: "กรุณากรอกวัตถุประสงค์การลา" },
+              ]}
+            >
               <Input.TextArea placeholder="วัตถุประสงค์การลา" />
             </Form.Item>
           </div>

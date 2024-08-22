@@ -13,6 +13,7 @@ const ExportDataLeaveAll: React.FC<ExportDataLeaveProps> = ({ data }) => {
     const transdata = data.map((dataItem) => ({
       ชื่อ: dataItem.firstName,
       นามสกุล: dataItem.lastName,
+      แผนก: dataItem.departName,
       ตำแหน่ง: dataItem.position,
       ประเภทการลา: dataItem.typeName,
       วันที่เริ่มลา: new Date(dataItem.startDate).toLocaleDateString("th-TH", {

@@ -1,35 +1,43 @@
 "use-client";
 import React from "react";
 import { Button, Table, Tabs } from "antd";
-import { ITpyeUser, ITypetypeleave } from "../../common";
+import { ITpyeUser, ITypeDataleaveMap } from "../../common";
 import { deleteIcon } from "@/components/icon";
 
 export interface props {
   getdataUserByTypeId: ITpyeUser[];
   onFinishDel: (event: number) => void;
+ 
 }
 
 export const TabeLeavManagement: React.FC<props> = ({
   getdataUserByTypeId,
   onFinishDel,
+ 
 }): React.ReactElement => {
   const columns: any = [
-    { key: "id", title: "ID", dataIndex: "id" },
+    {
+      key: "id",
+      title: "ID",
+      dataIndex: "id",
+      width: "50px",
+    },
+
     {
       key: "id",
       title: "ชื่อ - สกุล",
+      width: "300px",
       dataIndex: "id",
       render: (event: number, row: ITpyeUser, index: number) => {
-        return `${row.firstNameTh} ${row.lastNameTh}`;
+        return `${row.user.firstNameTh} ${row.user.lastNameTh}`;
       },
     },
     {
       key: "id",
       title: "ACTIVE",
-      dataIndex: "id",
       align: "center",
-      width: "70px",
-      render: (event: number, row: ITpyeUser, index: number) => {
+      width: "100px",
+      render: (row: any, event: number, index: number) => {
         return (
           <>
             <div>
@@ -50,7 +58,6 @@ export const TabeLeavManagement: React.FC<props> = ({
   ];
   return (
     <div>
-      
       <Table
         size="small"
         dataSource={getdataUserByTypeId}

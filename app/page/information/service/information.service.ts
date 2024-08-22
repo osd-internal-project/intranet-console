@@ -1,84 +1,11 @@
 import { AxiosInstance } from "axios";
 
-export const ManageCarServices = (axiosInstance: AxiosInstance) => {
-  const baseUrlApihandbookFile = "/handbookFile";
+export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
   const baseUrlApiinformationNews = "/informationNews";
-  const baseUrlApinewsImage = "/newsImage";
+  const baseUrlApinewsImage = "/news-image";
   const baseUrlApinewsType = "/newsType";
 
   return {
-    gethandbookFileQuery: async () => {
-      return await axiosInstance
-        .get(`${baseUrlApihandbookFile}`)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
-    findhandbookFile: async (skip: number, take: number) => {
-      return await axiosInstance
-        .get(`${baseUrlApihandbookFile}?take=${take}&skip=${skip}`)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
-    findOnehandbookFile: async (body: any) => {
-      return await axiosInstance
-        .get(`${baseUrlApihandbookFile}/${body}`)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
-
-    createhandbookFile: async (body: any) => {
-      return await axiosInstance
-        .post(`${baseUrlApihandbookFile}`, body)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
-
-    updatehandbookFile: async (body: any) => {
-      return await axiosInstance
-        .patch(`${baseUrlApihandbookFile}/${body.id}`, body)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
-    deletehandbookFile: async (carId: any) => {
-      console.log(carId);
-
-      return await axiosInstance
-        .delete(`${baseUrlApihandbookFile}/${carId}`)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
-
-
     getinformationNewsQuery: async () => {
       return await axiosInstance
         .get(`${baseUrlApiinformationNews}`)
@@ -92,7 +19,7 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
     },
     updateinformationNews: async (body: any) => {
       return await axiosInstance
-        .patch(`${baseUrlApiinformationNews}/${body.carId}`, body)
+        .patch(`${baseUrlApiinformationNews}/${body.newsId}`, body)
         .then((res) => {
           return res.data;
         })
@@ -112,10 +39,10 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    deleteinformationNews: async (carId: any) => {
-      console.log(`${baseUrlApiinformationNews}/${carId}`);
+    deleteinformationNews: async (newsId: any) => {
+      console.log(`${baseUrlApiinformationNews}/${newsId}`);
       return await axiosInstance
-        .delete(`${baseUrlApiinformationNews}/${carId}`)
+        .delete(`${baseUrlApiinformationNews}/${newsId}`)
         .then((res) => {
           return res.data;
         })
@@ -125,9 +52,7 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         });
     },
 
-
-    // ma car type
-    getnewsImageQuery: async () => {
+    getnewsImageQuery: async (newsId?: any) => {
       return await axiosInstance
         .get(`${baseUrlApinewsImage}`)
         .then((res) => {
@@ -160,10 +85,20 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    deletenewsImage: async (carId: any) => {
-      console.log(`${baseUrlApinewsImage}/${carId}`);
+    uploadFiles: async (newsId: number, formData: FormData) => {
+      console.log(`${baseUrlApinewsImage}/${newsId}`);
+      return axiosInstance.post(`${baseUrlApinewsImage}/${newsId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    },
+
+    deletenewsImage: async (imageId: number) => {
+      console.log(imageId);
+
       return await axiosInstance
-        .delete(`${baseUrlApinewsImage}/${carId}`)
+        .delete(`${baseUrlApinewsImage}/${imageId}`)
         .then((res) => {
           return res.data;
         })
@@ -172,7 +107,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-
 
     getnewsTypeQuery: async () => {
       return await axiosInstance
@@ -185,9 +119,9 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    updatenewsType: async (carWrapupId: string, body: any) => {
+    updatenewsType: async (body: any) => {
       return await axiosInstance
-        .patch(`${baseUrlApinewsType}/${carWrapupId}`, body)
+        .patch(`${baseUrlApinewsType}/${body.idType}`, body)
         .then((res) => {
           return res.data;
         })
@@ -207,10 +141,10 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    deletenewsType: async (carId: any) => {
-      console.log(`${baseUrlApinewsType}/${carId}`);
+    deletenewsType: async (idType: any) => {
+      console.log(`${baseUrlApinewsType}/${idType}`);
       return await axiosInstance
-        .delete(`${baseUrlApinewsType}/${carId}`)
+        .delete(`${baseUrlApinewsType}/${idType}`)
         .then((res) => {
           return res.data;
         })

@@ -62,7 +62,7 @@ export interface MaCarwarpup {
   vender: string;
   cost: Decimal;
   detail: string;
-  wrapupMiles: number;
+  wrapupMiles: number; 
   dateStart: Date | string;
   dateEnd: Date | string;
   remark: string;
@@ -654,6 +654,7 @@ const WarpupmaCar = () => {
           </Form.Item>
         </Form>
       </Modal>
+      
       <Modal
         title="แก้ไขข้อมูลตรวจสภาพรถ"
         open={IsmodlaOpenupdate}

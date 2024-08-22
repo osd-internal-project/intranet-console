@@ -33,21 +33,16 @@ export const CalendarDetail: React.FC<Props> = ({
   dataLeaveUser,
   downloadFile,
 }) => {
-  const [dataLeaveUsers, setDataLeaveUsers] = useState<ITypeDataLeave | null>(
-    null
-  );
   const [modalDataLeaveDetail, setModalDataLeaveDetail] = useState(false);
   const [formDetail] = useForm();
 
   const onCancelModalDetail = () => {
     setModalDataLeaveDetail(false);
-    // setDataLeaveUsers(null);
   };
 
   const onSelectEventCalendar = (event: CustomEvent) => {
     const dataLeaveCalendar = dataLeaveUser.find((b) => b.id === event.id);
     if (dataLeaveCalendar) {
-      setDataLeaveUsers(dataLeaveCalendar);
       formDetail.setFieldsValue({
         ...dataLeaveCalendar,
         name: `${dataLeaveCalendar.firstName} ${dataLeaveCalendar.lastName}`,

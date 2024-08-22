@@ -25,12 +25,12 @@ interface CustomEvent extends RbcEvent {
 }
 
 export interface Props {
-  dataLeaveUser: ITypeDataLeave[];
+  departmentId: ITypeDataLeave[];
   downloadFile: (id: number, filename: string) => void;
 }
 
 export const DepartmentCalendarDetail: React.FC<Props> = ({
-  dataLeaveUser,
+  departmentId,
   downloadFile,
 }) => {
   const [dataLeaveUsers, setDataLeaveUsers] = useState<ITypeDataLeave | null>(
@@ -41,11 +41,10 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({
 
   const onCancelModalDetail = () => {
     setModalDataLeaveDetail(false);
-    
   };
 
   const onSelectEventCalendar = (event: CustomEvent) => {
-    const dataLeaveCalendar = dataLeaveUser.find((b) => b.id === event.id);
+    const dataLeaveCalendar = departmentId.find((b) => b.id === event.id);
     if (dataLeaveCalendar) {
       setDataLeaveUsers(dataLeaveCalendar);
       formDetail.setFieldsValue({
@@ -80,7 +79,7 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({
     <div>
       <Calendar<CustomEvent>
         localizer={localizer}
-        events={dataLeaveUser.map((dataLeaveCalendar: ITypeDataLeave) => ({
+        events={departmentId.map((dataLeaveCalendar: ITypeDataLeave) => ({
           id: dataLeaveCalendar.id,
           title: dataLeaveCalendar.firstName,
           start: new Date(dataLeaveCalendar.startDate),

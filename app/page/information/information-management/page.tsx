@@ -1,10 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import { AntDesignOutlined } from "@ant-design/icons";
-import type { TableProps, FormProps } from "antd";
-import ImageUpload from "./components/ImageUpload";
 import Creaatenews from "./components/createnews"
-import Newoption from "./components/newoption";
+import Newoption from "./components/newoption"
 import Tablenews from "./components/tableNews"
 import {
   Select,
@@ -27,9 +24,6 @@ import {
   Tabs,
 } from "antd";
 const Infomation_management: React.FC = () => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [submitLoading, setSubmitLoading] = useState(true);
-
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -38,14 +32,15 @@ const Infomation_management: React.FC = () => {
     },
     {
       key: "2",
-      label: "ประเภทของข่าวสาร",
-      children: <Newoption/>,
-    },
-    {
-      key: "3",
       label: "ตารางข้อมูลข่าวสาร",
       children: <Tablenews/>,
     },
+    {
+      key: "3",
+      label: "ประเภทของข่าวสาร",
+      children: <Newoption/>,
+    },
+    
   ];
 
   return (

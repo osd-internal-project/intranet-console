@@ -19,7 +19,7 @@ import {
   ITSelectUsers,
   ITTicketConfigs,
 } from "../../common";
-import { CloseOutlined, UploadOutlined } from "@ant-design/icons";
+import { UploadOutlined } from "@ant-design/icons";
 
 import { RcFile } from "antd/es/upload";
 import { useForm } from "antd/es/form/Form";
@@ -76,6 +76,7 @@ const ProjectTicketAddComponent: React.FC<props> = ({
       attendFiles
     );
   };
+
   const handleChangeAttendFiles: UploadProps["onChange"] = async ({
     fileList: newFileList,
   }) => {
@@ -88,6 +89,7 @@ const ProjectTicketAddComponent: React.FC<props> = ({
     }
     return false;
   };
+
   return (
     <Modal
       forceRender

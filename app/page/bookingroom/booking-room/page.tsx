@@ -178,7 +178,6 @@ const BookingRoomPage: React.FC = () => {
 
     try {
       const conflict = await checkBookingConflict(roomName, startDate, endDate);
-      console.log(conflict);
       if (conflict) {
         message.error(
           "ห้องนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่."

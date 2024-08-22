@@ -39,6 +39,7 @@ export interface handbookFile {
   status: boolean;
 }
 export interface handbook {
+  handbookFile: any;
   idbook: number;
   fileName: String;
   filetype: String;
@@ -90,19 +91,32 @@ const Tablehandbook: React.FC = () => {
       message.error("Failed to fetch car data");
     }
   };
+  const handleDownload = (record: handbook) => {
+    if (
+      record.handbookFile &&
+      record.handbookFile[0] &&
+      record.handbookFile[0].fileName
+    ) {
+      window.open(
+        `http://localhost:4003/api/public/handbook-file/${record.handbookFile[0].fileName}`,
+        "_blank"
+      );
+    } else {
+      message.error("ไม่มีไฟล์ให้ดาวน์โหลด");
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
   const filteredData = handbook
-  .filter((handbook) => handbook.status) // กรองข้อมูลที่มี status เป็น true
-  .filter(
-    (handbook) =>
-      handbook.fileName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      handbook.filetype.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+    .filter((handbook) => handbook.status) // กรองข้อมูลที่มี status เป็น true
+    .filter(
+      (handbook) =>
+        handbook.fileName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        handbook.filetype.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   // const handleDownload = (fileUrl: string, p0?: string) => {
   //   console.log(fileUrl);
@@ -156,22 +170,22 @@ const Tablehandbook: React.FC = () => {
       key: "x",
       width: "30px",
       align: "center",
-      render: (record: any) => (
+      render: (_record: number, row: any, _index: number) => (
         <Button
           icon={<DownloadOutlined />}
           size="small"
-          onClick={() =>
-            window.open(
-              `http://localhost:4003/api/public/handbook-file/${record.handbookFile[0].fileName}`,
-              "_blank"
-            )
-          }
+          onClick={() => handleDownload(row)}
         >
           ดาวน์โหลด
         </Button>
       ),
     },
   ];
+  function opencreate() {
+    fetchDataHandbook();
+    fetchDataHandbookfile();
+  }
+
   return (
     <div>
       <div style={{ fontSize: "16px" }}>
@@ -185,7 +199,11 @@ const Tablehandbook: React.FC = () => {
             margin: "10px 0 10px 10px",
             width: "300px",
           }}
-        />
+        ></Input>
+        <Button type="primary" onClick={opencreate}
+        style={{display: 'flex', justifyContent: 'inline-end' }}>
+          Reload
+        </Button>
       </div>
       <Table
         dataSource={filteredData}

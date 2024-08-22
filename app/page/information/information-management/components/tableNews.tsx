@@ -43,7 +43,7 @@ export interface informationNews {
   content: string;
   newsType: string;
   author: string;
-  phblishedAt: string;
+  phblishedAt: Date | string;
   updatedAt: Date | string;
   status: boolean;
   images: newsImage[];
@@ -116,6 +116,7 @@ const Newoption: React.FC = () => {
     formdetail.setFieldsValue({
       ...record,
       phblishedAt: dayjs(record.phblishedAt),
+      updatedAt: dayjs(record.updatedAt),
     });
     setIsmodladetail(true);
   };
@@ -219,22 +220,29 @@ const Newoption: React.FC = () => {
   const handleDeleteNews = async (record: informationNews) => {
     try {
       setSubmitLoading(true);
-      const responsefile = await manageinformationNewsServices.deletenewsImage(
-        record.newsImage[0].imageId ||
-        record.newsImage[1].imageId ||
-        record.newsImage[2].imageId 
-      );
-      const response =
-        await manageinformationNewsServices.deleteinformationNews(
-          record.newsId
-        );
 
-      if (response && responsefile) {
-        message.success("ลบข่าวสารสำเร็จ");
-        fetchDatainformationNews();
-        fetchDatanewimage();
+      const deleteImagePromises = record.newsImage.map(
+        (image: { imageId: number }) =>
+          manageinformationNewsServices.deletenewsImage(image.imageId)
+      );
+
+      const responsefile = await Promise.all(deleteImagePromises);
+
+      if (responsefile.every((res) => res)) {
+        const response =
+          await manageinformationNewsServices.deleteinformationNews(
+            record.newsId
+          );
+
+        if (response) {
+          message.success("ลบข่าวสารสำเร็จ");
+          fetchDatainformationNews();
+          fetchDatanewimage();
+        } else {
+          message.error("ลบข่าวสารไม่สำเร็จ");
+        }
       } else {
-        message.error("ลบข่าวสารไม่สำเร็จ");
+        message.error("ลบรูปภาพไม่สำเร็จ");
       }
     } catch (error) {
       message.error("ลบข่าวสารไม่สำเร็จ");

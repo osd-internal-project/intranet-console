@@ -104,7 +104,8 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
         content: values.content,
         newsType: values.newsType,
         author: session?.user.username,
-        phblishedAt: new Date().toISOString(),
+        phblishedAt:
+          values !== null ? values.phblishedAt : new Date().toISOString(),
         updatedAt:
           values !== null ? values.updatedAt : new Date().toISOString(),
         status: values.status,
@@ -233,16 +234,19 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item valuePropName="filelist">
-            <Upload
-              fileList={attendFiles}
-              onChange={handleChangeAttendFiles}
-              beforeUpload={beforeUploadAttendFiles}
-              multiple={true}
-              maxCount={3}
-              accept=".png,.jpg,.jpeg"
-            >
-              <Button icon={<UploadOutlined />}>Select File</Button>
-            </Upload>
+            <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+              <Upload
+                listType="picture"
+                fileList={attendFiles}
+                onChange={handleChangeAttendFiles}
+                beforeUpload={beforeUploadAttendFiles}
+                multiple={true}
+                maxCount={3}
+                accept=".png,.jpg,.jpeg"
+              >
+                <Button icon={<UploadOutlined />}>Select File</Button>
+              </Upload>
+            </div>
           </Form.Item>
           <Form.Item>
             <Button

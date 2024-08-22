@@ -275,13 +275,6 @@ const Newoption: React.FC = () => {
   ];
   return (
     <div>
-      <Button
-        type="primary"
-        style={{ margin: "10px 0 10px 5px" }}
-        onClick={modalopencreate}
-      >
-        สร้างประเภทเอกสาร
-      </Button>
       <div style={{ fontSize: "16px" }}>
         ค้นหาประเภทเอกสาร :
         <Input
@@ -294,6 +287,13 @@ const Newoption: React.FC = () => {
             width: "300px",
           }}
         />
+        <Button
+          type="primary"
+          style={{ margin: "10px 0 10px 5px" }}
+          onClick={modalopencreate}
+        >
+          สร้างประเภทเอกสาร
+        </Button>
       </div>
       <Modal
         title="เพิ่มข้อมูลตรวจสภาพรถ"

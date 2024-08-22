@@ -214,13 +214,7 @@ const Newoption: React.FC = () => {
   ];
   return (
     <div>
-      <Button
-        type="primary"
-        style={{ margin: "10px 0 10px 5px" }}
-        onClick={modalopencreate}
-      >
-        สร้างประเภทข่าวสาร
-      </Button>
+      
       <div style={{ fontSize: "16px" }}>
         ค้นหาประเภทข่าว :
         <Input
@@ -229,10 +223,16 @@ const Newoption: React.FC = () => {
           onChange={handleInputChange}
           placeholder="ค้นหาข่าวสาร"
           style={{
-            margin: "10px 0 10px 10px",
+            margin: "10px 10px 10px 10px",
             width: "300px",
           }}
-        />
+        /><Button
+        type="primary"
+        style={{ margin: "10px 0 10px 5px" }}
+        onClick={modalopencreate}
+      >
+        สร้างประเภทข่าวสาร
+      </Button>
       </div>
       <Modal
         title="เพิ่มข้อมูลตรวจสภาพรถ"

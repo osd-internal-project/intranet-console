@@ -601,7 +601,7 @@ const Managehandbook: React.FC = () => {
                 ))}
             </Select>
           </Form.Item>
-          <Form.Item label="รูปภาพปัจจุบัน:">
+          <Form.Item label="ไฟล์ปัจจุบัน:">
             {existingFiles.map((file, index) => (
               <div
                 key={index}
@@ -612,7 +612,7 @@ const Managehandbook: React.FC = () => {
                   crossOrigin="anonymous"
                   src={file.url}
                   style={{ width: "100%" }}
-                  alt="news"
+                  alt={file.name}
                 />
                 <Button
                   type="primary"

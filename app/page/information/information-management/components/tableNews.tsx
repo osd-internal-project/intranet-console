@@ -106,6 +106,8 @@ const Newoption: React.FC = () => {
     }
   };
   const detailnews = (record: informationNews) => {
+    console.log("phblishedAt:", record.phblishedAt);
+    console.log("updatedAt:", record.updatedAt);
     formdetail.setFieldsValue({
       ...record,
       phblishedAt: dayjs(record.phblishedAt),
@@ -306,11 +308,11 @@ const Newoption: React.FC = () => {
     setSearchTerm(e.target.value);
   };
 
-  const filteredData = informationNews
-    .filter((news) =>
-      news.newsName.toLowerCase().includes(searchTerm.toLowerCase())||
+  const filteredData = informationNews.filter(
+    (news) =>
+      news.newsName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       news.newsType.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+  );
 
   const handledetail = () => {
     setSelectedNews(null);
@@ -485,13 +487,6 @@ const Newoption: React.FC = () => {
           >
             <Input />
           </Form.Item>
-          <Form.Item
-            name="updatedAt"
-            label="วันที่เผยแพร่ :"
-            style={{ width: "300px" }}
-          >
-            <DatePicker style={{ width: "100%" }} />
-          </Form.Item>
           <Form.Item label="รูปภาพปัจจุบัน:">
             {existingFiles.map((file, index) => (
               <div
@@ -502,7 +497,7 @@ const Newoption: React.FC = () => {
                   preview={false}
                   crossOrigin="anonymous"
                   src={file.url}
-                  style={{ width: "100%" }}
+                  style={{ width: "475px", height: "400px" }}
                   alt="news"
                 />
                 <Button

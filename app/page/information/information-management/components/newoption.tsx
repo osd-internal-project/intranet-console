@@ -18,6 +18,7 @@ import {
   Tooltip,
   Switch,
 } from "antd";
+import moment from "moment";
 export interface newType {
   idType: Number;
   nameType: string;
@@ -160,6 +161,7 @@ const Newoption: React.FC = () => {
       title: "เวลาการสร้าง",
       dataIndex: "createAt",
       key: "createAt",
+      render: (createdAt: Date) => moment(createdAt).format("YYYY/MM/DD"),
     },
     {
       title: "การมองเห็น",

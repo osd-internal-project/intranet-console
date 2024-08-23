@@ -100,17 +100,6 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         let totalHours = Math.floor(
           (row.haveLeftHours || 0) + (isSelected ? params.lengthTime : 0)
         );
-        const isOverLimit = totalDays > row.limitLeaveLastResult;
-        const hasDateRange = params.startDate && params.endDate;
-
-        let color: string | undefined;
-        if (isSelected) {
-          if (isOverLimit) {
-            color = "orange-inverse";
-          } else if (hasDateRange) {
-            color = "green-inverse";
-          }
-        }
 
         const convertDaysToHours = (days: number): number => {
           const decimalPart = days % 1;
@@ -123,6 +112,17 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         let displayedHours = totalHours + fractionalHours;
         if (totalDays < 0) totalDays = Math.floor(value) + 1;
         if (displayedHours < 0) displayedHours = totalHours + 8;
+        const isOverLimit = totalDays > row.limitLeaveLastResult;
+        const hasDateRange = params.startDate && params.endDate;
+        let color: string | undefined;
+
+        if (isSelected) {
+          if (isOverLimit) {
+            color = "orange-inverse";
+          } else if (hasDateRange) {
+            color = "green-inverse";
+          }
+        }
 
         return (
           <div className="flex justify-center">

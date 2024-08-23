@@ -42,7 +42,6 @@ export const TableDetail: React.FC<props> = ({
       dataIndex: "id",
       title: "Fullname",
       render: (e: string, row: ITypeDataLeave) => {
-        // const days: any = row?.leaveHour && row?.leaveHour > 8 ? Math.floor(row?.leaveHour / 8) : row?.leaveHour;
         const base = {
           name: `${row.firstName} ${row.lastName}`,
           createAt: row.createdAt ? dateToStringThNoTime(row.createdAt) : "-",
@@ -94,17 +93,6 @@ export const TableDetail: React.FC<props> = ({
         return (
           <>
             <Row gutter={[8, 8]} className="flex justify-center">
-              {/* <Col>
-                <Button
-                  type="primary"
-                  onClick={() => {
-                    onFinishUpdate("approved", row?.id ? row?.id : 0);
-                  }}
-                  disabled={row.approvedDate ? true : false}
-                >
-                  {editIcon} {`Approved`}
-                </Button>
-              </Col> */}
               <Col>
                 <Button
                   size="small"

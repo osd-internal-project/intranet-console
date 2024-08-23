@@ -59,10 +59,7 @@ const page = () => {
       setdataTypeLeave(resTypeLeave);
       setSearch({ typeid: options[0].value });
       setdataUser(options);
-    } catch (error) {
-      console.error("Error loading type leave or user data:", error);
-    } finally {
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -83,10 +80,7 @@ const page = () => {
         })
       );
       setdataUserByTypeId(lasresult);
-    } catch (error) {
-      console.error("Error loading user data by type:", error);
-    } finally {
-    }
+    } catch (error) {}
   };
 
   function handleChangeTab(typeId: string): void {

@@ -12,6 +12,7 @@ import {
   message,
   Input,
   Image,
+  Carousel,
 } from "antd";
 export interface informationNews {
   newsId: Number;
@@ -19,8 +20,8 @@ export interface informationNews {
   content: String;
   newsType: String;
   author: String;
-  phblishedAt: String;
-  updatedAt: String;
+  phblishedAt: Date |String;
+  updatedAt: Date | String;
   status: boolean;
   images: newsImage[];
 }
@@ -66,9 +67,11 @@ const ManagementNews: React.FC = () => {
     setSearchTerm(e.target.value);
   };
 
-  const filteredData = informationNews.filter((news) => news.status).filter((news)=>
-    news.newsName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredData = informationNews
+    .filter((news) => news.status)
+    .filter((news) =>
+      news.newsName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   const newsPerPage = 12;
   const indexOfLastNews = currentPage * newsPerPage;
@@ -87,7 +90,7 @@ const ManagementNews: React.FC = () => {
     setIsModalVisible(false);
     setSelectedNews(null);
   };
-  
+
   return (
     <div>
       <div
@@ -175,26 +178,44 @@ const ManagementNews: React.FC = () => {
             <p style={{ fontSize: "20px" }}>
               <strong>เนื้อหา:</strong> {selectedNews.content}
             </p>
-            {selectedNews.images.length > 0
-              ? selectedNews.images.map((image, index) => (
-                  <Image
-                    preview={false}
-                    key={index}
-                    crossOrigin="anonymous"
-                    alt="news"
-                    src={`http://localhost:4003/api/public/news-image/${image.fileName}`}
-                    style={{ width: "100%", marginBottom: "20px" }}
-                  />
-                ))
-              : null}
+            <Carousel
+              arrows
+              infinite={true}
+              autoplay
+              autoplaySpeed={10000}
+              style={{ width: "600px", margin: "0 auto" }}
+            >
+              {selectedNews.images.length > 0
+                ? selectedNews.images.map((image, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Image
+                        preview={false}
+                        crossOrigin="anonymous"
+                        alt="news"
+                        src={`http://localhost:4003/api/public/news-image/${image.fileName}`}
+                        style={{ width: "600px", height: "600px" }}
+                      />
+                    </div>
+                  ))
+                : null}
+            </Carousel>
             <p>
               <strong>ผู้เขียน:</strong> {selectedNews.author}
             </p>
             <p>
-              <strong>วันที่เผยแพร่:</strong> {selectedNews.phblishedAt}
+              <strong>วันที่เผยแพร่:</strong>{" "}
+              {new Date(selectedNews.phblishedAt.toString()).toLocaleDateString()}
             </p>
             <p>
-              <strong>อัปเดตล่าสุด:</strong> {selectedNews.updatedAt}
+              <strong>อัปเดตล่าสุด:</strong>{" "}
+              {new Date(selectedNews.updatedAt.toString()).toLocaleDateString()}
             </p>
           </div>
         )}

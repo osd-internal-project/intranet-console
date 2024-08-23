@@ -265,18 +265,19 @@ export default function Page() {
         default:
           resultId = 0;
       }
-
       const dataLeaveUserById = await dataleaveservice.getdataLeaveUserById(
-        type_id
+        value.userId
       );
-      const hasLeaveHour = dataLeaveUserById.map(
+      const dataLeaveTypeId = dataLeaveUserById.filter(
+        (typeId: any) => typeId.typeId === type_id
+      );
+      const hasLeaveHour = dataLeaveTypeId.map(
         (leaveTime: any) => leaveTime.leaveHour
       );
       const totalLeaveHours = hasLeaveHour.reduce(
         (total: any, hour: any) => total + (Number(hour) || 0),
         0
       );
-
       if (totalLeaveHours < resultId) {
         if (typeof value === "object" && value !== null) {
           let totalHourvalue = 0;
@@ -298,6 +299,7 @@ export default function Page() {
               }
             }
           }
+
           let result: number;
           switch (type_id) {
             case 1:
@@ -332,10 +334,15 @@ export default function Page() {
             default:
               result = 0;
           }
-          if (totalHourvalue > result) {
-            return true;
+
+          if (!dataLeaveTypeId || dataLeaveTypeId.length === 0) {
+          } else {
+            if (totalHourvalue > resultId) {
+              return true;
+            }
           }
-          const dataHoru = dataLeaveUserById.map((ho: any) => {
+
+          const dataHoru = dataLeaveTypeId.map((ho: any) => {
             const startDate = new Date(ho.startDate);
             const endDate = new Date(ho.endDate);
             const differenceInMilliseconds =
@@ -356,10 +363,11 @@ export default function Page() {
             0
           );
           const totalAll = totalHour + totalHourvalue;
-          if (totalAll > result) {
-            return true;
+          if (totalAll < result) {
+            return false;
           }
-          return false;
+
+          return true;
         }
       }
       return true;

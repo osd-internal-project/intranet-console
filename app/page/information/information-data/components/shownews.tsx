@@ -176,7 +176,7 @@ const ManagementNews: React.FC = () => {
               <strong></strong> {selectedNews.newsName}
             </p>
             <p style={{ fontSize: "20px" }}>
-              <strong>เนื้อหา:</strong> {selectedNews.content}
+              <strong style={{margin:"0 40px 0 0"}}></strong> {selectedNews.content}
             </p>
             <Carousel
               arrows

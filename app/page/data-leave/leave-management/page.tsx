@@ -8,7 +8,6 @@ import {
   Form,
   Modal,
   Row,
-  Spin,
   Tabs,
   message,
 } from "antd";
@@ -127,6 +126,7 @@ const page = () => {
       onCancel() {},
     });
   };
+
   const onFinishDel = (id: number) => {
     Modal.confirm({
       title: "Delete this unit",
@@ -161,6 +161,7 @@ const page = () => {
       onCancel() {},
     });
   };
+
   return (
     <Row>
       <Col span={24}>

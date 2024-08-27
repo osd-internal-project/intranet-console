@@ -33,7 +33,6 @@ export default function Page() {
   const [departmentId, setDataLeaveDepartmentId] = useState<ITypeDataLeave[]>(
     []
   );
-  const [dataId, setdataId] = useState<ITypeDataLeave[]>([]);
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
   const [formdetail] = Form.useForm();
 

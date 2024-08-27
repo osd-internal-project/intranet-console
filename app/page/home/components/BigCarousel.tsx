@@ -75,12 +75,12 @@ export const BigCarouselComponent: React.FC<Props> = ({
       <Modal
         title="Add Slide"
         open={isModalVisible}
-        // onOk={handleOk}
-        // onCancel={handleCancel}
-        onOk={() => setIsModalVisible(true)}
         onCancel={() => setIsModalVisible(false)}
         width={700}
-      ></Modal>
+        footer={false}
+      >
+        sadasd
+      </Modal>
 
       <Carousel
         autoplay

@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card } from "antd";
+import { Card, message } from "antd";
 import MeetingRoomTableComponent from "./components/MeetingRoomTable";
 import NewsCarouselComponent from "./components/NewsCarousel";
 import HolidaysCalendarComponent from "./components/HolidaysCalendar";
@@ -11,13 +11,17 @@ import { CarFilled, FileFilled, TeamOutlined } from "@ant-design/icons";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import SlideImageService from "./services/index.service";
 import { SlideImageType } from "./common";
+import { RcFile, UploadProps } from "antd/es/upload";
 
 export default function HomePage() {
   const intraAuth = useAxiosIntranet();
   const slideImageService = SlideImageService(intraAuth);
   const [loading, setLoading] = useState<boolean>(true);
   const [slideImage, setSlideImage] = useState<any[]>([]);
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [filePath, setFilePath] = useState<any[]>([]);
+  const [fileName, setFileName] = useState<any[]>([]);
+  const [addFile, setAddFile] = useState<any[]>([]);
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   const fetchData = async () => {
     // const slideImage = await slideImageService.getSlideImage();
@@ -25,19 +29,55 @@ export default function HomePage() {
     const dataFilePath = dataSlideImage.map(
       (item: SlideImageType) => item.filePath
     );
+    const dataFileName = dataSlideImage.map(
+      (item: SlideImageType) => item.fileName
+    );
+    setFileName(dataFileName);
+    setFilePath(dataFilePath);
     setSlideImage(dataSlideImage);
+    setLoading(false);
   };
 
   useEffect(() => {
     if (loading) fetchData();
   }, [loading]);
 
+  const handleChangeAddFile: UploadProps["onChange"] = async ({
+    fileList: newFileList,
+  }) => {
+    return setAddFile(newFileList);
+  };
+
+  const beforeUploadAddFiles = (file: RcFile) => {
+    if (addFile.find((oneFile) => oneFile.name === file.name)) {
+      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
+      return false;
+    }
+    return false;
+  };
+
+  const handleDeleteSlideImage = async (id: number) => {
+    setSubmitLoading(true);
+    try {
+      await slideImageService.deleteSlideImage(id);
+      setSlideImage(slideImage.filter((item) => item.id !== id));
+      message.success("ลบข้อมูลรูปภาพสำเร็จ");
+      setSubmitLoading(false);
+    } catch (error) {
+      message.error("ลบข้อมูลรูปภาพไม่สำเร็จ");
+    }
+  };
+
   return (
     <>
       <BigCarouselComponent
+        loading={loading}
         slideImage={slideImage}
-        isModalVisible={isModalVisible}
-        setIsModalVisible={(e: boolean) => setIsModalVisible(e)}
+        addFile={addFile}
+        handleChangeAddFile={handleChangeAddFile}
+        beforeUploadAddFiles={beforeUploadAddFiles}
+        submitLoading={submitLoading}
+        handleDeleteSlideImage={handleDeleteSlideImage}
       />
 
       <div className="my-2" />

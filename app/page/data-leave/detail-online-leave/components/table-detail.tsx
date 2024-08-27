@@ -22,6 +22,7 @@ export const TableDetail: React.FC<props> = ({
   onFinishUpdate,
   downloadFile,
 }): React.ReactElement => {
+
   const columns: any = [
     {
       key: "status",
@@ -112,6 +113,7 @@ export const TableDetail: React.FC<props> = ({
       },
     },
   ];
+  
   return (
     <div>
       <Table dataSource={dataLeaveUser} columns={columns} size="small" />

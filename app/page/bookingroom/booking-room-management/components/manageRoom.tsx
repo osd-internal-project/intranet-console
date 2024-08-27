@@ -267,7 +267,6 @@ const ManageRoom: React.FC = () => {
       });
 
       console.log(roomName);
-      
 
       if (hasOverlap) {
         message.error(

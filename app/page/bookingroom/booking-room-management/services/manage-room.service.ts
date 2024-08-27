@@ -49,6 +49,7 @@ export const ManageRoomServices = (axiosInstance: AxiosInstance) => {
                     return [];
                 });
         },
+
         deleteBooking: async (id: any) => {
             return await axiosInstance
                 .delete(`${baseUrlApiBookingRoom}/${id}`)
@@ -60,6 +61,7 @@ export const ManageRoomServices = (axiosInstance: AxiosInstance) => {
                     return [];
                 });
         },
+        
         getMasterRoomQuery: async () => {
             return await axiosInstance
                 .get(`${baseUrlApiMasterRoom}`)

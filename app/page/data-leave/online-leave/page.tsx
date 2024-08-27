@@ -88,7 +88,6 @@ export default function Page() {
       return { value: event.departId, label: event.departName };
     });
     setResDepartMent(departmentOptions);
-    setLoading(false);
     setUserOwner(resOwner);
     setTypeLeaveTable(resTableDeatilTypeLeave);
     setTypeLeaveTableAll(resTableUserTypeLeave.typeLeaveDisabledMap);
@@ -932,7 +931,6 @@ export default function Page() {
     } catch (error) {
       message.error("ลาล่วงหน้า 30วัน ไม่สำเร็จ");
     }
-    
   };
 
   return getUserOwner ? (

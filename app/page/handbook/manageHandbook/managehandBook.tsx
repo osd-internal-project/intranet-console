@@ -592,7 +592,7 @@ const Managehandbook: React.FC = () => {
                   }}
                   onClick={() => handleDeleteImage(file)}
                 >
-                  ลบรูปภาพ
+                  ลบไฟล์
                 </Button>
               </div>
             ))}

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import type { FormProps } from "antd";
 import type { UploadFile, UploadProps } from "antd";
 import { RcFile } from "antd/es/upload";
-import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
+import { DownloadOutlined, FilePdfOutlined, UploadOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { DeleteIcon, EditIcon } from "@/components/icon";
 import { useSession } from "next-auth/react";
@@ -76,12 +76,13 @@ const Managehandbook: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedhandbook, setSelectedhandbook] = useState<handbook | null>(
     null
-  );const [handbooktypeOptions, sethandbooktypeOptions] = useState<
-  {
-    value: number;
-    label: string;
-  }[]
->([]);
+  );
+  const [handbooktypeOptions, sethandbooktypeOptions] = useState<
+    {
+      value: number;
+      label: string;
+    }[]
+  >([]);
 
   useEffect(() => {
     fetchDataHandbookfile();
@@ -308,7 +309,11 @@ const Managehandbook: React.FC = () => {
   };
 
   const handleDownload = (record: handbook) => {
-    if (record.handbookFile && record.handbookFile[0] && record.handbookFile[0].fileName) {
+    if (
+      record.handbookFile &&
+      record.handbookFile[0] &&
+      record.handbookFile[0].fileName
+    ) {
       window.open(
         `http://localhost:4003/api/public/handbook-file/${record.handbookFile[0].fileName}`,
         "_blank"
@@ -453,10 +458,10 @@ const Managehandbook: React.FC = () => {
           }}
         />
         <Button type="primary" onClick={opencreate}>
-        การอัพโหลดไฟล์
-      </Button>
+          การอัพโหลดไฟล์
+        </Button>
       </div>
-      
+
       <Modal
         title="แก้ไขข้อมูลตรวจสภาพรถ"
         open={showmodalupload}
@@ -575,13 +580,28 @@ const Managehandbook: React.FC = () => {
                 key={index}
                 style={{ marginBottom: "20px", position: "relative" }}
               >
-                <Image
-                  preview={false}
-                  crossOrigin="anonymous"
-                  src={file.url}
-                  style={{ width: "100%" }}
-                  alt={file.name}
-                />
+                <Button
+                  type="link"
+                  href={file.url}
+                  target="_blank" // เปิดไฟล์ PDF ในแท็บใหม่
+                  style={{ width: "100%", textAlign: "left" }}
+                >
+                  <FilePdfOutlined
+                    style={{ fontSize: "48px", color: "#d32f2f" }}
+                  />
+                  <span style={{ marginLeft: "10px" }}>{file.fileName}</span>
+                </Button>
+                <a
+                  href={file.url}
+                  download={file.fileName}
+                  style={{
+                    position: "absolute",
+                    top: 10,
+                    right: 50,
+                  }}
+                >
+                  <Button type="primary" icon={<DownloadOutlined />} />
+                </a>
                 <Button
                   type="primary"
                   danger
@@ -641,4 +661,3 @@ const Managehandbook: React.FC = () => {
   );
 };
 export default Managehandbook;
-

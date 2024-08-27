@@ -359,7 +359,7 @@ const Managehandbook: React.FC = () => {
       width: "50px",
     },
     {
-      title: "นำเข้าเวลา",
+      title: "เวลาอัพเดท",
       dataIndex: "updatedAt",
       key: "updatedAt",
       width: "50px",

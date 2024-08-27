@@ -200,13 +200,6 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
           >
             <Input.TextArea />
           </Form.Item>
-          <Form.Item
-            name="updatedAt"
-            label="วันที่เผยแพร่ :"
-            style={{ width: "300px" }}
-          >
-            <DatePicker style={{ width: "100%" }} />
-          </Form.Item>
           <Form.Item valuePropName="filelist">
             <div
               style={{

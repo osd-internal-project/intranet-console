@@ -1,7 +1,5 @@
 "use client";
-
-//import "./globals.css";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "antd";
 import MeetingRoomTableComponent from "./components/MeetingRoomTable";
 import NewsCarouselComponent from "./components/NewsCarousel";
@@ -10,11 +8,38 @@ import BigCarouselComponent from "./components/BigCarousel";
 import DocumentComponent from "./components/Document";
 import "antd/dist/reset.css";
 import { CarFilled, FileFilled, TeamOutlined } from "@ant-design/icons";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import SlideImageService from "./services/index.service";
+import { SlideImageType } from "./common";
 
 export default function HomePage() {
+  const intraAuth = useAxiosIntranet();
+  const slideImageService = SlideImageService(intraAuth);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [slideImage, setSlideImage] = useState<any[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+
+  const fetchData = async () => {
+    // const slideImage = await slideImageService.getSlideImage();
+    const dataSlideImage = await slideImageService.getSlideImageQuery();
+    const dataFilePath = dataSlideImage.map(
+      (item: SlideImageType) => item.filePath
+    );
+    setSlideImage(dataSlideImage);
+  };
+
+  useEffect(() => {
+    if (loading) fetchData();
+  }, [loading]);
+
   return (
     <>
-      <BigCarouselComponent />
+      <BigCarouselComponent
+        slideImage={slideImage}
+        isModalVisible={isModalVisible}
+        setIsModalVisible={(e: boolean) => setIsModalVisible(e)}
+      />
+
       <div className="my-2" />
       <div className="grid md:grid-cols-3">
         <div className="px-2 mb-4">

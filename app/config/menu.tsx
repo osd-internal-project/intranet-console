@@ -31,7 +31,8 @@ const MenuNav: MenuProps["items"] = [
         href={"#"}
         onClick={async () => {
           signOut({ callbackUrl: "/signin" });
-        }}>
+        }}
+      >
         Sign Out
       </Link>
     ),
@@ -250,6 +251,11 @@ export const MenuSider: MenuItem[] = [
         // icon: IconPosition,
         label: `Master Position`,
         rule: "st-p-s",
+      },
+      {
+        key: `setting/manage-home`,
+        label: `Manage Home`,
+        rule: "ma-h-s",
       },
     ],
   },

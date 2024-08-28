@@ -20,7 +20,6 @@ export default function HomePage() {
   const [slideImage, setSlideImage] = useState<any[]>([]);
   const [filePath, setFilePath] = useState<any[]>([]);
   const [fileName, setFileName] = useState<any[]>([]);
-  const [addFile, setAddFile] = useState<any[]>([]);
   const [submitLoading, setSubmitLoading] = useState(false);
 
   const fetchData = async () => {
@@ -42,42 +41,12 @@ export default function HomePage() {
     if (loading) fetchData();
   }, [loading]);
 
-  const handleChangeAddFile: UploadProps["onChange"] = async ({
-    fileList: newFileList,
-  }) => {
-    return setAddFile(newFileList);
-  };
-
-  const beforeUploadAddFiles = (file: RcFile) => {
-    if (addFile.find((oneFile) => oneFile.name === file.name)) {
-      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
-      return false;
-    }
-    return false;
-  };
-
-  const handleDeleteSlideImage = async (id: number) => {
-    setSubmitLoading(true);
-    try {
-      await slideImageService.deleteSlideImage(id);
-      setSlideImage(slideImage.filter((item) => item.id !== id));
-      message.success("ลบข้อมูลรูปภาพสำเร็จ");
-      setSubmitLoading(false);
-    } catch (error) {
-      message.error("ลบข้อมูลรูปภาพไม่สำเร็จ");
-    }
-  };
-
   return (
     <>
       <BigCarouselComponent
         loading={loading}
         slideImage={slideImage}
-        addFile={addFile}
-        handleChangeAddFile={handleChangeAddFile}
-        beforeUploadAddFiles={beforeUploadAddFiles}
         submitLoading={submitLoading}
-        handleDeleteSlideImage={handleDeleteSlideImage}
       />
 
       <div className="my-2" />

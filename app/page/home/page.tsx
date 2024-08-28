@@ -20,7 +20,7 @@ export default function HomePage() {
   const [slideImage, setSlideImage] = useState<any[]>([]);
   const [filePath, setFilePath] = useState<any[]>([]);
   const [fileName, setFileName] = useState<any[]>([]);
-  const [submitLoading, setSubmitLoading] = useState(false);
+  
 
   const fetchData = async () => {
     // const slideImage = await slideImageService.getSlideImage();
@@ -46,7 +46,7 @@ export default function HomePage() {
       <BigCarouselComponent
         loading={loading}
         slideImage={slideImage}
-        submitLoading={submitLoading}
+      
       />
 
       <div className="my-2" />

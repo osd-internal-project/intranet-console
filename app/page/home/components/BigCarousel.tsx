@@ -19,15 +19,11 @@ import { RcFile } from "antd/es/upload";
 export interface Props {
   loading: boolean;
   slideImage: SlideImageType[];
-  submitLoading: boolean;
 }
 
-export const BigCarouselComponent: React.FC<Props> = ({
-
-}) => {
+export const BigCarouselComponent: React.FC<Props> = ({}) => {
   const intraAuth = useAxiosIntranet();
   const slideImageService = SlideImageService(intraAuth);
-
 
   const contentStyle: React.CSSProperties = {
     height: "100vh",
@@ -54,7 +50,6 @@ export const BigCarouselComponent: React.FC<Props> = ({
 
   return (
     <>
-      
       <Carousel
         autoplay
         arrows

@@ -31,38 +31,19 @@ export const CreateSlideImage: React.FC<props> = ({
   beforeUploadAddFiles,
   submitLoading,
 }): React.ReactElement => {
-  const [modalDetail, setModalDetail] = useState<boolean>(false);
   const [modalAddSlide, setModalAddSlide] = useState<boolean>(false);
 
   return (
     <>
       <div style={{ textAlign: "right" }}>
-        <button
-          type="button"
+        <Button
           style={{
             marginBottom: "20px",
-            padding: "5px 10px",
-            backgroundColor: "#007bff",
-            color: "#fff",
-            border: "none",
-            borderRadius: "4px",
-            fontSize: "16px",
-            cursor: "pointer",
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-            transition: "background-color 0.3s ease",
           }}
-          onMouseOver={(e) =>
-            (e.currentTarget.style.backgroundColor = "#0056b3")
-          }
-          onMouseOut={(e) =>
-            (e.currentTarget.style.backgroundColor = "#007bff")
-          }
+          type="primary"
           onClick={() => setModalAddSlide(true)}
-        >
-          Add Slide
-        </button>
+        >{`Add Slide`}</Button>
       </div>
-
       <Modal
         title="Add Slide"
         open={modalAddSlide}

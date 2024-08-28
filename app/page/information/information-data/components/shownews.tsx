@@ -20,7 +20,7 @@ export interface informationNews {
   content: String;
   newsType: String;
   author: String;
-  phblishedAt: Date |String;
+  phblishedAt: Date | String;
   updatedAt: Date | String;
   status: boolean;
   images: newsImage[];
@@ -138,7 +138,17 @@ const ManagementNews: React.FC = () => {
                 }
               >
                 <p style={{ fontSize: "20px" }}>{item.newsName}</p>
-                <p>{item.author}</p>
+                <p>อัพโดย : {item.author}</p>
+                <p>เวลา : {new Date(item.updatedAt.toString()).toLocaleDateString(
+                "en-GB",
+                {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }
+              )} น.</p>
               </Card>
             </Col>
           ))}
@@ -176,13 +186,14 @@ const ManagementNews: React.FC = () => {
               <strong></strong> {selectedNews.newsName}
             </p>
             <p style={{ fontSize: "20px" }}>
-              <strong style={{margin:"0 40px 0 0"}}></strong> {selectedNews.content}
+              <strong style={{ margin: "0 40px 0 0" }}></strong>{" "}
+              {selectedNews.content}
             </p>
             <Carousel
               arrows
               infinite={true}
               autoplay
-              autoplaySpeed={10000}
+              autoplaySpeed={3000}
               style={{ width: "600px", margin: "0 auto" }}
             >
               {selectedNews.images.length > 0
@@ -211,11 +222,29 @@ const ManagementNews: React.FC = () => {
             </p>
             <p>
               <strong>วันที่เผยแพร่:</strong>{" "}
-              {new Date(selectedNews.phblishedAt.toString()).toLocaleDateString()}
+              {new Date(selectedNews.phblishedAt.toString()).toLocaleDateString(
+                "en-GB",
+                {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }
+              )} น.
             </p>
             <p>
               <strong>อัปเดตล่าสุด:</strong>{" "}
-              {new Date(selectedNews.updatedAt.toString()).toLocaleDateString()}
+              {new Date(selectedNews.updatedAt.toString()).toLocaleDateString(
+                "en-GB",
+                {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }
+              )} น.
             </p>
           </div>
         )}

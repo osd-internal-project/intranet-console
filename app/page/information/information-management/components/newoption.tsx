@@ -163,11 +163,20 @@ const Newoption: React.FC = () => {
       key: "deteil",
     },
     {
+      title: "อัพเดทล่าสุด",
+      dataIndex: "updateAt",
+      key: "updateAt",
+      render: (updateAt: Date) =>
+        moment(updateAt).format("DD/MM/YYYY HH:mm" + " น."),
+    },
+    {
       title: "เวลาการสร้าง",
       dataIndex: "createAt",
       key: "createAt",
-      render: (createdAt: Date) => moment(createdAt).format("YYYY/MM/DD"),
+      render: (createdAt: Date) =>
+        moment(createdAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
+
     {
       title: "การมองเห็น",
       dataIndex: "status",
@@ -210,21 +219,30 @@ const Newoption: React.FC = () => {
   ];
   return (
     <div>
-      <div style={{ fontSize: "16px" }}>
-        ค้นหาประเภทข่าว :
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          fontSize: "16px",
+        }}
+      ><div style={{
+        margin: "10px 10px 10px 20px",
+      }}>ค้นหาประเภทข่าว :
         <Input
           type="text"
           value={searchTerm}
           onChange={handleInputChange}
-          placeholder="ค้นหาข่าวสาร"
+          placeholder="ค้นหาประเภทข่าวสาร"
           style={{
             margin: "10px 10px 10px 10px",
             width: "300px",
           }}
-        />
+        /></div>
+        <div></div>
         <Button
+          style={{ alignContent: "right" }}
           type="primary"
-          style={{ margin: "10px 0 10px 5px" }}
           onClick={modalopencreate}
         >
           สร้างประเภทข่าวสาร

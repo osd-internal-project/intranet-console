@@ -2,13 +2,7 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import { DownloadOutlined } from "@ant-design/icons";
-import {
-  Button,
-  Input,
-  Table,
-  TableProps,
-  message
-} from "antd";
+import { Button, Input, Table, TableProps, message } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManagehandbookFileServices } from "../service/handbook.service";
 
@@ -36,7 +30,8 @@ const Tablehandbook: React.FC = () => {
   const [handbook, sethandbook] = useState<handbook[]>([]);
   const [handbookFile, sethandbookFile] = useState<handbookFile[]>([]);
   const managehandbookFileServices = ManagehandbookFileServices(intraAuth);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchFileName, setSearchFileName] = useState("");
+  const [searchFileType, setSearchFileType] = useState("");
   useEffect(() => {
     fetchDataHandbook();
     fetchDataHandbookfile();
@@ -87,23 +82,25 @@ const Tablehandbook: React.FC = () => {
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+  const handleFileNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchFileName(e.target.value);
   };
 
-  const filteredData = handbook
-    .filter((handbook) => handbook.status)
-    .filter(
-      (handbook) =>
-        handbook.fileName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        handbook.filetype.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+  const handleFileTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchFileType(e.target.value);
+  };
 
-    const dataWithKey = filteredData.map((item, index) => ({
-      ...item,
-      key: index + 1,
-      index: index + 1,
-    }));
+  const filteredData = handbook.filter(
+    (handbook) =>
+      handbook.fileName.toLowerCase().includes(searchFileName.toLowerCase()) &&
+      handbook.filetype.toLowerCase().includes(searchFileType.toLowerCase())
+  );
+
+  const dataWithKey = filteredData.map((item, index) => ({
+    ...item,
+    key: index + 1,
+    index: index + 1,
+  }));
   const columns: TableProps<handbook>["columns"] = [
     {
       title: "ไอดี",
@@ -126,12 +123,12 @@ const Tablehandbook: React.FC = () => {
       align: "center",
     },
     {
-      title: "นำเข้าเวลา",
-      dataIndex: "createdAt",
-      key: "createdAt",
+      title: "ล่าสุด",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
       width: "50px",
       align: "center",
-      render: (createdAt: Date) => moment(createdAt).format("YYYY/MM/DD"),
+      render: (updatedAt: Date) => moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
       title: "อัพโหลดโดย",
@@ -156,7 +153,7 @@ const Tablehandbook: React.FC = () => {
       ),
     },
   ];
-  
+
   function opencreate() {
     fetchDataHandbook();
     fetchDataHandbookfile();
@@ -164,21 +161,47 @@ const Tablehandbook: React.FC = () => {
 
   return (
     <div>
-      <div style={{ fontSize: "16px" }}>
-        ค้นหาข่าวสาร :
-        <Input
-          type="text"
-          value={searchTerm}
-          onChange={handleInputChange}
-          placeholder="ค้นหาข่าวสาร"
-          style={{
-            margin: "10px 0 10px 10px",
-            width: "300px",
-          }}
-        ></Input>
-        <Button type="primary" onClick={opencreate}
-        style={{display: 'flex', justifyContent: 'inline-end' }}>
-          Reload
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          fontSize: "16px",
+        }}
+      >
+        <div>
+          <div>
+            ค้นหาชื่อเอกสาร :
+            <Input
+              type="text"
+              value={searchFileName}
+              onChange={handleFileNameChange}
+              placeholder="ค้นหาชื่อเอกสาร"
+              style={{
+                margin: "10px 10px 10px 10px",
+                width: "300px",
+              }}
+            />
+            ค้นหาประเภทเอกสาร :
+            <Input
+              type="text"
+              value={searchFileType}
+              onChange={handleFileTypeChange}
+              placeholder="ค้นหาประเภทเอกสาร"
+              style={{
+                margin: "10px 10px 10px 10px",
+                width: "300px",
+              }}
+            />
+          </div>
+        </div>
+        <div></div>
+        <Button
+          style={{ alignContent: "right" }}
+          type="primary"
+          onClick={opencreate}
+        >
+          Refresh
         </Button>
       </div>
       <Table

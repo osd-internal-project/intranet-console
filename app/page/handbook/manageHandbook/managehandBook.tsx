@@ -77,7 +77,8 @@ const Managehandbook: React.FC = () => {
   const [existingFiles, setExistingFiles] = useState<UploadFile[]>([]);
   const { data: session } = useSession();
   const [form] = useForm();
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchFileName, setSearchFileName] = useState("");
+  const [searchFileType, setSearchFileType] = useState("");
   const [selectedhandbook, setSelectedhandbook] = useState<handbook | null>(
     null
   );
@@ -349,15 +350,43 @@ const Managehandbook: React.FC = () => {
       message.error("ไม่มีไฟล์ให้ดาวน์โหลด");
     }
   };
+  const handleDeleteImage = async (file: UploadFile) => {
+    const handbookid = file.uid;
+    console.log(handbookid);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+    try {
+      const response = await managehandbookFileServices.deletehandbookFile(
+        +handbookid
+      );
+
+      if (response) {
+        const updatedFiles = existingFiles.filter(
+          (existingFile) => existingFile.uid !== handbookid
+        );
+        setExistingFiles(updatedFiles);
+        message.success("ลบไฟล์สำเร็จ");
+        fetchDataHandbook();
+        fetchDataHandbookfile();
+      } else {
+        message.error("ลบไฟล์ไม่สำเร็จ");
+      }
+    } catch {
+      message.error("ลบไฟล์ไม่สำเร็จ");
+    }
+  };
+
+  const handleFileNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchFileName(e.target.value);
+  };
+
+  const handleFileTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchFileType(e.target.value);
   };
 
   const filteredData = handbook.filter(
     (handbook) =>
-      handbook.fileName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      handbook.filetype.toLowerCase().includes(searchTerm.toLowerCase())
+      handbook.fileName.toLowerCase().includes(searchFileName.toLowerCase()) &&
+      handbook.filetype.toLowerCase().includes(searchFileType.toLowerCase())
   );
 
   const closecreate = () => {
@@ -399,15 +428,17 @@ const Managehandbook: React.FC = () => {
       title: "เวลาอัพเดท",
       dataIndex: "updatedAt",
       key: "updatedAt",
-      width: "50px",
-      render: (updatedAt: Date) => moment(updatedAt).format("YYYY/MM/DD"),
+      width: "150px",
+      render: (updatedAt: Date) =>
+        moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
       title: "นำเข้าเวลา",
       dataIndex: "createdAt",
       key: "createdAt",
-      width: "50px",
-      render: (createdAt: Date) => moment(createdAt).format("YYYY/MM/DD"),
+      width: "150px",
+      render: (createdAt: Date) =>
+        moment(createdAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
       title: "ผู้อัพโหลด",
@@ -419,7 +450,7 @@ const Managehandbook: React.FC = () => {
       title: "สถานะการมองเห็น",
       dataIndex: "status",
       key: "status",
-      width: "80px",
+      width: "60px",
       render: (status: boolean) =>
         status === true ? (
           <Tag color="green">เปิดการมองเห็น</Tag>
@@ -431,7 +462,7 @@ const Managehandbook: React.FC = () => {
       title: "การจัดการ",
       dataIndex: "x",
       key: "x",
-      width: "60px",
+      width: "30px",
       render: (_record: number, row: any, _index: number) => (
         <Space size="middle">
           <Tooltip title="แก้ไข">
@@ -472,24 +503,51 @@ const Managehandbook: React.FC = () => {
       ),
     },
   ];
-  function handleDeleteImage(_file: any): void {
-    throw new Error("Function not implemented.");
-  }
   return (
     <div>
-      <div style={{ fontSize: "16px" }}>
-        ค้นหาข่าวสาร :
-        <Input
-          type="text"
-          value={searchTerm}
-          onChange={handleInputChange}
-          placeholder="ค้นหาข่าวสาร"
-          style={{
-            margin: "10px 10px 10px 10px",
-            width: "300px",
-          }}
-        />
-        <Button type="primary" onClick={opencreate}>
+      <div style={{ margin: " 10px 40px 20px 0px ", fontSize: "20px" }}>
+        คำเตือน : การบันทึกเอกสารของคุณ ไม่สามารถอัพโหลดได้เกิน 1 เอกสาร
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          fontSize: "16px",
+        }}
+      >
+        <div>
+          <div>
+            ค้นหาชื่อเอกสาร :
+            <Input
+              type="text"
+              value={searchFileName}
+              onChange={handleFileNameChange}
+              placeholder="ค้นหาชื่อเอกสาร"
+              style={{
+                margin: "10px 10px 10px 10px",
+                width: "300px",
+              }}
+            />
+            ค้นหาประเภทเอกสาร :
+            <Input
+              type="text"
+              value={searchFileType}
+              onChange={handleFileTypeChange}
+              placeholder="ค้นหาประเภทเอกสาร"
+              style={{
+                margin: "10px 10px 10px 10px",
+                width: "300px",
+              }}
+            />
+          </div>
+        </div>
+        <div></div>
+        <Button
+          style={{ alignContent: "right" }}
+          type="primary"
+          onClick={opencreate}
+        >
           การอัพโหลดไฟล์
         </Button>
       </div>
@@ -575,6 +633,8 @@ const Managehandbook: React.FC = () => {
             label="ชื่อไฟล์ :"
             style={{
               width: "300px",
+              visibility: "hidden",
+              margin: "0px -80px -60px 0px",
             }}
           >
             <Input />
@@ -615,7 +675,7 @@ const Managehandbook: React.FC = () => {
                 <Button
                   type="link"
                   href={file.url}
-                  target="_blank" // เปิดไฟล์ PDF ในแท็บใหม่
+                  target="_blank"
                   style={{ width: "100%", textAlign: "left" }}
                 >
                   <FilePdfOutlined

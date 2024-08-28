@@ -139,12 +139,17 @@ const Newoption: React.FC = () => {
   const handleCancel1edit = () => {
     setModalEditnewType(false);
   };
+  const dataWithKey = searthnews.map((item, index) => ({
+    ...item,
+    key: index + 1,
+    index: index + 1,
+  }));
 
   const columns: TableProps<newType>["columns"] = [
     {
       title: "ลำดับ",
-      dataIndex: "idType",
-      key: "idType",
+      dataIndex: "key",
+      key: "key",
       align: "center",
     },
     {
@@ -350,7 +355,7 @@ const Newoption: React.FC = () => {
         </Form>
       </Modal>
       <Table
-        dataSource={searthnews}
+        dataSource={dataWithKey}
         columns={columns}
         rowKey="id"
         bordered

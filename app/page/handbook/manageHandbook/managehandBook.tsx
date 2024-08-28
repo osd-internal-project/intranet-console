@@ -706,6 +706,19 @@ const Managehandbook: React.FC = () => {
                 >
                   ลบไฟล์
                 </Button>
+                <Form.Item name="fileName" style={{ width: "450px" }}>
+                  <Input
+                    style={{
+                      border: "none",
+                      boxShadow: "none",
+                      color: "red",
+                      textAlign: "center",
+                      margin:" 0 0 0 10px",
+                      borderBlock:"3px solid red"
+                    }}
+                    readOnly
+                  />
+                </Form.Item>
               </div>
             ))}
           </Form.Item>

@@ -325,11 +325,17 @@ const Newoption: React.FC = () => {
   };
   console.log(selectedNews);
 
+  const dataWithKey = filteredData.map((item, index) => ({
+    ...item,
+    key: index + 1,
+    index: index + 1,
+  }));
+
   const columns: TableProps<informationNews>["columns"] = [
     {
       title: "ลำดับ",
-      dataIndex: "newsId",
-      key: "newsId",
+      dataIndex: "key",
+      key: "key",
       align: "center",
       width: "20px",
     },
@@ -420,7 +426,7 @@ const Newoption: React.FC = () => {
         />
       </div>
       <Table
-        dataSource={filteredData}
+        dataSource={dataWithKey}
         columns={columns}
         rowKey="id"
         bordered

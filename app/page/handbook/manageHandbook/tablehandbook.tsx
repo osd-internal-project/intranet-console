@@ -98,11 +98,17 @@ const Tablehandbook: React.FC = () => {
         handbook.fileName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         handbook.filetype.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    const dataWithKey = filteredData.map((item, index) => ({
+      ...item,
+      key: index + 1,
+      index: index + 1,
+    }));
   const columns: TableProps<handbook>["columns"] = [
     {
       title: "ไอดี",
-      dataIndex: "idbook",
-      key: "idbook",
+      dataIndex: "key",
+      key: "key",
       align: "center",
       width: "20px",
     },
@@ -176,7 +182,7 @@ const Tablehandbook: React.FC = () => {
         </Button>
       </div>
       <Table
-        dataSource={filteredData}
+        dataSource={dataWithKey}
         columns={columns}
         rowKey="id"
         bordered

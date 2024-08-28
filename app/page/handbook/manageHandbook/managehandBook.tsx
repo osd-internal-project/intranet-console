@@ -3,7 +3,11 @@ import React, { useState, useEffect } from "react";
 import type { FormProps } from "antd";
 import type { UploadFile, UploadProps } from "antd";
 import { RcFile } from "antd/es/upload";
-import { DownloadOutlined, FilePdfOutlined, UploadOutlined } from "@ant-design/icons";
+import {
+  DownloadOutlined,
+  FilePdfOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import moment from "moment";
 import { DeleteIcon, EditIcon } from "@/components/icon";
 import { useSession } from "next-auth/react";
@@ -83,8 +87,15 @@ const Managehandbook: React.FC = () => {
       label: string;
     }[]
   >([]);
+  const [handbookOptions, sethandbookOptions] = useState<
+    {
+      value: number;
+      label: string;
+    }[]
+  >([]);
 
   useEffect(() => {
+    fetchDataHandbookoption();
     fetchDataHandbookfile();
     fetchDataHandbook();
     fetchDataType();
@@ -108,11 +119,27 @@ const Managehandbook: React.FC = () => {
   };
   const fetchDataType = async () => {
     try {
-      const handtype = await managehandbookFileServices.gethandbooktypeQuery();
-      const optionsmaResponse = handtype.map((event: newsType) => {
+      const handbookoption =
+        await managehandbookFileServices.gethandbooktypeQuery();
+      const handoptionsmaResponse = handbookoption.map((event: newsType) => {
         return {
           value: event.nameType,
           label: event.nameType,
+        };
+      });
+      sethandbooktypeOptions(handoptionsmaResponse);
+      sethandbooktype(handbookoption);
+    } catch (error) {
+      message.error("Failed to fetch car data");
+    }
+  };
+  const fetchDataHandbookoption = async () => {
+    try {
+      const handtype = await managehandbookFileServices.gethandbooktypeQuery();
+      const optionsmaResponse = handtype.map((event: handbook) => {
+        return {
+          value: event.fileName,
+          label: event.fileName,
         };
       });
       sethandbooktypeOptions(optionsmaResponse);
@@ -343,11 +370,16 @@ const Managehandbook: React.FC = () => {
     setshowmodalupdate(false);
   };
 
+  const dataWithKey = filteredData.map((item, index) => ({
+    ...item,
+    key: index + 1,
+    index: index + 1,
+  }));
   const columns: TableProps<handbook>["columns"] = [
     {
       title: "ไอดี",
-      dataIndex: "idbook",
-      key: "idbook",
+      dataIndex: "key",
+      key: "key",
       align: "center",
       width: "20px",
     },
@@ -651,7 +683,7 @@ const Managehandbook: React.FC = () => {
         </Form>
       </Modal>
       <Table
-        dataSource={filteredData}
+        dataSource={dataWithKey}
         columns={columns}
         rowKey="id"
         bordered

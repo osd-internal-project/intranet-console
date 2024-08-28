@@ -202,11 +202,17 @@ const Newoption: React.FC = () => {
     setModalEditnewType(false);
   };
 
+  const dataWithKey = searthnews.map((item, index) => ({
+    ...item,
+    key: index + 1,
+    index: index + 1,
+  }));
+
   const columns: TableProps<handbooktype>["columns"] = [
     {
       title: "ลำดับ",
-      dataIndex: "idhandtype",
-      key: "idhandtype",
+      dataIndex: "key",
+      key: "key",
       align: "center",
     },
     {
@@ -393,7 +399,7 @@ const Newoption: React.FC = () => {
         </Form>
       </Modal>
       <Table
-        dataSource={searthnews}
+        dataSource={dataWithKey}
         columns={columns}
         rowKey="id"
         bordered

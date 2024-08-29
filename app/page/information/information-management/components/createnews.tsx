@@ -108,10 +108,8 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
         content: values.content,
         newsType: values.newsType,
         author: session?.user.username,
-        phblishedAt:
-          values !== null ? values.phblishedAt : new Date().toISOString(),
-        updatedAt:
-          values !== null ? values.updatedAt : new Date().toISOString(),
+        phblishedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
         status: values.status,
       },
     };
@@ -161,10 +159,14 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
     }
     return false;
   };
-  
+
   return (
     <div style={{ backgroundColor: "#FFFFFF" }}>
-      <div style={{ margin: " 10px 0 0 10px " }}>
+      <div style={{ margin: " 10px 40px 50px 10px " }}>
+        <div style={{ margin: " 10px 40px 20px 0px ", fontSize: "20px" }}>
+          คำเตือน : รูปภาพของคุณในการสร้างข่าวสาร คุณจะไม่สามารถอัพรูปภาพได้เกิน
+          3 ภาพ / 1 ข่าวสาร
+        </div>
         <Form form={form} onFinish={informationNewsCreate} layout="vertical">
           <Form.Item
             name="newsName"
@@ -198,7 +200,7 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
             label=" เนื้อหาข่าวสาร : "
             style={{ width: "500px" }}
           >
-            <Input.TextArea />
+            <Input.TextArea rows={15} />
           </Form.Item>
           <Form.Item valuePropName="filelist">
             <div

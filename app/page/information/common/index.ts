@@ -12,6 +12,7 @@ export interface newsType {
   idType: Number;
   nameType: String;
   deteil: String;
+  updatedAt: string;
   createAt: String;
   status: boolean;
 }

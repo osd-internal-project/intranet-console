@@ -23,12 +23,13 @@ import {
   Popconfirm,
   Tooltip,
   Switch,
-  DatePicker,
   Upload,
   Image,
   Tag,
+  Select,
 } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
+import moment from "moment";
 
 export interface informationNews {
   [x: string]: any;
@@ -70,10 +71,11 @@ const Newoption: React.FC = () => {
   const [formdetail] = useForm();
   const [Ismodladetail, setIsmodladetail] = useState(false);
   const [Ismodlaupdatedata, setIsmodlaupdatedata] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
   const [newsType, setnewsType] = useState<newsType[]>([]);
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [existingFiles, setExistingFiles] = useState<UploadFile[]>([]);
+  const [searchFileName, setSearchFileName] = useState("");
+  const [searchFileType, setSearchFileType] = useState("");
   const [selectedNews, setSelectedNews] = useState<informationNews | null>(
     null
   );
@@ -170,7 +172,6 @@ const Newoption: React.FC = () => {
       content: values.content,
       newsType: values.newsType,
       author: session?.user.username,
-      phblishedAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       status: values.status,
     };
@@ -203,6 +204,7 @@ const Newoption: React.FC = () => {
       setSubmitLoading(false);
       fetchDatainformationNews();
       fetchDatanewimage();
+      setIsmodlaupdatedata(false);
     } catch (error) {
       message.error("อัปเดตข่าวสารไม่สำเร็จ");
       setSubmitLoading(false);
@@ -304,14 +306,17 @@ const Newoption: React.FC = () => {
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+  const handleInputNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchFileName(e.target.value);
+  };
+  const handleInputTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchFileType(e.target.value);
   };
 
   const filteredData = informationNews.filter(
     (news) =>
-      news.newsName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      news.newsType.toLowerCase().includes(searchTerm.toLowerCase())
+      news.newsName.toLowerCase().includes(searchFileName.toLowerCase()) ||
+      news.newsType.toLowerCase().includes(searchFileType.toLowerCase())
   );
 
   const handledetail = () => {
@@ -343,16 +348,35 @@ const Newoption: React.FC = () => {
       title: "ชื่อข่าว",
       dataIndex: "newsName",
       key: "newsName",
+      width: "300px",
     },
     {
       title: "ประเภทข่าว",
       dataIndex: "newsType",
       key: "newsType",
+      width: "80px",
+    },
+    {
+      title: "อัพเดทล่าสุด",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
+      width: "120px",
+      render: (updatedAt: Date) =>
+        moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
+    },
+    {
+      title: "เวลาสร้าง",
+      dataIndex: "phblishedAt",
+      key: "phblishedAt",
+      width: "120px",
+      render: (phblishedAt: Date) =>
+        moment(phblishedAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
       title: "เนื้อหา:",
       dataIndex: "content",
       key: "content",
+      width: "20px",
       align: "center",
       render: (_: any, record: informationNews) => (
         <a onClick={() => detailnews(record)}>
@@ -368,12 +392,13 @@ const Newoption: React.FC = () => {
       title: "ผู้เขียน:",
       dataIndex: "author",
       key: "author",
-      width: "200px",
+      width: "100px",
     },
     {
       title: "การมองเห็น",
       dataIndex: "status",
       key: "status",
+      width: "100px",
       render: (status: boolean) =>
         status ? (
           <Tag color="green">เปิดการมอง</Tag>
@@ -385,6 +410,7 @@ const Newoption: React.FC = () => {
       title: "การจัดการ",
       dataIndex: "manage",
       key: "manage",
+      width: "100px",
       render: (record: number, row: any, index: number) => (
         <Space size="middle">
           <Tooltip title="แก้ไข">
@@ -412,18 +438,44 @@ const Newoption: React.FC = () => {
 
   return (
     <div>
-      <div style={{ fontSize: "16px" }}>
-        ค้นหาข่าวสาร :
-        <Input
-          type="text"
-          value={searchTerm}
-          onChange={handleInputChange}
-          placeholder="ค้นหาข่าวสาร"
-          style={{
-            margin: "10px 0 10px 10px",
-            width: "300px",
-          }}
-        />
+      <div style={{ margin: " 10px 40px 20px 0px ", fontSize: "20px" }}>
+        คำเตือน : รูปภาพของคุณในการแก้ไขข่าวสาร คุณจะไม่สามารถอัพรูปภาพได้เกิน 3
+        ภาพ / 1 ข่าวสาร
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          fontSize: "16px",
+        }}
+      >
+        <div>
+          <div>
+            ค้นหาชื่อข่าว :
+            <Input
+              type="text"
+              value={searchFileName}
+              onChange={handleInputNameChange}
+              placeholder="ค้นหาชื่อข่าว"
+              style={{
+                margin: "10px 10px 10px 10px",
+                width: "300px",
+              }}
+            />
+            ค้นหาประเภทข่าว :
+            <Input
+              type="text"
+              value={searchFileType}
+              onChange={handleInputTypeChange}
+              placeholder="ค้นหาประเภทข่าว"
+              style={{
+                margin: "10px 10px 10px 10px",
+                width: "300px",
+              }}
+            />
+          </div>
+        </div>
       </div>
       <Table
         dataSource={dataWithKey}
@@ -468,6 +520,8 @@ const Newoption: React.FC = () => {
             label="ชื่อประเภทข่าวสาร :"
             style={{
               width: "300px",
+              visibility: "hidden",
+              margin: " 0 -60px -60px 0 ",
             }}
           >
             <Input />
@@ -481,17 +535,30 @@ const Newoption: React.FC = () => {
           </Form.Item>
           <Form.Item
             name="newsType"
-            label="ประเภทข่าวสาร :"
+            label="ประเภทข่าวสาร:"
             style={{ width: "300px" }}
           >
-            <Input />
+            <Select>
+              {newsTypeOptions
+                .filter((option) => {
+                  const type = newsType.find(
+                    (type) => type.nameType === option.label
+                  );
+                  return type && type.status;
+                })
+                .map((option) => (
+                  <Select.Option key={option.value} value={option.value}>
+                    {option.label}
+                  </Select.Option>
+                ))}
+            </Select>
           </Form.Item>
           <Form.Item
             name="content"
             label="เนื้อหาข่าวสาร : "
-            style={{ width: "300px" }}
+            style={{ width: "470px" }}
           >
-            <Input />
+            <Input.TextArea rows={12} />
           </Form.Item>
           <Form.Item label="รูปภาพปัจจุบัน:">
             {existingFiles.map((file, index) => (

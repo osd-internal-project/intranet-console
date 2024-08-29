@@ -33,7 +33,7 @@ const dataform: React.FC = () => {
           borderBottom: "2px solid black",
         }}
       >
-        ข้อมูลข่าวสาร
+        หนังสือ และ เอกสาร
       </h1>
       <Col span={24}>
         <div className="grid-span-1 space-y-2">

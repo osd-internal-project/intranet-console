@@ -20,6 +20,7 @@ export interface handbook {
 export interface handbooktype {
   idhandtype: Number;
   nameType: String;
-  createAt: String;
+  createdAt: String;
+  updatedAt: String;
   status: boolean;
 }

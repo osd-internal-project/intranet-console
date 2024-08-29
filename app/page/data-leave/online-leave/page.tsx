@@ -509,6 +509,8 @@ export default function Page() {
                       formData.append("type", "attend");
                       formData.append("files", file.originFileObj);
                       await dataleaveservice.uploadFiles(result.id, formData);
+                      // console.log("result.id", result.id);
+                      // console.log("formData", formData);
                     });
                   }
                   message.success(`Add success`);

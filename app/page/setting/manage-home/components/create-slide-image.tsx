@@ -23,6 +23,10 @@ export interface props {
   handleChangeAddFile: (e: any) => void;
   beforeUploadAddFiles: (e: RcFile) => void;
   submitLoading: boolean;
+  onfinishCreateSlide: (values: SlideImageType) => void;
+  modalAddSlide: boolean;
+  setModalAddSlide: (value: boolean) => void;
+  createSlideImageForm: any;
 }
 
 export const CreateSlideImage: React.FC<props> = ({
@@ -30,9 +34,11 @@ export const CreateSlideImage: React.FC<props> = ({
   handleChangeAddFile,
   beforeUploadAddFiles,
   submitLoading,
+  onfinishCreateSlide,
+  modalAddSlide,
+  setModalAddSlide,
+  createSlideImageForm,
 }): React.ReactElement => {
-  const [modalAddSlide, setModalAddSlide] = useState<boolean>(false);
-
   return (
     <>
       <div style={{ textAlign: "right" }}>
@@ -54,14 +60,16 @@ export const CreateSlideImage: React.FC<props> = ({
         {" "}
         <div className=" col-span-3 md:col-span-1 ml-5">
           <Form
-            // form={form}
-            layout="vertical"
+            form={createSlideImageForm}
             name="create"
-            // onFinish={createBooking}
-            // onFinishFailed={onFinishFailed}
+            onFinish={onfinishCreateSlide}
             autoComplete="off"
           >
-            <Form.Item label={`แนบไฟล์ :`} name={"addFile"}>
+            <Form.Item
+              label={`แนบไฟล์ :`}
+              name={"addFile"}
+              rules={[{ required: true, message: "กรุณาแนบไฟล์" }]}
+            >
               <Upload
                 fileList={addFile}
                 onChange={handleChangeAddFile}
@@ -82,6 +90,7 @@ export const CreateSlideImage: React.FC<props> = ({
                 >
                   ตกลง
                 </Button>
+                {/* <Button htmlType="submit" type="primary">{`Add`}</Button> */}
               </div>
             </Form.Item>
           </Form>

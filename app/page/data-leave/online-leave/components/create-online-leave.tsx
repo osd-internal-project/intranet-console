@@ -383,7 +383,11 @@ export const CreateOnlineLeave: React.FC<props> = ({
             </div>
           </div>
           <div className=" col-span-12 md:col-span-1 ml-5 justify-center flex w-full">
-            <Button htmlType="submit" type="primary">{`ยื่นใบลา`}</Button>
+            <Button
+              htmlType="submit"
+              type="primary"
+              style={{ fontSize: "18px", padding: "12px 24px" }}
+            >{`ยื่นใบลา`}</Button>
           </div>
         </Form>
       </Card>

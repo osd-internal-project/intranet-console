@@ -17,6 +17,7 @@ import ManageHomeService from "./services/index.service";
 import { SlideImageType } from "./common";
 import { dateToEndofDay, dateToStartofDay } from "@/app/utils/format";
 import { RcFile, UploadProps } from "antd/es/upload";
+import { useForm } from "antd/es/form/Form";
 
 export default function TypeLeave() {
   const Auth = useAxiosIntranet();
@@ -25,6 +26,8 @@ export default function TypeLeave() {
   const [loading, setLoading] = useState<boolean>(true);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [addFile, setAddFile] = useState<any[]>([]);
+  const [createSlideImageForm] = useForm();
+  const [modalAddSlide, setModalAddSlide] = useState<boolean>(false);
 
   useEffect(() => {
     if (loading) loadData();
@@ -58,8 +61,8 @@ export default function TypeLeave() {
   };
 
   const beforeUploadAddFiles = (file: RcFile) => {
-    if (addFile.find((oneFile) => oneFile.name === file.name)) {
-      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
+    if (slideImage.find((oneFile) => oneFile.fileName === file.name)) {
+      message.warning(`ชื่อไฟล์นี้ซ้ำ ${file.name} `);
       return false;
     }
     return false;
@@ -69,6 +72,30 @@ export default function TypeLeave() {
     fileList: newFileList,
   }) => {
     return setAddFile(newFileList);
+  };
+
+  const onfinishCreateSlide = async (values: any) => {
+    try {
+      setSubmitLoading(true);
+
+      if (addFile.length > 0) {
+        for (const file of addFile) {
+          const formData: any = new FormData();
+          formData.append("type", "attend");
+          formData.append("files", file.originFileObj);
+          await manageHomeService.uploadFilesSlide(values.id, formData);
+        }
+        message.success("อัปโหลดสำเร็จ");
+      }
+    } catch (error) {
+      message.error("การอัปโหลดล้มเหลว");
+    } finally {
+      setSubmitLoading(false);
+      setModalAddSlide(false);
+      setLoading(true);
+      createSlideImageForm.resetFields();
+      setAddFile([]);
+    }
   };
 
   return (
@@ -102,6 +129,10 @@ export default function TypeLeave() {
               handleChangeAddFile={handleChangeAddFile}
               beforeUploadAddFiles={beforeUploadAddFiles}
               submitLoading={submitLoading}
+              onfinishCreateSlide={onfinishCreateSlide}
+              modalAddSlide={modalAddSlide}
+              setModalAddSlide={setModalAddSlide}
+              createSlideImageForm={createSlideImageForm}
             />
 
             <TableSlideImage

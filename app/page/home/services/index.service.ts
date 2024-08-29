@@ -3,6 +3,9 @@ import { SlideImageType } from "../common";
 
 const SlideImageService = (axiosInstance: AxiosInstance) => {
   const baseUrlSlideImage = "/slide-image";
+  const baseUrlApiMasterRoom = "/master-room";
+  const baseUrlApiHandbookFile = "/handbook-file";
+  const baseUrlApiHandbook = "/hand-book";
 
   const getSlideImage = async (filename: string): Promise<Blob> => {
     try {
@@ -29,7 +32,7 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
           return res.data;
         })
         .catch((err) => {
-          console.log(err);
+          // console.log(err);
           return;
         });
     },
@@ -52,10 +55,55 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
           return res.data;
         })
         .catch((err) => {
-          console.log(err);
-          return [];
+          // console.log(err);
+          return;
         });
     },
+
+    getMasterRoomQuery: async () => {
+      return await axiosInstance
+        .get(`${baseUrlApiMasterRoom}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          // console.log(err);
+          return;
+        });
+    },
+    getHandbookFileQuery: async () => {
+      return await axiosInstance
+        .get(`${baseUrlApiHandbookFile}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          // console.log(err);
+          return;
+        });
+    },
+
+    getHandbookQuery: async () => {
+      return await axiosInstance
+        .get(`${baseUrlApiHandbook}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          // console.log(err);
+          return ;
+        });
+    },
+
+    downloadFile: async (id: number) => {
+      return await axiosInstance
+        .get(`${baseUrlApiHandbookFile}/get-file/${id}`, { responseType: "blob" })
+        .then((result) => {
+          return result.data;
+        })
+        .catch((err) => console.log(err));
+    },
+
   };
 };
 

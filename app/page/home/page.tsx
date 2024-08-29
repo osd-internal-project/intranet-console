@@ -10,7 +10,12 @@ import "antd/dist/reset.css";
 import { CarFilled, FileFilled, TeamOutlined } from "@ant-design/icons";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import SlideImageService from "./services/index.service";
-import { SlideImageType } from "./common";
+import {
+  SlideImageType,
+  MasterRoomType,
+  HandbookFileType,
+  HandbookType,
+} from "./common";
 import { RcFile, UploadProps } from "antd/es/upload";
 
 export default function HomePage() {
@@ -20,10 +25,11 @@ export default function HomePage() {
   const [slideImage, setSlideImage] = useState<any[]>([]);
   const [filePath, setFilePath] = useState<any[]>([]);
   const [fileName, setFileName] = useState<any[]>([]);
-  
+  const [bookingRoom, setBookingRoom] = useState<MasterRoomType[]>([]);
+  const [handbookFile, setHandbookFile] = useState<HandbookFileType[]>([]);
+  const [handbookQuery, setHandbookQuery] = useState<HandbookType[]>([]);
 
   const fetchData = async () => {
-    // const slideImage = await slideImageService.getSlideImage();
     const dataSlideImage = await slideImageService.getSlideImageQuery();
     const dataFilePath = dataSlideImage.map(
       (item: SlideImageType) => item.filePath
@@ -31,6 +37,13 @@ export default function HomePage() {
     const dataFileName = dataSlideImage.map(
       (item: SlideImageType) => item.fileName
     );
+    const Bookingresponse = await slideImageService.getMasterRoomQuery();
+    const dataHandbookFileQuery =
+      await slideImageService.getHandbookFileQuery();
+    const dataHandbookQuery = await slideImageService.getHandbookQuery();
+    setHandbookQuery(dataHandbookQuery);
+    setHandbookFile(dataHandbookFileQuery);
+    setBookingRoom(Bookingresponse);
     setFileName(dataFileName);
     setFilePath(dataFilePath);
     setSlideImage(dataSlideImage);
@@ -41,12 +54,29 @@ export default function HomePage() {
     if (loading) fetchData();
   }, [loading]);
 
+  async function downloadFile(handbookid: number, name: string): Promise<void> {
+    console.log(handbookid);
+
+    if (handbookid) {
+      console.log(2);
+      const response = await slideImageService.downloadFile(handbookid);
+      const url = URL.createObjectURL(response);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  }
+
   return (
     <>
       <BigCarouselComponent
         loading={loading}
         slideImage={slideImage}
-      
+        // filePath={filePath}
+        // fileName={fileName}
       />
 
       <div className="my-2" />
@@ -91,13 +121,22 @@ export default function HomePage() {
           </Card>
           <div className="my-4"></div>
           <Card title="เอกสาร" bordered={false} className="text-center">
-            <DocumentComponent />
+            <DocumentComponent
+              handbookFile={handbookFile}
+              handbookQuery={handbookQuery}
+              downloadFile={(id: number, filename: string) =>
+                downloadFile(id, filename)
+              }
+            />
           </Card>
         </div>
 
         <div className="lg:col-span-1">
           <Card title="หอประชุม">
-            <MeetingRoomTableComponent pagination={false} />
+            <MeetingRoomTableComponent
+              pagination={false}
+              bookingRoom={bookingRoom}
+            />
           </Card>
           <div className="my-4"></div>
           <Card title="วันหยุดประจำปี">

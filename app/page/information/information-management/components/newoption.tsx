@@ -23,6 +23,7 @@ export interface newType {
   idType: Number;
   nameType: string;
   deteil: string;
+  updatedAt: string;
   createAt: string;
   status: boolean;
 }
@@ -65,6 +66,7 @@ const Newoption: React.FC = () => {
       data: {
         nameType: values.nameType,
         deteil: values.deteil,
+        updatedAt: new Date().toISOString(),
         createAt: new Date().toISOString(),
         status: values.status,
       },
@@ -77,12 +79,12 @@ const Newoption: React.FC = () => {
         message.success("เพิ่มประเภทข่าวสารสำเร็จ");
         form.resetFields();
       } else {
-        message.error("เพิ่มประเภทข่าวสารไม่สำเร็จ");
+        message.error("เพิ่มประเภทไม่สำเร็จ");
       }
       setSubmitLoading(false);
       fetchDatanewType();
     } catch (error) {
-      message.error("เพิ่มประเภทข่าวสารไม่สำเร็จ");
+      message.error("เพิ่มประเภทไม่สำเร็จ");
       setSubmitLoading(false);
     }
   };
@@ -95,15 +97,16 @@ const Newoption: React.FC = () => {
         idType: values?.idType,
         nameType: values?.nameType,
         deteil: values?.deteil,
+        updatedAt: new Date().toISOString(),
         status: values?.status,
       };
       await manageinformationNewsServices.updatenewsType(updatenewType);
-      message.success("แก้ไขข้อมูลห้องสำเร็จ");
+      message.success("แก้ไขประเภทสำเร็จ");
 
       fetchDatanewType();
       setSubmitLoading(false);
     } catch (error) {
-      message.error("แก้ไขข้อมูลห้องไม่สำเร็จ");
+      message.error("แก้ไขประเภทไม่สำเร็จ");
     }
   };
 
@@ -111,10 +114,10 @@ const Newoption: React.FC = () => {
     try {
       await manageinformationNewsServices.deletenewsType(idType);
       setnewType(newType.filter((item) => item.idType !== idType));
-      message.success("ลบการจองสำเร็จ");
+      message.success("ลบประเภทสำเร็จ");
       fetchDatanewType();
     } catch (error) {
-      message.error("ลบการจองไม่สำเร็จ");
+      message.error("ลบประเภทไม่สำเร็จ");
     }
   };
 
@@ -164,10 +167,10 @@ const Newoption: React.FC = () => {
     },
     {
       title: "อัพเดทล่าสุด",
-      dataIndex: "updateAt",
-      key: "updateAt",
-      render: (updateAt: Date) =>
-        moment(updateAt).format("DD/MM/YYYY HH:mm" + " น."),
+      dataIndex: "updatedAt",
+      key: "updatedAt",
+      render: (updatedAt: Date) =>
+        moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
       title: "เวลาการสร้าง",
@@ -226,19 +229,24 @@ const Newoption: React.FC = () => {
           alignItems: "center",
           fontSize: "16px",
         }}
-      ><div style={{
-        margin: "10px 10px 10px 20px",
-      }}>ค้นหาประเภทข่าว :
-        <Input
-          type="text"
-          value={searchTerm}
-          onChange={handleInputChange}
-          placeholder="ค้นหาประเภทข่าวสาร"
+      >
+        <div
           style={{
-            margin: "10px 10px 10px 10px",
-            width: "300px",
+            margin: "10px 10px 10px 20px",
           }}
-        /></div>
+        >
+          ค้นหาประเภทข่าว :
+          <Input
+            type="text"
+            value={searchTerm}
+            onChange={handleInputChange}
+            placeholder="ค้นหาประเภทข่าวสาร"
+            style={{
+              margin: "10px 10px 10px 10px",
+              width: "300px",
+            }}
+          />
+        </div>
         <div></div>
         <Button
           style={{ alignContent: "right" }}

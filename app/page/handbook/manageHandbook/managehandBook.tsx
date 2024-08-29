@@ -16,7 +16,6 @@ import {
   Button,
   Modal,
   Input,
-  Image,
   Table,
   TableProps,
   message,
@@ -88,13 +87,6 @@ const Managehandbook: React.FC = () => {
       label: string;
     }[]
   >([]);
-  const [handbookOptions, sethandbookOptions] = useState<
-    {
-      value: number;
-      label: string;
-    }[]
-  >([]);
-
   useEffect(() => {
     fetchDataHandbookoption();
     fetchDataHandbookfile();
@@ -115,7 +107,7 @@ const Managehandbook: React.FC = () => {
       sethandbookFile(handbookFile);
       setSubmitLoading(false);
     } catch (error) {
-      message.error("Failed to fetch car data");
+      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
     }
   };
   const fetchDataType = async () => {
@@ -131,7 +123,7 @@ const Managehandbook: React.FC = () => {
       sethandbooktypeOptions(handoptionsmaResponse);
       sethandbooktype(handbookoption);
     } catch (error) {
-      message.error("Failed to fetch car data");
+      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
     }
   };
   const fetchDataHandbookoption = async () => {
@@ -146,7 +138,7 @@ const Managehandbook: React.FC = () => {
       sethandbooktypeOptions(optionsmaResponse);
       sethandbooktype(handtype);
     } catch (error) {
-      message.error("Failed to fetch car data");
+      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
     }
   };
 
@@ -162,7 +154,7 @@ const Managehandbook: React.FC = () => {
       sethandbook(handbook);
       setSubmitLoading(false);
     } catch (error) {
-      message.error("Failed to fetch car data");
+      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
     }
   };
 
@@ -185,12 +177,9 @@ const Managehandbook: React.FC = () => {
       const response = await managehandbookFileServices.createhandbook(
         handbookCreateData
       );
-      console.log(response);
-      console.log(attendFiles);
       if (response && attendFiles.length > 0) {
         await Promise.all(
           attendFiles.map(async (file) => {
-            console.log(`${response.idbook}`);
             const formData = new FormData();
             formData.append("file", file.originFileObj as RcFile);
             await managehandbookFileServices.uploadFiles(
@@ -220,7 +209,6 @@ const Managehandbook: React.FC = () => {
   const handbookFileUpdate: FormProps<
     handbook & handbookFile
   >["onFinish"] = async (values) => {
-    console.log(attendFiles);
     setSubmitLoading(true);
     const handbookFileUpdateData = {
       idbook: values?.idbook,
@@ -238,7 +226,6 @@ const Managehandbook: React.FC = () => {
       if (response && attendFiles.length > 0) {
         await Promise.all(
           attendFiles.map(async (file) => {
-            console.log(`${response.idbook}`);
             const formData = new FormData();
             formData.append("file", file.originFileObj as RcFile);
             await managehandbookFileServices.uploadFiles(
@@ -352,7 +339,6 @@ const Managehandbook: React.FC = () => {
   };
   const handleDeleteImage = async (file: UploadFile) => {
     const handbookid = file.uid;
-    console.log(handbookid);
 
     try {
       const response = await managehandbookFileServices.deletehandbookFile(
@@ -713,8 +699,8 @@ const Managehandbook: React.FC = () => {
                       boxShadow: "none",
                       color: "red",
                       textAlign: "center",
-                      margin:" 0 0 0 10px",
-                      borderBlock:"3px solid red"
+                      margin: " 0 0 0 10px",
+                      borderBlock: "3px solid red",
                     }}
                     readOnly
                   />

@@ -84,7 +84,7 @@ const Newoption: React.FC = () => {
       sethandbooktype(handbooktype);
       setSubmitLoading(false);
     } catch (error) {
-      message.error("Failed to fetch car data");
+      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
     }
   };
   const fetchDataHandbookfile = async () => {
@@ -99,7 +99,7 @@ const Newoption: React.FC = () => {
       );
       sethandbookFile(handbookFile);
     } catch (error) {
-      message.error("Failed to fetch car data");
+      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
     }
   };
   const fetchDataHandbook = async () => {
@@ -112,7 +112,7 @@ const Newoption: React.FC = () => {
       sethandbook(handbook);
       setSubmitLoading(false);
     } catch (error) {
-      message.error("Failed to fetch car data");
+      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
     }
   };
   const newsTypeCreateDatacreate: FormProps<handbooktype>["onFinish"] = async (
@@ -132,17 +132,17 @@ const Newoption: React.FC = () => {
         informationNewsCreateData
       );
       if (response) {
-        message.success("เพิ่มประเภทหนังสือสำเร็จ");
+        message.success("เพิ่มประเภทเอกสารสำเร็จ");
         form.resetFields();
       } else {
-        message.error("เพิ่มประเภทหนังสือไม่สำเร็จ");
+        message.error("เพิ่มประเภทเอกสารไม่สำเร็จ");
       }
       setSubmitLoading(false);
       fetchDatahandbooktype();
       fetchDataHandbookfile();
       fetchDataHandbook();
     } catch (error) {
-      message.error("เพิ่มประเภทหนังสือไม่สำเร็จ");
+      message.error("เพิ่มประเภทเอกสารไม่สำเร็จ");
       setSubmitLoading(false);
     }
   };
@@ -151,26 +151,24 @@ const Newoption: React.FC = () => {
     values
   ) => {
     setSubmitLoading(true);
-    console.log(values);
 
     try {
       const updatenewType = {
         idhandtype: values?.idhandtype,
         nameType: values?.nameType,
         updatedAt: new Date().toISOString(),
-
         author: session?.user.username,
         status: values?.status,
       };
       await managehandbookFileServices.updatehandbooktype(updatenewType);
-      message.success("แก้ไขข้อมูลห้องสำเร็จ");
+      message.success("แก้ไขประเภทเอกสารสำเร็จ");
       fetchDatahandbooktype();
       fetchDataHandbookfile();
       fetchDataHandbook();
       formEdit.resetFields();
       setSubmitLoading(false);
     } catch (error) {
-      message.error("แก้ไขข้อมูลห้องไม่สำเร็จ");
+      message.error("แก้ไขประเภทเอกสารไม่สำเร็จ");
     }
   };
 
@@ -180,12 +178,12 @@ const Newoption: React.FC = () => {
       sethandbooktype(
         handbooktype.filter((item) => item.idhandtype !== idhandtype)
       );
-      message.success("ลบการจองสำเร็จ");
+      message.success("ลบประเภทเอกสารสำเร็จ");
       fetchDatahandbooktype();
       fetchDataHandbookfile();
       fetchDataHandbook();
     } catch (error) {
-      message.error("ลบการจองไม่สำเร็จ");
+      message.error("ลบประเภทเอกสารไม่สำเร็จ");
     }
   };
 

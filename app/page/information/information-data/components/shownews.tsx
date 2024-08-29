@@ -139,16 +139,20 @@ const ManagementNews: React.FC = () => {
               >
                 <p style={{ fontSize: "20px" }}>{item.newsName}</p>
                 <p>อัพโดย : {item.author}</p>
-                <p>เวลา : {new Date(item.updatedAt.toString()).toLocaleDateString(
-                "en-GB",
-                {
-                  year: "numeric",
-                  month: "2-digit",
-                  day: "2-digit",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                }
-              )} น.</p>
+                <p>
+                  เวลา :{" "}
+                  {new Date(item.updatedAt.toString()).toLocaleDateString(
+                    "en-GB",
+                    {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }
+                  )}{" "}
+                  น.
+                </p>
               </Card>
             </Col>
           ))}
@@ -193,7 +197,7 @@ const ManagementNews: React.FC = () => {
               arrows
               infinite={true}
               autoplay
-              autoplaySpeed={3000}
+              autoplaySpeed={1500}
               style={{ width: "600px", margin: "0 auto" }}
             >
               {selectedNews.images.length > 0
@@ -231,7 +235,8 @@ const ManagementNews: React.FC = () => {
                   hour: "2-digit",
                   minute: "2-digit",
                 }
-              )} น.
+              )}{" "}
+              น.
             </p>
             <p>
               <strong>อัปเดตล่าสุด:</strong>{" "}
@@ -244,7 +249,8 @@ const ManagementNews: React.FC = () => {
                   hour: "2-digit",
                   minute: "2-digit",
                 }
-              )} น.
+              )}{" "}
+              น.
             </p>
           </div>
         )}

@@ -49,7 +49,7 @@ const Tablehandbook: React.FC = () => {
       );
       sethandbookFile(handbookFile);
     } catch (error) {
-      message.error("Failed to fetch car data");
+      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
     }
   };
 
@@ -64,7 +64,7 @@ const Tablehandbook: React.FC = () => {
       );
       sethandbook(handbook);
     } catch (error) {
-      message.error("Failed to fetch car data");
+      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
     }
   };
   const handleDownload = (record: handbook) => {
@@ -128,7 +128,8 @@ const Tablehandbook: React.FC = () => {
       key: "updatedAt",
       width: "50px",
       align: "center",
-      render: (updatedAt: Date) => moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
+      render: (updatedAt: Date) =>
+        moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
       title: "อัพโหลดโดย",

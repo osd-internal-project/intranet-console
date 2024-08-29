@@ -54,12 +54,9 @@ export default function HomePage() {
     if (loading) fetchData();
   }, [loading]);
 
-  async function downloadFile(handbookid: number, name: string): Promise<void> {
-    console.log(handbookid);
-
-    if (handbookid) {
-      console.log(2);
-      const response = await slideImageService.downloadFile(handbookid);
+  async function downloadFile(id: number, name: string): Promise<void> {
+    if (id) {
+      const response = await slideImageService.downloadFile(id);
       const url = URL.createObjectURL(response);
       const a = document.createElement("a");
       a.href = url;
@@ -75,8 +72,6 @@ export default function HomePage() {
       <BigCarouselComponent
         loading={loading}
         slideImage={slideImage}
-        // filePath={filePath}
-        // fileName={fileName}
       />
 
       <div className="my-2" />

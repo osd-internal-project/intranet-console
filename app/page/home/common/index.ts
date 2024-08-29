@@ -44,5 +44,5 @@ export interface HandbookType {
   updatedAt?: Date;
   author?: string;
   status?: boolean;
-  handbookFile?: HandbookFileType[];
+  handbookFile: HandbookFileType[];
 }

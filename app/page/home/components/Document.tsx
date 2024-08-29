@@ -74,8 +74,9 @@ const DocumentComponent: React.FC<props> = ({
                 <strong>ไฟล์:</strong>{" "}
                 <Button
                   type="link"
-                  onClick={() => downloadFile(file.handbookid, file.fileName)}
-                  // onClick={() => (file.id, file.fileName)}
+                  onClick={() =>
+                    downloadFile(file.handbookFile[0].handbookid, file.fileName)
+                  }
                 >
                   <Space>
                     <PaperClipOutlined />
@@ -102,7 +103,7 @@ const DocumentComponent: React.FC<props> = ({
         width={1000}
         footer={null}
       >
-        {handbookQuery.map((file) => (
+        {handbookQuery.map((file, index) => (
           <Card
             key={file.idbook}
             hoverable
@@ -140,9 +141,23 @@ const DocumentComponent: React.FC<props> = ({
                     : "Date not available"}
                 </p>
               </div>
-              <div style={{ flex: 1 }}>
+              <div style={{ flex: 2 }} key={index}>
                 <p style={{ fontSize: "14px", color: "#595959" }}>
-                  <strong>ไฟล์:</strong> {file.fileName}
+                  <strong>ไฟล์:</strong>{" "}
+                  <Button
+                    type="link"
+                    onClick={() =>
+                      downloadFile(
+                        file.handbookFile[0].handbookid,
+                        file.fileName
+                      )
+                    }
+                  >
+                    <Space>
+                      <PaperClipOutlined />
+                      {file.fileName}
+                    </Space>
+                  </Button>
                 </p>
               </div>
             </div>

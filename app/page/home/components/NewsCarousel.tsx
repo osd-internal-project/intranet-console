@@ -1,6 +1,6 @@
-import { RightOutlined, LeftOutlined } from "@ant-design/icons";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { Carousel, Card, Modal, Image } from "antd";
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { InformationNewsType, NewsImageType } from "../common";
 
 export interface Props {
@@ -16,33 +16,8 @@ const NewsCarouselComponent: React.FC<Props> = ({
   const [selectedNews, setSelectedNews] = useState<InformationNewsType | null>(
     null
   );
-  const [numCols, setNumCols] = useState(3);
 
-  const chunkArray = (array: any[], size: number) => {
-    const chunkedArray = [];
-    for (let i = 0; i < array.length; i += size) {
-      chunkedArray.push(array.slice(i, i + size));
-    }
-    return chunkedArray;
-  };
-
-  const updateNumCols = () => {
-    if (window.innerWidth < 768) {
-      setNumCols(1);
-    } else if (window.innerWidth < 1024) {
-      setNumCols(2);
-    } else {
-      setNumCols(3);
-    }
-  };
-
-  useEffect(() => {
-    updateNumCols();
-    window.addEventListener("resize", updateNumCols);
-    return () => window.removeEventListener("resize", updateNumCols);
-  }, []);
-
-  const newsChunks = chunkArray(informationNews, numCols);
+  const carouselRef = useRef<any>(null);
 
   const showModal = (news: InformationNewsType) => {
     setSelectedNews(news);
@@ -59,67 +34,93 @@ const NewsCarouselComponent: React.FC<Props> = ({
     setSelectedNews(null);
   };
 
+  const chunkedNews = [];
+  for (let i = 0; i < informationNews.length; i += 3) {
+    chunkedNews.push(informationNews.slice(i, i + 3));
+  }
+
   return (
     <>
-      <Carousel
-        dots
-        arrows
-        nextArrow={<RightOutlined />}
-        prevArrow={<LeftOutlined />}
-        infinite
-        autoplay={true}
-        effect="fade"
-        lazyLoad="progressive"
-      >
-        {newsChunks.map((chunk, index) => (
-          <div key={index}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {chunk.map((file, idx) => (
-                <Card
-                  key={file.imageId}
-                  // hoverable
-                  cover={
-                    <Image
-                      preview={false}
-                      // alt="news"
-                      crossOrigin="anonymous"
-                      src={`http://localhost:4003/api/informationNews/${file.newsImage[0].fileimagePath}`}
-                    />
-                  }
-                >
-                  <Card.Meta
-                    title={file.newsName || "Untitled"}
-                    description={
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          height: "100%",
-                        }}
-                      >
-                        <p className="truncate-text" style={{ flexGrow: 1 }}>
-                          {file.content || "No content available"}
-                        </p>
+      <div style={{ position: "relative" }}>
+        <Carousel
+          ref={carouselRef}
+          autoplay
+          dots={false}
+          infinite
+          style={{ position: "relative" }}
+          arrows={false}
+        >
+          {chunkedNews.map((chunk, index) => (
+            <div key={index} style={{ display: "flex" }}>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {chunk.map((file, fileIndex) => (
+                  <Card
+                    key={fileIndex}
+                    onClick={() => showModal(file)}
+                    style={{
+                      margin: "20px",
+                      cursor: "pointer",
+                      transition: "transform 0.3s, box-shadow 0.3s",
+                    }}
+                    cover={
+                      <Image
+                        alt="news"
+                        preview={false}
+                        crossOrigin="anonymous"
+                        src={`http://localhost:4003/api/informationNews/${file.newsImage[0].fileimagePath}`}
+                      />
+                    }
+                    hoverable
+                  >
+                    <Card.Meta
+                      title={file.newsName || "Untitled"}
+                      description={
                         <div
                           style={{
                             display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
+                            flexDirection: "column",
+                            height: "100%",
                           }}
                         >
-                          <a onClick={() => showModal(file)}>
-                            read more <RightOutlined />
-                          </a>
+                          <p className="truncate-text" style={{ flexGrow: 1 }}>
+                            {file.content || "No content available"}
+                          </p>
                         </div>
-                      </div>
-                    }
-                  />
-                </Card>
-              ))}
+                      }
+                    />
+                  </Card>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
-      </Carousel>
+          ))}
+        </Carousel>
+        <LeftOutlined
+          onClick={() => carouselRef.current.prev()}
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "0",
+            transform: "translateY(-50%)",
+            zIndex: 2,
+            cursor: "pointer",
+            fontSize: "24px",
+            color: "#4E31AA",
+          }}
+        />
+        <RightOutlined
+          onClick={() => carouselRef.current.next()}
+          style={{
+            position: "absolute",
+            top: "50%",
+            right: "0",
+            transform: "translateY(-50%)",
+            zIndex: 2,
+            cursor: "pointer",
+            fontSize: "24px",
+            color: "#4E31AA",
+          }}
+        />
+      </div>
 
       <Modal
         title={selectedNews?.newsName}
@@ -134,17 +135,23 @@ const NewsCarouselComponent: React.FC<Props> = ({
               <strong>วันที่เผยแพร่:</strong>{" "}
               {new Date(selectedNews.phblishedAt || "").toLocaleDateString()}
             </p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
+            <Carousel
+              arrows
+              infinite={true}
+              autoplay={true}
+              autoplaySpeed={1500}
+              effect="fade"
+            >
               {selectedNews.newsImage.map((image, index) => (
                 <Image
                   key={index}
-                  preview={false}
+                  preview={true}
                   src={`http://localhost:4003/api/news-image/${image.fileimagePath}`}
                   crossOrigin="anonymous"
                   style={{ width: "calc(100% - 5px)", marginBottom: "5px" }}
                 />
               ))}
-            </div>
+            </Carousel>
             <div>{selectedNews.content}</div>
           </div>
         )}

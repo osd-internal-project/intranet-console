@@ -94,7 +94,7 @@ const MaCarReturn: React.FC<props> = ({
       title: "สถานะการใช้งาน",
       dataIndex: "carBookApprovedStatus",
       key: "carBookApprovedStatus",
-      width: "100px",
+      width: "130px",
       align: "center",
       render: (status: string) => {
         let color = "";

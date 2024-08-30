@@ -1,35 +1,29 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { AntDesignOutlined } from "@ant-design/icons";
 import type { TableProps, FormProps } from "antd";
 import { DeleteIcon, EditIcon } from "@/components/icon";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageinformationNewsServices } from "../../service/information.service";
 import { useForm } from "antd/es/form/Form";
-import { useSession } from "next-auth/react";
 import {
-  Select,
   Table,
   Space,
   Button,
-  Row,
-  Col,
   Modal,
   Form,
   Input,
   Tag,
   message,
   Popconfirm,
-  InputNumber,
   Tooltip,
-  Card,
-  Pagination,
   Switch,
 } from "antd";
+import moment from "moment";
 export interface newType {
   idType: Number;
   nameType: string;
   deteil: string;
+  updatedAt: string;
   createAt: string;
   status: boolean;
 }
@@ -40,12 +34,11 @@ const Newoption: React.FC = () => {
   const manageinformationNewsServices =
     ManageinformationNewsServices(intraAuth);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const { data: session } = useSession();
   const [IsmodlaOpencreate, setIsmodlaOpencreate] = useState(false);
   const [modalEditnewType, setModalEditnewType] = useState(false);
   const [form] = useForm();
   const [formEdit] = useForm();
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   useEffect(() => {
     fetchDatanewType();
   }, []);
@@ -63,17 +56,17 @@ const Newoption: React.FC = () => {
       message.error("Failed to fetch car data");
     }
   };
+
   const newsTypeCreateDatacreate: FormProps<newType>["onFinish"] = async (
     values
   ) => {
     setSubmitLoading(true);
-    // const carIdData = maCar.findLast((car) => car.carId === values.carId);
-    // console.log(`${carIdData}`);
 
     const informationNewsCreateData = {
       data: {
         nameType: values.nameType,
         deteil: values.deteil,
+        updatedAt: new Date().toISOString(),
         createAt: new Date().toISOString(),
         status: values.status,
       },
@@ -86,12 +79,12 @@ const Newoption: React.FC = () => {
         message.success("เพิ่มประเภทข่าวสารสำเร็จ");
         form.resetFields();
       } else {
-        message.error("เพิ่มประเภทข่าวสารไม่สำเร็จ");
+        message.error("เพิ่มประเภทไม่สำเร็จ");
       }
       setSubmitLoading(false);
       fetchDatanewType();
     } catch (error) {
-      message.error("เพิ่มประเภทข่าวสารไม่สำเร็จ");
+      message.error("เพิ่มประเภทไม่สำเร็จ");
       setSubmitLoading(false);
     }
   };
@@ -104,15 +97,16 @@ const Newoption: React.FC = () => {
         idType: values?.idType,
         nameType: values?.nameType,
         deteil: values?.deteil,
+        updatedAt: new Date().toISOString(),
         status: values?.status,
       };
       await manageinformationNewsServices.updatenewsType(updatenewType);
-      message.success("แก้ไขข้อมูลห้องสำเร็จ");
+      message.success("แก้ไขประเภทสำเร็จ");
 
       fetchDatanewType();
       setSubmitLoading(false);
     } catch (error) {
-      message.error("แก้ไขข้อมูลห้องไม่สำเร็จ");
+      message.error("แก้ไขประเภทไม่สำเร็จ");
     }
   };
 
@@ -120,10 +114,10 @@ const Newoption: React.FC = () => {
     try {
       await manageinformationNewsServices.deletenewsType(idType);
       setnewType(newType.filter((item) => item.idType !== idType));
-      message.success("ลบการจองสำเร็จ");
+      message.success("ลบประเภทสำเร็จ");
       fetchDatanewType();
     } catch (error) {
-      message.error("ลบการจองไม่สำเร็จ");
+      message.error("ลบประเภทไม่สำเร็จ");
     }
   };
 
@@ -131,7 +125,7 @@ const Newoption: React.FC = () => {
     setSearchTerm(e.target.value);
   };
 
-  const searthnews = newType.filter(newType =>
+  const searthnews = newType.filter((newType) =>
     newType.nameType.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -148,12 +142,17 @@ const Newoption: React.FC = () => {
   const handleCancel1edit = () => {
     setModalEditnewType(false);
   };
+  const dataWithKey = searthnews.map((item, index) => ({
+    ...item,
+    key: index + 1,
+    index: index + 1,
+  }));
 
   const columns: TableProps<newType>["columns"] = [
     {
       title: "ลำดับ",
-      dataIndex: "idType",
-      key: "idType",
+      dataIndex: "key",
+      key: "key",
       align: "center",
     },
     {
@@ -167,10 +166,20 @@ const Newoption: React.FC = () => {
       key: "deteil",
     },
     {
+      title: "อัพเดทล่าสุด",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
+      render: (updatedAt: Date) =>
+        moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
+    },
+    {
       title: "เวลาการสร้าง",
       dataIndex: "createAt",
       key: "createAt",
+      render: (createdAt: Date) =>
+        moment(createdAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
+
     {
       title: "การมองเห็น",
       dataIndex: "status",
@@ -194,7 +203,6 @@ const Newoption: React.FC = () => {
               <EditIcon width="24" height="24" />{" "}
             </a>
           </Tooltip>
-          {/*  */}
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
             onConfirm={() => handleDeletenewType(row.idType)}
@@ -214,25 +222,39 @@ const Newoption: React.FC = () => {
   ];
   return (
     <div>
-      
-      <div style={{ fontSize: "16px" }}>
-        ค้นหาประเภทข่าว :
-        <Input
-          type="text"
-          value={searchTerm}
-          onChange={handleInputChange}
-          placeholder="ค้นหาข่าวสาร"
-          style={{
-            margin: "10px 10px 10px 10px",
-            width: "300px",
-          }}
-        /><Button
-        type="primary"
-        style={{ margin: "10px 0 10px 5px" }}
-        onClick={modalopencreate}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          fontSize: "16px",
+        }}
       >
-        สร้างประเภทข่าวสาร
-      </Button>
+        <div
+          style={{
+            margin: "10px 10px 10px 20px",
+          }}
+        >
+          ค้นหาประเภทข่าว :
+          <Input
+            type="text"
+            value={searchTerm}
+            onChange={handleInputChange}
+            placeholder="ค้นหาประเภทข่าวสาร"
+            style={{
+              margin: "10px 10px 10px 10px",
+              width: "300px",
+            }}
+          />
+        </div>
+        <div></div>
+        <Button
+          style={{ alignContent: "right" }}
+          type="primary"
+          onClick={modalopencreate}
+        >
+          สร้างประเภทข่าวสาร
+        </Button>
       </div>
       <Modal
         title="เพิ่มข้อมูลตรวจสภาพรถ"
@@ -359,7 +381,7 @@ const Newoption: React.FC = () => {
         </Form>
       </Modal>
       <Table
-        dataSource={searthnews}
+        dataSource={dataWithKey}
         columns={columns}
         rowKey="id"
         bordered

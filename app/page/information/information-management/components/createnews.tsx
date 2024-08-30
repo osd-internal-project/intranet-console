@@ -1,39 +1,14 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { AntDesignOutlined } from "@ant-design/icons";
-import type { TableProps, FormProps } from "antd";
+import type { FormProps } from "antd";
 import { ManageinformationNewsServices } from "../../service/information.service";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useForm } from "antd/es/form/Form";
 import { useSession } from "next-auth/react";
 import { UploadOutlined } from "@ant-design/icons";
-import type { GetProp, UploadFile, UploadProps } from "antd";
+import type { UploadFile, UploadProps } from "antd";
 import { RcFile } from "antd/es/upload";
-import ImgCrop from "antd-img-crop";
-import {
-  Select,
-  Table,
-  Space,
-  Button,
-  Row,
-  Col,
-  Modal,
-  Form,
-  Input,
-  Tag,
-  message,
-  Popconfirm,
-  InputNumber,
-  Tooltip,
-  Card,
-  Pagination,
-  TabsProps,
-  Tabs,
-  DatePicker,
-  Upload,
-} from "antd";
-import { log } from "console";
-
+import { Select, Button, Form, Input, message, DatePicker, Upload } from "antd";
 export interface informationNews {
   newsId: Number;
   newsName: String;
@@ -66,7 +41,6 @@ export interface newsType {
   createAt: String;
   status: boolean;
 }
-const { TextArea } = Input;
 
 const Infomation_management: React.FC<newsImage> = ({}) => {
   const { data: session } = useSession();
@@ -84,64 +58,13 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
   const manageinformationNewsServices =
     ManageinformationNewsServices(intraAuth);
   const [form] = useForm();
+
   useEffect(() => {
     fetchDatainformationNews();
     fetchDataType();
     setAttendFiles([]);
   }, []);
 
-  const informationNewsCreate: FormProps<
-    informationNews & newsImage
-  >["onFinish"] = async (values) => {
-    console.log(attendFiles);
-
-    setSubmitLoading(true);
-
-    const informationNewsCreateData = {
-      data: {
-        newsId: values?.newsId,
-        newsName: values.newsName,
-        content: values.content,
-        newsType: values.newsType,
-        author: session?.user.username,
-        phblishedAt:
-          values !== null ? values.phblishedAt : new Date().toISOString(),
-        updatedAt:
-          values !== null ? values.updatedAt : new Date().toISOString(),
-        status: values.status,
-      },
-    };
-    try {
-      const response =
-        await manageinformationNewsServices.createinformationNews(
-          informationNewsCreateData
-        );
-      if (response && attendFiles.length > 0) {
-        await Promise.all(
-          attendFiles.map(async (file) => {
-            console.log(`${response.newsId}`);
-            const formData = new FormData();
-            formData.append("file", file.originFileObj as RcFile);
-            await manageinformationNewsServices.uploadFiles(
-              response.newsId,
-              formData
-            );
-          })
-        );
-      }
-      if (response) {
-        message.success("เพิ่มข่าวสารสำเร็จ");
-        form.resetFields();
-      } else {
-        message.error("เพิ่มข่าวสารไม่สำเร็จ");
-      }
-      setSubmitLoading(false);
-      fetchDatainformationNews();
-    } catch (error) {
-      message.error("เพิ่มข่าวสารไม่สำเร็จ");
-      setSubmitLoading(false);
-    }
-  };
   const fetchDatainformationNews = async () => {
     try {
       const maresponse =
@@ -174,6 +97,59 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
       message.error("Failed to fetch car data");
     }
   };
+  const informationNewsCreate: FormProps<
+    informationNews & newsImage
+  >["onFinish"] = async (values) => {
+    setSubmitLoading(true);
+    const informationNewsCreateData = {
+      data: {
+        newsId: values?.newsId,
+        newsName: values.newsName,
+        content: values.content,
+        newsType: values.newsType,
+        author: session?.user.username,
+        phblishedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        status: values.status,
+      },
+    };
+    try {
+      const response =
+        await manageinformationNewsServices.createinformationNews(
+          informationNewsCreateData
+        );
+      if (response && attendFiles.length > 0) {
+        await Promise.all(
+          attendFiles.map(async (file) => {
+            console.log(`${response.newsId}`);
+            const formData = new FormData();
+            formData.append("file", file.originFileObj as RcFile);
+            await manageinformationNewsServices.uploadFiles(
+              response.newsId,
+              formData
+            );
+          })
+        );
+      }
+      if (response) {
+        message.success("เพิ่มข่าวสารสำเร็จ");
+        form.resetFields();
+        setAttendFiles([]);
+      } else {
+        message.error("เพิ่มข่าวสารไม่สำเร็จ");
+        form.resetFields();
+        setAttendFiles([]);
+      }
+      setSubmitLoading(false);
+      fetchDatainformationNews();
+    } catch (error) {
+      message.error("เพิ่มข่าวสารไม่สำเร็จ");
+      
+      setAttendFiles([]);
+      form.resetFields();
+      setSubmitLoading(false);
+    }
+  };
 
   const handleChangeAttendFiles: UploadProps["onChange"] = async ({
     fileList: newFileList,
@@ -181,6 +157,7 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
     console.log(newFileList[0]);
     return setAttendFiles(newFileList);
   };
+
   const beforeUploadAttendFiles = (file: RcFile) => {
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
@@ -188,9 +165,14 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
     }
     return false;
   };
+
   return (
     <div style={{ backgroundColor: "#FFFFFF" }}>
-      <div style={{ margin: " 10px 0 0 10px " }}>
+      <div style={{ margin: " 10px 40px 50px 10px " }}>
+        <div style={{ margin: " 10px 40px 20px 0px ", fontSize: "20px" }}>
+          คำเตือน : รูปภาพของคุณในการสร้างข่าวสาร คุณจะไม่สามารถอัพรูปภาพได้เกิน
+          3 ภาพ / 1 ข่าวสาร
+        </div>
         <Form form={form} onFinish={informationNewsCreate} layout="vertical">
           <Form.Item
             name="newsName"
@@ -224,17 +206,16 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
             label=" เนื้อหาข่าวสาร : "
             style={{ width: "500px" }}
           >
-            <Input.TextArea />
-          </Form.Item>
-          <Form.Item
-            name="updatedAt"
-            label="วันที่เผยแพร่ :"
-            style={{ width: "300px" }}
-          >
-            <DatePicker style={{ width: "100%" }} />
+            <Input.TextArea rows={15} />
           </Form.Item>
           <Form.Item valuePropName="filelist">
-            <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginTop: "10px",
+              }}
+            >
               <Upload
                 listType="picture"
                 fileList={attendFiles}

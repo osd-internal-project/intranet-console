@@ -1,54 +1,49 @@
-import { Carousel } from "antd";
+import {
+  Button,
+  Carousel,
+  Form,
+  Modal,
+  Popconfirm,
+  Space,
+  Table,
+  Upload,
+  Image,
+} from "antd";
 import React from "react";
+import { SlideImageType } from "../common";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import SlideImageService from "../services/index.service";
 
-export interface props {}
-const BigCarouselComponent: React.FC<props> = (): React.ReactElement => {
-  const contentStyle1: React.CSSProperties = {
-    height: "450px",
-    color: "#fff",
-    lineHeight: "150px",
-    textAlign: "center",
-    background: "url('/images/homeImg/cover1.png') center center / cover no-repeat",
-  };
+export interface Props {
+  loading: boolean;
+  slideImage: SlideImageType[];
+}
 
-  const contentStyle2: React.CSSProperties = {
-    height: "450px",
-    color: "#fff",
-    lineHeight: "150px",
-    textAlign: "center",
-    background: "url('/images/homeImg/cover2.png') center center / cover no-repeat",
-  };
-
-  const contentStyle3: React.CSSProperties = {
-    height: "450px",
-    color: "#fff",
-    lineHeight: "150px",
-    textAlign: "center",
-    background: "url('/images/homeImg/cover3.png') center center / cover no-repeat",
-  };
-
-  const contentStyle4: React.CSSProperties = {
-    height: "450px",
-    color: "#fff",
-    lineHeight: "150px",
-    textAlign: "center",
-    background: "url('/images/homeImg/cover7.png') center center / cover no-repeat",
-  };
+export const BigCarouselComponent: React.FC<Props> = ({
+  loading,
+  slideImage,
+}) => {
+  const intraAuth = useAxiosIntranet();
+  const slideImageService = SlideImageService(intraAuth);
 
   return (
-    <Carousel autoplay arrows infinite>
-      <div>
-        <h3 style={contentStyle1}></h3>
-      </div>
-      <div>
-        <h3 style={contentStyle2}></h3>
-      </div>
-      <div>
-        <h3 style={contentStyle3}></h3>
-      </div>
-      <div>
-        <h3 style={contentStyle4}></h3>
-      </div>
+    <Carousel
+      autoplay={true}
+      arrows
+      infinite
+      effect="fade"
+      lazyLoad="progressive"
+      responsive={[{ breakpoint: 768, settings: { slidesToShow: 1 } }]}
+    >
+      {slideImage.map((image, index) => (
+        <div key={index}>
+          <Image
+            src={`http://localhost:4003/api/slide-image/${image.filePath}`}
+            crossOrigin="anonymous"
+            preview={false}
+          />
+        </div>
+      ))}
     </Carousel>
   );
 };

@@ -1,35 +1,31 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { AntDesignOutlined } from "@ant-design/icons";
 import type { TableProps, FormProps } from "antd";
 import { DeleteIcon, EditIcon } from "@/components/icon";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManagehandbookFileServices } from "../service/handbook.service";
 import { useForm } from "antd/es/form/Form";
-import { useSession } from "next-auth/react";
 import {
-  Select,
   Table,
   Space,
   Button,
-  Row,
-  Col,
   Modal,
   Form,
   Input,
   Tag,
   message,
   Popconfirm,
-  InputNumber,
   Tooltip,
-  Card,
-  Pagination,
   Switch,
 } from "antd";
+import moment from "moment";
+import dayjs from "dayjs";
+import { useSession } from "next-auth/react";
 export interface handbooktype {
-  idhandtype: Number;
+  idhandtype?: Number;
   nameType: String;
   createAt: String;
+  updatedAt: String;
   status: boolean;
 }
 export interface handbookFile {
@@ -63,12 +59,12 @@ const Newoption: React.FC = () => {
   const [handbookFile, sethandbookFile] = useState<handbookFile[]>([]);
   const managehandbookFileServices = ManagehandbookFileServices(intraAuth);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const { data: session } = useSession();
   const [IsmodlaOpencreate, setIsmodlaOpencreate] = useState(false);
   const [modalEditnewType, setModalEditnewType] = useState(false);
   const [form] = useForm();
   const [formEdit] = useForm();
   const [searchTerm, setSearchTerm] = useState("");
+  const { data: session } = useSession();
   useEffect(() => {
     fetchDatahandbooktype();
     fetchDataHandbookfile();
@@ -88,7 +84,7 @@ const Newoption: React.FC = () => {
       sethandbooktype(handbooktype);
       setSubmitLoading(false);
     } catch (error) {
-      message.error("Failed to fetch car data");
+      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
     }
   };
   const fetchDataHandbookfile = async () => {
@@ -103,31 +99,26 @@ const Newoption: React.FC = () => {
       );
       sethandbookFile(handbookFile);
     } catch (error) {
-      message.error("Failed to fetch car data");
+      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
     }
   };
   const fetchDataHandbook = async () => {
     try {
       const maresponse = await managehandbookFileServices.gethandbookQuery();
-      const handbook: handbook[] = maresponse.map(
-        (item: any, index: number) => ({
-          ...item,
-          images: item.handbookFile,
-        })
-      );
+      const handbook: handbook[] = maresponse.map((item: any) => ({
+        ...item,
+        images: item.handbookFile,
+      }));
       sethandbook(handbook);
       setSubmitLoading(false);
     } catch (error) {
-      message.error("Failed to fetch car data");
+      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
     }
   };
   const newsTypeCreateDatacreate: FormProps<handbooktype>["onFinish"] = async (
     values
   ) => {
     setSubmitLoading(true);
-    // const carIdData = maCar.findLast((car) => car.carId === values.carId);
-    // console.log(`${carIdData}`);
-
     const informationNewsCreateData = {
       data: {
         idhandtype: values.idhandtype,
@@ -141,17 +132,17 @@ const Newoption: React.FC = () => {
         informationNewsCreateData
       );
       if (response) {
-        message.success("เพิ่มประเภทหนังสือสำเร็จ");
+        message.success("เพิ่มประเภทเอกสารสำเร็จ");
         form.resetFields();
       } else {
-        message.error("เพิ่มประเภทหนังสือไม่สำเร็จ");
+        message.error("เพิ่มประเภทเอกสารไม่สำเร็จ");
       }
       setSubmitLoading(false);
       fetchDatahandbooktype();
       fetchDataHandbookfile();
       fetchDataHandbook();
     } catch (error) {
-      message.error("เพิ่มประเภทหนังสือไม่สำเร็จ");
+      message.error("เพิ่มประเภทเอกสารไม่สำเร็จ");
       setSubmitLoading(false);
     }
   };
@@ -165,16 +156,19 @@ const Newoption: React.FC = () => {
       const updatenewType = {
         idhandtype: values?.idhandtype,
         nameType: values?.nameType,
+        updatedAt: new Date().toISOString(),
+        author: session?.user.username,
         status: values?.status,
       };
       await managehandbookFileServices.updatehandbooktype(updatenewType);
-      message.success("แก้ไขข้อมูลห้องสำเร็จ");
+      message.success("แก้ไขประเภทเอกสารสำเร็จ");
       fetchDatahandbooktype();
       fetchDataHandbookfile();
       fetchDataHandbook();
+      formEdit.resetFields();
       setSubmitLoading(false);
     } catch (error) {
-      message.error("แก้ไขข้อมูลห้องไม่สำเร็จ");
+      message.error("แก้ไขประเภทเอกสารไม่สำเร็จ");
     }
   };
 
@@ -184,12 +178,12 @@ const Newoption: React.FC = () => {
       sethandbooktype(
         handbooktype.filter((item) => item.idhandtype !== idhandtype)
       );
-      message.success("ลบการจองสำเร็จ");
+      message.success("ลบประเภทเอกสารสำเร็จ");
       fetchDatahandbooktype();
       fetchDataHandbookfile();
       fetchDataHandbook();
     } catch (error) {
-      message.error("ลบการจองไม่สำเร็จ");
+      message.error("ลบประเภทเอกสารไม่สำเร็จ");
     }
   };
 
@@ -202,7 +196,9 @@ const Newoption: React.FC = () => {
   );
 
   const showModalEditnewType = (record: handbooktype) => {
-    formEdit.setFieldsValue(record);
+    formEdit.setFieldsValue({
+      ...record,
+    });
     setModalEditnewType(true);
   };
   const modalopencreate = () => {
@@ -215,11 +211,17 @@ const Newoption: React.FC = () => {
     setModalEditnewType(false);
   };
 
+  const dataWithKey = searthnews.map((item, index) => ({
+    ...item,
+    key: index + 1,
+    index: index + 1,
+  }));
+
   const columns: TableProps<handbooktype>["columns"] = [
     {
       title: "ลำดับ",
-      dataIndex: "idhandtype",
-      key: "idhandtype",
+      dataIndex: "key",
+      key: "key",
       align: "center",
     },
     {
@@ -228,10 +230,20 @@ const Newoption: React.FC = () => {
       key: "nameType",
     },
     {
+      title: "อัปเดทล่าสุด",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
+      render: (updatedAt: Date) =>
+        moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
+    },
+    {
       title: "เวลาการสร้าง",
       dataIndex: "createAt",
       key: "createAt",
+      render: (createAt: Date) =>
+        moment(createAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
+
     {
       title: "การมองเห็น",
       dataIndex: "status",
@@ -244,18 +256,23 @@ const Newoption: React.FC = () => {
         ),
     },
     {
+      title: "ผู้อัพโหลด",
+      dataIndex: "author",
+      key: "author",
+      width: "100px",
+    },
+    {
       title: "การจัดการ",
-      dataIndex: "manage",
-      key: "manage",
+      dataIndex: "x",
+      key: "x",
       align: "center",
-      render: (record: number, row: any, index: number) => (
+      render: (row: any, record: handbooktype) => (
         <Space size="middle">
           <Tooltip title="แก้ไข">
-            <a onClick={() => showModalEditnewType(row)}>
+            <a onClick={() => showModalEditnewType(record)}>
               <EditIcon width="24" height="24" />{" "}
             </a>
           </Tooltip>
-          {/*  */}
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
             onConfirm={() => handleDeletenewType(row.idType)}
@@ -275,24 +292,36 @@ const Newoption: React.FC = () => {
   ];
   return (
     <div>
-      <div style={{ fontSize: "16px" }}>
-        ค้นหาประเภทเอกสาร :
-        <Input
-          type="text"
-          value={searchTerm}
-          onChange={handleInputChange}
-          placeholder="ค้นหาข่าวสาร"
-          style={{
-            margin: "10px 0 10px 10px",
-            width: "300px",
-          }}
-        />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          fontSize: "16px",
+        }}
+      >
+        <div>
+          <div>
+            ค้นหาชื่อประเภท :
+            <Input
+              type="text"
+              value={searchTerm}
+              onChange={handleInputChange}
+              placeholder="ค้นหาชื่อประเภทเอกสาร"
+              style={{
+                margin: "10px 10px 10px 10px",
+                width: "300px",
+              }}
+            />
+          </div>
+        </div>
+        <div></div>
         <Button
+          style={{ alignContent: "right" }}
           type="primary"
-          style={{ margin: "10px 0 10px 5px" }}
           onClick={modalopencreate}
         >
-          สร้างประเภทเอกสาร
+          การอัพโหลดไฟล์
         </Button>
       </div>
       <Modal
@@ -353,7 +382,7 @@ const Newoption: React.FC = () => {
         destroyOnClose
       >
         <Form form={formEdit} onFinish={updatednewType} layout="vertical">
-          <Form.Item
+          <Form.Item<handbooktype>
             name="idhandtype"
             label="ชื่อประเภทเอกสาร :"
             style={{
@@ -406,7 +435,7 @@ const Newoption: React.FC = () => {
         </Form>
       </Modal>
       <Table
-        dataSource={searthnews}
+        dataSource={dataWithKey}
         columns={columns}
         rowKey="id"
         bordered

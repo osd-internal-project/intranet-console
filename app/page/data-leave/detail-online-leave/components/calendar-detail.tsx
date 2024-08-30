@@ -189,7 +189,6 @@ export const CalendarDetail: React.FC<Props> = ({
                               type="link"
                               onClick={
                                 () => downloadFile(file.id, file.fileName)
-                                // downloadFile()
                               }
                             >
                               <Space>

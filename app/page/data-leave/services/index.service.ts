@@ -64,10 +64,9 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getdataLeaveUserById: async (type_id: number) => {
+    getdataLeaveUserById: async (userId: number) => {
       const condition = {
-        where: { typeId: type_id },
-       
+        where: { userId: userId },
       };
       return await axiosInstance
         .post(`${baseUrlDataLeave}/condition`, {
@@ -265,6 +264,7 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+
     uploadFiles: async (id: number, form: any) => {
       return await axiosInstance
         .post(`${baseUrlDataLeaveFile}/${id}`, form, {
@@ -275,6 +275,7 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
         .then((result) => result.data)
         .catch((err) => err);
     },
+
     approvedDataLeave: async (event: string, id: number, data: any) => {
       const condition = {
         where: {
@@ -297,6 +298,7 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+
     downloadFile: async (id: number) => {
       return await axiosInstance
         .get(`${baseUrlDataLeaveFile}/get-file/${id}`, { responseType: "blob" })
@@ -305,6 +307,7 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
         })
         .catch((err) => console.log(err));
     },
+    
     deleteTypeLeaveDisabled: async (id: number) => {
       return await axiosInstance
         .delete(`${baseUrlTypeleaveMap}/${id}`)

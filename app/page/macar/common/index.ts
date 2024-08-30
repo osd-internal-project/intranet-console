@@ -79,6 +79,7 @@ export interface MaCarBookCalendarType {
 }
 
 export interface MaCarWrapupType {
+  status: null;
   id: number;
   carWrapupId: string;
   carId?: string;

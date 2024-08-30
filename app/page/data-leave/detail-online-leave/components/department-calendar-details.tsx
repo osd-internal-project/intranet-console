@@ -191,9 +191,8 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({
                           <div key={index}>
                             <Button
                               type="link"
-                              onClick={
-                                () => downloadFile(file.id, file.fileName)
-                                // downloadFile()
+                              onClick={() =>
+                                downloadFile(file.id, file.fileName)
                               }
                             >
                               <Space>

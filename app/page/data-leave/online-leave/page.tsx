@@ -52,7 +52,7 @@ export default function Page() {
   );
   const [getStartDate, setStartDate] = useState<Date>();
   const [getEndDate, setEndDate] = useState<Date>();
-  const [checkSwitch, setCheckSwitch] = useState<boolean>();
+  const [checkSwitch, setCheckSwitch] = useState<boolean>(false);
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [params, setParams] = useState<any>({
@@ -88,7 +88,6 @@ export default function Page() {
       return { value: event.departId, label: event.departName };
     });
     setResDepartMent(departmentOptions);
-    setLoading(false);
     setUserOwner(resOwner);
     setTypeLeaveTable(resTableDeatilTypeLeave);
     setTypeLeaveTableAll(resTableUserTypeLeave.typeLeaveDisabledMap);
@@ -136,9 +135,13 @@ export default function Page() {
       startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
     setParams((e: any) => ({
       ...e,
-      lengthDate: totalDays != "0" ? Number(totalDays) : checkSwitch ? 1 : 0,
+      lengthDate:
+        totalDays !== "0"
+          ? Number(totalDays)
+          : createdataleaveForm.getFieldValue("time_start_check")
+          ? 1
+          : 0,
     }));
-    setLoading(true);
   };
 
   const checklenghtTime = async (value1: any, value2: any) => {
@@ -261,18 +264,19 @@ export default function Page() {
         default:
           resultId = 0;
       }
-
       const dataLeaveUserById = await dataleaveservice.getdataLeaveUserById(
-        type_id
+        value.userId
       );
-      const hasLeaveHour = dataLeaveUserById.map(
+      const dataLeaveTypeId = dataLeaveUserById.filter(
+        (typeId: any) => typeId.typeId === type_id
+      );
+      const hasLeaveHour = dataLeaveTypeId.map(
         (leaveTime: any) => leaveTime.leaveHour
       );
       const totalLeaveHours = hasLeaveHour.reduce(
         (total: any, hour: any) => total + (Number(hour) || 0),
         0
       );
-
       if (totalLeaveHours < resultId) {
         if (typeof value === "object" && value !== null) {
           let totalHourvalue = 0;
@@ -294,6 +298,7 @@ export default function Page() {
               }
             }
           }
+
           let result: number;
           switch (type_id) {
             case 1:
@@ -328,10 +333,15 @@ export default function Page() {
             default:
               result = 0;
           }
-          if (totalHourvalue > result) {
-            return true;
+
+          if (!dataLeaveTypeId || dataLeaveTypeId.length === 0) {
+          } else {
+            if (totalHourvalue > resultId) {
+              return true;
+            }
           }
-          const dataHoru = dataLeaveUserById.map((ho: any) => {
+
+          const dataHoru = dataLeaveTypeId.map((ho: any) => {
             const startDate = new Date(ho.startDate);
             const endDate = new Date(ho.endDate);
             const differenceInMilliseconds =
@@ -352,10 +362,11 @@ export default function Page() {
             0
           );
           const totalAll = totalHour + totalHourvalue;
-          if (totalAll > result) {
-            return true;
+          if (totalAll < result) {
+            return false;
           }
-          return false;
+
+          return true;
         }
       }
       return true;
@@ -498,6 +509,8 @@ export default function Page() {
                       formData.append("type", "attend");
                       formData.append("files", file.originFileObj);
                       await dataleaveservice.uploadFiles(result.id, formData);
+                      // console.log("result.id", result.id);
+                      // console.log("formData", formData);
                     });
                   }
                   message.success(`Add success`);
@@ -920,89 +933,6 @@ export default function Page() {
     } catch (error) {
       message.error("ลาล่วงหน้า 30วัน ไม่สำเร็จ");
     }
-
-    // const base: ITypeDataLeave = {
-    //   userId: values.userId,
-    //   firstName: values.firstNameTh,
-    //   lastName: values.lastNameTh,
-    //   positionId: values.posId,
-    //   position: values.position,
-    //   departId: values.depart_id,
-    //   departName: selecteddepart ? selecteddepart.label : undefined,
-    //   typeId: values.type_id,
-    //   typeName: selectedOption ? selectedOption.label : undefined,
-    //   startDate: values.startDate,
-    //   endDate: values.endDate,
-    //   detail: values.detail,
-    //   phoneNumber: values.phoneNumber,
-    //   status: "waitting",
-    //   ownerId: values.ownerId,
-    //   ownerName: values.ownerName,
-    // };
-    // try {
-    //   // if (type_id) {
-    //   //   const hasTypeId =
-    //   //     type_id === 1 || type_id === 4 || type_id === 8 || type_id === 13;
-    //   //   if (hasTypeId) {
-    //   //     message.error("ลาย้อนหลัง");
-    //   //     return;
-    //   //   }
-    //   if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate))
-    //     return;
-    //   // }
-
-    // const condition: ITypeDataLeave = {
-    //   ...base,
-    //   ...(values.time_start_check
-    //     ? { leaveHour: 8 }
-    //     : {
-    //         leaveHour:
-    //           values.startTime && values.endTime
-    //             ? Number(totalHours)
-    //             : Number(totalDays) * 8,
-    //       }),
-    // };
-
-    //   Modal.confirm({
-    //     title: "Add ",
-    //     icon: <ExclamationCircleFilled />,
-    //     content: "Are you sure you want to add this ?",
-    //     okText: "Confirm",
-    //     cancelText: "Cancel",
-    //     okButtonProps: {
-    //       style: {
-    //         backgroundColor: "#00a1df",
-    //         borderColor: "#00a1df",
-    //       },
-    //     },
-
-    //     onOk: async () => {
-    //       const result = await dataleaveservice.createDataLeave(condition);
-    //       if (result) {
-    //         if (attendFiles.length > 0) {
-    //           attendFiles.forEach(async (file) => {
-    //             const formData: any = new FormData();
-    //             formData.append("type", "attend");
-    //             formData.append("files", file.originFileObj);
-    //             await dataleaveservice.uploadFiles(result.id, formData);
-    //           });
-    //         }
-    //         message.success(`Add success`);
-    //         createdataleaveForm.resetFields();
-    //         setStartDate(undefined);
-    //         setEndDate(undefined);
-    //         setCheckSwitch(false);
-    //         setLoading(true);
-    //         router.push("/page/data-leave/detail-online-leave");
-    //       }
-    //     },
-    //     onCancel() {
-    //       setLoading(false);
-    //     },
-    //   });
-    // } catch (err) {
-    //   message.error("ลาไม่สำเร็จ");
-    // }
   };
 
   return getUserOwner ? (

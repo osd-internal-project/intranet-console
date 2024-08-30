@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageinformationNewsServices } from "../../service/information.service";
-import { useForm } from "antd/es/form/Form";
 import {
   Button,
   Row,
@@ -12,22 +11,20 @@ import {
   Modal,
   message,
   Input,
-  Carousel,
   Image,
+  Carousel,
 } from "antd";
-
 export interface informationNews {
   newsId: Number;
   newsName: String;
   content: String;
   newsType: String;
   author: String;
-  publishedAt: String;
-  updatedAt: String;
+  phblishedAt: Date | String;
+  updatedAt: Date | String;
   status: boolean;
   images: newsImage[];
 }
-
 export interface newsImage {
   imageId: Number;
   newsId: Number;
@@ -37,7 +34,6 @@ export interface newsImage {
   fileimagePath: String;
   fileName: string;
 }
-
 const ManagementNews: React.FC = () => {
   const [informationNews, setInformationNews] = useState<informationNews[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -46,12 +42,9 @@ const ManagementNews: React.FC = () => {
     null
   );
   const [searchTerm, setSearchTerm] = useState("");
-
   const intraAuth = useAxiosIntranet();
   const manageInformationNewsServices =
     ManageinformationNewsServices(intraAuth);
-  const [form] = useForm();
-
   useEffect(() => {
     fetchDatainformationNews();
   }, []);
@@ -64,7 +57,6 @@ const ManagementNews: React.FC = () => {
         ...item,
         images: item.newsImage,
       }));
-
       setInformationNews(newsData);
     } catch (error) {
       message.error("Failed to fetch news data");
@@ -75,14 +67,17 @@ const ManagementNews: React.FC = () => {
     setSearchTerm(e.target.value);
   };
 
-  const filteredData = informationNews.filter((news) =>
-    news.newsName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredData = informationNews
+    .filter((news) => news.status)
+    .filter((news) =>
+      news.newsName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   const newsPerPage = 12;
   const indexOfLastNews = currentPage * newsPerPage;
   const indexOfFirstNews = indexOfLastNews - newsPerPage;
   const currentNews = filteredData.slice(indexOfFirstNews, indexOfLastNews);
+  // console.log("currentNews", currentNews);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -92,7 +87,6 @@ const ManagementNews: React.FC = () => {
     setSelectedNews(newsItem);
     setIsModalVisible(true);
   };
-
   const handleCancel = () => {
     setIsModalVisible(false);
     setSelectedNews(null);
@@ -125,7 +119,7 @@ const ManagementNews: React.FC = () => {
           {currentNews.map((item) => (
             <Col span={8} key={item.newsId.toString()}>
               <Card
-                style={{ margin: "20px 0 0 0" }}
+                style={{ margin: "20px 0 0 0" ,backgroundColor:"#F0F8FF"}}
                 hoverable
                 onClick={() => showModal(item)}
                 cover={
@@ -135,13 +129,31 @@ const ManagementNews: React.FC = () => {
                       alt="news"
                       crossOrigin="anonymous"
                       src={`http://localhost:4003/api/public/news-image/${item.images[0].fileName}`}
-                      style={{ width: "400px", height:"350px", marginBottom: "20px" }}
+                      style={{
+                        width: "400px",
+                        height: "350px",
+                        margin: "30px 20px -20px 10px",
+                      }}
                     />
                   ) : null
                 }
               >
                 <p style={{ fontSize: "20px" }}>{item.newsName}</p>
-                <p>{item.author}</p>
+                <p>อัพโดย : {item.author}</p>
+                <p>
+                  เวลา :{" "}
+                  {new Date(item.updatedAt.toString()).toLocaleDateString(
+                    "en-GB",
+                    {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }
+                  )}{" "}
+                  น.
+                </p>
               </Card>
             </Col>
           ))}
@@ -169,32 +181,77 @@ const ManagementNews: React.FC = () => {
       >
         {selectedNews && (
           <div>
-            <p style={{ textAlign: "center", fontSize: "24px ", fontWeight: "bold"}}>
+            <p
+              style={{
+                textAlign: "center",
+                fontSize: "24px ",
+                fontWeight: "bold",
+              }}
+            >
               <strong></strong> {selectedNews.newsName}
             </p>
-            <p style={{  fontSize: "20px" }}>
-              <strong>เนื้อหา:</strong> {selectedNews.content}
+            <Carousel
+              arrows
+              infinite={true}
+              autoplay
+              autoplaySpeed={1500}
+              style={{ width: "600px", margin: "0 auto" }}
+            >
+              {selectedNews.images.length > 0
+                ? selectedNews.images.map((image, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Image
+                        preview={false}
+                        crossOrigin="anonymous"
+                        alt="news"
+                        src={`http://localhost:4003/api/public/news-image/${image.fileName}`}
+                        style={{ width: "600px", height: "600px" }}
+                      />
+                    </div>
+                  ))
+                : null}
+            </Carousel>
+            <p style={{ fontSize: "20px" }}>
+              <strong style={{ margin: "0 40px 0 0" }}></strong>{" "}
+              {selectedNews.content}
             </p>
-            {selectedNews.images.length > 0
-              ? selectedNews.images.map((image, index) => (
-                  <Image
-                    preview={false}
-                    key={index}
-                    crossOrigin="anonymous"
-                    alt="news"
-                    src={`http://localhost:4003/api/public/news-image/${image.fileName}`}
-                    style={{ width: "100%", marginBottom: "20px" }}
-                  />
-                ))
-              : null}
             <p>
               <strong>ผู้เขียน:</strong> {selectedNews.author}
             </p>
             <p>
-              <strong>วันที่เผยแพร่:</strong> {selectedNews.publishedAt}
+              <strong>วันที่เผยแพร่:</strong>{" "}
+              {new Date(selectedNews.phblishedAt.toString()).toLocaleDateString(
+                "en-GB",
+                {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }
+              )}{" "}
+              น.
             </p>
             <p>
-              <strong>อัปเดตล่าสุด:</strong> {selectedNews.updatedAt}
+              <strong>อัปเดตล่าสุด:</strong>{" "}
+              {new Date(selectedNews.updatedAt.toString()).toLocaleDateString(
+                "en-GB",
+                {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }
+              )}{" "}
+              น.
             </p>
           </div>
         )}

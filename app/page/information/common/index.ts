@@ -12,6 +12,7 @@ export interface newsType {
   idType: Number;
   nameType: String;
   deteil: String;
+  updatedAt: string;
   createAt: String;
   status: boolean;
 }
@@ -22,12 +23,4 @@ export interface newsImage {
   updatedAt: String;
   fileimageName: String;
   fileimagePath: String;
-}
-export interface handbookFile {
-  id: Number;
-  fileName: String;
-  fileLocation: String;
-  createdAt: String;
-  updatedAt: String;
-  status: boolean;
 }

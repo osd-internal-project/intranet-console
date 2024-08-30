@@ -22,13 +22,14 @@ import {
   ITypeDataLeaveCreate,
 } from "../../common";
 import { RcFile } from "antd/es/upload";
+import { FormInstance } from "antd/lib";
 
 export interface props {
   getUser?: IDataUser | null;
   getTypeLeaveOption: ISelect[];
   getDepartmentById: ISelectDepartment[];
   onfinishCreate: (values: ITypeDataLeaveCreate) => void;
-  createdataleaveForm: any;
+  createdataleaveForm: FormInstance;
   setStartDate: (values: Date) => void;
   setEndDate: (values: Date) => void;
   setCheckSwitch: (values: boolean) => void;
@@ -72,7 +73,8 @@ export const CreateOnlineLeave: React.FC<props> = ({
       });
     };
     getdatauser();
-  }, [getUserOwner]);
+  }, [getUserOwner, checkSwitch]);
+
   const { Option } = Select;
   const [timeSlot, setTimeSlot] = useState("morning");
 
@@ -80,7 +82,6 @@ export const CreateOnlineLeave: React.FC<props> = ({
     disabledHours: () => [0, 16],
     disabledMinutes: () => [0],
   });
-  console.log(checkSwitch);
 
   return (
     <div>
@@ -211,6 +212,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
                       defaultChecked={false}
                       onChange={(e: any) => {
                         setCheckSwitch(e);
+                        onChangeParams(e, "endDate");
                       }}
                     />
                   </Form.Item>
@@ -381,7 +383,11 @@ export const CreateOnlineLeave: React.FC<props> = ({
             </div>
           </div>
           <div className=" col-span-12 md:col-span-1 ml-5 justify-center flex w-full">
-            <Button htmlType="submit" type="primary">{`ยื่นใบลา`}</Button>
+            <Button
+              htmlType="submit"
+              type="primary"
+              style={{ fontSize: "18px", padding: "12px 24px" }}
+            >{`ยื่นใบลา`}</Button>
           </div>
         </Form>
       </Card>

@@ -1,25 +1,21 @@
 "use client";
-import ReactDOM from "react-dom";
 import React, { useState, useEffect } from "react";
 import type { FormProps } from "antd";
-import type { GetProp, UploadFile, UploadProps } from "antd";
+import type { UploadFile, UploadProps } from "antd";
 import { RcFile } from "antd/es/upload";
-import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
+import {
+  DownloadOutlined,
+  FilePdfOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import moment from "moment";
 import { DeleteIcon, EditIcon } from "@/components/icon";
 import { useSession } from "next-auth/react";
 import dayjs from "dayjs";
 import {
   Button,
-  Row,
-  Col,
   Modal,
   Input,
-  Card,
-  Pagination,
-  Tabs,
-  TabsProps,
-  Image,
   Table,
   TableProps,
   message,
@@ -35,11 +31,8 @@ import {
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManagehandbookFileServices } from "../service/handbook.service";
 import { useForm } from "antd/es/form/Form";
-import { Anybody } from "next/font/google";
 import { newsType } from "../../information/common";
 import { UploadFileStatus } from "antd/es/upload/interface";
-import { create } from "domain";
-const { Option } = Select;
 export interface handbookFile {
   [x: string]: any;
   handbookid: number;
@@ -83,17 +76,19 @@ const Managehandbook: React.FC = () => {
   const [existingFiles, setExistingFiles] = useState<UploadFile[]>([]);
   const { data: session } = useSession();
   const [form] = useForm();
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchFileName, setSearchFileName] = useState("");
+  const [searchFileType, setSearchFileType] = useState("");
   const [selectedhandbook, setSelectedhandbook] = useState<handbook | null>(
     null
-  );const [handbooktypeOptions, sethandbooktypeOptions] = useState<
-  {
-    value: number;
-    label: string;
-  }[]
->([]);
-
+  );
+  const [handbooktypeOptions, sethandbooktypeOptions] = useState<
+    {
+      value: number;
+      label: string;
+    }[]
+  >([]);
   useEffect(() => {
+    fetchDataHandbookoption();
     fetchDataHandbookfile();
     fetchDataHandbook();
     fetchDataType();
@@ -112,48 +107,39 @@ const Managehandbook: React.FC = () => {
       sethandbookFile(handbookFile);
       setSubmitLoading(false);
     } catch (error) {
-      message.error("Failed to fetch car data");
+      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
     }
   };
   const fetchDataType = async () => {
     try {
-      const handtype = await managehandbookFileServices.gethandbooktypeQuery();
-      const optionsmaResponse = handtype.map((event: newsType) => {
+      const handbookoption =
+        await managehandbookFileServices.gethandbooktypeQuery();
+      const handoptionsmaResponse = handbookoption.map((event: newsType) => {
         return {
           value: event.nameType,
           label: event.nameType,
         };
       });
+      sethandbooktypeOptions(handoptionsmaResponse);
+      sethandbooktype(handbookoption);
+    } catch (error) {
+      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
+    }
+  };
+  const fetchDataHandbookoption = async () => {
+    try {
+      const handtype = await managehandbookFileServices.gethandbooktypeQuery();
+      const optionsmaResponse = handtype.map((event: handbook) => {
+        return {
+          value: event.fileName,
+          label: event.fileName,
+        };
+      });
       sethandbooktypeOptions(optionsmaResponse);
       sethandbooktype(handtype);
     } catch (error) {
-      message.error("Failed to fetch car data");
+      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
     }
-  };
-
-  const showModalinformationNews = async (record: handbook) => {
-    console.log(record);
-    console.log(record.images);
-
-    form.setFieldsValue({
-      ...record,
-      // createdAt: dayjs(record.createdAt),
-      updatedAt: dayjs(record.updatedAt),
-    });
-
-    const existingFilesList: UploadFile[] = record.images.map(
-      (images: { handbookid: any; fileName: string }) => ({
-        uid: String(images.handbookid),
-        name: images.fileName as string,
-        status: "done" as UploadFileStatus,
-        url: `http://localhost:4003/api/public/handbook-file/${images.fileName}`,
-      })
-    );
-    console.log(existingFilesList);
-
-    setExistingFiles(existingFilesList);
-    setSelectedhandbook(record);
-    setshowmodalupdate(true);
   };
 
   const fetchDataHandbook = async () => {
@@ -168,7 +154,7 @@ const Managehandbook: React.FC = () => {
       sethandbook(handbook);
       setSubmitLoading(false);
     } catch (error) {
-      message.error("Failed to fetch car data");
+      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
     }
   };
 
@@ -187,17 +173,13 @@ const Managehandbook: React.FC = () => {
         status: values.status,
       },
     };
-
     try {
       const response = await managehandbookFileServices.createhandbook(
         handbookCreateData
       );
-      console.log(response);
-      console.log(attendFiles);
       if (response && attendFiles.length > 0) {
         await Promise.all(
           attendFiles.map(async (file) => {
-            console.log(`${response.idbook}`);
             const formData = new FormData();
             formData.append("file", file.originFileObj as RcFile);
             await managehandbookFileServices.uploadFiles(
@@ -223,13 +205,11 @@ const Managehandbook: React.FC = () => {
       setSubmitLoading(false);
     }
   };
+
   const handbookFileUpdate: FormProps<
     handbook & handbookFile
   >["onFinish"] = async (values) => {
-    console.log(attendFiles);
-
     setSubmitLoading(true);
-
     const handbookFileUpdateData = {
       idbook: values?.idbook,
       fileName: values.fileName,
@@ -243,12 +223,9 @@ const Managehandbook: React.FC = () => {
       const response = await managehandbookFileServices.updatehandbook(
         handbookFileUpdateData
       );
-      console.log(response);
-
       if (response && attendFiles.length > 0) {
         await Promise.all(
           attendFiles.map(async (file) => {
-            console.log(`${response.idbook}`);
             const formData = new FormData();
             formData.append("file", file.originFileObj as RcFile);
             await managehandbookFileServices.uploadFiles(
@@ -278,11 +255,8 @@ const Managehandbook: React.FC = () => {
   };
 
   const handleDeletehandbook = async (record: handbook) => {
-    console.log(record);
-
     try {
       setSubmitLoading(true);
-
       const responsefile = await managehandbookFileServices.deletehandbookFile(
         record.handbookFile[0].handbookid
       );
@@ -307,6 +281,24 @@ const Managehandbook: React.FC = () => {
     }
   };
 
+  const showModalinformationNews = async (record: handbook) => {
+    form.setFieldsValue({
+      ...record,
+      createdAt: dayjs(record.createdAt),
+      updatedAt: dayjs(record.updatedAt),
+    });
+    const existingFilesList: UploadFile[] = record.images.map(
+      (images: { handbookid: any; fileName: string }) => ({
+        uid: String(images.handbookid),
+        name: images.fileName as string,
+        status: "done" as UploadFileStatus,
+        url: `http://localhost:4003/api/public/handbook-file/${images.fileName}`,
+      })
+    );
+    setExistingFiles(existingFilesList);
+    setSelectedhandbook(record);
+    setshowmodalupdate(true);
+  };
   const handleChangeAttendFiles: UploadProps["onChange"] = async ({
     fileList: newFileList,
   }) => {
@@ -315,28 +307,28 @@ const Managehandbook: React.FC = () => {
       message.warning("คุณไม่สามารถอัปโหลดไฟล์เกิน 1 ไฟล์ได้");
       return;
     }
-
     setAttendFiles(newFileList);
   };
+
   const beforeUploadAttendFiles = (file: RcFile) => {
     const totalFilesCount = existingFiles.length + attendFiles.length + 1;
-
     if (totalFilesCount > 1) {
       message.warning("คุณไม่สามารถอัปโหลดไฟล์เกิน 1 ไฟล์ได้");
       return Upload.LIST_IGNORE;
     }
-
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return Upload.LIST_IGNORE;
     }
-
     return true;
   };
 
   const handleDownload = (record: handbook) => {
-    
-    if (record.handbookFile && record.handbookFile[0] && record.handbookFile[0].fileName) {
+    if (
+      record.handbookFile &&
+      record.handbookFile[0] &&
+      record.handbookFile[0].fileName
+    ) {
       window.open(
         `http://localhost:4003/api/public/handbook-file/${record.handbookFile[0].fileName}`,
         "_blank"
@@ -344,17 +336,43 @@ const Managehandbook: React.FC = () => {
     } else {
       message.error("ไม่มีไฟล์ให้ดาวน์โหลด");
     }
-    
+  };
+  const handleDeleteImage = async (file: UploadFile) => {
+    const handbookid = file.uid;
+
+    try {
+      const response = await managehandbookFileServices.deletehandbookFile(
+        +handbookid
+      );
+
+      if (response) {
+        const updatedFiles = existingFiles.filter(
+          (existingFile) => existingFile.uid !== handbookid
+        );
+        setExistingFiles(updatedFiles);
+        message.success("ลบไฟล์สำเร็จ");
+        fetchDataHandbook();
+        fetchDataHandbookfile();
+      } else {
+        message.error("ลบไฟล์ไม่สำเร็จ");
+      }
+    } catch {
+      message.error("ลบไฟล์ไม่สำเร็จ");
+    }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+  const handleFileNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchFileName(e.target.value);
+  };
+
+  const handleFileTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchFileType(e.target.value);
   };
 
   const filteredData = handbook.filter(
     (handbook) =>
-      handbook.fileName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      handbook.filetype.toLowerCase().includes(searchTerm.toLowerCase())
+      handbook.fileName.toLowerCase().includes(searchFileName.toLowerCase()) &&
+      handbook.filetype.toLowerCase().includes(searchFileType.toLowerCase())
   );
 
   const closecreate = () => {
@@ -367,11 +385,16 @@ const Managehandbook: React.FC = () => {
     setshowmodalupdate(false);
   };
 
+  const dataWithKey = filteredData.map((item, index) => ({
+    ...item,
+    key: index + 1,
+    index: index + 1,
+  }));
   const columns: TableProps<handbook>["columns"] = [
     {
       title: "ไอดี",
-      dataIndex: "idbook",
-      key: "idbook",
+      dataIndex: "key",
+      key: "key",
       align: "center",
       width: "20px",
     },
@@ -388,18 +411,20 @@ const Managehandbook: React.FC = () => {
       width: "50px",
     },
     {
-      title: "นำเข้าเวลา",
+      title: "เวลาอัพเดท",
       dataIndex: "updatedAt",
       key: "updatedAt",
-      width: "50px",
-      render: (updatedAt: Date) => moment(updatedAt).format("YYYY/MM/DD"),
+      width: "150px",
+      render: (updatedAt: Date) =>
+        moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
       title: "นำเข้าเวลา",
       dataIndex: "createdAt",
       key: "createdAt",
-      width: "50px",
-      render: (createdAt: Date) => moment(createdAt).format("YYYY/MM/DD"),
+      width: "150px",
+      render: (createdAt: Date) =>
+        moment(createdAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
       title: "ผู้อัพโหลด",
@@ -411,7 +436,7 @@ const Managehandbook: React.FC = () => {
       title: "สถานะการมองเห็น",
       dataIndex: "status",
       key: "status",
-      width: "80px",
+      width: "60px",
       render: (status: boolean) =>
         status === true ? (
           <Tag color="green">เปิดการมองเห็น</Tag>
@@ -423,7 +448,7 @@ const Managehandbook: React.FC = () => {
       title: "การจัดการ",
       dataIndex: "x",
       key: "x",
-      width: "60px",
+      width: "30px",
       render: (_record: number, row: any, _index: number) => (
         <Space size="middle">
           <Tooltip title="แก้ไข">
@@ -455,7 +480,6 @@ const Managehandbook: React.FC = () => {
       align: "center",
       render: (_record: number, row: any, _index: number) => (
         <Button
-          // type="primary"
           icon={<DownloadOutlined />}
           size="small"
           onClick={() => handleDownload(row)}
@@ -465,28 +489,55 @@ const Managehandbook: React.FC = () => {
       ),
     },
   ];
-  function handleDeleteImage(_file: any): void {
-    throw new Error("Function not implemented.");
-  }
   return (
     <div>
-      <div style={{ fontSize: "16px" }}>
-        ค้นหาข่าวสาร :
-        <Input
-          type="text"
-          value={searchTerm}
-          onChange={handleInputChange}
-          placeholder="ค้นหาข่าวสาร"
-          style={{
-            margin: "10px 10px 10px 10px",
-            width: "300px",
-          }}
-        />
-        <Button type="primary" onClick={opencreate}>
-        การอัพโหลดไฟล์
-      </Button>
+      <div style={{ margin: " 10px 40px 20px 0px ", fontSize: "20px" }}>
+        คำเตือน : การบันทึกเอกสารของคุณ ไม่สามารถอัพโหลดได้เกิน 1 เอกสาร
       </div>
-      
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          fontSize: "16px",
+        }}
+      >
+        <div>
+          <div>
+            ค้นหาชื่อเอกสาร :
+            <Input
+              type="text"
+              value={searchFileName}
+              onChange={handleFileNameChange}
+              placeholder="ค้นหาชื่อเอกสาร"
+              style={{
+                margin: "10px 10px 10px 10px",
+                width: "300px",
+              }}
+            />
+            ค้นหาประเภทเอกสาร :
+            <Input
+              type="text"
+              value={searchFileType}
+              onChange={handleFileTypeChange}
+              placeholder="ค้นหาประเภทเอกสาร"
+              style={{
+                margin: "10px 10px 10px 10px",
+                width: "300px",
+              }}
+            />
+          </div>
+        </div>
+        <div></div>
+        <Button
+          style={{ alignContent: "right" }}
+          type="primary"
+          onClick={opencreate}
+        >
+          การอัพโหลดไฟล์
+        </Button>
+      </div>
+
       <Modal
         title="แก้ไขข้อมูลตรวจสภาพรถ"
         open={showmodalupload}
@@ -555,7 +606,6 @@ const Managehandbook: React.FC = () => {
           </Form.Item>
         </Form>
       </Modal>
-      {/* อัพเดท */}
       <Modal
         title="แก้ไขข้อมูลตรวจสภาพรถ"
         open={showmodalupdate}
@@ -569,7 +619,8 @@ const Managehandbook: React.FC = () => {
             label="ชื่อไฟล์ :"
             style={{
               width: "300px",
-              //  visibility: "hidden"
+              visibility: "hidden",
+              margin: "0px -80px -60px 0px",
             }}
           >
             <Input />
@@ -607,13 +658,28 @@ const Managehandbook: React.FC = () => {
                 key={index}
                 style={{ marginBottom: "20px", position: "relative" }}
               >
-                <Image
-                  preview={false}
-                  crossOrigin="anonymous"
-                  src={file.url}
-                  style={{ width: "100%" }}
-                  alt={file.name}
-                />
+                <Button
+                  type="link"
+                  href={file.url}
+                  target="_blank"
+                  style={{ width: "100%", textAlign: "left" }}
+                >
+                  <FilePdfOutlined
+                    style={{ fontSize: "48px", color: "#d32f2f" }}
+                  />
+                  <span style={{ marginLeft: "10px" }}>{file.fileName}</span>
+                </Button>
+                <a
+                  href={file.url}
+                  download={file.fileName}
+                  style={{
+                    position: "absolute",
+                    top: 10,
+                    right: 50,
+                  }}
+                >
+                  <Button type="primary" icon={<DownloadOutlined />} />
+                </a>
                 <Button
                   type="primary"
                   danger
@@ -624,8 +690,21 @@ const Managehandbook: React.FC = () => {
                   }}
                   onClick={() => handleDeleteImage(file)}
                 >
-                  ลบรูปภาพ
+                  ลบไฟล์
                 </Button>
+                <Form.Item name="fileName" style={{ width: "450px" }}>
+                  <Input
+                    style={{
+                      border: "none",
+                      boxShadow: "none",
+                      color: "red",
+                      textAlign: "center",
+                      margin: " 0 0 0 10px",
+                      borderBlock: "3px solid red",
+                    }}
+                    readOnly
+                  />
+                </Form.Item>
               </div>
             ))}
           </Form.Item>
@@ -663,7 +742,7 @@ const Managehandbook: React.FC = () => {
         </Form>
       </Modal>
       <Table
-        dataSource={filteredData}
+        dataSource={dataWithKey}
         columns={columns}
         rowKey="id"
         bordered
@@ -673,7 +752,3 @@ const Managehandbook: React.FC = () => {
   );
 };
 export default Managehandbook;
-function setnewsTypeOptions(optionsmaResponse: any) {
-  throw new Error("Function not implemented.");
-}
-

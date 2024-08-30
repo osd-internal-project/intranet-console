@@ -1,4 +1,4 @@
-import { LogoutOutlined, UserOutlined, HomeOutlined } from "@ant-design/icons";
+import { LogoutOutlined, UserOutlined, HomeOutlined, BarChartOutlined, BookOutlined } from "@ant-design/icons";
 import { Icon } from "@iconify/react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
@@ -31,7 +31,8 @@ const MenuNav: MenuProps["items"] = [
         href={"#"}
         onClick={async () => {
           signOut({ callbackUrl: "/signin" });
-        }}>
+        }}
+      >
         Sign Out
       </Link>
     ),
@@ -251,6 +252,11 @@ export const MenuSider: MenuItem[] = [
         label: `Master Position`,
         rule: "st-p-s",
       },
+      {
+        key: `setting/manage-home`,
+        label: `Manage Home`,
+        rule: "ma-h-s",
+      },
     ],
   },
   {
@@ -336,7 +342,7 @@ export const MenuSider: MenuItem[] = [
   },
   {
     key: "information",
-    icon: mindMappingIcon,
+    icon: <BarChartOutlined />,
     label: `Infomation`,
     rule: "ift-s",
     children: [
@@ -352,7 +358,7 @@ export const MenuSider: MenuItem[] = [
   },
   {
     key: "handbook",
-    icon: mindMappingIcon,
+    icon: <BookOutlined />,
     label: `Handbook`,
     rule: "hb-s",
   },

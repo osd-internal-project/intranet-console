@@ -239,9 +239,7 @@ const CreateProjectForm: React.FC<props> = ({
                   address.district ? address.district : "-"
                 } จังหวัด ${
                   address.province ? address.province : "-"
-                } รหัสไปรษณีย์ ${
-                  address.houseNumber ? address.houseNumber : "-"
-                }`,
+                } รหัสไปรษณีย์ ${address.zipCode ? address.zipCode : "-"}`,
               }))}
             />
           </Form.Item>
@@ -273,9 +271,7 @@ const CreateProjectForm: React.FC<props> = ({
                   address.district ? address.district : "-"
                 } จังหวัด ${
                   address.province ? address.province : "-"
-                } รหัสไปรษณีย์ ${
-                  address.houseNumber ? address.houseNumber : "-"
-                }`,
+                } รหัสไปรษณีย์ ${address.zipCode ? address.zipCode : "-"}`,
               }))}
             />
           </Form.Item>
@@ -307,9 +303,7 @@ const CreateProjectForm: React.FC<props> = ({
                   address.district ? address.district : "-"
                 } จังหวัด ${
                   address.province ? address.province : "-"
-                } รหัสไปรษณีย์ ${
-                  address.houseNumber ? address.houseNumber : "-"
-                }`,
+                } รหัสไปรษณีย์ ${address.zipCode ? address.zipCode : "-"}`,
               }))}
             />
           </Form.Item>

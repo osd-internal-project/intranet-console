@@ -126,8 +126,8 @@ const ProjectTicketFilterComponent: React.FC<props> = ({
                         value: "hold",
                       },
                       {
-                        label: <div style={{ color: "#555" }}>Close</div>,
-                        value: "close",
+                        label: <div style={{ color: "#555" }}>Complete</div>,
+                        value: "complete",
                       },
                     ]}
                   />

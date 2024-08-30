@@ -203,8 +203,8 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                         <Tag color="#f5222d">Cancel</Tag>
                       ) : ticketSelectedDetail.status === "hold" ? (
                         <Tag color="#aB5E00">On Hold</Tag>
-                      ) : ticketSelectedDetail.status === "close" ? (
-                        <Tag color="#aaa">Close</Tag>
+                      ) : ticketSelectedDetail.status === "complete" ? (
+                        <Tag color="#aaa">Complete</Tag>
                       ) : (
                         <></>
                       )}
@@ -359,6 +359,12 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                     >
                       SUMMARY INFORMATION
                     </Divider>
+                    <div className=" font-bold pl-3 pr-3 text-right">
+                      Manhour :
+                    </div>
+                    <div className=" col-span-2 md:col-span-1">
+                      {ticketSelectedDetail.manhour} ชั่วโมง
+                    </div>
                     <div className="col-span-3 md:col-span-6 ml-3 mr-3">
                       <Form.Item
                         label={
@@ -667,19 +673,33 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                       )
                     ) : ticketSelectedDetail.status === "finish" ||
                       ticketSelectedDetail.status === "cancel" ? (
-                      rules.ruleTicketClose ? (
-                        <Button
-                          type="primary"
-                          onClick={() =>
-                            updateTicketStatus(
-                              ticketSelectedDetail.id,
-                              "close",
-                              "close"
-                            )
-                          }
-                        >
-                          Close Ticket
-                        </Button>
+                      rules.ruleTicketComplete ? (
+                        <div>
+                          <Button
+                            type="primary"
+                            onClick={() =>
+                              updateTicketStatus(
+                                ticketSelectedDetail.id,
+                                "inprogress",
+                                "revise"
+                              )
+                            }
+                          >
+                            Revise
+                          </Button>{" "}
+                          <Button
+                            type="primary"
+                            onClick={() =>
+                              updateTicketStatus(
+                                ticketSelectedDetail.id,
+                                "complete",
+                                "complete"
+                              )
+                            }
+                          >
+                            Complete Ticket
+                          </Button>
+                        </div>
                       ) : (
                         <></>
                       )

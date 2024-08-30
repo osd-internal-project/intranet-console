@@ -10,6 +10,7 @@ import {
   Modal,
   Form,
   TablePaginationConfig,
+  InputNumber,
 } from "antd";
 import {
   ITBranchContact,
@@ -35,6 +36,7 @@ import TextArea from "antd/es/input/TextArea";
 import ProjectTicketFilterComponent from "./components/project-ticket-filter";
 import UserServices from "./services/user.service";
 import { checkRule } from "@/app/utils/rules";
+import ProjectTicketAddComponent from "./components/project-ticket-add";
 
 export default function CustomerDetailPage() {
   const { data: session } = useSession();
@@ -45,12 +47,13 @@ export default function CustomerDetailPage() {
     ruleTicketRequestFilesEdit: checkRule("crm-trf-e"),
     ruleTicketUpdateStatus: checkRule("crm-t-u"),
     ruleTicketHold: checkRule("crm-t-h"),
-    ruleTicketClose: checkRule("crm-t-c"),
+    ruleTicketComplete: checkRule("crm-t-c"),
   };
   const crmAuth = useAxiosCrm();
   const crmServices = CrmServices(crmAuth);
   const userAuth = useAxiosUser();
   const userServices = UserServices(userAuth);
+  const [finishForm] = useForm();
   const [summaryForm] = useForm();
   const [projectDescription, setProjectDescription] = useState<ITProject>();
   const [search, setSearch] = useState<object>({});
@@ -299,12 +302,28 @@ export default function CustomerDetailPage() {
     } else if (status === "inprogress" && action === "resume") {
       title = "Resume Ticket";
       content = <>ยืนยันการคืนงาน ?</>;
+    } else if (status === "inprogress" && action === "revise") {
+      title = "Revise Ticket";
+      content = <>ยืนยันการคืนงาน ?</>;
     } else if (status === "hold") {
       title = "Hold Ticket";
       content = <>ยืนยันการ Hold ?</>;
     } else if (status === "finish") {
+      finishForm.resetFields();
       title = "Finish Ticket";
-      content = <>ยืนยันการปิดงาน ?</>;
+      content = (
+        <>
+          <Form form={finishForm}>
+            <Form.Item
+              label={"Manhour"}
+              name={"manhour"}
+              rules={[{ required: true, message: "กรุณากรอก Manhour" }]}
+            >
+              <InputNumber min={0} />
+            </Form.Item>
+          </Form>
+        </>
+      );
       form = {
         finishDate: new Date(),
       };
@@ -314,9 +333,9 @@ export default function CustomerDetailPage() {
       form = {
         finishDate: new Date(),
       };
-    } else if (status === "close") {
+    } else if (status === "complete") {
       summaryForm.resetFields();
-      title = "Close Ticket";
+      title = "Complete Ticket";
       content = (
         <>
           <Form form={summaryForm}>
@@ -342,9 +361,12 @@ export default function CustomerDetailPage() {
       okButtonProps: { type: "primary" },
       cancelText: "Cancel",
       onOk: async () => {
-        if (status === "close") {
+        if (status === "complete") {
           const summary = summaryForm.getFieldValue("summary");
           form = { ...form, summary: summary };
+        } else if (status === "finish") {
+          const finish = finishForm.getFieldsValue();
+          form = { ...form, ...finish };
         }
         await crmServices
           .updateStatusProjectTicket(+ticketId, status, form)
@@ -375,7 +397,8 @@ export default function CustomerDetailPage() {
       detail = "Update Progress Info";
     } else if (action === "finish") {
       type = "Finish";
-      detail = "Finish";
+      const manhour = finishForm.getFieldValue("manhour");
+      detail = ` Manhour :${manhour} ชั่วโมง`;
     } else if (action === "cancel") {
       type = "Cancel";
       detail = "Cancel";
@@ -385,7 +408,7 @@ export default function CustomerDetailPage() {
     } else if (action === "resume") {
       type = "Resume";
       detail = "Resume";
-    } else if (action === "close") {
+    } else if (action === "complete") {
       type = "Complete";
       detail = summaryForm.getFieldValue("summary");
     } else if (action === "deleteFile") {
@@ -506,6 +529,21 @@ export default function CustomerDetailPage() {
           ) : (
             <></>
           )}
+          {/* <ProjectTicketAddComponent
+            projectTaskSelectId={undefined}
+            showModalTicketAdd={false}
+            ticketConfigs={ticketConfigs}
+            onShowModalProjectTicketAdd={function (status: boolean): void {
+              throw new Error("Function not implemented.");
+            }}
+            onSaveProjectTicket={function (
+              taskId: number | undefined,
+              dataForm: ITProjectTicketCreateForm,
+              attendFiles: UploadFile[]
+            ): void {
+              throw new Error("Function not implemented.");
+            }}
+          /> */}
         </Col>
       </Row>
     </div>

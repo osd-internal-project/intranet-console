@@ -1,4 +1,4 @@
-import { LogoutOutlined, UserOutlined, HomeOutlined } from "@ant-design/icons";
+import { LogoutOutlined, UserOutlined, HomeOutlined, BarChartOutlined, BookOutlined } from "@ant-design/icons";
 import { Icon } from "@iconify/react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
@@ -342,7 +342,7 @@ export const MenuSider: MenuItem[] = [
   },
   {
     key: "information",
-    icon: mindMappingIcon,
+    icon: <BarChartOutlined />,
     label: `Infomation`,
     rule: "ift-s",
     children: [
@@ -358,7 +358,7 @@ export const MenuSider: MenuItem[] = [
   },
   {
     key: "handbook",
-    icon: mindMappingIcon,
+    icon: <BookOutlined />,
     label: `Handbook`,
     rule: "hb-s",
   },

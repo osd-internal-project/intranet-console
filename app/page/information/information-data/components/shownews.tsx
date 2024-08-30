@@ -118,7 +118,7 @@ const ManagementNews: React.FC = () => {
           {currentNews.map((item) => (
             <Col span={8} key={item.newsId.toString()}>
               <Card
-                style={{ margin: "20px 0 0 0" }}
+                style={{ margin: "20px 0 0 0" ,backgroundColor:"#F0F8FF"}}
                 hoverable
                 onClick={() => showModal(item)}
                 cover={
@@ -131,7 +131,7 @@ const ManagementNews: React.FC = () => {
                       style={{
                         width: "400px",
                         height: "350px",
-                        marginBottom: "20px",
+                        margin: "30px 20px -20px 10px",
                       }}
                     />
                   ) : null
@@ -189,10 +189,6 @@ const ManagementNews: React.FC = () => {
             >
               <strong></strong> {selectedNews.newsName}
             </p>
-            <p style={{ fontSize: "20px" }}>
-              <strong style={{ margin: "0 40px 0 0" }}></strong>{" "}
-              {selectedNews.content}
-            </p>
             <Carousel
               arrows
               infinite={true}
@@ -221,6 +217,10 @@ const ManagementNews: React.FC = () => {
                   ))
                 : null}
             </Carousel>
+            <p style={{ fontSize: "20px" }}>
+              <strong style={{ margin: "0 40px 0 0" }}></strong>{" "}
+              {selectedNews.content}
+            </p>
             <p>
               <strong>ผู้เขียน:</strong> {selectedNews.author}
             </p>

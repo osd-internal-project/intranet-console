@@ -15,6 +15,8 @@ import {
   MasterRoomType,
   HandbookFileType,
   HandbookType,
+  InformationNewsType,
+  NewsImageType,
 } from "./common";
 import { RcFile, UploadProps } from "antd/es/upload";
 
@@ -28,6 +30,10 @@ export default function HomePage() {
   const [bookingRoom, setBookingRoom] = useState<MasterRoomType[]>([]);
   const [handbookFile, setHandbookFile] = useState<HandbookFileType[]>([]);
   const [handbookQuery, setHandbookQuery] = useState<HandbookType[]>([]);
+  const [informationNews, setInformationNews] = useState<InformationNewsType[]>(
+    []
+  );
+  const [NewsImage, setNewsImage] = useState<NewsImageType[]>([]);
 
   const fetchData = async () => {
     const dataSlideImage = await slideImageService.getSlideImageQuery();
@@ -41,6 +47,17 @@ export default function HomePage() {
     const dataHandbookFileQuery =
       await slideImageService.getHandbookFileQuery();
     const dataHandbookQuery = await slideImageService.getHandbookQuery();
+    const dataInformationNews =
+      await slideImageService.getinformationNewsQuery();
+
+    // const dataNewsImage = dataInformationNews.map((item: any) => ({
+    //   ...item,
+    //   images: item.newsImage,
+    // }));
+    const dataNewsImage = await slideImageService.getNewsImageQuery();
+
+    setNewsImage(dataNewsImage);
+    setInformationNews(dataInformationNews);
     setHandbookQuery(dataHandbookQuery);
     setHandbookFile(dataHandbookFileQuery);
     setBookingRoom(Bookingresponse);
@@ -69,10 +86,7 @@ export default function HomePage() {
 
   return (
     <>
-      <BigCarouselComponent
-        loading={loading}
-        slideImage={slideImage}
-      />
+      <BigCarouselComponent loading={loading} slideImage={slideImage} />
 
       <div className="my-2" />
       <div className="grid md:grid-cols-3">
@@ -112,7 +126,10 @@ export default function HomePage() {
             bordered={false}
             className="text-center"
           >
-            <NewsCarouselComponent />
+            <NewsCarouselComponent
+              informationNews={informationNews}
+              NewsImage={NewsImage}
+            />
           </Card>
           <div className="my-4"></div>
           <Card title="เอกสาร" bordered={false} className="text-center">

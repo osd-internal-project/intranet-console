@@ -77,6 +77,7 @@ const ManagementNews: React.FC = () => {
   const indexOfLastNews = currentPage * newsPerPage;
   const indexOfFirstNews = indexOfLastNews - newsPerPage;
   const currentNews = filteredData.slice(indexOfFirstNews, indexOfLastNews);
+  // console.log("currentNews", currentNews);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);

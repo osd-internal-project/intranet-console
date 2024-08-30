@@ -46,3 +46,25 @@ export interface HandbookType {
   status?: boolean;
   handbookFile: HandbookFileType[];
 }
+
+export interface InformationNewsType {
+  newsId: number;
+  newsName?: string;
+  content?: string;
+  newsType?: string;
+  author?: string;
+  phblishedAt?: Date;
+  updatedAt?: Date;
+  status?: boolean;
+  newsImage: NewsImageType[];
+}
+
+export interface NewsImageType {
+  imageId: Number;
+  newsId: Number;
+  createdAt: String;
+  updatedAt: String;
+  fileimageName: String;
+  fileimagePath: String;
+  fileName: string;
+}

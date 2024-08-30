@@ -39,7 +39,6 @@ export const BigCarouselComponent: React.FC<Props> = ({
         <div key={index}>
           <Image
             src={`http://localhost:4003/api/slide-image/${image.filePath}`}
-            // alt={`Slide ${index + 1}`}
             crossOrigin="anonymous"
             preview={false}
           />

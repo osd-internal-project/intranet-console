@@ -6,25 +6,10 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
   const baseUrlApiMasterRoom = "/master-room";
   const baseUrlApiHandbookFile = "/handbook-file";
   const baseUrlApiHandbook = "/hand-book";
-
-  const getSlideImage = async (filename: string): Promise<Blob> => {
-    try {
-      const response = await axiosInstance.get(
-        `${baseUrlSlideImage}/uploads/image/${filename}`,
-        {
-          responseType: "blob",
-        }
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching slide image:", error);
-      throw error;
-    }
-  };
+  const baseUrlApiInformationNews = "/informationNews";
+  const baseUrlApiNewsImage = "/news-image";
 
   return {
-    getSlideImage,
-
     getSlideImageQuery: async () => {
       return await axiosInstance
         .get(`${baseUrlSlideImage}`)
@@ -32,7 +17,6 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
           return res.data;
         })
         .catch((err) => {
-          // console.log(err);
           return;
         });
     },
@@ -55,7 +39,6 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
           return res.data;
         })
         .catch((err) => {
-          // console.log(err);
           return;
         });
     },
@@ -67,7 +50,6 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
           return res.data;
         })
         .catch((err) => {
-          // console.log(err);
           return;
         });
     },
@@ -78,7 +60,6 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
           return res.data;
         })
         .catch((err) => {
-          // console.log(err);
           return;
         });
     },
@@ -90,20 +71,44 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
           return res.data;
         })
         .catch((err) => {
-          // console.log(err);
-          return ;
+          return;
         });
     },
 
     downloadFile: async (id: number) => {
       return await axiosInstance
-        .get(`${baseUrlApiHandbookFile}/get-file/${id}`, { responseType: "blob" })
+        .get(`${baseUrlApiHandbookFile}/get-file/${id}`, {
+          responseType: "blob",
+        })
         .then((result) => {
           return result.data;
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          return;
+        });
     },
 
+    getinformationNewsQuery: async () => {
+      return await axiosInstance
+        .get(`${baseUrlApiInformationNews}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return;
+        });
+    },
+    getNewsImageQuery: async (newsId?: any) => {
+      return await axiosInstance
+        .get(`${baseUrlApiNewsImage}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return;
+        });
+    },
   };
 };
 

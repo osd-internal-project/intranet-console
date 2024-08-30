@@ -134,13 +134,19 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
       if (response) {
         message.success("เพิ่มข่าวสารสำเร็จ");
         form.resetFields();
+        setAttendFiles([]);
       } else {
         message.error("เพิ่มข่าวสารไม่สำเร็จ");
+        form.resetFields();
+        setAttendFiles([]);
       }
       setSubmitLoading(false);
       fetchDatainformationNews();
     } catch (error) {
       message.error("เพิ่มข่าวสารไม่สำเร็จ");
+      
+      setAttendFiles([]);
+      form.resetFields();
       setSubmitLoading(false);
     }
   };

@@ -49,11 +49,6 @@ export default function HomePage() {
     const dataHandbookQuery = await slideImageService.getHandbookQuery();
     const dataInformationNews =
       await slideImageService.getinformationNewsQuery();
-
-    // const dataNewsImage = dataInformationNews.map((item: any) => ({
-    //   ...item,
-    //   images: item.newsImage,
-    // }));
     const dataNewsImage = await slideImageService.getNewsImageQuery();
 
     setNewsImage(dataNewsImage);

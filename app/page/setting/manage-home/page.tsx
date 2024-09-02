@@ -8,6 +8,7 @@ import {
   Form,
   Modal,
   Row,
+  TablePaginationConfig,
   message,
 } from "antd";
 import { CreateSlideImage } from "./components/create-slide-image";
@@ -18,8 +19,10 @@ import { SlideImageType } from "./common";
 import { dateToEndofDay, dateToStartofDay } from "@/app/utils/format";
 import { RcFile, UploadProps } from "antd/es/upload";
 import { useForm } from "antd/es/form/Form";
+import { useSession } from "next-auth/react";
 
 export default function TypeLeave() {
+  const { data: session } = useSession();
   const Auth = useAxiosIntranet();
   const manageHomeService = ManageHomeService(Auth);
   const [slideImage, setSlideImage] = useState<SlideImageType[]>([]);
@@ -28,6 +31,16 @@ export default function TypeLeave() {
   const [addFile, setAddFile] = useState<any[]>([]);
   const [createSlideImageForm] = useForm();
   const [modalAddSlide, setModalAddSlide] = useState<boolean>(false);
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
+
+  const changePagination = (page: TablePaginationConfig) => {
+    setPagination({ ...page });
+    setLoading(true);
+  };
 
   useEffect(() => {
     if (loading) loadData();
@@ -35,17 +48,18 @@ export default function TypeLeave() {
 
   const loadData = async () => {
     const dataSlideImage = await manageHomeService.getSlideImageQuery();
-    // const dataFilePath = dataSlideImage.map(
-    //   (item: SlideImageType) => item.filePath
-    // );
-    // const dataFileName = dataSlideImage.map(
-    //   (item: SlideImageType) => item.fileName
-    // );
-    // setFileName(dataFileName);
-    // setFilePath(dataFilePath);
     setSlideImage(dataSlideImage);
 
     setLoading(false);
+  };
+
+  const showModal = () => {
+    createSlideImageForm.setFieldsValue({
+      createByName: `${session?.user.firstNameTh || ""} ${
+        session?.user.lastNameTh || ""
+      }`,
+    });
+    setModalAddSlide(true);
   };
 
   const handleDeleteSlideImage = async (id: number) => {
@@ -80,9 +94,14 @@ export default function TypeLeave() {
 
       if (addFile.length > 0) {
         for (const file of addFile) {
+          const createdByName =
+            session?.user.firstNameTh && session?.user.lastNameTh
+              ? `${session.user.firstNameTh} ${session.user.lastNameTh}`
+              : "";
           const formData: any = new FormData();
           formData.append("type", "attend");
           formData.append("files", file.originFileObj);
+          formData.append("createdByName", createdByName);
           await manageHomeService.uploadFilesSlide(values.id, formData);
         }
         message.success("อัปโหลดสำเร็จ");
@@ -133,12 +152,15 @@ export default function TypeLeave() {
               modalAddSlide={modalAddSlide}
               setModalAddSlide={setModalAddSlide}
               createSlideImageForm={createSlideImageForm}
+              showModal={showModal}
             />
 
             <TableSlideImage
               loading={loading}
               slideImage={slideImage}
               handleDeleteSlideImage={handleDeleteSlideImage}
+              pagination={pagination}
+              changePagination={changePagination}
             />
           </Card>
         </Col>

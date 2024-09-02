@@ -105,7 +105,6 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
           return res.data;
         })
         .catch((err) => {
-          console.log(err);
           return;
         });
     },

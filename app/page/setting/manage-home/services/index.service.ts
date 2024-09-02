@@ -27,6 +27,18 @@ const ManageHomeService = (axiosInstance: AxiosInstance) => {
         .then((result) => result.data)
         .catch((err) => err);
     },
+    createSlideImage: async (body: any) => {
+      console.log(body);
+      
+      return await axiosInstance
+        .post(`${baseUrlSlideImage}`, body)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return;
+        });
+    },
 
     deleteSlideImage: async (id: any) => {
       return await axiosInstance
@@ -39,8 +51,6 @@ const ManageHomeService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-
-  
   };
 };
 

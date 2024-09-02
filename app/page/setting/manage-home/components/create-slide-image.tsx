@@ -27,6 +27,7 @@ export interface props {
   modalAddSlide: boolean;
   setModalAddSlide: (value: boolean) => void;
   createSlideImageForm: any;
+  showModal: any;
 }
 
 export const CreateSlideImage: React.FC<props> = ({
@@ -38,6 +39,7 @@ export const CreateSlideImage: React.FC<props> = ({
   modalAddSlide,
   setModalAddSlide,
   createSlideImageForm,
+  showModal,
 }): React.ReactElement => {
   return (
     <>
@@ -47,7 +49,7 @@ export const CreateSlideImage: React.FC<props> = ({
             marginBottom: "20px",
           }}
           type="primary"
-          onClick={() => setModalAddSlide(true)}
+          onClick={showModal}
         >{`Add Slide`}</Button>
       </div>
       <Modal

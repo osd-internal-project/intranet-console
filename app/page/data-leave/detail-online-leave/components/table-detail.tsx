@@ -4,6 +4,7 @@ import { Button, Col, Form, Input, Modal, Row, Space, Table, Tag } from "antd";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { deleteIcon, editIcon } from "@/components/icon";
 import { PaperClipOutlined } from "@ant-design/icons";
+import dayjs from "dayjs";
 
 export interface props {
   dataLeaveUser: ITypeDataLeave[];
@@ -22,22 +23,7 @@ export const TableDetail: React.FC<props> = ({
   onFinishUpdate,
   downloadFile,
 }): React.ReactElement => {
-
   const columns: any = [
-    {
-      key: "status",
-      dataIndex: "status",
-      title: "Status",
-      render: (e: string) => {
-        return e === "waitting" ? (
-          <Tag color="blue">{`WAITTING`}</Tag>
-        ) : e === "approved" ? (
-          <Tag color="green">{`APPROVED`}</Tag>
-        ) : (
-          <Tag color="volcano">{`CANCEL`}</Tag>
-        );
-      },
-    },
     {
       key: "id",
       dataIndex: "id",
@@ -71,6 +57,7 @@ export const TableDetail: React.FC<props> = ({
         );
       },
     },
+    { key: "typeName", dataIndex: "typeName", title: "Type Leave" },
     {
       key: "id",
       dataIndex: "id",
@@ -83,8 +70,30 @@ export const TableDetail: React.FC<props> = ({
           : "-";
       },
     },
-    { key: "typeName", dataIndex: "typeName", title: "Type Leave" },
+    {
+      key: "status",
+      dataIndex: "status",
+      title: "Status",
+      render: (e: string) => {
+        return e === "waitting" ? (
+          <Tag color="blue">{`WAITTING`}</Tag>
+        ) : e === "approved" ? (
+          <Tag color="green">{`APPROVED`}</Tag>
+        ) : (
+          <Tag color="volcano">{`CANCEL`}</Tag>
+        );
+      },
+    },
     { key: "userApproved", dataIndex: "userApproved", title: "Approved By" },
+    {
+      key: "approvedDate",
+      dataIndex: "approvedDate",
+      title: "Approved Date",
+      render: (row: any) => (
+        <span>{dayjs(row.approvedDate).format("DD-MM-YYYY")}</span>
+      ),
+    },
+
     {
       key: "id",
       dataIndex: "id",
@@ -113,7 +122,7 @@ export const TableDetail: React.FC<props> = ({
       },
     },
   ];
-  
+
   return (
     <div>
       <Table dataSource={dataLeaveUser} columns={columns} size="small" />

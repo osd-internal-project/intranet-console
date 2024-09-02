@@ -1,14 +1,4 @@
-import {
-  Button,
-  Carousel,
-  Form,
-  Modal,
-  Popconfirm,
-  Space,
-  Table,
-  Upload,
-  Image,
-} from "antd";
+import { Carousel, Image } from "antd";
 import React from "react";
 import { SlideImageType } from "../common";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";

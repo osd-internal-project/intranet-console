@@ -7,10 +7,10 @@ import {
   DatePicker,
   Form,
   Input,
-  Radio,
   Select,
   Switch,
   TimePicker,
+  Typography,
   Upload,
   UploadFile,
 } from "antd";
@@ -94,9 +94,11 @@ export const CreateOnlineLeave: React.FC<props> = ({
           autoComplete="off"
           onFinish={onfinishCreate}
         >
-          <div className=" col-span-1 md:col-span-1 ml-5 justify-end flex">
+          <div className="col-span-1 md:col-span-1 ml-5 justify-end flex">
             <Form.Item label={`วันที่ `} name={`createdAt`} layout="horizontal">
-              <DatePicker defaultValue={dayjs(new Date())} disabled />
+              <Typography.Text>
+                {dayjs(new Date()).format("DD-MM-YYYY")}
+              </Typography.Text>
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5" hidden>
@@ -364,8 +366,26 @@ export const CreateOnlineLeave: React.FC<props> = ({
                 label={`เบอร์โทรศัพท์ :`}
                 name={"phoneNumber"}
                 required
+                rules={[
+                  {
+                    required: true,
+                    message: "กรุณากรอกเบอร์โทรศัพท์",
+                  },
+                  {
+                    pattern: /^[0-9]{10}$/,
+                    message: "กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง",
+                  },
+                ]}
               >
-                <Input placeholder="เบอร์โทรศัพท์" />
+                <Input
+                  placeholder="เบอร์โทรศัพท์"
+                  maxLength={10}
+                  onKeyDown={(event) => {
+                    if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
+                      event.preventDefault();
+                    }
+                  }}
+                />
               </Form.Item>
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">

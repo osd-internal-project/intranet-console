@@ -12,6 +12,7 @@ import {
   Avatar,
   Upload,
   UploadFile,
+  SelectProps,
 } from "antd";
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
@@ -45,6 +46,8 @@ type detailType = {
   updatedAt: Date | null;
   positionId: any | null;
   imageId: null | string;
+  departmentId?: string | null;
+  ownerGroupId?: string | null;
 };
 type option = {
   label: number;
@@ -68,7 +71,10 @@ const EditDetailComponent: React.FC<props> = ({
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
   const [imageFiles, setImageFiles] = useState<UploadFile[]>([]);
   const [image, setImage] = useState<any>();
-
+  const [userGroupSelect, setUserGroupSelect] = useState<
+    SelectProps["options"]
+  >([]);
+  
   useEffect(() => {
     if (loading) {
       loadingDetail();
@@ -92,6 +98,7 @@ const EditDetailComponent: React.FC<props> = ({
         createdAt: data.createdAt ? dateToStringTh(data.createdAt) : "",
         updatedAt: data.updatedAt ? dateToStringTh(data.updatedAt) : "",
         positionId: data.positionId,
+        departmentId: data.ownerGroupId,
       };
       setCheckedActiveStatus(data.activeStatus);
       detailForm.setFieldsValue(formdata);
@@ -100,6 +107,13 @@ const EditDetailComponent: React.FC<props> = ({
         label: d.nameEn,
         value: d.posId,
       }));
+      const dataUserGroup = await masterPositionServices.getUserGroupAll();
+
+      const userGroupOption: any = dataUserGroup.map((data: any) => ({
+        label: data.groupName,
+        value: data.groupId,
+      }));
+      setUserGroupSelect(userGroupOption);
       setPositionOption(positionOption);
     }
     setLoading(false);
@@ -126,6 +140,7 @@ const EditDetailComponent: React.FC<props> = ({
         phoneNumber: value.phoneNumber,
         email: value.email,
         positionId: value.positionId,
+        ownerGroupId: value.departmentId,
       };
       let formData: any = new FormData();
       if (imageFiles.length > 0) {
@@ -395,6 +410,18 @@ const EditDetailComponent: React.FC<props> = ({
             </div>
           </div>
           <div className="grid grid-cols-4 gap-2">
+            <div>
+              <Form.Item label="department" name="departmentId" required>
+                <Select
+                  options={userGroupSelect}
+                  allowClear
+                  showSearch
+                  optionFilterProp="label"
+                  disabled={disabledEdit}
+                  className={disabledEdit ? "read-only-input" : ""}
+                />
+              </Form.Item>
+            </div>
             <div>
               <Form.Item label="Created Date" name="createdAt">
                 <Input disabled className="read-only-input2" />

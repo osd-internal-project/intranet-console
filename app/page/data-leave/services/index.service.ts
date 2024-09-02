@@ -13,6 +13,7 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
   const baseUrlDataLeave = "/data-leave";
   const baseUrlDataLeaveFile = "/data-leave-file";
   const basrUrIDepartment = "/department";
+  const basrUrIUserGroup = "/user-group";
 
   return {
     getdataAll: async () => {
@@ -307,7 +308,7 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
         })
         .catch((err) => console.log(err));
     },
-    
+
     deleteTypeLeaveDisabled: async (id: number) => {
       return await axiosInstance
         .delete(`${baseUrlTypeleaveMap}/${id}`)
@@ -356,6 +357,45 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return res.data;
         })
         .catch((err) => {
+          return [];
+        });
+    },
+
+    getUserGroupByGroupId: async (groupId: string) => {
+      const condition = {
+        where: {
+          groupId: groupId,
+        },
+        select: {
+          id: true,
+          groupId: true,
+          groupName: true,
+          createdAt: true,
+          updatedAt: true,
+          parentGroupId: true,
+          organizedGroupId: true,
+          description: true,
+          userGroupUserRoleMap: true,
+          saleUserGroupId: true,
+          saleUsersId: true,
+          engineerUserGroupId: true,
+          engineerUsersId: true,
+          user: true,
+          headId: true,
+        },
+      };
+      return await axiosInstance
+        // .post(`/user-group/condition-first`, {
+        //   condition: condition,
+        // })
+        .post(`${basrUrIUserGroup}/condition-first`, {
+          condition: condition,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
           return [];
         });
     },

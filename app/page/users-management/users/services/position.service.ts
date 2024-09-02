@@ -13,6 +13,17 @@ const MasterPositionServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    getUserGroupAll: async () => {
+      return await axiosInstance
+        .post(`/user-group/condition`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
   };
 };
 export default MasterPositionServices;

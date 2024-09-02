@@ -67,7 +67,7 @@ const NewsCarouselComponent: React.FC<Props> = ({
                         alt="news"
                         preview={false}
                         crossOrigin="anonymous"
-                        src={`http://localhost:4003/api/informationNews/${file.newsImage[0].fileimagePath}`}
+                        // src={`http://localhost:4003/api/informationNews/${file.newsImage[0].fileimagePath}`}
                       />
                     }
                     hoverable

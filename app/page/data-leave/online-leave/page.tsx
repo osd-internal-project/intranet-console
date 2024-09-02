@@ -72,9 +72,9 @@ export default function Page() {
 
   const loadDataTypeLeave = async () => {
     const res = await dataleaveservice.getdataAll();
-    const resOwner = await dataleaveserviceUser.getOwnerGroupsByPositionId(
-      getUser?.userMapOrganizeChart[0]?.positionId
-    );
+    // const resOwner = await dataleaveserviceUser.getOwnerGroupsByPositionId(
+    //   getUser?.userMapOrganizeChart[0]?.positionId
+    // );
     const resTableDeatilTypeLeave =
       await dataleaveservice.findDetailTypeLeaveByUserId(getUser?.userId);
     const resTableUserTypeLeave = await dataleaveservice.findUserByUserId(
@@ -87,8 +87,15 @@ export default function Page() {
     const departmentOptions = resTableDepartMent.map((event: IDepartMent) => {
       return { value: event.departId, label: event.departName };
     });
+    const groupId = session?.user.ownerGroup;
+
+    if (groupId) {
+      const groupDetail = await dataleaveservice.getUserGroupByGroupId(groupId);
+      console.log("groupDetail:", groupDetail);
+    }
+
     setResDepartMent(departmentOptions);
-    setUserOwner(resOwner);
+    // setUserOwner(resOwner);
     setTypeLeaveTable(resTableDeatilTypeLeave);
     setTypeLeaveTableAll(resTableUserTypeLeave.typeLeaveDisabledMap);
     setTypeLeaveOption(options);

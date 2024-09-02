@@ -5,7 +5,9 @@ export const OrganizeManageSkeleton: React.FC = () => {
     <Card className="mx-2 my-2 md:my-0 " style={{ minHeight: " 500px" }}>
       <div className="grid grid-cols-1 gap-0 space-y-5 ">
         <div className="flex  justify-between ">
-          <div className=" text-2xl  font-semibold inline-block">Position Detail</div>
+          <div className=" text-2xl  font-semibold inline-block">
+            Position Detail
+          </div>
           <div className=" inline-block space-x-4 ">
             <Button className="button-blue" type="primary" disabled>
               Add Sub Position

@@ -11,6 +11,7 @@ import {
   Modal,
   Input,
   Form,
+  InputNumber,
 } from "antd";
 import DescriptionCustomerComponent from "./components/description-form";
 import {
@@ -56,7 +57,7 @@ export default function CustomerDetailPage() {
     ruleTicketRequestFilesEdit: checkRule("crm-trf-e"),
     ruleTicketUpdateStatus: checkRule("crm-t-u"),
     ruleTicketHold: checkRule("crm-t-h"),
-    ruleTicketClose: checkRule("crm-t-c"),
+    ruleTicketComplete: checkRule("crm-t-c"),
   };
   const crmAuth = useAxiosCrm();
   const crmServices = CrmServices(crmAuth);
@@ -64,6 +65,8 @@ export default function CustomerDetailPage() {
   const userServices = UserServices(userAuth);
   const params = useParams<{ pid: string }>();
   const [summaryForm] = useForm();
+  const [finishForm] = useForm();
+
   const [editTaskForm] = useForm();
   const [projectDescription, setProjectDescription] = useState<ITProject>();
   const [contactDescription, setContactDescription] = useState<
@@ -87,6 +90,13 @@ export default function CustomerDetailPage() {
   const [projectTicketDetail, setProjectTicketDetail] = useState<
     ITProjectTicket | undefined
   >(undefined);
+  const [persentTask, setPersentTask] = useState<{
+    success: number;
+    all: number;
+  }>({
+    success: 0,
+    all: 0,
+  });
   // const [ticketHistoryLogs, setTicketHistoryLogs] = useState<
   //   ITTicketHistoryLog[]
   // >([]);
@@ -105,7 +115,28 @@ export default function CustomerDetailPage() {
   useEffect(() => {
     fetchUserList();
   }, []);
-
+  useEffect(() => {
+    let totalSum = 0;
+    let totalAll = 0;
+    let totalWeight = 0;
+    projectTaskList.map((task) => {
+      const { weight, customerProjectTicket } = task;
+      const sum = customerProjectTicket
+        ? customerProjectTicket.filter(
+            (data) =>
+              data.status === "finish" ||
+              data.status === "complete" ||
+              data.status === "cancel"
+          ).length
+        : 0;
+      totalSum += weight * sum;
+      const all = customerProjectTicket ? customerProjectTicket.length : 0;
+      totalAll += weight * all;
+      totalWeight += weight;
+    });
+    const persent = (totalSum * totalWeight) / totalAll;
+    setPersentTask({ success: persent, all: totalWeight });
+  }, [projectTaskList]);
   const fetchData = async () => {
     await fetchConfigs();
     await fetchDescription();
@@ -373,12 +404,28 @@ export default function CustomerDetailPage() {
     } else if (status === "inprogress" && action === "resume") {
       title = "Resume Ticket";
       content = <>ยืนยันการคืนงาน ?</>;
+    } else if (status === "inprogress" && action === "revise") {
+      title = "Revise Ticket";
+      content = <>ยืนยันการคืนงาน ?</>;
     } else if (status === "hold") {
       title = "Hold Ticket";
       content = <>ยืนยันการ Hold ?</>;
     } else if (status === "finish") {
+      finishForm.resetFields();
       title = "Finish Ticket";
-      content = <>ยืนยันการปิดงาน ?</>;
+      content = (
+        <>
+          <Form form={finishForm}>
+            <Form.Item
+              label={"Manhour"}
+              name={"manhour"}
+              rules={[{ required: true, message: "กรุณากรอก Manhour" }]}
+            >
+              <InputNumber min={0} />
+            </Form.Item>
+          </Form>
+        </>
+      );
       form = {
         finishDate: new Date(),
       };
@@ -388,9 +435,9 @@ export default function CustomerDetailPage() {
       form = {
         finishDate: new Date(),
       };
-    } else if (status === "close") {
+    } else if (status === "complete") {
       summaryForm.resetFields();
-      title = "Close Ticket";
+      title = "Complete Ticket";
       content = (
         <>
           <Form form={summaryForm}>
@@ -416,9 +463,12 @@ export default function CustomerDetailPage() {
       okButtonProps: { type: "primary" },
       cancelText: "Cancel",
       onOk: async () => {
-        if (status === "close") {
+        if (status === "complete") {
           const summary = summaryForm.getFieldValue("summary");
           form = { ...form, summary: summary };
+        } else if (status === "finish") {
+          const finish = finishForm.getFieldsValue();
+          form = { ...form, ...finish };
         }
         await crmServices
           .updateStatusProjectTicket(+ticketId, status, form)
@@ -459,7 +509,7 @@ export default function CustomerDetailPage() {
     } else if (action === "resume") {
       type = "";
       detail = "Resume";
-    } else if (action === "close") {
+    } else if (action === "complete") {
       type = "Complete";
       detail = summaryForm.getFieldValue("summary");
     } else if (action === "deleteFile") {
@@ -600,7 +650,6 @@ export default function CustomerDetailPage() {
                           onSetProjectTaskSelectId={function (
                             taskId: number
                           ): void {
-                            console.log(taskId);
                             setProjectTaskSelectId(taskId);
                             fetchProjectTicket(taskId);
                           }}
@@ -624,6 +673,7 @@ export default function CustomerDetailPage() {
                             setShowModalTaskEdit(status);
                           }}
                           onUpdateProjectTask={onUpdateProjectTask}
+                          persentTask={persentTask}
                         />
                       ),
                     },

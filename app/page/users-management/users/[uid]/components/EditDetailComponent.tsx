@@ -326,6 +326,16 @@ const EditDetailComponent: React.FC<props> = ({
                     className="read-only-input2"
                   />
                 </div>
+                <div>
+                  <Button
+                    onClick={() => {
+                      setOpenChangePassword(true);
+                      repasswordForm.resetFields();
+                    }}
+                  >
+                    Change Password
+                  </Button>
+                </div>
               </Form.Item>
             </div>
           </div>

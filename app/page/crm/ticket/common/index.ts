@@ -115,6 +115,7 @@ export type ITProjectTicket = {
   completeDate?: Date;
   ticketHistoryLogs?: ITTicketHistoryLog[];
   summary?: string;
+  manhour?: number;
   createFiles?: ITCustomerFile[];
   updateFiles?: ITCustomerFile[];
 } & ITProjectTicketCreateForm &

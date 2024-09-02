@@ -15,6 +15,7 @@ import {
 } from "antd";
 import {
   ITBranchContactForm,
+  ITConfigData,
   ITProjectTicketCreateForm,
   ITSelectUsers,
   ITTicketConfigs,
@@ -61,6 +62,7 @@ const ProjectTicketAddComponent: React.FC<props> = ({
 }): React.ReactElement => {
   const [addform] = useForm();
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
+  const [jobTypes, setJobTypes] = useState<ITConfigData[]>([]);
   useEffect(() => {
     addform.resetFields();
     setAttendFiles([]);
@@ -89,6 +91,15 @@ const ProjectTicketAddComponent: React.FC<props> = ({
     }
     return false;
   };
+
+  function handdleChangeRequestType(rid: number): void {
+    addform.setFieldValue("jobTypeId", undefined);
+    const selected = ticketConfigs.requestTypeList.find(
+      (request) => request.id === rid
+    );
+    const jobtypes = selected?.customerJobType ? selected?.customerJobType : [];
+    setJobTypes(jobtypes);
+  }
 
   return (
     <Modal
@@ -160,6 +171,7 @@ const ProjectTicketAddComponent: React.FC<props> = ({
             <Select
               className=" w-full"
               allowClear
+              onChange={handdleChangeRequestType}
               placeholder="Please Select"
               options={ticketConfigs.requestTypeList.map((data) => ({
                 value: data.id,
@@ -172,9 +184,9 @@ const ProjectTicketAddComponent: React.FC<props> = ({
               className=" w-full"
               allowClear
               placeholder="Please Select"
-              options={ticketConfigs.jobTypeList.map((data) => ({
-                value: data.id,
-                label: data.name,
+              options={jobTypes.map((type) => ({
+                value: type.id,
+                label: type.name,
               }))}
             />
           </Form.Item>

@@ -6,6 +6,7 @@ import {
   DatePicker,
   Form,
   Input,
+  InputNumber,
   Modal,
   Select,
   Switch,
@@ -33,6 +34,10 @@ export interface props {
   showModalTaskAdd: boolean;
   onShowModalProjectTaskAdd: (status: boolean) => void;
   onSaveProjectTask: (projectId: number, form: ITProjectTaskForm) => void;
+  persentTask: {
+    success: number;
+    all: number;
+  };
 }
 
 const ProjectTaskAddComponent: React.FC<props> = ({
@@ -40,6 +45,7 @@ const ProjectTaskAddComponent: React.FC<props> = ({
   showModalTaskAdd,
   onShowModalProjectTaskAdd,
   onSaveProjectTask,
+  persentTask,
 }): React.ReactElement => {
   const [form] = useForm();
 
@@ -50,6 +56,12 @@ const ProjectTaskAddComponent: React.FC<props> = ({
     onSaveProjectTask(projectId, {
       ...form,
     });
+  };
+  const checkWeightLimit = (rule: any, value: number, callback: any) => {
+    if (value + persentTask.all > 100) {
+      callback(`Weight Limit is 100% (free : ${100 - persentTask.all}% )`);
+    }
+    callback();
   };
   return (
     <Modal
@@ -92,6 +104,16 @@ const ProjectTaskAddComponent: React.FC<props> = ({
           rules={[{ required: true, message: "กรุณาเลือก End Date" }]}
         >
           <DatePicker format={"DD/MM/YYYY"} />
+        </Form.Item>
+        <Form.Item
+          label="Weight (%) "
+          name={"weight"}
+          rules={[
+            { required: true, message: "กรุณากรอก Weight" },
+            { validator: checkWeightLimit },
+          ]}
+        >
+          <InputNumber min={0} />
         </Form.Item>
 
         <div className=" flex justify-end space-x-2">

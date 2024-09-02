@@ -119,6 +119,7 @@ export type ITProjectTicket = {
   completeDate?: Date;
   ticketHistoryLogs?: ITTicketHistoryLog[];
   summary?: string;
+  manhour?: number;
   createFiles?: ITCustomerFile[];
   updateFiles?: ITCustomerFile[];
 } & ITProjectTicketCreateForm &
@@ -127,6 +128,7 @@ export type ITProjectTaskForm = {
   taskTitle: string;
   startDate: Date;
   endDate: Date;
+  weight: number;
   customerProjectId: number;
 };
 export type ITProjectTask = {
@@ -144,7 +146,11 @@ export type ITTicketConfigs = {
   jobTypeList: ITConfigData[];
   priorityList: ITConfigData[];
   workTypeList: ITConfigData[];
-  requestTypeList: ITConfigData[];
+  requestTypeList: {
+    id: number;
+    name: string;
+    customerJobType: ITConfigData[];
+  }[];
 };
 export type ITTicketHistoryLogForm = {
   type: string;

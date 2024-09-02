@@ -36,7 +36,7 @@ export default function MaTaskPage() {
     ruleTicketRequestFilesEdit: checkRule("crm-trf-e"),
     ruleTicketUpdateStatus: checkRule("crm-t-u"),
     ruleTicketHold: checkRule("crm-t-h"),
-    ruleTicketClose: checkRule("crm-t-c"),
+    ruleTicketComplete: checkRule("crm-t-c"),
   };
   const crmAuth = useAxiosCrm();
   const crmServices = CrmServices(crmAuth);

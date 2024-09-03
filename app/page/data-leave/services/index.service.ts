@@ -98,9 +98,9 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getdataLeaveDepartById: async (dataDepartId: number) => {
+    getdataLeaveGroupById: async (groupId: string) => {
       const condition = {
-        where: { departId: dataDepartId },
+        where: { groupId: groupId },
         orderBy: { id: "asc" },
       };
       return await axiosInstance

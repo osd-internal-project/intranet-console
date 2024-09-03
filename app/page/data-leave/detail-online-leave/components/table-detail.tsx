@@ -29,32 +29,7 @@ export const TableDetail: React.FC<props> = ({
       dataIndex: "id",
       title: "Fullname",
       render: (e: string, row: ITypeDataLeave) => {
-        const base = {
-          name: `${row.firstName} ${row.lastName}`,
-          createAt: row.createdAt ? dateToStringThNoTime(row.createdAt) : "-",
-          detail: row.detail,
-          leaveHour: `${row.leaveHour} ชม.`,
-          startDate: row?.startDate
-            ? dateToStringThNoTime(row?.startDate)
-            : "-",
-          endDate: row?.endDate ? dateToStringThNoTime(row?.endDate) : "-",
-          phoneNumber: row.phoneNumber,
-          typeLeave: row.typeName,
-          approvedDate: row.approvedDate
-            ? dateToStringThNoTime(row?.approvedDate)
-            : "-",
-          userApproved: row.userApproved,
-          dataLeaveFiles: row.dataLeaveFiles,
-          ownerId: row.ownerId,
-          ownerName: row.ownerName,
-        };
-        return (
-          <a
-            onClick={() => {
-              setOpenModalDetail(true), formdetail.setFieldsValue(base);
-            }}
-          >{`${row.firstName} ${row.lastName}`}</a>
-        );
+        return <p>{`${row.firstName} ${row.lastName}`}</p>;
       },
     },
     { key: "typeName", dataIndex: "typeName", title: "Type Leave" },
@@ -94,23 +69,47 @@ export const TableDetail: React.FC<props> = ({
       key: "approvedDate",
       dataIndex: "approvedDate",
       title: "Approved Date",
-      render: (row: any) => (
+      render: (_: any, row: any) => (
         <span>
-          {row && row.approvedDate
+          {row.approvedDate
             ? dayjs(row.approvedDate).format("DD-MM-YYYY")
             : "-"}
         </span>
       ),
     },
-
     {
       key: "id",
       dataIndex: "id",
       title: "Active",
       align: "center",
       render: (e: string, row: ITypeDataLeave, index: number) => {
+        const base = {
+          id: row.id,
+          name: `${row.firstName} ${row.lastName}`,
+          createAt: row.createdAt ? dateToStringThNoTime(row.createdAt) : "-",
+          detail: row.detail,
+          leaveHour: `${row.leaveHour} ชม.`,
+          startDate: row?.startDate
+            ? dateToStringThNoTime(row?.startDate)
+            : "-",
+          endDate: row?.endDate ? dateToStringThNoTime(row?.endDate) : "-",
+          phoneNumber: row.phoneNumber,
+          typeLeave: row.typeName,
+          approvedDate: row.approvedDate
+            ? dateToStringThNoTime(row?.approvedDate)
+            : "-",
+          userApproved: row.userApproved,
+          dataLeaveFiles: row.dataLeaveFiles,
+          ownerId: row.ownerId,
+          ownerName: row.ownerName,
+        };
         return (
           <>
+            <a
+              onClick={() => {
+                setOpenModalDetail(true), formdetail.setFieldsValue(base);
+              }}
+            >{`รายละเอียด`}</a>
             <Row gutter={[8, 8]} className="flex justify-center">
               <Col>
                 <Button
@@ -271,6 +270,26 @@ export const TableDetail: React.FC<props> = ({
               </div>
             </>
           ) : null}
+          <Form.Item name={`id`}>
+            <Row gutter={[8, 8]} className="flex justify-center">
+              <Col>
+                <Button
+                  size="small"
+                  type="primary"
+                  onClick={() => {
+                    onFinishUpdate(
+                      "cancel",
+                      formdetail.id ? formdetail?.id : 0
+                    );
+                  }}
+                  disabled={formdetail.approvedDate ? true : false}
+                  danger
+                >
+                  {deleteIcon} {`Cancel`}
+                </Button>
+              </Col>
+            </Row>
+          </Form.Item>
         </Form>
       </Modal>
     </div>

@@ -76,12 +76,11 @@ export default function Page() {
       session?.user.userId as string
     );
     const dataDepartId = session?.user.departmentId as number;
-
-    const resDataLeaveDepartId = await dataleaveservice.getdataLeaveDepartById(
-      dataDepartId
+    const dataGroupId = session?.user.ownerGroup as string;
+    const resDataLeaveGrouptId = await dataleaveservice.getdataLeaveGroupById(
+      dataGroupId
     );
-
-    setDataLeaveDepartmentId(resDataLeaveDepartId);
+    setDataLeaveDepartmentId(resDataLeaveGrouptId);
     setDataLeaveUser(res);
     setLoading(false);
   };

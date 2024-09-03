@@ -157,6 +157,7 @@ export interface ITypeDataLeave {
   ownerId?: string;
   ownerName?: string;
   description?: string;
+  groupId?: string;
 }
 
 export interface ITypeDataLeaveCreate {

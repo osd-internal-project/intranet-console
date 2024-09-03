@@ -71,9 +71,6 @@ export default function Page() {
 
   const loadDataTypeLeave = async () => {
     const res = await dataleaveservice.getdataAll();
-    // const resOwner = await dataleaveserviceUser.getOwnerGroupsByPositionId(
-    //   getUser?.userMapOrganizeChart[0]?.positionId
-    // );
     const resTableDeatilTypeLeave =
       await dataleaveservice.findDetailTypeLeaveByUserId(getUser?.userId);
     const resTableUserTypeLeave = await dataleaveservice.findUserByUserId(
@@ -82,11 +79,6 @@ export default function Page() {
     const options = res.map((event: ITypetypeleave) => {
       return { value: event.typeId, label: event.typeName };
     });
-    const resTableDepartMent = await dataleaveservice.findDetailDepartment();
-
-    // console.log(session);
-    // console.log(session?.user.ownerGroup);
-
     const groupId = session?.user.ownerGroup;
 
     if (groupId) {
@@ -97,11 +89,8 @@ export default function Page() {
         dataGroupDetail.headId
       );
       setUserOwner(dataUserByID);
-      // DataGroupDetail.ownerGroup.headId
       setGroupDetail(dataGroupDetail);
-      console.log("DataGroupDetail:", dataUserByID);
     }
-
     setTypeLeaveTable(resTableDeatilTypeLeave);
     setTypeLeaveTableAll(resTableUserTypeLeave.typeLeaveDisabledMap);
     setTypeLeaveOption(options);
@@ -465,6 +454,7 @@ export default function Page() {
             status: "waitting",
             ownerId: values.ownerId,
             ownerName: values.ownerName,
+            groupId: session?.user.ownerGroup,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -573,6 +563,7 @@ export default function Page() {
             status: "waitting",
             ownerId: values.ownerId,
             ownerName: values.ownerName,
+            groupId: session?.user.ownerGroup,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -671,6 +662,7 @@ export default function Page() {
             status: "waitting",
             ownerId: values.ownerId,
             ownerName: values.ownerName,
+            groupId: session?.user.ownerGroup,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -768,6 +760,7 @@ export default function Page() {
             status: "waitting",
             ownerId: values.ownerId,
             ownerName: values.ownerName,
+            groupId: session?.user.ownerGroup,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -864,6 +857,7 @@ export default function Page() {
             status: "waitting",
             ownerId: values.ownerId,
             ownerName: values.ownerName,
+            groupId: session?.user.ownerGroup,
           };
 
           if (await checkDataLeaveCancel(type_id)) {

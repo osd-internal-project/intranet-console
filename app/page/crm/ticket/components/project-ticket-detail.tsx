@@ -19,9 +19,11 @@ import {
 } from "antd";
 import {
   ITBranchContactForm,
+  ITExpendType,
   ITProjectTicket,
   ITProjectTicketCreateForm,
   ITProjectTicketEditForm,
+  ITTicketExpend,
   ITTicketHistoryLog,
 } from "./../common";
 import "./../style.css";
@@ -36,6 +38,7 @@ import { dateToStringThNoTime } from "@/app/utils/format";
 import TicketHistoryTableComponent from "./ticket-history-table";
 import { RcFile } from "antd/es/upload";
 import { deleteIcon } from "@/components/icon";
+import TicketExpend from "./ticket-expend";
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 const layout = {
@@ -48,6 +51,7 @@ const layout = {
 };
 export interface props {
   rules: any;
+  expendType: ITExpendType[];
   ticketSelectedDetail: ITProjectTicket;
   onShowModalProjectTicketDetail: (id: number | undefined) => void;
   onEditProjectTicket: (
@@ -63,10 +67,14 @@ export interface props {
   ) => void;
   downloadFile: (id: number, name: string) => void;
   onDeleteTicketFile: (fileId: number, ticketId: number) => void;
+  handleAddTicketExpend: (value: ITTicketExpend) => void;
+  handleEditTicketExpend: (expendId: number, value: ITTicketExpend) => void;
+  handleDeleteTicketExpend: (expendId: number) => void;
 }
 
 const ProjectTicketDetailComponent: React.FC<props> = ({
   rules,
+  expendType,
   ticketSelectedDetail,
   onShowModalProjectTicketDetail,
   onEditProjectTicket,
@@ -74,6 +82,9 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
   updateTicketStatus,
   downloadFile,
   onDeleteTicketFile,
+  handleAddTicketExpend,
+  handleEditTicketExpend,
+  handleDeleteTicketExpend,
 }): React.ReactElement => {
   const [editForm] = useForm();
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
@@ -717,6 +728,20 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                   </div>
                 </Form>
               </>
+            ),
+          },
+          {
+            key: "expendTicket",
+            label: "รายการขอเบิก",
+            children: (
+              <TicketExpend
+                ticketExpends={ticketSelectedDetail.ticketExpend}
+                ticketId={ticketSelectedDetail.id}
+                expendType={expendType}
+                handleAddTicketExpend={handleAddTicketExpend}
+                handleEditTicketExpend={handleEditTicketExpend}
+                handleDeleteTicketExpend={handleDeleteTicketExpend}
+              />
             ),
           },
           {

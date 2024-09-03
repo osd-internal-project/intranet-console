@@ -181,15 +181,6 @@ const CreateCustomerForm: React.FC<props> = ({
             }))}
           />
         </Form.Item>
-        {/* <Form.Item label="ผู้รับผิดชอบร่วม" name={"thirdPartyId"}>
-          <Select
-            placeholder="Please Choose"
-            options={[
-              { value: "11", label: "user1" },
-              { value: "22", label: "user2" },
-            ]}
-          />
-        </Form.Item> */}
         <Form.Item
           label="Status"
           valuePropName="checked"

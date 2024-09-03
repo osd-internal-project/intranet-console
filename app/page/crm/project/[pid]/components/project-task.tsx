@@ -123,8 +123,9 @@ const TaskComponent: React.FC<props> = ({
               strokeColor={"#aaa"}
               format={(persent) => (
                 <div className="text-xs">
-                  {persentTask.success.toFixed(2)}% จาก{" "}
-                  {persentTask.all.toFixed(2)}%
+                  {persentTask.success ? persentTask.success.toFixed(2) : "- "}%
+                  จาก
+                  {persentTask.all ? persentTask.all.toFixed(2) : " - "}%
                 </div>
               )}
             />

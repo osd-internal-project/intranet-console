@@ -83,6 +83,7 @@ export type ITProjectCreateForm = {
 export type ITProject = {
   id: number;
   customerBranch: { customerDetail: ITCustomerForSelect } & ITBranchForSelect;
+  contractCompany?: { id: number; name: string };
 } & ITProjectCreateForm;
 export type ITProjectTicketCreateForm = {
   ticketTitle: string;
@@ -113,7 +114,7 @@ export type ITProjectTicket = {
   id: number;
   status: string;
   createdAt?: Date;
-
+  ticketExpend: ITTicketExpend[];
   receiveDate?: Date;
   finishDate?: Date;
   completeDate?: Date;
@@ -140,6 +141,7 @@ export type ITSelectUsers = {
   firstNameTh: string;
   lastNameTh: string;
 };
+export type ITContractCompany = { id: number; name: string };
 export type ITConfigData = { id: number; name: string };
 export type ITTicketConfigs = {
   channelTypeList: ITConfigData[];
@@ -163,3 +165,17 @@ export type ITTicketHistoryLogForm = {
 export type ITTicketHistoryLog = {
   id: number;
 } & ITTicketHistoryLogForm;
+export type ITTicketExpend = {
+  id?: number;
+  expendAmount: number;
+  expendPrice: number;
+  expendType?: { expendCode: string; expendName: string };
+  createdAt: Date;
+  updatedAt: Date;
+  updatedById?: string;
+  updatedByName?: string;
+};
+export type ITExpendType = {
+  expendCode: string;
+  expendName: string;
+};

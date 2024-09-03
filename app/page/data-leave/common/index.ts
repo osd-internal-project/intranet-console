@@ -193,3 +193,13 @@ export interface ITypeDataleaveMap {
   userId: number;
   masterTypeleaveId: number;
 }
+
+
+export interface UserGroupType {
+  id: number;
+  groupId: string;
+  groupName: string;
+  description: string;
+
+}
+

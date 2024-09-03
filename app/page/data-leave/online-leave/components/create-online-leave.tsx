@@ -20,6 +20,7 @@ import {
   ISelect,
   ISelectDepartment,
   ITypeDataLeaveCreate,
+  UserGroupType,
 } from "../../common";
 import { RcFile } from "antd/es/upload";
 import { FormInstance } from "antd/lib";
@@ -41,6 +42,7 @@ export interface props {
   attendFiles: UploadFile[];
   getUserOwner: IDataUser | null;
   onChangeParams: (value: Dayjs, type: string) => void;
+  groupDetail: any;
 }
 export const CreateOnlineLeave: React.FC<props> = ({
   getUser,
@@ -59,6 +61,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
   attendFiles,
   getUserOwner,
   onChangeParams,
+  groupDetail,
 }): React.ReactElement => {
   useEffect(() => {
     const getdatauser = () => {
@@ -70,6 +73,8 @@ export const CreateOnlineLeave: React.FC<props> = ({
         lastNameTh: getUser?.lastNameTh,
         ownerName: `${getUserOwner?.firstNameTh} ${getUserOwner?.lastNameTh}`,
         ownerId: getUserOwner?.userId,
+        groupName: groupDetail.groupName,
+        // ownerName:
       });
     };
     getdatauser();
@@ -139,18 +144,8 @@ export const CreateOnlineLeave: React.FC<props> = ({
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item
-              label={`แผนก :`}
-              name={`depart_id`}
-              required
-              rules={[{ required: true, message: "กรุณาเลือกแผนก" }]}
-            >
-              <Select
-                placeholder={`แผนก`}
-                options={getDepartmentById}
-                onChange={(e) => onChangeParams(e, "depart")}
-                allowClear
-              />
+            <Form.Item label={`แผนก :`} name={`groupName`}>
+              <Input disabled />
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">

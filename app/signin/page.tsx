@@ -29,7 +29,7 @@ export default function Login(props: Props) {
   const router = useRouter();
   const [form] = useForm();
   const [loading, setLoading] = useState<boolean>(true);
-  console.log(props.searchParams.error);
+  // console.log(props.searchParams.error);
   const onFinish = () => {
     setLoading(true);
     form.validateFields().then(async (values) => {
@@ -48,7 +48,7 @@ export default function Login(props: Props) {
         if (values.remember) {
           createCookieLocal("osd-user-remember", values.username);
         }
-        router.push("/page/");
+        router.push("/page/home");
       } else {
         setLoading(false);
         message.error(`Invalid Login : username or password is incorrect`);

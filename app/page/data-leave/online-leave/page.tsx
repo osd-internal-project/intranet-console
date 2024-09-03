@@ -24,6 +24,7 @@ import {
   ITypeDataLeaveCreate,
   IDepartMent,
   ISelectDepartment,
+  UserGroupType,
 } from "../common";
 import { CreateOnlineLeave } from "./components/create-online-leave";
 import { TableOnlineDetailLeave } from "./components/table-online-detail-leave";
@@ -50,6 +51,8 @@ export default function Page() {
   const [getDepartmentById, setResDepartMent] = useState<ISelectDepartment[]>(
     []
   );
+
+  const [groupDetail, setGroupDetail] = useState<UserGroupType[]>([]);
   const [getStartDate, setStartDate] = useState<Date>();
   const [getEndDate, setEndDate] = useState<Date>();
   const [checkSwitch, setCheckSwitch] = useState<boolean>(false);
@@ -87,15 +90,26 @@ export default function Page() {
     const departmentOptions = resTableDepartMent.map((event: IDepartMent) => {
       return { value: event.departId, label: event.departName };
     });
+    // console.log(session);
+    // console.log(session?.user.ownerGroup);
+
     const groupId = session?.user.ownerGroup;
 
     if (groupId) {
-      const groupDetail = await dataleaveservice.getUserGroupByGroupId(groupId);
-      console.log("groupDetail:", groupDetail);
+      const dataGroupDetail = await dataleaveserviceUser.getUserGroupByGroupId(
+        groupId
+      );
+      const dataUserByID = await dataleaveserviceUser.getUsersByUserId(
+        dataGroupDetail.headId
+      );
+      setUserOwner(dataUserByID);
+      // DataGroupDetail.ownerGroup.headId
+      setGroupDetail(dataGroupDetail);
+      console.log("DataGroupDetail:", dataUserByID);
     }
 
     setResDepartMent(departmentOptions);
-    // setUserOwner(resOwner);
+
     setTypeLeaveTable(resTableDeatilTypeLeave);
     setTypeLeaveTableAll(resTableUserTypeLeave.typeLeaveDisabledMap);
     setTypeLeaveOption(options);
@@ -981,6 +995,7 @@ export default function Page() {
             attendFiles={attendFiles}
             getUserOwner={getUserOwner}
             onChangeParams={onChangeParams}
+            groupDetail={groupDetail}
           />
         </Col>
         <Col span={12}>

@@ -14,6 +14,7 @@ import {
 } from "antd";
 import {
   ITBranchContact,
+  ITExpendType,
   ITProject,
   ITProjectTask,
   ITProjectTaskForm,
@@ -21,6 +22,7 @@ import {
   ITProjectTicketCreateForm,
   ITProjectTicketEditForm,
   ITTicketConfigs,
+  ITTicketExpend,
   ITTicketHistoryLogForm,
 } from "./common";
 import { useAxiosCrm, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -55,11 +57,10 @@ export default function CustomerDetailPage() {
   const userServices = UserServices(userAuth);
   const [finishForm] = useForm();
   const [summaryForm] = useForm();
-  const [projectDescription, setProjectDescription] = useState<ITProject>();
   const [search, setSearch] = useState<object>({});
   const [loading, setloading] = useState<boolean>(true);
   const [showModalTicketAdd, setShowModalTicketAdd] = useState<boolean>(false);
-
+  const [expendType, setExpendType] = useState<ITExpendType[]>([]);
   const [isEdit, setIsEdit] = useState(false);
 
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -99,10 +100,14 @@ export default function CustomerDetailPage() {
   //   setloading(false);
   // };
   const fetchData = async () => {
+    await fetchConfigs();
     await fetchDataTable();
     setloading(false);
   };
-
+  async function fetchConfigs() {
+    const expendTyoe = await crmServices.findExpendType();
+    setExpendType(expendTyoe);
+  }
   const fetchDataTable = async () => {
     const skip: number =
       (Number(pagination.current) - 1) * Number(pagination.pageSize);
@@ -232,8 +237,6 @@ export default function CustomerDetailPage() {
   ): Promise<void> {
     if (ticketId) {
       const detail = await crmServices.findProjectTicketDetailById(ticketId);
-
-      // setTicketHistoryLogs([]);
       setProjectTicketDetail(detail);
     } else {
       setProjectTicketDetail(undefined);
@@ -396,9 +399,9 @@ export default function CustomerDetailPage() {
       type = "Update Progress Info";
       detail = "Update Progress Info";
     } else if (action === "finish") {
-      type = "Finish";
       const manhour = finishForm.getFieldValue("manhour");
-      detail = ` Manhour :${manhour} ชั่วโมง`;
+      type = "Finish";
+      detail = `Finish Manhour : ${manhour} ชั่วโมง`;
     } else if (action === "cancel") {
       type = "Cancel";
       detail = "Cancel";
@@ -414,6 +417,9 @@ export default function CustomerDetailPage() {
     } else if (action === "deleteFile") {
       type = "Update Progress Info";
       detail = "Delete Attach File";
+    } else if (action === "revise") {
+      type = "Revise";
+      detail = "Revise";
     }
     const form: ITTicketHistoryLogForm = {
       customerProjectTicketId: ticketId,
@@ -462,6 +468,67 @@ export default function CustomerDetailPage() {
     setPagination({ ...pagination, current: 1 });
     setloading(true);
   };
+  async function handleAddTicketExpend(value: ITTicketExpend) {
+    if (projectTicketDetail?.id) {
+      const ticketId = projectTicketDetail.id;
+      await crmServices
+        .updateProjectTicket(ticketId, {
+          ticketExpend: { create: value },
+        })
+        .then(async (data) => {
+          message.success("สำเร็จ");
+          await onSaveHistoryLogs(ticketId, "เพิ่มรายการขอเบิก");
+          await onShowModalProjectTicketDetail(ticketId);
+          setloading(true);
+        })
+        .catch(() => {
+          message.error("ผิดพลาด กรุณาลองใหม่");
+        });
+    }
+  }
+  async function handleEditTicketExpend(
+    expendId: number,
+    value: ITTicketExpend
+  ) {
+    if (projectTicketDetail?.id) {
+      const ticketId = projectTicketDetail.id;
+      await crmServices
+        .updateProjectTicketExpend(expendId, value)
+        .then(async (data) => {
+          message.success("สำเร็จ");
+          await onSaveHistoryLogs(ticketId, "แก้ไขรายการขอเบิก");
+          await onShowModalProjectTicketDetail(ticketId);
+          setloading(true);
+        })
+        .catch(() => {
+          message.error("ผิดพลาด กรุณาลองใหม่");
+        });
+    }
+  }
+  async function handleDeleteTicketExpend(expendId: number) {
+    if (projectTicketDetail?.id) {
+      const ticketId = projectTicketDetail.id;
+      Modal.confirm({
+        title: "ลบการขอเบิก",
+        icon: <ExclamationCircleFilled />,
+        content: "ยืนยันการลบการขอเบิก ?",
+        okText: "Confirm",
+        okButtonProps: { type: "primary", danger: true },
+        cancelText: "Cancel",
+        onOk: async () => {
+          const dataResult = await crmServices.deleteProjectTicketExpend(
+            expendId
+          );
+          if (dataResult) {
+            message.success("สำเร็จ");
+            await onSaveHistoryLogs(ticketId, "ลบรายการขอเบิก");
+            await onShowModalProjectTicketDetail(ticketId);
+            setloading(true);
+          }
+        },
+      });
+    }
+  }
   return (
     <div>
       <Row gutter={[8, 8]}>
@@ -524,26 +591,15 @@ export default function CustomerDetailPage() {
                 saveRequestTicketFile={saveRequestTicketFile}
                 downloadFile={downloadFile}
                 onDeleteTicketFile={onDeleteTicketFile}
+                expendType={expendType}
+                handleAddTicketExpend={handleAddTicketExpend}
+                handleEditTicketExpend={handleEditTicketExpend}
+                handleDeleteTicketExpend={handleDeleteTicketExpend}
               />
             </div>
           ) : (
             <></>
           )}
-          {/* <ProjectTicketAddComponent
-            projectTaskSelectId={undefined}
-            showModalTicketAdd={false}
-            ticketConfigs={ticketConfigs}
-            onShowModalProjectTicketAdd={function (status: boolean): void {
-              throw new Error("Function not implemented.");
-            }}
-            onSaveProjectTicket={function (
-              taskId: number | undefined,
-              dataForm: ITProjectTicketCreateForm,
-              attendFiles: UploadFile[]
-            ): void {
-              throw new Error("Function not implemented.");
-            }}
-          /> */}
         </Col>
       </Row>
     </div>

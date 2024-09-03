@@ -91,6 +91,14 @@ const DescriptionCustomerForm: React.FC<props> = ({
                       : "-"}
                   </div>
                   <div className=" font-bold pl-3 pr-3 text-right">
+                    ออกโดย :
+                  </div>
+                  <div className=" col-span-2 md:col-span-1 text-slate-500">
+                    {projectDescription.contractCompany?.name
+                      ? `${projectDescription.contractCompany.name}`
+                      : "-"}
+                  </div>
+                  <div className=" font-bold pl-3 pr-3 text-right">
                     ชื่อลูกค้า :
                   </div>
                   <div className=" col-span-2 md:col-span-1 text-slate-500">

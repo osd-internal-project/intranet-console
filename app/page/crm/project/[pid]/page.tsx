@@ -17,6 +17,7 @@ import DescriptionCustomerComponent from "./components/description-form";
 import {
   ITBranchContact,
   ITBranchContactForm,
+  ITExpendType,
   ITProject,
   ITProjectTask,
   ITProjectTaskForm,
@@ -25,6 +26,7 @@ import {
   ITProjectTicketEditForm,
   ITSelectUsers,
   ITTicketConfigs,
+  ITTicketExpend,
   ITTicketHistoryLog,
   ITTicketHistoryLogForm,
 } from "../common";
@@ -108,6 +110,7 @@ export default function CustomerDetailPage() {
     requestTypeList: [],
   });
   const [usersList, setUsersList] = useState<ITSelectUsers[]>([]);
+  const [expendType, setExpendType] = useState<ITExpendType[]>([]);
   // const [data, setData] = useState<ITCustomer>();
   useEffect(() => {
     if (loading === true) fetchData();
@@ -115,6 +118,7 @@ export default function CustomerDetailPage() {
   useEffect(() => {
     fetchUserList();
   }, []);
+
   useEffect(() => {
     let totalSum = 0;
     let totalAll = 0;
@@ -154,6 +158,8 @@ export default function CustomerDetailPage() {
     setloading(false);
   };
   const fetchConfigs = async () => {
+    const expendTyoe = await crmServices.findExpendType();
+    setExpendType(expendTyoe);
     const ticketConfigs = await crmServices.findConfigsForTicket();
     if (ticketConfigs) {
       setTicketConfigs(ticketConfigs);
@@ -498,8 +504,9 @@ export default function CustomerDetailPage() {
       type = "Update Progress Info";
       detail = "Update Progress Info";
     } else if (action === "finish") {
+      const manhour = finishForm.getFieldValue("manhour");
       type = "Finish";
-      detail = "Finish";
+      detail = `Finish Manhour : ${manhour} ชั่วโมง`;
     } else if (action === "cancel") {
       type = "Cancel";
       detail = "Cancel";
@@ -515,6 +522,9 @@ export default function CustomerDetailPage() {
     } else if (action === "deleteFile") {
       type = "Update Progress Info";
       detail = "Delete Attach File";
+    } else if (action === "revise") {
+      type = "Revise";
+      detail = "Revise";
     }
     const form: ITTicketHistoryLogForm = {
       customerProjectTicketId: ticketId,
@@ -571,6 +581,67 @@ export default function CustomerDetailPage() {
     await onShowModalProjectTicketDetail(ticketId);
 
     setloading(true);
+  }
+  async function handleAddTicketExpend(value: ITTicketExpend) {
+    if (projectTicketDetail?.id) {
+      const ticketId = projectTicketDetail.id;
+      await crmServices
+        .updateProjectTicket(ticketId, {
+          ticketExpend: { create: value },
+        })
+        .then(async (data) => {
+          message.success("สำเร็จ");
+          await onSaveHistoryLogs(ticketId, "เพิ่มรายการขอเบิก");
+          await onShowModalProjectTicketDetail(ticketId);
+          setloading(true);
+        })
+        .catch(() => {
+          message.error("ผิดพลาด กรุณาลองใหม่");
+        });
+    }
+  }
+  async function handleEditTicketExpend(
+    expendId: number,
+    value: ITTicketExpend
+  ) {
+    if (projectTicketDetail?.id) {
+      const ticketId = projectTicketDetail.id;
+      await crmServices
+        .updateProjectTicketExpend(expendId, value)
+        .then(async (data) => {
+          message.success("สำเร็จ");
+          await onSaveHistoryLogs(ticketId, "แก้ไขรายการขอเบิก");
+          await onShowModalProjectTicketDetail(ticketId);
+          setloading(true);
+        })
+        .catch(() => {
+          message.error("ผิดพลาด กรุณาลองใหม่");
+        });
+    }
+  }
+  async function handleDeleteTicketExpend(expendId: number) {
+    if (projectTicketDetail?.id) {
+      const ticketId = projectTicketDetail.id;
+      Modal.confirm({
+        title: "ลบการขอเบิก",
+        icon: <ExclamationCircleFilled />,
+        content: "ยืนยันการลบการขอเบิก ?",
+        okText: "Confirm",
+        okButtonProps: { type: "primary", danger: true },
+        cancelText: "Cancel",
+        onOk: async () => {
+          const dataResult = await crmServices.deleteProjectTicketExpend(
+            expendId
+          );
+          if (dataResult) {
+            message.success("สำเร็จ");
+            await onSaveHistoryLogs(ticketId, "ลบรายการขอเบิก");
+            await onShowModalProjectTicketDetail(ticketId);
+            setloading(true);
+          }
+        },
+      });
+    }
   }
   return projectDescription ? (
     <div>
@@ -718,6 +789,10 @@ export default function CustomerDetailPage() {
                   onDeleteTicketFile={onDeleteTicketFile}
                   usersList={usersList}
                   saveRequestTicketFile={saveRequestTicketFile}
+                  expendType={expendType}
+                  handleAddTicketExpend={handleAddTicketExpend}
+                  handleEditTicketExpend={handleEditTicketExpend}
+                  handleDeleteTicketExpend={handleDeleteTicketExpend}
                 />
               ) : (
                 <></>

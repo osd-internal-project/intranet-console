@@ -16,6 +16,7 @@ import {
   ITProject,
   ITProjectCreateForm,
   ITSelectUsers,
+  ITContractCompany,
 } from "../common";
 import { useAxiosCrm, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import CrmServices from "../services/index.service";
@@ -40,11 +41,16 @@ export default function AddProjectPage() {
   const [saleList, setSaleList] = useState<{ uid: string; name: string }[]>([]);
   const [groupOption, setGroupOption] = useState<SelectProps["options"]>([]);
   const [usersFormGroup, setUsersFormGroup] = useState<ITSelectUsers[]>([]);
+  const [cntractCompany, setContractCompany] = useState<ITContractCompany[]>(
+    []
+  );
   useEffect(() => {
     if (loading === true) fetchData();
   }, [loading]);
   const fetchData = async () => {
     const data = await crmServices.findCustomerActive();
+    const resContractCompany = await crmServices.findContractCompany();
+    setContractCompany(resContractCompany);
     if (session?.user.userId) {
       const users = await userServices.findOrganizeUserByUserId(
         session?.user.userId
@@ -187,6 +193,7 @@ export default function AddProjectPage() {
                 groupOption={groupOption}
                 onChangeGroupSelect={onChangeGroupSelect}
                 usersFormGroup={usersFormGroup}
+                cntractCompany={cntractCompany}
               />
             </Card>
           </div>

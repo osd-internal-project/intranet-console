@@ -29,6 +29,7 @@ import {
   ITBranchAddress,
   ITBranchContact,
   ITBranchForSelect,
+  ITContractCompany,
   ITCustomerForSelect,
   ITProject,
   ITProjectCreateForm,
@@ -52,6 +53,7 @@ export interface props {
   onFinishAdd: (form: ITProjectCreateForm) => void;
   changeCustomerSelect: (id: number) => void;
   onChangeGroupSelect: (value: string[]) => void;
+  cntractCompany: ITContractCompany[];
 }
 
 const layout = {
@@ -73,6 +75,7 @@ const CreateProjectForm: React.FC<props> = ({
   onFinishAdd,
   changeCustomerSelect,
   onChangeGroupSelect,
+  cntractCompany,
 }): React.ReactElement => {
   const [form] = useForm();
   const [addressSelect, setAddressSelect] = useState<ITBranchAddress[]>([]);
@@ -170,7 +173,18 @@ const CreateProjectForm: React.FC<props> = ({
         </Form.Item>
         <Form.Item label="Duration" name={"duration"}>
           <Input readOnly className=" w-20" />
-        </Form.Item>
+        </Form.Item>{" "}
+        <div>
+          <Form.Item label="ออกโดย" name={"contractCompanyId"}>
+            <Select
+              placeholder="Select"
+              options={cntractCompany.map((data) => ({
+                value: data.id,
+                label: data.name,
+              }))}
+            />
+          </Form.Item>
+        </div>
         <Form.Item
           label="Customer"
           name={"customerId"}
@@ -336,7 +350,6 @@ const CreateProjectForm: React.FC<props> = ({
             }))}
           />
         </Form.Item>
-
         {/* <Form.Item label="Sale Manager" name={"saleManagerId"}>
           <Select
             allowClear

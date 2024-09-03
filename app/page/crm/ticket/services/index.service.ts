@@ -11,6 +11,8 @@ import {
   ITProject,
   ITTicketConfigs,
   ITTicketHistoryLogForm,
+  ITExpendType,
+  ITTicketExpend,
 } from "../common";
 import { ITMaTaskFiles } from "@/app/page/maintenance-management/common";
 export interface TMaServices {
@@ -32,7 +34,7 @@ export interface TMaServices {
   ) => Promise<ITProjectTicket>;
   updateProjectTicket: (
     ticketId: number,
-    form: ITProjectTicketEditForm
+    form: any
   ) => Promise<ITProjectTicket>;
   uploadFiles: (id: number, form: any) => Promise<any>;
   downloadFile: (id: number) => Promise<Blob>;
@@ -43,6 +45,12 @@ export interface TMaServices {
     skip: number,
     take: number
   ) => Promise<{ data: ITProjectTicket[]; total: number }>;
+  findExpendType: () => Promise<ITExpendType[]>;
+  updateProjectTicketExpend: (
+    expendId: number,
+    form: any
+  ) => Promise<ITTicketExpend>;
+  deleteProjectTicketExpend: (expendId: number) => Promise<ITTicketExpend>;
 }
 const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
   const customerUrl = "/customer-detail";
@@ -187,6 +195,30 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
           console.log(err);
           return;
         });
+    },
+    findExpendType: async () => {
+      return await axiosInstance
+        .get(`${customerUrl}/config/expend-type`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return;
+        });
+    },
+    updateProjectTicketExpend: async (expendId, form) => {
+      const formData = {
+        ...form,
+      };
+      return await axiosInstance
+        .patch(`${projectTicketUrl}/expend/${expendId}`, formData)
+        .then((res) => res.data);
+    },
+    deleteProjectTicketExpend: async (expendId: number) => {
+      return await axiosInstance.delete(
+        `${projectTicketUrl}/expend/${expendId}`
+      );
     },
   };
 };

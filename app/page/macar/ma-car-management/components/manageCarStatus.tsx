@@ -23,15 +23,14 @@ import { useForm } from "antd/es/form/Form";
 import { useSession } from "next-auth/react";
 import dayjs from "dayjs";
 import { MaCarType } from "../../common/index";
-import { TablePaginationConfig } from 'antd';
-
+import { TablePaginationConfig } from "antd";
 
 export interface props {
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   maCarData: any[];
   pagination: TablePaginationConfig;
-
+  changePagination: (pagination: TablePaginationConfig) => void;
 }
 
 const ManageCarStatus: React.FC<props> = ({
@@ -39,7 +38,7 @@ const ManageCarStatus: React.FC<props> = ({
   loading,
   maCarData,
   pagination,
-  
+  changePagination,
 }: any): React.ReactElement => {
   const intraAuth = useAxiosIntranet();
   const [form] = useForm();
@@ -423,7 +422,13 @@ const ManageCarStatus: React.FC<props> = ({
         </Button>
       </div>
 
-      <Table columns={columns} dataSource={maCarData} loading={loading} />
+      <Table
+        columns={columns}
+        dataSource={maCarData}
+        loading={loading}
+        pagination={pagination}
+        onChange={changePagination}
+      />
     </>
   );
 };

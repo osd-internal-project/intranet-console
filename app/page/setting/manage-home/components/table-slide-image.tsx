@@ -10,30 +10,38 @@ import {
   Space,
   Switch,
   Table,
+  TablePaginationConfig,
   Typography,
 } from "antd";
-import React from "react";
 import { SlideImageType } from "../common";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
+import React, { useState } from "react";
 
 export interface props {
   loading: boolean;
   slideImage: SlideImageType[];
   handleDeleteSlideImage: any;
+  pagination: TablePaginationConfig;
+  changePagination: (pagination: TablePaginationConfig) => void;
 }
 
 export const TableSlideImage: React.FC<props> = ({
   loading,
   slideImage,
   handleDeleteSlideImage,
+  pagination,
+  changePagination,
 }): React.ReactElement => {
   const columns: any = [
     {
       key: "id",
       dataIndex: "id",
       title: "ID",
-      render: (text: string, record: any, index: number) => index + 1,
+      render: (_: any, __: any, index: number) =>
+        pagination.current && pagination.pageSize
+          ? (pagination.current - 1) * pagination.pageSize + (index + 1)
+          : "",
     },
     {
       key: "fileName",
@@ -83,6 +91,8 @@ export const TableSlideImage: React.FC<props> = ({
         columns={columns}
         size="small"
         loading={loading}
+        pagination={pagination}
+        onChange={changePagination}
       />
     </>
   );

@@ -24,11 +24,16 @@ const ManageMaCar = () => {
   const [maCarBookData, setMaCarBookData] = useState<MaCarBookType[]>([]);
   const [maCarData, setmaCarData] = useState<MaCarType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [pagination] = useState<TablePaginationConfig>({
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
     total: 0,
   });
+
+  const changePagination = (page: TablePaginationConfig) => {
+    setPagination({ ...page });
+    setLoading(true);
+  };
 
   const items: TabsProps["items"] = [
     {
@@ -52,7 +57,7 @@ const ManageMaCar = () => {
           loading={loading}
           setLoading={setLoading}
           pagination={pagination}
-
+          changePagination={changePagination}
         />
       ),
     },

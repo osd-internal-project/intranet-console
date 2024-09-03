@@ -1,6 +1,22 @@
 import { AxiosInstance } from "axios";
 const UserGroupServices = (axiosInstance: AxiosInstance) => {
+  const userUrl = "/user";
   return {
+    getdataUserAll: async () => {
+      const condition = {
+        orderBy: { id: "asc" },
+      };
+      return await axiosInstance
+        .post(`${userUrl}/condition`, {
+          condition: condition,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
     getUserGroupAll: async () => {
       return await axiosInstance
         .post(`/user-group/condition`)
@@ -49,6 +65,8 @@ const UserGroupServices = (axiosInstance: AxiosInstance) => {
           saleUsersId: true,
           engineerUserGroupId: true,
           engineerUsersId: true,
+          user: true,
+          headId: true,
         },
       };
       return await axiosInstance

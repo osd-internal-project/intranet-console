@@ -1,8 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { TableDetail } from "./components/table-detail";
-import { CalendarDetail } from "./components/calendar-detail";
-import { DepartmentTableDetail } from "./components/department-table-details";
 import { DepartmentCalendarDetail } from "./components/department-calendar-details";
 import {
   Breadcrumb,
@@ -39,6 +37,18 @@ export default function Page() {
   const items: TabsProps["items"] = [
     {
       key: "1",
+      label: "Calendar",
+      children: (
+        <DepartmentCalendarDetail
+          departmentId={departmentId}
+          downloadFile={(id: number, filename: string) =>
+            downloadFile(id, filename)
+          }
+        />
+      ),
+    },
+    {
+      key: "2",
       label: "Detail",
       children: (
         <TableDetail
@@ -49,48 +59,6 @@ export default function Page() {
           onFinishUpdate={(type: string, id: number) =>
             onFinishUpdate(type, id)
           }
-          downloadFile={(id: number, filename: string) =>
-            downloadFile(id, filename)
-          }
-        />
-      ),
-    },
-    {
-      key: "2",
-      label: "Calendar",
-      children: (
-        <CalendarDetail
-          dataLeaveUser={dataLeaveUser}
-          downloadFile={(id: number, filename: string) =>
-            downloadFile(id, filename)
-          }
-        />
-      ),
-    },
-    {
-      key: "3",
-      label: "Department Detail",
-      children: (
-        <DepartmentTableDetail
-          departmentId={departmentId}
-          setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
-          openModalDetail={openModalDetail}
-          formdetail={formdetail}
-          onFinishUpdate={(type: string, id: number) =>
-            onFinishUpdate(type, id)
-          }
-          downloadFile={(id: number, filename: string) =>
-            downloadFile(id, filename)
-          }
-        />
-      ),
-    },
-    {
-      key: "4",
-      label: "Department Calendar",
-      children: (
-        <DepartmentCalendarDetail
-          departmentId={departmentId}
           downloadFile={(id: number, filename: string) =>
             downloadFile(id, filename)
           }

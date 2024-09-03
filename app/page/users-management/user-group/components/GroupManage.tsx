@@ -3,16 +3,13 @@ import {
   Button,
   Card,
   Col,
-  Descriptions,
-  DescriptionsProps,
+  ConfigProvider,
   Form,
   Input,
   Modal,
   Row,
   Select,
   SelectProps,
-  Skeleton,
-  Tree,
   message,
 } from "antd";
 import UserGroupServices from "../services/usergroup.service";
@@ -27,6 +24,7 @@ import { checkRule } from "@/app/utils/rules";
 import RolesServices from "../../user-role/services/role.service";
 import GroupPermissionComponent from "./GroupPermission";
 import { useSession } from "next-auth/react";
+import { Label } from "recharts";
 export interface props {
   propDataManage: (res: {
     selectOrganize: string | null;
@@ -49,6 +47,7 @@ type groupDetail = {
   groupId: string;
   groupName: string;
   description: string;
+  headId?: string;
   parentGroupId: string;
   // organizedGroupId: string;
 };
@@ -80,6 +79,7 @@ const GroupManage: React.FC<props> = ({
   const [showModalPermission, setShowModalPermission] =
     useState<boolean>(false);
   const [groupOption, setGroupOption] = useState<SelectProps["options"]>([]);
+  const [userSelect, setUserSelect] = useState<SelectProps["options"]>([]);
   const [saleUsersFormGroup, setSaleUsersFormGroup] = useState<ITSelectUsers[]>(
     []
   );
@@ -106,6 +106,12 @@ const GroupManage: React.FC<props> = ({
         groupSelect
       );
 
+      const dataUser: any = await userGroupServices.getdataUserAll();
+      const users = dataUser.map((user: any) => ({
+        value: user.userId,
+        label: `${user.firstNameTh} ${user.lastNameTh}`,
+      }));
+      setUserSelect(users);
       const resRole = await userRolesServices.getUserRoleAll();
       editform.setFieldsValue(groupDetail);
       editform.setFieldValue(
@@ -120,7 +126,6 @@ const GroupManage: React.FC<props> = ({
 
       await onChangeSaleGroupSelect(groupDetail.saleUserGroupId);
       await onChangeEngineerGroupSelect(groupDetail.engineerUserGroupId);
-      console.log(groupDetail.exceptionalSatatus);
       permissionform.setFieldsValue({
         exceptionalSatatus: groupDetail.exceptionalSatatus,
         saleUserGroupId: groupDetail.saleUserGroupId,
@@ -128,6 +133,7 @@ const GroupManage: React.FC<props> = ({
         engineerUserGroupId: groupDetail.engineerUserGroupId,
         engineerUsersId: groupDetail.engineerUsersId,
       });
+
       setGroupDetail(groupDetail);
       setSeleceRole(resRole);
     }
@@ -273,7 +279,6 @@ const GroupManage: React.FC<props> = ({
         })
         .catch((err) => message.error(err));
     }
-    console.log(form);
   };
   const onShowSetPermission = () => {
     setShowModalPermission(true);
@@ -371,6 +376,30 @@ const GroupManage: React.FC<props> = ({
                   className={!editState ? "read-only-input" : ""}
                 />
               </Form.Item>
+            </div>
+            <div>
+              {" "}
+              <ConfigProvider
+                theme={{
+                  token: {
+                    colorBgContainerDisabled: "#fff",
+                    colorTextDisabled: "#000",
+                  },
+                  components: {
+                    Select: { colorBorder: !editState ? "#fff" : "#d9d9d9" },
+                  },
+                }}
+              >
+                <Form.Item name="headId" label="Head:">
+                  <Select
+                    disabled={editState === false ? true : false}
+                    allowClear
+                    showSearch
+                    optionFilterProp="label"
+                    options={userSelect}
+                  />
+                </Form.Item>
+              </ConfigProvider>
             </div>
             <div>
               <Form.Item name="description" label="Description :">

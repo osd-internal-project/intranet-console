@@ -48,10 +48,6 @@ export default function Page() {
   const [typeLeaveTableAll, setTypeLeaveTableAll] = useState<ITypetypeleave[]>(
     []
   );
-  const [getDepartmentById, setResDepartMent] = useState<ISelectDepartment[]>(
-    []
-  );
-
   const [groupDetail, setGroupDetail] = useState<UserGroupType[]>([]);
   const [getStartDate, setStartDate] = useState<Date>();
   const [getEndDate, setEndDate] = useState<Date>();
@@ -87,9 +83,7 @@ export default function Page() {
       return { value: event.typeId, label: event.typeName };
     });
     const resTableDepartMent = await dataleaveservice.findDetailDepartment();
-    const departmentOptions = resTableDepartMent.map((event: IDepartMent) => {
-      return { value: event.departId, label: event.departName };
-    });
+
     // console.log(session);
     // console.log(session?.user.ownerGroup);
 
@@ -107,8 +101,6 @@ export default function Page() {
       setGroupDetail(dataGroupDetail);
       console.log("DataGroupDetail:", dataUserByID);
     }
-
-    setResDepartMent(departmentOptions);
 
     setTypeLeaveTable(resTableDeatilTypeLeave);
     setTypeLeaveTableAll(resTableUserTypeLeave.typeLeaveDisabledMap);
@@ -439,9 +431,6 @@ export default function Page() {
     const selectedOption = getTypeLeaveOption.find(
       (option) => option.value === values.type_id
     );
-    const selecteddepart = getDepartmentById.find(
-      (option) => option.value === values.depart_id
-    );
     const totalDays =
       startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
 
@@ -467,8 +456,6 @@ export default function Page() {
             lastName: values.lastNameTh,
             positionId: values.posId,
             position: values.position,
-            departId: values.depart_id,
-            departName: selecteddepart ? selecteddepart.label : undefined,
             typeId: values.type_id,
             typeName: selectedOption ? selectedOption.label : undefined,
             startDate: values.startDate,
@@ -571,13 +558,12 @@ export default function Page() {
             return;
           }
           const base: ITypeDataLeave = {
+            id: id,
             userId: values.userId,
             firstName: values.firstNameTh,
             lastName: values.lastNameTh,
             positionId: values.posId,
             position: values.position,
-            departId: values.depart_id,
-            departName: selecteddepart ? selecteddepart.label : undefined,
             typeId: values.type_id,
             typeName: selectedOption ? selectedOption.label : undefined,
             startDate: values.startDate,
@@ -670,13 +656,12 @@ export default function Page() {
             return;
           }
           const base: ITypeDataLeave = {
+            id: id,
             userId: values.userId,
             firstName: values.firstNameTh,
             lastName: values.lastNameTh,
             positionId: values.posId,
             position: values.position,
-            departId: values.depart_id,
-            departName: selecteddepart ? selecteddepart.label : undefined,
             typeId: values.type_id,
             typeName: selectedOption ? selectedOption.label : undefined,
             startDate: values.startDate,
@@ -768,13 +753,12 @@ export default function Page() {
             return;
           }
           const base: ITypeDataLeave = {
+            id: id,
             userId: values.userId,
             firstName: values.firstNameTh,
             lastName: values.lastNameTh,
             positionId: values.posId,
             position: values.position,
-            departId: values.depart_id,
-            departName: selecteddepart ? selecteddepart.label : undefined,
             typeId: values.type_id,
             typeName: selectedOption ? selectedOption.label : undefined,
             startDate: values.startDate,
@@ -871,8 +855,6 @@ export default function Page() {
             lastName: values.lastNameTh,
             positionId: values.posId,
             position: values.position,
-            departId: values.depart_id,
-            departName: selecteddepart ? selecteddepart.label : undefined,
             typeId: values.type_id,
             typeName: selectedOption ? selectedOption.label : undefined,
             startDate: values.startDate,
@@ -981,7 +963,6 @@ export default function Page() {
           <CreateOnlineLeave
             getUser={getUser}
             getTypeLeaveOption={getTypeLeaveOption}
-            getDepartmentById={getDepartmentById}
             onfinishCreate={(e: ITypeDataLeaveCreate) => onfinishCreate(e)}
             createdataleaveForm={createdataleaveForm}
             setStartDate={(e: Date) => setStartDate(e)}

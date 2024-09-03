@@ -411,7 +411,7 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           // createdAt: true,
           // updatedAt: true,
           // positionId: true,
-          // ownerGroupId: true,
+          ownerGroupId: true,
         },
       };
       return await axiosInstance

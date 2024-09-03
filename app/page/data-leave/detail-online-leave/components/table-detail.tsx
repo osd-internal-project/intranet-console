@@ -84,13 +84,22 @@ export const TableDetail: React.FC<props> = ({
         );
       },
     },
-    { key: "userApproved", dataIndex: "userApproved", title: "Approved By" },
+    {
+      key: "userApproved",
+      dataIndex: "userApproved",
+      title: "Approved By",
+      render: (text: any) => (text ? text : "-"),
+    },
     {
       key: "approvedDate",
       dataIndex: "approvedDate",
       title: "Approved Date",
       render: (row: any) => (
-        <span>{dayjs(row.approvedDate).format("DD-MM-YYYY")}</span>
+        <span>
+          {row && row.approvedDate
+            ? dayjs(row.approvedDate).format("DD-MM-YYYY")
+            : "-"}
+        </span>
       ),
     },
 

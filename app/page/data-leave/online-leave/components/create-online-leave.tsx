@@ -28,7 +28,6 @@ import { FormInstance } from "antd/lib";
 export interface props {
   getUser?: IDataUser | null;
   getTypeLeaveOption: ISelect[];
-  getDepartmentById: ISelectDepartment[];
   onfinishCreate: (values: ITypeDataLeaveCreate) => void;
   createdataleaveForm: FormInstance;
   setStartDate: (values: Date) => void;
@@ -47,7 +46,6 @@ export interface props {
 export const CreateOnlineLeave: React.FC<props> = ({
   getUser,
   getTypeLeaveOption,
-  getDepartmentById,
   onfinishCreate,
   createdataleaveForm,
   setStartDate,
@@ -74,7 +72,6 @@ export const CreateOnlineLeave: React.FC<props> = ({
         ownerName: `${getUserOwner?.firstNameTh} ${getUserOwner?.lastNameTh}`,
         ownerId: getUserOwner?.userId,
         groupName: groupDetail.groupName,
-        // ownerName:
       });
     };
     getdatauser();
@@ -160,6 +157,8 @@ export const CreateOnlineLeave: React.FC<props> = ({
                 options={getTypeLeaveOption}
                 onChange={(e) => onChangeParams(e, "type")}
                 allowClear
+                showSearch
+                optionFilterProp="label"
               />
             </Form.Item>
           </div>
@@ -401,7 +400,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
             <Button
               htmlType="submit"
               type="primary"
-              style={{ fontSize: "18px", padding: "12px 24px" }}
+              style={{ fontSize: "16px", padding: "18px 15px 15px" }}
             >{`ยื่นใบลา`}</Button>
           </div>
         </Form>

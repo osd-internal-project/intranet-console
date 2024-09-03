@@ -166,7 +166,6 @@ export interface ITypeDataLeaveCreate {
   lastNameTh: string;
   posId: number;
   position: string;
-  depart_id: number;
   departName: string;
   type_id: number;
   typeName: string;

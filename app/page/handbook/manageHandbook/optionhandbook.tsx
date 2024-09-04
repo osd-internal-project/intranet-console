@@ -313,7 +313,7 @@ const Newoption: React.FC = () => {
       >
         <div>
           <div>
-            ค้นหาชื่อประเภท :
+            ค้นหาชื่อประเภทเอกสาร :
             <Input
               type="text"
               value={searchTerm}

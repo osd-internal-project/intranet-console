@@ -103,10 +103,30 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   </div>
                   <div className=" col-span-2 md:col-span-1 text-slate-500">
                     {projectDescription.customerBranch.customerDetail
-                      .firstNameTh ||
-                    projectDescription.customerBranch.customerDetail.lastNameTh
-                      ? `${projectDescription.customerBranch.customerDetail.firstNameTh} ${projectDescription.customerBranch.customerDetail.lastNameTh}`
-                      : "-"}
+                      .customerTypeId === "natural"
+                      ? `${
+                          projectDescription.customerBranch.customerDetail
+                            .details?.prefixTh
+                            ? projectDescription.customerBranch.customerDetail
+                                .details?.prefixTh
+                            : ""
+                        }${
+                          projectDescription.customerBranch.customerDetail
+                            .details?.firstNameTh
+                            ? projectDescription.customerBranch.customerDetail
+                                .details?.firstNameTh
+                            : ""
+                        }${
+                          projectDescription.customerBranch.customerDetail
+                            .details?.lastNameTh
+                            ? ` ${projectDescription.customerBranch.customerDetail.details?.lastNameTh}`
+                            : ""
+                        }`
+                      : projectDescription.customerBranch.customerDetail
+                          .customerTypeId === "juristic"
+                      ? projectDescription.customerBranch.customerDetail.details
+                          ?.customerNameTh
+                      : ""}
                   </div>
                   <div className=" font-bold pl-3 pr-3 text-right">สาขา :</div>
                   <div className=" col-span-2 md:col-span-1 text-slate-500">
@@ -114,8 +134,6 @@ const DescriptionCustomerForm: React.FC<props> = ({
                       ? projectDescription.customerBranch.branchName
                       : "-"}
                   </div>
-                  <div className=" font-bold pl-3 pr-3 text-right"></div>
-                  <div className=" col-span-2 md:col-span-1 text-slate-500"></div>
                   {contactDescription ? (
                     <div className=" grid  grid-cols-3 md:grid-cols-6 gap-2  md:col-span-6">
                       <div className=" font-bold pl-3 pr-3 text-right">

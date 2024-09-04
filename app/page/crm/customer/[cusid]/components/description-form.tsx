@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { FormInstance } from "antd";
 import {
   Button,
@@ -44,6 +44,16 @@ const DescriptionCustomerForm: React.FC<props> = ({
   setIsEdit,
   onFinishEdit,
 }): React.ReactElement => {
+  const [customerType, setCustomerType] = useState<string | undefined>(
+    undefined
+  );
+  useEffect(() => {
+    const type = descriptionForm.getFieldValue("customerTypeId");
+    if (type) {
+      setCustomerType(type);
+    }
+  }, [customerTypes]);
+
   return (
     <Collapse
       bordered={true}
@@ -114,7 +124,79 @@ const DescriptionCustomerForm: React.FC<props> = ({
                       <></>
                     )}
                   </div>
+                  <Form.Item
+                    label="Type"
+                    name={"customerTypeId"}
+                    rules={[{ required: true, message: "กรุณาเลือก" }]}
+                  >
+                    <Select
+                      allowClear
+                      placeholder="Please Choose"
+                      onChange={(value) => setCustomerType(value)}
+                      options={customerTypes.map((data) => ({
+                        value: data.customerTypeId,
+                        label: data.name,
+                      }))}
+                    />
+                  </Form.Item>
 
+                  {customerType === "natural" ? (
+                    <div className=" col-span-3 grid grid-cols-3">
+                      <Form.Item
+                        label={<b>คำนำหน้า TH</b>}
+                        name={["details", "prefixTh"]}
+                      >
+                        <Input placeholder="Enter Text" maxLength={10} />
+                      </Form.Item>
+                      <Form.Item
+                        label={<b>ชื่อ TH</b>}
+                        name={["details", "firstNameTh"]}
+                      >
+                        <Input placeholder="Enter Text" maxLength={200} />
+                      </Form.Item>
+                      <Form.Item
+                        label={<b>นามสกุล TH</b>}
+                        name={["details", "lastNameTh"]}
+                      >
+                        <Input placeholder="Enter Text" maxLength={200} />
+                      </Form.Item>
+                      <Form.Item
+                        label={<b>คำนำหน้า EN</b>}
+                        name={["details", "prefixEn"]}
+                      >
+                        <Input placeholder="Enter Text" maxLength={10} />
+                      </Form.Item>
+                      <Form.Item
+                        label={<b>ชื่อ EN</b>}
+                        name={["details", "firstNameEn"]}
+                      >
+                        <Input placeholder="Enter Text" maxLength={200} />
+                      </Form.Item>
+                      <Form.Item
+                        label={<b>นามสกุล EN</b>}
+                        name={["details", "lastNameEn"]}
+                      >
+                        <Input placeholder="Enter Text" maxLength={200} />
+                      </Form.Item>
+                    </div>
+                  ) : customerType === "juristic" ? (
+                    <div className=" col-span-2 grid grid-cols-2">
+                      <Form.Item
+                        label={<b>ชื่อลูกค้า TH</b>}
+                        name={["details", "customerNameTH"]}
+                      >
+                        <Input placeholder="Enter Text" maxLength={10} />
+                      </Form.Item>
+                      <Form.Item
+                        label={<b>ชื่อลูกค้า EN</b>}
+                        name={["details", "customerNameEn"]}
+                      >
+                        <Input placeholder="Enter Text" maxLength={10} />
+                      </Form.Item>
+                    </div>
+                  ) : (
+                    <div className=" col-span-2 grid grid-cols-2"></div>
+                  )}
                   <Form.Item
                     label={<b>รหัส</b>}
                     name={"customerCode"}
@@ -144,42 +226,7 @@ const DescriptionCustomerForm: React.FC<props> = ({
                       maxLength={50}
                     />
                   </Form.Item>
-                  <Form.Item label={<b>คำนำหน้า TH</b>} name={"prefixTh"}>
-                    <Input
-                      placeholder={isEdit ? "Enter Text" : ""}
-                      maxLength={10}
-                    />
-                  </Form.Item>
-                  <Form.Item label={<b>ชื่อ TH</b>} name={"firstNameTh"}>
-                    <Input
-                      placeholder={isEdit ? "Enter Text" : ""}
-                      maxLength={200}
-                    />
-                  </Form.Item>
-                  <Form.Item label={<b>นามสกุล TH</b>} name={"lastNameTh"}>
-                    <Input
-                      placeholder={isEdit ? "Enter Text" : ""}
-                      maxLength={200}
-                    />
-                  </Form.Item>
-                  <Form.Item label={<b>คำนำหน้า EN</b>} name={"prefixEn"}>
-                    <Input
-                      placeholder={isEdit ? "Enter Text" : ""}
-                      maxLength={10}
-                    />
-                  </Form.Item>
-                  <Form.Item label={<b>ชื่อ EN</b>} name={"firstNameEn"}>
-                    <Input
-                      placeholder={isEdit ? "Enter Text" : ""}
-                      maxLength={200}
-                    />
-                  </Form.Item>
-                  <Form.Item label={<b>นามสกุล EN</b>} name={"lastNameEn"}>
-                    <Input
-                      placeholder={isEdit ? "Enter Text" : ""}
-                      maxLength={200}
-                    />
-                  </Form.Item>
+
                   <Form.Item
                     label={<b>เลขที่ทะเบียนบริษัท</b>}
                     name={"companyRegisNumber"}
@@ -202,7 +249,7 @@ const DescriptionCustomerForm: React.FC<props> = ({
                     <Select
                       placeholder={isEdit ? "Plese Choose" : ""}
                       options={customerTypes.map((data) => ({
-                        value: data.id,
+                        value: data.customerTypeId,
                         label: data.name,
                       }))}
                     />

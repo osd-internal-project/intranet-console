@@ -58,6 +58,9 @@ const CreateCustomerForm: React.FC<props> = ({
   onFinishAdd,
 }): React.ReactElement => {
   const [form] = useForm();
+  const [customerType, setCustomerType] = useState<string | undefined>(
+    undefined
+  );
   return (
     <Form
       size="small"
@@ -69,7 +72,55 @@ const CreateCustomerForm: React.FC<props> = ({
     >
       <div className="fix-form grid grid-cols-1 md:grid-cols-3 md:mb-0 md:mt-0">
         <div className=" md:col-span-3 font-bold">ข้อมูลเบื้องต้น </div>
+        <Form.Item
+          label="Type"
+          name={"customerTypeId"}
+          rules={[{ required: true, message: "กรุณาเลือก" }]}
+        >
+          <Select
+            allowClear
+            placeholder="Please Choose"
+            onChange={(value) => setCustomerType(value)}
+            options={customerTypes.map((data) => ({
+              value: data.customerTypeId,
+              label: data.name,
+            }))}
+          />
+        </Form.Item>
 
+        {customerType === "natural" ? (
+          <div className=" col-span-3 grid grid-cols-3">
+            <Form.Item label="คำนำหน้า TH" name={["details", "prefixTh"]}>
+              <Input placeholder="Enter Text" maxLength={10} />
+            </Form.Item>
+            <Form.Item label="ชื่อ TH" name={["details", "firstNameTh"]}>
+              <Input placeholder="Enter Text" maxLength={200} />
+            </Form.Item>
+            <Form.Item label="นามสกุล TH" name={["details", "lastNameTh"]}>
+              <Input placeholder="Enter Text" maxLength={200} />
+            </Form.Item>
+            <Form.Item label="คำนำหน้า EN" name={["details", "prefixEn"]}>
+              <Input placeholder="Enter Text" maxLength={10} />
+            </Form.Item>
+            <Form.Item label="ชื่อ EN" name={["details", "firstNameEn"]}>
+              <Input placeholder="Enter Text" maxLength={200} />
+            </Form.Item>
+            <Form.Item label="นามสกุล EN" name={["details", "lastNameEn"]}>
+              <Input placeholder="Enter Text" maxLength={200} />
+            </Form.Item>
+          </div>
+        ) : customerType === "juristic" ? (
+          <div className=" col-span-2 grid grid-cols-2">
+            <Form.Item label="คำนำหน้า TH" name={["details", "customerNameTh"]}>
+              <Input placeholder="Enter Text" maxLength={10} />
+            </Form.Item>
+            <Form.Item label="คำนำหน้า En" name={["details", "customerNameEn"]}>
+              <Input placeholder="Enter Text" maxLength={10} />
+            </Form.Item>
+          </div>
+        ) : (
+          <div className=" col-span-2 grid grid-cols-2"></div>
+        )}
         <Form.Item
           label="รหัส"
           name={"customerCode"}
@@ -81,27 +132,7 @@ const CreateCustomerForm: React.FC<props> = ({
         <Form.Item label="อ้างอิงรหัสลูกค้า" name={"referenceCode"}>
           <Input placeholder="Enter Text" maxLength={50} />
         </Form.Item>
-        <Form.Item label="Department Code" name={"departmentCode"}>
-          <Input placeholder="Enter Text" maxLength={50} />
-        </Form.Item>
-        <Form.Item label="คำนำหน้า TH" name={"prefixTh"}>
-          <Input placeholder="Enter Text" maxLength={10} />
-        </Form.Item>
-        <Form.Item label="ชื่อ TH" name={"firstNameTh"}>
-          <Input placeholder="Enter Text" maxLength={200} />
-        </Form.Item>
-        <Form.Item label="นามสกุล TH" name={"lastNameTh"}>
-          <Input placeholder="Enter Text" maxLength={200} />
-        </Form.Item>
-        <Form.Item label="คำนำหน้า EN" name={"prefixEn"}>
-          <Input placeholder="Enter Text" maxLength={10} />
-        </Form.Item>
-        <Form.Item label="ชื่อ EN" name={"firstNameEn"}>
-          <Input placeholder="Enter Text" maxLength={200} />
-        </Form.Item>
-        <Form.Item label="นามสกุล EN" name={"lastNameEn"}>
-          <Input placeholder="Enter Text" maxLength={200} />
-        </Form.Item>
+
         {/* <Form.Item
           label="สาขาใหญ่ ?"
           valuePropName="checked"
@@ -133,15 +164,6 @@ const CreateCustomerForm: React.FC<props> = ({
             formatter={(value) =>
               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             }
-          />
-        </Form.Item>
-        <Form.Item label="Type" name={"customerTypeId"}>
-          <Select
-            placeholder="Please Choose"
-            options={customerTypes.map((data) => ({
-              value: data.id,
-              label: data.name,
-            }))}
           />
         </Form.Item>
         <Form.Item label="กลุ่มลูกค้า" name={"customerGroupId"}>

@@ -1,5 +1,15 @@
 "use client";
-import { Breadcrumb, Button, Card, Checkbox, Col, Form, Input, Row, Tabs } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Card,
+  Checkbox,
+  Col,
+  Form,
+  Input,
+  Row,
+  Tabs,
+} from "antd";
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import ShowDetailComponent from "./components/ShowDetailComponent";

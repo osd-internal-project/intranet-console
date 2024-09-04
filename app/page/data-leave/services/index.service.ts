@@ -98,9 +98,9 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getdataLeaveDepartById: async (dataDepartId: number) => {
+    getdataLeaveGroupById: async (groupId: string) => {
       const condition = {
-        where: { departId: dataDepartId },
+        where: { groupId: groupId },
         orderBy: { id: "asc" },
       };
       return await axiosInstance
@@ -370,27 +370,52 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           id: true,
           groupId: true,
           groupName: true,
-          createdAt: true,
-          updatedAt: true,
-          parentGroupId: true,
-          organizedGroupId: true,
-          description: true,
-          userGroupUserRoleMap: true,
-          saleUserGroupId: true,
-          saleUsersId: true,
-          engineerUserGroupId: true,
-          engineerUsersId: true,
-          user: true,
+          // createdAt: true,
+          // parentGroupId: true,
+          // organizedGroupId: true,
+          // description: true,
+          // userGroupUserRoleMap: true,
+          // engineerUserGroupId: true,
+          // engineerUsersId: true,
+          // user: true,
           headId: true,
         },
       };
       return await axiosInstance
-        // .post(`/user-group/condition-first`, {
-        //   condition: condition,
-        // })
-        .post(`${basrUrIUserGroup}/condition-first`, {
+        .post(`/user-group/condition-first`, {
           condition: condition,
         })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+
+    getUsersByUserId: async (userId: string) => {
+      const condition = {
+        where: { userId: userId },
+        select: {
+          userId: true,
+          username: true,
+          firstNameTh: true,
+          lastNameTh: true,
+          firstNameEn: true,
+          lastNameEn: true,
+          email: true,
+          phoneNumber: true,
+          // activeStatus: true,
+          // clientId: true,
+          // createdAt: true,
+          // updatedAt: true,
+          // positionId: true,
+          ownerGroupId: true,
+        },
+      };
+      return await axiosInstance
+        .post(`${baseUrlUser}/condition-first`, { condition: condition })
         .then((res) => {
           return res.data;
         })

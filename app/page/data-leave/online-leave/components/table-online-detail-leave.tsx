@@ -1,7 +1,16 @@
-import { Card, Modal, Table, TableColumnsType, Tag, Typography } from "antd";
+import {
+  Button,
+  Card,
+  Modal,
+  Table,
+  TableColumnsType,
+  Tag,
+  Typography,
+} from "antd";
 import React, { useState } from "react";
 import dayjs from "dayjs";
 import { IDataUser, ITypetypeleave } from "../../common";
+import { MouseIcon } from "@/components/icon";
 
 export interface props {
   typeLeaveTable: ITypetypeleave[];
@@ -146,7 +155,7 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
     {
       key: "limitLeave",
       dataIndex: "limitLeave",
-      title: "ระยะเวลาในการลา (ตามอายุงาน)",
+      title: "ระยะเวลาในการลา",
       render: (values: string, row: ITypetypeleave, index: number) => {
         return <div className="flex justify-center">{`${values} วัน `}</div>;
       },
@@ -191,9 +200,30 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
           footer={() => (
             <>
               <div className="flex justify-center w-full">
-                <a type="primary" onClick={() => setIsModalOpen(true)}>
-                  {`เงื่อนไขในการลาตามแต่ละประเภท`}
-                </a>
+                {/* <a
+                  type="primary"
+                  onClick={() => setIsModalOpen(true)}
+                  // style={{ fontSize: "16px" }}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <span style={{ marginRight: "8px", fontSize: "18px" }}>
+                      {`เงื่อนไขในการลาตามแต่ละประเภท`}
+                    </span>
+                    {MouseIcon}
+                  </div>
+                </a> */}
+                <Button
+                  type="primary"
+                  ghost
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <span style={{ fontSize: "16px" }}>
+                      {`เงื่อนไขในการลาตามแต่ละประเภท`}
+                    </span>
+                    {/* {MouseIcon} */}
+                  </div>
+                </Button>
               </div>
             </>
           )}

@@ -100,14 +100,14 @@ const ManagementNews: React.FC = () => {
           fontSize: "36px",
         }}
       >
-        ข่าวกิจกรรมล่าสุด
+        ข่าวสารและกิจกรรมต่าง ๆ
       </div>
 
       <Input
         type="text"
         value={searchTerm}
         onChange={handleInputChange}
-        placeholder="ค้นหาข่าว"
+        placeholder="ข่าวสารและกิจกรรมต่าง ๆ"
         style={{
           margin: "10px 0 0 0",
           width: "300px",
@@ -116,47 +116,50 @@ const ManagementNews: React.FC = () => {
 
       <Card title="" bordered={false} className="text-center">
         <Row gutter={16}>
-          {currentNews.map((item) => (
-            <Col span={8} key={item.newsId.toString()}>
-              <Card
-                style={{ margin: "20px 0 0 0" ,backgroundColor:"#F0F8FF"}}
-                hoverable
-                onClick={() => showModal(item)}
-                cover={
-                  item.images.length > 0 && item.images[0]?.fileName ? (
-                    <Image
-                      preview={false}
-                      alt="news"
-                      crossOrigin="anonymous"
-                      src={`http://localhost:4003/api/public/news-image/${item.images[0].fileName}`}
-                      style={{
-                        width: "400px",
-                        height: "350px",
-                        margin: "30px 20px -20px 10px",
-                      }}
-                    />
-                  ) : null
-                }
-              >
-                <p style={{ fontSize: "20px" }}>{item.newsName}</p>
-                <p>อัพโดย : {item.author}</p>
-                <p>
-                  เวลา :{" "}
-                  {new Date(item.updatedAt.toString()).toLocaleDateString(
-                    "en-GB",
-                    {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    }
-                  )}{" "}
-                  น.
-                </p>
-              </Card>
-            </Col>
-          ))}
+          {currentNews
+            .slice()
+            .reverse()
+            .map((item) => (
+              <Col span={8} key={item.newsId.toString()}>
+                <Card
+                  style={{ margin: "20px 0 0 0", backgroundColor: "#F0F8FF" }}
+                  hoverable
+                  onClick={() => showModal(item)}
+                  cover={
+                    item.images.length > 0 && item.images[0]?.fileName ? (
+                      <Image
+                        preview={false}
+                        alt="news"
+                        crossOrigin="anonymous"
+                        src={`http://localhost:4003/api/public/news-image/${item.images[0].fileName}`}
+                        style={{
+                          width: "400px",
+                          height: "350px",
+                          margin: "30px 20px -20px 10px",
+                        }}
+                      />
+                    ) : null
+                  }
+                >
+                  <p style={{ fontSize: "20px" }}>{item.newsName}</p>
+                  <p>ผู้เขียน : {item.author}</p>
+                  <p>
+                    เวลา :{" "}
+                    {new Date(item.updatedAt.toString()).toLocaleDateString(
+                      "en-GB",
+                      {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      }
+                    )}{" "}
+                    น.
+                  </p>
+                </Card>
+              </Col>
+            ))}
         </Row>
         <Pagination
           align="center"
@@ -169,15 +172,11 @@ const ManagementNews: React.FC = () => {
       </Card>
 
       <Modal
-        width={1000}
+        width={950}
         title="รายละเอียดข่าวสาร"
         open={isModalVisible}
         onCancel={handleCancel}
-        footer={[
-          <Button key="close" onClick={handleCancel}>
-            ปิด
-          </Button>,
-        ]}
+        footer={[]}
       >
         {selectedNews && (
           <div>
@@ -218,15 +217,26 @@ const ManagementNews: React.FC = () => {
                   ))
                 : null}
             </Carousel>
-            <p style={{ fontSize: "20px" }}>
-              <strong style={{ margin: "0 40px 0 0" }}></strong>{" "}
-              {selectedNews.content}
+            <div style={{ fontSize: "20px" }}>
+              <Input.TextArea 
+                style={{
+                  fontSize: "20px",
+                  width: "900px",
+                  border: "none",
+                  outline: "none", // ลบเส้นกรอบเมื่อ focus
+                  resize: "none", // ป้องกันการเปลี่ยนขนาดของ TextArea
+                  boxShadow: "none",
+                }}
+                value={selectedNews?.content?.toString()}
+                readOnly
+                autoSize
+              />
+            </div>
+            <p>
+              <strong>ผู้เขียน : </strong> {selectedNews.author}
             </p>
             <p>
-              <strong>ผู้เขียน:</strong> {selectedNews.author}
-            </p>
-            <p>
-              <strong>วันที่เผยแพร่:</strong>{" "}
+              <strong>วันที่เผยแพร่ : </strong>{" "}
               {new Date(selectedNews.phblishedAt.toString()).toLocaleDateString(
                 "en-GB",
                 {
@@ -240,7 +250,7 @@ const ManagementNews: React.FC = () => {
               น.
             </p>
             <p>
-              <strong>อัปเดตล่าสุด:</strong>{" "}
+              <strong>อัปเดตล่าสุด : </strong>{" "}
               {new Date(selectedNews.updatedAt.toString()).toLocaleDateString(
                 "en-GB",
                 {

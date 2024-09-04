@@ -7,7 +7,7 @@ const dataform: React.FC = () => {
   const items: TabsProps["items"] = [
     {
       key: "1",
-      label: "สร้างข้อมูลข่าว",
+      label: "",
       children: <Newsshow />,
     },
   ];

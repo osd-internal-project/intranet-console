@@ -5,6 +5,7 @@ import { dateToStringThNoTime } from "@/app/utils/format";
 import { deleteIcon, editIcon } from "@/components/icon";
 import { PaperClipOutlined } from "@ant-design/icons";
 import ExportDataLeaveAll from "../../common/export-excel";
+import dayjs from "dayjs";
 
 export interface props {
   dataLeaveUser: ITypeDataLeave[];
@@ -27,6 +28,27 @@ export const TableDetail: React.FC<props> = ({
 }): React.ReactElement => {
   const columns: any = [
     {
+      key: "id",
+      dataIndex: "id",
+      title: "Fullname",
+      render: (e: string, row: ITypeDataLeave) => {
+        return <p>{`${row.firstName} ${row.lastName}`}</p>;
+      },
+    },
+    { key: "typeName", dataIndex: "typeName", title: "Type Leave" },
+    {
+      key: "id",
+      dataIndex: "id",
+      title: "Date Leave",
+      render: (e: string, row: ITypeDataLeave) => {
+        return row?.startDate && row?.endDate
+          ? `${dateToStringThNoTime(row?.startDate)} ถึง ${dateToStringThNoTime(
+              row?.endDate
+            )}`
+          : "-";
+      },
+    },
+    {
       key: "status",
       dataIndex: "status",
       title: "Status",
@@ -41,10 +63,29 @@ export const TableDetail: React.FC<props> = ({
       },
     },
     {
+      key: "userApproved",
+      dataIndex: "userApproved",
+      title: "Approved By",
+      render: (text: any) => (text ? text : "-"),
+    },
+    {
+      key: "approvedDate",
+      dataIndex: "approvedDate",
+      title: "Approved Date",
+      render: (_: any, row: any) => (
+        <span>
+          {row.approvedDate
+            ? dayjs(row.approvedDate).format("DD-MM-YYYY")
+            : "-"}
+        </span>
+      ),
+    },
+    {
       key: "id",
       dataIndex: "id",
-      title: "Fullname",
-      render: (e: string, row: ITypeDataLeave) => {
+      title: "Active",
+      align: "center",
+      render: (e: string, row: ITypeDataLeave, index: number) => {
         const base = {
           name: `${row.firstName} ${row.lastName}`,
           createAt: row.createdAt ? dateToStringThNoTime(row.createdAt) : "-",
@@ -62,35 +103,6 @@ export const TableDetail: React.FC<props> = ({
           userApproved: row.userApproved,
           dataLeaveFiles: row.dataLeaveFiles,
         };
-        return (
-          <a
-            onClick={() => {
-              setOpenModalDetail(true), formdetail.setFieldsValue(base);
-            }}
-          >{`${row.firstName} ${row.lastName}`}</a>
-        );
-      },
-    },
-    {
-      key: "id",
-      dataIndex: "id",
-      title: "Date Leave",
-      render: (e: string, row: ITypeDataLeave) => {
-        return row?.startDate && row?.endDate
-          ? `${dateToStringThNoTime(row?.startDate)} ถึง ${dateToStringThNoTime(
-              row?.endDate
-            )}`
-          : "-";
-      },
-    },
-    { key: "typeName", dataIndex: "typeName", title: "Type Leave" },
-    { key: "userApproved", dataIndex: "userApproved", title: "Approved By" },
-    {
-      key: "id",
-      dataIndex: "id",
-      title: "Active",
-      align: "center",
-      render: (e: string, row: ITypeDataLeave, index: number) => {
         return (
           <>
             <Row gutter={[8, 8]} className="flex justify-center">
@@ -130,6 +142,13 @@ export const TableDetail: React.FC<props> = ({
                 >
                   {deleteIcon} {`Delete`}
                 </Button>
+              </Col>
+              <Col>
+                <a
+                  onClick={() => {
+                    setOpenModalDetail(true), formdetail.setFieldsValue(base);
+                  }}
+                >{`รายละเอียด`}</a>
               </Col>
             </Row>
           </>

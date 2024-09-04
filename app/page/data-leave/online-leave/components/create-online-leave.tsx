@@ -20,6 +20,7 @@ import {
   ISelect,
   ISelectDepartment,
   ITypeDataLeaveCreate,
+  UserGroupType,
 } from "../../common";
 import { RcFile } from "antd/es/upload";
 import { FormInstance } from "antd/lib";
@@ -27,7 +28,6 @@ import { FormInstance } from "antd/lib";
 export interface props {
   getUser?: IDataUser | null;
   getTypeLeaveOption: ISelect[];
-  getDepartmentById: ISelectDepartment[];
   onfinishCreate: (values: ITypeDataLeaveCreate) => void;
   createdataleaveForm: FormInstance;
   setStartDate: (values: Date) => void;
@@ -41,11 +41,11 @@ export interface props {
   attendFiles: UploadFile[];
   getUserOwner: IDataUser | null;
   onChangeParams: (value: Dayjs, type: string) => void;
+  groupDetail: any;
 }
 export const CreateOnlineLeave: React.FC<props> = ({
   getUser,
   getTypeLeaveOption,
-  getDepartmentById,
   onfinishCreate,
   createdataleaveForm,
   setStartDate,
@@ -59,6 +59,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
   attendFiles,
   getUserOwner,
   onChangeParams,
+  groupDetail,
 }): React.ReactElement => {
   useEffect(() => {
     const getdatauser = () => {
@@ -70,6 +71,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
         lastNameTh: getUser?.lastNameTh,
         ownerName: `${getUserOwner?.firstNameTh} ${getUserOwner?.lastNameTh}`,
         ownerId: getUserOwner?.userId,
+        groupName: groupDetail.groupName,
       });
     };
     getdatauser();
@@ -139,18 +141,8 @@ export const CreateOnlineLeave: React.FC<props> = ({
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item
-              label={`แผนก :`}
-              name={`depart_id`}
-              required
-              rules={[{ required: true, message: "กรุณาเลือกแผนก" }]}
-            >
-              <Select
-                placeholder={`แผนก`}
-                options={getDepartmentById}
-                onChange={(e) => onChangeParams(e, "depart")}
-                allowClear
-              />
+            <Form.Item label={`แผนก :`} name={`groupName`}>
+              <Input disabled />
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
@@ -165,6 +157,8 @@ export const CreateOnlineLeave: React.FC<props> = ({
                 options={getTypeLeaveOption}
                 onChange={(e) => onChangeParams(e, "type")}
                 allowClear
+                showSearch
+                optionFilterProp="label"
               />
             </Form.Item>
           </div>
@@ -406,7 +400,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
             <Button
               htmlType="submit"
               type="primary"
-              style={{ fontSize: "18px", padding: "12px 24px" }}
+              style={{ fontSize: "16px", padding: "18px 15px 15px" }}
             >{`ยื่นใบลา`}</Button>
           </div>
         </Form>

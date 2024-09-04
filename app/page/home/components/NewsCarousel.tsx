@@ -63,12 +63,15 @@ const NewsCarouselComponent: React.FC<Props> = ({
                       transition: "transform 0.3s, box-shadow 0.3s",
                     }}
                     cover={
-                      <Image
-                        alt="news"
-                        preview={false}
-                        crossOrigin="anonymous"
-                        // src={`http://localhost:4003/api/informationNews/${file.newsImage[0].fileimagePath}`}
-                      />
+                      file.newsImage.length > 0 &&
+                      file.newsImage[0]?.fileName ? (
+                        <Image
+                          alt="news"
+                          preview={false}
+                          crossOrigin="anonymous"
+                          src={`http://localhost:4003/api/informationNews/${file.newsImage[0].fileimagePath}`}
+                        />
+                      ) : null
                     }
                     hoverable
                   >

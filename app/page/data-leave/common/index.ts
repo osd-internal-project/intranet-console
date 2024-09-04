@@ -157,6 +157,7 @@ export interface ITypeDataLeave {
   ownerId?: string;
   ownerName?: string;
   description?: string;
+  groupId?: string;
 }
 
 export interface ITypeDataLeaveCreate {
@@ -166,7 +167,6 @@ export interface ITypeDataLeaveCreate {
   lastNameTh: string;
   posId: number;
   position: string;
-  depart_id: number;
   departName: string;
   type_id: number;
   typeName: string;
@@ -193,3 +193,13 @@ export interface ITypeDataleaveMap {
   userId: number;
   masterTypeleaveId: number;
 }
+
+
+export interface UserGroupType {
+  id: number;
+  groupId: string;
+  groupName: string;
+  description: string;
+
+}
+

@@ -90,11 +90,15 @@ const Tablehandbook: React.FC = () => {
     setSearchFileType(e.target.value);
   };
 
-  const filteredData = handbook.filter(
-    (handbook) =>
-      handbook.fileName.toLowerCase().includes(searchFileName.toLowerCase()) &&
-      handbook.filetype.toLowerCase().includes(searchFileType.toLowerCase())
-  );
+  const filteredData = handbook
+    .filter((handbook) => handbook.status)
+    .filter(
+      (handbook) =>
+        handbook.fileName
+          .toLowerCase()
+          .includes(searchFileName.toLowerCase()) &&
+        handbook.filetype.toLowerCase().includes(searchFileType.toLowerCase())
+    );
 
   const dataWithKey = filteredData.map((item, index) => ({
     ...item,
@@ -113,36 +117,36 @@ const Tablehandbook: React.FC = () => {
       title: "ชื่อไฟล์",
       dataIndex: "fileName",
       key: "fileName",
-      width: "250px",
+      width: "200px",
     },
     {
       title: "ประเภทเอกสาร",
       dataIndex: "filetype",
       key: "filetype",
       width: "50px",
-      align: "center",
+      ellipsis: true,
     },
     {
-      title: "ล่าสุด",
+      title: "อัปเดตล่าสุด",
       dataIndex: "updatedAt",
       key: "updatedAt",
       width: "50px",
-      align: "center",
       render: (updatedAt: Date) =>
         moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
-      title: "อัพโหลดโดย",
+      title: "ผู้อัปโหลด",
       dataIndex: "author",
       key: "author",
-      width: "100px",
+      width: "70px",
     },
     {
       title: "ดาวโหลดไฟล์",
       dataIndex: "x",
       key: "x",
-      width: "30px",
+      width: "50px",
       align: "center",
+      ellipsis: true,
       render: (_record: number, row: any, _index: number) => (
         <Button
           icon={<DownloadOutlined />}
@@ -154,11 +158,6 @@ const Tablehandbook: React.FC = () => {
       ),
     },
   ];
-
-  function opencreate() {
-    fetchDataHandbook();
-    fetchDataHandbookfile();
-  }
 
   return (
     <div>
@@ -196,14 +195,6 @@ const Tablehandbook: React.FC = () => {
             />
           </div>
         </div>
-        <div></div>
-        <Button
-          style={{ alignContent: "right" }}
-          type="primary"
-          onClick={opencreate}
-        >
-          Refresh
-        </Button>
       </div>
       <Table
         dataSource={dataWithKey}

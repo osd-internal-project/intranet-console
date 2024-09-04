@@ -24,6 +24,7 @@ import {
   ITypeDataLeaveCreate,
   IDepartMent,
   ISelectDepartment,
+  UserGroupType,
 } from "../common";
 import { CreateOnlineLeave } from "./components/create-online-leave";
 import { TableOnlineDetailLeave } from "./components/table-online-detail-leave";
@@ -47,9 +48,7 @@ export default function Page() {
   const [typeLeaveTableAll, setTypeLeaveTableAll] = useState<ITypetypeleave[]>(
     []
   );
-  const [getDepartmentById, setResDepartMent] = useState<ISelectDepartment[]>(
-    []
-  );
+  const [groupDetail, setGroupDetail] = useState<UserGroupType[]>([]);
   const [getStartDate, setStartDate] = useState<Date>();
   const [getEndDate, setEndDate] = useState<Date>();
   const [checkSwitch, setCheckSwitch] = useState<boolean>(false);
@@ -72,9 +71,6 @@ export default function Page() {
 
   const loadDataTypeLeave = async () => {
     const res = await dataleaveservice.getdataAll();
-    // const resOwner = await dataleaveserviceUser.getOwnerGroupsByPositionId(
-    //   getUser?.userMapOrganizeChart[0]?.positionId
-    // );
     const resTableDeatilTypeLeave =
       await dataleaveservice.findDetailTypeLeaveByUserId(getUser?.userId);
     const resTableUserTypeLeave = await dataleaveservice.findUserByUserId(
@@ -83,19 +79,18 @@ export default function Page() {
     const options = res.map((event: ITypetypeleave) => {
       return { value: event.typeId, label: event.typeName };
     });
-    const resTableDepartMent = await dataleaveservice.findDetailDepartment();
-    const departmentOptions = resTableDepartMent.map((event: IDepartMent) => {
-      return { value: event.departId, label: event.departName };
-    });
     const groupId = session?.user.ownerGroup;
 
     if (groupId) {
-      const groupDetail = await dataleaveservice.getUserGroupByGroupId(groupId);
-      console.log("groupDetail:", groupDetail);
+      const dataGroupDetail = await dataleaveserviceUser.getUserGroupByGroupId(
+        groupId
+      );
+      const dataUserByID = await dataleaveserviceUser.getUsersByUserId(
+        dataGroupDetail.headId
+      );
+      setUserOwner(dataUserByID);
+      setGroupDetail(dataGroupDetail);
     }
-
-    setResDepartMent(departmentOptions);
-    // setUserOwner(resOwner);
     setTypeLeaveTable(resTableDeatilTypeLeave);
     setTypeLeaveTableAll(resTableUserTypeLeave.typeLeaveDisabledMap);
     setTypeLeaveOption(options);
@@ -425,9 +420,6 @@ export default function Page() {
     const selectedOption = getTypeLeaveOption.find(
       (option) => option.value === values.type_id
     );
-    const selecteddepart = getDepartmentById.find(
-      (option) => option.value === values.depart_id
-    );
     const totalDays =
       startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
 
@@ -453,8 +445,6 @@ export default function Page() {
             lastName: values.lastNameTh,
             positionId: values.posId,
             position: values.position,
-            departId: values.depart_id,
-            departName: selecteddepart ? selecteddepart.label : undefined,
             typeId: values.type_id,
             typeName: selectedOption ? selectedOption.label : undefined,
             startDate: values.startDate,
@@ -464,6 +454,7 @@ export default function Page() {
             status: "waitting",
             ownerId: values.ownerId,
             ownerName: values.ownerName,
+            groupId: session?.user.ownerGroup,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -557,13 +548,12 @@ export default function Page() {
             return;
           }
           const base: ITypeDataLeave = {
+            id: id,
             userId: values.userId,
             firstName: values.firstNameTh,
             lastName: values.lastNameTh,
             positionId: values.posId,
             position: values.position,
-            departId: values.depart_id,
-            departName: selecteddepart ? selecteddepart.label : undefined,
             typeId: values.type_id,
             typeName: selectedOption ? selectedOption.label : undefined,
             startDate: values.startDate,
@@ -573,6 +563,7 @@ export default function Page() {
             status: "waitting",
             ownerId: values.ownerId,
             ownerName: values.ownerName,
+            groupId: session?.user.ownerGroup,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -656,13 +647,12 @@ export default function Page() {
             return;
           }
           const base: ITypeDataLeave = {
+            id: id,
             userId: values.userId,
             firstName: values.firstNameTh,
             lastName: values.lastNameTh,
             positionId: values.posId,
             position: values.position,
-            departId: values.depart_id,
-            departName: selecteddepart ? selecteddepart.label : undefined,
             typeId: values.type_id,
             typeName: selectedOption ? selectedOption.label : undefined,
             startDate: values.startDate,
@@ -672,6 +662,7 @@ export default function Page() {
             status: "waitting",
             ownerId: values.ownerId,
             ownerName: values.ownerName,
+            groupId: session?.user.ownerGroup,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -754,13 +745,12 @@ export default function Page() {
             return;
           }
           const base: ITypeDataLeave = {
+            id: id,
             userId: values.userId,
             firstName: values.firstNameTh,
             lastName: values.lastNameTh,
             positionId: values.posId,
             position: values.position,
-            departId: values.depart_id,
-            departName: selecteddepart ? selecteddepart.label : undefined,
             typeId: values.type_id,
             typeName: selectedOption ? selectedOption.label : undefined,
             startDate: values.startDate,
@@ -770,6 +760,7 @@ export default function Page() {
             status: "waitting",
             ownerId: values.ownerId,
             ownerName: values.ownerName,
+            groupId: session?.user.ownerGroup,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -857,8 +848,6 @@ export default function Page() {
             lastName: values.lastNameTh,
             positionId: values.posId,
             position: values.position,
-            departId: values.depart_id,
-            departName: selecteddepart ? selecteddepart.label : undefined,
             typeId: values.type_id,
             typeName: selectedOption ? selectedOption.label : undefined,
             startDate: values.startDate,
@@ -868,6 +857,7 @@ export default function Page() {
             status: "waitting",
             ownerId: values.ownerId,
             ownerName: values.ownerName,
+            groupId: session?.user.ownerGroup,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -967,7 +957,6 @@ export default function Page() {
           <CreateOnlineLeave
             getUser={getUser}
             getTypeLeaveOption={getTypeLeaveOption}
-            getDepartmentById={getDepartmentById}
             onfinishCreate={(e: ITypeDataLeaveCreate) => onfinishCreate(e)}
             createdataleaveForm={createdataleaveForm}
             setStartDate={(e: Date) => setStartDate(e)}
@@ -981,6 +970,7 @@ export default function Page() {
             attendFiles={attendFiles}
             getUserOwner={getUserOwner}
             onChangeParams={onChangeParams}
+            groupDetail={groupDetail}
           />
         </Col>
         <Col span={12}>

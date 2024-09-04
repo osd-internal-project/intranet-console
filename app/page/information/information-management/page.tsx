@@ -1,25 +1,32 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Creaatenews from "./components/createnews";
 import Newoption from "./components/newoption";
 import Tablenews from "./components/tableNews";
-import { Col, Card, TabsProps, Tabs } from "antd";
+import { Col, Card, Tabs, TabsProps } from "antd";
+
 const Infomation_management: React.FC = () => {
+  const [activeKey, setActiveKey] = useState<string>("1");
+
+  const handleTabChange = (key: string) => {
+    setActiveKey(key);
+  };
+
   const items: TabsProps["items"] = [
     {
       key: "1",
-      label: "สร้างข้อมูลข่าว",
-      children: <Creaatenews />,
+      label: "สร้างข้อมูลข่าวสาร",
+      children: activeKey === "1" ? <Creaatenews /> : null,
     },
     {
       key: "2",
       label: "ตารางข้อมูลข่าวสาร",
-      children: <Tablenews />,
+      children: activeKey === "2" ? <Tablenews /> : null,
     },
     {
       key: "3",
       label: "ประเภทของข่าวสาร",
-      children: <Newoption />,
+      children: activeKey === "3" ? <Newoption /> : null,
     },
   ];
 
@@ -38,7 +45,11 @@ const Infomation_management: React.FC = () => {
       <Col span={24}>
         <div className="grid-span-1 space-y-2">
           <Card>
-            <Tabs defaultActiveKey="1" items={items} />
+            <Tabs
+              activeKey={activeKey}
+              onChange={handleTabChange}
+              items={items}
+            />
           </Card>
         </div>
       </Col>

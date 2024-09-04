@@ -22,7 +22,7 @@ import moment from "moment";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 export interface handbooktype {
-  idhandtype?: Number;
+  idhandtype: Number;
   nameType: String;
   createAt: String;
   updatedAt: String;
@@ -141,6 +141,7 @@ const Newoption: React.FC = () => {
       fetchDatahandbooktype();
       fetchDataHandbookfile();
       fetchDataHandbook();
+      setIsmodlaOpencreate(false);
     } catch (error) {
       message.error("เพิ่มประเภทเอกสารไม่สำเร็จ");
       setSubmitLoading(false);
@@ -157,7 +158,7 @@ const Newoption: React.FC = () => {
         idhandtype: values?.idhandtype,
         nameType: values?.nameType,
         updatedAt: new Date().toISOString(),
-        author: session?.user.username,
+        author: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
         status: values?.status,
       };
       await managehandbookFileServices.updatehandbooktype(updatenewType);
@@ -167,21 +168,22 @@ const Newoption: React.FC = () => {
       fetchDataHandbook();
       formEdit.resetFields();
       setSubmitLoading(false);
+      setModalEditnewType(false);
     } catch (error) {
       message.error("แก้ไขประเภทเอกสารไม่สำเร็จ");
     }
   };
 
-  const handleDeletenewType = async (idhandtype: number) => {
+  const handleDeletenewType = async (record: handbooktype) => {
+    record.idhandtype;
+    console.log(record.idhandtype);
     try {
-      await managehandbookFileServices.deletehandbooktype(idhandtype);
+      await managehandbookFileServices.deletehandbooktype(record.idhandtype);
       sethandbooktype(
-        handbooktype.filter((item) => item.idhandtype !== idhandtype)
+        handbooktype.filter((item) => item.idhandtype !== record.idhandtype)
       );
       message.success("ลบประเภทเอกสารสำเร็จ");
       fetchDatahandbooktype();
-      fetchDataHandbookfile();
-      fetchDataHandbook();
     } catch (error) {
       message.error("ลบประเภทเอกสารไม่สำเร็จ");
     }
@@ -222,41 +224,49 @@ const Newoption: React.FC = () => {
       title: "ลำดับ",
       dataIndex: "key",
       key: "key",
+      width: "40px",
       align: "center",
     },
     {
       title: "ชื่อประเภทเอกสาร",
       dataIndex: "nameType",
       key: "nameType",
+      width: "400px",
     },
     {
-      title: "อัปเดทล่าสุด",
-      dataIndex: "updatedAt",
-      key: "updatedAt",
-      render: (updatedAt: Date) =>
-        moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
-    },
-    {
-      title: "เวลาการสร้าง",
+      title: "วันที่สร้าง",
       dataIndex: "createAt",
       key: "createAt",
+      width: "100px",
       render: (createAt: Date) =>
         moment(createAt).format("DD/MM/YYYY HH:mm" + " น."),
+      ellipsis: true,
     },
-
+    {
+      title: "วันที่อัปเดต",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
+      width: "100px",
+      render: (updatedAt: Date) =>
+        moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
+      ellipsis: true,
+    },
     {
       title: "การมองเห็น",
       dataIndex: "status",
       key: "status",
+      width: "80px",
+      align: "center",
+      ellipsis: true,
       render: (status: boolean) =>
         status ? (
-          <Tag color="green">เปิดการมอง</Tag>
+          <Tag color="green">เปิดการมองเห็น</Tag>
         ) : (
-          <Tag color="red">ปิดการมอง</Tag>
+          <Tag color="red">ปิดการมองเห็น</Tag>
         ),
     },
     {
-      title: "ผู้อัพโหลด",
+      title: "ผู้อัปโหลด",
       dataIndex: "author",
       key: "author",
       width: "100px",
@@ -266,7 +276,8 @@ const Newoption: React.FC = () => {
       dataIndex: "x",
       key: "x",
       align: "center",
-      render: (row: any, record: handbooktype) => (
+      width: "80px",
+      render: (row: number, record: handbooktype) => (
         <Space size="middle">
           <Tooltip title="แก้ไข">
             <a onClick={() => showModalEditnewType(record)}>
@@ -274,8 +285,8 @@ const Newoption: React.FC = () => {
             </a>
           </Tooltip>
           <Popconfirm
-            title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
-            onConfirm={() => handleDeletenewType(row.idType)}
+            title="คุณแน่ใจหรือไม่ว่าต้องการลบการเอกสารนี้?"
+            onConfirm={() => handleDeletenewType(record)}
             okText="ใช่"
             cancelText="ไม่"
           >
@@ -335,9 +346,10 @@ const Newoption: React.FC = () => {
           <Form.Item
             name="nameType"
             label="ชื่อประเภทเอกสาร :"
+            rules={[{ required: true, message: "กรุณากรอกชื่อประเภทเอกสาร" }]}
             style={{ width: "300px" }}
           >
-            <Input />
+            <Input placeholder="ชื่อประเภทเอกสาร" />
           </Form.Item>
           <Form.Item
             name="status"
@@ -361,12 +373,7 @@ const Newoption: React.FC = () => {
               </Button>
             </Form.Item>
             <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={submitLoading}
-                onClick={handleclosecreate}
-              >
+              <Button type="primary" htmlType="submit" loading={submitLoading}>
                 ตกลง
               </Button>
             </Form.Item>
@@ -396,9 +403,10 @@ const Newoption: React.FC = () => {
           <Form.Item
             name="nameType"
             label="ชื่อประเภทเอกสาร :"
+            rules={[{ required: true, message: "กรุณากรอกชื่อประเภทเอกสาร" }]}
             style={{ width: "300px" }}
           >
-            <Input disabled />
+            <Input placeholder="ชื่อประเภทเอกสาร" />
           </Form.Item>
           <Form.Item
             name="status"
@@ -422,12 +430,7 @@ const Newoption: React.FC = () => {
               </Button>
             </Form.Item>
             <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={submitLoading}
-                onClick={handleCancel1edit}
-              >
+              <Button type="primary" htmlType="submit" loading={submitLoading}>
                 ตกลง
               </Button>
             </Form.Item>

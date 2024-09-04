@@ -49,6 +49,7 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [informationNews, setinformationNews] = useState<informationNews[]>([]);
   const [newsType, setnewsType] = useState<newsType[]>([]);
+  const [newsimage, setnewsimage] = useState<newsImage[]>([]);
   const [newsTypeOptions, setnewsTypeOptions] = useState<
     {
       value: number;
@@ -62,6 +63,7 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
   useEffect(() => {
     fetchDatainformationNews();
     fetchDataType();
+    fetchDatanewimage();
     setAttendFiles([]);
   }, []);
 
@@ -76,9 +78,8 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
         })
       );
       setinformationNews(informationNews);
-      setSubmitLoading(false);
     } catch (error) {
-      message.error("Failed to fetch car data");
+      message.error("ไม่สามารถโหลดข้อมูลข่าวสารได้");
     }
   };
 
@@ -94,7 +95,23 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
       setnewsTypeOptions(optionsmaResponse);
       setnewsType(maresponse);
     } catch (error) {
-      message.error("Failed to fetch car data");
+      message.error("ไม่สามารถโหลดข้อมูลข่าวสารได้");
+    }
+  };
+  const fetchDatanewimage = async () => {
+    try {
+      const maresponse =
+        await manageinformationNewsServices.getnewsImageQuery();
+      const newsImage: newsImage[] = maresponse.map(
+        (item: any, index: number) => ({
+          ...item,
+          key: index.toString(),
+        })
+      );
+      setnewsimage(newsImage);
+      setSubmitLoading(false);
+    } catch (error) {
+      message.error("ไม่สามารถโหลดข้อมูลข่าวสารได้");
     }
   };
   const informationNewsCreate: FormProps<
@@ -107,7 +124,7 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
         newsName: values.newsName,
         content: values.content,
         newsType: values.newsType,
-        author: session?.user.username,
+        author: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
         phblishedAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         status: values.status,
@@ -130,21 +147,31 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
             );
           })
         );
+        fetchDatainformationNews();
+        fetchDataType();
+        setAttendFiles([]);
       }
       if (response) {
         message.success("เพิ่มข่าวสารสำเร็จ");
-        form.resetFields();
+        fetchDatainformationNews();
+        fetchDataType();
         setAttendFiles([]);
+        form.resetFields();
       } else {
         message.error("เพิ่มข่าวสารไม่สำเร็จ");
-        form.resetFields();
+        fetchDatainformationNews();
+        fetchDataType();
         setAttendFiles([]);
+        form.resetFields();
       }
-      setSubmitLoading(false);
       fetchDatainformationNews();
+      fetchDataType();
+      setAttendFiles([]);
+      setSubmitLoading(false);
     } catch (error) {
       message.error("เพิ่มข่าวสารไม่สำเร็จ");
-      
+      fetchDatainformationNews();
+      fetchDataType();
       setAttendFiles([]);
       form.resetFields();
       setSubmitLoading(false);
@@ -154,16 +181,19 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
   const handleChangeAttendFiles: UploadProps["onChange"] = async ({
     fileList: newFileList,
   }) => {
-    console.log(newFileList[0]);
+    if (newFileList.length > 3) {
+      message.warning("คุณไม่สามารถอัปโหลดภาพเกิน 3 ไฟล์ได้");
+      return Upload.LIST_IGNORE;
+    }
     return setAttendFiles(newFileList);
   };
 
   const beforeUploadAttendFiles = (file: RcFile) => {
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
-      return false;
+      return Upload.LIST_IGNORE;
     }
-    return false;
+    return true;
   };
 
   return (
@@ -177,16 +207,18 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
           <Form.Item
             name="newsName"
             label="หัวข้อข่าวสาร"
+            rules={[{ required: true, message: "กรุณากรอกหัวข้อข่าวสาร" }]}
             style={{ width: "300px" }}
           >
-            <Input />
+            <Input placeholder="หัวข้อข่าวสาร"/>
           </Form.Item>
           <Form.Item
             name="newsType"
             label="ประเภทข่าวสาร:"
+            rules={[{ required: true, message: "กรุณากรอกประเภทข่าวสาร" }]}
             style={{ width: "300px" }}
           >
-            <Select>
+            <Select placeholder="ประเภทข่าวสาร">
               {newsTypeOptions
                 .filter((option) => {
                   const type = newsType.find(
@@ -204,9 +236,10 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
           <Form.Item
             name="content"
             label=" เนื้อหาข่าวสาร : "
-            style={{ width: "500px" }}
+            rules={[{ required: true, message: "กรุณากรอกเนื้อหาข่าวสาร" }]}
+            style={{ width: "900px" }}
           >
-            <Input.TextArea rows={15} />
+            <Input.TextArea rows={15} placeholder="เนื้อหาข่าวสาร"/>
           </Form.Item>
           <Form.Item valuePropName="filelist">
             <div
@@ -222,10 +255,9 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
                 onChange={handleChangeAttendFiles}
                 beforeUpload={beforeUploadAttendFiles}
                 multiple={true}
-                maxCount={3}
                 accept=".png,.jpg,.jpeg"
               >
-                <Button icon={<UploadOutlined />}>Select File</Button>
+                <Button icon={<UploadOutlined />}>อัปโหลดรูปภาพ</Button>
               </Upload>
             </div>
           </Form.Item>

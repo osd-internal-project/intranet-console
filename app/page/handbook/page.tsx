@@ -1,26 +1,31 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import ManageHandbook from "./manageHandbook/managehandBook";
 import Tablehandbook from "./manageHandbook/tablehandbook";
 import Optionhandbook from "./manageHandbook/optionhandbook";
 import { Col, Card, Tabs, TabsProps } from "antd";
 
 const dataform: React.FC = () => {
+  const [activeKey, setActiveKey] = useState<string>("1");
+
+  const handleTabChange = (key: string) => {
+    setActiveKey(key);
+  };
   const items: TabsProps["items"] = [
     {
       key: "1",
       label: "file PDF",
-      children: <Tablehandbook />,
+      children: activeKey === "1" ?<Tablehandbook />: null,
     },
     {
       key: "2",
       label: "เพิ่มข้อมูล PDF",
-      children: <ManageHandbook />,
+      children: activeKey === "2" ?<ManageHandbook />: null,
     },
     {
       key: "3",
       label: "ประเภท PDF",
-      children: <Optionhandbook />,
+      children: activeKey === "3" ?<Optionhandbook />: null,
     },
   ];
   return (
@@ -38,7 +43,11 @@ const dataform: React.FC = () => {
       <Col span={24}>
         <div className="grid-span-1 space-y-2">
           <Card>
-            <Tabs defaultActiveKey="1" items={items} />
+            <Tabs
+              activeKey={activeKey}
+              onChange={handleTabChange}
+              items={items}
+            />
           </Card>
         </div>
       </Col>

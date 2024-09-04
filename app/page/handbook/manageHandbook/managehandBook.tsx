@@ -167,7 +167,7 @@ const Managehandbook: React.FC = () => {
         fileName: values.fileName,
         filetype: values.filetype,
         fileLocation: values?.fileLocation,
-        author: session?.user.username,
+        author: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         status: values.status,
@@ -214,7 +214,7 @@ const Managehandbook: React.FC = () => {
       idbook: values?.idbook,
       fileName: values.fileName,
       filetype: values.filetype,
-      author: session?.user.username,
+      author: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
       updatedAt: new Date().toISOString(),
       status: values.status,
     };
@@ -396,38 +396,39 @@ const Managehandbook: React.FC = () => {
       dataIndex: "key",
       key: "key",
       align: "center",
-      width: "20px",
+      width: "40px",
     },
     {
       title: "ชื่อไฟล์",
       dataIndex: "fileName",
       key: "fileName",
-      width: "240px",
+      width: "270px",
     },
     {
       title: "ประเภทเอกสาร",
       dataIndex: "filetype",
       key: "filetype",
-      width: "50px",
+      width: "70px",
+      ellipsis: true,
     },
     {
-      title: "เวลาอัพเดท",
+      title: "วันที่อัปเดต",
       dataIndex: "updatedAt",
       key: "updatedAt",
-      width: "150px",
+      width: "90px",
       render: (updatedAt: Date) =>
         moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
-      title: "นำเข้าเวลา",
+      title: "วันที่สร้าง",
       dataIndex: "createdAt",
       key: "createdAt",
-      width: "150px",
+      width: "90px",
       render: (createdAt: Date) =>
         moment(createdAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
-      title: "ผู้อัพโหลด",
+      title: "ผู้อัปโหลด",
       dataIndex: "author",
       key: "author",
       width: "100px",
@@ -436,7 +437,8 @@ const Managehandbook: React.FC = () => {
       title: "สถานะการมองเห็น",
       dataIndex: "status",
       key: "status",
-      width: "60px",
+      width: "80px",
+      align: "center",
       render: (status: boolean) =>
         status === true ? (
           <Tag color="green">เปิดการมองเห็น</Tag>
@@ -448,7 +450,8 @@ const Managehandbook: React.FC = () => {
       title: "การจัดการ",
       dataIndex: "x",
       key: "x",
-      width: "30px",
+      width: "60px",
+      align: "center",
       render: (_record: number, row: any, _index: number) => (
         <Space size="middle">
           <Tooltip title="แก้ไข">
@@ -474,9 +477,9 @@ const Managehandbook: React.FC = () => {
     },
     {
       title: "ดาวโหลดไฟล์",
-      dataIndex: "x",
-      key: "x",
-      width: "200px",
+      dataIndex: "O",
+      key: "O",
+      width: "70px",
       align: "center",
       render: (_record: number, row: any, _index: number) => (
         <Button
@@ -539,7 +542,7 @@ const Managehandbook: React.FC = () => {
       </div>
 
       <Modal
-        title="แก้ไขข้อมูลตรวจสภาพรถ"
+        title="สร้างข้อมูลเอกสาร"
         open={showmodalupload}
         onCancel={closecreate}
         footer={null}
@@ -548,17 +551,19 @@ const Managehandbook: React.FC = () => {
         <Form form={formupload} onFinish={handbookfileCreate} layout="vertical">
           <Form.Item
             name="fileName"
-            label="ชื่อไฟล์ :"
+            label="ชื่อเอกสาร :"
+            rules={[{ required: true, message: "กรุณากรอกชื่อเอกสาร" }]}
             style={{ width: "300px" }}
           >
-            <Input />
+            <Input placeholder="ชื่อเอกสาร" />
           </Form.Item>
           <Form.Item
             name="filetype"
-            label="ประเภทไฟล์งาน :"
+            label="ประเภทเอกสาร :"
+            rules={[{ required: true, message: "กรุณากรอกประเภทเอกสาร" }]}
             style={{ width: "300px" }}
           >
-            <Select>
+            <Select placeholder="ประเภทเอกสาร">
               {handbooktypeOptions
                 .filter((option) => {
                   const type = handbooktype.find(
@@ -582,7 +587,7 @@ const Managehandbook: React.FC = () => {
               maxCount={1}
               accept=".pdf"
             >
-              <Button icon={<UploadOutlined />}>Select File</Button>
+              <Button icon={<UploadOutlined />}>อัปโหลดเอกสาร</Button>
             </Upload>
           </Form.Item>
           <Form.Item
@@ -607,7 +612,7 @@ const Managehandbook: React.FC = () => {
         </Form>
       </Modal>
       <Modal
-        title="แก้ไขข้อมูลตรวจสภาพรถ"
+        title="แก้ไขข้อมูลเอกสาร"
         open={showmodalupdate}
         onCancel={closeupdate}
         footer={null}
@@ -627,17 +632,19 @@ const Managehandbook: React.FC = () => {
           </Form.Item>
           <Form.Item
             name="fileName"
-            label="ชื่อไฟล์ :"
+            label="ชื่อเอกสาร :"
+            rules={[{ required: true, message: "กรุณากรอกชื่อเอกสาร" }]}
             style={{ width: "300px" }}
           >
-            <Input />
+            <Input placeholder="ชื่อเอกสาร" />
           </Form.Item>
           <Form.Item
             name="filetype"
-            label="ประเภทไฟล์งาน :"
+            label="ประเภทเอกสาร :"
+            rules={[{ required: true, message: "กรุณากรอกประเภทเอกสาร" }]}
             style={{ width: "300px" }}
           >
-            <Select>
+            <Select placeholder="ประเภทเอกสาร">
               {handbooktypeOptions
                 .filter((option) => {
                   const type = handbooktype.find(
@@ -717,7 +724,7 @@ const Managehandbook: React.FC = () => {
               accept=".pdf"
               listType="picture"
             >
-              <Button icon={<UploadOutlined />}>Select File</Button>
+              <Button icon={<UploadOutlined />}>อัปโหลดเอกสาร</Button>
             </Upload>
           </Form.Item>
           <Form.Item

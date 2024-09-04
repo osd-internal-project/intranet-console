@@ -124,7 +124,7 @@ const Newoption: React.FC = () => {
     const totalFilesCount = existingFiles.length + newFileList.length;
 
     if (totalFilesCount > 3) {
-      message.warning("คุณไม่สามารถอัปโหลดไฟล์เกิน 3 รูปได้");
+      message.warning("คุณไม่สามารถอัปโหลดรูปภาพเกิน 3 รูปได้");
       return;
     }
 
@@ -171,7 +171,7 @@ const Newoption: React.FC = () => {
       newsName: values.newsName,
       content: values.content,
       newsType: values.newsType,
-      author: session?.user.username,
+      author: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
       updatedAt: new Date().toISOString(),
       status: values.status,
     };
@@ -197,6 +197,7 @@ const Newoption: React.FC = () => {
       if (response) {
         message.success("อัปเดตข่าวสารสำเร็จ");
         form.resetFields();
+        setIsmodlaupdatedata(false);
         setAttendFiles([]);
       } else {
         message.error("อัปเดตข่าวสารไม่สำเร็จ");
@@ -342,7 +343,7 @@ const Newoption: React.FC = () => {
       dataIndex: "key",
       key: "key",
       align: "center",
-      width: "20px",
+      width: "45px",
     },
     {
       title: "ชื่อข่าว",
@@ -355,28 +356,30 @@ const Newoption: React.FC = () => {
       dataIndex: "newsType",
       key: "newsType",
       width: "80px",
+      ellipsis: true,
     },
     {
-      title: "อัพเดทล่าสุด",
-      dataIndex: "updatedAt",
-      key: "updatedAt",
-      width: "120px",
-      render: (updatedAt: Date) =>
-        moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
-    },
-    {
-      title: "เวลาสร้าง",
+      title: "วันที่สร้าง",
       dataIndex: "phblishedAt",
       key: "phblishedAt",
-      width: "120px",
+      width: "105px",
       render: (phblishedAt: Date) =>
         moment(phblishedAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
-      title: "เนื้อหา:",
+      title: "วันที่อัปเดต",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
+      width: "105px",
+      render: (updatedAt: Date) =>
+        moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
+    },
+
+    {
+      title: "เนื้อหา",
       dataIndex: "content",
       key: "content",
-      width: "20px",
+      width: "45px",
       align: "center",
       render: (_: any, record: informationNews) => (
         <a onClick={() => detailnews(record)}>
@@ -389,7 +392,7 @@ const Newoption: React.FC = () => {
       ),
     },
     {
-      title: "ผู้เขียน:",
+      title: "ผู้เขียน",
       dataIndex: "author",
       key: "author",
       width: "100px",
@@ -398,20 +401,22 @@ const Newoption: React.FC = () => {
       title: "การมองเห็น",
       dataIndex: "status",
       key: "status",
-      width: "100px",
+      width: "75px",
+      align: "center",
       render: (status: boolean) =>
         status ? (
-          <Tag color="green">เปิดการมอง</Tag>
+          <Tag color="green">เปิดการมองเห็น</Tag>
         ) : (
-          <Tag color="red">ปิดการมอง</Tag>
+          <Tag color="red">ปิดการมองเห็น</Tag>
         ),
     },
     {
       title: "การจัดการ",
       dataIndex: "manage",
       key: "manage",
-      width: "100px",
-      render: (record: number, row: any, index: number) => (
+      width: "60px",
+      align: "center",
+      render: (record: number, row: any) => (
         <Space size="middle">
           <Tooltip title="แก้ไข">
             <a onClick={() => showModalinformationNews(row)}>
@@ -419,7 +424,7 @@ const Newoption: React.FC = () => {
             </a>
           </Tooltip>
           <Popconfirm
-            title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
+            title="คุณแน่ใจหรือไม่ว่าต้องการลบข่าวสารนี้?"
             onConfirm={() => handleDeleteNews(row)}
             okText="ใช่"
             cancelText="ไม่"
@@ -452,25 +457,25 @@ const Newoption: React.FC = () => {
       >
         <div>
           <div>
-            ค้นหาชื่อข่าว :
+            ค้นหาชื่อข่าวสาร :
             <Input
               type="text"
               value={searchFileName}
               onChange={handleInputNameChange}
-              placeholder="ค้นหาชื่อข่าว"
+              placeholder="ค้นหาชื่อข่าวสาร"
               style={{
-                margin: "10px 10px 10px 10px",
+                margin: "10px 10px 20px 10px",
                 width: "300px",
               }}
             />
-            ค้นหาประเภทข่าว :
+            ค้นหาประเภทข่าวสาร :
             <Input
               type="text"
               value={searchFileType}
               onChange={handleInputTypeChange}
-              placeholder="ค้นหาประเภทข่าว"
+              placeholder="ค้นหาประเภทข่าวสาร"
               style={{
-                margin: "10px 10px 10px 10px",
+                margin: "10px 10px 20px 10px",
                 width: "300px",
               }}
             />
@@ -485,7 +490,7 @@ const Newoption: React.FC = () => {
         pagination={{ pageSize: 10 }}
       />
       <Modal
-        title="หมายเหตุ (รายละเอียด)"
+        title="เนื้อหาข่าวสาร"
         width={600}
         open={Ismodladetail}
         onCancel={handledetail}
@@ -508,37 +513,43 @@ const Newoption: React.FC = () => {
       </Modal>
 
       <Modal
-        title="แก้ไขการมองเห็นข่าว"
+        title="แก้ไขการมองเห็นข่าวสาร"
         open={Ismodlaupdatedata}
         onCancel={handleCanceupdate}
         footer={null}
         destroyOnClose
+        width={950}
       >
         <Form form={form} onFinish={informationNewsUpdate} layout="vertical">
           <Form.Item
             name="newsId"
             label="ชื่อประเภทข่าวสาร :"
+            rules={[{ required: true, message: "กรุณากรอกชื่อประเภทข่าวสาร" }]}
             style={{
               width: "300px",
               visibility: "hidden",
               margin: " 0 -60px -60px 0 ",
             }}
           >
-            <Input />
+            <Input 
+              placeholder="ชื่อประเภทข่าวสาร"/>
           </Form.Item>
           <Form.Item
             name="newsName"
             label="หัวข้อข่าวสาร :"
+            rules={[{ required: true, message: "กรุณากรอกหัวข้อข่าวสาร" }]}
             style={{ width: "300px" }}
           >
-            <Input />
+            <Input 
+              placeholder="หัวข้อข่าวสาร"/>
           </Form.Item>
           <Form.Item
             name="newsType"
-            label="ประเภทข่าวสาร:"
+            label="ประเภทข่าวสาร :"
+            rules={[{ required: true, message: "กรุณากรอกประเภทข่าวสาร" }]}
             style={{ width: "300px" }}
           >
-            <Select>
+            <Select placeholder="ประเภทข่าวสาร">
               {newsTypeOptions
                 .filter((option) => {
                   const type = newsType.find(
@@ -556,9 +567,10 @@ const Newoption: React.FC = () => {
           <Form.Item
             name="content"
             label="เนื้อหาข่าวสาร : "
-            style={{ width: "470px" }}
+            rules={[{ required: true, message: "กรุณากรอกเนื้อหาข่าวสาร" }]}
+            style={{ width: "900px" }}
           >
-            <Input.TextArea rows={12} />
+            <Input.TextArea rows={12} placeholder="เนื้อหาข่าวสาร"/>
           </Form.Item>
           <Form.Item label="รูปภาพปัจจุบัน:">
             {existingFiles.map((file, index) => (
@@ -589,6 +601,11 @@ const Newoption: React.FC = () => {
             ))}
           </Form.Item>
           <Form.Item valuePropName="fileList">
+            <div>
+              <p style={{ color: "red", fontSize: "16px",margin:" 0 0 -5px 0" }}>คำเตือน **</p>
+              รูปภาพของคุณในการอัปเดตข่าวสาร รวมถึงรูปเก่าในข้อมูลเดิม คุณจะไม่สามารถอัพรูปภาพได้เกิน 3 ภาพ
+              / 1 ข่าวสาร
+            </div>
             <Upload
               fileList={[...attendFiles]}
               onChange={handleChangeAttendFiles}
@@ -597,7 +614,7 @@ const Newoption: React.FC = () => {
               accept=".png,.jpg,.jpeg"
               listType="picture"
             >
-              <Button icon={<UploadOutlined />}>Select File</Button>
+              <Button icon={<UploadOutlined />}>อัปโหลดรูปภาพ</Button>
             </Upload>
           </Form.Item>
 

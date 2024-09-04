@@ -204,9 +204,8 @@ export const ManagehandbookFileServices = (axiosInstance: AxiosInstance) => {
         });
     },
     deletehandbooktype: async (idhandtype: any) => {
-
       return await axiosInstance
-        .delete(`${baseUrlApihandbook}/${idhandtype}`)
+        .delete(`${baseUrlApihandbooktype}/${idhandtype}`)
         .then((res) => {
           return res.data;
         })

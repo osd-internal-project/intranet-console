@@ -136,23 +136,33 @@ const CreateCustomerForm: React.FC<props> = ({
         ) : customerType === "juristic" ? (
           <div className=" col-span-2 grid grid-cols-2">
             <Form.Item
-              label="คำนำหน้า TH"
+              label="ชื่อลูกค้า TH"
               name={["details", "customerNameTh"]}
               rules={[{ required: true, message: "Please Enter" }]}
             >
               <Input placeholder="Enter Text" maxLength={10} />
             </Form.Item>
             <Form.Item
-              label="คำนำหน้า En"
+              label="ชื่อลูกค้า En"
               name={["details", "customerNameEn"]}
               rules={[{ required: true, message: "Please Enter" }]}
             >
               <Input placeholder="Enter Text" maxLength={10} />
             </Form.Item>
+            <Form.Item label={"ชื่อย่อ"} name={["details", "initials"]}>
+              <Input placeholder="Enter Text" maxLength={50} />
+            </Form.Item>
           </div>
         ) : (
           <div className=" col-span-2 grid grid-cols-2"></div>
         )}
+        <Form.Item
+          label="เลขประจำตัวผู้เสียภาษี"
+          name={["details", "identificationNo"]}
+          rules={[{ required: true, message: "Please Enter" }]}
+        >
+          <Input placeholder="Enter Text" maxLength={50} />
+        </Form.Item>
         <Form.Item
           label="รหัส"
           name={"customerCode"}
@@ -160,7 +170,6 @@ const CreateCustomerForm: React.FC<props> = ({
         >
           <Input placeholder="Enter Text" maxLength={50} />
         </Form.Item>
-
         <Form.Item label="อ้างอิงรหัสลูกค้า" name={"referenceCode"}>
           <Input placeholder="Enter Text" maxLength={50} />
         </Form.Item>
@@ -183,21 +192,29 @@ const CreateCustomerForm: React.FC<props> = ({
         <Form.Item label="เลขที่ทะเบียนบริษัท" name={"companyRegisNumber"}>
           <Input placeholder="Enter Text" maxLength={20} />
         </Form.Item>
-        <Form.Item
-          label="วันที่จดทะเบียน"
-          rules={[{ required: true, message: "Please Enter" }]}
-        >
-          <DatePicker format={"DD/MM/YYYY"} className=" w-full" />
-        </Form.Item>
-        <Form.Item label="ทุนจดทะเบียน" name={"registration"}>
-          <InputNumber
-            min={0}
-            className=" w-full"
-            formatter={(value) =>
-              `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-            }
-          />
-        </Form.Item>
+        {customerType === "juristic" && (
+          <Form.Item
+            label="วันที่จดทะเบียน"
+            rules={[{ required: true, message: "Please Enter" }]}
+          >
+            <DatePicker format={"DD/MM/YYYY"} className=" w-full" />
+          </Form.Item>
+        )}
+        {customerType === "juristic" && (
+          <Form.Item
+            label="ทุนจดทะเบียน"
+            name={"registration"}
+            rules={[{ required: true, message: "Please Enter" }]}
+          >
+            <InputNumber
+              min={0}
+              className=" w-full"
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
+            />
+          </Form.Item>
+        )}
         <Form.Item label="กลุ่มลูกค้า" name={"customerGroupId"}>
           <Select
             placeholder="Please Choose"
@@ -265,6 +282,17 @@ const CreateCustomerForm: React.FC<props> = ({
         <Form.Item label="Map" name={"notiMap"}>
           <Input placeholder="Enter Text" />
         </Form.Item>
+        {customerType === "juristic" && (
+          <Form.Item label="Domain @" name={["details", "notiDomain"]}>
+            <Input placeholder="Enter Text" />
+          </Form.Item>
+        )}
+        {customerType === "juristic" && (
+          <Form.Item label="Website" name={["details", "notiWebsite"]}>
+            <Input placeholder="Enter Text" />
+          </Form.Item>
+        )}
+
         <div className=" md:col-span-3">
           <Form.Item label="หมวดธุรกิจ" name={"businessCategory"}>
             <TextArea />

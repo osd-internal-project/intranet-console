@@ -147,7 +147,7 @@ const DescriptionCustomerForm: React.FC<props> = ({
                         name={["details", "prefixTh"]}
                         rules={[{ required: true, message: "Please Enter" }]}
                       >
-                        <Input placeholder="Enter Text" maxLength={10} />
+                        <Input placeholder="Enter Text" maxLength={50} />
                       </Form.Item>
                       <Form.Item
                         label={<b>ชื่อ TH</b>}
@@ -168,7 +168,7 @@ const DescriptionCustomerForm: React.FC<props> = ({
                         name={["details", "prefixEn"]}
                         rules={[{ required: true, message: "Please Enter" }]}
                       >
-                        <Input placeholder="Enter Text" maxLength={10} />
+                        <Input placeholder="Enter Text" maxLength={50} />
                       </Form.Item>
                       <Form.Item
                         label={<b>ชื่อ EN</b>}
@@ -186,25 +186,38 @@ const DescriptionCustomerForm: React.FC<props> = ({
                       </Form.Item>
                     </div>
                   ) : customerType === "juristic" ? (
-                    <div className=" col-span-2 grid grid-cols-2">
+                    <div className=" col-span-3 grid grid-cols-3">
                       <Form.Item
                         label={<b>ชื่อลูกค้า TH</b>}
                         name={["details", "customerNameTH"]}
                         rules={[{ required: true, message: "Please Enter" }]}
                       >
-                        <Input placeholder="Enter Text" maxLength={10} />
+                        <Input placeholder="Enter Text" maxLength={50} />
                       </Form.Item>
                       <Form.Item
                         label={<b>ชื่อลูกค้า EN</b>}
                         name={["details", "customerNameEn"]}
                         rules={[{ required: true, message: "Please Enter" }]}
                       >
-                        <Input placeholder="Enter Text" maxLength={10} />
+                        <Input placeholder="Enter Text" maxLength={50} />
+                      </Form.Item>
+                      <Form.Item
+                        label={<b>ชื่อย่อ</b>}
+                        name={["details", "initials"]}
+                      >
+                        <Input placeholder="Enter Text" maxLength={50} />
                       </Form.Item>
                     </div>
                   ) : (
                     <div className=" col-span-2 grid grid-cols-2"></div>
                   )}
+                  <Form.Item
+                    label={<b>เลขประจำตัวผู้เสียภาษี</b>}
+                    name={["details", "identificationNo"]}
+                    rules={[{ required: true, message: "Please Enter" }]}
+                  >
+                    <Input placeholder="Enter Text" maxLength={50} />
+                  </Form.Item>
                   <Form.Item
                     label={<b>รหัส</b>}
                     name={"customerCode"}
@@ -241,18 +254,29 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   >
                     <Input placeholder={isEdit ? "Enter Text" : ""} />
                   </Form.Item>
-                  <Form.Item label={<b>วันที่จดทะเบียน</b>} name={"regisDate"}>
-                    <DatePicker format={"DD/MM/YYYY"} className=" w-full" />
-                  </Form.Item>
-                  <Form.Item label={<b>ทุนจดทะเบียน</b>} name={"registration"}>
-                    <InputNumber
-                      min={0}
-                      className=" w-full"
-                      formatter={(value) =>
-                        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                      }
-                    />
-                  </Form.Item>
+                  {customerType === "juristic" && (
+                    <Form.Item
+                      label="วันที่จดทะเบียน"
+                      rules={[{ required: true, message: "Please Enter" }]}
+                    >
+                      <DatePicker format={"DD/MM/YYYY"} className=" w-full" />
+                    </Form.Item>
+                  )}
+                  {customerType === "juristic" && (
+                    <Form.Item
+                      label="ทุนจดทะเบียน"
+                      name={"registration"}
+                      rules={[{ required: true, message: "Please Enter" }]}
+                    >
+                      <InputNumber
+                        min={0}
+                        className=" w-full"
+                        formatter={(value) =>
+                          `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                        }
+                      />
+                    </Form.Item>
+                  )}
                   <Form.Item label={<b>Type</b>} name={"customerTypeId"}>
                     <Select
                       placeholder={isEdit ? "Plese Choose" : ""}
@@ -351,6 +375,22 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   <Form.Item label={<b>Map</b>} name={"notiMap"}>
                     <Input placeholder={isEdit ? "Enter Text" : ""} />
                   </Form.Item>
+                  {customerType === "juristic" && (
+                    <Form.Item
+                      label={<b>Domain @</b>}
+                      name={["details", "notiDomain"]}
+                    >
+                      <Input placeholder="Enter Text" />
+                    </Form.Item>
+                  )}
+                  {customerType === "juristic" && (
+                    <Form.Item
+                      label={<b>Website</b>}
+                      name={["details", "notiWebsite"]}
+                    >
+                      <Input placeholder="Enter Text" />
+                    </Form.Item>
+                  )}
                   <div className=" md:col-span-4">
                     <Form.Item
                       label={<b>หมวดธุรกิจ</b>}

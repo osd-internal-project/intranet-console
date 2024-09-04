@@ -139,7 +139,7 @@ const CustomerTableComponent: React.FC<props> = ({
     {
       key: "responsible",
       dataIndex: "responsible",
-      title: "ผู้รับผิดชอบ",
+      title: "พนักงานขาย",
       width: "200px",
       render: (value: { uid: string; name: string }[]) =>
         value

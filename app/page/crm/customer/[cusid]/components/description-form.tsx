@@ -145,36 +145,42 @@ const DescriptionCustomerForm: React.FC<props> = ({
                       <Form.Item
                         label={<b>คำนำหน้า TH</b>}
                         name={["details", "prefixTh"]}
+                        rules={[{ required: true, message: "Please Enter" }]}
                       >
                         <Input placeholder="Enter Text" maxLength={10} />
                       </Form.Item>
                       <Form.Item
                         label={<b>ชื่อ TH</b>}
                         name={["details", "firstNameTh"]}
+                        rules={[{ required: true, message: "Please Enter" }]}
                       >
                         <Input placeholder="Enter Text" maxLength={200} />
                       </Form.Item>
                       <Form.Item
                         label={<b>นามสกุล TH</b>}
                         name={["details", "lastNameTh"]}
+                        rules={[{ required: true, message: "Please Enter" }]}
                       >
                         <Input placeholder="Enter Text" maxLength={200} />
                       </Form.Item>
                       <Form.Item
                         label={<b>คำนำหน้า EN</b>}
                         name={["details", "prefixEn"]}
+                        rules={[{ required: true, message: "Please Enter" }]}
                       >
                         <Input placeholder="Enter Text" maxLength={10} />
                       </Form.Item>
                       <Form.Item
                         label={<b>ชื่อ EN</b>}
                         name={["details", "firstNameEn"]}
+                        rules={[{ required: true, message: "Please Enter" }]}
                       >
                         <Input placeholder="Enter Text" maxLength={200} />
                       </Form.Item>
                       <Form.Item
                         label={<b>นามสกุล EN</b>}
                         name={["details", "lastNameEn"]}
+                        rules={[{ required: true, message: "Please Enter" }]}
                       >
                         <Input placeholder="Enter Text" maxLength={200} />
                       </Form.Item>
@@ -184,12 +190,14 @@ const DescriptionCustomerForm: React.FC<props> = ({
                       <Form.Item
                         label={<b>ชื่อลูกค้า TH</b>}
                         name={["details", "customerNameTH"]}
+                        rules={[{ required: true, message: "Please Enter" }]}
                       >
                         <Input placeholder="Enter Text" maxLength={10} />
                       </Form.Item>
                       <Form.Item
                         label={<b>ชื่อลูกค้า EN</b>}
                         name={["details", "customerNameEn"]}
+                        rules={[{ required: true, message: "Please Enter" }]}
                       >
                         <Input placeholder="Enter Text" maxLength={10} />
                       </Form.Item>
@@ -281,7 +289,7 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   </Form.Item>
                   <Form.Item name={"responsible"} hidden></Form.Item>
                   <Form.Item
-                    label={<b>ผู้รับผิดชอบ</b>}
+                    label={<b>พนักงานขาย</b>}
                     name={"responsibleId"}
                     rules={[{ required: true, message: "กรุณาเลือก" }]}
                   >
@@ -295,7 +303,7 @@ const DescriptionCustomerForm: React.FC<props> = ({
                       }))}
                     />
                   </Form.Item>
-                  {/* <Form.Item label={<b>ผู้รับผิดชอบ</b>} name={"responsibleId"}>
+                  {/* <Form.Item label={<b>พนักงานขาย</b>} name={"responsibleId"}>
                   <Select
                     placeholder={isEdit ? "Plese Choose" : ""}
                     options={[
@@ -305,7 +313,7 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   />
                 </Form.Item> */}
                   {/* <Form.Item
-                  label={<b>ผู้รับผิดชอบร่วม</b>}
+                  label={<b>พนักงานขาย</b>}
                   name={"thirdPartyId"}
                 >
                   <Select
@@ -327,7 +335,11 @@ const DescriptionCustomerForm: React.FC<props> = ({
                       checkedChildren={"Active"}
                     />
                   </Form.Item>
-                  <Form.Item label={<b>โทรศัพท์</b>} name={"notiPhone"}>
+                  <Form.Item
+                    label={<b>โทรศัพท์</b>}
+                    name={"notiPhone"}
+                    rules={[{ required: true, message: "Please Enter" }]}
+                  >
                     <Input placeholder={isEdit ? "Enter Text" : ""} />
                   </Form.Item>
                   <Form.Item label={<b>แฟกซ์</b>} name={"notiFax"}>

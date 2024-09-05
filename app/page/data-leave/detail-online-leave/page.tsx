@@ -75,7 +75,6 @@ export default function Page() {
     const res = await dataleaveservice.getdataLeaveByuserId(
       session?.user.userId as string
     );
-    const dataDepartId = session?.user.departmentId as number;
     const dataGroupId = session?.user.ownerGroup as string;
     const resDataLeaveGrouptId = await dataleaveservice.getdataLeaveGroupById(
       dataGroupId
@@ -84,7 +83,9 @@ export default function Page() {
     setDataLeaveUser(res);
     setLoading(false);
   };
-  const onFinishUpdate = (type: string, id: number) => {
+
+  const onFinishUpdate = async (type: string, id: number) => {
+
     Modal.confirm({
       title: <>{type === "cancel" ? "Cancel " : "Approved"}</>,
       icon: <ExclamationCircleFilled />,
@@ -109,11 +110,10 @@ export default function Page() {
             ? message.error("cancel success")
             : message.success("approved success");
           setLoading(true);
+          setOpenModalDetail(false);
         }
       },
-      onCancel() {
-        setLoading(true);
-      },
+      onCancel() {},
     });
   };
 
@@ -135,7 +135,7 @@ export default function Page() {
         <Breadcrumb
           items={[
             {
-              href: "/page",
+              href: "/page/home",
               title: <span>Home</span>,
             },
             {

@@ -7,25 +7,25 @@ import { deleteIcon } from "@/components/icon";
 export interface props {
   getdataUserByTypeId: ITpyeUser[];
   onFinishDel: (event: number) => void;
- 
+  getLoading: boolean;
 }
 
 export const TabeLeavManagement: React.FC<props> = ({
   getdataUserByTypeId,
   onFinishDel,
- 
+  getLoading,
 }): React.ReactElement => {
   const columns: any = [
     {
       key: "id",
-      title: "ID",
       dataIndex: "id",
+      title: "ID",
       width: "50px",
+      render: (values: string, row: any, index: number) => index + 1,
     },
-
     {
       key: "id",
-      title: "ชื่อ - สกุล",
+      title: "Fullname",
       width: "300px",
       dataIndex: "id",
       render: (event: number, row: ITpyeUser, index: number) => {

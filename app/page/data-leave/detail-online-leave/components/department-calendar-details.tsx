@@ -109,70 +109,46 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({
         <Form autoComplete="off" form={formDetail} layout="vertical">
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`วันที่ :`} name={`createAt`}>
-              <Input
-                readOnly
-                style={{ border: "none", borderBottom: "1px solid #808080" }}
-              />
+              <Input disabled />
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เรียนถึง :`} name={`ownerName`}>
-              <Input
-                readOnly
-                style={{ border: "none", borderBottom: "1px solid #808080" }}
-              />
+              <Input disabled />
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เนื่องจาก :`} name={`detail`}>
-              <Input
-                readOnly
-                style={{ border: "none", borderBottom: "1px solid #808080" }}
-              />
+              <Input disabled />
             </Form.Item>
           </div>
           <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`จึงขอ :`} name={`typeLeave`}>
-                <Input
-                  readOnly
-                  style={{ border: "none", borderBottom: "1px solid #808080" }}
-                />
+                <Input disabled />
               </Form.Item>
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`เป็นเวลา :`} name={`leaveHour`}>
-                <Input
-                  readOnly
-                  style={{ border: "none", borderBottom: "1px solid #808080" }}
-                />
+                <Input disabled />
               </Form.Item>
             </div>
           </div>
           <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`ตั้งแต่วันที่ :`} name={`startDate`}>
-                <Input
-                  readOnly
-                  style={{ border: "none", borderBottom: "1px solid #808080" }}
-                />
+                <Input disabled />
               </Form.Item>
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`ถึงวันที่ :`} name={`endDate`}>
-                <Input
-                  readOnly
-                  style={{ border: "none", borderBottom: "1px solid #808080" }}
-                />
+                <Input disabled />
               </Form.Item>
             </div>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เบอร์ติดต่อระหว่างลา :`} name={`phoneNumber`}>
-              <Input
-                readOnly
-                style={{ border: "none", borderBottom: "1px solid #808080" }}
-              />
+              <Input disabled />
             </Form.Item>
           </div>
           {Array.isArray(formDetail.getFieldValue("dataLeaveFiles")) &&
@@ -212,24 +188,12 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({
               <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
                 <div className=" col-span-3 md:col-span-1 ml-5">
                   <Form.Item label={`ผู้อนุมัติ :`} name={`userApproved`}>
-                    <Input
-                      readOnly
-                      style={{
-                        border: "none",
-                        borderBottom: "1px solid #808080",
-                      }}
-                    />
+                    <Input disabled />
                   </Form.Item>
                 </div>
                 <div className=" col-span-3 md:col-span-1 ml-5">
                   <Form.Item label={`วันที่อนุมัติ :`} name={`approvedDate`}>
-                    <Input
-                      readOnly
-                      style={{
-                        border: "none",
-                        borderBottom: "1px solid #808080",
-                      }}
-                    />
+                    <Input disabled />
                   </Form.Item>
                 </div>
               </div>

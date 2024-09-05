@@ -11,36 +11,30 @@ interface ExportDataLeaveProps {
 const ExportDataLeaveAll: React.FC<ExportDataLeaveProps> = ({ data }) => {
   const handleOnExport = () => {
     const transdata = data.map((dataItem) => ({
-      ชื่อ: dataItem.firstName,
-      นามสกุล: dataItem.lastName,
-      แผนก: dataItem.departName,
-      ตำแหน่ง: dataItem.position,
-      ประเภทการลา: dataItem.typeName,
-      วันที่เริ่มลา: new Date(dataItem.startDate).toLocaleDateString("th-TH", {
+      firstName: dataItem.firstName,
+      lastName: dataItem.lastName,
+      position: dataItem.position,
+      typeName: dataItem.typeName,
+      startDate: new Date(dataItem.startDate).toLocaleDateString("th-TH", {
         year: "numeric",
         month: "2-digit",
         day: "2-digit",
       }),
-      วันที่สิ้นสุดการลา: new Date(dataItem.endDate).toLocaleDateString(
-        "th-TH",
-        {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        }
-      ),
-
-      สถานะการลา: dataItem.status,
-      ผู้อนุมัติ: dataItem.userApproved,
-      วันที่อนุมัติ: new Date(dataItem.approvedDate || "").toLocaleDateString(
-        "th-TH",
-        {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        }
-      ),
-      รายละเอียด: dataItem.detail,
+      endDate: new Date(dataItem.endDate).toLocaleDateString("th-TH", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+      status: dataItem.status,
+      userApproved: dataItem.userApproved ?? "-",
+      approvedDate: dataItem.approvedDate
+        ? new Date(dataItem.approvedDate).toLocaleDateString("th-TH", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          })
+        : "-",
+      detail: dataItem.detail,
     }));
 
     const workbook = XLSX.utils.book_new();

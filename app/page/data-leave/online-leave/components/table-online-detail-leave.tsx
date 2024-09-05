@@ -200,18 +200,6 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
           footer={() => (
             <>
               <div className="flex justify-center w-full">
-                {/* <a
-                  type="primary"
-                  onClick={() => setIsModalOpen(true)}
-                  // style={{ fontSize: "16px" }}
-                >
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <span style={{ marginRight: "8px", fontSize: "18px" }}>
-                      {`เงื่อนไขในการลาตามแต่ละประเภท`}
-                    </span>
-                    {MouseIcon}
-                  </div>
-                </a> */}
                 <Button
                   type="primary"
                   ghost

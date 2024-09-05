@@ -1,10 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { ITypeDataLeave } from "../../common";
-import { Button, Col, Form, Input, Modal, Row, Space, Table, Tag } from "antd";
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  Modal,
+  Row,
+  Space,
+  Table,
+  Tag,
+  Tooltip,
+} from "antd";
 import { dateToStringThNoTime } from "@/app/utils/format";
-import { deleteIcon, editIcon } from "@/components/icon";
+import { deleteIcon, editIcon, CancelIcon } from "@/components/icon";
 import { PaperClipOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import DataLeaveService from "../../services/index.service";
 
 export interface props {
   dataLeaveUser: ITypeDataLeave[];
@@ -23,6 +36,11 @@ export const TableDetail: React.FC<props> = ({
   onFinishUpdate,
   downloadFile,
 }): React.ReactElement => {
+  const Auth = useAxiosIntranet();
+  const dataleaveservice = DataLeaveService(Auth);
+  const [statusById, setStatusById] = useState<any | null>(null);
+  const [dataById, setDataById] = useState<number | undefined>(undefined);
+
   const columns: any = [
     {
       key: "id",
@@ -105,26 +123,22 @@ export const TableDetail: React.FC<props> = ({
         };
         return (
           <>
-            <a
-              onClick={() => {
-                setOpenModalDetail(true), formdetail.setFieldsValue(base);
-              }}
-            >{`รายละเอียด`}</a>
-            <Row gutter={[8, 8]} className="flex justify-center">
-              <Col>
-                <Button
-                  size="small"
-                  type="primary"
-                  onClick={() => {
-                    onFinishUpdate("cancel", row?.id ? row?.id : 0);
-                  }}
-                  disabled={row.approvedDate ? true : false}
-                  danger
-                >
-                  {deleteIcon} {`Cancel`}
-                </Button>
-              </Col>
-            </Row>
+            <Tooltip title={`รายละเอียด`}>
+              <Button
+                type="primary"
+                ghost
+                onClick={async () => {
+                  const dataLeaveById = await dataleaveservice.getdataLeaveById(
+                    row.id as number
+                  );
+                  setStatusById(dataLeaveById[0].status);
+                  setDataById(row.id);
+                  setOpenModalDetail(true), formdetail.setFieldsValue(base);
+                }}
+              >
+                {`รายละเอียด`}
+              </Button>
+            </Tooltip>
           </>
         );
       },
@@ -144,70 +158,46 @@ export const TableDetail: React.FC<props> = ({
         <Form autoComplete="off" form={formdetail} layout="vertical">
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`วันที่ :`} name={`createAt`}>
-              <Input
-                readOnly
-                style={{ border: "none", borderBottom: "1px solid #808080" }}
-              />
+              <Input disabled />
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เรียนถึง :`} name={`ownerName`}>
-              <Input
-                readOnly
-                style={{ border: "none", borderBottom: "1px solid #808080" }}
-              />
+              <Input disabled />
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เนื่องจาก :`} name={`detail`}>
-              <Input
-                readOnly
-                style={{ border: "none", borderBottom: "1px solid #808080" }}
-              />
+              <Input disabled />
             </Form.Item>
           </div>
           <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`จึงขอ :`} name={`typeLeave`}>
-                <Input
-                  readOnly
-                  style={{ border: "none", borderBottom: "1px solid #808080" }}
-                />
+                <Input disabled />
               </Form.Item>
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`เป็นเวลา :`} name={`leaveHour`}>
-                <Input
-                  readOnly
-                  style={{ border: "none", borderBottom: "1px solid #808080" }}
-                />
+                <Input disabled />
               </Form.Item>
             </div>
           </div>
           <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`ตั้งแต่วันที่ :`} name={`startDate`}>
-                <Input
-                  readOnly
-                  style={{ border: "none", borderBottom: "1px solid #808080" }}
-                />
+                <Input disabled />
               </Form.Item>
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`ถึงวันที่ :`} name={`endDate`}>
-                <Input
-                  readOnly
-                  style={{ border: "none", borderBottom: "1px solid #808080" }}
-                />
+                <Input disabled />
               </Form.Item>
             </div>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เบอร์ติดต่อระหว่างลา :`} name={`phoneNumber`}>
-              <Input
-                readOnly
-                style={{ border: "none", borderBottom: "1px solid #808080" }}
-              />
+              <Input disabled />
             </Form.Item>
           </div>
           {Array.isArray(formdetail.getFieldValue("dataLeaveFiles")) &&
@@ -247,50 +237,54 @@ export const TableDetail: React.FC<props> = ({
               <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
                 <div className=" col-span-3 md:col-span-1 ml-5">
                   <Form.Item label={`ผู้อนุมัติ :`} name={`userApproved`}>
-                    <Input
-                      readOnly
-                      style={{
-                        border: "none",
-                        borderBottom: "1px solid #808080",
-                      }}
-                    />
+                    <Input disabled />
                   </Form.Item>
                 </div>
                 <div className=" col-span-3 md:col-span-1 ml-5">
                   <Form.Item label={`วันที่อนุมัติ :`} name={`approvedDate`}>
-                    <Input
-                      readOnly
-                      style={{
-                        border: "none",
-                        borderBottom: "1px solid #808080",
-                      }}
-                    />
+                    <Input disabled />
                   </Form.Item>
                 </div>
               </div>
             </>
           ) : null}
-          <Form.Item name={`id`}>
-            <Row gutter={[8, 8]} className="flex justify-center">
-              <Col>
+          <Form.Item hidden name={`id`}>
+            <Input />{" "}
+          </Form.Item>
+          <Form.Item hidden name={`approvedDate`}>
+            <Input />{" "}
+          </Form.Item>
+          <Form.Item hidden name={`status`}>
+            <Input />{" "}
+          </Form.Item>
+        </Form>
+        <>
+          <Row gutter={[8, 8]} className="flex justify-center">
+            <Col>
+              <Tooltip title={`Cancel`}>
                 <Button
                   size="small"
                   type="primary"
-                  onClick={() => {
-                    onFinishUpdate(
-                      "cancel",
-                      formdetail.id ? formdetail?.id : 0
-                    );
+                  style={{
+                    width: "60px",
+                    height: "30px",
+                    // backgroundColor: "orange",
+                    // color: "white",
                   }}
-                  disabled={formdetail.approvedDate ? true : false}
+                  onClick={() => {
+                    onFinishUpdate("cancel", dataById ? dataById : 0);
+                  }}
+                  disabled={
+                    statusById === "cancel" || statusById === "approved"
+                  }
                   danger
                 >
-                  {deleteIcon} {`Cancel`}
+                  {CancelIcon}
                 </Button>
-              </Col>
-            </Row>
-          </Form.Item>
-        </Form>
+              </Tooltip>
+            </Col>
+          </Row>
+        </>
       </Modal>
     </div>
   );

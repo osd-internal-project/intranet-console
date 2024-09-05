@@ -80,6 +80,21 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    getdataLeaveById: async (id: number) => {
+      const condition = {
+        where: { id: id },
+      };
+      return await axiosInstance
+        .post(`${baseUrlDataLeave}/condition`, {
+          condition: condition,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return ;
+        });
+    },
     getdataLeaveAll: async () => {
       const condition = {
         include: {
@@ -227,7 +242,8 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return res.data;
         })
         .catch((err) => {
-          return [];
+          console.log(err);
+          return;
         });
     },
     createTypeLeaveDisabled: async (event: ITpyeUser) => {

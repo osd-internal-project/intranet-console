@@ -24,6 +24,7 @@ export const BigCarouselComponent: React.FC<Props> = ({
       effect="fade"
       lazyLoad="progressive"
       responsive={[{ breakpoint: 768, settings: { slidesToShow: 1 } }]}
+      style={{ width: "1485px", height: "845px" }}
     >
       {slideImage.map((image, index) => (
         <div key={index}>

@@ -26,7 +26,7 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(true);
   const [dataLeaveUser, setDataLeaveUser] = useState<ITypeDataLeave[]>([]);
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
-
+ 
   const [formdetail] = Form.useForm();
   useEffect(() => {
     if (loading) loadData();
@@ -77,11 +77,10 @@ export default function Page() {
             ? message.error("cancel success")
             : message.success("approved success");
           setLoading(true);
+          setOpenModalDetail(false);
         }
       },
-      onCancel() {
-        setLoading(true);
-      },
+      onCancel() {},
     });
   };
 
@@ -112,14 +111,13 @@ export default function Page() {
             message.error("Delete failed");
           }
           setLoading(true);
+          setOpenModalDetail(false);
         } catch (error) {
           message.error("Delete failed");
         }
       },
 
-      onCancel() {
-        setLoading(true);
-      },
+      onCancel() {},
     });
   };
 
@@ -141,7 +139,7 @@ export default function Page() {
         <Breadcrumb
           items={[
             {
-              href: "/page",
+              href: "/page/home",
               title: <span>Home</span>,
             },
             {

@@ -16,12 +16,14 @@ export interface props {
   typeLeaveTable: ITypetypeleave[];
   params: any;
   typeLeaveTableAll: any;
+  rowClassName: any;
 }
 
 export const TableOnlineDetailLeave: React.FC<props> = ({
   typeLeaveTable,
   params,
   typeLeaveTableAll,
+  rowClassName,
 }): React.ReactElement => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -46,9 +48,15 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         const displayHours = calculateHours(value);
         const wholeDays = Math.floor(value);
 
+        const rowClass = rowClassName(row);
+        let color: string | undefined;
+        if (rowClass === "disabled-row") {
+          color = "#e0e0e0";
+        }
+
         return (
           <div className="flex justify-center">
-            <Tag className="w-full flex justify-center">
+            <Tag className="w-full flex justify-center" color={color}>
               {`${wholeDays} วัน (${displayHours} ชม.)`}
             </Tag>
           </div>
@@ -69,9 +77,16 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
 
         const displayHours = calculateHours(value);
         const wholeDays = Math.floor(value);
+
+        const rowClass = rowClassName(row);
+        let color: string | undefined;
+        if (rowClass === "disabled-row") {
+          color = "#e0e0e0";
+        }
+
         return (
           <div className="flex justify-center">
-            <Tag className="w-full flex justify-center">
+            <Tag className="w-full flex justify-center" color={color}>
               {`${wholeDays} วัน (${displayHours} ชม.)`}
             </Tag>
           </div>
@@ -88,9 +103,16 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         let hours = isSelected ? params.lengthTime : 0;
         days = days < 0 ? 1 : days;
         hours = hours < 0 ? 1 : hours;
+
+        const rowClass = rowClassName(row);
+        let color: string | undefined;
+        if (rowClass === "disabled-row") {
+          color = "#e0e0e0";
+        }
+
         return (
           <div className="flex justify-center">
-            <Tag className="w-full flex justify-center">
+            <Tag className="w-full flex justify-center" color={color}>
               {`${days} วัน (${hours} ชม.)`}
             </Tag>
           </div>
@@ -123,9 +145,12 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         if (displayedHours < 0) displayedHours = totalHours + 8;
         const isOverLimit = totalDays > row.limitLeaveLastResult;
         const hasDateRange = params.startDate && params.endDate;
-        let color: string | undefined;
+        const rowClass = rowClassName(row);
 
-        if (isSelected) {
+        let color: string | undefined;
+        if (rowClass === "disabled-row") {
+          color = "#e0e0e0";
+        } else if (isSelected) {
           if (isOverLimit) {
             color = "orange-inverse";
           } else if (hasDateRange) {
@@ -157,7 +182,12 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       dataIndex: "limitLeave",
       title: "ระยะเวลาในการลา",
       render: (values: string, row: ITypetypeleave, index: number) => {
-        return <div className="flex justify-center">{`${values} วัน `}</div>;
+        if (row.typeId === 3) {
+          return (
+            <div className="flex justify-center">{`3,6,10,12 วัน(ตามอายุงาน)`}</div>
+          );
+        }
+        return <div className="flex justify-center">{`${values} วัน`}</div>;
       },
     },
     {
@@ -173,12 +203,6 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       },
     },
   ];
-
-  const rowClassName = (record: any) => {
-    return typeLeaveTableAll.some((e: any) => record.id === e.masterTypeleaveId)
-      ? "disabled-row"
-      : "";
-  };
 
   return (
     <>
@@ -200,18 +224,6 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
           footer={() => (
             <>
               <div className="flex justify-center w-full">
-                {/* <a
-                  type="primary"
-                  onClick={() => setIsModalOpen(true)}
-                  // style={{ fontSize: "16px" }}
-                >
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <span style={{ marginRight: "8px", fontSize: "18px" }}>
-                      {`เงื่อนไขในการลาตามแต่ละประเภท`}
-                    </span>
-                    {MouseIcon}
-                  </div>
-                </a> */}
                 <Button
                   type="primary"
                   ghost

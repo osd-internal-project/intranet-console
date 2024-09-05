@@ -25,8 +25,6 @@ export default function HomePage() {
   const slideImageService = SlideImageService(intraAuth);
   const [loading, setLoading] = useState<boolean>(true);
   const [slideImage, setSlideImage] = useState<any[]>([]);
-  const [filePath, setFilePath] = useState<any[]>([]);
-  const [fileName, setFileName] = useState<any[]>([]);
   const [bookingRoom, setBookingRoom] = useState<MasterRoomType[]>([]);
   const [handbookFile, setHandbookFile] = useState<HandbookFileType[]>([]);
   const [handbookQuery, setHandbookQuery] = useState<HandbookType[]>([]);
@@ -37,12 +35,6 @@ export default function HomePage() {
 
   const fetchData = async () => {
     const dataSlideImage = await slideImageService.getSlideImageQuery();
-    const dataFilePath = dataSlideImage.map(
-      (item: SlideImageType) => item.filePath
-    );
-    const dataFileName = dataSlideImage.map(
-      (item: SlideImageType) => item.fileName
-    );
     const Bookingresponse = await slideImageService.getMasterRoomQuery();
     const dataHandbookFileQuery =
       await slideImageService.getHandbookFileQuery();
@@ -56,8 +48,6 @@ export default function HomePage() {
     setHandbookQuery(dataHandbookQuery);
     setHandbookFile(dataHandbookFileQuery);
     setBookingRoom(Bookingresponse);
-    setFileName(dataFileName);
-    setFilePath(dataFilePath);
     setSlideImage(dataSlideImage);
     setLoading(false);
   };

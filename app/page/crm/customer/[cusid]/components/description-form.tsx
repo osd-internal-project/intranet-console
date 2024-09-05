@@ -189,7 +189,7 @@ const DescriptionCustomerForm: React.FC<props> = ({
                     <div className=" col-span-3 grid grid-cols-3">
                       <Form.Item
                         label={<b>ชื่อลูกค้า TH</b>}
-                        name={["details", "customerNameTH"]}
+                        name={["details", "customerNameTh"]}
                         rules={[{ required: true, message: "Please Enter" }]}
                       >
                         <Input placeholder="Enter Text" maxLength={50} />

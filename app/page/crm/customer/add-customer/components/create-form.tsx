@@ -133,28 +133,31 @@ const CreateCustomerForm: React.FC<props> = ({
               <Input placeholder="Enter Text" maxLength={200} />
             </Form.Item>
           </div>
-        ) : customerType === "juristic" ? (
-          <div className=" col-span-2 grid grid-cols-2">
-            <Form.Item
-              label="ชื่อลูกค้า TH"
-              name={["details", "customerNameTh"]}
-              rules={[{ required: true, message: "Please Enter" }]}
-            >
-              <Input placeholder="Enter Text" maxLength={10} />
-            </Form.Item>
-            <Form.Item
-              label="ชื่อลูกค้า En"
-              name={["details", "customerNameEn"]}
-              rules={[{ required: true, message: "Please Enter" }]}
-            >
-              <Input placeholder="Enter Text" maxLength={10} />
-            </Form.Item>
-            <Form.Item label={"ชื่อย่อ"} name={["details", "initials"]}>
-              <Input placeholder="Enter Text" maxLength={50} />
-            </Form.Item>
-          </div>
         ) : (
           <div className=" col-span-2 grid grid-cols-2"></div>
+        )}
+        {customerType === "juristic" && (
+          <Form.Item
+            label="ชื่อลูกค้า TH"
+            name={["details", "customerNameTh"]}
+            rules={[{ required: true, message: "Please Enter" }]}
+          >
+            <Input placeholder="Enter Text" maxLength={10} />
+          </Form.Item>
+        )}
+        {customerType === "juristic" && (
+          <Form.Item
+            label="ชื่อลูกค้า En"
+            name={["details", "customerNameEn"]}
+            rules={[{ required: true, message: "Please Enter" }]}
+          >
+            <Input placeholder="Enter Text" maxLength={10} />
+          </Form.Item>
+        )}
+        {customerType === "juristic" && (
+          <Form.Item label={"ชื่อย่อ"} name={["details", "initials"]}>
+            <Input placeholder="Enter Text" maxLength={50} />
+          </Form.Item>
         )}
         <Form.Item
           label="เลขประจำตัวผู้เสียภาษี"

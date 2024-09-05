@@ -200,7 +200,24 @@ const CreateProjectForm: React.FC<props> = ({
             onChange={onChangeCustomerSelect}
             options={customerList.map((customer) => ({
               value: customer.id,
-              label: `${customer.prefixTh} ${customer.firstNameTh} ${customer.lastNameTh}`,
+              label:
+                customer.customerTypeId === "natural"
+                  ? `${
+                      customer.details?.prefixTh
+                        ? customer.details?.prefixTh
+                        : ""
+                    }${
+                      customer.details?.firstNameTh
+                        ? customer.details?.firstNameTh
+                        : ""
+                    }${
+                      customer.details?.lastNameTh
+                        ? ` ${customer.details?.lastNameTh}`
+                        : ""
+                    }`
+                  : customer.customerTypeId === "juristic"
+                  ? customer.details?.customerNameTh
+                  : "",
             }))}
           />
         </Form.Item>

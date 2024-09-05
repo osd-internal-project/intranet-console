@@ -69,7 +69,11 @@ const TicketExpendEdit: React.FC<props> = ({
         labelCol={{ sm: 5 }}
         onFinish={(value) => handleEditTicketExpend(editExpendId, value)}
       >
-        <Form.Item label={`รายการ`} name={`expendCode`}>
+        <Form.Item
+          label={`รายการ`}
+          name={`expendCode`}
+          rules={[{ required: true, message: "Please Select" }]}
+        >
           <Select
             showSearch
             optionFilterProp="label"
@@ -79,10 +83,15 @@ const TicketExpendEdit: React.FC<props> = ({
             }))}
           />
         </Form.Item>
-        <Form.Item label={`จำนวน`} name={`expendAmount`}>
+        <Form.Item label={`รายละเอียด`} name={`description`}>
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label={`จำนวน`}
+          name={`expendAmount`}
+          rules={[{ required: true, message: "Please Enter" }]}
+        >
           <InputNumber
-            precision={2}
-            decimalSeparator={"."}
             onChange={() => onCalSummaryPrice()}
             // formatter={(value) =>
             //   `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -91,7 +100,11 @@ const TicketExpendEdit: React.FC<props> = ({
             className=" w-full"
           />
         </Form.Item>
-        <Form.Item label={`ราคา/หน่วย`} name={`expendPrice`}>
+        <Form.Item
+          label={`ราคา/หน่วย`}
+          name={`expendPrice`}
+          rules={[{ required: true, message: "Please Enter" }]}
+        >
           <InputNumber
             precision={2}
             decimalSeparator={"."}

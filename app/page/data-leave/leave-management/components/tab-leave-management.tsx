@@ -25,7 +25,7 @@ export const TabeLeavManagement: React.FC<props> = ({
     },
     {
       key: "id",
-      title: "ชื่อ - สกุล",
+      title: "Fullname",
       width: "300px",
       dataIndex: "id",
       render: (event: number, row: ITpyeUser, index: number) => {
@@ -63,7 +63,6 @@ export const TabeLeavManagement: React.FC<props> = ({
         dataSource={getdataUserByTypeId}
         columns={columns}
         rowKey={(e: any) => e.id}
-        // loading={getLoading}
       />
     </div>
   );

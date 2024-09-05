@@ -15,13 +15,7 @@ import {
   UploadFile,
 } from "antd";
 import dayjs, { Dayjs } from "dayjs";
-import {
-  IDataUser,
-  ISelect,
-  ISelectDepartment,
-  ITypeDataLeaveCreate,
-  UserGroupType,
-} from "../../common";
+import { IDataUser, ISelect, ITypeDataLeaveCreate } from "../../common";
 import { RcFile } from "antd/es/upload";
 import { FormInstance } from "antd/lib";
 
@@ -216,7 +210,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
                 {!checkSwitch ? (
                   <>
                     <div className="col-span-3 md:col-span-1 ml-5 mt-4">
-                      <Form.Item label="ช่วงเวลา" name="timeSlot" required>
+                      <Form.Item label="ช่วงเวลา" name="timeSlot">
                         <Select
                           defaultValue="morning"
                           onChange={(value) => setTimeSlot(value)}
@@ -281,7 +275,6 @@ export const CreateOnlineLeave: React.FC<props> = ({
                         </div>
                       </>
                     )}
-
                     {timeSlot === "afternoon" && (
                       <>
                         <div className="col-span-3 md:col-span-1 ml-5 mt-4">
@@ -341,15 +334,14 @@ export const CreateOnlineLeave: React.FC<props> = ({
               </div>
             ) : null}
           </>
-
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item
               label={`วัตถุประสงค์การลา :`}
               name={`detail`}
               required
-              rules={[
-                { required: true, message: "กรุณากรอกวัตถุประสงค์การลา" },
-              ]}
+              // rules={[
+              //   { required: true, message: "กรุณากรอกวัตถุประสงค์การลา" },
+              // ]}
             >
               <Input.TextArea placeholder="วัตถุประสงค์การลา" />
             </Form.Item>
@@ -359,17 +351,16 @@ export const CreateOnlineLeave: React.FC<props> = ({
               <Form.Item
                 label={`เบอร์โทรศัพท์ :`}
                 name={"phoneNumber"}
-                required
-                rules={[
-                  {
-                    required: true,
-                    message: "กรุณากรอกเบอร์โทรศัพท์",
-                  },
-                  {
-                    pattern: /^[0-9]{10}$/,
-                    message: "กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง",
-                  },
-                ]}
+                // rules={[
+                //   {
+                //     required: true,
+                //     message: "กรุณากรอกเบอร์โทรศัพท์",
+                //   },
+                //   {
+                //     pattern: /^[0-9]{10}$/,
+                //     message: "กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง",
+                //   },
+                // ]}
               >
                 <Input
                   placeholder="เบอร์โทรศัพท์"

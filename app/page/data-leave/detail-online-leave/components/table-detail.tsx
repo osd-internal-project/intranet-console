@@ -26,7 +26,6 @@ export interface props {
   formdetail: any;
   onFinishUpdate: (type: string, id: number) => void;
   downloadFile: (id: number, filename: string) => void;
-  columnsId: number | undefined;
 }
 
 export const TableDetail: React.FC<props> = ({
@@ -36,11 +35,11 @@ export const TableDetail: React.FC<props> = ({
   formdetail,
   onFinishUpdate,
   downloadFile,
-  columnsId,
 }): React.ReactElement => {
   const Auth = useAxiosIntranet();
   const dataleaveservice = DataLeaveService(Auth);
   const [statusById, setStatusById] = useState<any | null>(null);
+  const [dataById, setDataById] = useState<number | undefined>(undefined);
 
   const columns: any = [
     {
@@ -124,16 +123,22 @@ export const TableDetail: React.FC<props> = ({
         };
         return (
           <>
-            <a
-              onClick={async () => {
-                const dataLeaveById = await dataleaveservice.getdataLeaveById(
-                  row.id as number
-                );
-                setStatusById(dataLeaveById[0].status);
-
-                setOpenModalDetail(true), formdetail.setFieldsValue(base);
-              }}
-            >{`รายละเอียด`}</a>
+            <Tooltip title={`รายละเอียด`}>
+              <Button
+                type="primary"
+                ghost
+                onClick={async () => {
+                  const dataLeaveById = await dataleaveservice.getdataLeaveById(
+                    row.id as number
+                  );
+                  setStatusById(dataLeaveById[0].status);
+                  setDataById(row.id);
+                  setOpenModalDetail(true), formdetail.setFieldsValue(base);
+                }}
+              >
+                {`รายละเอียด`}
+              </Button>
+            </Tooltip>
           </>
         );
       },
@@ -267,7 +272,7 @@ export const TableDetail: React.FC<props> = ({
                     // color: "white",
                   }}
                   onClick={() => {
-                    onFinishUpdate("cancel", columnsId ? columnsId : 0);
+                    onFinishUpdate("cancel", dataById ? dataById : 0);
                   }}
                   disabled={
                     statusById === "cancel" || statusById === "approved"

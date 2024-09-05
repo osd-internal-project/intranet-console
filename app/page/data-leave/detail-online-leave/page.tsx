@@ -33,7 +33,6 @@ export default function Page() {
   );
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
   const [formdetail] = Form.useForm();
-  const [columnsId, setColumnsId] = useState<number | undefined>(undefined);
 
   const items: TabsProps["items"] = [
     {
@@ -63,7 +62,6 @@ export default function Page() {
           downloadFile={(id: number, filename: string) =>
             downloadFile(id, filename)
           }
-          columnsId={columnsId}
         />
       ),
     },
@@ -87,8 +85,6 @@ export default function Page() {
   };
 
   const onFinishUpdate = async (type: string, id: number) => {
-    const dataid = formdetail.getFieldValue("id");
-    setColumnsId(dataid);
 
     Modal.confirm({
       title: <>{type === "cancel" ? "Cancel " : "Approved"}</>,
@@ -114,11 +110,10 @@ export default function Page() {
             ? message.error("cancel success")
             : message.success("approved success");
           setLoading(true);
+          setOpenModalDetail(false);
         }
       },
-      onCancel() {
-        setLoading(true);
-      },
+      onCancel() {},
     });
   };
 
@@ -140,7 +135,7 @@ export default function Page() {
         <Breadcrumb
           items={[
             {
-              href: "/page",
+              href: "/page/home",
               title: <span>Home</span>,
             },
             {

@@ -47,7 +47,8 @@ const NewsCarouselComponent: React.FC<Props> = ({
           autoplay
           dots={false}
           infinite
-          style={{ position: "relative" }}
+          // style={{ width: "1000px", height: "500px" }}
+          // style={{ position: "relative", top: "10px", left: "20px" }}
           arrows={false}
         >
           {chunkedNews.map((chunk, index) => (

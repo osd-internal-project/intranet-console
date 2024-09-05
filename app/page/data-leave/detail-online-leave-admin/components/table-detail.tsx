@@ -1,11 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { ITypeDataLeave } from "../../common";
-import { Button, Col, Form, Input, Modal, Row, Space, Table, Tag } from "antd";
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  Modal,
+  Row,
+  Space,
+  Table,
+  Tag,
+  Tooltip,
+} from "antd";
 import { dateToStringThNoTime } from "@/app/utils/format";
-import { deleteIcon, editIcon } from "@/components/icon";
+import { deleteIcon, editIcon, CancelIcon, CheckIcon } from "@/components/icon";
 import { PaperClipOutlined } from "@ant-design/icons";
 import ExportDataLeaveAll from "../../common/export-excel";
 import dayjs from "dayjs";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import DataLeaveService from "../../services/index.service";
 
 export interface props {
   dataLeaveUser: ITypeDataLeave[];
@@ -15,6 +28,7 @@ export interface props {
   onFinishUpdate: (type: string, id: number) => void;
   onFinishDelete: (type: string, id: number) => void;
   downloadFile: (id: number, filename: string) => void;
+  columnsId: number | undefined;
 }
 
 export const TableDetail: React.FC<props> = ({
@@ -25,7 +39,12 @@ export const TableDetail: React.FC<props> = ({
   onFinishUpdate,
   onFinishDelete,
   downloadFile,
+  columnsId,
 }): React.ReactElement => {
+  const Auth = useAxiosIntranet();
+  const dataleaveservice = DataLeaveService(Auth);
+  const [statusById, setStatusById] = useState<any | null>(null);
+
   const columns: any = [
     {
       key: "id",
@@ -87,6 +106,7 @@ export const TableDetail: React.FC<props> = ({
       align: "center",
       render: (e: string, row: ITypeDataLeave, index: number) => {
         const base = {
+          id: row.id,
           name: `${row.firstName} ${row.lastName}`,
           createAt: row.createdAt ? dateToStringThNoTime(row.createdAt) : "-",
           detail: row.detail,
@@ -102,53 +122,26 @@ export const TableDetail: React.FC<props> = ({
             : "-",
           userApproved: row.userApproved,
           dataLeaveFiles: row.dataLeaveFiles,
+          ownerId: row.ownerId,
+          ownerName: row.ownerName,
         };
         return (
           <>
             <Row gutter={[8, 8]} className="flex justify-center">
               <Col>
-                <Button
-                  size="small"
-                  type="primary"
-                  onClick={() => {
-                    onFinishUpdate("approved", row?.id ? row?.id : 0);
-                  }}
-                  disabled={row.approvedDate ? true : false}
-                >
-                  {editIcon} {`Approved`}
-                </Button>
-              </Col>
-              <Col>
-                <Button
-                  size="small"
-                  type="primary"
-                  onClick={() => {
-                    onFinishUpdate("cancel", row?.id ? row?.id : 0);
-                  }}
-                  disabled={row.approvedDate ? true : false}
-                  danger
-                >
-                  {deleteIcon} {`Cancel`}
-                </Button>
-              </Col>
-              <Col>
-                <Button
-                  size="small"
-                  type="primary"
-                  onClick={() => {
-                    onFinishDelete("delete", row?.id ? row?.id : 0);
-                  }}
-                  danger
-                >
-                  {deleteIcon} {`Delete`}
-                </Button>
-              </Col>
-              <Col>
-                <a
-                  onClick={() => {
-                    setOpenModalDetail(true), formdetail.setFieldsValue(base);
-                  }}
-                >{`รายละเอียด`}</a>
+                <Tooltip title={`รายละเอียด`}>
+                  <a
+                    onClick={async () => {
+                      const dataLeaveById =
+                        await dataleaveservice.getdataLeaveById(
+                          row.id as number
+                        );
+                      setStatusById(dataLeaveById[0].status);
+
+                      setOpenModalDetail(true), formdetail.setFieldsValue(base);
+                    }}
+                  >{`รายละเอียด`}</a>
+                </Tooltip>
               </Col>
             </Row>
           </>
@@ -182,70 +175,46 @@ export const TableDetail: React.FC<props> = ({
         <Form autoComplete="off" form={formdetail} layout="vertical">
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`วันที่ :`} name={`createAt`}>
-              <Input
-                readOnly
-                style={{ border: "none", borderBottom: "1px solid #808080" }}
-              />
+              <Input disabled />
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`เรียนถึง :`}>
-              <Input
-                readOnly
-                style={{ border: "none", borderBottom: "1px solid #808080" }}
-              />
+            <Form.Item label={`เรียนถึง :`} name={`ownerName`}>
+              <Input disabled />
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เนื่องจาก :`} name={`detail`}>
-              <Input
-                readOnly
-                style={{ border: "none", borderBottom: "1px solid #808080" }}
-              />
+              <Input disabled />
             </Form.Item>
           </div>
           <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`จึงขอ :`} name={`typeLeave`}>
-                <Input
-                  readOnly
-                  style={{ border: "none", borderBottom: "1px solid #808080" }}
-                />
+                <Input disabled />
               </Form.Item>
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`เป็นเวลา :`} name={`leaveHour`}>
-                <Input
-                  readOnly
-                  style={{ border: "none", borderBottom: "1px solid #808080" }}
-                />
+                <Input disabled />
               </Form.Item>
             </div>
           </div>
           <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`ตั้งแต่วันที่ :`} name={`startDate`}>
-                <Input
-                  readOnly
-                  style={{ border: "none", borderBottom: "1px solid #808080" }}
-                />
+                <Input disabled />
               </Form.Item>
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`ถึงวันที่ :`} name={`endDate`}>
-                <Input
-                  readOnly
-                  style={{ border: "none", borderBottom: "1px solid #808080" }}
-                />
+                <Input disabled />
               </Form.Item>
             </div>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เบอร์ติดต่อระหว่างลา :`} name={`phoneNumber`}>
-              <Input
-                readOnly
-                style={{ border: "none", borderBottom: "1px solid #808080" }}
-              />
+              <Input disabled />
             </Form.Item>
           </div>
           {Array.isArray(formdetail.getFieldValue("dataLeaveFiles")) &&
@@ -285,30 +254,74 @@ export const TableDetail: React.FC<props> = ({
               <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
                 <div className=" col-span-3 md:col-span-1 ml-5">
                   <Form.Item label={`ผู้อนุมัติ :`} name={`userApproved`}>
-                    <Input
-                      readOnly
-                      style={{
-                        border: "none",
-                        borderBottom: "1px solid #808080",
-                      }}
-                    />
+                    <Input disabled />
                   </Form.Item>
                 </div>
                 <div className=" col-span-3 md:col-span-1 ml-5">
                   <Form.Item label={`วันที่อนุมัติ :`} name={`approvedDate`}>
-                    <Input
-                      readOnly
-                      style={{
-                        border: "none",
-                        borderBottom: "1px solid #808080",
-                      }}
-                    />
+                    <Input disabled />
                   </Form.Item>
                 </div>
               </div>
             </>
           ) : null}
+          <Form.Item hidden name={`id`}>
+            <Input />{" "}
+          </Form.Item>
         </Form>
+        <Row gutter={[12, 12]} className="flex justify-center">
+          <Col>
+            <Tooltip title={`Approved`}>
+              <Button
+                size="small"
+                type="primary"
+                onClick={() => {
+                  onFinishUpdate("approved", columnsId ? columnsId : 0);
+                }}
+                style={{ width: "60px", height: "30px" }}
+                disabled={statusById === "cancel" || statusById === "approved"}
+              >
+                {CheckIcon}
+              </Button>
+            </Tooltip>
+          </Col>
+          <Col>
+            <Tooltip title={`Cancel`}>
+              <Button
+                size="small"
+                type="primary"
+                style={{
+                  width: "60px",
+                  height: "30px",
+                  // backgroundColor: "orange",
+                  // color: "white",
+                }}
+                onClick={() => {
+                  onFinishUpdate("cancel", columnsId ? columnsId : 0);
+                }}
+                disabled={statusById === "cancel" || statusById === "approved"}
+                danger
+              >
+                {CancelIcon}
+              </Button>
+            </Tooltip>
+          </Col>
+          <Col>
+            <Tooltip title={`Delete`}>
+              <Button
+                size="small"
+                type="primary"
+                style={{ width: "60px", height: "30px" }}
+                onClick={() => {
+                  onFinishDelete("delete", columnsId ? columnsId : 0);
+                }}
+                danger
+              >
+                {deleteIcon}
+              </Button>
+            </Tooltip>
+          </Col>
+        </Row>
       </Modal>
     </div>
   );

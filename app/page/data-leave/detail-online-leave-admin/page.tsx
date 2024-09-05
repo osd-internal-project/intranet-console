@@ -26,6 +26,7 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(true);
   const [dataLeaveUser, setDataLeaveUser] = useState<ITypeDataLeave[]>([]);
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
+  const [columnsId, setColumnsId] = useState<number | undefined>(undefined);
 
   const [formdetail] = Form.useForm();
   useEffect(() => {
@@ -86,6 +87,9 @@ export default function Page() {
   };
 
   const onFinishDelete = (type: string, id: number) => {
+    const dataid = formdetail.getFieldValue("id");
+    setColumnsId(dataid);
+
     Modal.confirm({
       title: <>{type === "delete" ? "Delete" : "Delete"}</>,
       icon: <ExclamationCircleFilled />,
@@ -169,6 +173,7 @@ export default function Page() {
             downloadFile={(id: number, filename: string) =>
               downloadFile(id, filename)
             }
+            columnsId={columnsId}
           />
         </Card>
       </div>

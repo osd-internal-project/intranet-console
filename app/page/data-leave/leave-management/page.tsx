@@ -56,16 +56,15 @@ const page = () => {
         label: `${event.firstNameTh} ${event.lastNameTh}`,
       }));
       setdataTypeLeave(resTypeLeave);
-      setSearch({ typeid: options[0].value });
+      setSearch({ typeid: "1" });
       setdataUser(options);
+      setLoading(true);
     } catch (error) {}
   };
 
   useEffect(() => {
     if (getSearch) {
       loadDataUser(getSearch);
-    } else {
-      setdataUserByTypeId([]);
     }
   }, [getSearch]);
 
@@ -86,7 +85,17 @@ const page = () => {
     setSearch(typeId === "0" ? undefined : { typeid: typeId });
   }
 
-  const onFinishCreate = (event: ITpyeUser) => {
+  const onFinishCreate = async (event: ITpyeUser) => {
+    const resTypeLeaveMap = await dataleaveserviceIntra.getdataTypeLeaveMap(
+      event.userId
+    );
+    if (event.userId && resTypeLeaveMap.length > 0) {
+      if (resTypeLeaveMap[0].userId === event.userId) {
+        message.warning(`ประเภทการลานี้มีการเพิ่มชื่อผู้ใช้นี้แล้ว!`);
+        return {};
+      }
+    }
+
     Modal.confirm({
       title: "Add ",
       icon: <ExclamationCircleFilled />,
@@ -104,6 +113,7 @@ const page = () => {
           const result = await dataleaveserviceIntra.createTypeLeaveDisabled(
             event
           );
+          setLoading(true);
           if (result) {
             message.success("Add success");
             formcreate.resetFields();
@@ -123,7 +133,9 @@ const page = () => {
         } finally {
         }
       },
-      onCancel() {},
+      onCancel() {
+        formcreate.resetFields();
+      },
     });
   };
 
@@ -158,7 +170,9 @@ const page = () => {
           setLoading(false);
         }
       },
-      onCancel() {},
+      onCancel() {
+        formcreate.resetFields();
+      },
     });
   };
 
@@ -204,6 +218,7 @@ const page = () => {
                     <TabeLeavManagement
                       getdataUserByTypeId={getdataUserByTypeId}
                       onFinishDel={(e: number) => onFinishDel(e)}
+                      getLoading={getLoading}
                     />
                   </div>
                 ),

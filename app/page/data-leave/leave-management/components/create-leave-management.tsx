@@ -69,6 +69,7 @@ export const CreateLeaveManagement: React.FC<props> = ({
         <Button
           type="primary"
           onClick={() => {
+            formcreate.resetFields();
             setOpenModal(true);
             formcreate.setFieldsValue({ masterTypeleaveId: TypeId });
           }}

@@ -63,11 +63,12 @@ const TicketExpend: React.FC<props> = ({
   }, [ticketExpends]);
   const customerColumns: TableColumnsType<ITTicketExpend> = [
     {
-      title: "#",
+      title: "No.",
       key: "id",
       dataIndex: "id",
       align: "center",
       width: "100px",
+      render: (id: number, record, index: number) => index + 1,
     },
     {
       title: "ประเภทค่าใช้จ่าย",
@@ -80,6 +81,12 @@ const TicketExpend: React.FC<props> = ({
       key: "expendType",
       dataIndex: ["expendType", "expendName"],
       width: "200px",
+    },
+    {
+      title: "รายละเอียด",
+      key: "description",
+      dataIndex: "description",
+      width: "250px",
     },
     {
       title: "จำนวน",

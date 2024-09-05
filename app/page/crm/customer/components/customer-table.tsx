@@ -97,6 +97,18 @@ const CustomerTableComponent: React.FC<props> = ({
       width: "200px",
     },
     {
+      key: "customerTypeId",
+      dataIndex: "customerTypeId",
+      title: "รหัสอ้างอิงลูกค้า",
+      width: "200px",
+      render: (value: string, record, index) =>
+        value === "natural"
+          ? "บุคคลธรรมดา"
+          : value === "juristic"
+          ? "นิติบุคคล"
+          : "",
+    },
+    {
       key: "customerName",
       dataIndex: "customerName",
       title: "ชื่อ",

@@ -133,12 +133,11 @@ export default function CustomerDetailPage() {
               data.status === "cancel"
           ).length
         : 0;
-      totalSum += weight * sum;
       const all = customerProjectTicket ? customerProjectTicket.length : 0;
-      totalAll += weight * all;
+      totalSum += all > 0 ? (weight * sum) / all : 0;
       totalWeight += weight;
     });
-    const persent = (totalSum * totalWeight) / totalAll;
+    const persent = totalSum;
     setPersentTask({ success: persent, all: totalWeight });
   }, [projectTaskList]);
   const fetchData = async () => {
@@ -525,7 +524,17 @@ export default function CustomerDetailPage() {
     } else if (action === "rollback") {
       type = "Rollback";
       detail = "Rollback";
+    } else if (action === "add-expend") {
+      type = "Add Expense";
+      detail = "เพิ่มรายการขอเบิก";
+    } else if (action === "edit-expend") {
+      type = "Edit Expense";
+      detail = "แก้ไขรายการขอเบิก";
+    } else if (action === "delete-expend") {
+      type = "Delete Expense";
+      detail = "ลบรายการขอเบิก";
     }
+
     const form: ITTicketHistoryLogForm = {
       customerProjectTicketId: ticketId,
       updatedAt: new Date(),
@@ -591,7 +600,7 @@ export default function CustomerDetailPage() {
         })
         .then(async (data) => {
           message.success("สำเร็จ");
-          await onSaveHistoryLogs(ticketId, "เพิ่มรายการขอเบิก");
+          await onSaveHistoryLogs(ticketId, "add-expend");
           await onShowModalProjectTicketDetail(ticketId);
           setloading(true);
         })
@@ -610,7 +619,7 @@ export default function CustomerDetailPage() {
         .updateProjectTicketExpend(expendId, value)
         .then(async (data) => {
           message.success("สำเร็จ");
-          await onSaveHistoryLogs(ticketId, "แก้ไขรายการขอเบิก");
+          await onSaveHistoryLogs(ticketId, "edit-expend");
           await onShowModalProjectTicketDetail(ticketId);
           setloading(true);
         })
@@ -635,7 +644,7 @@ export default function CustomerDetailPage() {
           );
           if (dataResult) {
             message.success("สำเร็จ");
-            await onSaveHistoryLogs(ticketId, "ลบรายการขอเบิก");
+            await onSaveHistoryLogs(ticketId, "delete-expend");
             await onShowModalProjectTicketDetail(ticketId);
             setloading(true);
           }

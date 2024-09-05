@@ -84,6 +84,9 @@ const TicketExpendAdd: React.FC<props> = ({
             }))}
           />
         </Form.Item>
+        <Form.Item label={`รายละเอียด`} name={`description`}>
+          <Input />
+        </Form.Item>
         <Form.Item
           label={`จำนวน`}
           name={`expendAmount`}

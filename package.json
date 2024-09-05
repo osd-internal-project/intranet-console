@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start ",
     "lint": "next lint",
-    "docker:buildx": "docker build --no-cache --platform linux/amd64 -t 'intranet-fe:v1.0.6' -f ./Dockerfile ."
+    "docker:buildx": "docker build --no-cache --platform linux/amd64 -t 'intranet-fe:v1.0.1' -f ./Dockerfile ."
   },
   "dependencies": {
     "@ant-design/charts": "^2.1.0",

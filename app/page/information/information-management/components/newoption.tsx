@@ -39,6 +39,7 @@ const Newoption: React.FC = () => {
   const [form] = useForm();
   const [formEdit] = useForm();
   const [searchTerm, setSearchTerm] = useState("");
+
   useEffect(() => {
     fetchDatanewType();
   }, []);
@@ -53,7 +54,7 @@ const Newoption: React.FC = () => {
       setnewType(newType);
       setSubmitLoading(false);
     } catch (error) {
-      message.error("Failed to fetch car data");
+      message.error("ไม่สามารถเรียกข้อมูลได้");
     }
   };
 
@@ -78,13 +79,14 @@ const Newoption: React.FC = () => {
       if (response) {
         message.success("เพิ่มประเภทข่าวสารสำเร็จ");
         form.resetFields();
+        setIsmodlaOpencreate(false);
       } else {
-        message.error("เพิ่มประเภทไม่สำเร็จ");
+        message.error("เพิ่มประเภทข่าวสารไม่สำเร็จ");
       }
       setSubmitLoading(false);
       fetchDatanewType();
     } catch (error) {
-      message.error("เพิ่มประเภทไม่สำเร็จ");
+      message.error("เพิ่มประเภทข่าวสารไม่สำเร็จ");
       setSubmitLoading(false);
     }
   };
@@ -101,12 +103,13 @@ const Newoption: React.FC = () => {
         status: values?.status,
       };
       await manageinformationNewsServices.updatenewsType(updatenewType);
-      message.success("แก้ไขประเภทสำเร็จ");
-
+      message.success("แก้ไขประเภทข่าวสารสำเร็จ");
       fetchDatanewType();
       setSubmitLoading(false);
+      setModalEditnewType(false);
     } catch (error) {
-      message.error("แก้ไขประเภทไม่สำเร็จ");
+      fetchDatanewType();
+      message.error("แก้ไขประเภทข่าวสารไม่สำเร็จ");
     }
   };
 
@@ -114,10 +117,10 @@ const Newoption: React.FC = () => {
     try {
       await manageinformationNewsServices.deletenewsType(idType);
       setnewType(newType.filter((item) => item.idType !== idType));
-      message.success("ลบประเภทสำเร็จ");
+      message.success("ลบประเภทข่าวสารสำเร็จ");
       fetchDatanewType();
     } catch (error) {
-      message.error("ลบประเภทไม่สำเร็จ");
+      message.error("ลบประเภทไม่ข่าวสารสำเร็จ");
     }
   };
 
@@ -153,42 +156,49 @@ const Newoption: React.FC = () => {
       title: "ลำดับ",
       dataIndex: "key",
       key: "key",
+      width: "40px",
       align: "center",
     },
     {
       title: "ชื่อประเภทข่าว",
       dataIndex: "nameType",
       key: "nameType",
+      width: "300px",
     },
     {
       title: "รายละเอียด",
       dataIndex: "deteil",
       key: "deteil",
+      width: "100px",
+      ellipsis: true,
     },
     {
-      title: "อัพเดทล่าสุด",
+      title: "วันที่สร้าง",
+      dataIndex: "createAt",
+      key: "createAt",
+      width: "85px",
+      render: (createdAt: Date) =>
+        moment(createdAt).format("DD/MM/YYYY HH:mm" + " น."),
+    },
+    {
+      title: "วันที่อัปเดต",
       dataIndex: "updatedAt",
       key: "updatedAt",
+      width: "85px",
       render: (updatedAt: Date) =>
         moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
-      title: "เวลาการสร้าง",
-      dataIndex: "createAt",
-      key: "createAt",
-      render: (createdAt: Date) =>
-        moment(createdAt).format("DD/MM/YYYY HH:mm" + " น."),
-    },
-
-    {
       title: "การมองเห็น",
       dataIndex: "status",
       key: "status",
+      align: "center",
+      width: "70px",
       render: (status: boolean) =>
         status ? (
-          <Tag color="green">เปิดการมอง</Tag>
+          <Tag color="green">เปิดการมองเห็น</Tag>
         ) : (
-          <Tag color="red">ปิดการมอง</Tag>
+          <Tag color="red">ปิดการมองเห็น</Tag>
         ),
     },
     {
@@ -196,7 +206,8 @@ const Newoption: React.FC = () => {
       dataIndex: "manage",
       key: "manage",
       align: "center",
-      render: (record: number, row: any, index: number) => (
+      width: "70px",
+      render: (record: newType, row: any) => (
         <Space size="middle">
           <Tooltip title="แก้ไข">
             <a onClick={() => showModalEditnewType(row)}>
@@ -204,7 +215,7 @@ const Newoption: React.FC = () => {
             </a>
           </Tooltip>
           <Popconfirm
-            title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
+            title="คุณแน่ใจหรือไม่ว่าต้องการลบประเภทข่าวสารนี้ ? "
             onConfirm={() => handleDeletenewType(row.idType)}
             okText="ใช่"
             cancelText="ไม่"
@@ -235,7 +246,7 @@ const Newoption: React.FC = () => {
             margin: "10px 10px 10px 20px",
           }}
         >
-          ค้นหาประเภทข่าว :
+          ค้นหาประเภทข่าวสาร :
           <Input
             type="text"
             value={searchTerm}
@@ -257,7 +268,7 @@ const Newoption: React.FC = () => {
         </Button>
       </div>
       <Modal
-        title="เพิ่มข้อมูลตรวจสภาพรถ"
+        title="สร้างประเภทข้อมูลข่าวสาร"
         open={IsmodlaOpencreate}
         onCancel={handleclosecreate}
         footer={null}
@@ -267,21 +278,23 @@ const Newoption: React.FC = () => {
           <Form.Item
             name="nameType"
             label="ชื่อประเภทข่าวสาร :"
-            style={{ width: "300px" }}
+            rules={[{ required: true, message: "กรุณากรอกชื่อประเภทข่าวสาร" }]}
+            style={{ width: "460px" }}
           >
-            <Input />
+            <Input placeholder="ชื่อประเภทข่าวสาร" />
           </Form.Item>
           <Form.Item
             name="deteil"
             label="รายละเอียดข่าวสาร :"
-            style={{ width: "300px" }}
+            rules={[{ required: true, message: "กรุณากรอกรายละเอียดข่าวสาร" }]}
+            style={{ width: "460px" }}
           >
-            <Input />
+            <Input.TextArea rows={12} placeholder="รายละเอียดข่าวสาร" />
           </Form.Item>
           <Form.Item
             name="status"
             label="สถานะการมอง :"
-            style={{ width: "300px" }}
+            style={{ width: "460px" }}
           >
             <Switch
               checkedChildren="เปิดการมอง"
@@ -300,12 +313,7 @@ const Newoption: React.FC = () => {
               </Button>
             </Form.Item>
             <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={submitLoading}
-                onClick={handleclosecreate}
-              >
+              <Button type="primary" htmlType="submit" loading={submitLoading}>
                 ตกลง
               </Button>
             </Form.Item>
@@ -314,7 +322,7 @@ const Newoption: React.FC = () => {
       </Modal>
 
       <Modal
-        title="แก้ไขการมองเห็นข่าว"
+        title="แก้ไขประเภทข้อมูลข่าวสาร"
         open={modalEditnewType}
         onCancel={handleCancel1edit}
         footer={null}
@@ -325,7 +333,7 @@ const Newoption: React.FC = () => {
             name="idType"
             label="ชื่อประเภทข่าวสาร :"
             style={{
-              width: "300px",
+              width: "450px",
               visibility: "hidden",
               margin: "0 0 -60px 0",
             }}
@@ -335,21 +343,23 @@ const Newoption: React.FC = () => {
           <Form.Item
             name="nameType"
             label="ชื่อประเภทข่าวสาร :"
-            style={{ width: "300px" }}
+            rules={[{ required: true, message: "กรุณากรอกชื่อประเภทข่าวสาร" }]}
+            style={{ width: "460px" }}
           >
-            <Input disabled />
+            <Input placeholder="ชื่อประเภทข่าวสาร" />
           </Form.Item>
           <Form.Item
             name="deteil"
             label="รายละเอียดข่าวสาร :"
-            style={{ width: "300px" }}
+            rules={[{ required: true, message: "กรุณากรอกรายละเอียดข่าวสาร" }]}
+            style={{ width: "460px" }}
           >
-            <Input disabled />
+            <Input.TextArea rows={12} placeholder="รายละเอียดข่าวสาร" />
           </Form.Item>
           <Form.Item
             name="status"
             label="สถานะการมอง :"
-            style={{ width: "300px" }}
+            style={{ width: "460px" }}
           >
             <Switch
               checkedChildren="เปิดการมอง"
@@ -372,7 +382,6 @@ const Newoption: React.FC = () => {
                 type="primary"
                 htmlType="submit"
                 loading={submitLoading}
-                onClick={handleCancel1edit}
               >
                 ตกลง
               </Button>

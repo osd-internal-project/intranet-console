@@ -1,5 +1,16 @@
 export type ITCustomerForSelect = {
   id: number;
+  customerTypeId: string;
+  details?: {
+    prefixEn?: string;
+    prefixTh?: string;
+    firstNameEn?: string;
+    firstNameTh?: string;
+    lastNameEn?: string;
+    lastNameTh?: string;
+    customerNameTh?: string;
+    customerNameEn?: string;
+  };
   firstNameTh?: string;
   lastNameTh?: string;
   prefixTh?: string;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { FormInstance } from "antd";
 import {
   Button,
@@ -44,6 +44,16 @@ const DescriptionCustomerForm: React.FC<props> = ({
   setIsEdit,
   onFinishEdit,
 }): React.ReactElement => {
+  const [customerType, setCustomerType] = useState<string | undefined>(
+    undefined
+  );
+  useEffect(() => {
+    const type = descriptionForm.getFieldValue("customerTypeId");
+    if (type) {
+      setCustomerType(type);
+    }
+  }, [customerTypes]);
+
   return (
     <Collapse
       bordered={true}
@@ -114,7 +124,100 @@ const DescriptionCustomerForm: React.FC<props> = ({
                       <></>
                     )}
                   </div>
+                  <Form.Item
+                    label="Type"
+                    name={"customerTypeId"}
+                    rules={[{ required: true, message: "กรุณาเลือก" }]}
+                  >
+                    <Select
+                      allowClear
+                      placeholder="Please Choose"
+                      onChange={(value) => setCustomerType(value)}
+                      options={customerTypes.map((data) => ({
+                        value: data.customerTypeId,
+                        label: data.name,
+                      }))}
+                    />
+                  </Form.Item>
 
+                  {customerType === "natural" ? (
+                    <div className=" col-span-3 grid grid-cols-3">
+                      <Form.Item
+                        label={<b>คำนำหน้า TH</b>}
+                        name={["details", "prefixTh"]}
+                        rules={[{ required: true, message: "Please Enter" }]}
+                      >
+                        <Input placeholder="Enter Text" maxLength={50} />
+                      </Form.Item>
+                      <Form.Item
+                        label={<b>ชื่อ TH</b>}
+                        name={["details", "firstNameTh"]}
+                        rules={[{ required: true, message: "Please Enter" }]}
+                      >
+                        <Input placeholder="Enter Text" maxLength={200} />
+                      </Form.Item>
+                      <Form.Item
+                        label={<b>นามสกุล TH</b>}
+                        name={["details", "lastNameTh"]}
+                        rules={[{ required: true, message: "Please Enter" }]}
+                      >
+                        <Input placeholder="Enter Text" maxLength={200} />
+                      </Form.Item>
+                      <Form.Item
+                        label={<b>คำนำหน้า EN</b>}
+                        name={["details", "prefixEn"]}
+                        rules={[{ required: true, message: "Please Enter" }]}
+                      >
+                        <Input placeholder="Enter Text" maxLength={50} />
+                      </Form.Item>
+                      <Form.Item
+                        label={<b>ชื่อ EN</b>}
+                        name={["details", "firstNameEn"]}
+                        rules={[{ required: true, message: "Please Enter" }]}
+                      >
+                        <Input placeholder="Enter Text" maxLength={200} />
+                      </Form.Item>
+                      <Form.Item
+                        label={<b>นามสกุล EN</b>}
+                        name={["details", "lastNameEn"]}
+                        rules={[{ required: true, message: "Please Enter" }]}
+                      >
+                        <Input placeholder="Enter Text" maxLength={200} />
+                      </Form.Item>
+                    </div>
+                  ) : customerType === "juristic" ? (
+                    <div className=" col-span-3 grid grid-cols-3">
+                      <Form.Item
+                        label={<b>ชื่อลูกค้า TH</b>}
+                        name={["details", "customerNameTH"]}
+                        rules={[{ required: true, message: "Please Enter" }]}
+                      >
+                        <Input placeholder="Enter Text" maxLength={50} />
+                      </Form.Item>
+                      <Form.Item
+                        label={<b>ชื่อลูกค้า EN</b>}
+                        name={["details", "customerNameEn"]}
+                        rules={[{ required: true, message: "Please Enter" }]}
+                      >
+                        <Input placeholder="Enter Text" maxLength={50} />
+                      </Form.Item>
+                      <Form.Item
+                        label={<b>ชื่อย่อ</b>}
+                        name={["details", "initials"]}
+                      >
+                        <Input placeholder="Enter Text" maxLength={50} />
+                      </Form.Item>
+                    </div>
+                  ) : (
+                    <div className=" col-span-2 grid grid-cols-2"></div>
+                  )}
+                  <Form.Item
+                    label={<b>เลขประจำตัวผู้เสียภาษี</b>}
+                    name={["details", "identificationNo"]}
+                    rules={[{ required: true, message: "Please Enter" }]}
+                  >
+                    <Input placeholder="Enter Text" maxLength={50} />
+                  </Form.Item>
                   <Form.Item
                     label={<b>รหัส</b>}
                     name={"customerCode"}
@@ -144,65 +247,41 @@ const DescriptionCustomerForm: React.FC<props> = ({
                       maxLength={50}
                     />
                   </Form.Item>
-                  <Form.Item label={<b>คำนำหน้า TH</b>} name={"prefixTh"}>
-                    <Input
-                      placeholder={isEdit ? "Enter Text" : ""}
-                      maxLength={10}
-                    />
-                  </Form.Item>
-                  <Form.Item label={<b>ชื่อ TH</b>} name={"firstNameTh"}>
-                    <Input
-                      placeholder={isEdit ? "Enter Text" : ""}
-                      maxLength={200}
-                    />
-                  </Form.Item>
-                  <Form.Item label={<b>นามสกุล TH</b>} name={"lastNameTh"}>
-                    <Input
-                      placeholder={isEdit ? "Enter Text" : ""}
-                      maxLength={200}
-                    />
-                  </Form.Item>
-                  <Form.Item label={<b>คำนำหน้า EN</b>} name={"prefixEn"}>
-                    <Input
-                      placeholder={isEdit ? "Enter Text" : ""}
-                      maxLength={10}
-                    />
-                  </Form.Item>
-                  <Form.Item label={<b>ชื่อ EN</b>} name={"firstNameEn"}>
-                    <Input
-                      placeholder={isEdit ? "Enter Text" : ""}
-                      maxLength={200}
-                    />
-                  </Form.Item>
-                  <Form.Item label={<b>นามสกุล EN</b>} name={"lastNameEn"}>
-                    <Input
-                      placeholder={isEdit ? "Enter Text" : ""}
-                      maxLength={200}
-                    />
-                  </Form.Item>
+
                   <Form.Item
                     label={<b>เลขที่ทะเบียนบริษัท</b>}
                     name={"companyRegisNumber"}
                   >
                     <Input placeholder={isEdit ? "Enter Text" : ""} />
                   </Form.Item>
-                  <Form.Item label={<b>วันที่จดทะเบียน</b>} name={"regisDate"}>
-                    <DatePicker format={"DD/MM/YYYY"} className=" w-full" />
-                  </Form.Item>
-                  <Form.Item label={<b>ทุนจดทะเบียน</b>} name={"registration"}>
-                    <InputNumber
-                      min={0}
-                      className=" w-full"
-                      formatter={(value) =>
-                        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                      }
-                    />
-                  </Form.Item>
+                  {customerType === "juristic" && (
+                    <Form.Item
+                      label="วันที่จดทะเบียน"
+                      rules={[{ required: true, message: "Please Enter" }]}
+                    >
+                      <DatePicker format={"DD/MM/YYYY"} className=" w-full" />
+                    </Form.Item>
+                  )}
+                  {customerType === "juristic" && (
+                    <Form.Item
+                      label="ทุนจดทะเบียน"
+                      name={"registration"}
+                      rules={[{ required: true, message: "Please Enter" }]}
+                    >
+                      <InputNumber
+                        min={0}
+                        className=" w-full"
+                        formatter={(value) =>
+                          `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                        }
+                      />
+                    </Form.Item>
+                  )}
                   <Form.Item label={<b>Type</b>} name={"customerTypeId"}>
                     <Select
                       placeholder={isEdit ? "Plese Choose" : ""}
                       options={customerTypes.map((data) => ({
-                        value: data.id,
+                        value: data.customerTypeId,
                         label: data.name,
                       }))}
                     />
@@ -234,7 +313,7 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   </Form.Item>
                   <Form.Item name={"responsible"} hidden></Form.Item>
                   <Form.Item
-                    label={<b>ผู้รับผิดชอบ</b>}
+                    label={<b>พนักงานขาย</b>}
                     name={"responsibleId"}
                     rules={[{ required: true, message: "กรุณาเลือก" }]}
                   >
@@ -248,7 +327,7 @@ const DescriptionCustomerForm: React.FC<props> = ({
                       }))}
                     />
                   </Form.Item>
-                  {/* <Form.Item label={<b>ผู้รับผิดชอบ</b>} name={"responsibleId"}>
+                  {/* <Form.Item label={<b>พนักงานขาย</b>} name={"responsibleId"}>
                   <Select
                     placeholder={isEdit ? "Plese Choose" : ""}
                     options={[
@@ -258,7 +337,7 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   />
                 </Form.Item> */}
                   {/* <Form.Item
-                  label={<b>ผู้รับผิดชอบร่วม</b>}
+                  label={<b>พนักงานขาย</b>}
                   name={"thirdPartyId"}
                 >
                   <Select
@@ -280,7 +359,11 @@ const DescriptionCustomerForm: React.FC<props> = ({
                       checkedChildren={"Active"}
                     />
                   </Form.Item>
-                  <Form.Item label={<b>โทรศัพท์</b>} name={"notiPhone"}>
+                  <Form.Item
+                    label={<b>โทรศัพท์</b>}
+                    name={"notiPhone"}
+                    rules={[{ required: true, message: "Please Enter" }]}
+                  >
                     <Input placeholder={isEdit ? "Enter Text" : ""} />
                   </Form.Item>
                   <Form.Item label={<b>แฟกซ์</b>} name={"notiFax"}>
@@ -292,6 +375,22 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   <Form.Item label={<b>Map</b>} name={"notiMap"}>
                     <Input placeholder={isEdit ? "Enter Text" : ""} />
                   </Form.Item>
+                  {customerType === "juristic" && (
+                    <Form.Item
+                      label={<b>Domain @</b>}
+                      name={["details", "notiDomain"]}
+                    >
+                      <Input placeholder="Enter Text" />
+                    </Form.Item>
+                  )}
+                  {customerType === "juristic" && (
+                    <Form.Item
+                      label={<b>Website</b>}
+                      name={["details", "notiWebsite"]}
+                    >
+                      <Input placeholder="Enter Text" />
+                    </Form.Item>
+                  )}
                   <div className=" md:col-span-4">
                     <Form.Item
                       label={<b>หมวดธุรกิจ</b>}

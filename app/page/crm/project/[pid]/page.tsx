@@ -410,8 +410,8 @@ export default function CustomerDetailPage() {
     } else if (status === "inprogress" && action === "resume") {
       title = "Resume Ticket";
       content = <>ยืนยันการคืนงาน ?</>;
-    } else if (status === "inprogress" && action === "revise") {
-      title = "Revise Ticket";
+    } else if (status === "inprogress" && action === "rollback") {
+      title = "Rollback Ticket";
       content = <>ยืนยันการคืนงาน ?</>;
     } else if (status === "hold") {
       title = "Hold Ticket";
@@ -522,9 +522,9 @@ export default function CustomerDetailPage() {
     } else if (action === "deleteFile") {
       type = "Update Progress Info";
       detail = "Delete Attach File";
-    } else if (action === "revise") {
-      type = "Revise";
-      detail = "Revise";
+    } else if (action === "rollback") {
+      type = "Rollback";
+      detail = "Rollback";
     }
     const form: ITTicketHistoryLogForm = {
       customerProjectTicketId: ticketId,

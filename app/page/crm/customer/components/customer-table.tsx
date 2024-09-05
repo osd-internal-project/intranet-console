@@ -102,9 +102,15 @@ const CustomerTableComponent: React.FC<props> = ({
       title: "ชื่อ",
       width: "200px",
       render: (value: string, record, index) =>
-        `${record.prefixTh ? record.prefixTh : ""} ${
-          record.firstNameTh ? record.firstNameTh : ""
-        } ${record.lastNameTh ? record.lastNameTh : ""}`,
+        record.customerTypeId === "natural"
+          ? `${record.details?.prefixTh ? record.details?.prefixTh : ""}${
+              record.details?.firstNameTh ? record.details?.firstNameTh : ""
+            }${
+              record.details?.lastNameTh ? ` ${record.details?.lastNameTh}` : ""
+            }`
+          : record.customerTypeId === "juristic"
+          ? record.details?.customerNameTh
+          : "",
     },
     {
       key: "activeStatus",
@@ -133,7 +139,7 @@ const CustomerTableComponent: React.FC<props> = ({
     {
       key: "responsible",
       dataIndex: "responsible",
-      title: "ผู้รับผิดชอบ",
+      title: "พนักงานขาย",
       width: "200px",
       render: (value: { uid: string; name: string }[]) =>
         value

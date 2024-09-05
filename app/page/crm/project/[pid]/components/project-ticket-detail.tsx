@@ -694,11 +694,11 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                               updateTicketStatus(
                                 ticketSelectedDetail.id,
                                 "inprogress",
-                                "revise"
+                                "rollback"
                               )
                             }
                           >
-                            Revise
+                            Rollback
                           </Button>{" "}
                           <Button
                             type="primary"

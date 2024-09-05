@@ -5,17 +5,24 @@ export type ITCustomerForm = {
   customerGroupId?: number;
   customerGroupName?: string;
   departmentCode?: string;
-  firstNameEn?: string;
-  firstNameTh?: string;
+
   grade?: string;
-  lastNameEn?: string;
-  lastNameTh?: string;
+  details?: {
+    prefixEn?: string;
+    prefixTh?: string;
+    firstNameEn?: string;
+    firstNameTh?: string;
+    lastNameEn?: string;
+    lastNameTh?: string;
+    customerNameTh?: string;
+    customerNameEn?: string;
+  };
+
   notiEmail?: string;
   notiFax?: string;
   notiMap?: string;
   notiPhone?: string;
-  prefixEn?: string;
-  prefixTh?: string;
+
   referenceCode?: string;
   regisDate?: Date;
   registration?: number;
@@ -24,7 +31,7 @@ export type ITCustomerForm = {
   responsibleName?: string;
   thirdPartyId?: number;
   thirdPartyName?: string;
-  customerTypeId?: number;
+  customerTypeId?: string;
   customerTypeName?: string;
   taxAlley?: string;
   businessCategory?: string;
@@ -87,7 +94,7 @@ export type ITBranchDetail = {
   customerAddress: ITBranchAddress[];
   customerContact: ITBranchContact[];
 } & ITBranchForm;
-export type ITConfigData = { id: number; name: string };
+export type ITConfigData = { id: number; name: string; customerTypeId: string };
 export type ITSelectUsers = {
   userId: string;
   firstNameTh: string;

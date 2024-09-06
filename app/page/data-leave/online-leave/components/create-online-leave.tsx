@@ -339,9 +339,9 @@ export const CreateOnlineLeave: React.FC<props> = ({
               label={`วัตถุประสงค์การลา :`}
               name={`detail`}
               required
-              // rules={[
-              //   { required: true, message: "กรุณากรอกวัตถุประสงค์การลา" },
-              // ]}
+              rules={[
+                { required: true, message: "กรุณากรอกวัตถุประสงค์การลา" },
+              ]}
             >
               <Input.TextArea placeholder="วัตถุประสงค์การลา" />
             </Form.Item>
@@ -351,16 +351,16 @@ export const CreateOnlineLeave: React.FC<props> = ({
               <Form.Item
                 label={`เบอร์โทรศัพท์ :`}
                 name={"phoneNumber"}
-                // rules={[
-                //   {
-                //     required: true,
-                //     message: "กรุณากรอกเบอร์โทรศัพท์",
-                //   },
-                //   {
-                //     pattern: /^[0-9]{10}$/,
-                //     message: "กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง",
-                //   },
-                // ]}
+                rules={[
+                  {
+                    required: true,
+                    message: "กรุณากรอกเบอร์โทรศัพท์",
+                  },
+                  {
+                    pattern: /^[0-9]{10}$/,
+                    message: "กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง",
+                  },
+                ]}
               >
                 <Input
                   placeholder="เบอร์โทรศัพท์"

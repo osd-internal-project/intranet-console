@@ -130,6 +130,12 @@ export default function Page() {
     setLoading(true);
   };
 
+  const rowClassName = (record: any) => {
+    return typeLeaveTableAll.some((e: any) => record.id === e.masterTypeleaveId)
+      ? "disabled-row"
+      : "";
+  };
+
   const checklenghtDay = async (value1: any, value2: any) => {
     const startDate = value1 ? dayjs(value1).startOf("day") : null;
     const endDate = value2 ? dayjs(value2).endOf("day") : null;
@@ -978,6 +984,7 @@ export default function Page() {
             typeLeaveTable={typeLeaveTable}
             params={params}
             typeLeaveTableAll={typeLeaveTableAll}
+            rowClassName={rowClassName}
           />
         </Col>
       </Row>

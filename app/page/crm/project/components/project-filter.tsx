@@ -67,6 +67,9 @@ const ProjectFilterComponent: React.FC<props> = ({
                 </Form.Item> */}
                 <Form.Item name={"projectname"} label={"Project Name"}>
                   <Input />
+                </Form.Item>{" "}
+                <Form.Item name={"productName"} label={"Project Name"}>
+                  <Input />
                 </Form.Item>
                 <Form.Item name={"activeDate"} label={"ช่วงเวลาดำเนินการ"}>
                   <RangePicker format={"DD/MM/YYYY"} />

@@ -5,6 +5,7 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
   const baseUrlApiMaCar = "/ma-car";
   const baseUrlApiMaCarTpye = "/ma-car-type";
   const baseUrlApiMaCarwarpup = "/ma-car-wrapup";
+  const baseUrlApiMaCarwarpupimage = "/ma-car-wrapup-image";
 
   return {
     getMaCarBookQuery: async () => {
@@ -205,6 +206,60 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
       console.log(`${baseUrlApiMaCarTpye}/${carId}`);
       return await axiosInstance
         .delete(`${baseUrlApiMaCarwarpup}/${carId}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+
+    getMaCarQueryWarpupimage: async () => {
+      return await axiosInstance
+        .get(`${baseUrlApiMaCarwarpupimage}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    updateMaCarWarpupimage: async (carWrapupId: string, body: any) => {
+      return await axiosInstance
+        .patch(`${baseUrlApiMaCarwarpupimage}/${carWrapupId}`, body)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    uploadFiles: async (carWrapupId: string, formData: FormData) => {
+      return axiosInstance.post(`${baseUrlApiMaCarwarpupimage}/${carWrapupId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    },
+
+    createMaCarWarpupimage: async (body: any) => {
+      return await axiosInstance
+        .post(`${baseUrlApiMaCarwarpupimage}`, body)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    deleteMaCarWarpupimage: async (idwarpupImage: any) => {
+      console.log(`${baseUrlApiMaCarTpye}/${idwarpupImage}`);
+      return await axiosInstance
+        .delete(`${baseUrlApiMaCarwarpupimage}/${idwarpupImage}`)
         .then((res) => {
           return res.data;
         })

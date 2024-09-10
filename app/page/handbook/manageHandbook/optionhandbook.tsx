@@ -207,9 +207,11 @@ const Newoption: React.FC = () => {
     setIsmodlaOpencreate(true);
   };
   const handleclosecreate = () => {
+    form.resetFields();
     setIsmodlaOpencreate(false);
   };
   const handleCancel1edit = () => {
+    formEdit.resetFields();
     setModalEditnewType(false);
   };
 
@@ -349,7 +351,9 @@ const Newoption: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกชื่อประเภทเอกสาร" }]}
             style={{ width: "300px" }}
           >
-            <Input placeholder="ชื่อประเภทเอกสาร" />
+            <Input placeholder="ชื่อประเภทเอกสาร" 
+              showCount
+              maxLength={100}/>
           </Form.Item>
           <Form.Item
             name="status"
@@ -406,7 +410,9 @@ const Newoption: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกชื่อประเภทเอกสาร" }]}
             style={{ width: "300px" }}
           >
-            <Input placeholder="ชื่อประเภทเอกสาร" />
+            <Input placeholder="ชื่อประเภทเอกสาร" 
+              showCount
+              maxLength={100}/>
           </Form.Item>
           <Form.Item
             name="status"

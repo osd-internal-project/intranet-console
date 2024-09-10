@@ -29,6 +29,7 @@ const ManageMaCar = () => {
     pageSize: 10,
     total: 0,
   });
+  const [activeKey, setActiveKey] = useState<string>("1");
 
   const changePagination = (page: TablePaginationConfig) => {
     setPagination({ ...page });
@@ -63,16 +64,18 @@ const ManageMaCar = () => {
     },
     {
       key: "3",
-      label: "การตรวจเช็ค",
-      children: <MasterType />,
+      label: "ประเภทการตรวจสภาพ",
+      children: activeKey === "3" ? <MasterType /> : null,
     },
     {
       key: "4",
       label: "เช็คสภาพรถ",
-      children: <WarpupmaCar />,
+      children: activeKey === "4" ? <WarpupmaCar /> : null,
     },
   ];
-
+  const handleTabChange = (key: string) => {
+    setActiveKey(key);
+  };
   const fetchData = async () => {
     const skip: number =
       (Number(pagination.current) - 1) * Number(pagination.pageSize);
@@ -121,7 +124,11 @@ const ManageMaCar = () => {
         <Col span={24}>
           <div className="grid-span-1 space-y-2">
             <Card>
-              <Tabs defaultActiveKey="1" items={items} />
+              <Tabs
+                defaultActiveKey="1"
+                items={items}
+                onChange={handleTabChange}
+              />
             </Card>
           </div>
         </Col>

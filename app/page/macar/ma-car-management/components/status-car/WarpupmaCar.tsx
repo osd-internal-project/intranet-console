@@ -597,7 +597,7 @@ const WarpupmaCar = () => {
                   color: isEditable ? "inherit" : "gray",
                 }}
               >
-                <EditIcon />
+                {EditIcon}
               </a>
             </Tooltip>
             <Popconfirm
@@ -621,7 +621,7 @@ const WarpupmaCar = () => {
                   color: isEditable ? "inherit" : "gray",
                 }}
               >
-                <ApproveIcon strokeColor="blue" width="1rem" height="1rem" />
+                {ApproveIcon}
               </a>
             </Tooltip>
           </Space>

@@ -63,6 +63,8 @@ export default function Page() {
     lengthDate: 0,
     lengthTime: 0,
   });
+  // console.log("params:", params);
+
   const [createdataleaveForm] = useForm();
 
   useEffect(() => {
@@ -106,6 +108,12 @@ export default function Page() {
     return false;
   };
 
+  const rowClassName = (record: any) => {
+    return typeLeaveTableAll.some((e: any) => record.id === e.masterTypeleaveId)
+      ? "disabled-row"
+      : "";
+  };
+
   const onChangeParams = (value: Dayjs, type: string) => {
     if (type === "type") {
       setParams((e: any) => ({ ...e, typeId: value }));
@@ -118,22 +126,33 @@ export default function Page() {
     if (type === "endDate") {
       setParams((e: any) => ({ ...e, endDate: value }));
     }
-    if (type === "startTime") {
-      setParams((e: any) => ({ ...e, startTime: value }));
-    } else if (type === "endTime" && params.startTime) {
-      checklenghtTime(params.startTime, value);
-    }
-    if (type === "endTime") {
-      setParams((e: any) => ({ ...e, endTime: value }));
-    }
+    // if (type === "startTime") {
+    //   setParams((e: any) => ({ ...e, startTime: value }));
+    // } else if (type === "endTime" && params.startTime) {
+    //   checklenghtTime(params.startTime, value);
+    // }
+    // if (type === "endTime") {
+    //   setParams((e: any) => ({ ...e, endTime: value }));
+    // }
 
+    if (type === "selectStartTime") {
+      setParams((prevParams: { endTime: any }) => {
+        const newParams = { ...prevParams, startTime: value };
+        if (prevParams.endTime) {
+          checklenghtTime(newParams.startTime, prevParams.endTime);
+        }
+        return newParams;
+      });
+    } else if (type === "selectEndTime") {
+      setParams((prevParams: { startTime: any }) => {
+        const newParams = { ...prevParams, endTime: value };
+        if (prevParams.startTime) {
+          checklenghtTime(prevParams.startTime, newParams.endTime);
+        }
+        return newParams;
+      });
+    }
     setLoading(true);
-  };
-
-  const rowClassName = (record: any) => {
-    return typeLeaveTableAll.some((e: any) => record.id === e.masterTypeleaveId)
-      ? "disabled-row"
-      : "";
   };
 
   const checklenghtDay = async (value1: any, value2: any) => {
@@ -153,17 +172,35 @@ export default function Page() {
   };
 
   const checklenghtTime = async (value1: any, value2: any) => {
-    const startTime = value1 ? dayjs(value1, "HH:mm") : null;
-    const endTime = value2 ? dayjs(value2, "HH:mm") : null;
+    console.log("Start Time:", value1);
+    console.log("End Time:", value2);
+
+    const startTime = dayjs(value1, "HH:mm");
+    const endTime = dayjs(value2, "HH:mm");
+
     const totalHours =
       startTime && endTime
         ? endTime.diff(startTime, "hour", true).toFixed(1)
-        : 0;
+        : "0";
     setParams((e: any) => ({
       ...e,
-      lengthTime: totalHours != 0 ? Number(totalHours) : 1,
+      lengthTime: totalHours !== "0" ? Number(totalHours) : 1,
     }));
   };
+
+  // const checklenghtTime = async (value1: any, value2: any) => {
+
+  //   const startTime = value1 ? dayjs(value1, "HH:mm") : null;
+  //   const endTime = value2 ? dayjs(value2, "HH:mm") : null;
+  //   const totalHours =
+  //     startTime && endTime
+  //       ? endTime.diff(startTime, "hour", true).toFixed(1)
+  //       : 0;
+  //   setParams((e: any) => ({
+  //     ...e,
+  //     lengthTime: totalHours != 0 ? Number(totalHours) : 1,
+  //   }));
+  // };
 
   const handleChangeAttendFiles: UploadProps["onChange"] = async ({
     fileList: newFileList,
@@ -426,6 +463,7 @@ export default function Page() {
     const selectedOption = getTypeLeaveOption.find(
       (option) => option.value === values.type_id
     );
+
     const totalDays =
       startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
 
@@ -513,8 +551,6 @@ export default function Page() {
                       formData.append("type", "attend");
                       formData.append("files", file.originFileObj);
                       await dataleaveservice.uploadFiles(result.id, formData);
-                      // console.log("result.id", result.id);
-                      // console.log("formData", formData);
                     });
                   }
                   message.success(`Add success`);

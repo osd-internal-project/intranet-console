@@ -20,7 +20,7 @@ import {
   Popconfirm,
 } from "antd";
 import type { FormProps, TableProps } from "antd";
-import { EditIcon } from "@/components/icon";
+import { EditIcon, CancelMaCarIcon } from "@/components/icon";
 import dayjs from "dayjs";
 import ShareMaCarBook from "../share-ma-car-book/share-xlsx";
 import { MaCarServices } from "../services/ma-car.service";
@@ -46,7 +46,9 @@ const MaCarBookTable: React.FC<props> = ({
   maCarData,
 }: any): React.ReactElement => {
   const { data: session } = useSession();
+  const { TextArea } = Input;
   const [form] = Form.useForm();
+  const [formCancel] = Form.useForm();
   const intraAuth = useAxiosIntranet();
   const maCarServices = MaCarServices(intraAuth);
   const [modalEditMaCarBook, setModalEditMa] = useState(false);
@@ -54,6 +56,8 @@ const MaCarBookTable: React.FC<props> = ({
   const [currentMaCarBookId, setCurrentMaCarBookId] = useState<number | null>(
     null
   );
+  const [modalCancel, setModalCancel] = useState(false);
+  const [columnId, setColumnId] = useState<number | undefined>(undefined);
 
   const columns: TableProps<MaCarBookType>["columns"] = [
     {
@@ -73,26 +77,24 @@ const MaCarBookTable: React.FC<props> = ({
       align: "center",
     },
     {
-      key: "createdAt",
-      title: "วันที่จอง",
-      width: "200px",
+      key: "carBookStartDate",
+      title: "วันที่เริ่มจอง",
+      width: "150px",
       align: "center",
       render: (_, record) => (
         <span>
-          {dayjs(record.carBookStartDate).format("DD-MM-YYYY")} -{" "}
-          {dayjs(record.carBookEndDate).format("DD-MM-YYYY")}
+          {dayjs(record.carBookStartDate).format("DD-MM-YYYY HH:mm:ss")}
         </span>
       ),
     },
     {
-      title: "เวลาจอง",
-      key: "bookingTime",
-      width: "100px",
+      key: "carBookEndDate",
+      title: "วันที่สิ้นสุดการจอง",
+      width: "150px",
       align: "center",
       render: (_, record) => (
         <span>
-          {dayjs(record.carBookStartDate).format("HH:mm")} -{" "}
-          {dayjs(record.carBookEndDate).format("HH:mm")}
+          {dayjs(record.carBookEndDate).format("DD-MM-YYYY HH:mm:ss")}
         </span>
       ),
     },
@@ -114,27 +116,27 @@ const MaCarBookTable: React.FC<props> = ({
         let text = "";
         switch (status) {
           case "Process":
-            color = "blue";
+            color = "DodgerBlue";
             text = "กำลังรออนุมัติ";
             break;
           case "Cancel":
-            color = "red";
+            color = "silver";
             text = "ยกเลิกการจอง";
             break;
           case "Approve":
-            color = "green";
+            color = "LimeGreen";
             text = "อนุมัติแล้ว";
             break;
           case "DisapProved":
-            color = "orange";
+            color = "OrangeRed";
             text = "ไม่อนุมัติ";
             break;
           case "Return":
-            color = "yellow";
+            color = "Gold";
             text = "แจ้งคืนรถแล้ว";
             break;
           case "Completed":
-            color = "#748698";
+            color = "MediumPurple";
             text = "คืนรถสำเร็จ";
             break;
           default:
@@ -149,8 +151,17 @@ const MaCarBookTable: React.FC<props> = ({
       key: "carBookApprovedByName",
       title: "ผู้อนุมัติ",
       dataIndex: "carBookApprovedByName",
-      width: "150px",
+      width: "130px",
       align: "center",
+      render: (value: string) => (value ? value : "-"),
+    },
+    {
+      key: "remarkApproved",
+      title: "หมายเหตุการยกเลิก",
+      dataIndex: "remarkApproved",
+      width: "100px",
+      align: "center",
+      render: (value: string) => (value ? value : "-"),
     },
     {
       title: "จัดการ",
@@ -167,20 +178,51 @@ const MaCarBookTable: React.FC<props> = ({
               aria-label="Edit"
               style={{ cursor: "pointer" }}
             >
-              <EditIcon width="24" height="24" />
+              {EditIcon}
             </a>
           </Tooltip>
+          {/* <Tooltip title="ยกเลิกการจอง">
+            <p
+              onClick={() => {
+                setModalCancel(true);
+                setColumnId(record.id);
+              }}
+            >
+              {CancelMaCarIcon}
+            </p>
+          </Tooltip> */}
 
-          <Popconfirm
-            title="คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการจองนี้?"
-            onConfirm={() => handleCancelMa(record)}
-            okText="ใช่"
-            cancelText="ไม่"
-          >
-            <Tooltip title="ยกเลิกการจอง">
-              <a>ยกเลิกการจอง</a>
-            </Tooltip>
-          </Popconfirm>
+          <Tooltip title="ยกเลิกการจอง">
+            <p
+              onClick={() => {
+                if (record.carBookApprovedStatus === "Approve") {
+                  message.warning("ไม่สามารถยกเลิกการจองที่อนุมัติได้");
+                  return;
+                }
+                if (record.carBookApprovedStatus === "Return") {
+                  message.warning("ไม่สามารถยกเลิกการจองที่แจ้งคืนรถได้");
+                  return;
+                }
+                if (record.carBookApprovedStatus === "Completed") {
+                  message.warning("ไม่สามารถยกเลิกการจองที่คืนรถได้");
+                  return;
+                }
+                if (record.carBookApprovedStatus === "DisapProved") {
+                  message.warning("ไม่สามารถยกเลิกการจองที่ไม่อนุมัติได้");
+                  return;
+                }
+                if (record.carBookApprovedStatus === "Cancel") {
+                  message.warning("ยกเลิกการจองนี้ไปแล้ว");
+                  return;
+                }
+                setModalCancel(true);
+                setColumnId(record.id);
+              }}
+              // style={{ cursor: "pointer", color: "red" }}
+            >
+              {CancelMaCarIcon}
+            </p>
+          </Tooltip>
         </Space>
       ),
     },
@@ -218,37 +260,22 @@ const MaCarBookTable: React.FC<props> = ({
     setLoading(true);
   };
 
-  const handleCancelMa = async (record: MaCarBookType) => {
-    setSubmitLoading(true);
-
-    if (record.carBookApprovedStatus === "Approve") {
-      message.warning("ไม่สามารถยกเลิกการจองที่อนุมัติได้");
-      return;
-    }
-    if (record.carBookApprovedStatus === "Return") {
-      message.warning("ไม่สามารถยกเลิกการจองที่แจ้งคืนรถได้");
-      return;
-    }
-    if (record.carBookApprovedStatus === "Completed") {
-      message.warning("ไม่สามารถยกเลิกการจองที่คืนรถได้");
-      return;
-    }
-    if (record.carBookApprovedStatus === "DisapProved") {
-      message.warning("ไม่สามารถยกเลิกการจองที่ไม่อนุมัติได้");
-      return;
-    }
-    if (record.carBookApprovedStatus === "Cancel") {
-      message.warning("ยกเลิกการจองนี้ไปแล้ว");
-      return;
-    }
-
+  const handleCancelMa: FormProps<MaCarBookType>["onFinish"] = async (
+    values
+  ) => {
+    
     try {
       const updatedApproveMa = {
-        id: record.id,
+        id: columnId,
         carBookApprovedStatus: "Cancel",
+        remarkApproved: values.remarkApproved,
+        carBookApprovedDate: dayjs().toISOString(),
+        carBookApprovedById: session?.user.userId,
+        carBookApprovedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
       };
       await maCarServices.updateMaCarBook(updatedApproveMa);
       message.success("ยกเลิกการจองสำเร็จ");
+      setModalCancel(false);
     } catch (error) {
       message.error("ยกเลิกการจองไม่สำเร็จ");
     } finally {
@@ -256,8 +283,6 @@ const MaCarBookTable: React.FC<props> = ({
     }
     setLoading(true);
   };
-
-  const { TextArea } = Input;
 
   const handleEditMaCancel = () => {
     setModalEditMa(false);
@@ -411,9 +436,16 @@ const MaCarBookTable: React.FC<props> = ({
                 />
               </Form.Item>
             </Col>
+          </Row>
+          <Row gutter={24}>
             <Col span={8}>
               <Form.Item name="detail" label="รายยละเอียด">
                 <TextArea placeholder="กรอกรายยละเอียด" rows={2} />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item name="remark" label="หมายเหตุการจองรถ">
+                <TextArea placeholder="กรอกหมายเหตุการจองรถ" rows={2} />
               </Form.Item>
             </Col>
           </Row>
@@ -498,6 +530,41 @@ const MaCarBookTable: React.FC<props> = ({
         </Form>
       </Modal>
 
+      <Modal
+        title="ยกเลิกการจองรถ"
+        open={modalCancel}
+        onCancel={() => setModalCancel(false)}
+        footer={null}
+        width={400}
+      >
+        <Form
+          form={formCancel}
+          layout="vertical"
+          name="cancel_ma"
+          onFinish={handleCancelMa}
+          autoComplete="off"
+        >
+          <Col>
+            <Form.Item
+              name="remarkApproved"
+              label="หมายเหตุยกเลิกการจองรถ"
+              rules={[
+                { required: true, message: "กรุณากรอกหมายเหตุการยกเลิก" },
+              ]}
+            >
+              <Input placeholder="กรอกหมายเหตุการยกเลิก" />
+            </Form.Item>
+          </Col>
+          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+            <Row justify="end" gutter={16}>
+              <Button type="primary" htmlType="submit" loading={submitLoading}>
+                ตกลง
+              </Button>
+            </Row>
+          </Form.Item>
+        </Form>
+      </Modal>
+
       <Row gutter={[18, 18]}>
         <Col md={18}>
           <ShareMaCarBook data={maCarBookData} />
@@ -515,6 +582,7 @@ const MaCarBookTable: React.FC<props> = ({
       <Table
         columns={columns}
         dataSource={maCarBookData}
+        sortDirections={["descend", "ascend"]}
         rowKey="id"
         onChange={changePagination}
         pagination={pagination}

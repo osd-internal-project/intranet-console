@@ -419,9 +419,7 @@ const Newoption: React.FC = () => {
       render: (record: number, row: any) => (
         <Space size="middle">
           <Tooltip title="แก้ไข">
-            <a onClick={() => showModalinformationNews(row)}>
-              <EditIcon width="24" height="24" />{" "}
-            </a>
+            <a onClick={() => showModalinformationNews(row)}>{EditIcon}</a>
           </Tooltip>
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบข่าวสารนี้?"

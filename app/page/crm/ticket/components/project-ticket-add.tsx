@@ -129,7 +129,7 @@ const ProjectTicketAddComponent: React.FC<props> = ({
             name={"ticketDetail"}
             className=" col-span-4"
           >
-            <TextArea maxLength={200} showCount />
+            <TextArea showCount />
           </Form.Item>
           <Divider orientation="left" className="  p-0 m-0">
             CLASSIFIED DETAIL

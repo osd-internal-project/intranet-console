@@ -17,8 +17,9 @@ import MaCarReturn from "./components/maCarReturn";
 import { useSession } from "next-auth/react";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { MaCarBookServices } from "./services/ma-car-book.service";
-import { MaCarType, MaCarBookType } from "../common/index";
+import { MaCarType, MaCarBookType, ProvincesType } from "../common/index";
 import { useSearchParams } from "next/navigation";
+import axios from "axios";
 
 const MaCarBooking: React.FC = () => {
   const { data: session } = useSession();
@@ -28,11 +29,17 @@ const MaCarBooking: React.FC = () => {
   const [maCarBookData, setMaCarBookData] = useState<MaCarBookType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [form] = Form.useForm();
+ 
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
     total: 0,
   });
+
+  const [dataoptionsProvinces, setDataoptionsProvinces] = useState<
+    ProvincesType[]
+  >([]);
+
   const searchParams = useSearchParams();
 
   const action = searchParams.get("action");
@@ -41,9 +48,14 @@ const MaCarBooking: React.FC = () => {
     {
       key: "1",
       label: "ทำการจองรถ",
-      children: <MaCarBook maCarData={maCarData} setLoading={setLoading} />,
+      children: (
+        <MaCarBook
+          maCarData={maCarData}
+          setLoading={setLoading}
+          dataoptionsProvinces={dataoptionsProvinces}
+        />
+      ),
     },
-
     {
       key: "2",
       label: "การคืนรถ",
@@ -52,6 +64,7 @@ const MaCarBooking: React.FC = () => {
           maCarBookData={maCarBookData}
           loading={loading}
           setLoading={setLoading}
+         
         />
       ),
     },
@@ -66,26 +79,32 @@ const MaCarBooking: React.FC = () => {
 
     try {
       const maCar = await maCarBookServices.getMaCarQuery();
+      const userIdData = session?.user.userId;
+      const maCarBook = await maCarBookServices.getMaCarBookQuery(userIdData);
+      const MaCarBook: MaCarBookType[] = maCarBook.map(
+        (item: any, index: number) => ({
+          ...item,
+          key: index.toString(),
+        })
+      );
+      const response = await axios.get(
+        "https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json"
+      );
+      const provinces = response.data;
+      const optionsProvinces = provinces.map((event: ProvincesType) => ({
+        value: event.id,
+        label: event.name_th,
+      }));
+      setDataoptionsProvinces(optionsProvinces);
+      setMaCarBookData(MaCarBook);
       setMaCarData(maCar);
-
       setPagination({ ...pagination, total: maCar.count });
+
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
+      setLoading(false);
     }
-
-    const userIdData = session?.user.userId;
-
-    const maCarBook = await maCarBookServices.getMaCarBookQuery(userIdData);
-
-    const MaCarBook: MaCarBookType[] = maCarBook.map(
-      (item: any, index: number) => ({
-        ...item,
-        key: index.toString(),
-      })
-    );
-    setMaCarBookData(MaCarBook);
-
-    setLoading(false);
   };
 
   useEffect(() => {

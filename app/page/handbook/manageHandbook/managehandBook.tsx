@@ -472,9 +472,7 @@ const Managehandbook: React.FC = () => {
       render: (_record: number, row: any, _index: number) => (
         <Space size="middle">
           <Tooltip title="แก้ไข">
-            <a onClick={() => showModalinformationNews(row)}>
-              <EditIcon width="24" height="24" />{" "}
-            </a>
+            <a onClick={() => showModalinformationNews(row)}>{EditIcon}</a>
           </Tooltip>
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"

@@ -74,7 +74,7 @@ const EditDetailComponent: React.FC<props> = ({
   const [userGroupSelect, setUserGroupSelect] = useState<
     SelectProps["options"]
   >([]);
-  
+
   useEffect(() => {
     if (loading) {
       loadingDetail();
@@ -256,8 +256,18 @@ const EditDetailComponent: React.FC<props> = ({
           autoComplete="off"
           layout="vertical"
         >
-          <div className=" flex justify-center p-1">
+          {/* <div className=" flex justify-center p-1">
             <Avatar size={128} src={image ? URL.createObjectURL(image) : ""} />
+          </div> */}
+          <div className="flex justify-center p-1">
+            <Avatar
+              size={128}
+              src={
+                image instanceof File
+                  ? URL.createObjectURL(image)
+                  : "https://e7.pngegg.com/pngimages/184/821/png-clipart-mangalore-united-states-management-computer-science-business-profile-angle-white-thumbnail.png"
+              }
+            />
           </div>
           <div className=" flex justify-center">
             <Form.Item name="image" hidden={disabledEdit}>

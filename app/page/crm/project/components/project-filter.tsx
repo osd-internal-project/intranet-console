@@ -37,6 +37,9 @@ const ProjectFilterComponent: React.FC<props> = ({
     if (values.projectname) {
       search = { ...search, projectname: values.projectname };
     }
+    if (values.productname) {
+      search = { ...search, productname: values.productname };
+    }
     if (values.activeDate) {
       search = {
         ...search,
@@ -69,6 +72,9 @@ const ProjectFilterComponent: React.FC<props> = ({
                   <Input />
                 </Form.Item>{" "}
                 <Form.Item name={"productName"} label={"Project Name"}>
+                  <Input />
+                </Form.Item>
+                <Form.Item name={"productname"} label={"Product Name"}>
                   <Input />
                 </Form.Item>
                 <Form.Item name={"activeDate"} label={"ช่วงเวลาดำเนินการ"}>

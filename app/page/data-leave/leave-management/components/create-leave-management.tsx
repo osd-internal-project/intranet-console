@@ -51,7 +51,12 @@ export const CreateLeaveManagement: React.FC<props> = ({
                   },
                 ]}
               >
-                <Select options={getdataUser} placeholder={`Please Select`} />
+                <Select
+                  options={getdataUser}
+                  placeholder={`Please Select`}
+                  showSearch
+                  optionFilterProp="label"
+                />
               </Form.Item>
             </Col>
           </Row>

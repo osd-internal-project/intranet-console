@@ -201,9 +201,7 @@ const masterType: React.FC = () => {
       render: (record: number, row: any, index: number) => (
         <Space size="middle">
           <Tooltip title="แก้ไข">
-            <a onClick={() => showModalEditMaCarType(row)}>
-              <EditIcon width="24" height="24" />{" "}
-            </a>
+            <a onClick={() => showModalEditMaCarType(row)}>{EditIcon}</a>
           </Tooltip>
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบประเภทการตรวจสภาพนี้?"

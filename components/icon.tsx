@@ -661,11 +661,7 @@ const DeleteIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 );
 export { DeleteIcon };
 
-interface EditIconProps extends React.SVGProps<SVGSVGElement> {
-  fill?: string;
-}
-
-const EditIcon: React.FC<EditIconProps> = ({ fill = "blue", ...props }) => (
+export const EditIcon = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="1.8rem"
@@ -679,21 +675,8 @@ const EditIcon: React.FC<EditIconProps> = ({ fill = "blue", ...props }) => (
     />
   </svg>
 );
-export { EditIcon };
 
-interface ApproveIconProps extends React.SVGProps<SVGSVGElement> {
-  strokeColor?: string;
-  width?: string;
-  height?: string;
-}
-
-// Define the ApproveIcon component
-const ApproveIcon: React.FC<ApproveIconProps> = ({
-  strokeColor = "green",
-  width = "1.8rem",
-  height = "1.8rem",
-  ...props
-}) => (
+export const ApproveIcon = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="1.8rem"
@@ -712,8 +695,6 @@ const ApproveIcon: React.FC<ApproveIconProps> = ({
     </g>
   </svg>
 );
-
-export { ApproveIcon };
 
 interface ExcelIconProps extends React.SVGProps<SVGSVGElement> {
   strokeColor?: string;
@@ -831,6 +812,21 @@ export const CheckIcon = (
     <path
       fill="currentColor"
       d="m10.6 16.6l7.05-7.05l-1.4-1.4l-5.65 5.65l-2.85-2.85l-1.4 1.4zM12 22q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22"
+    />
+  </svg>
+);
+
+export const CancelMaCarIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="2.18em"
+    height="2.18em"
+    viewBox="0 0 48 48"
+  >
+    <rect width="48" height="48" fill="none" />
+    <path
+      fill="#d50000"
+      d="M24 6C14.1 6 6 14.1 6 24s8.1 18 18 18s18-8.1 18-18S33.9 6 24 6m0 4c3.1 0 6 1.1 8.4 2.8L12.8 32.4C11.1 30 10 27.1 10 24c0-7.7 6.3-14 14-14m0 28c-3.1 0-6-1.1-8.4-2.8l19.6-19.6C36.9 18 38 20.9 38 24c0 7.7-6.3 14-14 14"
     />
   </svg>
 );

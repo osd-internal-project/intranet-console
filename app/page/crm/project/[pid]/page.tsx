@@ -450,7 +450,7 @@ export default function CustomerDetailPage() {
               name={"summary"}
               rules={[{ required: true, message: "กรุณากรอก Summary" }]}
             >
-              <TextArea showCount={true} maxLength={200} />
+              <TextArea showCount={true} />
             </Form.Item>
           </Form>
         </>

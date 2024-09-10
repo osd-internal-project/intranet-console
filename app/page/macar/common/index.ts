@@ -47,6 +47,8 @@ export interface MaCarBookType {
   returnAt: Date;
   maCar: MaCarType;
   carSelected: string;
+  idProvinces: string;
+  remarkApproved: string;
 }
 
 export interface MaCarBookCalendarType {

@@ -35,8 +35,7 @@ interface CustomEvent extends RbcEvent {
 
 const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
   const [formUpdate] = useForm();
-  const [modalMaCarBookDetail, setModalMaCarBookDetail] =
-    useState(false);
+  const [modalMaCarBookDetail, setModalMaCarBookDetail] = useState(false);
   const [selectedMa, setSelectedMa] = useState<MaCarBookCalendarType | null>(
     null
   );
@@ -49,17 +48,17 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
   const renderStatusTag = (status: string) => {
     switch (status) {
       case "Process":
-        return <Tag color="blue">กำลังรออนุมัติ</Tag>;
+        return <Tag color="DodgerBlue">กำลังรออนุมัติ</Tag>;
       case "Approve":
-        return <Tag color="green">อนุมัติแล้ว</Tag>;
+        return <Tag color="LimeGreen">อนุมัติแล้ว</Tag>;
       case "Cancel":
-        return <Tag color="red">ยกเลิกการจอง</Tag>;
+        return <Tag color="silver">ยกเลิกการจอง</Tag>;
       case "DisapProved":
-        return <Tag color="orange">ไม่อนุมัติ</Tag>;
+        return <Tag color="OrangeRed">ไม่อนุมัติ</Tag>;
       case "Return":
-        return <Tag color="yellow">แจ้งคืนรถแล้ว</Tag>;
+        return <Tag color="Gold">แจ้งคืนรถแล้ว</Tag>;
       case "Completed":
-        return <Tag color="#748698">คืนรถสำเร็จ</Tag>;
+        return <Tag color="MediumPurple">คืนรถสำเร็จ</Tag>;
       default:
         return "Unknown Status";
     }

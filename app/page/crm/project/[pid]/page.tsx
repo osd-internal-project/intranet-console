@@ -422,7 +422,7 @@ export default function CustomerDetailPage() {
         <>
           <Form form={finishForm}>
             <Form.Item
-              label={"Manhour"}
+              label={"man-hour"}
               name={"manhour"}
               rules={[{ required: true, message: "กรุณากรอก Manhour" }]}
             >
@@ -473,6 +473,7 @@ export default function CustomerDetailPage() {
           form = { ...form, summary: summary };
         } else if (status === "finish") {
           const finish = finishForm.getFieldsValue();
+          finishForm.submit();
           form = { ...form, ...finish };
         }
         await crmServices

@@ -119,11 +119,11 @@ const ManageCarStatus: React.FC<props> = ({
               aria-label="Edit"
               style={{ cursor: "pointer" }}
             >
-              <EditIcon width="24" height="24" />
+              {EditIcon}
             </a>
           </Tooltip>
           <Popconfirm
-            title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
+            title="คุณแน่ใจหรือไม่ว่าต้องการลบรถคันนี้?"
             onConfirm={() => handleDeleteCarStatus(record.carId)}
             okText="ใช่"
             cancelText="ไม่"
@@ -290,7 +290,14 @@ const ManageCarStatus: React.FC<props> = ({
             name="carMile"
             rules={[{ required: true, message: "กรุณากรอกเลขไมค์รถ!" }]}
           >
-            <InputNumber style={{ width: "100%" }} placeholder="เลขไมค์รถ" />
+            <Input
+              placeholder="กรอกเลขไมล์รถ"
+              onKeyDown={(event) => {
+                if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
+                  event.preventDefault();
+                }
+              }}
+            />
           </Form.Item>
           <Form.Item
             label="รายละเอียดรถ"
@@ -373,11 +380,22 @@ const ManageCarStatus: React.FC<props> = ({
               name="carMile"
               rules={[{ required: true, message: "กรุณากรอกเลขไมล์รถ!" }]}
             >
-              <InputNumber placeholder="กรอกเลขไมล์รถ" min={0} />
+              <Input
+                placeholder="กรอกเลขไมล์รถ"
+                onKeyDown={(event) => {
+                  if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
+                    event.preventDefault();
+                  }
+                }}
+              />
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item label="รายละเอียด" name="detail">
+            <Form.Item
+              label="รายละเอียด"
+              name="detail"
+              rules={[{ required: true, message: "กรุณากรอกรายละเอียดรถ!" }]}
+            >
               <Input.TextArea rows={4} placeholder="รายละเอียด" />
             </Form.Item>
           </Col>

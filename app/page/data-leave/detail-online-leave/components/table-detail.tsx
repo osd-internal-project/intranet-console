@@ -268,8 +268,7 @@ export const TableDetail: React.FC<props> = ({
                   style={{
                     width: "60px",
                     height: "30px",
-                    // backgroundColor: "orange",
-                    // color: "white",
+                   
                   }}
                   onClick={() => {
                     onFinishUpdate("cancel", dataById ? dataById : 0);

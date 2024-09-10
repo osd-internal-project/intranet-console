@@ -18,15 +18,20 @@ import {
 import { MaCarBookServices } from "../services/ma-car-book.service";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { MaCarType, MaCarBookType } from "../../common/index";
+import { MaCarType, MaCarBookType, ProvincesType } from "../../common/index";
+import { RangePickerProps } from "antd/es/date-picker";
+import dayjs from "dayjs";
+import axios from "axios";
 export interface props {
   maCarData: MaCarType[];
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  dataoptionsProvinces: ProvincesType[];
 }
 
 const MaCarBook: React.FC<props> = ({
   maCarData,
   setLoading,
+  dataoptionsProvinces,
 }: any): React.ReactElement => {
   const router = useRouter();
   const { data: session } = useSession();
@@ -56,6 +61,9 @@ const MaCarBook: React.FC<props> = ({
     });
   };
 
+  const disabledDate: RangePickerProps["disabledDate"] = (current) => {
+    return current && current < dayjs().startOf("day");
+  };
   const createMaCarBook: FormProps<MaCarBookType>["onFinish"] = async (
     values
   ) => {
@@ -79,6 +87,10 @@ const MaCarBook: React.FC<props> = ({
       setSubmitLoading(false);
       return;
     }
+    const selectedOptionProvinces = dataoptionsProvinces.find(
+      (option: ProvincesType) => option.value === values.idProvinces
+    );
+
     if (new Date(carBookEndDate) < new Date(carBookStartDate)) {
       message.error("วันที่สิ้นสุดการจองต้องหลังวันที่เริ่มการจอง");
       setSubmitLoading(false);
@@ -89,7 +101,9 @@ const MaCarBook: React.FC<props> = ({
       carName: carSelected?.carName,
       createdById: session?.user.userId,
       createdByName: values.createdByName,
-      carBookProvince: values.carBookProvince,
+      carBookProvince: selectedOptionProvinces
+        ? selectedOptionProvinces.label
+        : undefined,
       carBookPlace: values.carBookPlace,
       carBookUsers: Number(values.carBookUsers),
       carBookStartDate: values.carBookStartDate,
@@ -222,11 +236,17 @@ const MaCarBook: React.FC<props> = ({
         </Col>
         <Col span={8}>
           <Form.Item<MaCarBookType>
-            name="carBookProvince"
+            name="idProvinces"
             label="จังหวัด"
             rules={[{ required: true, message: "กรุณากรอกจังหวัด" }]}
           >
-            <Input placeholder="กรอกจังหวัด" />
+            <Select
+              placeholder={`กรอกจังหวัด`}
+              options={dataoptionsProvinces}
+              allowClear
+              showSearch
+              optionFilterProp="label"
+            />
           </Form.Item>
         </Col>
         <Col span={8}>
@@ -235,11 +255,15 @@ const MaCarBook: React.FC<props> = ({
             label="จำนวนผู้ใช้"
             rules={[{ required: true, message: "กรุณากรอกจำนวนผู้ใช้" }]}
           >
-            <InputNumber
-              style={{ width: "100%" }}
+            <Input
               placeholder="กรอกจำนวนผู้ใช้"
-              max={12}
-              min={1}
+              maxLength={2}
+              onKeyDown={(event) => {
+                if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
+                  event.preventDefault();
+                }
+              }}
+              suffix={<span>คน</span>}
             />
           </Form.Item>
         </Col>
@@ -254,6 +278,7 @@ const MaCarBook: React.FC<props> = ({
             <DatePicker
               placeholder="กรอกวันที่เริ่มการจอง"
               showTime
+              disabledDate={disabledDate}
               format="DD/MM/YYYY HH:mm"
               style={{ width: "100%" }}
             />
@@ -268,6 +293,7 @@ const MaCarBook: React.FC<props> = ({
             <DatePicker
               placeholder="กรอกวันที่สิ้นสุดการจอง"
               showTime
+              disabledDate={disabledDate}
               format="DD/MM/YYYY HH:mm"
               style={{ width: "100%" }}
             />
@@ -281,8 +307,8 @@ const MaCarBook: React.FC<props> = ({
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item name="remark" label="หมายเหตุ">
-            <Input placeholder="กรอกหมายเหตุ" />
+          <Form.Item name="remark" label="หมายเหตุการจองรถ">
+            <TextArea placeholder="หมายเหตุการจองรถ" />
           </Form.Item>
         </Col>
       </Row>

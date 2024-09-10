@@ -280,9 +280,7 @@ const Newoption: React.FC = () => {
       render: (row: number, record: handbooktype) => (
         <Space size="middle">
           <Tooltip title="แก้ไข">
-            <a onClick={() => showModalEditnewType(record)}>
-              <EditIcon width="24" height="24" />{" "}
-            </a>
+            <a onClick={() => showModalEditnewType(record)}>{EditIcon}</a>
           </Tooltip>
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบการเอกสารนี้?"

@@ -71,15 +71,24 @@ const MaCarReturn: React.FC<props> = ({
       align: "center",
     },
     {
-      title: "วันที่ใช้งาน",
-      dataIndex: "carBookStartDate",
       key: "carBookStartDate",
+      title: "วันที่เริ่มจอง",
       width: "200px",
       align: "center",
       render: (_, record) => (
         <span>
-          {dayjs(record.carBookStartDate).format("DD-MM-DYYYYD")} ถึง{" "}
-          {dayjs(record.carBookEndDate).format("DD-MM-YYYY")}
+          {dayjs(record.carBookStartDate).format("DD-MM-YYYY HH:mm:ss")}
+        </span>
+      ),
+    },
+    {
+      key: "carBookEndDate",
+      title: "วันที่สิ้นสุดการจอง",
+      width: "200px",
+      align: "center",
+      render: (_, record) => (
+        <span>
+          {dayjs(record.carBookEndDate).format("DD-MM-YYYY HH:mm:ss")}
         </span>
       ),
     },
@@ -101,27 +110,27 @@ const MaCarReturn: React.FC<props> = ({
         let text = "";
         switch (status) {
           case "Process":
-            color = "blue";
+            color = "DodgerBlue";
             text = "กำลังรออนุมัติ";
             break;
           case "Approve":
-            color = "green";
+            color = "LimeGreen";
             text = "อนุมัติแล้ว";
             break;
           case "Cancel":
-            color = "red";
+            color = "silver";
             text = "ยกเลิกการจองนี้แล้ว";
             break;
           case "Return":
-            color = "orange";
+            color = "Gold";
             text = "แจ้งคืนรถแล้ว";
             break;
           case "Completed":
-            color = "#748698";
+            color = "MediumPurple";
             text = "คืนรถสำเร็จ";
             break;
           case "DisapProved":
-            color = "yellow";
+            color = "OrangeRed";
             text = "ไม่อนุมัติ";
             break;
           default:
@@ -136,35 +145,65 @@ const MaCarReturn: React.FC<props> = ({
       title: "รายละเอียด",
       width: "120px",
       align: "center",
-      render: (_: any, record: MaCarBookType) => (
-        <Space size="middle">
-          <a onClick={() => showModalDetail(record)}>รายละเอียด</a>
-        </Space>
-      ),
+      render: (_: any, record: MaCarBookType) => {
+        return (
+          <Space size="middle">
+            <a
+              onClick={() => {
+                showModalDetail(record);
+              }}
+            >
+              รายละเอียด
+            </a>
+          </Space>
+        );
+      },
     },
     {
       title: "จัดการ",
       width: "150px",
       align: "center",
-      render: (_: any, record: MaCarBookType) => (
-        <Space size="middle">
-          {record.carBookApprovedStatus === "Approve" ? (
-            <a onClick={() => showModalReturn(record)}>แจ้งคืนรถ</a>
-          ) : record.carBookApprovedStatus === "Return" ? (
-            <span style={{ color: "grey" }}>แจ้งคืนรถแล้ว</span>
-          ) : record.carBookApprovedStatus === "Completed" ? (
-            <span style={{ color: "grey" }}>คืนรถสำเร็จ</span>
-          ) : record.carBookApprovedStatus === "Cancel" ? (
-            <span style={{ color: "grey" }}>ยกเลิกการจองนี้ไปแล้ว</span>
-          ) : record.carBookApprovedStatus === "DisapProved" ? (
-            <span style={{ color: "grey" }}>ไม่อนุมัติการจองรถ</span>
-          ) : record.carBookApprovedStatus === "Process" ? (
-            <span style={{ color: "grey" }}>ไม่สามารถแจ้งคืนรถได้</span>
-          ) : (
-            <span style={{ color: "grey" }}>ไม่สามารถแจ้งคืนรถได้</span>
-          )}
-        </Space>
-      ),
+      render: (_: any, record: MaCarBookType) => {
+        const { carBookApprovedStatus } = record;
+        let statusDisplay;
+        switch (carBookApprovedStatus) {
+          case "Approve":
+            statusDisplay = (
+              <a onClick={() => showModalReturn(record)}>แจ้งคืนรถ</a>
+            );
+            break;
+          case "Return":
+            statusDisplay = (
+              <span style={{ color: "grey" }}>แจ้งคืนรถแล้ว</span>
+            );
+            break;
+          case "Completed":
+            statusDisplay = <span style={{ color: "grey" }}>คืนรถสำเร็จ</span>;
+            break;
+          case "Cancel":
+            statusDisplay = (
+              <span style={{ color: "grey" }}>ยกเลิกการจองนี้ไปแล้ว</span>
+            );
+            break;
+          case "DisapProved":
+            statusDisplay = (
+              <span style={{ color: "grey" }}>ไม่อนุมัติการจองรถ</span>
+            );
+            break;
+          case "Process":
+            statusDisplay = (
+              <span style={{ color: "grey" }}>ไม่สามารถแจ้งคืนรถได้</span>
+            );
+            break;
+          default:
+            statusDisplay = (
+              <span style={{ color: "grey" }}>ไม่สามารถแจ้งคืนรถได้</span>
+            );
+            break;
+        }
+
+        return <Space size="middle">{statusDisplay}</Space>;
+      },
     },
   ];
 
@@ -190,6 +229,34 @@ const MaCarReturn: React.FC<props> = ({
     setModalEditDetail(true);
     setCurrentMaBookId(record.id);
     setStatusApprove(record.carBookApprovedStatus);
+    let displayText = "";
+
+    switch (record.carBookApprovedStatus) {
+      case "statusApprove":
+        displayText = "แจ้งคืนรถ";
+        break;
+      case "Return":
+        displayText = "แจ้งคืนรถแล้ว";
+        break;
+      case "Completed":
+        displayText = "คืนรถสำเร็จ";
+        break;
+      case "Cancel":
+        displayText = "ยกเลิกการจองนี้ไปแล้ว";
+        break;
+      case "DisapProved":
+        displayText = "ไม่อนุมัติการจองรถ";
+        break;
+      case "Process":
+        displayText = "ไม่สามารถแจ้งคืนรถได้";
+        break;
+      case "Approve":
+        displayText = "อนุมัติแล้ว";
+        break;
+      default:
+        displayText = "ไม่สามารถแจ้งคืนรถได้";
+        break;
+    }
 
     formBookData.setFieldsValue({
       ...record,
@@ -205,7 +272,10 @@ const MaCarReturn: React.FC<props> = ({
       recipientName: record.recipientName,
       returnAt: dayjs(record.returnAt),
       carName1: record.carName,
+      statusApprove: displayText,
     });
+
+    // setStatusText(displayText);
   };
 
   const handleModalDetail = () => {
@@ -287,9 +357,13 @@ const MaCarReturn: React.FC<props> = ({
                 },
               ]}
             >
-              <InputNumber
-                style={{ width: "100%" }}
+              <Input
                 placeholder="กรอกเลขไมล์รถ"
+                onKeyDown={(event) => {
+                  if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
+                    event.preventDefault();
+                  }
+                }}
               />
             </Form.Item>
           </Col>
@@ -460,6 +534,14 @@ const MaCarReturn: React.FC<props> = ({
               </Form.Item>
             </Col>
           </Row>
+          <Row gutter={24}>
+            <Col span={6}>
+              <Form.Item name="statusApprove" label="สถานะการจองรถ">
+                <Input disabled />
+              </Form.Item>
+            </Col>
+          </Row>
+
           <Divider orientation="left">ข้อมูลการคืนรถ</Divider>
 
           {(statusApprove === "Return" || statusApprove === "Completed") && (

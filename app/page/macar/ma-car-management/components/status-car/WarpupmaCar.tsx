@@ -62,7 +62,7 @@ export interface MaCarwarpup {
   vender: string;
   cost: Decimal;
   detail: string;
-  wrapupMiles: number; 
+  wrapupMiles: number;
   dateStart: Date | string;
   dateEnd: Date | string;
   remark: string;
@@ -105,7 +105,7 @@ const WarpupmaCar = () => {
   const [maCar, setMaCar] = useState<MaCarwarpup[]>([]);
   const [selectedCar, setSelectedCar] = useState<string>("");
   const [mileage, setMileage] = useState<number | undefined>(undefined);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -328,7 +328,7 @@ const WarpupmaCar = () => {
     setSearchTerm(e.target.value);
   };
 
-  const filteredData = maDataWarpup.filter(MaCarwarpup =>
+  const filteredData = maDataWarpup.filter((MaCarwarpup) =>
     MaCarwarpup.carName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -447,7 +447,7 @@ const WarpupmaCar = () => {
                   color: isEditable ? "inherit" : "gray",
                 }}
               >
-                <EditIcon />
+                {EditIcon}
               </a>
             </Tooltip>
             <Popconfirm
@@ -471,7 +471,7 @@ const WarpupmaCar = () => {
                   color: isEditable ? "inherit" : "gray",
                 }}
               >
-                <ApproveIcon strokeColor="blue" width="1rem" height="1rem" />
+                {ApproveIcon}
               </a>
             </Tooltip>
           </Space>
@@ -503,9 +503,9 @@ const WarpupmaCar = () => {
             placeholder="ค้นหารถ"
             style={{
               float: "left",
-              width:"300px",
+              width: "300px",
               margin: "16px 0",
-              
+
               fontSize: "16px",
             }}
           />
@@ -654,7 +654,7 @@ const WarpupmaCar = () => {
           </Form.Item>
         </Form>
       </Modal>
-      
+
       <Modal
         title="แก้ไขข้อมูลตรวจสภาพรถ"
         open={IsmodlaOpenupdate}

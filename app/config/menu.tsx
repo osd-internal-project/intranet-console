@@ -1,4 +1,10 @@
-import { LogoutOutlined, UserOutlined, HomeOutlined, BarChartOutlined, BookOutlined } from "@ant-design/icons";
+import {
+  LogoutOutlined,
+  UserOutlined,
+  HomeOutlined,
+  BarChartOutlined,
+  BookOutlined,
+} from "@ant-design/icons";
 import { Icon } from "@iconify/react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
@@ -329,14 +335,17 @@ export const MenuSider: MenuItem[] = [
       {
         key: `macar/ma-car`,
         label: `Ma car`,
+        // rule: "mc-c-s",
       },
       {
         key: `macar/ma-car-booking`,
         label: `Ma car Booking`,
+        // rule: "mc-cb-s",
       },
       {
         key: `macar/ma-car-management`,
         label: `Ma car Management`,
+        rule: "mc-m-s",
       },
     ],
   },

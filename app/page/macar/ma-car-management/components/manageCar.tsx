@@ -17,7 +17,7 @@ import {
   Divider,
   Input,
 } from "antd";
-import { DeleteIcon, ApproveIcon } from "@/components/icon";
+import { DeleteIcon, ApproveIcon, CancelMaCarIcon } from "@/components/icon";
 import type { TableProps, FormProps } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../services/manage-car.service";
@@ -71,26 +71,24 @@ const ManageCar: React.FC<props> = ({
       align: "center",
     },
     {
-      title: "วันที่จอง",
-      key: "createdAt",
-      width: "200px",
-      align: "center",
-      render: (_, record) => (
-        <span>
-          {dayjs(record.carBookStartDate).format("DD-MM-YYYY")} -{" "}
-          {dayjs(record.carBookEndDate).format("DD-MM-YYYY")}
-        </span>
-      ),
-    },
-    {
-      title: "เวลาจอง",
-      key: "bookingTime",
+      key: "carBookStartDate",
+      title: "วันที่เริ่มจอง",
       width: "150px",
       align: "center",
       render: (_, record) => (
         <span>
-          {dayjs(record.carBookStartDate).format("HH:mm")} -{" "}
-          {dayjs(record.carBookEndDate).format("HH:mm")}
+          {dayjs(record.carBookStartDate).format("DD-MM-YYYY HH:mm:ss")}
+        </span>
+      ),
+    },
+    {
+      key: "carBookEndDate",
+      title: "วันที่สิ้นสุดการจอง",
+      width: "150px",
+      align: "center",
+      render: (_, record) => (
+        <span>
+          {dayjs(record.carBookEndDate).format("DD-MM-YYYY HH:mm:ss")}
         </span>
       ),
     },
@@ -111,17 +109,17 @@ const ManageCar: React.FC<props> = ({
         <Tag
           color={
             status === "Process"
-              ? "blue"
+              ? "DodgerBlue"
               : status === "Cancel"
-              ? "red"
+              ? "silver"
               : status === "Approve"
-              ? "green"
+              ? "LimeGreen"
               : status === "DisapProved"
-              ? "orange"
+              ? "OrangeRed"
               : status === "Return"
-              ? "yellow"
+              ? "Gold"
               : status === "Completed"
-              ? "#748698 "
+              ? "MediumPurple"
               : undefined
           }
         >
@@ -162,9 +160,30 @@ const ManageCar: React.FC<props> = ({
               onClick={() => showModalApproveBook(record)}
               style={{ color: "green", width: "50px", textAlign: "center" }}
             >
-              <ApproveIcon />
+              {ApproveIcon}
             </a>
           </Tooltip>
+          <Popconfirm
+            title="คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการจองนี้?"
+            onConfirm={() => handleCancelMa(record)}
+            okText="ใช่"
+            cancelText="ไม่"
+          >
+            <a style={{ width: "100px", textAlign: "center" }}>
+              {CancelMaCarIcon}
+            </a>
+          </Popconfirm>
+
+          <div style={{ width: "90px", textAlign: "center" }}>
+            {" "}
+            {record.carBookApprovedStatus === "Return" ? (
+              <a onClick={() => showModalReturn(record)}>รับคืนรถ</a>
+            ) : record.carBookApprovedStatus === "Completed" ? (
+              <span style={{ color: "grey" }}>รับคืนแล้ว</span>
+            ) : (
+              <span style={{ color: "grey" }}>รอแจ้งคืนรถ</span>
+            )}
+          </div>
 
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
@@ -177,26 +196,6 @@ const ManageCar: React.FC<props> = ({
                 <DeleteIcon />
               </a>
             </Tooltip>
-          </Popconfirm>
-
-          <div style={{ width: "120px", textAlign: "center" }}>
-            {" "}
-            {record.carBookApprovedStatus === "Return" ? (
-              <a onClick={() => showModalReturn(record)}>รับคืนรถ</a>
-            ) : record.carBookApprovedStatus === "Completed" ? (
-              <span style={{ color: "grey" }}>รับคืนแล้ว</span>
-            ) : (
-              <span style={{ color: "grey" }}>รอแจ้งคืนรถ</span>
-            )}
-          </div>
-
-          <Popconfirm
-            title="คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการจองนี้?"
-            onConfirm={() => handleCancelMa(record)}
-            okText="ใช่"
-            cancelText="ไม่"
-          >
-            <a style={{ width: "100px", textAlign: "center" }}>ยกเลิกการจอง</a>
           </Popconfirm>
         </Space>
       ),
@@ -264,7 +263,6 @@ const ManageCar: React.FC<props> = ({
       const updatedCancelMa = {
         id: record.id,
         carBookApprovedStatus: "Cancel",
-       
       };
       await manageCarServices.updateMaCarBook(updatedCancelMa);
       message.success("ยกเลิกการจองสำเร็จ");

@@ -187,9 +187,7 @@ const masterType: React.FC = () => {
       render: (record: number, row: any, index: number) => (
         <Space size="middle">
           <Tooltip title="แก้ไข">
-            <a onClick={() => showModalEditMaCarType(row)}>
-              <EditIcon width="24" height="24" />{" "}
-            </a>
+            <a onClick={() => showModalEditMaCarType(row)}>{EditIcon}</a>
           </Tooltip>
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
@@ -223,7 +221,8 @@ const masterType: React.FC = () => {
             onClick={showModal}
           >
             สร้างประเภทตรวจสภาพ
-          </Button><div
+          </Button>
+          <div
             style={{
               float: "right",
               margin: "10px",
@@ -233,10 +232,8 @@ const masterType: React.FC = () => {
           >
             <ExportExcel datamacartype={maCarData} />
           </div>
-          
-          
         </div>
-            
+
         <Modal
           width={350}
           title="การจัดการประเภทรถ"
@@ -339,7 +336,7 @@ const masterType: React.FC = () => {
                 textAlign: "left",
                 margin: "0 0 -80px 0",
                 width: "450px",
-                visibility:"hidden",
+                visibility: "hidden",
               }}
               name="id"
               label={"ID :"}

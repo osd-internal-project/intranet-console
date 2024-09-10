@@ -211,7 +211,7 @@ const Newoption: React.FC = () => {
         <Space size="middle">
           <Tooltip title="แก้ไข">
             <a onClick={() => showModalEditnewType(row)}>
-              <EditIcon width="24" height="24" />{" "}
+             {EditIcon}
             </a>
           </Tooltip>
           <Popconfirm

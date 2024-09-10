@@ -66,7 +66,7 @@ const ProjectTableComponent: React.FC<props> = ({
     {
       key: "productName",
       dataIndex: "productName",
-      title: "Project Name",
+      title: "Product Name",
       width: "200px",
     },
     {

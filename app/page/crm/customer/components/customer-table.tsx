@@ -99,7 +99,7 @@ const CustomerTableComponent: React.FC<props> = ({
     {
       key: "customerTypeId",
       dataIndex: "customerTypeId",
-      title: "รหัสอ้างอิงลูกค้า",
+      title: "Type",
       width: "200px",
       render: (value: string, record, index) =>
         value === "natural"

@@ -72,16 +72,20 @@ const masterType: React.FC = () => {
     setIsModalOpen1(true);
   };
   const handleOk = () => {
+    form.resetFields();
     setIsModalOpen1(false);
   };
   const handleCancel = () => {
+    form.resetFields();
     setIsModalOpen1(false);
   };
 
   const handleOk1edit = () => {
+    form.resetFields();
     setModalEditMaCarType(false);
   };
   const handleCancel1edit = () => {
+    form.resetFields();
     setModalEditMaCarType(false);
   };
   const createMaCarType: FormProps<MaCarType>["onFinish"] = async (values) => {
@@ -90,27 +94,30 @@ const masterType: React.FC = () => {
       detail: values.detail,
       status: values.status,
       createdById: session?.user.userId,
-      createdByName: session?.user.username,
+      createdByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
     };
+    console.log(maCarCreateData);
+
     try {
       const response = await manageCarServices.createMaCarType(maCarCreateData);
       if (response) {
-        message.success("เพิ่มรถสำเร็จ");
+        message.success("เพิ่มประเภทการตรวจสภาพสำเร็จ");
         form.resetFields();
       } else {
-        message.error("เพิ่มรถไม่สำเร็จ");
+        message.error("เพิ่มประเภทการตรวจสภาพไม่สำเร็จ");
       }
-
-      setSubmitLoading(false);
       fetchData();
+      setSubmitLoading(false);
+      setIsModalOpen1(false);
     } catch (error) {
-      message.error("เพิ่มรถไม่สำเร็จ");
+      message.error("เพิ่มประเภทการตรวจสภาพไม่สำเร็จ");
       setSubmitLoading(true);
     }
   };
 
   const updatedCarType: FormProps<MaCarType>["onFinish"] = async (values) => {
     setSubmitLoading(true);
+    console.log(`${values}`);
 
     try {
       const updateMaCarType = {
@@ -118,15 +125,16 @@ const masterType: React.FC = () => {
         typeName: values?.typeName,
         detail: values?.detail,
         status: values?.status,
+        createdByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
       };
       await manageCarServices.updateMaCarType(updateMaCarType);
-      message.success("แก้ไขข้อมูลห้องสำเร็จ");
+      message.success("แก้ไขประเภทการตรวจสภาพสำเร็จ");
 
       fetchData();
       handleEditMaCarCancelType();
       setSubmitLoading(false);
     } catch (error) {
-      message.error("แก้ไขข้อมูลห้องไม่สำเร็จ");
+      message.error("แก้ไขประเภทการตรวจสภาพไม่สำเร็จ");
     }
   };
 
@@ -134,17 +142,23 @@ const masterType: React.FC = () => {
     try {
       await maCarServices.deleteMaCarType(id);
       setmaCarData(maCarData.filter((item) => item.id !== id));
-      message.success("ลบการจองสำเร็จ");
+      message.success("ลบประเภทการตรวจสภาพสำเร็จ");
       fetchData();
     } catch (error) {
-      message.error("ลบการจองไม่สำเร็จ");
+      message.error("ลบประเภทการตรวจสภาพไม่สำเร็จ");
     }
   };
+
+  const dataWithKey = maCarData.map((item, index) => ({
+    ...item,
+    key: index + 1,
+    index: index + 1,
+  }));
   const columns = [
     {
-      title: "ไอดี",
-      dataIndex: "id",
-      key: "id",
+      title: "ลำดับ",
+      dataIndex: "index",
+      key: "index",
     },
     {
       title: "ประเภทการบำรุง",
@@ -152,12 +166,12 @@ const masterType: React.FC = () => {
       key: "typeName",
     },
     {
-      title: "รายละเอียดการบำรุงรักษา",
+      title: "รายละเอียดการตรวจสภาพ",
       dataIndex: "detail",
       key: "detail",
     },
     {
-      title: "ชื่อ",
+      title: "ชื่อ-นามสกุล",
       dataIndex: "createdByName",
       key: "createdByName",
     },
@@ -166,11 +180,11 @@ const masterType: React.FC = () => {
       dataIndex: "createdAt",
       key: "createdAt",
       render: (createdAt: Date) =>
-        moment(createdAt).format("YYYY-MM-DD HH:mm A"),
+        moment(createdAt).format("DD-MM-YYYY HH:mm" + " น."),
     },
 
     {
-      title: "Active",
+      title: "สถานะ",
       dataIndex: "status",
       key: "status",
       render: (status: boolean) =>
@@ -190,7 +204,7 @@ const masterType: React.FC = () => {
             <a onClick={() => showModalEditMaCarType(row)}>{EditIcon}</a>
           </Tooltip>
           <Popconfirm
-            title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
+            title="คุณแน่ใจหรือไม่ว่าต้องการลบประเภทการตรวจสภาพนี้?"
             onConfirm={() => handleDeletemaCar(row.id)}
             okText="ใช่"
             cancelText="ไม่"
@@ -230,13 +244,13 @@ const masterType: React.FC = () => {
               fontSize: "16px",
             }}
           >
-            <ExportExcel datamacartype={maCarData} />
+            <ExportExcel datamacartype={dataWithKey} />
           </div>
         </div>
 
         <Modal
-          width={350}
-          title="การจัดการประเภทรถ"
+          width={450}
+          title="สร้างประเภทการตรวจสภาพ"
           open={isModalOpen1}
           onOk={handleOk}
           onCancel={handleCancel}
@@ -252,29 +266,39 @@ const masterType: React.FC = () => {
             layout="vertical"
             form={form}
           >
-            <Form.Item<MaCarType>
+            <Form.Item
               style={{
                 textAlign: "left",
                 margin: "0 0 10px 0",
-                width: "450px",
+                width: "590px",
               }}
               name="typeName"
-              label={"ประเภทการบำรุงรักษา :"}
+              label={"ประเภทการตรวจสภาพ :"}
+              rules={[
+                { required: true, message: "กรุณากรอกประเภทการตรวจสภาพ" },
+              ]}
             >
-              <Input size="large" />
+              <Input size="large" placeholder="ประเภทการตรวจสภาพ" />
             </Form.Item>
-            <Form.Item<MaCarType>
+            <Form.Item
               style={{
                 textAlign: "left",
                 margin: "0 0 10px 0",
-                width: "450px",
+                width: "590px",
               }}
               name="detail"
-              label={"รายละเอียดรถ :"}
+              label={"รายละเอียดการบำรุงรักษา :"}
+              rules={[
+                { required: true, message: "กรุณากรอกรายละเอียดการบำรุงรักษา" },
+              ]}
             >
-              <Input size="large" placeholder="รายละเอียดรถ" />
+              <Input.TextArea
+                rows={8}
+                size="large"
+                placeholder="รายละเอียดการบำรุงรักษา"
+              />
             </Form.Item>
-            <Form.Item<MaCarType>
+            <Form.Item
               style={{
                 textAlign: "left",
                 margin: "0 0 10px 0",
@@ -286,7 +310,7 @@ const masterType: React.FC = () => {
               <Switch
                 checkedChildren="เปิดการมอง"
                 unCheckedChildren="ปิดการมอง"
-                defaultChecked
+                defaultChecked={true}
               />
             </Form.Item>
             <div className="flex justify-end w-full">
@@ -304,7 +328,6 @@ const masterType: React.FC = () => {
                   type="primary"
                   htmlType="submit"
                   loading={submitLoading}
-                  onClick={handleCancel}
                 >
                   ตกลง
                 </Button>
@@ -314,7 +337,7 @@ const masterType: React.FC = () => {
         </Modal>
 
         <Modal
-          width={350}
+          width={450}
           title="การแก้ไขบำรุงการรักษา"
           open={modalEditMaCarType}
           onOk={handleOk1edit}
@@ -331,10 +354,10 @@ const masterType: React.FC = () => {
             layout="vertical"
             form={formEdit}
           >
-            <Form.Item<MaCarType>
+            <Form.Item
               style={{
                 textAlign: "left",
-                margin: "0 0 -80px 0",
+                margin: "0 0 -70px 0",
                 width: "450px",
                 visibility: "hidden",
               }}
@@ -343,29 +366,39 @@ const masterType: React.FC = () => {
             >
               <Input size="large" disabled />
             </Form.Item>
-            <Form.Item<MaCarType>
+            <Form.Item
               style={{
                 textAlign: "left",
                 margin: "0 0 10px 0",
-                width: "450px",
+                width: "590px",
               }}
               name="typeName"
-              label={"ประเภทการบำรุงรักษา :"}
+              label={"ประเภทการตรวจสภาพ :"}
+              rules={[
+                { required: true, message: "กรุณากรอกประเภทการตรวจสภาพ" },
+              ]}
             >
-              <Input size="large" />
+              <Input size="large" placeholder="ประเภทการตรวจสภาพ" />
             </Form.Item>
-            <Form.Item<MaCarType>
+            <Form.Item
               style={{
                 textAlign: "left",
                 margin: "0 0 10px 0",
-                width: "450px",
+                width: "590px",
               }}
               name="detail"
-              label={"รายละเอียดรถ :"}
+              label={"รายละเอียดการบำรุงรักษา :"}
+              rules={[
+                { required: true, message: "กรุณากรอกรายละเอียดการบำรุงรักษา" },
+              ]}
             >
-              <Input size="large" placeholder="รายละเอียดรถ" />
+              <Input.TextArea
+                rows={8}
+                size="large"
+                placeholder="รายละเอียดการบำรุงรักษา"
+              />
             </Form.Item>
-            <Form.Item<MaCarType>
+            <Form.Item
               style={{
                 textAlign: "left",
                 margin: "0 0 10px 0",
@@ -377,7 +410,7 @@ const masterType: React.FC = () => {
               <Switch
                 checkedChildren="เปิดการมอง"
                 unCheckedChildren="ปิดการมอง"
-                defaultChecked
+                defaultChecked={true}
               />
             </Form.Item>
             <div className="flex justify-end w-full">
@@ -403,7 +436,11 @@ const masterType: React.FC = () => {
           </Form>
         </Modal>
       </div>
-      <Table dataSource={maCarData} columns={columns} />
+      <Table
+        dataSource={dataWithKey}
+        columns={columns}
+        scroll={{ x: "max-content" }}
+      />
     </div>
   );
 };

@@ -97,12 +97,15 @@ export interface MaCarWrapupType {
   remark: string;
   createdAt: Date;
   updatedAt?: Date;
+  createbyName?:string;
   maCar?: MaCarType[];
 }
-
-export interface ProvincesType {
-  id: string;
-  name_th: string;
-  value: string;
-  label: string;
+export interface MaCarWrapupImage {
+  idwarpupImage?: number;
+  maName: String;
+  mafileNameImage: String;
+  mafilePart: String;
+  createdAt: String;
+  updatedAt: String;
+  carWrapupId: string;
 }

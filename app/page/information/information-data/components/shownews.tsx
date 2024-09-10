@@ -223,8 +223,8 @@ const ManagementNews: React.FC = () => {
                   fontSize: "20px",
                   width: "900px",
                   border: "none",
-                  outline: "none", // ลบเส้นกรอบเมื่อ focus
-                  resize: "none", // ป้องกันการเปลี่ยนขนาดของ TextArea
+                  outline: "none",
+                  resize: "none", 
                   boxShadow: "none",
                 }}
                 value={selectedNews?.content?.toString()}
@@ -246,7 +246,7 @@ const ManagementNews: React.FC = () => {
                   hour: "2-digit",
                   minute: "2-digit",
                 }
-              )}{" "}
+              ).replace(',', '')}{" "}
               น.
             </p>
             <p>
@@ -260,7 +260,7 @@ const ManagementNews: React.FC = () => {
                   hour: "2-digit",
                   minute: "2-digit",
                 }
-              )}{" "}
+              ).replace(',', '')}{" "}
               น.
             </p>
           </div>

@@ -140,6 +140,7 @@ const Newoption: React.FC = () => {
     setIsmodlaOpencreate(true);
   };
   const handleclosecreate = () => {
+    form.resetFields();
     setIsmodlaOpencreate(false);
   };
   const handleCancel1edit = () => {

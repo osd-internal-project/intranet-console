@@ -502,6 +502,10 @@ const Newoption: React.FC = () => {
               style={{
                 fontSize: "16px",
                 userSelect: "none",
+                border: "none",
+                outline: "none",
+                resize: "none",
+                boxShadow: "none",
               }}
               rows={27}
               readOnly

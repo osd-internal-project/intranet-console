@@ -1,6 +1,7 @@
 import React from "react";
 import * as XLSX from "xlsx";
 import { FileExcelFilled } from "@ant-design/icons";
+import { Button } from "antd";
 
 interface ExportExcelProps {
   datamacar: any[];
@@ -10,25 +11,31 @@ const ExportExcel: React.FC<ExportExcelProps> = ({ datamacar }) => {
   const handleExport = () => {
     const transdata = datamacar.map((dataItem) => {
       return {
-        ลำดับที่: dataItem.key,
+        ลำดับ: dataItem.key,
         เลขรถ: dataItem.carId ? dataItem.carId : "Null",
         ชื่อรถ: dataItem.carName,
-        เลขไมล์: dataItem.wrapupMiles,
+        เลขไมล์ตรวจสภาพ: dataItem.wrapupMiles,
         ประเภทตรวจสภาพ: dataItem.typeName,
         สถานที่เช็คสภาพ: dataItem.vender,
         รายละเอียดการตรวจ: dataItem.detail,
         ราคา: dataItem.cost,
-        วันที่ระบุ: new Date(dataItem.dateStart).toISOString().split('T')[0],
-        วันตรวจสภาพ: new Date(dataItem.dateEnd).toISOString().split('T')[0],
+        วันที่ตรวจสภาพ: new Date(dataItem.dateStart)
+          .toISOString()
+          .split("T")[0],
+        วันตรวจสภาพครั้งถัดไป: new Date(dataItem.dateEnd)
+          .toISOString()
+          .split("T")[0],
         หมายเหตุ: dataItem.remark,
-        สถานะการตรวจเช็ค: dataItem.status === true 
-        ? "เช็คแล้ว" 
-        : dataItem.status === false 
-        ? "ยกเลิกการเช็ค" 
-        : "รอตรวจสภาพ",
+        สถานะการตรวจเช็ค:
+          dataItem.status === true
+            ? "เช็คแล้ว"
+            : dataItem.status === false
+            ? "ยกเลิกการเช็ค"
+            : "รอตรวจสภาพ",
+        "ชื่อ-นามสกุล":dataItem.createbyName,
       };
     });
-    
+
     const chunkSize = 10;
     const transdataWithPageInfo: any[] = [];
 
@@ -62,6 +69,7 @@ const ExportExcel: React.FC<ExportExcelProps> = ({ datamacar }) => {
       { wpx: 180 },
       { wpx: 115 },
       { wpx: 130 },
+      { wpx: 130 },
     ];
 
     worksheet["!cols"] = columnWidths;
@@ -71,8 +79,10 @@ const ExportExcel: React.FC<ExportExcelProps> = ({ datamacar }) => {
   };
 
   return (
-    <a onClick={handleExport} style={{ color: "black" }}>
-      <FileExcelFilled /> Download data
+    <a>
+      <Button onClick={handleExport} style={{ color: "black" }}>
+        <FileExcelFilled /> Download data
+      </Button>
     </a>
   );
 };

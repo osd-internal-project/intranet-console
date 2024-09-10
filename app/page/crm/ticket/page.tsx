@@ -369,6 +369,7 @@ export default function CustomerDetailPage() {
           form = { ...form, summary: summary };
         } else if (status === "finish") {
           const finish = finishForm.getFieldsValue();
+          finishForm.submit();
           form = { ...form, ...finish };
         }
         await crmServices
@@ -611,6 +612,21 @@ export default function CustomerDetailPage() {
             <></>
           )}
         </Col>
+      </Row>
+      <Row>
+        <Col className="  pt-1 text-xs" span={8}>
+          <Card>
+            <div className="flex flex-wrap	 justify-start ">
+              <div className="flex justify-start ">
+                <div>Total DUE</div>
+                <div className="pl-1">100000000000</div>
+              </div>
+              <div className="flex pl-1 justify-start ">%Total DUE 100%</div>
+            </div>
+          </Card>
+        </Col>
+        <Col></Col>
+        <Col></Col>
       </Row>
     </div>
   );

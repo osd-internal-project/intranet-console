@@ -307,15 +307,10 @@ const Managehandbook: React.FC = () => {
       message.warning("คุณไม่สามารถอัปโหลดไฟล์เกิน 1 ไฟล์ได้");
       return;
     }
-    setAttendFiles(newFileList);
+    return setAttendFiles(newFileList);
   };
 
   const beforeUploadAttendFiles = (file: RcFile) => {
-    const totalFilesCount = existingFiles.length + attendFiles.length + 1;
-    if (totalFilesCount > 1) {
-      message.warning("คุณไม่สามารถอัปโหลดไฟล์เกิน 1 ไฟล์ได้");
-      return Upload.LIST_IGNORE;
-    }
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return Upload.LIST_IGNORE;
@@ -323,20 +318,36 @@ const Managehandbook: React.FC = () => {
     return true;
   };
 
-  const handleDownload = (record: handbook) => {
+  const handleDownload = async (record: handbook) => {
     if (
       record.handbookFile &&
       record.handbookFile[0] &&
       record.handbookFile[0].fileName
     ) {
-      window.open(
-        `http://localhost:4003/api/public/handbook-file/${record.handbookFile[0].fileName}`,
-        "_blank"
-      );
+      const fileUrl = `http://localhost:4003/api/public/handbook-file/${record.handbookFile[0].fileName}`;
+  
+      try {
+        const response = await fetch(fileUrl);
+  
+        if (response.ok) {
+          const blob = await response.blob();
+          const link = document.createElement("a");
+          link.href = window.URL.createObjectURL(blob);
+          link.download = record.handbookFile[0].fileName;
+          link.click();
+          window.URL.revokeObjectURL(link.href); // Clear memory after download
+        } else {
+          message.error("ไม่มีไฟล์ให้ดาวน์โหลด");
+        }
+      } catch (error) {
+        message.error("เกิดข้อผิดพลาดในการดาวน์โหลดไฟล์");
+      }
     } else {
       message.error("ไม่มีไฟล์ให้ดาวน์โหลด");
     }
   };
+  
+  
   const handleDeleteImage = async (file: UploadFile) => {
     const handbookid = file.uid;
 
@@ -376,14 +387,18 @@ const Managehandbook: React.FC = () => {
   );
 
   const closecreate = () => {
+    setAttendFiles([]);
     formupload.resetFields();
     setshowmodalupload(false);
   };
   const opencreate = () => {
+    setAttendFiles([]);
     setshowmodalupload(true);
   };
   const closeupdate = () => {
     formupload.resetFields();
+    setExistingFiles([]);
+    setAttendFiles([]);
     setshowmodalupdate(false);
   };
 
@@ -557,9 +572,7 @@ const Managehandbook: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกชื่อเอกสาร" }]}
             style={{ width: "300px" }}
           >
-            <Input placeholder="ชื่อเอกสาร" 
-              showCount
-              maxLength={100}/>
+            <Input placeholder="ชื่อเอกสาร" showCount maxLength={100} />
           </Form.Item>
           <Form.Item
             name="filetype"
@@ -587,7 +600,6 @@ const Managehandbook: React.FC = () => {
               fileList={attendFiles}
               onChange={handleChangeAttendFiles}
               beforeUpload={beforeUploadAttendFiles}
-              multiple={true}
               maxCount={1}
               accept=".pdf"
             >
@@ -640,9 +652,7 @@ const Managehandbook: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกชื่อเอกสาร" }]}
             style={{ width: "300px" }}
           >
-            <Input placeholder="ชื่อเอกสาร" 
-              showCount
-              maxLength={100}/>
+            <Input placeholder="ชื่อเอกสาร" showCount maxLength={100} />
           </Form.Item>
           <Form.Item
             name="filetype"
@@ -726,7 +736,6 @@ const Managehandbook: React.FC = () => {
               fileList={[...attendFiles]}
               onChange={handleChangeAttendFiles}
               beforeUpload={beforeUploadAttendFiles}
-              multiple={true}
               accept=".pdf"
               listType="picture"
             >

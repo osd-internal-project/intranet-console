@@ -74,7 +74,7 @@ export interface MaCarwarpup {
   createdAt: string;
   updatedAt: string;
   status?: boolean;
-  createbyName?:string;
+  createbyName?: string;
   maCarWrapupImage: MaCarWrapupImage[];
 }
 
@@ -164,7 +164,6 @@ const WarpupmaCar = () => {
     form.setFieldsValue({ wrapupMiles: carmilesData?.carMile });
   };
 
-
   const fetchDataType = async () => {
     try {
       const maresponse = await manageCarServices.getMaCarQueryType();
@@ -216,7 +215,7 @@ const WarpupmaCar = () => {
         cost: values?.cost ?? 0,
         dateStart: values.dateStart,
         dateEnd: values.dateEnd,
-        createbyName:`${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+        createbyName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
         remark: values?.remark ?? "",
         status: null,
       },
@@ -241,18 +240,11 @@ const WarpupmaCar = () => {
       }
       if (response) {
         message.success("เพิ่มการตรวจสภาพรถสำเร็จ");
-
         fetchDataWarpup();
-        setAttendFiles([]);
-
-        form.resetFields();
       } else {
         message.error("เพิ่มการตรวจสภาพรถไม่สำเร็จ");
-        form.resetFields();
       }
       setIsmodlaOpencreate(false);
-
-      fetchDataWarpup();
       setAttendFiles([]);
       form.resetFields();
       setSubmitLoading(false);
@@ -277,7 +269,7 @@ const WarpupmaCar = () => {
       wrapupMiles: new String(values.wrapupMiles),
       detail: values.detail,
       cost: values.cost,
-      createbyName:`${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+      createbyName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
       dateStart: new Date(values.dateStart),
       dateEnd: new Date(values.dateEnd),
       remark: values.remark,
@@ -829,7 +821,9 @@ const WarpupmaCar = () => {
                   showDownloadIcon: false,
                 }}
               >
-                <Button icon={<UploadOutlined />}>อัปโหลดรูปภาพและเอกสาร</Button>
+                <Button icon={<UploadOutlined />}>
+                  อัปโหลดรูปภาพและเอกสาร
+                </Button>
               </Upload>
             </div>
           </Form.Item>
@@ -920,7 +914,7 @@ const WarpupmaCar = () => {
             label="สถานที่การตรวจสภาพ"
             rules={[{ required: true, message: "กรุณากรอกสถานที่การตรวจสภาพ" }]}
           >
-            <Input placeholder="โปรดเลือกสถานที่การตรวจสภาพ"/>
+            <Input placeholder="โปรดเลือกสถานที่การตรวจสภาพ" />
           </Form.Item>
           <Form.Item
             name="cost"
@@ -955,7 +949,12 @@ const WarpupmaCar = () => {
           <Form.Item
             name="dateEnd"
             label="วันที่่ตรวจสภาพครั้งถัดไป"
-            rules={[{ required: true, message: "กรุณาเลือกวันที่่ตรวจสภาพครั้งถัดไป" }]}
+            rules={[
+              {
+                required: true,
+                message: "กรุณาเลือกวันที่่ตรวจสภาพครั้งถัดไป",
+              },
+            ]}
           >
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
@@ -1007,7 +1006,9 @@ const WarpupmaCar = () => {
                 multiple={true}
                 accept=".png,.jpg,.jpeg,.pdf"
               >
-                <Button icon={<UploadOutlined />}>อัปโหลดรูปภาพและเอกสาร</Button>
+                <Button icon={<UploadOutlined />}>
+                  อัปโหลดรูปภาพและเอกสาร
+                </Button>
               </Upload>
             </div>
           </Form.Item>

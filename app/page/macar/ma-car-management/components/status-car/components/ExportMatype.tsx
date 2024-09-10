@@ -1,6 +1,7 @@
 import React from "react";
 import * as XLSX from "xlsx";
 import { FileExcelFilled } from "@ant-design/icons";
+import { Button } from "antd";
 
 interface ExportExcelProps {
   datamacartype: any[];
@@ -10,15 +11,25 @@ const ExportExcel: React.FC<ExportExcelProps> = ({ datamacartype }) => {
   const handleExport = () => {
     const transdata = datamacartype.map((datadic) => {
       return {
-        ลำดับที่: datadic.id,
+        ลำดับ: datadic.key,
         ประเภทการบำรุง: datadic.typeName,
         รายละเอียดการบำรุงรักษา: datadic.detail,
         ประเภทตรวจสภาพ: datadic.createdByName,
-        "วันที่ระบุ(วัน/เดือน/ปี ชั่วโมง:นาที:วินาที)": new Date(datadic.createdAt).toLocaleString('th-TH'),
-        สถานะการตรวจเช็ค: datadic.status ?"เปิดการมอง":"ปิดการมอง",
+        "วันที่ระบุ ( วัน/เดือน/ปี ชั่วโมง:นาที:วินาที )": new Date(
+          datadic.createdAt
+        )
+          .toLocaleDateString("en-GB", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+          .replace(",", ""),
+        สถานะ: datadic.status ? "เปิดการมอง" : "ปิดการมอง",
       };
     });
-    
+
     const chunkSize = 10;
     const transdataWithPageInfo: any[] = [];
 
@@ -56,8 +67,10 @@ const ExportExcel: React.FC<ExportExcelProps> = ({ datamacartype }) => {
   };
 
   return (
-    <a onClick={handleExport} style={{ color: "black" }}>
-      <FileExcelFilled /> Download data
+    <a>
+      <Button onClick={handleExport} style={{ color: "black" }}>
+        <FileExcelFilled /> Download data
+      </Button>
     </a>
   );
 };

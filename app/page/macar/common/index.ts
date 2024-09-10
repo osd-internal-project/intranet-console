@@ -95,5 +95,15 @@ export interface MaCarWrapupType {
   remark: string;
   createdAt: Date;
   updatedAt?: Date;
+  createbyName?:string;
   maCar?: MaCarType[];
+}
+export interface MaCarWrapupImage {
+  idwarpupImage?: number;
+  maName: String;
+  mafileNameImage: String;
+  mafilePart: String;
+  createdAt: String;
+  updatedAt: String;
+  carWrapupId: string;
 }

@@ -504,6 +504,10 @@ const Newoption: React.FC = () => {
               style={{
                 fontSize: "16px",
                 userSelect: "none",
+                border: "none",
+                outline: "none",
+                resize: "none",
+                boxShadow: "none",
               }}
               rows={27}
               readOnly
@@ -531,8 +535,7 @@ const Newoption: React.FC = () => {
               margin: " 0 -60px -60px 0 ",
             }}
           >
-            <Input 
-              placeholder="ชื่อประเภทข่าวสาร"/>
+            <Input placeholder="ชื่อประเภทข่าวสาร" />
           </Form.Item>
           <Form.Item
             name="newsName"
@@ -540,8 +543,7 @@ const Newoption: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกหัวข้อข่าวสาร" }]}
             style={{ width: "300px" }}
           >
-            <Input 
-              placeholder="หัวข้อข่าวสาร"/>
+            <Input placeholder="หัวข้อข่าวสาร" />
           </Form.Item>
           <Form.Item
             name="newsType"
@@ -570,7 +572,7 @@ const Newoption: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกเนื้อหาข่าวสาร" }]}
             style={{ width: "900px" }}
           >
-            <Input.TextArea rows={12} placeholder="เนื้อหาข่าวสาร"/>
+            <Input.TextArea rows={12} placeholder="เนื้อหาข่าวสาร" />
           </Form.Item>
           <Form.Item label="รูปภาพปัจจุบัน:">
             {existingFiles.map((file, index) => (
@@ -602,9 +604,17 @@ const Newoption: React.FC = () => {
           </Form.Item>
           <Form.Item valuePropName="fileList">
             <div>
-              <p style={{ color: "red", fontSize: "16px",margin:" 0 0 -5px 0" }}>คำเตือน **</p>
-              รูปภาพของคุณในการอัปเดตข่าวสาร รวมถึงรูปเก่าในข้อมูลเดิม คุณจะไม่สามารถอัพรูปภาพได้เกิน 3 ภาพ
-              / 1 ข่าวสาร
+              <p
+                style={{
+                  color: "red",
+                  fontSize: "16px",
+                  margin: " 0 0 -5px 0",
+                }}
+              >
+                คำเตือน **
+              </p>
+              รูปภาพของคุณในการอัปเดตข่าวสาร รวมถึงรูปเก่าในข้อมูลเดิม
+              คุณจะไม่สามารถอัพรูปภาพได้เกิน 3 ภาพ / 1 ข่าวสาร
             </div>
             <Upload
               fileList={[...attendFiles]}

@@ -376,12 +376,14 @@ const Managehandbook: React.FC = () => {
   );
 
   const closecreate = () => {
+    formupload.resetFields();
     setshowmodalupload(false);
   };
   const opencreate = () => {
     setshowmodalupload(true);
   };
   const closeupdate = () => {
+    formupload.resetFields();
     setshowmodalupdate(false);
   };
 
@@ -555,7 +557,9 @@ const Managehandbook: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกชื่อเอกสาร" }]}
             style={{ width: "300px" }}
           >
-            <Input placeholder="ชื่อเอกสาร" />
+            <Input placeholder="ชื่อเอกสาร" 
+              showCount
+              maxLength={100}/>
           </Form.Item>
           <Form.Item
             name="filetype"
@@ -636,7 +640,9 @@ const Managehandbook: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกชื่อเอกสาร" }]}
             style={{ width: "300px" }}
           >
-            <Input placeholder="ชื่อเอกสาร" />
+            <Input placeholder="ชื่อเอกสาร" 
+              showCount
+              maxLength={100}/>
           </Form.Item>
           <Form.Item
             name="filetype"

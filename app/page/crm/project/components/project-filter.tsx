@@ -71,9 +71,6 @@ const ProjectFilterComponent: React.FC<props> = ({
                 <Form.Item name={"projectname"} label={"Project Name"}>
                   <Input />
                 </Form.Item>{" "}
-                <Form.Item name={"productName"} label={"Project Name"}>
-                  <Input />
-                </Form.Item>
                 <Form.Item name={"productname"} label={"Product Name"}>
                   <Input />
                 </Form.Item>

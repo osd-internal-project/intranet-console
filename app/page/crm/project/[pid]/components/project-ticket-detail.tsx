@@ -430,7 +430,7 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                       <Form.Item
                         label={
                           <div className=" font-bold  text-purple-700">
-                            Attach Files
+                          Attach Files
                           </div>
                         }
                         valuePropName="fileList"

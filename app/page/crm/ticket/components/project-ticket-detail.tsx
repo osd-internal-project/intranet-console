@@ -275,6 +275,7 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                             beforeUpload={beforeUploadRequestFiles}
                             multiple={true}
                             maxCount={10}
+                            accept="*/*"
                           >
                             <Button icon={<UploadOutlined />}>
                               Click to upload

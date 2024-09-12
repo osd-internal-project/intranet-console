@@ -181,7 +181,7 @@ const MaCarBook: React.FC<props> = ({
       layout="vertical"
       onFinish={createMaCarBook}
       onFinishFailed={onFinishFailed}
-      autoComplete="off"
+      size="small"
     >
       <Divider orientation="left">ข้อมูลผู้จอง</Divider>
       <Row gutter={16}>

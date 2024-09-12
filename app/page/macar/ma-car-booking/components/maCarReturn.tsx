@@ -272,8 +272,6 @@ const MaCarReturn: React.FC<props> = ({
       carName1: record.carName,
       statusApprove: displayText,
     });
-
-    // setStatusText(displayText);
   };
 
   const handleModalDetail = () => {
@@ -328,6 +326,7 @@ const MaCarReturn: React.FC<props> = ({
           layout="vertical"
           onFinish={updatedMaCarReturn}
           autoComplete="off"
+          size="small"
         >
           <Divider orientation="left">ข้อมูลการคืนรถ</Divider>
 
@@ -420,6 +419,7 @@ const MaCarReturn: React.FC<props> = ({
           layout="vertical"
           initialValues={{ remember: true }}
           autoComplete="off"
+          size="small"
         >
           <Divider orientation="left">ข้อมูลผู้จอง</Divider>
           <Row gutter={8}>
@@ -481,7 +481,7 @@ const MaCarReturn: React.FC<props> = ({
               </Form.Item>
             </Col>
             <Col span={9}>
-              <Form.Item name="remark" label="หมายเหตุ">
+              <Form.Item name="remark" label="หมายเหตุการจองรถ">
                 <TextArea disabled rows={1} />
               </Form.Item>
             </Col>
@@ -545,7 +545,10 @@ const MaCarReturn: React.FC<props> = ({
               </Form.Item>
             </Col>
             <Col span={9}>
-              <Form.Item name="remarkApproved" label="หมายเหตุ">
+              <Form.Item
+                name="remarkApproved"
+                label="หมายเหตุการไม่อนุมัติการจองรถ"
+              >
                 <TextArea disabled rows={1} />
               </Form.Item>
             </Col>

@@ -158,14 +158,6 @@ const MaCarBookTable: React.FC<props> = ({
       align: "center",
       render: (value: string) => (value ? value : "-"),
     },
-    // {
-    //   key: "remarkApproved",
-    //   title: "หมายเหตุการยกเลิก",
-    //   dataIndex: "remarkApproved",
-    //   width: "100px",
-    //   align: "center",
-    //   render: (value: string) => (value ? value : "-"),
-    // },
     {
       title: "จัดการ",
       key: "note",
@@ -187,17 +179,6 @@ const MaCarBookTable: React.FC<props> = ({
               {EditIcon}
             </a>
           </Tooltip>
-          {/* <Tooltip title="ยกเลิกการจอง">
-            <p
-              onClick={() => {
-                setModalCancel(true);
-                setColumnId(record.id);
-              }}
-            >
-              {CancelMaCarIcon}
-            </p>
-          </Tooltip> */}
-
           <Tooltip title="ยกเลิกการจอง">
             <p
               onClick={() => {
@@ -223,8 +204,8 @@ const MaCarBookTable: React.FC<props> = ({
                 }
                 setModalCancel(true);
                 setColumnId(record.id);
+                formCancel.resetFields();
               }}
-              // style={{ cursor: "pointer", color: "red" }}
             >
               {CancelMaCarIcon}
             </p>
@@ -367,6 +348,7 @@ const MaCarBookTable: React.FC<props> = ({
           name="edit_ma"
           onFinish={updatedMaCarBook}
           autoComplete="off"
+          size="small"
         >
           <Row gutter={16}>
             <Col span={8}>
@@ -630,6 +612,7 @@ const MaCarBookTable: React.FC<props> = ({
           name="cancel_ma"
           onFinish={handleCancelMa}
           autoComplete="off"
+          size="small"
         >
           <Col>
             <Form.Item

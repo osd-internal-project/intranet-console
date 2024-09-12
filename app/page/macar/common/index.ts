@@ -97,7 +97,7 @@ export interface MaCarWrapupType {
   remark: string;
   createdAt: Date;
   updatedAt?: Date;
-  createbyName?:string;
+  createbyName?: string;
   maCar?: MaCarType[];
 }
 export interface MaCarWrapupImage {
@@ -108,4 +108,11 @@ export interface MaCarWrapupImage {
   createdAt: String;
   updatedAt: String;
   carWrapupId: string;
+}
+
+export interface ProvincesType {
+  id: number;
+  name_th: string;
+  value: string;
+  label: string;
 }

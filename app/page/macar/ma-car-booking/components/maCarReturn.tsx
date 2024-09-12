@@ -119,7 +119,7 @@ const MaCarReturn: React.FC<props> = ({
             break;
           case "Cancel":
             color = "silver";
-            text = "ยกเลิกการจองนี้แล้ว";
+            text = "ยกเลิกการจอง";
             break;
           case "Return":
             color = "Gold";
@@ -181,9 +181,7 @@ const MaCarReturn: React.FC<props> = ({
             statusDisplay = <span style={{ color: "grey" }}>คืนรถสำเร็จ</span>;
             break;
           case "Cancel":
-            statusDisplay = (
-              <span style={{ color: "grey" }}>ยกเลิกการจองนี้ไปแล้ว</span>
-            );
+            statusDisplay = <span style={{ color: "grey" }}>ยกเลิกการจอง</span>;
             break;
           case "DisapProved":
             statusDisplay = (
@@ -274,8 +272,6 @@ const MaCarReturn: React.FC<props> = ({
       carName1: record.carName,
       statusApprove: displayText,
     });
-
-    // setStatusText(displayText);
   };
 
   const handleModalDetail = () => {
@@ -330,6 +326,7 @@ const MaCarReturn: React.FC<props> = ({
           layout="vertical"
           onFinish={updatedMaCarReturn}
           autoComplete="off"
+          size="small"
         >
           <Divider orientation="left">ข้อมูลการคืนรถ</Divider>
 
@@ -422,6 +419,7 @@ const MaCarReturn: React.FC<props> = ({
           layout="vertical"
           initialValues={{ remember: true }}
           autoComplete="off"
+          size="small"
         >
           <Divider orientation="left">ข้อมูลผู้จอง</Divider>
           <Row gutter={8}>
@@ -477,9 +475,14 @@ const MaCarReturn: React.FC<props> = ({
                 <Input disabled placeholder="กรอกจำนวนผู้ใช้" />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col span={9}>
               <Form.Item name="detail" label="รายละเอียด">
-                <TextArea disabled placeholder="กรอกรายละเอียด" rows={2} />
+                <TextArea disabled placeholder="กรอกรายละเอียด" rows={1} />
+              </Form.Item>
+            </Col>
+            <Col span={9}>
+              <Form.Item name="remark" label="หมายเหตุการจองรถ">
+                <TextArea disabled rows={1} />
               </Form.Item>
             </Col>
           </Row>
@@ -534,10 +537,19 @@ const MaCarReturn: React.FC<props> = ({
               </Form.Item>
             </Col>
           </Row>
+          <Divider orientation="left">ข้อมูลสถานะการจองรถ</Divider>
           <Row gutter={24}>
             <Col span={6}>
               <Form.Item name="statusApprove" label="สถานะการจองรถ">
                 <Input disabled />
+              </Form.Item>
+            </Col>
+            <Col span={9}>
+              <Form.Item
+                name="remarkApproved"
+                label="หมายเหตุการไม่อนุมัติการจองรถ"
+              >
+                <TextArea disabled rows={1} />
               </Form.Item>
             </Col>
           </Row>

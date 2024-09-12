@@ -252,8 +252,9 @@ const ManageCarStatus: React.FC<props> = ({
           form={form}
           name="edit_macar"
           onFinish={updatedCar}
-          autoComplete="off"
+          // autoComplete="off"
           layout="vertical"
+          size="small"
         >
           <Form.Item
             label="ชื่อรถ"
@@ -338,6 +339,7 @@ const ManageCarStatus: React.FC<props> = ({
           onFinish={createMaCar}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
+          size="small"
         >
           <Col span={24}>
             <Form.Item

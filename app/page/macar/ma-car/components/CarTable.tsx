@@ -58,6 +58,9 @@ const MaCarBookTable: React.FC<props> = ({
   );
   const [modalCancel, setModalCancel] = useState(false);
   const [columnId, setColumnId] = useState<number | undefined>(undefined);
+  const [carBookApprovedStatus, setcarBookApprovedStatus] = useState<
+    string | undefined
+  >(undefined);
 
   const columns: TableProps<MaCarBookType>["columns"] = [
     {
@@ -156,14 +159,6 @@ const MaCarBookTable: React.FC<props> = ({
       render: (value: string) => (value ? value : "-"),
     },
     {
-      key: "remarkApproved",
-      title: "หมายเหตุการยกเลิก",
-      dataIndex: "remarkApproved",
-      width: "100px",
-      align: "center",
-      render: (value: string) => (value ? value : "-"),
-    },
-    {
       title: "จัดการ",
       key: "note",
       dataIndex: "note",
@@ -173,7 +168,10 @@ const MaCarBookTable: React.FC<props> = ({
         <Space size="middle">
           <Tooltip title="แก้ไข">
             <a
-              onClick={() => showModalEditMaCarBook(record)}
+              onClick={() => {
+                showModalEditMaCarBook(record);
+                setcarBookApprovedStatus(record.carBookApprovedStatus);
+              }}
               role="button"
               aria-label="Edit"
               style={{ cursor: "pointer" }}
@@ -181,17 +179,6 @@ const MaCarBookTable: React.FC<props> = ({
               {EditIcon}
             </a>
           </Tooltip>
-          {/* <Tooltip title="ยกเลิกการจอง">
-            <p
-              onClick={() => {
-                setModalCancel(true);
-                setColumnId(record.id);
-              }}
-            >
-              {CancelMaCarIcon}
-            </p>
-          </Tooltip> */}
-
           <Tooltip title="ยกเลิกการจอง">
             <p
               onClick={() => {
@@ -217,8 +204,8 @@ const MaCarBookTable: React.FC<props> = ({
                 }
                 setModalCancel(true);
                 setColumnId(record.id);
+                formCancel.resetFields();
               }}
-              // style={{ cursor: "pointer", color: "red" }}
             >
               {CancelMaCarIcon}
             </p>
@@ -229,26 +216,26 @@ const MaCarBookTable: React.FC<props> = ({
   ];
 
   const showModalEditMaCarBook = (record: MaCarBookType) => {
-    if (record.carBookApprovedStatus === "Approve") {
-      message.warning("ไม่สามารถแก้ไขการจองที่อนุมัติได้");
-      return;
-    }
-    if (record.carBookApprovedStatus === "Return") {
-      message.warning("ไม่สามารถแก้ไขการจองที่แจ้งคืนรถได้");
-      return;
-    }
-    if (record.carBookApprovedStatus === "Completed") {
-      message.warning("ไม่สามารถแก้ไขการจองที่คืนรถได้");
-      return;
-    }
-    if (record.carBookApprovedStatus === "DisapProved") {
-      message.warning("ไม่สามารถแก้ไขการจองที่ไม่อนุมัติได้");
-      return;
-    }
-    if (record.carBookApprovedStatus === "Cancel") {
-      message.warning("ไม่สามารถแก้ไขการจองที่ยกเลิกได้");
-      return;
-    }
+    // if (record.carBookApprovedStatus === "Approve") {
+    //   message.warning("ไม่สามารถแก้ไขการจองที่อนุมัติได้");
+    //   return;
+    // }
+    // if (record.carBookApprovedStatus === "Return") {
+    //   message.warning("ไม่สามารถแก้ไขการจองที่แจ้งคืนรถได้");
+    //   return;
+    // }
+    // if (record.carBookApprovedStatus === "Completed") {
+    //   message.warning("ไม่สามารถแก้ไขการจองที่คืนรถได้");
+    //   return;
+    // }
+    // if (record.carBookApprovedStatus === "DisapProved") {
+    //   message.warning("ไม่สามารถแก้ไขการจองที่ไม่อนุมัติได้");
+    //   return;
+    // }
+    // if (record.carBookApprovedStatus === "Cancel") {
+    //   message.warning("ไม่สามารถแก้ไขการจองที่ยกเลิกได้");
+    //   return;
+    // }
 
     setCurrentMaCarBookId(record.id);
     form.setFieldsValue({
@@ -263,7 +250,6 @@ const MaCarBookTable: React.FC<props> = ({
   const handleCancelMa: FormProps<MaCarBookType>["onFinish"] = async (
     values
   ) => {
-    
     try {
       const updatedApproveMa = {
         id: columnId,
@@ -362,6 +348,7 @@ const MaCarBookTable: React.FC<props> = ({
           name="edit_ma"
           onFinish={updatedMaCarBook}
           autoComplete="off"
+          size="small"
         >
           <Row gutter={16}>
             <Col span={8}>
@@ -384,7 +371,17 @@ const MaCarBookTable: React.FC<props> = ({
                 label="ชื่อรถ"
                 rules={[{ required: true, message: "กรุณาเลือกรถ" }]}
               >
-                <Select placeholder="โปรดเลือกรถ" style={{ width: "100%" }}>
+                <Select
+                  placeholder="โปรดเลือกรถ"
+                  style={{ width: "100%" }}
+                  disabled={
+                    carBookApprovedStatus === "Approve" ||
+                    carBookApprovedStatus === "Return" ||
+                    carBookApprovedStatus === "Completed" ||
+                    carBookApprovedStatus === "DisapProved" ||
+                    carBookApprovedStatus === "Cancel"
+                  }
+                >
                   {maCarData.map((car: any, index: any) => (
                     <Select.Option key={index} value={car.carId}>
                       {car.carName}
@@ -401,7 +398,16 @@ const MaCarBookTable: React.FC<props> = ({
                   { required: true, message: "กรุณากรอกวัตถุประสงค์การใช้งาน" },
                 ]}
               >
-                <Input placeholder="กรอกวัตถุประสงค์การใช้งาน" />
+                <Input
+                  placeholder="กรอกวัตถุประสงค์การใช้งาน"
+                  disabled={
+                    carBookApprovedStatus === "Approve" ||
+                    carBookApprovedStatus === "Return" ||
+                    carBookApprovedStatus === "Completed" ||
+                    carBookApprovedStatus === "DisapProved" ||
+                    carBookApprovedStatus === "Cancel"
+                  }
+                />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -410,7 +416,16 @@ const MaCarBookTable: React.FC<props> = ({
                 label="สถานที่ไป"
                 rules={[{ required: true, message: "กรุณากรอกสถานที่ไป" }]}
               >
-                <Input placeholder="กรอกสถานที่ไป" />
+                <Input
+                  placeholder="กรอกสถานที่ไป"
+                  disabled={
+                    carBookApprovedStatus === "Approve" ||
+                    carBookApprovedStatus === "Return" ||
+                    carBookApprovedStatus === "Completed" ||
+                    carBookApprovedStatus === "DisapProved" ||
+                    carBookApprovedStatus === "Cancel"
+                  }
+                />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -419,7 +434,16 @@ const MaCarBookTable: React.FC<props> = ({
                 label="จังหวัด"
                 rules={[{ required: true, message: "กรุณากรอกจังหวัด" }]}
               >
-                <Input placeholder="กรอกจังหวัด" />
+                <Input
+                  placeholder="กรอกจังหวัด"
+                  disabled={
+                    carBookApprovedStatus === "Approve" ||
+                    carBookApprovedStatus === "Return" ||
+                    carBookApprovedStatus === "Completed" ||
+                    carBookApprovedStatus === "DisapProved" ||
+                    carBookApprovedStatus === "Cancel"
+                  }
+                />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -433,6 +457,13 @@ const MaCarBookTable: React.FC<props> = ({
                   placeholder="กรอกจำนวนผู้ใช้"
                   min={1}
                   max={12}
+                  disabled={
+                    carBookApprovedStatus === "Approve" ||
+                    carBookApprovedStatus === "Return" ||
+                    carBookApprovedStatus === "Completed" ||
+                    carBookApprovedStatus === "DisapProved" ||
+                    carBookApprovedStatus === "Cancel"
+                  }
                 />
               </Form.Item>
             </Col>
@@ -440,12 +471,32 @@ const MaCarBookTable: React.FC<props> = ({
           <Row gutter={24}>
             <Col span={8}>
               <Form.Item name="detail" label="รายยละเอียด">
-                <TextArea placeholder="กรอกรายยละเอียด" rows={2} />
+                <TextArea
+                  placeholder="กรอกรายยละเอียด"
+                  rows={2}
+                  disabled={
+                    carBookApprovedStatus === "Approve" ||
+                    carBookApprovedStatus === "Return" ||
+                    carBookApprovedStatus === "Completed" ||
+                    carBookApprovedStatus === "DisapProved" ||
+                    carBookApprovedStatus === "Cancel"
+                  }
+                />
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item name="remark" label="หมายเหตุการจองรถ">
-                <TextArea placeholder="กรอกหมายเหตุการจองรถ" rows={2} />
+                <TextArea
+                  placeholder="กรอกหมายเหตุการจองรถ"
+                  rows={2}
+                  disabled={
+                    carBookApprovedStatus === "Approve" ||
+                    carBookApprovedStatus === "Return" ||
+                    carBookApprovedStatus === "Completed" ||
+                    carBookApprovedStatus === "DisapProved" ||
+                    carBookApprovedStatus === "Cancel"
+                  }
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -519,10 +570,28 @@ const MaCarBookTable: React.FC<props> = ({
                 type="default"
                 onClick={handleEditMaCancel}
                 style={{ marginRight: "16px" }}
+                disabled={
+                  carBookApprovedStatus === "Approve" ||
+                  carBookApprovedStatus === "Return" ||
+                  carBookApprovedStatus === "Completed" ||
+                  carBookApprovedStatus === "DisapProved" ||
+                  carBookApprovedStatus === "Cancel"
+                }
               >
                 ยกเลิก
               </Button>
-              <Button type="primary" htmlType="submit" loading={submitLoading}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={submitLoading}
+                disabled={
+                  carBookApprovedStatus === "Approve" ||
+                  carBookApprovedStatus === "Return" ||
+                  carBookApprovedStatus === "Completed" ||
+                  carBookApprovedStatus === "DisapProved" ||
+                  carBookApprovedStatus === "Cancel"
+                }
+              >
                 ตกลง
               </Button>
             </Row>
@@ -543,6 +612,7 @@ const MaCarBookTable: React.FC<props> = ({
           name="cancel_ma"
           onFinish={handleCancelMa}
           autoComplete="off"
+          size="small"
         >
           <Col>
             <Form.Item

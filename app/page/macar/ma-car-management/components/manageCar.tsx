@@ -16,6 +16,8 @@ import {
   InputNumber,
   Divider,
   Input,
+  TimePicker,
+  DatePicker,
 } from "antd";
 import { DeleteIcon, ApproveIcon, CancelMaCarIcon } from "@/components/icon";
 import type { TableProps, FormProps } from "antd";
@@ -25,6 +27,7 @@ import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import isBetween from "dayjs/plugin/isBetween";
 import { MaCarBookType } from "../../common/index";
+import TextArea from "antd/es/input/TextArea";
 
 dayjs.extend(isBetween);
 
@@ -52,6 +55,8 @@ const ManageCar: React.FC<props> = ({
   const [maBookData, setMaCarBookData] = useState<MaCarBookType[]>([]);
   const manageCarServices = ManageCarServices(intraAuth);
   const { data: session } = useSession();
+  const [modalDisapProved, setModalDisapProved] = useState(false);
+  const [formDisapProved] = Form.useForm();
 
   const columns: TableProps<MaCarBookType>["columns"] = [
     {
@@ -157,7 +162,26 @@ const ManageCar: React.FC<props> = ({
         >
           <Tooltip title="อนุมัติ">
             <a
-              onClick={() => showModalApproveBook(record)}
+              onClick={() => {
+                // console.log(record.carBookApprovedStatus);
+                // if (record.carBookApprovedStatus === "Approve") {
+                //   message.warning("อนุมัติการจองนี้ไปแล้ว");
+                //   return;
+                // }
+                if (record.carBookApprovedStatus === "Return") {
+                  message.warning("ไม่สามารถอนุมัติการจองที่แจ้งคืนรถได้");
+                  return;
+                }
+                if (record.carBookApprovedStatus === "Completed") {
+                  message.warning("ไม่สามารถอนุมัติการจองที่คืนรถได้");
+                  return;
+                }
+                if (record.carBookApprovedStatus === "Cancel") {
+                  message.warning("ไม่สามารถอนุมัติการจองที่ยกเลิกได้ได้");
+                  return;
+                }
+                showModalApproveBook(record);
+              }}
               style={{ color: "green", width: "50px", textAlign: "center" }}
             >
               {ApproveIcon}
@@ -203,6 +227,20 @@ const ManageCar: React.FC<props> = ({
   ];
 
   const showModalApproveBook = (record: MaCarBookType) => {
+    form.setFieldsValue({
+      createdByName: record.createdByName,
+      carName: record.maCar.carName,
+      status: record.maCar.status,
+      carBookTitle: record.carBookTitle,
+      carBookPlace: record.carBookPlace,
+      carBookProvince: record.carBookProvince,
+      carBookUsers: record.carBookUsers,
+      detail: record.detail,
+      remark: record.remark,
+      carBookStartDate: dayjs(record.carBookStartDate),
+      carBookEndDate: dayjs(record.carBookEndDate),
+    });
+
     setModalApproveMa(true);
     setMaCarBookStatus(record.carBookApprovedStatus);
     setCurrentMaId(record.id);
@@ -275,25 +313,29 @@ const ManageCar: React.FC<props> = ({
     setLoading(true);
   };
 
-  const onFinishCancel = async () => {
-    setSubmitLoading(false);
+  const onFinishCancel: FormProps<MaCarBookType>["onFinish"] = async (
+    values
+  ) => {
+    // console.log(values);
 
-    if (carBookApprovedStatus === "Return") {
-      message.warning("ไม่สามารถไม่อนุมัติการจองที่แจ้งคืนรถได้");
-      return;
-    }
-    if (carBookApprovedStatus === "Completed") {
-      message.warning("ไม่สามารถไม่อนุมัติการจองที่คืนรถได้");
-      return;
-    }
-    if (carBookApprovedStatus === "DisapProved") {
-      message.warning("ไม่อนุมัติการจองนี้ไปแล้ว");
-      return;
-    }
-    if (carBookApprovedStatus === "Cancel") {
-      message.warning("ไม่สามารถไม่อนุมัติการจองที่ยกเลิกได้ได้");
-      return;
-    }
+    setSubmitLoading(true);
+
+    // if (carBookApprovedStatus === "Return") {
+    //   message.warning("ไม่สามารถไม่อนุมัติการจองที่แจ้งคืนรถได้");
+    //   return;
+    // }
+    // if (carBookApprovedStatus === "Completed") {
+    //   message.warning("ไม่สามารถไม่อนุมัติการจองที่คืนรถได้");
+    //   return;
+    // }
+    // if (carBookApprovedStatus === "DisapProved") {
+    //   message.warning("ไม่อนุมัติการจองนี้ไปแล้ว");
+    //   return;
+    // }
+    // if (carBookApprovedStatus === "Cancel") {
+    //   message.warning("ไม่สามารถไม่อนุมัติการจองที่ยกเลิกได้ได้");
+    //   return;
+    // }
     setModalApproveMa(false);
 
     try {
@@ -393,7 +435,7 @@ const ManageCar: React.FC<props> = ({
   return (
     <>
       <Modal
-        width={400}
+        width={800}
         title="การอนุมัติการจองรถ"
         open={modalApproveMa}
         onCancel={handleApproveBook}
@@ -403,11 +445,158 @@ const ManageCar: React.FC<props> = ({
           form={form}
           onFinish={onFinishApprove}
           onFinishFailed={onFinishFailed}
+          layout="vertical"
+          size="small"
         >
+          <Row gutter={16}>
+            <Col span={8}>
+              <Form.Item<MaCarBookType> name="createdByName" label="ชื่อผู้จอง">
+                <Input disabled />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Divider orientation="left">ข้อมูลการจองรถ</Divider>
+
+          <Row gutter={16}>
+            <Col span={8}>
+              <Form.Item<MaCarBookType>
+                name="carName"
+                label="ชื่อรถ"
+                rules={[{ required: true, message: "กรุณาเลือกรถ" }]}
+              >
+                <Input disabled />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item<MaCarBookType>
+                name="carBookTitle"
+                label="วัตถุประสงค์การใช้งาน"
+                rules={[
+                  { required: true, message: "กรุณากรอกวัตถุประสงค์การใช้งาน" },
+                ]}
+              >
+                <Input placeholder="กรอกวัตถุประสงค์การใช้งาน" disabled />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item<MaCarBookType>
+                name="carBookPlace"
+                label="สถานที่ไป"
+                rules={[{ required: true, message: "กรุณากรอกสถานที่ไป" }]}
+              >
+                <Input placeholder="กรอกสถานที่ไป" disabled />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item<MaCarBookType>
+                name="carBookProvince"
+                label="จังหวัด"
+                rules={[{ required: true, message: "กรุณากรอกจังหวัด" }]}
+              >
+                <Input placeholder="กรอกจังหวัด" disabled />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item<MaCarBookType>
+                name="carBookUsers"
+                label="จำนวนผู้ใช้"
+                rules={[{ required: true, message: "กรุณากรอกจำนวนผู้ใช้" }]}
+              >
+                <InputNumber
+                  style={{ width: "100%" }}
+                  placeholder="กรอกจำนวนผู้ใช้"
+                  min={1}
+                  max={12}
+                  disabled
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={24}>
+            <Col span={8}>
+              <Form.Item name="detail" label="รายยละเอียด">
+                <TextArea placeholder="กรอกรายยละเอียด" rows={2} disabled />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item name="remark" label="หมายเหตุการจองรถ">
+                <TextArea
+                  placeholder="กรอกหมายเหตุการจองรถ"
+                  rows={2}
+                  disabled
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={24}>
+            <Col span={6}>
+              <Form.Item
+                name="carBookStartDate"
+                label="วันที่เริ่มการจอง"
+                rules={[
+                  { required: true, message: "กรุณาเลือกวันที่เริ่มจอง!" },
+                ]}
+              >
+                <DatePicker
+                  disabled
+                  format="DD-MM-YYYY"
+                  placeholder="กรอกวันที่เริ่มการจอง"
+                  style={{ width: "100%" }}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item
+                name="carBookStartDate"
+                label="เวลาเริ่มการจอง"
+                rules={[{ required: true, message: "กรุณาเลือกเวลาเริ่มจอง!" }]}
+              >
+                <TimePicker
+                  disabled
+                  format="HH:mm"
+                  placeholder="กรอกเวลาเริ่มการจอง"
+                  style={{ width: "100%" }}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item
+                name="carBookEndDate"
+                label="วันที่สิ้นสุดการจอง"
+                rules={[
+                  { required: true, message: "กรุณาเลือกวันที่สิ้นสุดการจอง!" },
+                ]}
+              >
+                <DatePicker
+                  disabled
+                  format="DD-MM-YYYY"
+                  placeholder="กรอกวันที่สิ้นสุดการจอง"
+                  style={{ width: "100%" }}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item
+                name="carBookEndDate"
+                label="เวลาสิ้นสุดการจอง"
+                rules={[
+                  { required: true, message: "กรุณาเลือกเวลาสิ้นสุดการจอง!" },
+                ]}
+              >
+                <TimePicker
+                  disabled
+                  format="HH:mm"
+                  placeholder="กรอกเวลาสิ้นสุดการจอง"
+                  style={{ width: "100%" }}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
           <Row justify="end">
             <Button
               type="default"
-              onClick={onFinishCancel}
+              onClick={() => setModalDisapProved(true)}
               disabled={carBookApprovedStatus === "DisapProved"}
               loading={submitLoading}
               style={{ marginRight: "16px", marginTop: "16px" }}
@@ -439,6 +628,7 @@ const ManageCar: React.FC<props> = ({
           onFinish={onFinishReturn}
           layout="vertical"
           autoComplete="off"
+          size="small"
         >
           <Divider orientation="left">ข้อมูลการคืนรถ</Divider>
 
@@ -512,6 +702,44 @@ const ManageCar: React.FC<props> = ({
               </Button>
             </Row>
           </Form.Item>
+        </Form>
+      </Modal>
+
+      <Modal
+        width={300}
+        title="หมายเหตุการไม่อนุมัติ"
+        open={modalDisapProved}
+        onCancel={() => setModalDisapProved(false)}
+        footer={null}
+      >
+        {" "}
+        <Form
+          form={formDisapProved}
+          onFinish={onFinishCancel}
+          // onFinishFailed={onFinishFailed}
+          layout="vertical"
+          size="small"
+        >
+          <Form.Item
+            name="remarkApproved"
+            rules={[
+              { required: true, message: "กรุณากรอกหมายเหตุการไม่อนุมัติ" },
+            ]}
+          >
+            {" "}
+            <TextArea />
+          </Form.Item>
+          <Row justify="end">
+            <Button
+              type="primary"
+              htmlType="submit"
+              disabled={carBookApprovedStatus === "DisapProved"}
+              loading={submitLoading}
+              style={{ marginTop: "16px" }}
+            >
+              {`ตกลง`}
+            </Button>
+          </Row>
         </Form>
       </Modal>
 

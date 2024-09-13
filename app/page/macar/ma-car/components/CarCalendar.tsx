@@ -18,6 +18,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useForm } from "antd/es/form/Form";
 import { CaretRightOutlined } from "@ant-design/icons";
 import { MaCarBookCalendarType } from "../../common/index";
+import dayjs from "dayjs";
 
 const localizer = momentLocalizer(moment);
 const { TextArea } = Input;
@@ -71,11 +72,9 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
 
       formUpdate.setFieldsValue({
         ...maCarCalendar,
-        carBookStartDate: moment(maCarCalendar.carBookStartDate),
-        carBookEndDate: moment(maCarCalendar.carBookEndDate),
-        approveDate: maCarCalendar.approveDate
-          ? moment(maCarCalendar.approveDate).format("DD-MM-YYYY HH:mm")
-          : undefined,
+        carBookStartDate: dayjs(maCarCalendar.carBookStartDate),
+        carBookEndDate: dayjs(maCarCalendar.carBookEndDate),
+        approveDate: dayjs(maCarCalendar.approveDate),
       });
       setModalMaCarBookDetail(true);
     }
@@ -197,14 +196,27 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
                   {renderStatusTag(selectedMa.carBookApprovedStatus)}
                 </Form.Item>
                 {selectedMa.carBookApprovedStatus !== "Process" && (
-                  <>
+                  <div>
                     <Form.Item label="ผู้อนุมัติ" name="carBookApprovedByName">
                       <Input className="read-only-input" disabled />
                     </Form.Item>
-                    <Form.Item label="วันที่อนุมัติ" name="carBookApprovedDate">
-                      <Input className="read-only-input" disabled />
+                    <Form.Item label="วันที่อนุมัติ" name="approveDate">
+                      <DatePicker
+                        format="DD-MM-YYYY"
+                        disabled
+                        className="read-only-input"
+                        style={{ width: "100%" }}
+                      />
                     </Form.Item>
-                  </>
+                    <Form.Item label="เวลาอนุมัติ" name="approveDate">
+                      <DatePicker
+                        format="HH:mm"
+                        disabled
+                        className="read-only-input"
+                        style={{ width: "100%" }}
+                      />
+                    </Form.Item>
+                  </div>
                 )}
               </Collapse.Panel>
             </Collapse>

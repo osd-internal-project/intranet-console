@@ -165,6 +165,8 @@ const ManageCarStatus: React.FC<props> = ({
   };
 
   const createMaCar: FormProps<MaCarType>["onFinish"] = async (values) => {
+    console.log(values);
+
     setSubmitLoading(true);
     const carName = values.carName as string;
 
@@ -252,7 +254,7 @@ const ManageCarStatus: React.FC<props> = ({
           form={form}
           name="edit_macar"
           onFinish={updatedCar}
-          // autoComplete="off"
+          autoComplete="off"
           layout="vertical"
           size="small"
         >
@@ -291,7 +293,7 @@ const ManageCarStatus: React.FC<props> = ({
             name="carMile"
             rules={[{ required: true, message: "กรุณากรอกเลขไมค์รถ!" }]}
           >
-            <Input
+            <InputNumber
               placeholder="กรอกเลขไมล์รถ"
               onKeyDown={(event) => {
                 if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
@@ -382,7 +384,7 @@ const ManageCarStatus: React.FC<props> = ({
               name="carMile"
               rules={[{ required: true, message: "กรุณากรอกเลขไมล์รถ!" }]}
             >
-              <Input
+              <InputNumber
                 placeholder="กรอกเลขไมล์รถ"
                 onKeyDown={(event) => {
                   if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {

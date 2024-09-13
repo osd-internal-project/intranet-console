@@ -167,17 +167,16 @@ const MaCarBookTable: React.FC<props> = ({
       render: (_, record) => (
         <Space size="middle">
           <Tooltip title="แก้ไข">
-            <a
+            <p
               onClick={() => {
                 showModalEditMaCarBook(record);
                 setcarBookApprovedStatus(record.carBookApprovedStatus);
               }}
               role="button"
               aria-label="Edit"
-              style={{ cursor: "pointer" }}
             >
               {EditIcon}
-            </a>
+            </p>
           </Tooltip>
           <Tooltip title="ยกเลิกการจอง">
             <p
@@ -204,7 +203,9 @@ const MaCarBookTable: React.FC<props> = ({
                 }
                 setModalCancel(true);
                 setColumnId(record.id);
-                formCancel.resetFields();
+                formCancel.setFieldsValue({
+                  remarkCancel: record.remarkCancel,
+                });
               }}
             >
               {CancelMaCarIcon}
@@ -216,27 +217,6 @@ const MaCarBookTable: React.FC<props> = ({
   ];
 
   const showModalEditMaCarBook = (record: MaCarBookType) => {
-    // if (record.carBookApprovedStatus === "Approve") {
-    //   message.warning("ไม่สามารถแก้ไขการจองที่อนุมัติได้");
-    //   return;
-    // }
-    // if (record.carBookApprovedStatus === "Return") {
-    //   message.warning("ไม่สามารถแก้ไขการจองที่แจ้งคืนรถได้");
-    //   return;
-    // }
-    // if (record.carBookApprovedStatus === "Completed") {
-    //   message.warning("ไม่สามารถแก้ไขการจองที่คืนรถได้");
-    //   return;
-    // }
-    // if (record.carBookApprovedStatus === "DisapProved") {
-    //   message.warning("ไม่สามารถแก้ไขการจองที่ไม่อนุมัติได้");
-    //   return;
-    // }
-    // if (record.carBookApprovedStatus === "Cancel") {
-    //   message.warning("ไม่สามารถแก้ไขการจองที่ยกเลิกได้");
-    //   return;
-    // }
-
     setCurrentMaCarBookId(record.id);
     form.setFieldsValue({
       ...record,
@@ -254,7 +234,7 @@ const MaCarBookTable: React.FC<props> = ({
       const updatedApproveMa = {
         id: columnId,
         carBookApprovedStatus: "Cancel",
-        remarkApproved: values.remarkApproved,
+        remarkCancel: values.remarkCancel,
         carBookApprovedDate: dayjs().toISOString(),
         carBookApprovedById: session?.user.userId,
         carBookApprovedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
@@ -277,37 +257,29 @@ const MaCarBookTable: React.FC<props> = ({
   const updatedMaCarBook: FormProps<MaCarBookType>["onFinish"] = async (
     values
   ) => {
-    setSubmitLoading(true);
     if (currentMaCarBookId === null) {
       message.error("No ma selected for update");
       return;
     }
-
     const carSelected = maCarData.findLast(
       (car: any) => car.carId === values.carId
     );
-
     try {
       const { carBookStartDate, carBookEndDate, carName, ...restValues } =
         values;
-
       const updatedStartDate = carBookStartDate.toISOString();
-
       const updatedEndDate = carBookEndDate.toISOString();
-
       const today = new Date();
       if (new Date(updatedStartDate) < today) {
         message.error("ไม่สามารถจองในวันที่ผ่านมาได้");
         setSubmitLoading(false);
         return;
       }
-
       if (new Date(updatedEndDate) < new Date(updatedStartDate)) {
         message.error("วันที่สิ้นสุดการจองต้องหลังวันที่เริ่มการจอง");
         setSubmitLoading(false);
         return;
       }
-
       const maCarBookData = {
         ...restValues,
         id: currentMaCarBookId,
@@ -616,7 +588,7 @@ const MaCarBookTable: React.FC<props> = ({
         >
           <Col>
             <Form.Item
-              name="remarkApproved"
+              name="remarkCancel"
               label="หมายเหตุยกเลิกการจองรถ"
               rules={[
                 { required: true, message: "กรุณากรอกหมายเหตุการยกเลิก" },

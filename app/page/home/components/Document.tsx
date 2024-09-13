@@ -24,6 +24,10 @@ const DocumentComponent: React.FC<props> = ({
   const handleOk = () => setIsModalVisible(false);
   const handleCancel = () => setIsModalVisible(false);
 
+  if (!handbookQuery) {
+    return <div>Loading...</div>;
+  }
+
   const limitedFiles = handbookQuery.slice(0, 3);
 
   return (

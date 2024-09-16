@@ -35,9 +35,10 @@ const NewsCarouselComponent: React.FC<Props> = ({
   };
 
   const chunkedNews = [];
-  for (let i = 0; i < informationNews.length; i += 3) {
-    chunkedNews.push(informationNews.slice(i, i + 3));
-  }
+  if (informationNews)
+    for (let i = 0; i < informationNews.length; i += 3) {
+      chunkedNews.push(informationNews.slice(i, i + 3));
+    }
 
   return (
     <>

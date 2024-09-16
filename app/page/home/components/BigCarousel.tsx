@@ -26,7 +26,7 @@ export const BigCarouselComponent: React.FC<Props> = ({
       responsive={[{ breakpoint: 768, settings: { slidesToShow: 1 } }]}
       style={{ width: "1485px", height: "845px" }}
     >
-      {slideImage.map((image, index) => (
+      {slideImage?.map((image, index) => (
         <div key={index}>
           <Image
             src={`http://localhost:4003/api/slide-image/${image.filePath}`}

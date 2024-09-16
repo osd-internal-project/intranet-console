@@ -354,7 +354,7 @@ const MaCarReturn: React.FC<props> = ({
                 },
               ]}
             >
-              <Input
+              <InputNumber
                 placeholder="กรอกเลขไมล์รถ"
                 onKeyDown={(event) => {
                   if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
@@ -549,6 +549,11 @@ const MaCarReturn: React.FC<props> = ({
                 name="remarkApproved"
                 label="หมายเหตุการไม่อนุมัติการจองรถ"
               >
+                <TextArea disabled rows={1} />
+              </Form.Item>
+            </Col>
+            <Col span={9}>
+              <Form.Item name="remarkCancel" label="หมายเหตุการยกเลิก">
                 <TextArea disabled rows={1} />
               </Form.Item>
             </Col>

@@ -40,6 +40,7 @@ const MaCarBook: React.FC<props> = ({
   const [submitLoading, setSubmitLoading] = useState(false);
   const [carName, setCarName] = useState<MaCarType[]>([]);
   const [form] = Form.useForm();
+  const { TextArea } = Input;
 
   const checkMaCarBookConflict = async (
     carName: string,
@@ -117,8 +118,22 @@ const MaCarBook: React.FC<props> = ({
     try {
       if (carSelected) {
         const hasProcessStatus = carSelected.maCarBook.some(
-          (item: MaCarBookType) => item.carBookApprovedStatus === "Process"
+          (item: MaCarBookType) =>
+            item.carBookApprovedStatus === "Process" ||
+            item.carBookApprovedStatus === "Approve"
         );
+        if (hasProcessStatus) {
+          const conflict = await checkMaCarBookConflict(
+            carSelected.carName || "",
+            carBookStartDate,
+            carBookEndDate
+          );
+          if (conflict) {
+            message.error("รถคันนี้มีการจองในช่วงเวลาที่คุณเลือกแล้ว !");
+            setSubmitLoading(false);
+            return;
+          }
+        }
         if (hasProcessStatus) {
           const conflict = await checkMaCarBookConflict(
             carSelected.carName || "",
@@ -151,14 +166,6 @@ const MaCarBook: React.FC<props> = ({
     setLoading(true);
   };
 
-  const { TextArea } = Input;
-
-  const onFinishFailed: FormProps<MaCarBookType>["onFinishFailed"] = (
-    errorInfo
-  ) => {
-    console.log("Failed:", errorInfo);
-  };
-
   const maCarBookName = () => {
     const createdByName = `${session?.user.firstNameTh || ""} ${
       session?.user.lastNameTh || ""
@@ -176,13 +183,7 @@ const MaCarBook: React.FC<props> = ({
   }, [maCarData]);
 
   return (
-    <Form
-      form={form}
-      layout="vertical"
-      onFinish={createMaCarBook}
-      onFinishFailed={onFinishFailed}
-      size="small"
-    >
+    <Form form={form} layout="vertical" onFinish={createMaCarBook} size="small">
       <Divider orientation="left">ข้อมูลผู้จอง</Divider>
       <Row gutter={16}>
         <Col span={8}>

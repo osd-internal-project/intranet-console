@@ -35,6 +35,7 @@ const BranchEditComponent: React.FC<props> = ({
       onCancel={() => {
         onShowModalBranchEdit(false);
       }}
+      maskClosable={false}
     >
       <Form
         form={formEdit}

@@ -63,6 +63,7 @@ const TicketExpendEdit: React.FC<props> = ({
       title={"แก้ไขรายการขอเบิก"}
       onCancel={closeEditModal}
       footer={[]}
+      maskClosable={false}
     >
       <Form
         form={editform}

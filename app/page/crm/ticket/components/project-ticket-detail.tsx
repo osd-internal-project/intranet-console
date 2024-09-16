@@ -174,6 +174,7 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
       onCancel={() => onShowModalProjectTicketDetail(undefined)}
       width={1500}
       style={{ top: 20 }}
+      maskClosable={false}
     >
       <Tabs
         destroyInactiveTabPane={true}

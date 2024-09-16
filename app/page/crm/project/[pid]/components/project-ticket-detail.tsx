@@ -177,6 +177,7 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
       onCancel={() => onShowModalProjectTicketDetail(undefined)}
       width={1500}
       style={{ top: 20 }}
+      maskClosable={false}
     >
       <Tabs
         destroyInactiveTabPane={true}
@@ -430,7 +431,7 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                       <Form.Item
                         label={
                           <div className=" font-bold  text-purple-700">
-                          Attach Files
+                            Attach Files
                           </div>
                         }
                         valuePropName="fileList"

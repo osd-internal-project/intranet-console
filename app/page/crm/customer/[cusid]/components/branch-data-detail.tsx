@@ -73,6 +73,7 @@ const BranchDetailComponent: React.FC<props> = ({
           // onShowModalBranchAdd(false);
           onShowModalBranchDetail(undefined);
         }}
+        maskClosable={false}
       >
         <div className=" space-y-3">
           <div className=" grid grid-cols-4">

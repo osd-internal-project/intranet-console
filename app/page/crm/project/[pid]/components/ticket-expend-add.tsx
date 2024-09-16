@@ -64,6 +64,7 @@ const TicketExpendAdd: React.FC<props> = ({
       title={"เพิ่มรายการขอเบิก"}
       onCancel={closeAddModal}
       footer={[]}
+      maskClosable={false}
     >
       <Form
         form={addform}

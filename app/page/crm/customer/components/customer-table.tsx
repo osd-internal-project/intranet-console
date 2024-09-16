@@ -137,8 +137,8 @@ const CustomerTableComponent: React.FC<props> = ({
         ),
     },
     {
-      key: "customerGroupName",
-      dataIndex: "customerGroupName",
+      key: "customerTypeGroupName",
+      dataIndex: "customerTypeGroupName",
       title: "กลุ่มลูกค้า",
       width: "200px",
     },

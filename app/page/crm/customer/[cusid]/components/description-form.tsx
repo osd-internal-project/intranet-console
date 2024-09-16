@@ -18,7 +18,7 @@ import { ITConfigData, ITCustomerForm, ITSelectUsers } from "../../common";
 const { TextArea } = Input;
 export interface props {
   rules: any;
-  customerGroup: ITConfigData[];
+  customerTypeGroup: ITConfigData[];
   customerTypes: ITConfigData[];
   customerResponsibles: ITSelectUsers[];
   descriptionForm: FormInstance<ITCustomerForm>;
@@ -36,7 +36,7 @@ const layout = {
 
 const DescriptionCustomerForm: React.FC<props> = ({
   rules,
-  customerGroup,
+  customerTypeGroup,
   customerTypes,
   customerResponsibles,
   descriptionForm,
@@ -288,11 +288,11 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   </Form.Item>
                   <Form.Item
                     label={<b>กลุ่มลูกค้า</b>}
-                    name={"customerGroupId"}
+                    name={"customerTypeGroupId"}
                   >
                     <Select
                       placeholder={isEdit ? "Plese Choose" : ""}
-                      options={customerGroup.map((data) => ({
+                      options={customerTypeGroup.map((data) => ({
                         value: data.id,
                         label: data.name,
                       }))}

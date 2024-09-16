@@ -2,8 +2,8 @@ export type ITCustomerForm = {
   activeStatus: boolean;
   companyRegisNumber?: string;
   customerCode?: string;
-  customerGroupId?: number;
-  customerGroupName?: string;
+  customerTypeGroupId?: number;
+  customerTypeGroupName?: string;
   departmentCode?: string;
 
   grade?: string;

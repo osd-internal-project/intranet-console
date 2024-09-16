@@ -48,14 +48,12 @@ const NewsCarouselComponent: React.FC<Props> = ({
           autoplay
           dots={false}
           infinite
-          // style={{ width: "1000px", height: "500px" }}
-          // style={{ position: "relative", top: "10px", left: "20px" }}
           arrows={false}
         >
-          {chunkedNews.map((chunk, index) => (
+          {chunkedNews?.map((chunk, index) => (
             <div key={index} style={{ display: "flex" }}>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {chunk.map((file, fileIndex) => (
+                {chunk?.map((file, fileIndex) => (
                   <Card
                     key={fileIndex}
                     onClick={() => showModal(file)}
@@ -147,7 +145,7 @@ const NewsCarouselComponent: React.FC<Props> = ({
               autoplaySpeed={1500}
               effect="fade"
             >
-              {selectedNews.newsImage.map((image, index) => (
+              {selectedNews?.newsImage.map((image, index) => (
                 <Image
                   key={index}
                   preview={true}

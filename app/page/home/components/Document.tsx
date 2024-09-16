@@ -25,14 +25,14 @@ const DocumentComponent: React.FC<props> = ({
   const handleCancel = () => setIsModalVisible(false);
 
   if (!handbookQuery) {
-    return <div>Loading...</div>;
+    return <div>No Data...</div>;
   }
 
   const limitedFiles = handbookQuery.slice(0, 3);
 
   return (
     <div style={{ textAlign: "left", padding: "20px", background: "#f0f2f5" }}>
-      {limitedFiles.map((file, index) => (
+      {limitedFiles?.map((file, index) => (
         <Card
           key={file.idbook}
           hoverable
@@ -107,7 +107,7 @@ const DocumentComponent: React.FC<props> = ({
         width={1000}
         footer={null}
       >
-        {handbookQuery.map((file, index) => (
+        {handbookQuery?.map((file, index) => (
           <Card
             key={file.idbook}
             hoverable

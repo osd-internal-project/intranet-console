@@ -70,14 +70,17 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       title: "ลามาแล้ว",
       render: (value: number, row: ITypetypeleave) => {
         const wholeDays = Math.floor(value);
-        const totalHoursDecimal = value % 1;
+        console.log("value", value);
+
+        // const totalHoursDecimal = value % 1;
+        const totalHoursDecimal = Math.round((value % 1) * 10) / 10;
+
+        console.log("totalHoursDecimal:", totalHoursDecimal);
+
         const totalHours = Math.floor(totalHoursDecimal * 10);
         const totalMinutesRaw = (totalHoursDecimal * 10) % 1;
-        let totalMinutes = Math.round(totalMinutesRaw * 6);
+        let totalMinutes = Math.round(totalMinutesRaw * 10);
 
-        if (totalMinutes === 5) {
-          totalMinutes = 3;
-        }
         let timeDisplay = `${totalHours} ชม.`;
         if (totalMinutes > 0) {
           timeDisplay = `${totalHours}.${totalMinutes} ชม.`;
@@ -134,27 +137,20 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       dataIndex: "limitLeaveLastResult",
       title: "คงเหลือ",
       render: (value: number, row: ITypetypeleave) => {
-        const wholeDays = Math.floor(value); // Get the whole day part
-        const totalHoursDecimal = value % 1; // Get the decimal part representing hours
-        const totalHours = Math.floor(totalHoursDecimal * 10); // Convert decimal part to hours
-        const totalMinutesRaw = (totalHoursDecimal * 10) % 1; // Get the remaining decimal part representing minutes
-        let totalMinutes = Math.round(totalMinutesRaw * 6); // Convert decimal part to minutes
-
-        // Custom rounding for minutes
-        if (totalMinutes === 5) {
-          totalMinutes = 3;
-        }
-
-        // Prepare the time display string (hours and minutes)
+        const wholeDays = Math.floor(value);
+        const totalHoursDecimal = value % 1;
+        const totalHours = Math.floor(totalHoursDecimal * 10);
+        const totalMinutesRaw = (totalHoursDecimal * 10) % 1;
+        let totalMinutes = Math.round(totalMinutesRaw * 10);
         let timeDisplay = `${totalHours} ชม.`;
         if (totalMinutes > 0) {
           timeDisplay = `${totalHours}.${totalMinutes} ชม.`;
         }
 
-        const rowClass = rowClassName(row); // Determine the row class for styling
+        const rowClass = rowClassName(row);
         let color: string | undefined;
         if (rowClass === "disabled-row") {
-          color = "#e0e0e0"; // Set color for disabled row
+          color = "#e0e0e0";
         }
 
         return (
@@ -253,39 +249,27 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       render: (value: number, row: ITypetypeleave) => {
         const isSelected = row.typeId === params.typeId;
 
-        // คำนวณจำนวนวันเต็ม (Integer)
         let totalDays = Math.floor(
           value + (isSelected ? params.lengthDate : 0)
         );
 
-        // ได้เฉพาะส่วนที่เป็นทศนิยม (ส่วนของชั่วโมงและนาที)
-        let totalHoursDecimal = value % 1;
+        // let totalHoursDecimal = value % 1;
+        const totalHoursDecimal = Math.round((value % 1) * 10) / 10;
 
-        // แปลงค่าทศนิยมเป็นชั่วโมงและนาที (เช่น 0.35 แปลงเป็น 3 ชั่วโมง 30 นาที)
-        let totalHours = Math.floor(totalHoursDecimal * 10); // คำนวณชั่วโมง (เช่น 0.3 เป็น 3 ชั่วโมง)
-        let totalMinutesRaw = (totalHoursDecimal * 10) % 1; // คำนวณนาที (เช่น 0.5 เป็น 30 นาที)
+        let totalHours = Math.floor(totalHoursDecimal * 10);
+        let totalMinutesRaw = (totalHoursDecimal * 10) % 1;
 
-        // ถ้าทศนิยมส่วนที่ 3 มีค่าเป็น 5 ให้แสดงเป็น 3 (หมายถึง 30 นาที)
-        let totalMinutes = Math.round(totalMinutesRaw * 6); // เปลี่ยนเป็นนาที
+        let totalMinutes = Math.round(totalMinutesRaw * 10);
 
-        if (totalMinutes === 5) {
-          totalMinutes = 3; // ถ้าเป็น 5 ให้แสดงเป็น 30 นาที
-        }
-
-        // เพิ่ม lengthTime ถ้ามีการเลือก (assuming lengthTime เป็นชั่วโมง)
         if (isSelected) {
-          totalHours = (totalHours + params.lengthTime) % 24; // กำหนดชั่วโมงสูงสุดเป็น 24 ชั่วโมง
-          totalMinutes = params.lengthTime % 6; // อัพเดทนาทีถ้ามีการเลือกเวลา
+          totalHours = (totalHours + params.lengthTime) % 24;
+          totalMinutes = params.lengthTime % 6;
         }
 
-        // ลบเงื่อนไขเก่าเกี่ยวกับค่าติดลบ
-
-        // กำหนดเงื่อนไขว่าจำนวนวันเกินจำนวนวันที่สามารถลาได้หรือไม่
         const isOverLimit = totalDays > row.limitLeaveLastResult;
         const hasDateRange = params.startDate && params.endDate;
         const rowClass = rowClassName(row);
 
-        // กำหนดสีตามเงื่อนไข
         let color: string | undefined;
         if (rowClass === "disabled-row") {
           color = "#e0e0e0";
@@ -297,7 +281,6 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
           }
         }
 
-        // แสดงเฉพาะชั่วโมง ถ้า totalMinutes เป็น 0
         let timeDisplay = `${totalHours} ชม.`;
         if (totalMinutes > 0) {
           timeDisplay = `${totalHours}.${totalMinutes} ชม.`;

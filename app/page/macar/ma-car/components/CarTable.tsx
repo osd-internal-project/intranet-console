@@ -61,9 +61,7 @@ const MaCarBookTable: React.FC<props> = ({
   const [carBookApprovedStatus, setcarBookApprovedStatus] = useState<
     string | undefined
   >(undefined);
-
-  console.log(maCarBookData);
-
+  
   const columns: TableProps<MaCarBookType>["columns"] = [
     {
       title: "ลำดับ",

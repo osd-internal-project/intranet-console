@@ -47,7 +47,7 @@ export interface TCrmServices {
     contact: ITBranchContactForm
   ) => Promise<ITBranchAddress>;
   deleteBranchContact: (contactId: number) => Promise<ITBranchContact>;
-  findConfigCustomerGroup: () => Promise<ITConfigData[]>;
+  findConfigCustomerTypeGroup: () => Promise<ITConfigData[]>;
   findConfigCustomerResponsible: () => Promise<ITConfigData[]>;
   findConfigCustomerType: () => Promise<[ITConfigData]>;
 }
@@ -179,9 +179,9 @@ const CrmServices = (axiosInstance: AxiosInstance): TCrmServices => {
     deleteBranchContact: async (id) => {
       return await axiosInstance.delete(`${customerContactUrl}/${id}`);
     },
-    findConfigCustomerGroup: async () => {
+    findConfigCustomerTypeGroup: async () => {
       return await axiosInstance
-        .get(`${customerUrl}/config/customer-group`)
+        .get(`${customerUrl}/config/customer-type-group`)
         .then((res) => {
           return res.data;
         })

@@ -36,7 +36,7 @@ import "../../style.css";
 import { useForm } from "antd/es/form/Form";
 const { RangePicker } = DatePicker;
 export interface props {
-  customerGroup: ITConfigData[];
+  customerTypeGroup: ITConfigData[];
   customerTypes: ITConfigData[];
   customerResponsibles: ITSelectUsers[];
   onFinishAdd: (form: ITCustomerForm) => void;
@@ -52,7 +52,7 @@ const layout = {
 };
 
 const CreateCustomerForm: React.FC<props> = ({
-  customerGroup,
+  customerTypeGroup,
   customerTypes,
   customerResponsibles,
   onFinishAdd,
@@ -218,10 +218,10 @@ const CreateCustomerForm: React.FC<props> = ({
             />
           </Form.Item>
         )}
-        <Form.Item label="กลุ่มลูกค้า" name={"customerGroupId"}>
+        <Form.Item label="กลุ่มลูกค้า" name={"customerTypeGroupId"}>
           <Select
             placeholder="Please Choose"
-            options={customerGroup.map((data) => ({
+            options={customerTypeGroup.map((data) => ({
               value: data.id,
               label: data.name,
             }))}

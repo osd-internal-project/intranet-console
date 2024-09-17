@@ -64,7 +64,9 @@ export default function CustomerDetailPage() {
     undefined
   );
   const [projectDetail, setProjectDetail] = useState<ITProject[]>([]);
-  const [customerGroup, setCustomerGroup] = useState<ITConfigData[]>([]);
+  const [customerTypeGroup, setCustomerTypeGroup] = useState<ITConfigData[]>(
+    []
+  );
   const [customerResponsibles, setCustomerResponsibles] = useState<
     ITSelectUsers[]
   >([]);
@@ -85,8 +87,8 @@ export default function CustomerDetailPage() {
     setloading(false);
   };
   const fetchConfig = async () => {
-    const group = await crmServices.findConfigCustomerGroup();
-    setCustomerGroup(group);
+    const group = await crmServices.findConfigCustomerTypeGroup();
+    setCustomerTypeGroup(group);
     if (session?.user.userId) {
       const responsibles = await userServices.findOrganizeUserByUserId(
         session?.user.userId
@@ -143,7 +145,7 @@ export default function CustomerDetailPage() {
     let updateForm = form;
     if (form.customerTypeId) {
       const customerTypeSelected = customerTypes.findLast(
-        (d) => d.id === form.customerGroupId
+        (d) => d.id === form.customerTypeGroupId
       );
       if (customerTypeSelected?.name) {
         updateForm = {
@@ -152,14 +154,14 @@ export default function CustomerDetailPage() {
         };
       }
     }
-    if (form.customerGroupId) {
-      const customerGroupSelected = customerGroup.findLast(
-        (d) => d.id === form.customerGroupId
+    if (form.customerTypeGroupId) {
+      const customerTypeGroupSelected = customerTypeGroup.findLast(
+        (d) => d.id === form.customerTypeGroupId
       );
-      if (customerGroupSelected?.name) {
+      if (customerTypeGroupSelected?.name) {
         updateForm = {
           ...updateForm,
-          customerGroupName: customerGroupSelected.name,
+          customerTypeGroupName: customerTypeGroupSelected.name,
         };
       }
     }
@@ -342,7 +344,7 @@ export default function CustomerDetailPage() {
                 onFinishEdit={onFinishEdit}
                 // downloadFile={downloadFile}
                 // getImageBlob={getImageBlob}
-                customerGroup={customerGroup}
+                customerTypeGroup={customerTypeGroup}
                 customerTypes={customerTypes}
                 customerResponsibles={customerResponsibles}
               />

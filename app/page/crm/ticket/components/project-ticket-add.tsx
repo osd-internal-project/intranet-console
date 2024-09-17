@@ -90,7 +90,7 @@ const ProjectTicketAddComponent: React.FC<props> = ({
       onCancel={() => onShowModalProjectTicketAdd(false)}
       width={1200}
       style={{ top: 20 }}
-      // footer={[]}
+      maskClosable={false}
     >
       <Form
         name="addTaskForm"

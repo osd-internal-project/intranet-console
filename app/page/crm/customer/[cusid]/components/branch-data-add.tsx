@@ -40,6 +40,7 @@ const BranchAddComponent: React.FC<props> = ({
       onCancel={() => {
         onShowModalBranchAdd(false);
       }}
+      maskClosable={false}
     >
       <Form
         name="addBranchForm"

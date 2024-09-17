@@ -111,16 +111,17 @@ const ManageCarStatus: React.FC<props> = ({
       title: "จัดการ",
       align: "center",
       render: (_, record) => (
-        <Space size="middle">
+        <Space>
           <Tooltip title="แก้ไข">
-            <a
+            <Button
+              type="link"
               onClick={() => showModalEditMaCar(record)}
               role="button"
               aria-label="Edit"
               style={{ cursor: "pointer" }}
             >
               {EditIcon}
-            </a>
+            </Button>
           </Tooltip>
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบรถคันนี้?"
@@ -129,10 +130,10 @@ const ManageCarStatus: React.FC<props> = ({
             cancelText="ไม่"
           >
             <Tooltip title="ลบ">
-              <a>
+              <Button type="link">
                 {" "}
                 <DeleteIcon />{" "}
-              </a>
+              </Button>
             </Tooltip>
           </Popconfirm>
         </Space>
@@ -450,6 +451,7 @@ const ManageCarStatus: React.FC<props> = ({
         loading={loading}
         pagination={pagination}
         onChange={changePagination}
+        size="small"
       />
     </>
   );

@@ -157,7 +157,8 @@ const ManageCar: React.FC<props> = ({
       render: (_: any, record: MaCarBookType) => (
         <Space>
           <Tooltip title="อนุมัติ">
-            <a
+            <Button
+              type="link"
               onClick={() => {
                 // console.log(record.carBookApprovedStatus);
                 // if (record.carBookApprovedStatus === "Approve") {
@@ -181,9 +182,10 @@ const ManageCar: React.FC<props> = ({
               style={{ color: "green", width: "50px", textAlign: "center" }}
             >
               {ApproveIcon}
-            </a>
+            </Button>
           </Tooltip>
-          <a
+          <Button
+            type="link"
             onClick={() => {
               if (record.carBookApprovedStatus === "Return") {
                 message.warning("ไม่สามารถยกเลิกการจองที่แจ้งคืนรถได้");
@@ -207,12 +209,14 @@ const ManageCar: React.FC<props> = ({
             }}
           >
             {CancelMaCarIcon}
-          </a>
+          </Button>
 
           <div style={{ width: "90px", textAlign: "center" }}>
             {" "}
             {record.carBookApprovedStatus === "Return" ? (
-              <a onClick={() => showModalReturn(record)}>รับคืนรถ</a>
+              <Button type="link" onClick={() => showModalReturn(record)}>
+                รับคืนรถ
+              </Button>
             ) : record.carBookApprovedStatus === "Completed" ? (
               <span style={{ color: "grey" }}>รับคืนแล้ว</span>
             ) : (
@@ -227,9 +231,12 @@ const ManageCar: React.FC<props> = ({
             cancelText="ไม่"
           >
             <Tooltip title="ลบ">
-              <a style={{ color: "red", width: "50px", textAlign: "center" }}>
+              <Button
+                type="link"
+                style={{ color: "red", width: "50px", textAlign: "center" }}
+              >
                 <DeleteIcon />
-              </a>
+              </Button>
             </Tooltip>
           </Popconfirm>
         </Space>

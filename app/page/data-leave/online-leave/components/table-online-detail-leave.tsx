@@ -70,12 +70,12 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       title: "ลามาแล้ว",
       render: (value: number, row: ITypetypeleave) => {
         const wholeDays = Math.floor(value);
-        console.log("value", value);
+        // console.log("value", value);
 
-        // const totalHoursDecimal = value % 1;
-        const totalHoursDecimal = Math.round((value % 1) * 10) / 10;
+        const totalHoursDecimal = value % 1;
+        // const totalHoursDecimal = Math.round((value % 1) * 10) / 10;
 
-        console.log("totalHoursDecimal:", totalHoursDecimal);
+        // console.log("totalHoursDecimal:", totalHoursDecimal);
 
         const totalHours = Math.floor(totalHoursDecimal * 10);
         const totalMinutesRaw = (totalHoursDecimal * 10) % 1;
@@ -137,11 +137,22 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       dataIndex: "limitLeaveLastResult",
       title: "คงเหลือ",
       render: (value: number, row: ITypetypeleave) => {
+        // console.log("valueคงเหลือ:", value);
+
         const wholeDays = Math.floor(value);
-        const totalHoursDecimal = value % 1;
+        // const totalHoursDecimal = value % 1;
+        const totalHoursDecimal = Number((value % 1).toFixed(2));
+        // console.log("คงเหลือ: " + totalHoursDecimal);
         const totalHours = Math.floor(totalHoursDecimal * 10);
-        const totalMinutesRaw = (totalHoursDecimal * 10) % 1;
-        let totalMinutes = Math.round(totalMinutesRaw * 10);
+        const totalMinutesRaw = totalHoursDecimal * 10;
+
+        // let totalMinutes = Math.round(totalMinutesRaw * 10);
+        const totalMinutes = Math.round((totalMinutesRaw * 10) % 10);
+
+        // console.log("คงเหลือ-ชม: " + totalHours);
+        // console.log("คงเหลือ-นาที: " + totalMinutesRaw);
+        // console.log("คงเหลือ-นาทีครึ่ง: " + totalMinutes);
+
         let timeDisplay = `${totalHours} ชม.`;
         if (totalMinutes > 0) {
           timeDisplay = `${totalHours}.${totalMinutes} ชม.`;
@@ -164,6 +175,41 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       },
     },
 
+    // {
+    //   key: "limitLeaveLastResult",
+    //   dataIndex: "limitLeaveLastResult",
+    //   title: "คงเหลือ",
+    //   render: (value: number, row: ITypetypeleave) => {
+    //     console.log("valueคงเหลือ:", value);
+
+    //     const wholeDays = Math.floor(value);
+    //     const totalHoursDecimal = Number((value % 1).toFixed(2)); // Keep it as a number
+
+    //     console.log("คงเหลือ (ทศนิยม):", totalHoursDecimal);
+
+    //     const totalHours = Math.floor(totalHoursDecimal * 10); // Since a day is divided into 8 hours
+    //     let timeDisplay = `${totalHours} ชม.`;
+
+    //     // If there are decimal minutes (totalMinutes), adjust the display
+    //     if (totalHoursDecimal > 0 && totalHours < 8) {
+    //       timeDisplay = `${totalHours} ชม.`;
+    //     }
+
+    //     const rowClass = rowClassName(row);
+    //     let color: string | undefined;
+    //     if (rowClass === "disabled-row") {
+    //       color = "#e0e0e0";
+    //     }
+
+    //     return (
+    //       <div className="flex justify-center">
+    //         <Tag className="w-full flex justify-center" color={color}>
+    //           {`${wholeDays} วัน (${timeDisplay})`}
+    //         </Tag>
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       key: "id",
       dataIndex: "id",
@@ -253,8 +299,8 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
           value + (isSelected ? params.lengthDate : 0)
         );
 
-        // let totalHoursDecimal = value % 1;
-        const totalHoursDecimal = Math.round((value % 1) * 10) / 10;
+        let totalHoursDecimal = value % 1;
+        // const totalHoursDecimal = Math.round((value % 1) * 10) / 10;
 
         let totalHours = Math.floor(totalHoursDecimal * 10);
         let totalMinutesRaw = (totalHoursDecimal * 10) % 1;

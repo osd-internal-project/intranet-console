@@ -45,7 +45,7 @@ export const TableDetail: React.FC<props> = ({
     {
       key: "id",
       dataIndex: "id",
-      title: "Fullname",
+      title: "Full Name",
       render: (e: string, row: ITypeDataLeave) => {
         return <p>{`${row.firstName} ${row.lastName}`}</p>;
       },
@@ -67,6 +67,7 @@ export const TableDetail: React.FC<props> = ({
       key: "status",
       dataIndex: "status",
       title: "Status",
+      align: "center",
       render: (e: string) => {
         return e === "waitting" ? (
           <Tag color="blue">{`WAITTING`}</Tag>

@@ -19,7 +19,12 @@ import {
   TimePicker,
   DatePicker,
 } from "antd";
-import { DeleteIcon, ApproveIcon, CancelMaCarIcon } from "@/components/icon";
+import {
+  DeleteIcon,
+  ApproveIcon,
+  CancelMaCarIcon,
+  CarApproveIcon,
+} from "@/components/icon";
 import type { TableProps, FormProps } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../services/manage-car.service";
@@ -157,14 +162,9 @@ const ManageCar: React.FC<props> = ({
       render: (_: any, record: MaCarBookType) => (
         <Space>
           <Tooltip title="อนุมัติ">
-            <Button
+            <a
               type="link"
               onClick={() => {
-                // console.log(record.carBookApprovedStatus);
-                // if (record.carBookApprovedStatus === "Approve") {
-                //   message.warning("อนุมัติการจองนี้ไปแล้ว");
-                //   return;
-                // }
                 if (record.carBookApprovedStatus === "Return") {
                   message.warning("ไม่สามารถอนุมัติการจองที่แจ้งคืนรถได้");
                   return;
@@ -181,8 +181,8 @@ const ManageCar: React.FC<props> = ({
               }}
               style={{ color: "green", width: "50px", textAlign: "center" }}
             >
-              {ApproveIcon}
-            </Button>
+              {CarApproveIcon}
+            </a>
           </Tooltip>
           <Button
             type="link"
@@ -231,12 +231,12 @@ const ManageCar: React.FC<props> = ({
             cancelText="ไม่"
           >
             <Tooltip title="ลบ">
-              <Button
+              <a
                 type="link"
                 style={{ color: "red", width: "50px", textAlign: "center" }}
               >
                 <DeleteIcon />
-              </Button>
+              </a>
             </Tooltip>
           </Popconfirm>
         </Space>

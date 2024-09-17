@@ -638,8 +638,8 @@ export const MaCarIcon = (
 const DeleteIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="2rem"
-    height="2rem"
+    width="2em"
+    height="2em"
     viewBox="0 0 72 72"
   >
     <path
@@ -664,8 +664,8 @@ export { DeleteIcon };
 export const EditIcon = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="1.8rem"
-    height="1.8rem"
+    width="2em"
+    height="2em"
     viewBox="0 0 24 24"
   >
     <path
@@ -819,14 +819,29 @@ export const CheckIcon = (
 export const CancelMaCarIcon = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="2.18em"
-    height="2.18em"
+    width="2em"
+    height="2em"
     viewBox="0 0 48 48"
   >
     <rect width="48" height="48" fill="none" />
     <path
       fill="#d50000"
       d="M24 6C14.1 6 6 14.1 6 24s8.1 18 18 18s18-8.1 18-18S33.9 6 24 6m0 4c3.1 0 6 1.1 8.4 2.8L12.8 32.4C11.1 30 10 27.1 10 24c0-7.7 6.3-14 14-14m0 28c-3.1 0-6-1.1-8.4-2.8l19.6-19.6C36.9 18 38 20.9 38 24c0 7.7-6.3 14-14 14"
+    />
+  </svg>
+);
+
+export const CarApproveIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="2em"
+    height="2em"
+    viewBox="0 0 24 24"
+  >
+    <rect width="24" height="24" fill="none" />
+    <path
+      fill="green"
+      d="m10.6 16.6l7.05-7.05l-1.4-1.4l-5.65 5.65l-2.85-2.85l-1.4 1.4zM12 22q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12t-2.325-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m0-8"
     />
   </svg>
 );

@@ -165,7 +165,7 @@ const ManageRoom: React.FC = () => {
       dataIndex: "note",
       width: "150px",
       render: (_, record) => (
-        <Space size="middle">
+        <Space >
           <a onClick={() => showModalEditBooking(record)}>แก้ไข</a>
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"

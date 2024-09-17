@@ -46,6 +46,8 @@ const ManageMaCar = () => {
           loading={loading}
           setLoading={setLoading}
           pagination={pagination}
+          changePagination={changePagination}
+
         />
       ),
     },
@@ -82,6 +84,7 @@ const ManageMaCar = () => {
     const take: number = Number(pagination.pageSize);
     try {
       const MaCarBook = await manageCarServices.findMaCarBook(skip, take);
+
       setMaCarBookData(MaCarBook);
 
       const MaCar = await manageCarServices.getMaCarQuery();

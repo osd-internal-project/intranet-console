@@ -36,6 +36,7 @@ export interface props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   maCarBookData: any[];
   pagination: TablePaginationConfig;
+  changePagination: (pagination: TablePaginationConfig) => void;
 }
 
 const ManageCar: React.FC<props> = ({
@@ -43,6 +44,7 @@ const ManageCar: React.FC<props> = ({
   loading,
   maCarBookData,
   pagination,
+  changePagination,
 }: any): React.ReactElement => {
   const intraAuth = useAxiosIntranet();
   const [formReturn] = Form.useForm();
@@ -66,10 +68,9 @@ const ManageCar: React.FC<props> = ({
       title: "ลำดับ",
       width: "50px",
       align: "center",
-      render: (_: any, __: any, index: number) =>
-        pagination.current && pagination.pageSize
-          ? (pagination.current - 1) * pagination.pageSize + (index + 1)
-          : "",
+      render: (event: number, row: any, index: number) =>
+        maCarBookData.total -
+        (index + (pagination.current - 1) * pagination.pageSize),
     },
     {
       title: "ชื่อรถ",
@@ -154,15 +155,7 @@ const ManageCar: React.FC<props> = ({
       width: "280px",
       align: "center",
       render: (_: any, record: MaCarBookType) => (
-        <Space
-          size="middle"
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
+        <Space>
           <Tooltip title="อนุมัติ">
             <a
               onClick={() => {
@@ -792,7 +785,14 @@ const ManageCar: React.FC<props> = ({
         </Form>
       </Modal>
 
-      <Table columns={columns} dataSource={maCarBookData} loading={loading} />
+      <Table
+        columns={columns}
+        dataSource={maCarBookData.docs}
+        loading={loading}
+        pagination={{ total: maCarBookData.total }}
+        onChange={changePagination}
+        size="small"
+      />
     </>
   );
 };

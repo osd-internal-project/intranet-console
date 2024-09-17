@@ -62,15 +62,16 @@ const MaCarBookTable: React.FC<props> = ({
     string | undefined
   >(undefined);
 
+  console.log(maCarBookData);
+
   const columns: TableProps<MaCarBookType>["columns"] = [
     {
       title: "ลำดับ",
       width: "50px",
       align: "center",
-      render: (_: any, __: any, index: number) =>
-        pagination.current && pagination.pageSize
-          ? (pagination.current - 1) * pagination.pageSize + (index + 1)
-          : "",
+      render: (event: number, row: any, index: number) =>
+        maCarBookData.total -
+        (index + (pagination.current - 1) * pagination.pageSize),
     },
     {
       key: "carName",
@@ -165,9 +166,10 @@ const MaCarBookTable: React.FC<props> = ({
       width: "150px",
       align: "center",
       render: (_, record) => (
-        <Space size="middle">
+        <Space>
           <Tooltip title="แก้ไข">
-            <p
+            <Button
+              type="link"
               onClick={() => {
                 showModalEditMaCarBook(record);
                 setcarBookApprovedStatus(record.carBookApprovedStatus);
@@ -176,10 +178,11 @@ const MaCarBookTable: React.FC<props> = ({
               aria-label="Edit"
             >
               {EditIcon}
-            </p>
+            </Button>
           </Tooltip>
           <Tooltip title="ยกเลิกการจอง">
-            <p
+            <Button
+              type="link"
               onClick={() => {
                 if (record.carBookApprovedStatus === "Approve") {
                   message.warning("ไม่สามารถยกเลิกการจองที่อนุมัติได้");
@@ -209,7 +212,7 @@ const MaCarBookTable: React.FC<props> = ({
               }}
             >
               {CancelMaCarIcon}
-            </p>
+            </Button>
           </Tooltip>
         </Space>
       ),
@@ -623,13 +626,14 @@ const MaCarBookTable: React.FC<props> = ({
 
       <Table
         columns={columns}
-        dataSource={maCarBookData}
+        dataSource={maCarBookData.docs}
         sortDirections={["descend", "ascend"]}
         rowKey="id"
         onChange={changePagination}
-        pagination={pagination}
+        pagination={{ total: maCarBookData.total }}
         loading={loading}
         style={{ marginTop: "15px" }}
+        size="small"
       />
     </>
   );

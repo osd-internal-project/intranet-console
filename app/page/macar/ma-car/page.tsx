@@ -18,13 +18,13 @@ import CarStatus from "./components/CarStatus";
 import { MaCarServices } from "./services/ma-car.service";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { MaCarType, MaCarBookType } from "../common/index";
+import { MaCarType, MaCarBookType, dataMaCarbook } from "../common/index";
 
 const MaCar: React.FC = () => {
   const { data: session } = useSession();
   const intraAuth = useAxiosIntranet();
   const maCarServices = MaCarServices(intraAuth);
-  const [maCarBookData, setMaCarBookData] = useState<MaCarBookType[]>([]);
+  const [maCarBookData, setMaCarBookData] = useState<dataMaCarbook[]>([]);
   const [maFetchCalendar, setMaFetchCalendar] = useState([]);
   const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -76,7 +76,11 @@ const MaCar: React.FC = () => {
 
       const createdById = session?.user.userId;
 
-      const maCarBook = await maCarServices.findMaCarBook(createdById);
+      const maCarBook = await maCarServices.findMaCarBook(
+        createdById,
+        skip,
+        take
+      );
 
       const maCalender = await maCarServices.getMaCarBookQuery(createdById);
 

@@ -109,7 +109,11 @@ export const TableDetail: React.FC<props> = ({
           name: `${row.firstName} ${row.lastName}`,
           createAt: row.createdAt ? dateToStringThNoTime(row.createdAt) : "-",
           detail: row.detail,
-          leaveHour: `${row.leaveHour} ชม.`,
+          leaveHour: row.leaveHour
+            ? row.leaveHour % 8 === 0
+              ? `${row.leaveHour / 8} วัน`
+              : `${row.leaveHour} ชม.`
+            : "ไม่มีข้อมูล",
           startDate: row?.startDate
             ? dateToStringThNoTime(row?.startDate)
             : "-",

@@ -47,7 +47,7 @@ export const CreateLeaveManagement: React.FC<props> = ({
                 rules={[
                   {
                     required: true,
-                    message: "กรุณากรอกเลือกชื่อพนักงาน",
+                    message: "กรุณาเลือกชื่อพนักงาน",
                   },
                 ]}
               >

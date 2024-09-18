@@ -52,6 +52,11 @@ export interface MaCarBookType {
   remarkCancel: string;
 }
 
+export interface dataMaCarbook {
+  docs: MaCarBookType[];
+  total: number;
+}
+
 export interface MaCarBookCalendarType {
   id: number;
   carId: string;

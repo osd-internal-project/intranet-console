@@ -52,7 +52,11 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({
         name: `${dataLeaveCalendar.firstName} ${dataLeaveCalendar.lastName}`,
         detail: dataLeaveCalendar.detail,
         typeLeave: dataLeaveCalendar.typeName,
-        leaveHour: `${dataLeaveCalendar.leaveHour} ชม.`,
+        leaveHour: dataLeaveCalendar.leaveHour
+          ? dataLeaveCalendar.leaveHour % 8 === 0
+            ? `${dataLeaveCalendar.leaveHour / 8} วัน`
+            : `${dataLeaveCalendar.leaveHour} ชม.`
+          : "ไม่มีข้อมูล",
         startDate: dataLeaveCalendar.startDate
           ? dateToStringThNoTime(dataLeaveCalendar.startDate)
           : "-",

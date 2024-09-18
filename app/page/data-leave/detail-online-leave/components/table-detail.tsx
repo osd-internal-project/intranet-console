@@ -45,7 +45,7 @@ export const TableDetail: React.FC<props> = ({
     {
       key: "id",
       dataIndex: "id",
-      title: "Fullname",
+      title: "Full Name",
       render: (e: string, row: ITypeDataLeave) => {
         return <p>{`${row.firstName} ${row.lastName}`}</p>;
       },
@@ -67,6 +67,7 @@ export const TableDetail: React.FC<props> = ({
       key: "status",
       dataIndex: "status",
       title: "Status",
+      align: "center",
       render: (e: string) => {
         return e === "waitting" ? (
           <Tag color="blue">{`WAITTING`}</Tag>
@@ -106,7 +107,11 @@ export const TableDetail: React.FC<props> = ({
           name: `${row.firstName} ${row.lastName}`,
           createAt: row.createdAt ? dateToStringThNoTime(row.createdAt) : "-",
           detail: row.detail,
-          leaveHour: `${row.leaveHour} ชม.`,
+          leaveHour: row.leaveHour
+            ? row.leaveHour % 8 === 0
+              ? `${row.leaveHour / 8} วัน`
+              : `${row.leaveHour} ชม.`
+            : "ไม่มีข้อมูล",
           startDate: row?.startDate
             ? dateToStringThNoTime(row?.startDate)
             : "-",
@@ -181,6 +186,16 @@ export const TableDetail: React.FC<props> = ({
               <Form.Item label={`เป็นเวลา :`} name={`leaveHour`}>
                 <Input disabled />
               </Form.Item>
+              {/* <Form.Item label={`เป็นเวลา :`} name={`leaveHour`}>
+                <Input
+                  value={
+                    dataLeaveDays % 8 === 0
+                      ? dataLeaveDays / 8
+                      : dataLeaveDays / 8
+                  }
+                  disabled
+                />
+              </Form.Item> */}
             </div>
           </div>
           <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
@@ -268,7 +283,6 @@ export const TableDetail: React.FC<props> = ({
                   style={{
                     width: "60px",
                     height: "30px",
-                   
                   }}
                   onClick={() => {
                     onFinishUpdate("cancel", dataById ? dataById : 0);

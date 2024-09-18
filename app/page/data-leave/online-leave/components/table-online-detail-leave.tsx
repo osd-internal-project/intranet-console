@@ -33,65 +33,25 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       dataIndex: "typeName",
       title: "ประเภทการลา",
     },
-    // {
-    //   key: "haveLeft",
-    //   dataIndex: "haveLeft",
-    //   title: "ลามาแล้ว",
-    //   render: (value: number, row: ITypetypeleave) => {
-    //     const calculateHours = (value: number): number => {
-    //       if (value % 1 === 0.5) {
-    //         return 4;
-    //       }
-    //       return row.haveLeftHours ?? 0;
-    //     };
-
-    //     const displayHours = calculateHours(value);
-    //     const wholeDays = Math.floor(value);
-
-    //     const rowClass = rowClassName(row);
-    //     let color: string | undefined;
-    //     if (rowClass === "disabled-row") {
-    //       color = "#e0e0e0";
-    //     }
-
-    //     return (
-    //       <div className="flex justify-center">
-    //         <Tag className="w-full flex justify-center" color={color}>
-    //           {`${wholeDays} วัน (${displayHours} ชม.)`}
-    //         </Tag>
-    //       </div>
-    //     );
-    //   },
-    // },
-
     {
       key: "haveLeft",
       dataIndex: "haveLeft",
       title: "ลามาแล้ว",
       render: (value: number, row: ITypetypeleave) => {
         const wholeDays = Math.floor(value);
-        console.log("value", value);
-
-        // const totalHoursDecimal = value % 1;
-        const totalHoursDecimal = Math.round((value % 1) * 10) / 10;
-
-        console.log("totalHoursDecimal:", totalHoursDecimal);
-
+        const totalHoursDecimal = parseFloat((value % 1).toFixed(2));
         const totalHours = Math.floor(totalHoursDecimal * 10);
         const totalMinutesRaw = (totalHoursDecimal * 10) % 1;
         let totalMinutes = Math.round(totalMinutesRaw * 10);
-
         let timeDisplay = `${totalHours} ชม.`;
         if (totalMinutes > 0) {
           timeDisplay = `${totalHours}.${totalMinutes} ชม.`;
         }
-
         const rowClass = rowClassName(row);
         let color: string | undefined;
         if (rowClass === "disabled-row") {
           color = "#e0e0e0";
         }
-
         return (
           <div className="flex justify-center">
             <Tag className="w-full flex justify-center" color={color}>
@@ -101,52 +61,20 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         );
       },
     },
-    // {
-    //   key: "limitLeaveLastResult",
-    //   dataIndex: "limitLeaveLastResult",
-    //   title: "คงเหลือ",
-    //   render: (value: number, row: ITypetypeleave) => {
-    //     const calculateHours = (value: number): number => {
-    //       if (value % 1 === 0.5) {
-    //         return value;
-    //       }
-    //       return row.limitLeaveHours ?? 0;
-    //     };
-
-    //     const displayHours = calculateHours(value);
-    //     const wholeDays = Math.floor(value);
-
-    //     const rowClass = rowClassName(row);
-    //     let color: string | undefined;
-    //     if (rowClass === "disabled-row") {
-    //       color = "#e0e0e0";
-    //     }
-
-    //     return (
-    //       <div className="flex justify-center">
-    //         <Tag className="w-full flex justify-center" color={color}>
-    //           {`${wholeDays} วัน (${displayHours} ชม.)`}
-    //         </Tag>
-    //       </div>
-    //     );
-    //   },
-    // },
-
     {
       key: "limitLeaveLastResult",
       dataIndex: "limitLeaveLastResult",
       title: "คงเหลือ",
       render: (value: number, row: ITypetypeleave) => {
         const wholeDays = Math.floor(value);
-        const totalHoursDecimal = value % 1;
+        const totalHoursDecimal = Number((value % 1).toFixed(2));
         const totalHours = Math.floor(totalHoursDecimal * 10);
-        const totalMinutesRaw = (totalHoursDecimal * 10) % 1;
-        let totalMinutes = Math.round(totalMinutesRaw * 10);
+        const totalMinutesRaw = totalHoursDecimal * 10;
+        const totalMinutes = Math.round((totalMinutesRaw * 10) % 10);
         let timeDisplay = `${totalHours} ชม.`;
         if (totalMinutes > 0) {
           timeDisplay = `${totalHours}.${totalMinutes} ชม.`;
         }
-
         const rowClass = rowClassName(row);
         let color: string | undefined;
         if (rowClass === "disabled-row") {
@@ -157,13 +85,11 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
           <div className="flex justify-center">
             <Tag className="w-full flex justify-center" color={color}>
               {`${wholeDays} วัน (${timeDisplay})`}{" "}
-              {/* Display the whole days and time */}
             </Tag>
           </div>
         );
       },
     },
-
     {
       key: "id",
       dataIndex: "id",
@@ -174,13 +100,11 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         let hours = isSelected ? params.lengthTime : 0;
         days = days < 0 ? 1 : days;
         hours = hours < 0 ? 1 : hours;
-
         const rowClass = rowClassName(row);
         let color: string | undefined;
         if (rowClass === "disabled-row") {
           color = "#e0e0e0";
         }
-
         return (
           <div className="flex justify-center">
             <Tag className="w-full flex justify-center" color={color}>
@@ -190,86 +114,30 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         );
       },
     },
-    // {
-    //   key: "total",
-    //   dataIndex: "haveLeft",
-    //   title: "รวม",
-    //   render: (value: number, row: ITypetypeleave) => {
-    //     const isSelected = row.typeId === params.typeId;
-    //     let totalDays = Math.floor(
-    //       value + (isSelected ? params.lengthDate : 0)
-    //     );
-    //     let totalHours = Math.floor(
-    //       (row.haveLeftHours || 0) + (isSelected ? params.lengthTime : 0)
-    //     );
-    //     console.log(isSelected);
-    //     console.log(totalDays);
-    //     console.log(totalHours);
-
-    //     const convertDaysToHours = (days: number): number => {
-    //       const decimalPart = days % 1;
-    //       return decimalPart > 0 ? 4 : 0;
-    //     };
-
-    //     const fractionalHours = convertDaysToHours(
-    //       value + (isSelected ? params.lengthDate : 0)
-    //     );
-    //     let displayedHours = totalHours + fractionalHours;
-    //     if (totalDays < 0) totalDays = Math.floor(value) + 1;
-    //     if (displayedHours < 0) displayedHours = totalHours + 8;
-
-    //     const isOverLimit = totalDays > row.limitLeaveLastResult;
-    //     const hasDateRange = params.startDate && params.endDate;
-    //     const rowClass = rowClassName(row);
-
-    //     let color: string | undefined;
-    //     if (rowClass === "disabled-row") {
-    //       color = "#e0e0e0";
-    //     } else if (isSelected) {
-    //       if (isOverLimit) {
-    //         color = "orange-inverse";
-    //       } else if (hasDateRange) {
-    //         color = "green-inverse";
-    //       }
-    //     }
-
-    //     return (
-    //       <div className="flex justify-center">
-    //         <Tag className="w-full flex justify-center" color={color}>
-    //           {`${totalDays} วัน (${displayedHours} ชม.)`}
-    //         </Tag>
-    //       </div>
-    //     );
-    //   },
-    // },
     {
       key: "total",
       dataIndex: "haveLeft",
       title: "รวม",
       render: (value: number, row: ITypetypeleave) => {
         const isSelected = row.typeId === params.typeId;
-
         let totalDays = Math.floor(
           value + (isSelected ? params.lengthDate : 0)
         );
-
-        // let totalHoursDecimal = value % 1;
-        const totalHoursDecimal = Math.round((value % 1) * 10) / 10;
-
+        const totalHoursDecimal = parseFloat((value % 1).toFixed(2));
         let totalHours = Math.floor(totalHoursDecimal * 10);
+        let lengthTime = params.lengthTime;
         let totalMinutesRaw = (totalHoursDecimal * 10) % 1;
-
         let totalMinutes = Math.round(totalMinutesRaw * 10);
-
         if (isSelected) {
-          totalHours = (totalHours + params.lengthTime) % 24;
-          totalMinutes = params.lengthTime % 6;
+          totalHours = totalHours + lengthTime;
         }
-
+        if (totalHours >= 8) {
+          totalDays += Math.floor(totalHours / 8);
+          totalHours = totalHours % 8;
+        }
         const isOverLimit = totalDays > row.limitLeaveLastResult;
         const hasDateRange = params.startDate && params.endDate;
         const rowClass = rowClassName(row);
-
         let color: string | undefined;
         if (rowClass === "disabled-row") {
           color = "#e0e0e0";
@@ -280,7 +148,6 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
             color = "green-inverse";
           }
         }
-
         let timeDisplay = `${totalHours} ชม.`;
         if (totalMinutes > 0) {
           timeDisplay = `${totalHours}.${totalMinutes} ชม.`;

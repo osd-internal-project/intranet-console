@@ -19,7 +19,12 @@ import {
   TimePicker,
   DatePicker,
 } from "antd";
-import { DeleteIcon, ApproveIcon, CancelMaCarIcon } from "@/components/icon";
+import {
+  DeleteIcon,
+  ApproveIcon,
+  CancelMaCarIcon,
+  CarApproveIcon,
+} from "@/components/icon";
 import type { TableProps, FormProps } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../services/manage-car.service";
@@ -36,6 +41,7 @@ export interface props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   maCarBookData: any[];
   pagination: TablePaginationConfig;
+  changePagination: (pagination: TablePaginationConfig) => void;
 }
 
 const ManageCar: React.FC<props> = ({
@@ -43,6 +49,7 @@ const ManageCar: React.FC<props> = ({
   loading,
   maCarBookData,
   pagination,
+  changePagination,
 }: any): React.ReactElement => {
   const intraAuth = useAxiosIntranet();
   const [formReturn] = Form.useForm();
@@ -66,10 +73,9 @@ const ManageCar: React.FC<props> = ({
       title: "ลำดับ",
       width: "50px",
       align: "center",
-      render: (_: any, __: any, index: number) =>
-        pagination.current && pagination.pageSize
-          ? (pagination.current - 1) * pagination.pageSize + (index + 1)
-          : "",
+      render: (event: number, row: any, index: number) =>
+        maCarBookData.total -
+        (index + (pagination.current - 1) * pagination.pageSize),
     },
     {
       title: "ชื่อรถ",
@@ -154,23 +160,11 @@ const ManageCar: React.FC<props> = ({
       width: "280px",
       align: "center",
       render: (_: any, record: MaCarBookType) => (
-        <Space
-          size="middle"
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
+        <Space>
           <Tooltip title="อนุมัติ">
             <a
+              type="link"
               onClick={() => {
-                // console.log(record.carBookApprovedStatus);
-                // if (record.carBookApprovedStatus === "Approve") {
-                //   message.warning("อนุมัติการจองนี้ไปแล้ว");
-                //   return;
-                // }
                 if (record.carBookApprovedStatus === "Return") {
                   message.warning("ไม่สามารถอนุมัติการจองที่แจ้งคืนรถได้");
                   return;
@@ -187,10 +181,11 @@ const ManageCar: React.FC<props> = ({
               }}
               style={{ color: "green", width: "50px", textAlign: "center" }}
             >
-              {ApproveIcon}
+              {CarApproveIcon}
             </a>
           </Tooltip>
-          <a
+          <Button
+            type="link"
             onClick={() => {
               if (record.carBookApprovedStatus === "Return") {
                 message.warning("ไม่สามารถยกเลิกการจองที่แจ้งคืนรถได้");
@@ -214,12 +209,14 @@ const ManageCar: React.FC<props> = ({
             }}
           >
             {CancelMaCarIcon}
-          </a>
+          </Button>
 
           <div style={{ width: "90px", textAlign: "center" }}>
             {" "}
             {record.carBookApprovedStatus === "Return" ? (
-              <a onClick={() => showModalReturn(record)}>รับคืนรถ</a>
+              <Button type="link" onClick={() => showModalReturn(record)}>
+                รับคืนรถ
+              </Button>
             ) : record.carBookApprovedStatus === "Completed" ? (
               <span style={{ color: "grey" }}>รับคืนแล้ว</span>
             ) : (
@@ -234,7 +231,10 @@ const ManageCar: React.FC<props> = ({
             cancelText="ไม่"
           >
             <Tooltip title="ลบ">
-              <a style={{ color: "red", width: "50px", textAlign: "center" }}>
+              <a
+                type="link"
+                style={{ color: "red", width: "50px", textAlign: "center" }}
+              >
                 <DeleteIcon />
               </a>
             </Tooltip>
@@ -792,7 +792,14 @@ const ManageCar: React.FC<props> = ({
         </Form>
       </Modal>
 
-      <Table columns={columns} dataSource={maCarBookData} loading={loading} />
+      <Table
+        columns={columns}
+        dataSource={maCarBookData.docs}
+        loading={loading}
+        pagination={{ total: maCarBookData.total }}
+        onChange={changePagination}
+        size="small"
+      />
     </>
   );
 };

@@ -133,24 +133,22 @@ export const TableDetail: React.FC<props> = ({
           <>
             <Row gutter={[8, 8]} className="flex justify-center">
               <Col>
-                <Tooltip title={`รายละเอียด`}>
-                  <Button
-                    type="primary"
-                    ghost
-                    onClick={async () => {
-                      const dataLeaveById =
-                        await dataleaveservice.getdataLeaveById(
-                          row.id as number
-                        );
-                      setStatusById(dataLeaveById[0].status);
-                      setDataById(row.id);
+                {/* <Tooltip title={`รายละเอียด`}> */}
+                <Button
+                  type="primary"
+                  ghost
+                  onClick={async () => {
+                    const dataLeaveById =
+                      await dataleaveservice.getdataLeaveById(row.id as number);
+                    setStatusById(dataLeaveById[0].status);
+                    setDataById(row.id);
 
-                      setOpenModalDetail(true), formdetail.setFieldsValue(base);
-                    }}
-                  >
-                    {`รายละเอียด`}
-                  </Button>
-                </Tooltip>
+                    setOpenModalDetail(true), formdetail.setFieldsValue(base);
+                  }}
+                >
+                  {`รายละเอียด`}
+                </Button>
+                {/* </Tooltip> */}
               </Col>
             </Row>
           </>

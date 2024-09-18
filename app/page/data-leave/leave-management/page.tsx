@@ -46,6 +46,7 @@ const page = () => {
       loadDataTypeLeave();
     }
   }, [getLoading]);
+  
 
   const loadDataTypeLeave = async () => {
     try {

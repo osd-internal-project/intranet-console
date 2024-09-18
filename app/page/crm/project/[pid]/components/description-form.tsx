@@ -99,36 +99,48 @@ const DescriptionCustomerForm: React.FC<props> = ({
                       : "-"}
                   </div>
                   <div className=" font-bold pl-3 pr-3 text-right">
-                    ชื่อลูกค้า :
+                    Customer Group :
                   </div>
                   <div className=" col-span-2 md:col-span-1 text-slate-500">
                     {projectDescription.customerBranch.customerDetail
-                      .customerTypeId === "natural"
-                      ? `${
-                          projectDescription.customerBranch.customerDetail
-                            .details?.prefixTh
-                            ? projectDescription.customerBranch.customerDetail
-                                .details?.prefixTh
-                            : ""
-                        }${
-                          projectDescription.customerBranch.customerDetail
-                            .details?.firstNameTh
-                            ? projectDescription.customerBranch.customerDetail
-                                .details?.firstNameTh
-                            : ""
-                        }${
-                          projectDescription.customerBranch.customerDetail
-                            .details?.lastNameTh
-                            ? ` ${projectDescription.customerBranch.customerDetail.details?.lastNameTh}`
-                            : ""
-                        }`
-                      : projectDescription.customerBranch.customerDetail
-                          .customerTypeId === "juristic"
-                      ? projectDescription.customerBranch.customerDetail.details
-                          ?.customerNameTh
+                      ? projectDescription.customerBranch.customerDetail
+                          .customerTypeId === "natural"
+                        ? `${
+                            projectDescription.customerBranch.customerDetail
+                              .details?.prefixTh
+                              ? projectDescription.customerBranch.customerDetail
+                                  .details?.prefixTh
+                              : ""
+                          }${
+                            projectDescription.customerBranch.customerDetail
+                              .details?.firstNameTh
+                              ? projectDescription.customerBranch.customerDetail
+                                  .details?.firstNameTh
+                              : ""
+                          }${
+                            projectDescription.customerBranch.customerDetail
+                              .details?.lastNameTh
+                              ? ` ${projectDescription.customerBranch.customerDetail.details?.lastNameTh}`
+                              : ""
+                          }`
+                        : projectDescription.customerBranch.customerDetail
+                            .customerTypeId === "juristic"
+                        ? projectDescription.customerBranch.customerDetail
+                            .details?.customerNameTh
+                        : ""
                       : ""}
                   </div>
-                  <div className=" font-bold pl-3 pr-3 text-right">สาขา :</div>
+                  <div className=" font-bold pl-3 pr-3 text-right">
+                    Customer :
+                  </div>
+                  <div className=" col-span-2 md:col-span-1 text-slate-500">
+                    {projectDescription?.customerBranch?.customerDetailSub?.name
+                      ? `${projectDescription.customerBranch.customerDetailSub.name}`
+                      : "-"}
+                  </div>
+                  <div className=" font-bold pl-3 pr-3 text-right">
+                    Sub Customer / Branch :
+                  </div>
                   <div className=" col-span-2 md:col-span-1 text-slate-500">
                     {projectDescription.customerBranch.branchName
                       ? projectDescription.customerBranch.branchName
@@ -179,6 +191,7 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   ) : (
                     ""
                   )}
+                  <div className=" col-span-3 md:col-span-4"></div>
                   <div className="font-bold pl-3 pr-3 text-right">
                     ที่อยู่ใบกำกับภาษี :
                   </div>
@@ -197,11 +210,11 @@ const DescriptionCustomerForm: React.FC<props> = ({
                   <div className=" col-span-2 md:col-span-5 text-slate-500">
                     {projectDescription.notiAddressText}
                   </div>
-                  <div className="font-bold pl-3 pr-3 text-right">
+                  <div className="font-bold pl-3 pr-3 text-right mb-5">
                     รายละเอียด :
                   </div>
-                  <div className=" col-span-2 md:col-span-5 text-slate-500">
-                    {projectDescription.description}
+                  <div className=" col-span-2 md:col-span-5 text-slate-500  mb-5">
+                    <TextArea readOnly value={projectDescription.description} />
                   </div>
                   <div className=" font-bold pl-3  pr-3 text-right ">
                     Project Manager :

@@ -60,6 +60,7 @@ export type ITBranchForm = {
   branchCode: string;
   branchName: string;
 };
+
 export type ITBranch = { id: number } & ITBranchForm;
 export type ITBranchAddressForm = {
   addressTypeId?: string;
@@ -93,6 +94,16 @@ export type ITBranchDetail = {
   id: number;
   customerAddress: ITBranchAddress[];
   customerContact: ITBranchContact[];
+} & ITBranchForm;
+export type ITCustomerSubForm = {
+  id: number;
+  code: string;
+  name: string;
+};
+export type ITCustomerSub = { id: number } & ITCustomerSubForm;
+export type ITCustomerSubDetail = {
+  id: number;
+  customerBranch?: ITBranch[];
 } & ITBranchForm;
 export type ITConfigData = { id: number; name: string; customerTypeId: string };
 export type ITSelectUsers = {

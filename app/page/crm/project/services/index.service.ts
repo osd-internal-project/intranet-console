@@ -18,6 +18,7 @@ import {
 } from "../common";
 import { ITMaTaskFiles } from "@/app/page/maintenance-management/common";
 import { FormInstance } from "antd";
+import { ITCustomerSub } from "../../ticket/common";
 export interface TMaServices {
   findProjectDataTable: (
     search: object,
@@ -26,7 +27,12 @@ export interface TMaServices {
     userId: string
   ) => Promise<{ data: ITProject[]; count: number }>;
   findCustomerActive: () => Promise<ITCustomerForSelect[]>;
-  findBranchByCustomerId: (customerId: number) => Promise<ITBranchForSelect[]>;
+  findCustomerSubSelectByCustomerId: (
+    customerId: number
+  ) => Promise<ITCustomerSub[]>;
+  findBranchSelectByCustomerSubId: (
+    customerSubId: number
+  ) => Promise<ITBranchForSelect[]>;
   findProjectDetailById: (project: number) => Promise<ITProject>;
   findProjectTaskByProjectId: (project: number) => Promise<ITProjectTask[]>;
 
@@ -82,6 +88,7 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
   const projectTicketUrl = "/customer-project-ticket";
   const ticketHistoryLogsUrl = "/ticket-history-logs";
   const filesUrl = "/customer-files";
+  const customerSubUrl = "/customer-detail-sub";
   return {
     findCustomerActive: async () => {
       return await axiosInstance
@@ -94,12 +101,22 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
           return [];
         });
     },
-    findBranchByCustomerId: async (customerId) => {
-      const query = {
-        customerDetailId: customerId,
-      };
+    findCustomerSubSelectByCustomerId: async (customer) => {
       return await axiosInstance
-        .get(`${customerBranchUrl}/both-address-contact/${customerId}`, {})
+        .get(`${customerSubUrl}/detail-list-by-customer/${customer}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    findBranchSelectByCustomerSubId: async (customerSubId) => {
+      return await axiosInstance
+        .get(
+          `${customerBranchUrl}/detail-list-by-customer-sub/${customerSubId}`
+        )
         .then((res) => {
           return res.data;
         })

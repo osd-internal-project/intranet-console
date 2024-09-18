@@ -114,14 +114,18 @@ const CustomerTableComponent: React.FC<props> = ({
       title: "ชื่อ",
       width: "200px",
       render: (value: string, record, index) =>
-        record.customerTypeId === "natural"
-          ? `${record.details?.prefixTh ? record.details?.prefixTh : ""}${
-              record.details?.firstNameTh ? record.details?.firstNameTh : ""
-            }${
-              record.details?.lastNameTh ? ` ${record.details?.lastNameTh}` : ""
-            }`
-          : record.customerTypeId === "juristic"
-          ? record.details?.customerNameTh
+        record?.customerTypeId
+          ? record?.customerTypeId === "natural"
+            ? `${record.details?.prefixTh ? record.details?.prefixTh : ""}${
+                record.details?.firstNameTh ? record.details?.firstNameTh : ""
+              }${
+                record.details?.lastNameTh
+                  ? ` ${record.details?.lastNameTh}`
+                  : ""
+              }`
+            : record.customerTypeId === "juristic"
+            ? record.details?.customerNameTh
+            : ""
           : "",
     },
     {

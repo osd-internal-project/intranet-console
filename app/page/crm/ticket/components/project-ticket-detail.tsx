@@ -259,8 +259,12 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                     <div className=" md:col-span-1 font-bold pl-3 pr-3 text-right">
                       Detail:
                     </div>
-                    <div className=" col-span-1 md:col-span-1">
-                      {ticketSelectedDetail.ticketDetail}
+                    <div className=" col-span-2 md:col-span-5">
+                    <TextArea
+                        readOnly
+                        rows={5}
+                        value={ticketSelectedDetail.ticketDetail}
+                     /> 
                     </div>
                     <div className=" col-span-2 md:col-span-4"></div>
                     <div className="md:col-span-1  font-bold pl-3 pr-3 text-right">
@@ -390,7 +394,11 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                         {editTicketStatus ? (
                           <TextArea />
                         ) : ticketSelectedDetail.problem ? (
-                          ticketSelectedDetail.problem
+                          <TextArea
+                          readOnly
+                          rows={5}
+                          value={ticketSelectedDetail.problem}
+                       /> 
                         ) : (
                           " - "
                         )}
@@ -406,7 +414,11 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                         {editTicketStatus ? (
                           <TextArea />
                         ) : ticketSelectedDetail.solution ? (
-                          ticketSelectedDetail.solution
+                          <TextArea
+                          readOnly
+                          rows={5}
+                          value={ticketSelectedDetail.solution}
+                       /> 
                         ) : (
                           " - "
                         )}
@@ -422,7 +434,11 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                         {editTicketStatus ? (
                           <TextArea />
                         ) : ticketSelectedDetail.result ? (
-                          ticketSelectedDetail.result
+                          <TextArea
+                          readOnly
+                          rows={5}
+                          value={ticketSelectedDetail.result}
+                       /> 
                         ) : (
                           " - "
                         )}

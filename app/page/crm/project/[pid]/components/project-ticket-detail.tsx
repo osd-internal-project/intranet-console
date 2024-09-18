@@ -263,13 +263,12 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                       Detail:
                     </div>
                     <div className=" col-span-2 md:col-span-5">
-                    <TextArea
+                      <TextArea
                         readOnly
                         rows={5}
                         value={ticketSelectedDetail.ticketDetail}
-                     /> 
+                      ></TextArea>
                     </div>
-                    <div className=" col-span-2 md:col-span-4"></div>
                     <div className="md:col-span-1  font-bold pl-3 pr-3 text-right">
                       Attach Files
                     </div>
@@ -380,7 +379,9 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                       Manhour :
                     </div>
                     <div className=" col-span-2 md:col-span-1">
-                      {ticketSelectedDetail.manhour} ชั่วโมง
+                      {ticketSelectedDetail.manhour
+                        ? `${ticketSelectedDetail.manhour} ชั่วโมง`
+                        : `-`}
                     </div>
                     <div className="col-span-3 md:col-span-6 ml-3 mr-3">
                       <Form.Item
@@ -395,10 +396,10 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                           <TextArea />
                         ) : ticketSelectedDetail.problem ? (
                           <TextArea
-                          readOnly
-                          rows={5}
-                          value={ticketSelectedDetail.problem}
-                       /> 
+                            readOnly
+                            rows={5}
+                            value={ticketSelectedDetail.problem}
+                          ></TextArea>
                         ) : (
                           " - "
                         )}
@@ -415,10 +416,10 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                           <TextArea />
                         ) : ticketSelectedDetail.solution ? (
                           <TextArea
-                        readOnly
-                        rows={5}
-                        value={ticketSelectedDetail.solution}
-                     /> 
+                            readOnly
+                            rows={5}
+                            value={ticketSelectedDetail.solution}
+                          ></TextArea>
                         ) : (
                           " - "
                         )}
@@ -435,10 +436,10 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                           <TextArea />
                         ) : ticketSelectedDetail.result ? (
                           <TextArea
-                          readOnly
-                          rows={5}
-                          value={ticketSelectedDetail.result}
-                       /> 
+                            readOnly
+                            rows={5}
+                            value={ticketSelectedDetail.result}
+                          ></TextArea>
                         ) : (
                           " - "
                         )}

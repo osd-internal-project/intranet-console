@@ -70,7 +70,7 @@ export const TableSlideImage: React.FC<props> = ({
       title: "Active",
       align: "center",
       render: (_: any, record: { id: number }) => (
-        <Space size="middle">
+        <Space>
           <Popconfirm
             title="คุณต้องการลบรูปนี้ใช่หรือไม่?"
             onConfirm={() => handleDeleteSlideImage(record.id)}

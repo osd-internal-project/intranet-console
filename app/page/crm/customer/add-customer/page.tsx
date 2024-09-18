@@ -119,13 +119,13 @@ export default function AddCustomerPage() {
                 title: <span>Customer</span>,
               },
               {
-                title: <span>Add Customer</span>,
+                title: <span>Add Customer Group</span>,
               },
             ]}
           />
         </Col>
         <Col span={24}>
-          <div className="title-page-font">{`ADD CUSTOMER`}</div>
+          <div className="title-page-font">{`ADD CUSTOMER GROUP`}</div>
         </Col>
 
         <Col span={24}>

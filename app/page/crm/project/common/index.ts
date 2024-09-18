@@ -1,3 +1,5 @@
+import { ITCustomerSub } from "../../customer/common";
+
 export type ITCustomerForSelect = {
   id: number;
   customerTypeId: string;
@@ -77,6 +79,7 @@ export type ITProjectCreateForm = {
   duration: number;
   customerBranchId: number;
   taxAddressId?: number;
+  customerDetailSubId?: number;
   taxAddressText?: string;
   deliveryAddressId?: number;
   deliveryAddressText?: string;
@@ -93,7 +96,10 @@ export type ITProjectCreateForm = {
 };
 export type ITProject = {
   id: number;
-  customerBranch: { customerDetail: ITCustomerForSelect } & ITBranchForSelect;
+  customerBranch: {
+    customerDetail: ITCustomerForSelect;
+    customerDetailSub: ITCustomerSub;
+  } & ITBranchForSelect;
   contractCompany?: { id: number; name: string };
 } & ITProjectCreateForm;
 export type ITProjectTicketCreateForm = {

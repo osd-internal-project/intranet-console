@@ -19,13 +19,13 @@ export const TabeLeavManagement: React.FC<props> = ({
     {
       key: "id",
       dataIndex: "id",
-      title: "ID",
+      title: "Id",
       width: "50px",
       render: (values: string, row: any, index: number) => index + 1,
     },
     {
       key: "id",
-      title: "Fullname",
+      title: "Full Name",
       width: "300px",
       dataIndex: "id",
       render: (event: number, row: ITpyeUser, index: number) => {
@@ -34,7 +34,7 @@ export const TabeLeavManagement: React.FC<props> = ({
     },
     {
       key: "id",
-      title: "ACTIVE",
+      title: "Active",
       align: "center",
       width: "100px",
       render: (row: any, event: number, index: number) => {

@@ -115,23 +115,8 @@ const Managehandbook: React.FC = () => {
     values
   ) => {
     setSubmitLoading(true);
-    // const handbookCreateData = {
-    //   data: {
-    //     fileName: values.fileName,
-    //     filetype: values.filetype,
-    //     author: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
-    //     // createdAt: new Date().toISOString(),
-    //     // updatedAt: new Date().toISOString(),
-    //     status: values?.status,
-    //   },
-    // };
-    // console.log(handbookCreateData);
 
     try {
-      // const response = await managehandbookFileServices.createhandbookFile(
-      //   handbookCreateData
-      // );
-      // console.log(response.handbookid);
       console.log(attendFiles);
 
       if (attendFiles.length > 0) {
@@ -144,9 +129,7 @@ const Managehandbook: React.FC = () => {
         );
         formData.append("status", values?.status);
         formData.append("file", attendFiles[0].originFileObj as RcFile);
-        const response = await managehandbookFileServices.createuploadFiles(
-          formData
-        );
+        const response = await managehandbookFileServices.uploadFiles(formData);
         console.log("response:", formData);
         console.log("response:", response);
 
@@ -157,15 +140,18 @@ const Managehandbook: React.FC = () => {
           message.error("เพิ่มเอกสารไม่สำเร็จ");
         }
 
-        setSubmitLoading(false);
         fetchDataHandbookfile();
         setAttendFiles([]);
         closecreate();
+      } else if (attendFiles.length === 0) {
+        message.error("กรุณาอัพโหลดเอกสาร");
       } else {
-        message.error("ไม่พบไฟล์");
+        message.error("กรุณาอัพโหลดเอกสาร");
       }
+      setSubmitLoading(false);
+      return true;
     } catch (error) {
-      message.error("อัปโหลดไฟล์ไม่สำเร็จ");
+      message.error("อัปโหลดเอกสารไม่สำเร็จ");
       setSubmitLoading(false);
     }
   };
@@ -174,42 +160,33 @@ const Managehandbook: React.FC = () => {
     values
   ) => {
     setSubmitLoading(true);
-
+    const handbookCreateData = {
+        handbookid:values.handbookid,
+        fileName: values.fileName,
+        filetype: values.filetype,
+        author: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+        updatedAt: new Date().toISOString(),
+        status: values?.status,
+    };
+    console.log(handbookCreateData);
     try {
-      if (attendFiles.length >= 0) {
-        for (const file of attendFiles) {
-          const formData: any = new FormData();
-          formData.append("handbookid", values.handbookid);
-          formData.append("fileName", values.fileName);
-          formData.append("filetype", values.filetype);
-          formData.append(
-            "author",
-            `${session?.user.firstNameTh} ${session?.user.lastNameTh}`
-          );
-          formData.append("status", values?.status); // ใช้ file.originFileObj แทน attendFiles[0]
+      const response = await managehandbookFileServices.updatehandbookFile(
+        handbookCreateData
+      );
+      console.log(response);
 
-          const response = await managehandbookFileServices.updateuploadFiles(
-            formData,
-            values.handbookid
-          );
-          console.log("formData:", formData);
-          console.log("response:", response);
-
-          if (response) {
-            formupload.resetFields();
-            message.success("อัปเดตไฟล์สำเร็จ");
-          } else {
-            message.error("อัปเดตไฟล์ไม่สำเร็จ1");
-          }
-        }
-
-        fetchDataHandbookfile();
-        setshowmodalupdate(false);
-        setAttendFiles([]);
+      if (response !== undefined) {
+        formupload.resetFields();
+        message.success("อัปเดตไฟล์สำเร็จ");
+      } else {
+        message.error("อัปเดตไฟล์ไม่สำเร็จ");
       }
-      setSubmitLoading(false);
+
+      fetchDataHandbookfile();
+      setshowmodalupdate(false);
+      setAttendFiles([]);
     } catch (error) {
-      message.error("อัปเดตไฟล์ไม่สำเร็จ2");
+      message.error("อัปเดตไฟล์ไม่สำเร็จ");
       setSubmitLoading(false);
     }
   };
@@ -236,18 +213,6 @@ const Managehandbook: React.FC = () => {
       createdAt: dayjs(record.createdAt),
       updatedAt: dayjs(record.updatedAt),
     });
-
-    // // ตรวจสอบว่า record.images มีค่าและเป็น Array หรือไม่
-    // const existingFilesList: UploadFile[] = Array.isArray(record.images)
-    //   ? record.images.map((images: { handbookid: any; fileId: string }) => ({
-    //       uid: String(images.handbookid),
-    //       name: images.fileId as string,
-    //       status: "done" as UploadFileStatus,
-    //       url: `http://localhost:4003/api/public/handbook-file/${images.fileId}`,
-    //     }))
-    //   : [];
-
-    // setExistingFiles(existingFilesList);
     setshowmodalupdate(true);
   };
 
@@ -274,14 +239,13 @@ const Managehandbook: React.FC = () => {
     console.log(record);
     console.log(record.fileId);
     console.log(record.fileName);
-    
-    if (
-      record &&
-      record.fileId
-    ) {
-      const fileUrl = `http://localhost:4003/api/public/handbook-file/${record.fileId}?fileName=${encodeURIComponent(String(record.fileName))}`;
+
+    if (record && record.fileId) {
+      const fileUrl = `http://localhost:4003/api/public/handbook-file/${
+        record.fileId
+      }?fileName=${encodeURIComponent(String(record.fileName))}`;
       console.log(fileUrl);
-      
+
       try {
         const response = await fetch(fileUrl);
 
@@ -289,7 +253,7 @@ const Managehandbook: React.FC = () => {
           const blob = await response.blob();
           const link = document.createElement("a");
 
-          const cleanFileName = (record.fileName).replace(/[^\w\s.-]/gi, "_"); 
+          const cleanFileName = record.fileName.replace(/[^\w\s.-]/gi, "_");
 
           link.href = window.URL.createObjectURL(blob);
           link.download = String(record.fileName);
@@ -304,30 +268,6 @@ const Managehandbook: React.FC = () => {
       }
     } else {
       message.error("ไม่มีไฟล์ให้ดาวน์โหลด");
-    }
-  };
-
-  const handleDeleteImage = async (file: UploadFile) => {
-    const handbookid = file.uid;
-
-    try {
-      const response = await managehandbookFileServices.deletehandbookFile(
-        +handbookid
-      );
-
-      if (response) {
-        const updatedFiles = existingFiles.filter(
-          (existingFile) => existingFile.uid !== handbookid
-        );
-        setExistingFiles(updatedFiles);
-        message.success("ลบไฟล์สำเร็จ");
-
-        fetchDataHandbookfile();
-      } else {
-        message.error("ลบไฟล์ไม่สำเร็จ");
-      }
-    } catch {
-      message.error("ลบไฟล์ไม่สำเร็จ");
     }
   };
 
@@ -378,7 +318,7 @@ const Managehandbook: React.FC = () => {
       fixed: "left",
     },
     {
-      title: "ชื่อไฟล์",
+      title: "ชื่อเอกสาร",
       dataIndex: "fileName",
       key: "fileName",
       width: "300px",

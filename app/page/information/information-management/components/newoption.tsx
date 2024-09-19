@@ -159,12 +159,14 @@ const Newoption: React.FC = () => {
       key: "key",
       width: "40px",
       align: "center",
+      fixed: "left",
     },
     {
       title: "ชื่อประเภทข่าว",
       dataIndex: "nameType",
       key: "nameType",
       width: "300px",
+      fixed: "left",
     },
     {
       title: "รายละเอียด",
@@ -392,6 +394,7 @@ const Newoption: React.FC = () => {
       <Table
         dataSource={dataWithKey}
         columns={columns}
+        scroll={{ x: "max-content" }}
         rowKey="id"
         bordered
         pagination={{ pageSize: 10 }}

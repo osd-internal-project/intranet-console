@@ -82,11 +82,10 @@ const Tablehandbook: React.FC = () => {
           const blob = await response.blob();
           const link = document.createElement("a");
   
-          // ทำความสะอาดชื่อไฟล์ (ลบหรือแทนที่อักขระที่ไม่สามารถใช้ได้ในชื่อไฟล์)
           const cleanFileName = record.fileName.replace(/[^\w\s.-]/gi, '_');
           
           link.href = window.URL.createObjectURL(blob);
-          link.download = cleanFileName;  // ใช้ชื่อไฟล์ที่สะอาดแล้ว
+          link.download = cleanFileName;
           link.click();
   
           window.URL.revokeObjectURL(link.href); // ล้าง memory หลังจากดาวน์โหลด
@@ -110,14 +109,14 @@ const Tablehandbook: React.FC = () => {
   };
 
   const filteredData = handbook
-    // .filter((handbook) => handbook.status)
-    // .filter(
-      // (handbook) =>
-      //   handbook.fileName
-      //     .toLowerCase()
-      //     .includes(searchFileName.toLowerCase()) &&
-      //   handbook.filetype.toLowerCase().includes(searchFileType.toLowerCase())
-    // );
+    .filter((handbook) => handbook.status)
+    .filter(
+      (handbook) =>
+        handbook.fileName
+          .toLowerCase()
+          .includes(searchFileName.toLowerCase()) &&
+        handbook.filetype.toLowerCase().includes(searchFileType.toLowerCase())
+    );
 
   const dataWithKey = filteredData.map((item, index) => ({
     ...item,

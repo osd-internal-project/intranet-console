@@ -224,7 +224,7 @@ const WarpupmaCar = () => {
       const response = await manageCarServices.createMaCarWarpup(
         maCarCreateDataWarpup
       );
-
+      
       if (response && attendFiles.length > 0) {
         await Promise.all(
           attendFiles.map(async (file) => {
@@ -493,7 +493,7 @@ const WarpupmaCar = () => {
       width: "250px",
     },
     {
-      title: "ประเภทตรวจสภาพ",
+      title: "ประเภทการตรวจสภาพ",
       dataIndex: "typeName",
       key: "typeName",
       width: "170px",

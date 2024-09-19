@@ -540,7 +540,7 @@ const Newoption: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกหัวข้อข่าวสาร" }]}
             style={{ width: "300px" }}
           >
-            <Input placeholder="หัวข้อข่าวสาร" />
+            <Input placeholder="หัวข้อข่าวสาร" showCount maxLength={50}/>
           </Form.Item>
           <Form.Item
             name="newsType"
@@ -548,7 +548,7 @@ const Newoption: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกประเภทข่าวสาร" }]}
             style={{ width: "300px" }}
           >
-            <Select placeholder="ประเภทข่าวสาร">
+            <Select placeholder="ประเภทข่าวสาร" >
               {newsTypeOptions
                 .filter((option) => {
                   const type = newsType.find(

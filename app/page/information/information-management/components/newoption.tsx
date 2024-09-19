@@ -283,7 +283,7 @@ const Newoption: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกชื่อประเภทข่าวสาร" }]}
             style={{ width: "460px" }}
           >
-            <Input placeholder="ชื่อประเภทข่าวสาร" />
+            <Input placeholder="ชื่อประเภทข่าวสาร" showCount maxLength={50} />
           </Form.Item>
           <Form.Item
             name="deteil"
@@ -291,7 +291,7 @@ const Newoption: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกรายละเอียดข่าวสาร" }]}
             style={{ width: "460px" }}
           >
-            <Input.TextArea rows={12} placeholder="รายละเอียดข่าวสาร" />
+            <Input.TextArea rows={12} placeholder="รายละเอียดข่าวสาร" showCount maxLength={200} />
           </Form.Item>
           <Form.Item
             name="status"
@@ -348,7 +348,7 @@ const Newoption: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกชื่อประเภทข่าวสาร" }]}
             style={{ width: "460px" }}
           >
-            <Input placeholder="ชื่อประเภทข่าวสาร" />
+            <Input placeholder="ชื่อประเภทข่าวสาร" showCount maxLength={50}/>
           </Form.Item>
           <Form.Item
             name="deteil"
@@ -356,7 +356,7 @@ const Newoption: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกรายละเอียดข่าวสาร" }]}
             style={{ width: "460px" }}
           >
-            <Input.TextArea rows={12} placeholder="รายละเอียดข่าวสาร" />
+            <Input.TextArea rows={12} placeholder="รายละเอียดข่าวสาร" showCount maxLength={200}/>
           </Form.Item>
           <Form.Item
             name="status"

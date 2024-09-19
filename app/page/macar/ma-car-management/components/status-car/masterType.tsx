@@ -289,7 +289,7 @@ const masterType: React.FC = () => {
                 { required: true, message: "กรุณากรอกประเภทการตรวจสภาพ" },
               ]}
             >
-              <Input size="large" placeholder="ประเภทการตรวจสภาพ" />
+              <Input size="large" placeholder="ประเภทการตรวจสภาพ" showCount maxLength={50}/>
             </Form.Item>
             <Form.Item
               style={{
@@ -306,7 +306,7 @@ const masterType: React.FC = () => {
               <Input.TextArea
                 rows={8}
                 size="large"
-                placeholder="รายละเอียดการตรวจสภาพ"
+                placeholder="รายละเอียดการตรวจสภาพ" showCount maxLength={150}
               />
             </Form.Item>
             <Form.Item
@@ -389,7 +389,7 @@ const masterType: React.FC = () => {
                 { required: true, message: "กรุณากรอกประเภทการตรวจสภาพ" },
               ]}
             >
-              <Input size="large" placeholder="ประเภทการตรวจสภาพ" />
+              <Input size="large" placeholder="ประเภทการตรวจสภาพ" showCount maxLength={50} />
             </Form.Item>
             <Form.Item
               style={{
@@ -406,7 +406,7 @@ const masterType: React.FC = () => {
               <Input.TextArea
                 rows={8}
                 size="large"
-                placeholder="รายละเอียดการตรวจสภาพ"
+                placeholder="รายละเอียดการตรวจสภาพ" showCount maxLength={150}
               />
             </Form.Item>
             <Form.Item

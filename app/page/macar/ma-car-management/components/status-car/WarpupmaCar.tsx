@@ -224,7 +224,7 @@ const WarpupmaCar = () => {
       const response = await manageCarServices.createMaCarWarpup(
         maCarCreateDataWarpup
       );
-      
+
       if (response && attendFiles.length > 0) {
         await Promise.all(
           attendFiles.map(async (file) => {
@@ -780,7 +780,12 @@ const WarpupmaCar = () => {
             //   { required: true, message: "กรุณากรอกรายละเอียดการตรวจสภาพ" },
             // ]}
           >
-            <Input.TextArea placeholder="รายละเอียดการตรวจสภาพ" rows={4} />
+            <Input.TextArea
+              placeholder="รายละเอียดการตรวจสภาพ"
+              rows={4}
+              showCount
+              maxLength={150}
+            />
           </Form.Item>
           <Form.Item
             name="dateStart"
@@ -797,7 +802,7 @@ const WarpupmaCar = () => {
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item name="remark" label="หมายเหตุ">
-            <Input.TextArea rows={2} />
+            <Input.TextArea rows={2} showCount maxLength={150} />
           </Form.Item>
           <Form.Item valuePropName="filelist">
             <div
@@ -937,7 +942,7 @@ const WarpupmaCar = () => {
               { required: true, message: "กรุณากรอกรายละเอียดการตรวจสภาพ" },
             ]}
           >
-            <Input.TextArea rows={4} />
+            <Input.TextArea rows={4} showCount maxLength={150} />
           </Form.Item>
           <Form.Item
             name="dateStart"
@@ -959,7 +964,7 @@ const WarpupmaCar = () => {
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item name="remark" label="หมายเหตุ">
-            <Input.TextArea rows={2} />
+            <Input.TextArea rows={2} showCount maxLength={150} />
           </Form.Item>
           <Form.Item label="รูปภาพปัจจุบัน:">
             {existingFiles.map((file, index) => (

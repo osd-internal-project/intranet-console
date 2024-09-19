@@ -347,7 +347,7 @@ const Newoption: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกชื่อประเภทเอกสาร" }]}
             style={{ width: "300px" }}
           >
-            <Input placeholder="ชื่อประเภทเอกสาร" showCount maxLength={100} />
+            <Input placeholder="ชื่อประเภทเอกสาร" showCount maxLength={50} />
           </Form.Item>
           <Form.Item
             name="status"
@@ -404,7 +404,7 @@ const Newoption: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกชื่อประเภทเอกสาร" }]}
             style={{ width: "300px" }}
           >
-            <Input placeholder="ชื่อประเภทเอกสาร" showCount maxLength={100} />
+            <Input placeholder="ชื่อประเภทเอกสาร" showCount maxLength={50} />
           </Form.Item>
           <Form.Item
             name="status"

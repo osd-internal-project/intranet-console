@@ -129,7 +129,7 @@ const Tablehandbook: React.FC = () => {
       dataIndex: "key",
       key: "key",
       align: "center",
-      width: "30px",
+      width: "40px",
     },
     {
       title: "ชื่อไฟล์",
@@ -142,13 +142,12 @@ const Tablehandbook: React.FC = () => {
       dataIndex: "filetype",
       key: "filetype",
       width: "130px",
-      ellipsis: true,
     },
     {
       title: "อัปเดตล่าสุด",
       dataIndex: "updatedAt",
       key: "updatedAt",
-      width: "120px",
+      width: "180px",
       render: (updatedAt: Date) =>
         moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
@@ -156,13 +155,13 @@ const Tablehandbook: React.FC = () => {
       title: "ผู้อัปโหลด",
       dataIndex: "author",
       key: "author",
-      width: "140px",
+      width: "200px",
     },
     {
       title: "ดาวโหลดไฟล์",
       dataIndex: "x",
       key: "x",
-      width: "70px",
+      
       align: "center",
       render: (_record: number, row: any, _index: number) => (
         <Button

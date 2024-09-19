@@ -61,7 +61,7 @@ const MaCarBookTable: React.FC<props> = ({
   const [carBookApprovedStatus, setcarBookApprovedStatus] = useState<
     string | undefined
   >(undefined);
-  
+
   const columns: TableProps<MaCarBookType>["columns"] = [
     {
       title: "ลำดับ",
@@ -178,7 +178,7 @@ const MaCarBookTable: React.FC<props> = ({
               {EditIcon}
             </Button>
           </Tooltip>
-          <Tooltip title="ยกเลิกการจอง">
+          <Tooltip title="ยกเลิก">
             <Button
               type="link"
               onClick={() => {

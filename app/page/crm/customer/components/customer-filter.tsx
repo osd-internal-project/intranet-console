@@ -35,7 +35,6 @@ const CustomerFilterComponent: React.FC<props> = ({
   onSearch,
 }): React.ReactElement => {
   async function onFinishFilter(values: any): Promise<void> {
-    console.log(values);
     let search = {};
     if (values.refcode) {
       search = { ...search, refcode: values.refcode };

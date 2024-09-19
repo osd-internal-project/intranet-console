@@ -13,6 +13,7 @@ import {
   Form,
   Input,
   Modal,
+  Row,
   Select,
   Switch,
   Table,
@@ -87,7 +88,7 @@ const CustomerTableComponent: React.FC<props> = ({
       key: "customerCode",
       title: "รหัส",
       dataIndex: "customerCode",
-      width: "100px",
+      width: "200px",
       align: "center",
     },
     {
@@ -111,8 +112,8 @@ const CustomerTableComponent: React.FC<props> = ({
     {
       key: "customerName",
       dataIndex: "customerName",
-      title: "ชื่อ",
-      width: "200px",
+      title: "ชื่อ TH",
+      width: "300px",
       render: (value: string, record, index) =>
         record?.customerTypeId
           ? record?.customerTypeId === "natural"
@@ -129,10 +130,36 @@ const CustomerTableComponent: React.FC<props> = ({
           : "",
     },
     {
+      key: "customerName",
+      dataIndex: "customerName",
+      title: "ชื่อ EN",
+      width: "300px",
+      render: (value: string, record, index) =>
+        record?.customerTypeId
+          ? record?.customerTypeId === "natural"
+            ? `${record.details?.prefixEn ? record.details?.prefixEn : ""}${
+                record.details?.firstNameEn ? record.details?.firstNameEn : ""
+              }${
+                record.details?.lastNameEn
+                  ? ` ${record.details?.lastNameEn}`
+                  : ""
+              }`
+            : record.customerTypeId === "juristic"
+            ? record.details?.customerNameEn
+            : ""
+          : "",
+    },
+    {
+      key: "initials",
+      dataIndex: ["details", "initials"],
+      title: "ชื่อย่อ",
+      width: "200px",
+    },
+    {
       key: "activeStatus",
       dataIndex: "activeStatus",
       title: "Active",
-      width: "200px",
+      width: "100px",
       render: (value: boolean, record, index) =>
         value ? (
           <Tag color="green">Active</Tag>
@@ -144,19 +171,19 @@ const CustomerTableComponent: React.FC<props> = ({
       key: "customerTypeGroupName",
       dataIndex: "customerTypeGroupName",
       title: "กลุ่มลูกค้า",
-      width: "200px",
+      width: "250px",
     },
     {
       key: "grade",
       dataIndex: "grade",
       title: "Grade",
-      width: "200px",
+      width: "100px",
     },
     {
       key: "responsible",
       dataIndex: "responsible",
       title: "พนักงานขาย",
-      width: "200px",
+      width: "220px",
       render: (value: { uid: string; name: string }[]) =>
         value
           ? value.map((data, index) => <div key={index}>{data.name}</div>)
@@ -172,7 +199,7 @@ const CustomerTableComponent: React.FC<props> = ({
       key: "id",
       dataIndex: "id",
       title: "ตรวจสอบ",
-      width: "200px",
+      width: "100px",
       align: "center",
       render: (id: number, record: ITCustomer, index: number) => (
         <div className="space-x-1" key={index}>
@@ -186,7 +213,7 @@ const CustomerTableComponent: React.FC<props> = ({
       key: "id",
       dataIndex: "id",
       title: "ดำเนินการ",
-      width: "200px",
+      width: "100px",
       align: "center",
       render: (id: number, record: ITCustomer, index: number) => (
         <div className="space-x-1" key={index}>
@@ -206,16 +233,17 @@ const CustomerTableComponent: React.FC<props> = ({
   ];
 
   return (
-    <>
+    <Row>
       <Table
         columns={customerColumns}
         dataSource={dataTable}
         size="small"
+        scroll={{ x: "max-content" }}
         pagination={pagination}
         onChange={changePagination}
         rowKey={(data: ITCustomer) => data.id}
       />
-    </>
+    </Row>
   );
 };
 

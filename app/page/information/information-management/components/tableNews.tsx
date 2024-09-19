@@ -356,7 +356,6 @@ const Newoption: React.FC = () => {
       dataIndex: "newsType",
       key: "newsType",
       width: "80px",
-      ellipsis: true,
     },
     {
       title: "วันที่สร้าง",

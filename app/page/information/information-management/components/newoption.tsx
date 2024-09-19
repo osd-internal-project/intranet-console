@@ -171,7 +171,6 @@ const Newoption: React.FC = () => {
       dataIndex: "deteil",
       key: "deteil",
       width: "100px",
-      ellipsis: true,
     },
     {
       title: "วันที่สร้าง",

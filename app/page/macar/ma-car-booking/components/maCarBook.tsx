@@ -208,7 +208,12 @@ const MaCarBook: React.FC<props> = ({
           >
             <Select placeholder="โปรดเลือกรถ" style={{ width: "100%" }}>
               {carName.map((car, index) => (
-                <Select.Option key={index} value={car.carId}>
+                <Select.Option
+                  key={index}
+                  value={car.carId}
+                  showSearch
+                  optionFilterProp="label"
+                >
                   {car.carName}
                 </Select.Option>
               ))}

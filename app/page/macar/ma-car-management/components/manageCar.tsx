@@ -184,33 +184,36 @@ const ManageCar: React.FC<props> = ({
               {CarApproveIcon}
             </a>
           </Tooltip>
-          <Button
-            type="link"
-            onClick={() => {
-              if (record.carBookApprovedStatus === "Return") {
-                message.warning("ไม่สามารถยกเลิกการจองที่แจ้งคืนรถได้");
-                return;
-              }
-              if (record.carBookApprovedStatus === "Completed") {
-                message.warning("ไม่สามารถยกเลิกการจองที่คืนรถได้");
-                return;
-              }
-              if (record.carBookApprovedStatus === "DisapProved") {
-                message.warning("ไม่สามารถยกเลิกการจองที่ไม่อนุมัติได้");
-                return;
-              }
-              if (record.carBookApprovedStatus === "Cancel") {
-                message.warning("ยกเลิกการจองนี้ไปแล้ว");
-                return;
-              }
-              setModalCancel(true);
-              setColumnId(record.id);
-              formCancel.setFieldsValue({ remarkCancel: record.remarkCancel });
-            }}
-          >
-            {CancelMaCarIcon}
-          </Button>
-
+          <Tooltip title="ยกเลิก">
+            <Button
+              type="link"
+              onClick={() => {
+                if (record.carBookApprovedStatus === "Return") {
+                  message.warning("ไม่สามารถยกเลิกการจองที่แจ้งคืนรถได้");
+                  return;
+                }
+                if (record.carBookApprovedStatus === "Completed") {
+                  message.warning("ไม่สามารถยกเลิกการจองที่คืนรถได้");
+                  return;
+                }
+                if (record.carBookApprovedStatus === "DisapProved") {
+                  message.warning("ไม่สามารถยกเลิกการจองที่ไม่อนุมัติได้");
+                  return;
+                }
+                if (record.carBookApprovedStatus === "Cancel") {
+                  message.warning("ยกเลิกการจองนี้ไปแล้ว");
+                  return;
+                }
+                setModalCancel(true);
+                setColumnId(record.id);
+                formCancel.setFieldsValue({
+                  remarkCancel: record.remarkCancel,
+                });
+              }}
+            >
+              {CancelMaCarIcon}
+            </Button>
+          </Tooltip>
           <div style={{ width: "90px", textAlign: "center" }}>
             {" "}
             {record.carBookApprovedStatus === "Return" ? (
@@ -303,27 +306,9 @@ const ManageCar: React.FC<props> = ({
     setLoading(true);
   };
 
-  // const handleCancelMa = async (record: MaCarBookType) => {
-  //   setSubmitLoading(false);
-
   const handleCancelMa: FormProps<MaCarBookType>["onFinish"] = async (
     values
   ) => {
-    console.log(values);
-    // formCancel.getFieldValue({ remarkCancel: remarkCancel });
-    // if (record.carBookApprovedStatus === "Return") {
-    //   message.warning("ไม่สามารถยกเลิกการจองที่แจ้งคืนรถได้");
-    //   return;
-    // }
-    // if (record.carBookApprovedStatus === "Completed") {
-    //   message.warning("ไม่สามารถยกเลิกการจองที่คืนรถได้");
-    //   return;
-    // }
-    // if (record.carBookApprovedStatus === "Cancel") {
-    //   message.warning("ยกเลิกการจองนี้ไปแล้ว");
-    //   return;
-    // }
-
     try {
       const updatedCancelMa = {
         id: columnId,

@@ -229,7 +229,7 @@ const DescriptionCustomerForm: React.FC<props> = ({
                     />
                   </Form.Item>
                   <Form.Item
-                    label={<b>อ้างอิงรหัสลูกค้า</b>}
+                    label={<b>รหัสอ้างอิงลูกค้า</b>}
                     name={"referenceCode"}
                   >
                     <Input

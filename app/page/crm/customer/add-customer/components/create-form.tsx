@@ -173,7 +173,7 @@ const CreateCustomerForm: React.FC<props> = ({
         >
           <Input placeholder="Enter Text" maxLength={50} />
         </Form.Item>
-        <Form.Item label="อ้างอิงรหัสลูกค้า" name={"referenceCode"}>
+        <Form.Item label="รหัสอ้างอิงลูกค้า" name={"referenceCode"}>
           <Input placeholder="Enter Text" maxLength={50} />
         </Form.Item>
 

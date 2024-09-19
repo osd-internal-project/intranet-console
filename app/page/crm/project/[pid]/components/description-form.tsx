@@ -53,186 +53,187 @@ const DescriptionCustomerForm: React.FC<props> = ({
           children: (
             <>
               {projectDescription ? (
-                <div className=" grid  grid-cols-3 md:grid-cols-6 gap-2 pr-10">
-                  <div className=" font-bold pl-3  pr-3 text-right ">
-                    Project Name :
-                  </div>
-                  <div className=" col-span-2 md:col-span-5 text-slate-500">
-                    {projectDescription.projectName}
-                  </div>
-                  <div className=" font-bold pl-3  pr-3 text-right ">
-                    Product Name :
-                  </div>
-                  <div className=" col-span-2 md:col-span-5 text-slate-500">
-                    {projectDescription.productName}
-                  </div>
-                  <div className=" font-bold pl-3 pr-3 text-right">
-                    Start Date :{" "}
-                  </div>
-                  <div className=" col-span-2 md:col-span-1 text-slate-500">
-                    {projectDescription.startDate
-                      ? dateToStringThNoTime(projectDescription.startDate)
-                      : "-"}
-                  </div>
-                  <div className=" font-bold pl-3 pr-3 text-right">
-                    End Date :{" "}
-                  </div>
-                  <div className=" col-span-2 md:col-span-1 text-slate-500">
-                    {projectDescription.endDate
-                      ? dateToStringThNoTime(projectDescription.endDate)
-                      : "-"}
-                  </div>
-                  <div className=" font-bold pl-3 pr-3 text-right">
-                    Duration :
-                  </div>
-                  <div className=" col-span-2 md:col-span-1 text-slate-500">
-                    {projectDescription.duration
-                      ? projectDescription.duration
-                      : "-"}
-                  </div>
-                  <div className=" font-bold pl-3 pr-3 text-right">
-                    ออกโดย :
-                  </div>
-                  <div className=" col-span-2 md:col-span-1 text-slate-500">
-                    {projectDescription.contractCompany?.name
-                      ? `${projectDescription.contractCompany.name}`
-                      : "-"}
-                  </div>
-                  <div className=" font-bold pl-3 pr-3 text-right">
-                    Customer Group :
-                  </div>
-                  <div className=" col-span-2 md:col-span-1 text-slate-500">
-                    {projectDescription.customerBranch.customerDetail
-                      ? projectDescription.customerBranch.customerDetail
-                          .customerTypeId === "natural"
-                        ? `${
-                            projectDescription.customerBranch.customerDetail
-                              .details?.prefixTh
-                              ? projectDescription.customerBranch.customerDetail
-                                  .details?.prefixTh
-                              : ""
-                          }${
-                            projectDescription.customerBranch.customerDetail
-                              .details?.firstNameTh
-                              ? projectDescription.customerBranch.customerDetail
-                                  .details?.firstNameTh
-                              : ""
-                          }${
-                            projectDescription.customerBranch.customerDetail
-                              .details?.lastNameTh
-                              ? ` ${projectDescription.customerBranch.customerDetail.details?.lastNameTh}`
-                              : ""
-                          }`
-                        : projectDescription.customerBranch.customerDetail
-                            .customerTypeId === "juristic"
-                        ? projectDescription.customerBranch.customerDetail
-                            .details?.customerNameTh
-                        : ""
-                      : ""}
-                  </div>
-                  <div className=" font-bold pl-3 pr-3 text-right">
-                    Customer :
-                  </div>
-                  <div className=" col-span-2 md:col-span-1 text-slate-500">
-                    {projectDescription?.customerBranch?.customerDetailSub?.name
-                      ? `${projectDescription.customerBranch.customerDetailSub.name}`
-                      : "-"}
-                  </div>
-                  <div className=" font-bold pl-3 pr-3 text-right">
-                    Sub Customer / Branch :
-                  </div>
-                  <div className=" col-span-2 md:col-span-1 text-slate-500">
-                    {projectDescription.customerBranch.branchName
-                      ? projectDescription.customerBranch.branchName
-                      : "-"}
-                  </div>
-                  {contactDescription ? (
-                    <div className=" grid  grid-cols-3 md:grid-cols-6 gap-2  md:col-span-6">
-                      <div className=" font-bold pl-3 pr-3 text-right">
-                        ชื่อผู้ติดต่อ :{" "}
-                      </div>
-                      <div className="  col-span-2 md:col-span-1 text-slate-500">
-                        {contactDescription.name}
-                        {contactDescription.nickName
-                          ? `(${contactDescription.nickName})`
-                          : ``}
-                      </div>
-                      <div className=" font-bold pl-3 pr-3 text-right">
-                        ตำแหน่ง :{" "}
-                      </div>
-                      <div className="  col-span-2 md:col-span-1 text-slate-500">
-                        {contactDescription.position}
-                      </div>
-                      <div className=" font-bold pl-3 pr-3 text-right">
-                        เบอร์มือถือ :{" "}
-                      </div>
-                      <div className="  col-span-2 md:col-span-1 text-slate-500">
-                        {contactDescription.phone}
-                      </div>
-                      <div className=" font-bold pl-3 pr-3 text-right">
-                        เบอร์ออฟฟิศ :{" "}
-                      </div>
-                      <div className="  col-span-2 md:col-span-1 text-slate-500">
-                        {contactDescription.officePhone}
-                      </div>
-                      <div className=" font-bold pl-3 pr-3 text-right">
-                        เบอร์แฟกซ์ :{" "}
-                      </div>
-                      <div className="  col-span-2 md:col-span-1 text-slate-500">
-                        {contactDescription.officePhone}
-                      </div>
-                      <div className=" font-bold pl-3 pr-3 text-right">
-                        อีเมล :{" "}
-                      </div>
-                      <div className="  col-span-2 md:col-span-1 text-slate-500">
-                        {contactDescription.email}
-                      </div>
+                <div>
+                  <div className=" grid  grid-cols-3 md:grid-cols-6 gap-2 pr-10">
+                    <div className=" font-bold pl-3  pr-3 text-right ">
+                      Project Name :
                     </div>
-                  ) : (
-                    ""
-                  )}
-                  <div className=" col-span-3 md:col-span-4"></div>
-                  <div className="font-bold pl-3 pr-3 text-right">
-                    ที่อยู่ใบกำกับภาษี :
+                    <div className=" col-span-2 md:col-span-5 text-slate-500">
+                      {projectDescription.projectName}
+                    </div>
+                    <div className=" font-bold pl-3  pr-3 text-right ">
+                      Product Name :
+                    </div>
+                    <div className=" col-span-2 md:col-span-5 text-slate-500">
+                      {projectDescription.productName}
+                    </div>
+                    <div className=" font-bold pl-3 pr-3 text-right">
+                      Start Date :{" "}
+                    </div>
+                    <div className=" col-span-2 md:col-span-1 text-slate-500">
+                      {projectDescription.startDate
+                        ? dateToStringThNoTime(projectDescription.startDate)
+                        : "-"}
+                    </div>
+                    <div className=" font-bold pl-3 pr-3 text-right">
+                      End Date :{" "}
+                    </div>
+                    <div className=" col-span-2 md:col-span-1 text-slate-500">
+                      {projectDescription.endDate
+                        ? dateToStringThNoTime(projectDescription.endDate)
+                        : "-"}
+                    </div>
+                    <div className=" font-bold pl-3 pr-3 text-right">
+                      Duration :
+                    </div>
+                    <div className=" col-span-2 md:col-span-1 text-slate-500">
+                      {projectDescription.duration
+                        ? projectDescription.duration
+                        : "-"}
+                    </div>
+                    <div className=" font-bold pl-3 pr-3 text-right">
+                      ออกโดย :
+                    </div>
+                    <div className=" col-span-2 md:col-span-1 text-slate-500">
+                      {projectDescription.contractCompany?.name
+                        ? `${projectDescription.contractCompany.name}`
+                        : "-"}
+                    </div>
+                    <div className=" font-bold pl-3 pr-3 text-right">
+                      Customer Group :
+                    </div>
+                    <div className=" col-span-2 md:col-span-1 text-slate-500">
+                      {projectDescription.customerBranch.customerDetail
+                        ? projectDescription.customerBranch.customerDetail
+                            .customerTypeId === "natural"
+                          ? `${
+                              projectDescription.customerBranch.customerDetail
+                                .details?.prefixTh
+                                ? projectDescription.customerBranch
+                                    .customerDetail.details?.prefixTh
+                                : ""
+                            }${
+                              projectDescription.customerBranch.customerDetail
+                                .details?.firstNameTh
+                                ? projectDescription.customerBranch
+                                    .customerDetail.details?.firstNameTh
+                                : ""
+                            }${
+                              projectDescription.customerBranch.customerDetail
+                                .details?.lastNameTh
+                                ? ` ${projectDescription.customerBranch.customerDetail.details?.lastNameTh}`
+                                : ""
+                            }`
+                          : projectDescription.customerBranch.customerDetail
+                              .customerTypeId === "juristic"
+                          ? projectDescription.customerBranch.customerDetail
+                              .details?.customerNameTh
+                          : ""
+                        : ""}
+                    </div>
+                    <div className=" font-bold pl-3 pr-3 text-right">
+                      Customer :
+                    </div>
+                    <div className=" col-span-2 md:col-span-1 text-slate-500">
+                      {projectDescription?.customerBranch?.customerDetailSub
+                        ?.name
+                        ? `${projectDescription.customerBranch.customerDetailSub.name}`
+                        : "-"}
+                    </div>
+                    <div className=" font-bold pl-3 pr-3 text-right">
+                      Sub Customer / Branch :
+                    </div>
+                    <div className=" col-span-2 md:col-span-1 text-slate-500">
+                      {projectDescription.customerBranch.branchName
+                        ? projectDescription.customerBranch.branchName
+                        : "-"}
+                    </div>
+                    {contactDescription ? (
+                      <div className=" grid  grid-cols-3 md:grid-cols-6 gap-2  md:col-span-6">
+                        <div className=" font-bold pl-3 pr-3 text-right">
+                          ชื่อผู้ติดต่อ :{" "}
+                        </div>
+                        <div className="  col-span-2 md:col-span-1 text-slate-500">
+                          {contactDescription.name}
+                          {contactDescription.nickName
+                            ? `(${contactDescription.nickName})`
+                            : ``}
+                        </div>
+                        <div className=" font-bold pl-3 pr-3 text-right">
+                          ตำแหน่ง :{" "}
+                        </div>
+                        <div className="  col-span-2 md:col-span-1 text-slate-500">
+                          {contactDescription.position}
+                        </div>
+                        <div className=" font-bold pl-3 pr-3 text-right">
+                          เบอร์มือถือ :{" "}
+                        </div>
+                        <div className="  col-span-2 md:col-span-1 text-slate-500">
+                          {contactDescription.phone}
+                        </div>
+                        <div className=" font-bold pl-3 pr-3 text-right">
+                          เบอร์ออฟฟิศ :{" "}
+                        </div>
+                        <div className="  col-span-2 md:col-span-1 text-slate-500">
+                          {contactDescription.officePhone}
+                        </div>
+                        <div className=" font-bold pl-3 pr-3 text-right">
+                          เบอร์แฟกซ์ :{" "}
+                        </div>
+                        <div className="  col-span-2 md:col-span-1 text-slate-500">
+                          {contactDescription.officePhone}
+                        </div>
+                        <div className=" font-bold pl-3 pr-3 text-right">
+                          อีเมล :{" "}
+                        </div>
+                        <div className="  col-span-2 md:col-span-1 text-slate-500">
+                          {contactDescription.email}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className=" grid  grid-cols-3 md:grid-cols-6 gap-2  md:col-span-6"></div>
+                    )}
                   </div>
-                  <div className=" col-span-2 md:col-span-5 text-slate-500">
-                    {projectDescription.taxAddressText}
-                  </div>
-                  <div className="font-bold pl-3 pr-3 text-right">
-                    ที่อยู่การจัดส่งบริการ :
-                  </div>
-                  <div className=" col-span-2 md:col-span-5 text-slate-500">
-                    {projectDescription.deliveryAddressText}
-                  </div>
-                  <div className="font-bold pl-3 pr-3 text-right">
-                    ที่อยู่จัดส่งใบแจ้งบริการ :
-                  </div>
-                  <div className=" col-span-2 md:col-span-5 text-slate-500">
-                    {projectDescription.notiAddressText}
-                  </div>
-                  <div className="font-bold pl-3 pr-3 text-right mb-5">
-                    รายละเอียด :
-                  </div>
-                  <div className=" col-span-2 md:col-span-5 text-slate-500  mb-5">
-                    <TextArea readOnly value={projectDescription.description} />
-                  </div>
-                  <div className=" font-bold pl-3  pr-3 text-right ">
-                    Project Manager :
-                  </div>
-                  <div className=" col-span-2 md:col-span-1 text-slate-500">
-                    {projectDescription.projectManagerName}
-                  </div>
-                  {/* <div className=" font-bold pl-3  pr-3 text-right ">
-                    Sale Manager :
-                  </div> */}
-                  {/* <div className=" col-span-2 md:col-span-1 text-slate-500">
-                    {projectDescription.saleManagerName}
-                  </div> */}
-                  <div className=" font-bold pl-3  pr-3 text-right ">
-                    Sale :
-                  </div>
-                  <div className=" col-span-2 md:col-span-1 text-slate-500">
-                    {projectDescription.saleName}
+                  <div className=" grid  grid-cols-3 md:grid-cols-6 gap-2 pr-10">
+                    <div className="font-bold pl-3 pr-3 text-right">
+                      ที่อยู่ใบกำกับภาษี :
+                    </div>
+                    <div className=" col-span-2 md:col-span-5 text-slate-500">
+                      {projectDescription.taxAddressText}
+                    </div>
+                    <div className="font-bold pl-3 pr-3 text-right">
+                      ที่อยู่การจัดส่งบริการ :
+                    </div>
+                    <div className=" col-span-2 md:col-span-5 text-slate-500">
+                      {projectDescription.deliveryAddressText}
+                    </div>
+                    <div className="font-bold pl-3 pr-3 text-right">
+                      ที่อยู่จัดส่งใบแจ้งบริการ :
+                    </div>
+                    <div className=" col-span-2 md:col-span-5 text-slate-500">
+                      {projectDescription.notiAddressText}
+                    </div>
+                    <div className="font-bold pl-3 pr-3 text-right mb-5">
+                      รายละเอียด :
+                    </div>
+                    <div className=" col-span-2 md:col-span-5 text-slate-500  mb-5">
+                      <TextArea
+                        readOnly
+                        value={projectDescription.description}
+                      />
+                    </div>
+                    <div className=" font-bold pl-3  pr-3 text-right ">
+                      Project Manager :
+                    </div>
+                    <div className=" col-span-2 md:col-span-1 text-slate-500">
+                      {projectDescription.projectManagerName}
+                    </div>
+                    <div className=" font-bold pl-3  pr-3 text-right ">
+                      Sale :
+                    </div>
+                    <div className=" col-span-2 md:col-span-1 text-slate-500">
+                      {projectDescription.saleName}
+                    </div>
                   </div>
                 </div>
               ) : (

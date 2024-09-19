@@ -154,8 +154,6 @@ const BranchComponent: React.FC<props> = ({
           theme={{
             components: {
               Table: {
-                headerBg: "rgba(207 250 254)",
-
                 colorBgContainer: "rgba(0, 0, 0, 0.0)",
                 borderColor: "#ddd",
               },

@@ -95,7 +95,7 @@ export default function MaTaskPage() {
           />
         </Col>
         <Col span={24}>
-          <div className="title-page-font">{`CUSTOMER`}</div>
+          <div className="title-page-font">{`CUSTOMER GROUP`}</div>
         </Col>
 
         <Col span={24}>
@@ -107,7 +107,7 @@ export default function MaTaskPage() {
                     {rules.ruleCustomerAdd ? (
                       <Link href="/page/crm/customer/add-customer">
                         <Button size="small" type="primary">
-                          Add Customer
+                          Add Customer GROUP
                         </Button>
                       </Link>
                     ) : (

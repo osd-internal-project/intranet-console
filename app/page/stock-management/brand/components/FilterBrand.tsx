@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { Button, Card, Col, Form, Input, Modal, Row, Typography, message } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  Modal,
+  Row,
+  Typography,
+  message,
+} from "antd";
 import { ITypeCreateBodyBrands, ITypeCreateBrands } from "../common/index";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { BrandService } from "../services/brand.service";
@@ -10,7 +20,9 @@ export interface props {
   onCloseDialog: (dataField: boolean) => void;
 }
 
-export const FilterBrand: React.FC<props> = ({ onCloseDialog }): React.ReactElement => {
+export const FilterBrand: React.FC<props> = ({
+  onCloseDialog,
+}): React.ReactElement => {
   const stockAuth = useAxiosStock();
   const addRule = checkRule("sm-brand-a");
   const brandservice = BrandService(stockAuth);
@@ -25,7 +37,7 @@ export const FilterBrand: React.FC<props> = ({ onCloseDialog }): React.ReactElem
     };
     setbuttonLoading(true);
     Modal.confirm({
-      title: "Add Brand",
+      title: "Add Customer",
       icon: <ExclamationCircleFilled />,
       content: "Are you sure you want to add this ?",
       okText: "Confirm",
@@ -66,13 +78,24 @@ export const FilterBrand: React.FC<props> = ({ onCloseDialog }): React.ReactElem
             >
               <Row gutter={[32, 8]}>
                 <Col span={8}>
-                  <Form.Item name={`name`} label={`Brand Name:`} rules={[{ required: true, message: "Please enter brand name" }]}>
+                  <Form.Item
+                    name={`name`}
+                    label={`Brand Name:`}
+                    rules={[
+                      { required: true, message: "Please enter brand name" },
+                    ]}
+                  >
                     <Input placeholder="Text" />
                   </Form.Item>
                 </Col>
                 <Col>
                   <Form.Item>
-                    <Button htmlType="submit" type="primary" className="button-blue" disabled={buttonLoading}>{`Add Brand`}</Button>
+                    <Button
+                      htmlType="submit"
+                      type="primary"
+                      className="button-blue"
+                      disabled={buttonLoading}
+                    >{`Add Brand`}</Button>
                   </Form.Item>
                 </Col>
               </Row>

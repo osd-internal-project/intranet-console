@@ -34,13 +34,12 @@ const BranchAddComponent: React.FC<props> = ({
   return (
     <Modal
       open={showModalBranchAdd}
-      title={"เพิ่มสาขา"}
+      title={"Add Sub Customer/Branch"}
       // width={1000}
       footer={[]}
       onCancel={() => {
         onShowModalBranchAdd(false);
       }}
-      maskClosable={false}
     >
       <Form
         name="addBranchForm"

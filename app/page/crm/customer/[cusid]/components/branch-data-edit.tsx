@@ -30,7 +30,7 @@ const BranchEditComponent: React.FC<props> = ({
   return (
     <Modal
       open={showModalBranchEdit}
-      title={"แก้ไขข้อมูลสาขา"}
+      title={"Edit Sub Customer/Branch"}
       footer={[]}
       onCancel={() => {
         onShowModalBranchEdit(false);

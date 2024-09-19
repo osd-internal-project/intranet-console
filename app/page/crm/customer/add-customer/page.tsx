@@ -23,7 +23,9 @@ export default function AddCustomerPage() {
   const userAuth = useAxiosUser();
   const userServices = UserServices(userAuth);
   const router = useRouter();
-  const [customerGroup, setCustomerGroup] = useState<ITConfigData[]>([]);
+  const [customerTypeGroup, setCustomerTypeGroup] = useState<ITConfigData[]>(
+    []
+  );
   const [customerResponsibles, setCustomerResponsibles] = useState<
     ITSelectUsers[]
   >([]);
@@ -33,8 +35,8 @@ export default function AddCustomerPage() {
   }, []);
 
   const fetchData = async () => {
-    const group = await crmServices.findConfigCustomerGroup();
-    setCustomerGroup(group);
+    const group = await crmServices.findConfigCustomerTypeGroup();
+    setCustomerTypeGroup(group);
     if (session?.user.userId) {
       const responsibles = await userServices.findSaleUserBySalePermission(
         session?.user.userId
@@ -52,7 +54,7 @@ export default function AddCustomerPage() {
     let createForm = form;
     if (form.customerTypeId) {
       const customerTypeSelected = customerTypes.findLast(
-        (group) => group.id === form.customerGroupId
+        (group) => group.id === form.customerTypeGroupId
       );
       if (customerTypeSelected?.name) {
         createForm = {
@@ -61,14 +63,14 @@ export default function AddCustomerPage() {
         };
       }
     }
-    if (form.customerGroupId) {
-      const customerGroupSelected = customerGroup.findLast(
-        (group) => group.id === form.customerGroupId
+    if (form.customerTypeGroupId) {
+      const customerTypeGroupSelected = customerTypeGroup.findLast(
+        (group) => group.id === form.customerTypeGroupId
       );
-      if (customerGroupSelected?.name) {
+      if (customerTypeGroupSelected?.name) {
         createForm = {
           ...createForm,
-          customerGroupName: customerGroupSelected.name,
+          customerTypeGroupName: customerTypeGroupSelected.name,
         };
       }
     }
@@ -117,13 +119,13 @@ export default function AddCustomerPage() {
                 title: <span>Customer</span>,
               },
               {
-                title: <span>Add Customer</span>,
+                title: <span>Add Customer Group</span>,
               },
             ]}
           />
         </Col>
         <Col span={24}>
-          <div className="title-page-font">{`ADD CUSTOMER`}</div>
+          <div className="title-page-font">{`ADD CUSTOMER GROUP`}</div>
         </Col>
 
         <Col span={24}>
@@ -131,7 +133,7 @@ export default function AddCustomerPage() {
             <Card>
               <CreateCustomerForm
                 onFinishAdd={onFinishAdd}
-                customerGroup={customerGroup}
+                customerTypeGroup={customerTypeGroup}
                 customerTypes={customerTypes}
                 customerResponsibles={customerResponsibles}
               />

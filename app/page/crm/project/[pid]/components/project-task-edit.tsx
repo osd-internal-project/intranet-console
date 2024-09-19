@@ -79,11 +79,7 @@ const ProjectTaskEditComponent: React.FC<props> = ({
       footer={[]}
       open={showModalTaskEdit}
       onCancel={() => onShowModalProjectTaskEdit(false)}
-      // width={1200}
-      // footer={[]}
-      // onCancel={() => {
-      //   onShowModalContactAdd(false);
-      // }}
+      maskClosable={false}
     >
       <Form
         form={editTaskForm}

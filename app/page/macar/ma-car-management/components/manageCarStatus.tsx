@@ -111,9 +111,10 @@ const ManageCarStatus: React.FC<props> = ({
       title: "จัดการ",
       align: "center",
       render: (_, record) => (
-        <Space size="middle">
+        <Space>
           <Tooltip title="แก้ไข">
             <a
+              type="link"
               onClick={() => showModalEditMaCar(record)}
               role="button"
               aria-label="Edit"
@@ -129,7 +130,7 @@ const ManageCarStatus: React.FC<props> = ({
             cancelText="ไม่"
           >
             <Tooltip title="ลบ">
-              <a>
+              <a type="link">
                 {" "}
                 <DeleteIcon />{" "}
               </a>
@@ -450,6 +451,7 @@ const ManageCarStatus: React.FC<props> = ({
         loading={loading}
         pagination={pagination}
         onChange={changePagination}
+        size="small"
       />
     </>
   );

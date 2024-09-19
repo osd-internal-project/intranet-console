@@ -76,9 +76,7 @@ const MaCarReturn: React.FC<props> = ({
       width: "200px",
       align: "center",
       render: (_, record) => (
-        <span>
-          {dayjs(record.carBookStartDate).format("DD-MM-YYYY HH:mm:ss")}
-        </span>
+        <span>{dayjs(record.carBookStartDate).format("DD-MM-YYYY HH:mm")}</span>
       ),
     },
     {
@@ -147,14 +145,15 @@ const MaCarReturn: React.FC<props> = ({
       align: "center",
       render: (_: any, record: MaCarBookType) => {
         return (
-          <Space size="middle">
-            <a
+          <Space >
+            <Button
+              type="link"
               onClick={() => {
                 showModalDetail(record);
               }}
             >
               รายละเอียด
-            </a>
+            </Button>
           </Space>
         );
       },
@@ -169,7 +168,9 @@ const MaCarReturn: React.FC<props> = ({
         switch (carBookApprovedStatus) {
           case "Approve":
             statusDisplay = (
-              <a onClick={() => showModalReturn(record)}>แจ้งคืนรถ</a>
+              <Button type="link" onClick={() => showModalReturn(record)}>
+                แจ้งคืนรถ
+              </Button>
             );
             break;
           case "Return":
@@ -200,7 +201,7 @@ const MaCarReturn: React.FC<props> = ({
             break;
         }
 
-        return <Space size="middle">{statusDisplay}</Space>;
+        return <Space>{statusDisplay}</Space>;
       },
     },
   ];
@@ -695,7 +696,12 @@ const MaCarReturn: React.FC<props> = ({
         </Form>
       </Modal>
 
-      <Table columns={columns} dataSource={maCarBookData} loading={loading} />
+      <Table
+        columns={columns}
+        dataSource={maCarBookData}
+        loading={loading}
+        size="small"
+      />
     </>
   );
 };

@@ -42,9 +42,11 @@ import TextArea from "antd/es/input/TextArea";
 import "../../style.css";
 import { useForm } from "antd/es/form/Form";
 import moment from "moment";
+import { ITCustomerSub, ITCustomerSubForm } from "../../../customer/common";
 const { RangePicker } = DatePicker;
 export interface props {
   customerList: ITCustomerForSelect[];
+  customerSubList: ITCustomerSubForm[];
   branchList: ITBranchForSelect[];
   userList: ITSelectUsers[];
   groupOption: SelectProps["options"];
@@ -52,6 +54,7 @@ export interface props {
   usersFormGroup: ITSelectUsers[];
   onFinishAdd: (form: ITProjectCreateForm) => void;
   changeCustomerSelect: (id: number) => void;
+  changeCustomerSubSelect: (id: number) => void;
   onChangeGroupSelect: (value: string[]) => void;
   cntractCompany: ITContractCompany[];
 }
@@ -67,6 +70,7 @@ const layout = {
 
 const CreateProjectForm: React.FC<props> = ({
   customerList,
+  customerSubList,
   branchList,
   groupOption,
   saleList,
@@ -74,6 +78,7 @@ const CreateProjectForm: React.FC<props> = ({
   usersFormGroup,
   onFinishAdd,
   changeCustomerSelect,
+  changeCustomerSubSelect,
   onChangeGroupSelect,
   cntractCompany,
 }): React.ReactElement => {
@@ -120,7 +125,12 @@ const CreateProjectForm: React.FC<props> = ({
   }
   const onChangeCustomerSelect = (id: number) => {
     form.setFieldValue("customerBranchId", undefined);
+    form.setFieldValue("customerDetaulSubId", undefined);
     changeCustomerSelect(id);
+  };
+  const onChangeSubCustomerSelect = (id: number) => {
+    form.setFieldValue("customerBranchId", undefined);
+    changeCustomerSubSelect(id);
   };
   return (
     <Form
@@ -186,7 +196,7 @@ const CreateProjectForm: React.FC<props> = ({
           </Form.Item>
         </div>
         <Form.Item
-          label="Customer"
+          label="Customer Group"
           name={"customerId"}
           rules={[{ required: true, message: "กรุณาเลือก Customer" }]}
         >
@@ -222,9 +232,34 @@ const CreateProjectForm: React.FC<props> = ({
           />
         </Form.Item>
         <Form.Item
-          label="Branch"
+          label="Customer"
+          name={"customerDetailSubId"}
+          rules={[{ required: true, message: "กรุณาเลือก Customer  " }]}
+        >
+          <Select
+            showSearch
+            placeholder="Please select Customer "
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+            disabled={customerSubList.length > 0 ? false : true}
+            allowClear
+            onChange={onChangeSubCustomerSelect}
+            options={customerSubList.map((customer) => ({
+              value: customer.id,
+              label: customer.name,
+            }))}
+          />
+        </Form.Item>
+        <Form.Item
+          label="Sub Customer / Branch"
           name={"customerBranchId"}
-          rules={[{ required: true, message: "กรุณาเลือก Branch" }]}
+          rules={[
+            {
+              required: true,
+              message: "กรุณาเลือก BrancSub Customer / Branch",
+            },
+          ]}
         >
           <Select
             showSearch

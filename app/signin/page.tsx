@@ -48,7 +48,7 @@ export default function Login(props: Props) {
         if (values.remember) {
           createCookieLocal("osd-user-remember", values.username);
         }
-        router.push("/page/home");
+        router.push("/page");
       } else {
         setLoading(false);
         message.error(`Invalid Login : username or password is incorrect`);

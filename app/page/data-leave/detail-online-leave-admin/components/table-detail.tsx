@@ -48,7 +48,7 @@ export const TableDetail: React.FC<props> = ({
     {
       key: "id",
       dataIndex: "id",
-      title: "Fullname",
+      title: "Full Name",
       render: (e: string, row: ITypeDataLeave) => {
         return <p>{`${row.firstName} ${row.lastName}`}</p>;
       },
@@ -70,6 +70,7 @@ export const TableDetail: React.FC<props> = ({
       key: "status",
       dataIndex: "status",
       title: "Status",
+      align: "center",
       render: (e: string) => {
         return e === "waitting" ? (
           <Tag color="blue">{`WAITTING`}</Tag>
@@ -109,7 +110,11 @@ export const TableDetail: React.FC<props> = ({
           name: `${row.firstName} ${row.lastName}`,
           createAt: row.createdAt ? dateToStringThNoTime(row.createdAt) : "-",
           detail: row.detail,
-          leaveHour: `${row.leaveHour} ชม.`,
+          leaveHour: row.leaveHour
+            ? row.leaveHour % 8 === 0
+              ? `${row.leaveHour / 8} วัน`
+              : `${row.leaveHour} ชม.`
+            : "ไม่มีข้อมูล",
           startDate: row?.startDate
             ? dateToStringThNoTime(row?.startDate)
             : "-",
@@ -128,24 +133,22 @@ export const TableDetail: React.FC<props> = ({
           <>
             <Row gutter={[8, 8]} className="flex justify-center">
               <Col>
-                <Tooltip title={`รายละเอียด`}>
-                  <Button
-                    type="primary"
-                    ghost
-                    onClick={async () => {
-                      const dataLeaveById =
-                        await dataleaveservice.getdataLeaveById(
-                          row.id as number
-                        );
-                      setStatusById(dataLeaveById[0].status);
-                      setDataById(row.id);
+                {/* <Tooltip title={`รายละเอียด`}> */}
+                <Button
+                  type="primary"
+                  ghost
+                  onClick={async () => {
+                    const dataLeaveById =
+                      await dataleaveservice.getdataLeaveById(row.id as number);
+                    setStatusById(dataLeaveById[0].status);
+                    setDataById(row.id);
 
-                      setOpenModalDetail(true), formdetail.setFieldsValue(base);
-                    }}
-                  >
-                    {`รายละเอียด`}
-                  </Button>
-                </Tooltip>
+                    setOpenModalDetail(true), formdetail.setFieldsValue(base);
+                  }}
+                >
+                  {`รายละเอียด`}
+                </Button>
+                {/* </Tooltip> */}
               </Col>
             </Row>
           </>

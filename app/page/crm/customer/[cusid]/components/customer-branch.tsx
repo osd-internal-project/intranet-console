@@ -1,6 +1,6 @@
 import React from "react";
 import type { FormInstance, TableColumnsType } from "antd";
-import { Button, Input, Modal, Table } from "antd";
+import { Button, ConfigProvider, Input, Modal, Table } from "antd";
 import {
   ITBranch,
   ITBranchAddressForm,
@@ -8,7 +8,7 @@ import {
   ITBranchDetail,
   ITBranchForm,
 } from "../../common";
-import BranchModalAdd from "../components/branch-data-add";
+import BranchModalAdd from "./branch-data-add";
 import BranchModalEdit from "./branch-data-edit";
 import BranchModalDetail from "../components/branch-data-detail";
 import { deleteIcon, editIcon } from "@/components/icon";
@@ -52,7 +52,7 @@ const BranchComponent: React.FC<props> = ({
 }): React.ReactElement => {
   const showModalBranchDelete = (id: number) => {
     Modal.confirm({
-      title: "Delete this  Branch",
+      title: "Delete this  Sub Customer/Branch",
       icon: <ExclamationCircleFilled />,
       content: "Are you sure you want to delete this ?",
       okText: "Confirm",
@@ -69,6 +69,7 @@ const BranchComponent: React.FC<props> = ({
       dataIndex: "id",
       title: "No",
       width: "100px",
+      align: "center",
       render: (id: number, record: ITBranch, index: number) => index + 1,
     },
     {
@@ -103,37 +104,37 @@ const BranchComponent: React.FC<props> = ({
       align: "center",
       render: (id: number, record: ITBranch, index: number) => (
         <div className="space-x-1">
-          {rules.ruleCustomerBranchEdit ? (
-            <Button
-              type="link"
-              onClick={() => {
-                onShowModalBranchEdit(true), formEdit.setFieldsValue(record);
-              }}
-            >
-              {editIcon}
-            </Button>
-          ) : (
+          {/* {rules.ruleCustomerBranchEdit ? ( */}
+          <Button
+            type="link"
+            onClick={() => {
+              onShowModalBranchEdit(true), formEdit.setFieldsValue(record);
+            }}
+          >
+            {editIcon}
+          </Button>
+          {/* ) : (
             <></>
-          )}
-          {rules.ruleCustomerBranchDelete ? (
-            <Button
-              type="link"
-              onClick={() => showModalBranchDelete(id)}
-              danger
-            >
-              {deleteIcon}
-            </Button>
-          ) : (
+          )} */}
+          {/* {rules.ruleCustomerBranchDelete ? ( */}
+          <Button type="link" onClick={() => showModalBranchDelete(id)} danger>
+            {deleteIcon}
+          </Button>
+          {/* ) : (
             <></>
-          )}
+          )} */}
         </div>
       ),
     },
   ];
   return (
-    <div className=" grid grid-cols-1 gap-3">
-      <div className=" flex justify-end">
-        {rules.ruleCustomerBranchAdd ? (
+    <div className=" grid grid-cols-1 gap-3  ">
+      <div className=" flex  justify-between">
+        <div className=" font-bold text-base ml-10 text-default  ">
+          Sub Customers / Branch
+        </div>
+        <>
+          {/* {rules.ruleCustomerBranchAdd ? ( */}
           <Button
             size="small"
             type="primary"
@@ -141,18 +142,35 @@ const BranchComponent: React.FC<props> = ({
               onShowModalBranchAdd(true);
             }}
           >
-            {`Add Branch`}
+            {`+ Add `}
           </Button>
-        ) : (
+          {/* ) : (
           <></>
-        )}
+        )} */}
+        </>
       </div>
-      <Table
-        size="small"
-        columns={columns}
-        dataSource={branchs}
-        rowKey={(data: ITBranch) => data.id}
-      />
+      <div className=" m-2">
+        <ConfigProvider
+          theme={{
+            components: {
+              Table: {
+                colorBgContainer: "rgba(0, 0, 0, 0.0)",
+                borderColor: "#ddd",
+              },
+            },
+          }}
+        >
+          <Table
+            className="  text-cyan-100"
+            rowHoverable={false}
+            size="small"
+            columns={columns}
+            dataSource={branchs}
+            rowKey={(data: ITBranch) => data.id}
+            pagination={false}
+          />
+        </ConfigProvider>
+      </div>
       <BranchModalAdd
         onSaveBranch={onSaveBranch}
         showModalBranchAdd={showModalBranchAdd}
@@ -164,7 +182,7 @@ const BranchComponent: React.FC<props> = ({
         onShowModalBranchEdit={onShowModalBranchEdit}
         formEdit={formEdit}
       />
-      {branchDetail ? (
+      {branchDetail && (
         <BranchModalDetail
           rules={rules}
           branchDetail={branchDetail}
@@ -174,8 +192,6 @@ const BranchComponent: React.FC<props> = ({
           onSaveBranchContact={onSaveBranchContact}
           onDeleteCustomerBranchContact={onDeleteCustomerBranchContact}
         />
-      ) : (
-        ""
       )}
     </div>
   );

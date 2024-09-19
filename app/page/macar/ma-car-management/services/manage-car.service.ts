@@ -19,10 +19,10 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    
+
     findMaCarBook: async (skip: number, take: number) => {
       return await axiosInstance
-        .get(`${baseUrlApiMaCarBook}?take=${take}&skip=${skip}`)
+        .get(`${baseUrlApiMaCarBook}/${skip}/${take}`)
         .then((res) => {
           return res.data;
         })
@@ -67,7 +67,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         });
     },
     deleteMaCarBook: async (carId: any) => {
-
       return await axiosInstance
         .delete(`${baseUrlApiMaCarBook}/${carId}`)
         .then((res) => {
@@ -238,11 +237,15 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         });
     },
     uploadFiles: async (carWrapupId: string, formData: FormData) => {
-      return axiosInstance.post(`${baseUrlApiMaCarwarpupimage}/${carWrapupId}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      return axiosInstance.post(
+        `${baseUrlApiMaCarwarpupimage}/${carWrapupId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
     },
 
     createMaCarWarpupimage: async (body: any) => {

@@ -26,7 +26,7 @@ import { deleteIcon, editIcon } from "@/components/icon";
 import { useForm } from "antd/es/form/Form";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import Link from "next/link";
-import { ITCustomer } from "../../customer/common";
+import { ITCustomer, ITCustomerSub } from "../../customer/common";
 
 export interface props {
   dataTable: ITProject[];
@@ -72,23 +72,33 @@ const ProjectTableComponent: React.FC<props> = ({
     {
       key: "customerName",
       dataIndex: ["customerBranch", "customerDetail"],
-      title: "Customer",
+      title: "Customer Group",
       width: "200px",
       render: (record: ITCustomer) =>
-        record.customerTypeId === "natural"
-          ? `${record.details?.prefixTh ? record.details?.prefixTh : ""}${
-              record.details?.firstNameTh ? record.details?.firstNameTh : ""
-            }${
-              record.details?.lastNameTh ? ` ${record.details?.lastNameTh}` : ""
-            }`
-          : record.customerTypeId === "juristic"
-          ? record.details?.customerNameTh
+        record
+          ? record.customerTypeId === "natural"
+            ? `${record.details?.prefixTh ? record.details?.prefixTh : ""}${
+                record.details?.firstNameTh ? record.details?.firstNameTh : ""
+              }${
+                record.details?.lastNameTh
+                  ? ` ${record.details?.lastNameTh}`
+                  : ""
+              }`
+            : record.customerTypeId === "juristic"
+            ? record.details?.customerNameTh
+            : ""
           : "",
+    },
+    {
+      key: "customerName",
+      dataIndex: ["customerBranch", "customerDetailSub", "name"],
+      title: "Customer",
+      width: "200px",
     },
     {
       key: "branchName",
       dataIndex: ["customerBranch", "branchName"],
-      title: "Branch",
+      title: "Sub Customer / Branch",
       width: "200px",
     },
     {

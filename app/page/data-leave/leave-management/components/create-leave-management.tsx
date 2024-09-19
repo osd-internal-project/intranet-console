@@ -47,7 +47,7 @@ export const CreateLeaveManagement: React.FC<props> = ({
                 rules={[
                   {
                     required: true,
-                    message: "กรุณากรอกจำนวนวันลา (อายุงานน้อยกว่า 1 ปี)",
+                    message: "กรุณาเลือกชื่อพนักงาน",
                   },
                 ]}
               >

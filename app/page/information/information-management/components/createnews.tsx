@@ -210,7 +210,7 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
             rules={[{ required: true, message: "กรุณากรอกหัวข้อข่าวสาร" }]}
             style={{ width: "300px" }}
           >
-            <Input placeholder="หัวข้อข่าวสาร"/>
+            <Input placeholder="หัวข้อข่าวสาร" showCount maxLength={50}/>
           </Form.Item>
           <Form.Item
             name="newsType"
@@ -239,7 +239,7 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
             rules={[{ required: true, message: "กรุณากรอกเนื้อหาข่าวสาร" }]}
             style={{ width: "900px" }}
           >
-            <Input.TextArea rows={15} placeholder="เนื้อหาข่าวสาร"/>
+            <Input.TextArea rows={15} placeholder="เนื้อหาข่าวสาร" />
           </Form.Item>
           <Form.Item valuePropName="filelist">
             <div

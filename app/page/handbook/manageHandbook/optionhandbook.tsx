@@ -104,7 +104,7 @@ const Newoption: React.FC = () => {
   };
   const fetchDataHandbook = async () => {
     try {
-      const maresponse = await managehandbookFileServices.gethandbookQuery();
+      const maresponse = await managehandbookFileServices.gethandbookFileQuery();
       const handbook: handbook[] = maresponse.map((item: any) => ({
         ...item,
         images: item.handbookFile,
@@ -226,32 +226,31 @@ const Newoption: React.FC = () => {
       title: "ลำดับ",
       dataIndex: "key",
       key: "key",
-      width: "40px",
+      width: "30px",
       align: "center",
     },
     {
       title: "ชื่อประเภทเอกสาร",
       dataIndex: "nameType",
       key: "nameType",
-      width: "400px",
+      width: "300px",
+      fixed: "left",
     },
     {
       title: "วันที่สร้าง",
       dataIndex: "createAt",
       key: "createAt",
-      width: "100px",
+      width: "170px",
       render: (createAt: Date) =>
         moment(createAt).format("DD/MM/YYYY HH:mm" + " น."),
-      ellipsis: true,
     },
     {
       title: "วันที่อัปเดต",
       dataIndex: "updatedAt",
       key: "updatedAt",
-      width: "100px",
+      width: "170px",
       render: (updatedAt: Date) =>
         moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
-      ellipsis: true,
     },
     {
       title: "การมองเห็น",
@@ -259,7 +258,6 @@ const Newoption: React.FC = () => {
       key: "status",
       width: "80px",
       align: "center",
-      ellipsis: true,
       render: (status: boolean) =>
         status ? (
           <Tag color="green">เปิดการมองเห็น</Tag>
@@ -271,7 +269,7 @@ const Newoption: React.FC = () => {
       title: "ผู้อัปโหลด",
       dataIndex: "author",
       key: "author",
-      width: "100px",
+      width: "230px",
     },
     {
       title: "การจัดการ",
@@ -349,9 +347,7 @@ const Newoption: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกชื่อประเภทเอกสาร" }]}
             style={{ width: "300px" }}
           >
-            <Input placeholder="ชื่อประเภทเอกสาร" 
-              showCount
-              maxLength={100}/>
+            <Input placeholder="ชื่อประเภทเอกสาร" showCount maxLength={50} />
           </Form.Item>
           <Form.Item
             name="status"
@@ -408,9 +404,7 @@ const Newoption: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกชื่อประเภทเอกสาร" }]}
             style={{ width: "300px" }}
           >
-            <Input placeholder="ชื่อประเภทเอกสาร" 
-              showCount
-              maxLength={100}/>
+            <Input placeholder="ชื่อประเภทเอกสาร" showCount maxLength={50} />
           </Form.Item>
           <Form.Item
             name="status"
@@ -444,6 +438,7 @@ const Newoption: React.FC = () => {
       <Table
         dataSource={dataWithKey}
         columns={columns}
+        scroll={{ x: "max-content" }}
         rowKey="id"
         bordered
         pagination={{ pageSize: 10 }}

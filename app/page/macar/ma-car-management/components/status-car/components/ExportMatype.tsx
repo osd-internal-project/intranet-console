@@ -12,10 +12,10 @@ const ExportExcel: React.FC<ExportExcelProps> = ({ datamacartype }) => {
     const transdata = datamacartype.map((datadic) => {
       return {
         ลำดับ: datadic.key,
-        ประเภทการบำรุง: datadic.typeName,
-        รายละเอียดการบำรุงรักษา: datadic.detail,
+        ประเภทการตรวตสภาพ: datadic.typeName,
+        รายละเอียดการตรวตสภาพ: datadic.detail,
         ประเภทตรวจสภาพ: datadic.createdByName,
-        "วันที่ระบุ ( วัน/เดือน/ปี ชั่วโมง:นาที:วินาที )": new Date(
+        "วันที่ระบุ": new Date(
           datadic.createdAt
         )
           .toLocaleDateString("en-GB", {

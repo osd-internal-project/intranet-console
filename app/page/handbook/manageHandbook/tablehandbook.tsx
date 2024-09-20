@@ -55,7 +55,7 @@ const Tablehandbook: React.FC = () => {
 
   const fetchDataHandbook = async () => {
     try {
-      const maresponse = await managehandbookFileServices.gethandbookQuery();
+      const maresponse = await managehandbookFileServices.gethandbookFileQuery();
       const handbook: handbook[] = maresponse.map(
         (item: any, index: number) => ({
           ...item,
@@ -67,16 +67,34 @@ const Tablehandbook: React.FC = () => {
       message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
     }
   };
-  const handleDownload = (record: handbook) => {
+  const handleDownload = async (record: handbook) => {
     if (
       record.handbookFile &&
       record.handbookFile[0] &&
       record.handbookFile[0].fileName
     ) {
-      window.open(
-        `http://localhost:4003/api/public/handbook-file/${record.handbookFile[0].fileName}`,
-        "_blank"
-      );
+      const fileUrl = `http://localhost:4003/api/public/handbook-file/${record.handbookFile[0].fileName}?fileoriginalName=${record.fileName}`;
+  
+      try {
+        const response = await fetch(fileUrl);
+  
+        if (response.ok) {
+          const blob = await response.blob();
+          const link = document.createElement("a");
+  
+          const cleanFileName = record.fileName.replace(/[^\w\s.-]/gi, '_');
+          
+          link.href = window.URL.createObjectURL(blob);
+          link.download = cleanFileName;
+          link.click();
+  
+          window.URL.revokeObjectURL(link.href); // ล้าง memory หลังจากดาวน์โหลด
+        } else {
+          message.error("ไม่มีไฟล์ให้ดาวน์โหลด");
+        }
+      } catch (error) {
+        message.error("เกิดข้อผิดพลาดในการดาวน์โหลดไฟล์");
+      }
     } else {
       message.error("ไม่มีไฟล์ให้ดาวน์โหลด");
     }
@@ -107,30 +125,29 @@ const Tablehandbook: React.FC = () => {
   }));
   const columns: TableProps<handbook>["columns"] = [
     {
-      title: "ไอดี",
+      title: "ลำดับ",
       dataIndex: "key",
       key: "key",
       align: "center",
-      width: "20px",
+      width: "40px",
     },
     {
       title: "ชื่อไฟล์",
       dataIndex: "fileName",
       key: "fileName",
-      width: "200px",
+      width: "300px",
     },
     {
       title: "ประเภทเอกสาร",
       dataIndex: "filetype",
       key: "filetype",
-      width: "50px",
-      ellipsis: true,
+      width: "130px",
     },
     {
       title: "อัปเดตล่าสุด",
       dataIndex: "updatedAt",
       key: "updatedAt",
-      width: "50px",
+      width: "180px",
       render: (updatedAt: Date) =>
         moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
@@ -138,15 +155,14 @@ const Tablehandbook: React.FC = () => {
       title: "ผู้อัปโหลด",
       dataIndex: "author",
       key: "author",
-      width: "70px",
+      width: "200px",
     },
     {
       title: "ดาวโหลดไฟล์",
       dataIndex: "x",
       key: "x",
-      width: "50px",
+      
       align: "center",
-      ellipsis: true,
       render: (_record: number, row: any, _index: number) => (
         <Button
           icon={<DownloadOutlined />}
@@ -199,6 +215,7 @@ const Tablehandbook: React.FC = () => {
       <Table
         dataSource={dataWithKey}
         columns={columns}
+        scroll={{ x: "max-content" }}
         rowKey="id"
         bordered
         pagination={{ pageSize: 10 }}

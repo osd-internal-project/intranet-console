@@ -14,6 +14,7 @@ import {
   FormProps,
   Tooltip,
   Switch,
+  TableProps,
 } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../../services/manage-car.service";
@@ -118,7 +119,6 @@ const masterType: React.FC = () => {
   const updatedCarType: FormProps<MaCarType>["onFinish"] = async (values) => {
     setSubmitLoading(true);
     console.log(`${values}`);
-
     try {
       const updateMaCarType = {
         id: values?.id,
@@ -129,7 +129,6 @@ const masterType: React.FC = () => {
       };
       await manageCarServices.updateMaCarType(updateMaCarType);
       message.success("แก้ไขประเภทการตรวจสภาพสำเร็จ");
-
       fetchData();
       handleEditMaCarCancelType();
       setSubmitLoading(false);
@@ -154,39 +153,48 @@ const masterType: React.FC = () => {
     key: index + 1,
     index: index + 1,
   }));
-  const columns = [
+
+  const columns: TableProps<MaCarType>["columns"] = [
     {
       title: "ลำดับ",
       dataIndex: "index",
       key: "index",
+      align: "center",
+      width: "40px",
+      fixed: "left",
     },
     {
-      title: "ประเภทการบำรุง",
+      title: "ประเภทการตรวตสภาพ",
       dataIndex: "typeName",
       key: "typeName",
+      width: "300px",
+      fixed: "left",
     },
     {
       title: "รายละเอียดการตรวจสภาพ",
       dataIndex: "detail",
       key: "detail",
+      width: "300px",
     },
     {
       title: "ชื่อ-นามสกุล",
       dataIndex: "createdByName",
       key: "createdByName",
+      width: "200px",
     },
     {
       title: "เวลาการสร้าง",
       dataIndex: "createdAt",
       key: "createdAt",
+      width: "180px",
       render: (createdAt: Date) =>
-        moment(createdAt).format("DD-MM-YYYY HH:mm" + " น."),
+        moment(createdAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
-
     {
       title: "สถานะ",
       dataIndex: "status",
       key: "status",
+      align: "center",
       render: (status: boolean) =>
         status ? (
           <Tag color="green">เปิดการมอง</Tag>
@@ -198,6 +206,8 @@ const masterType: React.FC = () => {
       title: "การจัดการ",
       dataIndex: "manage",
       key: "manage",
+      width: "80px",
+      align: "center",
       render: (record: number, row: any, index: number) => (
         <Space size="middle">
           <Tooltip title="แก้ไข">
@@ -278,7 +288,12 @@ const masterType: React.FC = () => {
                 { required: true, message: "กรุณากรอกประเภทการตรวจสภาพ" },
               ]}
             >
-              <Input size="large" placeholder="ประเภทการตรวจสภาพ" />
+              <Input
+                size="large"
+                placeholder="ประเภทการตรวจสภาพ"
+                showCount
+                maxLength={50}
+              />
             </Form.Item>
             <Form.Item
               style={{
@@ -287,15 +302,17 @@ const masterType: React.FC = () => {
                 width: "590px",
               }}
               name="detail"
-              label={"รายละเอียดการบำรุงรักษา :"}
+              label={"รายละเอียดการตรวจสภาพ :"}
               rules={[
-                { required: true, message: "กรุณากรอกรายละเอียดการบำรุงรักษา" },
+                { required: true, message: "กรุณากรอกรายละเอียดการตรวจสภาพ" },
               ]}
             >
               <Input.TextArea
                 rows={8}
                 size="large"
-                placeholder="รายละเอียดการบำรุงรักษา"
+                placeholder="รายละเอียดการตรวจสภาพ"
+                showCount
+                maxLength={150}
               />
             </Form.Item>
             <Form.Item
@@ -378,7 +395,12 @@ const masterType: React.FC = () => {
                 { required: true, message: "กรุณากรอกประเภทการตรวจสภาพ" },
               ]}
             >
-              <Input size="large" placeholder="ประเภทการตรวจสภาพ" />
+              <Input
+                size="large"
+                placeholder="ประเภทการตรวจสภาพ"
+                showCount
+                maxLength={50}
+              />
             </Form.Item>
             <Form.Item
               style={{
@@ -387,15 +409,17 @@ const masterType: React.FC = () => {
                 width: "590px",
               }}
               name="detail"
-              label={"รายละเอียดการบำรุงรักษา :"}
+              label={"รายละเอียดการตรวจสภาพ :"}
               rules={[
-                { required: true, message: "กรุณากรอกรายละเอียดการบำรุงรักษา" },
+                { required: true, message: "กรุณากรอกรายละเอียดการตรวจสภาพ" },
               ]}
             >
               <Input.TextArea
                 rows={8}
                 size="large"
-                placeholder="รายละเอียดการบำรุงรักษา"
+                placeholder="รายละเอียดการตรวจสภาพ"
+                showCount
+                maxLength={150}
               />
             </Form.Item>
             <Form.Item

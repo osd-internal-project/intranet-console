@@ -526,9 +526,9 @@ const WarpupmaCar = () => {
       width: "100px",
       render: (text: number) => (
         <div style={{ textAlign: "right" }}>
-          {new Intl.NumberFormat('en-US', {
-            minimumFractionDigits: 2, 
-            maximumFractionDigits: 2  
+          {new Intl.NumberFormat("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
           }).format(text)}
         </div>
       ),
@@ -899,30 +899,44 @@ const WarpupmaCar = () => {
             name="wrapupMiles"
             label="เลขไมล์"
             rules={[
-              { required: true, message: "กรุณากรอกเลขไมล์" },
               {
+                required: true,
                 validator: async (_, value) => {
-                  if (value == undefined || value == "") {
+                  if (value === undefined || value === "") {
+                    // การตรวจสอบนี้จะถูกจัดการโดยกฎ required
                     return Promise.resolve();
                   }
+
                   const selectedCar = maData.find(
                     (car) => car.carName === formchange.getFieldValue("carName")
                   );
-                  if (selectedCar && value < selectedCar.carMile) {
-                    throw new Error(
-                      `เลขไมล์ต้องไม่น้อยกว่าเลขไมล์ของรถ ${selectedCar.carMile}`
-                    );
+
+                  if (selectedCar) {
+                    if (value === undefined || value === ""||value === null) {
+                      throw new Error(
+                        `กรุณากรอกเลขไมล์`
+                      );
+                    }
+                    if (value < 0) {
+                      throw new Error(
+                        `กรุณากรอกเลขไมล์`
+                      );
+                    }
+                    if (value < selectedCar.carMile) {
+                      throw new Error(
+                        `เลขไมล์ต้องไม่น้อยกว่าเลขไมล์ของรถ ${selectedCar.carMile}`
+                      );
+                    }
                   }
+
+                  return Promise.resolve();
                 },
               },
             ]}
           >
-            <InputNumber
-              // onChange={handleMileageChange}
-              value={mileage}
-              min={mileage || 0}
-            />
+            <InputNumber value={mileage} min={mileage || 0} />
           </Form.Item>
+
           <Form.Item
             name="vender"
             label="สถานที่การตรวจสภาพ"

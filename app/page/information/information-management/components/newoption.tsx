@@ -172,13 +172,13 @@ const Newoption: React.FC = () => {
       title: "รายละเอียด",
       dataIndex: "deteil",
       key: "deteil",
-      width: "100px",
+      width: "170px",
     },
     {
       title: "วันที่สร้าง",
       dataIndex: "createAt",
       key: "createAt",
-      width: "85px",
+      width: "170px",
       render: (createdAt: Date) =>
         moment(createdAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
@@ -186,7 +186,7 @@ const Newoption: React.FC = () => {
       title: "วันที่อัปเดต",
       dataIndex: "updatedAt",
       key: "updatedAt",
-      width: "85px",
+      width: "170px",
       render: (updatedAt: Date) =>
         moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
@@ -195,7 +195,7 @@ const Newoption: React.FC = () => {
       dataIndex: "status",
       key: "status",
       align: "center",
-      width: "70px",
+      width: "80px",
       render: (status: boolean) =>
         status ? (
           <Tag color="green">เปิดการมองเห็น</Tag>

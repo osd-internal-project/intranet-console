@@ -10,6 +10,21 @@ interface ExportExcelProps {
 const ExportExcel: React.FC<ExportExcelProps> = ({ datamacar }) => {
   const handleExport = () => {
     const transdata = datamacar.map((dataItem) => {
+      const dateEndFormatted = dataItem.dateEnd
+        ? new Date(dataItem.dateEnd).toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          })
+        : "-";
+      const dateStartFormatted = dataItem.dateStart
+        ? new Date(dataItem.dateStart).toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          })
+        : "-";
+
       return {
         ลำดับ: dataItem.key,
         เลขรถ: dataItem.carId ? dataItem.carId : "Null",
@@ -19,12 +34,8 @@ const ExportExcel: React.FC<ExportExcelProps> = ({ datamacar }) => {
         สถานที่เช็คสภาพ: dataItem.vender,
         รายละเอียดการตรวจ: dataItem.detail,
         ราคา: dataItem.cost,
-        วันที่ตรวจสภาพ: new Date(dataItem.dateStart)
-          .toISOString()
-          .split("T")[0],
-        วันตรวจสภาพครั้งถัดไป: new Date(dataItem.dateEnd)
-          .toISOString()
-          .split("T")[0],
+        วันที่ตรวจสภาพ: dateStartFormatted,
+        วันตรวจสภาพครั้งถัดไป: dateEndFormatted,
         หมายเหตุ: dataItem.remark,
         สถานะการตรวจเช็ค:
           dataItem.status === true
@@ -32,7 +43,7 @@ const ExportExcel: React.FC<ExportExcelProps> = ({ datamacar }) => {
             : dataItem.status === false
             ? "ยกเลิกการเช็ค"
             : "รอตรวจสภาพ",
-        "ชื่อ-นามสกุล":dataItem.createbyName,
+        "ชื่อ-นามสกุล": dataItem.createbyName,
       };
     });
 

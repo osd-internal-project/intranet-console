@@ -343,25 +343,27 @@ const Newoption: React.FC = () => {
       dataIndex: "key",
       key: "key",
       align: "center",
-      width: "45px",
+      width: "40px",
+      fixed: "left",
     },
     {
       title: "ชื่อข่าว",
       dataIndex: "newsName",
       key: "newsName",
-      width: "300px",
+      width: "350px",
+      fixed: "left",
     },
     {
       title: "ประเภทข่าว",
       dataIndex: "newsType",
       key: "newsType",
-      width: "80px",
+      width: "150px",
     },
     {
       title: "วันที่สร้าง",
       dataIndex: "phblishedAt",
       key: "phblishedAt",
-      width: "105px",
+      width: "170px",
       render: (phblishedAt: Date) =>
         moment(phblishedAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
@@ -369,7 +371,7 @@ const Newoption: React.FC = () => {
       title: "วันที่อัปเดต",
       dataIndex: "updatedAt",
       key: "updatedAt",
-      width: "105px",
+      width: "170px",
       render: (updatedAt: Date) =>
         moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
@@ -394,13 +396,13 @@ const Newoption: React.FC = () => {
       title: "ผู้เขียน",
       dataIndex: "author",
       key: "author",
-      width: "100px",
+      width: "170px",
     },
     {
       title: "การมองเห็น",
       dataIndex: "status",
       key: "status",
-      width: "75px",
+      width: "90px",
       align: "center",
       render: (status: boolean) =>
         status ? (
@@ -482,6 +484,7 @@ const Newoption: React.FC = () => {
       <Table
         dataSource={dataWithKey}
         columns={columns}
+        scroll={{ x: "max-content" }}
         rowKey="id"
         bordered
         pagination={{ pageSize: 10 }}

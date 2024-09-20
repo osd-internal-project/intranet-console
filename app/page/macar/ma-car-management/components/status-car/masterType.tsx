@@ -154,7 +154,7 @@ const masterType: React.FC = () => {
     index: index + 1,
   }));
 
-  const columns: TableProps<MaCarType>["columns"]  = [
+  const columns: TableProps<MaCarType>["columns"] = [
     {
       title: "ลำดับ",
       dataIndex: "index",
@@ -188,13 +188,12 @@ const masterType: React.FC = () => {
       key: "createdAt",
       width: "180px",
       render: (createdAt: Date) =>
-        moment(createdAt).format("DD-MM-YYYY HH:mm" + " น."),
+        moment(createdAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
       title: "สถานะ",
       dataIndex: "status",
       key: "status",
-      width: "80px",
       align: "center",
       render: (status: boolean) =>
         status ? (
@@ -289,7 +288,12 @@ const masterType: React.FC = () => {
                 { required: true, message: "กรุณากรอกประเภทการตรวจสภาพ" },
               ]}
             >
-              <Input size="large" placeholder="ประเภทการตรวจสภาพ" showCount maxLength={50}/>
+              <Input
+                size="large"
+                placeholder="ประเภทการตรวจสภาพ"
+                showCount
+                maxLength={50}
+              />
             </Form.Item>
             <Form.Item
               style={{
@@ -306,7 +310,9 @@ const masterType: React.FC = () => {
               <Input.TextArea
                 rows={8}
                 size="large"
-                placeholder="รายละเอียดการตรวจสภาพ" showCount maxLength={150}
+                placeholder="รายละเอียดการตรวจสภาพ"
+                showCount
+                maxLength={150}
               />
             </Form.Item>
             <Form.Item
@@ -389,7 +395,12 @@ const masterType: React.FC = () => {
                 { required: true, message: "กรุณากรอกประเภทการตรวจสภาพ" },
               ]}
             >
-              <Input size="large" placeholder="ประเภทการตรวจสภาพ" showCount maxLength={50} />
+              <Input
+                size="large"
+                placeholder="ประเภทการตรวจสภาพ"
+                showCount
+                maxLength={50}
+              />
             </Form.Item>
             <Form.Item
               style={{
@@ -406,7 +417,9 @@ const masterType: React.FC = () => {
               <Input.TextArea
                 rows={8}
                 size="large"
-                placeholder="รายละเอียดการตรวจสภาพ" showCount maxLength={150}
+                placeholder="รายละเอียดการตรวจสภาพ"
+                showCount
+                maxLength={150}
               />
             </Form.Item>
             <Form.Item

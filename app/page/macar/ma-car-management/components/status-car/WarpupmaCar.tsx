@@ -524,7 +524,14 @@ const WarpupmaCar = () => {
       key: "cost",
       align: "center",
       width: "100px",
-      render: (text: number) => new Intl.NumberFormat().format(text),
+      render: (text: number) => (
+        <div style={{ textAlign: "right" }}>
+          {new Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 2, 
+            maximumFractionDigits: 2  
+          }).format(text)}
+        </div>
+      ),
     },
     {
       title: "วันที่ตรวจสภาพ",
@@ -532,7 +539,7 @@ const WarpupmaCar = () => {
       key: "dateStart",
       align: "center",
       width: "140px",
-      render: (createdAt: Date) => moment(createdAt).format("YYYY/MM/DD"),
+      render: (createdAt: Date) => moment(createdAt).format("DD/MM/YYYY"),
     },
     {
       title: "วันตรวจสภาพครั้งถัดไป",
@@ -540,7 +547,8 @@ const WarpupmaCar = () => {
       key: "dateEnd",
       align: "center",
       width: "140px",
-      render: (createdAt: Date) => moment(createdAt).format("YYYY/MM/DD"),
+      render: (updateAT: Date | null) =>
+        updateAT ? moment(updateAT).format("DD/MM/YYYY") : "-",
     },
     {
       title: "หมายเหตุ",
@@ -762,7 +770,7 @@ const WarpupmaCar = () => {
           <Form.Item
             name="cost"
             label="ราคา"
-            // rules={[{ required: true, message: "กรุณากรอกราคา" }]}
+            rules={[{ required: true, message: "กรุณากรอกราคา" }]}
           >
             <InputNumber
               style={{ width: "100%" }}
@@ -773,6 +781,7 @@ const WarpupmaCar = () => {
               min={0}
             />
           </Form.Item>
+
           <Form.Item
             name="detail"
             label="รายละเอียดการตรวจสภาพ"

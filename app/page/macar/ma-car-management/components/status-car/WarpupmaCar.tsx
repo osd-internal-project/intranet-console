@@ -738,22 +738,35 @@ const WarpupmaCar = () => {
           </Form.Item>
           <Form.Item
             name="wrapupMiles"
-            label="เลขไมล์ ( ** ระบุข้อมูลได้ภายหลังส่วนของการแก้ไข )"
+            label="เลขไมล์"
             rules={[
-              { required: true, message: "กรุณากรอกเลขไมล์" },
               {
+                required: true,
                 validator: async (_, value) => {
-                  if (value == undefined || value == "") {
+                  if (value === undefined || value === "") {
+                    // การตรวจสอบนี้จะถูกจัดการโดยกฎ required
                     return Promise.resolve();
                   }
+
                   const selectedCar = maData.find(
                     (car) => car.carName === formchange.getFieldValue("carName")
                   );
-                  if (selectedCar && value < selectedCar.carMile) {
-                    throw new Error(
-                      `เลขไมล์ต้องไม่น้อยกว่าเลขไมล์ของรถ ${selectedCar.carMile}`
-                    );
+
+                  if (selectedCar) {
+                    if (value === undefined || value === "" || value === null) {
+                      throw new Error(`กรุณากรอกเลขไมล์`);
+                    }
+                    if (value < 0) {
+                      throw new Error(`กรุณากรอกเลขไมล์`);
+                    }
+                    if (value < selectedCar.carMile) {
+                      throw new Error(
+                        `เลขไมล์ต้องไม่น้อยกว่าเลขไมล์ของรถ ${selectedCar.carMile}`
+                      );
+                    }
                   }
+
+                  return Promise.resolve();
                 },
               },
             ]}
@@ -912,15 +925,11 @@ const WarpupmaCar = () => {
                   );
 
                   if (selectedCar) {
-                    if (value === undefined || value === ""||value === null) {
-                      throw new Error(
-                        `กรุณากรอกเลขไมล์`
-                      );
+                    if (value === undefined || value === "" || value === null) {
+                      throw new Error(`กรุณากรอกเลขไมล์`);
                     }
                     if (value < 0) {
-                      throw new Error(
-                        `กรุณากรอกเลขไมล์`
-                      );
+                      throw new Error(`กรุณากรอกเลขไมล์`);
                     }
                     if (value < selectedCar.carMile) {
                       throw new Error(

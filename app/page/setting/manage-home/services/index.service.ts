@@ -27,9 +27,7 @@ const ManageHomeService = (axiosInstance: AxiosInstance) => {
         .then((result) => result.data)
         .catch((err) => err);
     },
-    createSlideImage: async (body: any) => {
-      console.log(body);
-      
+    createSlideImage: async (body: any) => { 
       return await axiosInstance
         .post(`${baseUrlSlideImage}`, body)
         .then((res) => {

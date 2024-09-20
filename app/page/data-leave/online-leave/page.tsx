@@ -137,7 +137,7 @@ export default function Page() {
     if (value === true) {
       setParams((e: any) => ({ ...e, lengthDate: 1 }));
     } else if (value === false) {
-      setParams((e: any) => ({ ...e, lengthDate: -0.5 }));
+      setParams((e: any) => ({ ...e, lengthDate: value }));
     }
 
     setLoading(true);
@@ -257,8 +257,6 @@ export default function Page() {
     type_id: number,
     value: any
   ): Promise<boolean> => {
-    // console.log("value : " + value);
-    // console.log("type_id : " + type_id);
     try {
       let resultId: number;
       switch (type_id) {
@@ -409,7 +407,6 @@ export default function Page() {
     type_id: number,
     value: any
   ): Promise<boolean> => {
-
     const conflict = await checkLeaveHour(type_id, value);
     if (conflict) {
       message.warning({
@@ -422,8 +419,6 @@ export default function Page() {
   };
 
   const onfinishCreate = async (values: ITypeDataLeaveCreate) => {
-    // console.log(values);
-
     const userId = values.userId as string;
     const leaveStartDate = values.startDate as Date;
     const leaveEndDate = values.endDate as Date;
@@ -494,7 +489,6 @@ export default function Page() {
           }
 
           if (await checkDataLeaveHour(type_id, values)) {
-            // console.log(values);
             return;
           }
 

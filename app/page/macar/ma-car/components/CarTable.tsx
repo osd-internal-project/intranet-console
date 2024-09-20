@@ -18,11 +18,22 @@ import {
   TimePicker,
   Tooltip,
   Popconfirm,
+  Flex,
 } from "antd";
+import {
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  CloseCircleOutlined,
+  ExclamationCircleOutlined,
+  MinusCircleOutlined,
+  SyncOutlined,
+} from "@ant-design/icons";
 import type { FormProps, TableProps } from "antd";
 import { EditIcon, CancelMaCarIcon } from "@/components/icon";
 import dayjs from "dayjs";
-import ShareMaCarBook from "../share-ma-car-book/share-xlsx";
+// import ShareMaCarBook from "../share-ma-car-book/share-xlsx";
+import ShareMaCarBook from "../../common/export-excel";
+
 import { MaCarServices } from "../services/ma-car.service";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useSession } from "next-auth/react";
@@ -35,6 +46,7 @@ export interface props {
   pagination: TablePaginationConfig;
   changePagination: (pagination: TablePaginationConfig) => void;
   maCarData: any[];
+  maCarBookById: any[];
 }
 
 const MaCarBookTable: React.FC<props> = ({
@@ -44,6 +56,7 @@ const MaCarBookTable: React.FC<props> = ({
   setLoading,
   loading,
   maCarData,
+  maCarBookById,
 }: any): React.ReactElement => {
   const { data: session } = useSession();
   const { TextArea } = Input;
@@ -116,37 +129,52 @@ const MaCarBookTable: React.FC<props> = ({
       render: (status: string) => {
         let color = "";
         let text = "";
+        let icon = null;
+
         switch (status) {
           case "Process":
             color = "DodgerBlue";
             text = "กำลังรออนุมัติ";
+            icon = <SyncOutlined spin />;
             break;
           case "Cancel":
             color = "silver";
-            text = "ยกเลิกการจอง";
+            text = "ยกเลิก";
+            icon = <CloseCircleOutlined />;
             break;
           case "Approve":
             color = "LimeGreen";
             text = "อนุมัติแล้ว";
+            icon = <CheckCircleOutlined />;
             break;
           case "DisapProved":
             color = "OrangeRed";
             text = "ไม่อนุมัติ";
+            icon = <CloseCircleOutlined />;
             break;
           case "Return":
             color = "Gold";
             text = "แจ้งคืนรถแล้ว";
+            icon = <ExclamationCircleOutlined />;
             break;
           case "Completed":
             color = "MediumPurple";
             text = "คืนรถสำเร็จ";
+            icon = <CheckCircleOutlined />;
             break;
           default:
             color = "default";
             text = "Unknown Status";
             break;
         }
-        return <Tag color={color}>{text}</Tag>;
+
+        return (
+          // <div className=" flex justify-center p-1"></div>
+
+          <Tag color={color} icon={icon}>
+            {text}
+          </Tag>
+        );
       },
     },
     {
@@ -610,7 +638,7 @@ const MaCarBookTable: React.FC<props> = ({
 
       <Row gutter={[18, 18]}>
         <Col md={18}>
-          <ShareMaCarBook data={maCarBookData} />
+          <ShareMaCarBook data={maCarBookById} />
         </Col>
         <Col
           md={6}
@@ -622,6 +650,29 @@ const MaCarBookTable: React.FC<props> = ({
         ></Col>
       </Row>
 
+      <div>
+        <Flex gap="4px 0" wrap>
+          <Tag icon={<CheckCircleOutlined />} color="LimeGreen">
+            อนุมัติแล้ว
+          </Tag>
+          <Tag icon={<SyncOutlined spin />} color="DodgerBlue">
+            กำลังรออนุมัติ
+          </Tag>
+          <Tag icon={<CloseCircleOutlined />} color="OrangeRed">
+            ไม่อนุมัติ
+          </Tag>
+          <Tag icon={<ExclamationCircleOutlined />} color="Gold">
+            แจ้งคืนรถแล้ว
+          </Tag>
+          <Tag icon={<CheckCircleOutlined />} color="MediumPurple">
+            คืนรถสำเร็จ
+          </Tag>
+          <Tag icon={<MinusCircleOutlined />} color="silver">
+            ยกเลิก
+          </Tag>
+        </Flex>
+      </div>
+
       <Table
         columns={columns}
         dataSource={maCarBookData.docs}
@@ -630,7 +681,7 @@ const MaCarBookTable: React.FC<props> = ({
         onChange={changePagination}
         pagination={{ total: maCarBookData.total }}
         loading={loading}
-        style={{ marginTop: "15px" }}
+        style={{ marginTop: "5px" }}
         size="small"
       />
     </>

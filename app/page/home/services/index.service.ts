@@ -20,6 +20,17 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
           return;
         });
     },
+    getImage: async () => {
+      return await axiosInstance
+        .get(`${baseUrlSlideImage}/upload-image`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
 
     uploadFilesSlide: async (id: number, form: any) => {
       return await axiosInstance

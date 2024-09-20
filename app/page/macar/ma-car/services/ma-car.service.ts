@@ -39,6 +39,17 @@ export const MaCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    findMaCarBookById: async (createdById: any) => {
+      return await axiosInstance
+        .get(`${baseUrlApiMaCarBook}/${createdById}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return;
+        });
+    },
 
     createMaCar: async (body: any) => {
       return await axiosInstance

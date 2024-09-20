@@ -18,6 +18,7 @@ import {
   Input,
   TimePicker,
   DatePicker,
+  Flex,
 } from "antd";
 import {
   DeleteIcon,
@@ -25,6 +26,14 @@ import {
   CancelMaCarIcon,
   CarApproveIcon,
 } from "@/components/icon";
+import {
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  CloseCircleOutlined,
+  ExclamationCircleOutlined,
+  MinusCircleOutlined,
+  SyncOutlined,
+} from "@ant-design/icons";
 import type { TableProps, FormProps } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../services/manage-car.service";
@@ -119,39 +128,54 @@ const ManageCar: React.FC<props> = ({
       dataIndex: "carBookApprovedStatus",
       width: "100px",
       align: "center",
-      render: (status: string) => (
-        <Tag
-          color={
-            status === "Process"
-              ? "DodgerBlue"
-              : status === "Cancel"
-              ? "silver"
-              : status === "Approve"
-              ? "LimeGreen"
-              : status === "DisapProved"
-              ? "OrangeRed"
-              : status === "Return"
-              ? "Gold"
-              : status === "Completed"
-              ? "MediumPurple"
-              : undefined
-          }
-        >
-          {status === "Process"
-            ? "กำลังรออนุมัติ"
-            : status === "Cancel"
-            ? "ยกเลิกการจอง"
-            : status === "Approve"
-            ? "อนุมัติแล้ว"
-            : status === "DisapProved"
-            ? "ไม่อนุมัติ"
-            : status === "Return"
-            ? "แจ้งคืนรถแล้ว"
-            : status === "Completed"
-            ? "รับคืนรถสำเร็จ"
-            : ""}
-        </Tag>
-      ),
+      render: (status: string) => {
+        let color = "";
+        let text = "";
+        let icon = null;
+
+        switch (status) {
+          case "Process":
+            color = "DodgerBlue";
+            text = "กำลังรออนุมัติ";
+            icon = <SyncOutlined spin />;
+            break;
+          case "Cancel":
+            color = "silver";
+            text = "ยกเลิก";
+            icon = <CloseCircleOutlined />;
+            break;
+          case "Approve":
+            color = "LimeGreen";
+            text = "อนุมัติแล้ว";
+            icon = <CheckCircleOutlined />;
+            break;
+          case "DisapProved":
+            color = "OrangeRed";
+            text = "ไม่อนุมัติ";
+            icon = <CloseCircleOutlined />;
+            break;
+          case "Return":
+            color = "Gold";
+            text = "แจ้งคืนรถแล้ว";
+            icon = <ExclamationCircleOutlined />;
+            break;
+          case "Completed":
+            color = "MediumPurple";
+            text = "คืนรถสำเร็จ";
+            icon = <CheckCircleOutlined />;
+            break;
+          default:
+            color = "default";
+            text = "Unknown Status";
+            break;
+        }
+
+        return (
+          <Tag color={color} icon={icon}>
+            {text}
+          </Tag>
+        );
+      },
     },
     {
       title: "จัดการ",
@@ -422,7 +446,6 @@ const ManageCar: React.FC<props> = ({
   const onFinishFailed: FormProps<MaCarBookType>["onFinishFailed"] = (
     errorInfo
   ) => {
-    console.log("Failed:", errorInfo);
   };
 
   return (
@@ -776,6 +799,28 @@ const ManageCar: React.FC<props> = ({
           </Form.Item>
         </Form>
       </Modal>
+      <div>
+        <Flex gap="4px 0" wrap>
+          <Tag icon={<CheckCircleOutlined />} color="LimeGreen">
+            อนุมัติแล้ว
+          </Tag>
+          <Tag icon={<SyncOutlined spin />} color="DodgerBlue">
+            กำลังรออนุมัติ
+          </Tag>
+          <Tag icon={<CloseCircleOutlined />} color="OrangeRed">
+            ไม่อนุมัติ
+          </Tag>
+          <Tag icon={<ExclamationCircleOutlined />} color="Gold">
+            แจ้งคืนรถแล้ว
+          </Tag>
+          <Tag icon={<CheckCircleOutlined />} color="MediumPurple">
+            คืนรถสำเร็จ
+          </Tag>
+          <Tag icon={<MinusCircleOutlined />} color="silver">
+            ยกเลิก
+          </Tag>
+        </Flex>
+      </div>
 
       <Table
         columns={columns}
@@ -784,6 +829,7 @@ const ManageCar: React.FC<props> = ({
         pagination={{ total: maCarBookData.total }}
         onChange={changePagination}
         size="small"
+        style={{ marginTop: "5px" }}
       />
     </>
   );

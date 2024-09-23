@@ -651,7 +651,7 @@ const MaCarBookTable: React.FC<props> = ({
       </Row>
 
       <div>
-        <Flex gap="4px 0" wrap>
+        <Flex gap="4px 4px" wrap>
           <Tag icon={<CheckCircleOutlined />} color="LimeGreen">
             อนุมัติแล้ว
           </Tag>

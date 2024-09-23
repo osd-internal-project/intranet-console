@@ -445,8 +445,7 @@ const ManageCar: React.FC<props> = ({
 
   const onFinishFailed: FormProps<MaCarBookType>["onFinishFailed"] = (
     errorInfo
-  ) => {
-  };
+  ) => {};
 
   return (
     <>
@@ -800,7 +799,7 @@ const ManageCar: React.FC<props> = ({
         </Form>
       </Modal>
       <div>
-        <Flex gap="4px 0" wrap>
+        <Flex gap="4px 4px" wrap>
           <Tag icon={<CheckCircleOutlined />} color="LimeGreen">
             อนุมัติแล้ว
           </Tag>

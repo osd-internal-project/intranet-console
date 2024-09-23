@@ -80,7 +80,6 @@ export default function Page() {
       return { value: event.typeId, label: event.typeName };
     });
     const groupId = session?.user.ownerGroup;
-
     if (groupId) {
       const dataGroupDetail = await dataleaveserviceUser.getUserGroupByGroupId(
         groupId
@@ -482,6 +481,7 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
             groupId: session?.user.ownerGroup,
+            attrachFile: attendFiles[0]?.name,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -589,6 +589,7 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
             groupId: session?.user.ownerGroup,
+            attrachFile: attendFiles[0].name,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -688,6 +689,7 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
             groupId: session?.user.ownerGroup,
+            attrachFile: attendFiles[0].name,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -786,6 +788,7 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
             groupId: session?.user.ownerGroup,
+            attrachFile: attendFiles[0].name,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -883,6 +886,7 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
             groupId: session?.user.ownerGroup,
+            attrachFile: attendFiles[0].name,
           };
 
           if (await checkDataLeaveCancel(type_id)) {

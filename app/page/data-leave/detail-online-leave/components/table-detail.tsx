@@ -82,7 +82,7 @@ export const TableDetail: React.FC<props> = ({
         let icon = null;
 
         switch (e) {
-          case "waitting": 
+          case "waitting":
             color = "DodgerBlue";
             text = "WAITING";
             icon = <SyncOutlined spin />;
@@ -111,7 +111,6 @@ export const TableDetail: React.FC<props> = ({
         );
       },
     },
-
     {
       key: "userApproved",
       dataIndex: "userApproved",

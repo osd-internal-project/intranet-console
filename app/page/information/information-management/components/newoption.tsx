@@ -159,25 +159,26 @@ const Newoption: React.FC = () => {
       key: "key",
       width: "40px",
       align: "center",
+      fixed: "left",
     },
     {
       title: "ชื่อประเภทข่าว",
       dataIndex: "nameType",
       key: "nameType",
       width: "300px",
+      fixed: "left",
     },
     {
       title: "รายละเอียด",
       dataIndex: "deteil",
       key: "deteil",
-      width: "100px",
-      ellipsis: true,
+      width: "170px",
     },
     {
       title: "วันที่สร้าง",
       dataIndex: "createAt",
       key: "createAt",
-      width: "85px",
+      width: "170px",
       render: (createdAt: Date) =>
         moment(createdAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
@@ -185,7 +186,7 @@ const Newoption: React.FC = () => {
       title: "วันที่อัปเดต",
       dataIndex: "updatedAt",
       key: "updatedAt",
-      width: "85px",
+      width: "170px",
       render: (updatedAt: Date) =>
         moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
@@ -194,7 +195,7 @@ const Newoption: React.FC = () => {
       dataIndex: "status",
       key: "status",
       align: "center",
-      width: "70px",
+      width: "80px",
       render: (status: boolean) =>
         status ? (
           <Tag color="green">เปิดการมองเห็น</Tag>
@@ -282,7 +283,7 @@ const Newoption: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกชื่อประเภทข่าวสาร" }]}
             style={{ width: "460px" }}
           >
-            <Input placeholder="ชื่อประเภทข่าวสาร" />
+            <Input placeholder="ชื่อประเภทข่าวสาร" showCount maxLength={50} />
           </Form.Item>
           <Form.Item
             name="deteil"
@@ -290,7 +291,7 @@ const Newoption: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกรายละเอียดข่าวสาร" }]}
             style={{ width: "460px" }}
           >
-            <Input.TextArea rows={12} placeholder="รายละเอียดข่าวสาร" />
+            <Input.TextArea rows={12} placeholder="รายละเอียดข่าวสาร" showCount maxLength={200} />
           </Form.Item>
           <Form.Item
             name="status"
@@ -347,7 +348,7 @@ const Newoption: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกชื่อประเภทข่าวสาร" }]}
             style={{ width: "460px" }}
           >
-            <Input placeholder="ชื่อประเภทข่าวสาร" />
+            <Input placeholder="ชื่อประเภทข่าวสาร" showCount maxLength={50}/>
           </Form.Item>
           <Form.Item
             name="deteil"
@@ -355,7 +356,7 @@ const Newoption: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกรายละเอียดข่าวสาร" }]}
             style={{ width: "460px" }}
           >
-            <Input.TextArea rows={12} placeholder="รายละเอียดข่าวสาร" />
+            <Input.TextArea rows={12} placeholder="รายละเอียดข่าวสาร" showCount maxLength={200}/>
           </Form.Item>
           <Form.Item
             name="status"
@@ -393,6 +394,7 @@ const Newoption: React.FC = () => {
       <Table
         dataSource={dataWithKey}
         columns={columns}
+        scroll={{ x: "max-content" }}
         rowKey="id"
         bordered
         pagination={{ pageSize: 10 }}

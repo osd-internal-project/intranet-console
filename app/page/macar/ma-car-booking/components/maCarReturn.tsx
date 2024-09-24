@@ -15,7 +15,16 @@ import {
   DatePicker,
   InputNumber,
   TimePicker,
+  Flex,
 } from "antd";
+import {
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  CloseCircleOutlined,
+  ExclamationCircleOutlined,
+  MinusCircleOutlined,
+  SyncOutlined,
+} from "@ant-design/icons";
 import type { TableProps, FormProps } from "antd";
 import dayjs from "dayjs";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -106,37 +115,50 @@ const MaCarReturn: React.FC<props> = ({
       render: (status: string) => {
         let color = "";
         let text = "";
+        let icon = null;
+
         switch (status) {
           case "Process":
             color = "DodgerBlue";
             text = "กำลังรออนุมัติ";
+            icon = <SyncOutlined spin />;
+            break;
+          case "Cancel":
+            color = "silver";
+            text = "ยกเลิก";
+            icon = <CloseCircleOutlined />;
             break;
           case "Approve":
             color = "LimeGreen";
             text = "อนุมัติแล้ว";
-            break;
-          case "Cancel":
-            color = "silver";
-            text = "ยกเลิกการจอง";
-            break;
-          case "Return":
-            color = "Gold";
-            text = "แจ้งคืนรถแล้ว";
-            break;
-          case "Completed":
-            color = "MediumPurple";
-            text = "คืนรถสำเร็จ";
+            icon = <CheckCircleOutlined />;
             break;
           case "DisapProved":
             color = "OrangeRed";
             text = "ไม่อนุมัติ";
+            icon = <CloseCircleOutlined />;
+            break;
+          case "Return":
+            color = "Gold";
+            text = "แจ้งคืนรถแล้ว";
+            icon = <ExclamationCircleOutlined />;
+            break;
+          case "Completed":
+            color = "MediumPurple";
+            text = "คืนรถสำเร็จ";
+            icon = <CheckCircleOutlined />;
             break;
           default:
             color = "default";
             text = "Unknown Status";
             break;
         }
-        return <Tag color={color}>{text}</Tag>;
+
+        return (
+          <Tag color={color} icon={icon}>
+            {text}
+          </Tag>
+        );
       },
     },
     {
@@ -145,7 +167,7 @@ const MaCarReturn: React.FC<props> = ({
       align: "center",
       render: (_: any, record: MaCarBookType) => {
         return (
-          <Space >
+          <Space>
             <Button
               type="link"
               onClick={() => {
@@ -695,12 +717,34 @@ const MaCarReturn: React.FC<props> = ({
           )}
         </Form>
       </Modal>
-
+      <div>
+        <Flex gap="4px 4px" wrap>
+          <Tag icon={<CheckCircleOutlined />} color="LimeGreen">
+            อนุมัติแล้ว
+          </Tag>
+          <Tag icon={<SyncOutlined spin />} color="DodgerBlue">
+            กำลังรออนุมัติ
+          </Tag>
+          <Tag icon={<CloseCircleOutlined />} color="OrangeRed">
+            ไม่อนุมัติ
+          </Tag>
+          <Tag icon={<ExclamationCircleOutlined />} color="Gold">
+            แจ้งคืนรถแล้ว
+          </Tag>
+          <Tag icon={<CheckCircleOutlined />} color="MediumPurple">
+            คืนรถสำเร็จ
+          </Tag>
+          <Tag icon={<MinusCircleOutlined />} color="silver">
+            ยกเลิก
+          </Tag>
+        </Flex>
+      </div>
       <Table
         columns={columns}
         dataSource={maCarBookData}
         loading={loading}
         size="small"
+        style={{ marginTop: "5px" }}
       />
     </>
   );

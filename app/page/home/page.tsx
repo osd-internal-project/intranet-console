@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, message } from "antd";
+import { Card, message, Avatar } from "antd";
 import MeetingRoomTableComponent from "./components/MeetingRoomTable";
 import NewsCarouselComponent from "./components/NewsCarousel";
 import HolidaysCalendarComponent from "./components/HolidaysCalendar";
@@ -72,7 +72,6 @@ export default function HomePage() {
   return (
     <>
       <BigCarouselComponent loading={loading} slideImage={slideImage} />
-
       <div className="my-2" />
       <div className="grid md:grid-cols-3">
         <div className="px-2 mb-4">
@@ -103,7 +102,6 @@ export default function HomePage() {
           </Card>
         </div>
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2">
           <Card
@@ -141,8 +139,6 @@ export default function HomePage() {
           </Card>
         </div>
       </div>
-
-      <div className="my-6"></div>
     </>
   );
 }

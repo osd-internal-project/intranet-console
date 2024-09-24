@@ -50,6 +50,7 @@ export interface MaCarBookType {
   idProvinces: string;
   remarkApproved: string;
   remarkCancel: string;
+  // docs: dataMaCarbook[];
 }
 
 export interface dataMaCarbook {

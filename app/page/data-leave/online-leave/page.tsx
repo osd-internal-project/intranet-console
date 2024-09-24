@@ -80,7 +80,6 @@ export default function Page() {
       return { value: event.typeId, label: event.typeName };
     });
     const groupId = session?.user.ownerGroup;
-
     if (groupId) {
       const dataGroupDetail = await dataleaveserviceUser.getUserGroupByGroupId(
         groupId
@@ -113,7 +112,6 @@ export default function Page() {
   };
 
   const onChangeParams = (value: any, type: string) => {
-
     if (type === "type") {
       setParams((e: any) => ({ ...e, typeId: value }));
     }
@@ -138,7 +136,7 @@ export default function Page() {
     if (value === true) {
       setParams((e: any) => ({ ...e, lengthDate: 1 }));
     } else if (value === false) {
-      setParams((e: any) => ({ ...e, lengthDate: -0.5 }));
+      setParams((e: any) => ({ ...e, lengthDate: value }));
     }
 
     setLoading(true);
@@ -483,6 +481,7 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
             groupId: session?.user.ownerGroup,
+            attrachFile: attendFiles[0]?.name,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -590,6 +589,7 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
             groupId: session?.user.ownerGroup,
+            attrachFile: attendFiles[0].name,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -689,6 +689,7 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
             groupId: session?.user.ownerGroup,
+            attrachFile: attendFiles[0].name,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -787,6 +788,7 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
             groupId: session?.user.ownerGroup,
+            attrachFile: attendFiles[0].name,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -884,6 +886,7 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
             groupId: session?.user.ownerGroup,
+            attrachFile: attendFiles[0].name,
           };
 
           if (await checkDataLeaveCancel(type_id)) {

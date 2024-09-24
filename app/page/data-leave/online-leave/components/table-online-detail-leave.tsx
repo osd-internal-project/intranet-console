@@ -38,20 +38,23 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       dataIndex: "haveLeft",
       title: "ลามาแล้ว",
       render: (value: number, row: ITypetypeleave) => {
+        const rowClass = rowClassName(row);
+        let color: string | undefined;
         const wholeDays = Math.floor(value);
         const totalHoursDecimal = parseFloat((value % 1).toFixed(2));
         const totalHours = Math.floor(totalHoursDecimal * 10);
         const totalMinutesRaw = (totalHoursDecimal * 10) % 1;
         let totalMinutes = Math.round(totalMinutesRaw * 10);
         let timeDisplay = `${totalHours} ชม.`;
+
         if (totalMinutes > 0) {
           timeDisplay = `${totalHours}.${totalMinutes} ชม.`;
         }
-        const rowClass = rowClassName(row);
-        let color: string | undefined;
+
         if (rowClass === "disabled-row") {
           color = "#e0e0e0";
         }
+
         return (
           <div className="flex justify-center">
             <Tag className="w-full flex justify-center" color={color}>
@@ -66,17 +69,23 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       dataIndex: "limitLeaveLastResult",
       title: "คงเหลือ",
       render: (value: number, row: ITypetypeleave) => {
-        const wholeDays = Math.floor(value);
+        const rowClass = rowClassName(row);
+        let color: string | undefined;
+        let wholeDays = Math.floor(value);
         const totalHoursDecimal = Number((value % 1).toFixed(2));
-        const totalHours = Math.floor(totalHoursDecimal * 10);
+        let totalHours = Math.floor(totalHoursDecimal * 10);
         const totalMinutesRaw = totalHoursDecimal * 10;
         const totalMinutes = Math.round((totalMinutesRaw * 10) % 10);
+        if (totalHours === 8) {
+          wholeDays += 1;
+          totalHours = 0;
+        }
+        
         let timeDisplay = `${totalHours} ชม.`;
+
         if (totalMinutes > 0) {
           timeDisplay = `${totalHours}.${totalMinutes} ชม.`;
         }
-        const rowClass = rowClassName(row);
-        let color: string | undefined;
         if (rowClass === "disabled-row") {
           color = "#e0e0e0";
         }
@@ -96,15 +105,23 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       title: "ลาครั้งนี้",
       render: (value: string, row: ITypetypeleave) => {
         const isSelected = row.typeId === params.typeId;
-        let days = isSelected ? params.lengthDate : 0;
-        let hours = isSelected ? params.lengthTime : 0;
+        let days = isSelected ? (params.lengthDate ? params.lengthDate : 0) : 0;
+        let hours = isSelected
+          ? params.lengthTime
+            ? params.lengthTime
+            : 0
+          : 0;
+
         days = days < 0 ? 1 : days;
         hours = hours < 0 ? 1 : hours;
+
         const rowClass = rowClassName(row);
         let color: string | undefined;
+
         if (rowClass === "disabled-row") {
           color = "#e0e0e0";
         }
+
         return (
           <div className="flex justify-center">
             <Tag className="w-full flex justify-center" color={color}>
@@ -128,13 +145,22 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         let lengthTime = params.lengthTime;
         let totalMinutesRaw = (totalHoursDecimal * 10) % 1;
         let totalMinutes = Math.round(totalMinutesRaw * 10);
+
         if (isSelected) {
-          totalHours = totalHours + lengthTime;
+          const lengthTimeHours = Math.floor(lengthTime);
+          const lengthTimeMinutes = Math.round((lengthTime % 1) * 10);
+          totalHours += lengthTimeHours;
+          totalMinutes += lengthTimeMinutes;
+        }
+        if (totalMinutes >= 8 && totalMinutes <= 10) {
+          totalHours += Math.floor(totalMinutes / 10);
+          totalMinutes = totalMinutes % 10;
         }
         if (totalHours >= 8) {
           totalDays += Math.floor(totalHours / 8);
           totalHours = totalHours % 8;
         }
+
         const isOverLimit = totalDays > row.limitLeaveLastResult;
         const hasDateRange = params.startDate && params.endDate;
         const rowClass = rowClassName(row);
@@ -177,12 +203,11 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       dataIndex: "limitLeave",
       title: "ระยะเวลาในการลา",
       render: (values: string, row: ITypetypeleave, index: number) => {
-        if (row.typeId === 3) {
-          return (
-            <div className="flex justify-center">{`3,6,10,12 วัน(ตามอายุงาน)`}</div>
-          );
-        }
-        return <div className="flex justify-center">{`${values} วัน`}</div>;
+        return (
+          <Typography style={{ textAlign: "center" }}>
+            {row.typeId === 3 ? "3,6,10,12 วัน (ตามอายุงาน)" : `${values} วัน`}
+          </Typography>
+        );
       },
     },
     {
@@ -190,10 +215,12 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       dataIndex: "forwardLeave",
       title: "เงื่อนไขการลา",
       render: (values: number, row: ITypetypeleave, index: number) => {
-        return values ? (
-          <Typography>{`ลาล่วงหน้า ${values} วัน`} </Typography>
-        ) : (
-          <Typography>{`สามารถลาย้อนหลังได้`}</Typography>
+        const isSpecialType = [6, 9, 11, 12].includes(row.typeId);
+        return (
+          <Typography>
+            {values ? `ลาล่วงหน้า ${values} วัน` : "สามารถลาย้อนหลังได้"}
+            {isSpecialType && <span style={{ color: "red" }}> *</span>}{" "}
+          </Typography>
         );
       },
     },
@@ -250,6 +277,16 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
           dataSource={typeLeaveTable}
           rowKey={(e: ITypetypeleave) => e.id}
           pagination={{ pageSize: 13, position: ["none"] }}
+          summary={() => (
+            <Table.Summary.Row>
+              <Table.Summary.Cell index={0} colSpan={columnsDetail.length}>
+                <div style={{ textAlign: "left" }}>
+                  หมายเหตุ : <span style={{ color: "red" }}>*</span>{" "}
+                  ประเภทการลาที่รวมวันหยุด !
+                </div>
+              </Table.Summary.Cell>
+            </Table.Summary.Row>
+          )}
         />
       </Modal>
     </>

@@ -74,7 +74,7 @@ export interface MaCarwarpup {
   createdAt: string;
   updatedAt: string;
   status?: boolean;
-  createbyName?:string;
+  createbyName?: string;
   maCarWrapupImage: MaCarWrapupImage[];
 }
 
@@ -164,7 +164,6 @@ const WarpupmaCar = () => {
     form.setFieldsValue({ wrapupMiles: carmilesData?.carMile });
   };
 
-
   const fetchDataType = async () => {
     try {
       const maresponse = await manageCarServices.getMaCarQueryType();
@@ -216,7 +215,7 @@ const WarpupmaCar = () => {
         cost: values?.cost ?? 0,
         dateStart: values.dateStart,
         dateEnd: values.dateEnd,
-        createbyName:`${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+        createbyName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
         remark: values?.remark ?? "",
         status: null,
       },
@@ -241,18 +240,11 @@ const WarpupmaCar = () => {
       }
       if (response) {
         message.success("เพิ่มการตรวจสภาพรถสำเร็จ");
-
         fetchDataWarpup();
-        setAttendFiles([]);
-
-        form.resetFields();
       } else {
         message.error("เพิ่มการตรวจสภาพรถไม่สำเร็จ");
-        form.resetFields();
       }
       setIsmodlaOpencreate(false);
-
-      fetchDataWarpup();
       setAttendFiles([]);
       form.resetFields();
       setSubmitLoading(false);
@@ -277,7 +269,7 @@ const WarpupmaCar = () => {
       wrapupMiles: new String(values.wrapupMiles),
       detail: values.detail,
       cost: values.cost,
-      createbyName:`${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+      createbyName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
       dateStart: new Date(values.dateStart),
       dateEnd: new Date(values.dateEnd),
       remark: values.remark,
@@ -501,7 +493,7 @@ const WarpupmaCar = () => {
       width: "250px",
     },
     {
-      title: "ประเภทตรวจสภาพ",
+      title: "ประเภทการตรวจสภาพ",
       dataIndex: "typeName",
       key: "typeName",
       width: "170px",
@@ -532,7 +524,14 @@ const WarpupmaCar = () => {
       key: "cost",
       align: "center",
       width: "100px",
-      render: (text: number) => new Intl.NumberFormat().format(text),
+      render: (text: number) => (
+        <div style={{ textAlign: "right" }}>
+          {new Intl.NumberFormat("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }).format(text)}
+        </div>
+      ),
     },
     {
       title: "วันที่ตรวจสภาพ",
@@ -540,7 +539,7 @@ const WarpupmaCar = () => {
       key: "dateStart",
       align: "center",
       width: "140px",
-      render: (createdAt: Date) => moment(createdAt).format("YYYY/MM/DD"),
+      render: (createdAt: Date) => moment(createdAt).format("DD/MM/YYYY"),
     },
     {
       title: "วันตรวจสภาพครั้งถัดไป",
@@ -548,7 +547,8 @@ const WarpupmaCar = () => {
       key: "dateEnd",
       align: "center",
       width: "140px",
-      render: (createdAt: Date) => moment(createdAt).format("YYYY/MM/DD"),
+      render: (updateAT: Date | null) =>
+        updateAT ? moment(updateAT).format("DD/MM/YYYY") : "-",
     },
     {
       title: "หมายเหตุ",
@@ -738,22 +738,35 @@ const WarpupmaCar = () => {
           </Form.Item>
           <Form.Item
             name="wrapupMiles"
-            label="เลขไมล์ ( ** ระบุข้อมูลได้ภายหลังส่วนของการแก้ไข )"
+            label="เลขไมล์"
             rules={[
-              { required: true, message: "กรุณากรอกเลขไมล์" },
               {
+                required: true,
                 validator: async (_, value) => {
-                  if (value == undefined || value == "") {
+                  if (value === undefined || value === "") {
+                    // การตรวจสอบนี้จะถูกจัดการโดยกฎ required
                     return Promise.resolve();
                   }
+
                   const selectedCar = maData.find(
                     (car) => car.carName === formchange.getFieldValue("carName")
                   );
-                  if (selectedCar && value < selectedCar.carMile) {
-                    throw new Error(
-                      `เลขไมล์ต้องไม่น้อยกว่าเลขไมล์ของรถ ${selectedCar.carMile}`
-                    );
+
+                  if (selectedCar) {
+                    if (value === undefined || value === "" || value === null) {
+                      throw new Error(`กรุณากรอกเลขไมล์`);
+                    }
+                    if (value < 0) {
+                      throw new Error(`กรุณากรอกเลขไมล์`);
+                    }
+                    if (value < selectedCar.carMile) {
+                      throw new Error(
+                        `เลขไมล์ต้องไม่น้อยกว่าเลขไมล์ของรถ ${selectedCar.carMile}`
+                      );
+                    }
                   }
+
+                  return Promise.resolve();
                 },
               },
             ]}
@@ -770,7 +783,7 @@ const WarpupmaCar = () => {
           <Form.Item
             name="cost"
             label="ราคา"
-            // rules={[{ required: true, message: "กรุณากรอกราคา" }]}
+            rules={[{ required: true, message: "กรุณากรอกราคา" }]}
           >
             <InputNumber
               style={{ width: "100%" }}
@@ -781,6 +794,7 @@ const WarpupmaCar = () => {
               min={0}
             />
           </Form.Item>
+
           <Form.Item
             name="detail"
             label="รายละเอียดการตรวจสภาพ"
@@ -788,7 +802,12 @@ const WarpupmaCar = () => {
             //   { required: true, message: "กรุณากรอกรายละเอียดการตรวจสภาพ" },
             // ]}
           >
-            <Input.TextArea placeholder="รายละเอียดการตรวจสภาพ" rows={4} />
+            <Input.TextArea
+              placeholder="รายละเอียดการตรวจสภาพ"
+              rows={4}
+              showCount
+              maxLength={150}
+            />
           </Form.Item>
           <Form.Item
             name="dateStart"
@@ -805,7 +824,7 @@ const WarpupmaCar = () => {
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item name="remark" label="หมายเหตุ">
-            <Input.TextArea rows={2} />
+            <Input.TextArea rows={2} showCount maxLength={150} />
           </Form.Item>
           <Form.Item valuePropName="filelist">
             <div
@@ -829,7 +848,9 @@ const WarpupmaCar = () => {
                   showDownloadIcon: false,
                 }}
               >
-                <Button icon={<UploadOutlined />}>อัปโหลดรูปภาพและเอกสาร</Button>
+                <Button icon={<UploadOutlined />}>
+                  อัปโหลดรูปภาพและเอกสาร
+                </Button>
               </Upload>
             </div>
           </Form.Item>
@@ -891,36 +912,46 @@ const WarpupmaCar = () => {
             name="wrapupMiles"
             label="เลขไมล์"
             rules={[
-              { required: true, message: "กรุณากรอกเลขไมล์" },
               {
+                required: true,
                 validator: async (_, value) => {
-                  if (value == undefined || value == "") {
+                  if (value === undefined || value === "") {
+                    // การตรวจสอบนี้จะถูกจัดการโดยกฎ required
                     return Promise.resolve();
                   }
+
                   const selectedCar = maData.find(
                     (car) => car.carName === formchange.getFieldValue("carName")
                   );
-                  if (selectedCar && value < selectedCar.carMile) {
-                    throw new Error(
-                      `เลขไมล์ต้องไม่น้อยกว่าเลขไมล์ของรถ ${selectedCar.carMile}`
-                    );
+
+                  if (selectedCar) {
+                    if (value === undefined || value === "" || value === null) {
+                      throw new Error(`กรุณากรอกเลขไมล์`);
+                    }
+                    if (value < 0) {
+                      throw new Error(`กรุณากรอกเลขไมล์`);
+                    }
+                    if (value < selectedCar.carMile) {
+                      throw new Error(
+                        `เลขไมล์ต้องไม่น้อยกว่าเลขไมล์ของรถ ${selectedCar.carMile}`
+                      );
+                    }
                   }
+
+                  return Promise.resolve();
                 },
               },
             ]}
           >
-            <InputNumber
-              // onChange={handleMileageChange}
-              value={mileage}
-              min={mileage || 0}
-            />
+            <InputNumber value={mileage} min={mileage || 0} />
           </Form.Item>
+
           <Form.Item
             name="vender"
             label="สถานที่การตรวจสภาพ"
             rules={[{ required: true, message: "กรุณากรอกสถานที่การตรวจสภาพ" }]}
           >
-            <Input placeholder="โปรดเลือกสถานที่การตรวจสภาพ"/>
+            <Input placeholder="โปรดเลือกสถานที่การตรวจสภาพ" />
           </Form.Item>
           <Form.Item
             name="cost"
@@ -943,7 +974,7 @@ const WarpupmaCar = () => {
               { required: true, message: "กรุณากรอกรายละเอียดการตรวจสภาพ" },
             ]}
           >
-            <Input.TextArea rows={4} />
+            <Input.TextArea rows={4} showCount maxLength={150} />
           </Form.Item>
           <Form.Item
             name="dateStart"
@@ -955,12 +986,17 @@ const WarpupmaCar = () => {
           <Form.Item
             name="dateEnd"
             label="วันที่่ตรวจสภาพครั้งถัดไป"
-            rules={[{ required: true, message: "กรุณาเลือกวันที่่ตรวจสภาพครั้งถัดไป" }]}
+            rules={[
+              {
+                required: true,
+                message: "กรุณาเลือกวันที่่ตรวจสภาพครั้งถัดไป",
+              },
+            ]}
           >
             <DatePicker style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item name="remark" label="หมายเหตุ">
-            <Input.TextArea rows={2} />
+            <Input.TextArea rows={2} showCount maxLength={150} />
           </Form.Item>
           <Form.Item label="รูปภาพปัจจุบัน:">
             {existingFiles.map((file, index) => (
@@ -1007,7 +1043,9 @@ const WarpupmaCar = () => {
                 multiple={true}
                 accept=".png,.jpg,.jpeg,.pdf"
               >
-                <Button icon={<UploadOutlined />}>อัปโหลดรูปภาพและเอกสาร</Button>
+                <Button icon={<UploadOutlined />}>
+                  อัปโหลดรูปภาพและเอกสาร
+                </Button>
               </Upload>
             </div>
           </Form.Item>

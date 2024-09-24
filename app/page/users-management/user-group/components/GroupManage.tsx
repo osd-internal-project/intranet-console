@@ -175,7 +175,6 @@ const GroupManage: React.FC<props> = ({
   };
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
   };
 
   const onFinishEdit = async (values: groupDetail) => {
@@ -288,7 +287,7 @@ const GroupManage: React.FC<props> = ({
       <Card className="mx-2 my-2 md:my-0  " style={{ minHeight: " 500px" }}>
         <div className="grid grid-cols-1 gap-0 space-y-5 ">
           <Row>
-            <Col span={12}>
+            <Col span={10}>
               <div>
                 <div className=" text-2xl  font-semibold inline-block mb-3">
                   Group Detail
@@ -300,7 +299,7 @@ const GroupManage: React.FC<props> = ({
                 </div>
               </div>
             </Col>
-            <Col span={12} style={{ justifyContent: "end", display: "flex" }}>
+            <Col span={14} style={{ justifyContent: "end", display: "flex" }}>
               <div className=" inline-block space-x-2 ">
                 <Button
                   type="primary"

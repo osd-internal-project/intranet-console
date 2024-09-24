@@ -2,7 +2,6 @@ import { AxiosInstance } from "axios";
 
 export const ManagehandbookFileServices = (axiosInstance: AxiosInstance) => {
   const baseUrlApihandbookFile = "/handbook-file";
-  const baseUrlApihandbook = "/hand-book";
   const baseUrlApihandbooktype = "/handbook-type";
   return {
     gethandbookFileQuery: async () => {
@@ -49,9 +48,9 @@ export const ManagehandbookFileServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    uploadFiles: async (idbook: number, formData: FormData) => {
+    uploadFiles: async (formData: FormData) => {
       return axiosInstance.post(
-        `${baseUrlApihandbookFile}/${idbook}`,
+        `${baseUrlApihandbookFile}`,
         formData,
         {
           headers: {
@@ -60,6 +59,7 @@ export const ManagehandbookFileServices = (axiosInstance: AxiosInstance) => {
         }
       );
     },
+    
     updatehandbookFile: async (body: any) => {
       return await axiosInstance
         .patch(`${baseUrlApihandbookFile}/${body.handbookid}`, body)
@@ -74,72 +74,6 @@ export const ManagehandbookFileServices = (axiosInstance: AxiosInstance) => {
     deletehandbookFile: async (handbookid: any) => {
       return await axiosInstance
         .delete(`${baseUrlApihandbookFile}/${handbookid}`)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
-    gethandbookQuery: async () => {
-      return await axiosInstance
-        .get(`${baseUrlApihandbook}`)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
-    findhandbook: async (skip: number, take: number) => {
-      return await axiosInstance
-        .get(`${baseUrlApihandbook}?take=${take}&skip=${skip}`)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
-    findOnehandbook: async (body: any) => {
-      return await axiosInstance
-        .get(`${baseUrlApihandbook}/${body}`)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
-    createhandbook: async (body: any) => {
-      return await axiosInstance
-        .post(`${baseUrlApihandbook}`, body)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
-    updatehandbook: async (body: any) => {
-      return await axiosInstance
-        .patch(`${baseUrlApihandbook}/${body.idbook}`, body)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
-    deletehandbook: async (idbook: any) => {
-      return await axiosInstance
-        .delete(`${baseUrlApihandbook}/${idbook}`)
         .then((res) => {
           return res.data;
         })

@@ -14,6 +14,14 @@ import {
   momentLocalizer,
   Event as RbcEvent,
 } from "react-big-calendar";
+import {
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  CloseCircleOutlined,
+  ExclamationCircleOutlined,
+  MinusCircleOutlined,
+  SyncOutlined,
+} from "@ant-design/icons";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useForm } from "antd/es/form/Form";
 import { CaretRightOutlined } from "@ant-design/icons";
@@ -47,22 +55,51 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
   };
 
   const renderStatusTag = (status: string) => {
+    let color = "";
+    let text = "";
+    let icon = null;
     switch (status) {
       case "Process":
-        return <Tag color="DodgerBlue">กำลังรออนุมัติ</Tag>;
-      case "Approve":
-        return <Tag color="LimeGreen">อนุมัติแล้ว</Tag>;
+        color = "DodgerBlue";
+        text = "กำลังรออนุมัติ";
+        icon = <SyncOutlined spin />;
+        break;
       case "Cancel":
-        return <Tag color="silver">ยกเลิกการจอง</Tag>;
+        color = "silver";
+        text = "ยกเลิก";
+        icon = <CloseCircleOutlined />;
+        break;
+      case "Approve":
+        color = "LimeGreen";
+        text = "อนุมัติแล้ว";
+        icon = <CheckCircleOutlined />;
+        break;
       case "DisapProved":
-        return <Tag color="OrangeRed">ไม่อนุมัติ</Tag>;
+        color = "OrangeRed";
+        text = "ไม่อนุมัติ";
+        icon = <CloseCircleOutlined />;
+        break;
       case "Return":
-        return <Tag color="Gold">แจ้งคืนรถแล้ว</Tag>;
+        color = "Gold";
+        text = "แจ้งคืนรถแล้ว";
+        icon = <ExclamationCircleOutlined />;
+        break;
       case "Completed":
-        return <Tag color="MediumPurple">คืนรถสำเร็จ</Tag>;
+        color = "MediumPurple";
+        text = "คืนรถสำเร็จ";
+        icon = <CheckCircleOutlined />;
+        break;
       default:
-        return "Unknown Status";
+        color = "default";
+        text = "Unknown Status";
+        break;
     }
+
+    return (
+      <Tag color={color} icon={icon}>
+        {text}
+      </Tag>
+    );
   };
 
   const onSelectEventCalendar = (event: CustomEvent) => {

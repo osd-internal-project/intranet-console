@@ -92,7 +92,7 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return res.data;
         })
         .catch((err) => {
-          return ;
+          return;
         });
     },
     getdataLeaveAll: async () => {
@@ -116,6 +116,9 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
     getdataLeaveGroupById: async (groupId: string) => {
       const condition = {
         where: { groupId: groupId },
+        include: {
+          dataLeaveFiles: true,
+        },
         orderBy: { id: "asc" },
       };
       return await axiosInstance

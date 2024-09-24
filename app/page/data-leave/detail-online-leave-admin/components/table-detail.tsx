@@ -11,7 +11,16 @@ import {
   Table,
   Tag,
   Tooltip,
+  Flex,
 } from "antd";
+import {
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  CloseCircleOutlined,
+  ExclamationCircleOutlined,
+  MinusCircleOutlined,
+  SyncOutlined,
+} from "@ant-design/icons";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { deleteIcon, editIcon, CancelIcon, CheckIcon } from "@/components/icon";
 import { PaperClipOutlined } from "@ant-design/icons";
@@ -72,12 +81,37 @@ export const TableDetail: React.FC<props> = ({
       title: "Status",
       align: "center",
       render: (e: string) => {
-        return e === "waitting" ? (
-          <Tag color="blue">{`WAITTING`}</Tag>
-        ) : e === "approved" ? (
-          <Tag color="green">{`APPROVED`}</Tag>
-        ) : (
-          <Tag color="volcano">{`CANCEL`}</Tag>
+        let color = "";
+        let text = "";
+        let icon = null;
+
+        switch (e) {
+          case "waitting":
+            color = "DodgerBlue";
+            text = "WAITING";
+            icon = <SyncOutlined spin />;
+            break;
+          case "cancel":
+            color = "silver";
+            text = "CANCEL";
+            icon = <CloseCircleOutlined />;
+            break;
+          case "approved":
+            color = "LimeGreen";
+            text = "APPROVED";
+            icon = <CheckCircleOutlined />;
+            break;
+          default:
+            color = "gray";
+            text = "UNKNOWN";
+            icon = <MinusCircleOutlined />;
+            break;
+        }
+
+        return (
+          <Tag color={color} icon={icon}>
+            {text}
+          </Tag>
         );
       },
     },

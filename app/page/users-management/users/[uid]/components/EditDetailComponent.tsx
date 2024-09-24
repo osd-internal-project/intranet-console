@@ -245,7 +245,6 @@ const EditDetailComponent: React.FC<props> = ({
   }) => {
     return setImageFiles(newFileList);
   };
-
   return (
     <>
       <Card>
@@ -256,8 +255,16 @@ const EditDetailComponent: React.FC<props> = ({
           autoComplete="off"
           layout="vertical"
         >
-          <div className=" flex justify-center p-1">
+          {/* <div className=" flex justify-center p-1">
             <Avatar size={128} src={image ? URL.createObjectURL(image) : ""} />
+          </div> */}
+          <div className=" flex justify-center p-1">
+            <Avatar
+              size={128}
+              src={
+                image && image instanceof Blob ? URL.createObjectURL(image) : ""
+              }
+            />
           </div>
 
           <div className=" flex justify-center">

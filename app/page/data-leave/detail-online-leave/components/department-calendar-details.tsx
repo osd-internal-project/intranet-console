@@ -43,6 +43,7 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({
     setModalDataLeaveDetail(false);
   };
 
+
   const onSelectEventCalendar = (event: CustomEvent) => {
     const dataLeaveCalendar = departmentId.find((b) => b.id === event.id);
     if (dataLeaveCalendar) {
@@ -96,7 +97,12 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({
         onSelectEvent={onSelectEventCalendar}
         eventPropGetter={(event: CustomEvent) => {
           const backgroundColor =
-            event.status === "approved" ? "#4CAF50" : "#2196F3";
+            event.status === "approved"
+              ? "DodgerBlue"
+              : event.status === "cancel"
+              ? "silver"
+              : "DodgerBlue";
+
           return {
             style: { backgroundColor, color: "#fff", fontSize: 10 },
           };

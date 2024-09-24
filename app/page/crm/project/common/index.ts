@@ -131,7 +131,7 @@ export type ITProjectTicket = {
   id: number;
   status: string;
   createdAt?: Date;
-  ticketExpend: ITTicketExpend[];
+  ticketExpense: ITTicketExpense[];
   receiveDate?: Date;
   finishDate?: Date;
   completeDate?: Date;
@@ -182,17 +182,18 @@ export type ITTicketHistoryLogForm = {
 export type ITTicketHistoryLog = {
   id: number;
 } & ITTicketHistoryLogForm;
-export type ITTicketExpend = {
+export type ITTicketExpense = {
   id?: number;
-  expendAmount: number;
-  expendPrice: number;
-  expendType?: { expendCode: string; expendName: string };
+  processStatus: string;
+  expenseAmount: number;
+  expensePrice: number;
+  expenseType?: { expenseCode: string; expenseName: string };
   createdAt: Date;
   updatedAt: Date;
   updatedById?: string;
   updatedByName?: string;
 };
-export type ITExpendType = {
-  expendCode: string;
-  expendName: string;
+export type ITExpenseType = {
+  expenseCode: string;
+  expenseName: string;
 };

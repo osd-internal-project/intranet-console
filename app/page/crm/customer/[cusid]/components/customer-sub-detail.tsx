@@ -138,39 +138,26 @@ const CustomerSubDetailComponent: React.FC<props> = ({
       align: "center",
       render: (id: number, record: ITCustomerSubDetail, index: number) => (
         <div className="space-x-1">
-          {/* {rules.ruleCustomerCustomerSubEdit ? (
+          {rules.ruleCustomerSubEdit && (
             <Button
               type="link"
               onClick={() => {
-                onShowModalCustomerSubEdit(true),
-                  formEdit.setFieldsValue(record);
+                onShowModalCustomerSubEdit(true);
+                formCustomerSubEdit.setFieldsValue(record);
               }}
             >
               {editIcon}
             </Button>
-          ) : (
-            <></>
-          )} */}
-          {/* {rules.ruleCustomerCustomerSubDelete ? ( */}{" "}
-          <Button
-            type="link"
-            onClick={() => {
-              onShowModalCustomerSubEdit(true);
-              formCustomerSubEdit.setFieldsValue(record);
-            }}
-          >
-            {editIcon}
-          </Button>
-          <Button
-            type="link"
-            onClick={() => showModalCustomerSubDelete(id)}
-            danger
-          >
-            {deleteIcon}
-          </Button>
-          {/* ) : (
-            <></>
-          )} */}
+          )}
+          {rules.ruleCustomerSubDelete && (
+            <Button
+              type="link"
+              onClick={() => showModalCustomerSubDelete(id)}
+              danger
+            >
+              {deleteIcon}
+            </Button>
+          )}
         </div>
       ),
     },
@@ -201,19 +188,19 @@ const CustomerSubDetailComponent: React.FC<props> = ({
   return (
     <div className=" grid grid-cols-1 gap-3">
       <div className=" flex justify-end">
-        {/* {rules?.ruleCustomerCustomerSubAdd ? ( */}
-        <Button
-          size="small"
-          type="primary"
-          onClick={() => {
-            onShowModalCustomerSubAdd(true);
-          }}
-        >
-          {`Add Customer`}
-        </Button>
-        {/* ) : (
+        {rules?.ruleCustomerCustomerSubAdd ? (
+          <Button
+            size="small"
+            type="primary"
+            onClick={() => {
+              onShowModalCustomerSubAdd(true);
+            }}
+          >
+            {`Add Customer`}
+          </Button>
+        ) : (
           <></>
-        )} */}
+        )}
       </div>
       <ConfigProvider
         theme={{

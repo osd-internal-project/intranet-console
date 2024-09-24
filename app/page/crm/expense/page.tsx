@@ -22,9 +22,8 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import ExpenseFilterComponent from "./components/expense-filter";
 export default function MaTaskPage() {
   const rules = {
-    ruleExpenseShow: checkRule("crm-c-s"),
-    ruleExpenseAdd: checkRule("crm-c-a"),
-    ruleExpenseDelete: checkRule("crm-c-d"),
+    ruleExpenseShow: checkRule("crm-ex"),
+    ruleExpenseApprove: checkRule("crm-ex-approve"),
   };
 
   const { data: session } = useSession();
@@ -122,6 +121,7 @@ export default function MaTaskPage() {
                   expenseType={expenseType}
                 />
                 <ExpenseTableComponent
+                  rules={rules}
                   ticketExpense={dataTable}
                   pagination={pagination}
                   handdleChangeExpenseStatus={handdleChangeExpenseStatus}

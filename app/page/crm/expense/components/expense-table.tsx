@@ -29,6 +29,7 @@ import Link from "next/link";
 import { ITTicketExpense } from "./../common";
 
 export interface props {
+  rules: any;
   pagination: TablePaginationConfig;
   ticketExpense: ITTicketExpense[];
   handdleChangeExpenseStatus: (id: number, status: string) => void;
@@ -36,6 +37,7 @@ export interface props {
 }
 
 const ExpenseTableComponent: React.FC<props> = ({
+  rules,
   pagination,
   ticketExpense,
   handdleChangeExpenseStatus,
@@ -134,6 +136,7 @@ const ExpenseTableComponent: React.FC<props> = ({
       align: "center",
       render: (id: number, record: ITTicketExpense) => {
         return (
+          rules.ruleExpenseApprove &&
           record.processStatus === "wait" && (
             <div className=" flex justify-center space-x-2">
               <Button
@@ -163,6 +166,7 @@ const ExpenseTableComponent: React.FC<props> = ({
         size="small"
         rowKey={(data: any) => data.id}
         onChange={changePagination}
+        pagination={pagination}
       />
     </>
   );

@@ -13,8 +13,8 @@ import {
   ITTicketHistoryLogForm,
   ITSelectUsers,
   ITContractCompany,
-  ITTicketExpend,
-  ITExpendType,
+  ITTicketExpense,
+  ITExpenseType,
 } from "../common";
 import { ITMaTaskFiles } from "@/app/page/maintenance-management/common";
 import { FormInstance } from "antd";
@@ -72,12 +72,12 @@ export interface TMaServices {
   uploadFiles: (id: number, form: any) => Promise<any>;
   downloadFile: (id: number) => Promise<Blob>;
   deleteTicketFile: (id: number) => Promise<ITMaTaskFiles>;
-  findExpendType: () => Promise<ITExpendType[]>;
-  updateProjectTicketExpend: (
-    expendId: number,
+  findExpenseType: () => Promise<ITExpenseType[]>;
+  updateProjectTicketExpense: (
+    expenseId: number,
     form: any
-  ) => Promise<ITTicketExpend>;
-  deleteProjectTicketExpend: (expendId: number) => Promise<ITTicketExpend>;
+  ) => Promise<ITTicketExpense>;
+  deleteProjectTicketExpense: (expenseId: number) => Promise<ITTicketExpense>;
 }
 const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
   const customerUrl = "/customer-detail";
@@ -306,9 +306,9 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
     deleteTicketFile: async (id: number) => {
       return await axiosInstance.delete(`${filesUrl}/${id}`);
     },
-    findExpendType: async () => {
+    findExpenseType: async () => {
       return await axiosInstance
-        .get(`${customerUrl}/config/expend-type`)
+        .get(`${customerUrl}/config/expense-type`)
         .then((res) => {
           return res.data;
         })
@@ -317,17 +317,17 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
           return;
         });
     },
-    updateProjectTicketExpend: async (expendId, form) => {
+    updateProjectTicketExpense: async (expenseId, form) => {
       const formData = {
         ...form,
       };
       return await axiosInstance
-        .patch(`${projectTicketUrl}/expend/${expendId}`, formData)
+        .patch(`${projectTicketUrl}/expense/${expenseId}`, formData)
         .then((res) => res.data);
     },
-    deleteProjectTicketExpend: async (expendId: number) => {
+    deleteProjectTicketExpense: async (expenseId: number) => {
       return await axiosInstance.delete(
-        `${projectTicketUrl}/expend/${expendId}`
+        `${projectTicketUrl}/expense/${expenseId}`
       );
     },
   };

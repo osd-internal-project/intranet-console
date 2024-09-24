@@ -316,13 +316,18 @@ export const MenuSider: MenuItem[] = [
       },
       {
         key: `crm/project`,
-        label: `Project `,
-        // rule: "crm-p-s",
+        label: `Project`,
+        rule: "crm-p-s",
       },
       {
         key: `crm/ticket`,
-        label: `Ticket `,
-        // rule: "crm-t-s",
+        label: `Ticket`,
+        rule: "crm-t-s",
+      },
+      {
+        key: `crm/expense`,
+        label: `Expense`,
+        rule: "crm-ex",
       },
     ],
   },

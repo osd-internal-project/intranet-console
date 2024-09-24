@@ -433,13 +433,8 @@ const ManageCarStatus: React.FC<props> = ({
       >
         <Button
           type="primary"
+          size="small"
           onClick={showModalCreateMaCar}
-          style={{
-            float: "right",
-            margin: "5px",
-            padding: " 15px 20px 15px 20px",
-            fontSize: "16px",
-          }}
         >
           เพิ่มรถ
         </Button>

@@ -88,8 +88,7 @@ const MaCar: React.FC = () => {
       setMaFetchCalendar(maCalender);
       setPagination({ ...pagination, total: maCarBook.count });
       setLoading(false);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -126,10 +125,14 @@ const MaCar: React.FC = () => {
               <div className="flex justify-end space-x-4">
                 {" "}
                 <Link href="/page/macar/ma-car-booking?action=1">
-                  <Button type="primary">ทำการจองรถ</Button>
+                  <Button type="primary" size="small">
+                    ทำการจองรถ
+                  </Button>
                 </Link>
                 <Link href="/page/macar/ma-car-booking?action=2">
-                  <Button type="primary">คืนรถ</Button>
+                  <Button type="primary" size="small">
+                    คืนรถ
+                  </Button>
                 </Link>
               </div>
 

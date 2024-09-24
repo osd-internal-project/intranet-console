@@ -67,6 +67,7 @@ const UserGroupServices = (axiosInstance: AxiosInstance) => {
           engineerUsersId: true,
           user: true,
           headId: true,
+          userGroupMapHeader: true,
         },
       };
       return await axiosInstance
@@ -108,6 +109,10 @@ const UserGroupServices = (axiosInstance: AxiosInstance) => {
         data
       );
     },
+    createdUserGroupPermission: async (data: Object) => {
+      return await axiosInstance.post(`/user-group-map-header/`, data);
+    },
+
     deleteUserGroup: async (groupId: string) => {
       return await axiosInstance.delete(`/user-group/${groupId}`);
     },

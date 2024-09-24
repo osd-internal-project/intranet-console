@@ -15,6 +15,7 @@ import {
 import UserGroupServices from "../services/usergroup.service";
 import { GroupManageSkeleton } from "./Skeleton";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
+import Link from "next/link";
 import {
   CarryOutOutlined,
   ExclamationCircleFilled,
@@ -23,6 +24,8 @@ import {
 import { checkRule } from "@/app/utils/rules";
 import RolesServices from "../../user-role/services/role.service";
 import GroupPermissionComponent from "./GroupPermission";
+import GroupUserPermission from "./GroupUserPermission";
+
 import { useSession } from "next-auth/react";
 import { Label } from "recharts";
 export interface props {
@@ -69,6 +72,7 @@ const GroupManage: React.FC<props> = ({
   const [addform] = Form.useForm();
   const [editform] = Form.useForm();
   const [permissionform] = Form.useForm();
+  const [userpermissionform] = Form.useForm();
   const userGroupServices = UserGroupServices(userAuth);
   const userRolesServices = RolesServices(userAuth);
   const [groupDetail, setGroupDetail] = useState<groupDetail | null>(null);
@@ -86,6 +90,9 @@ const GroupManage: React.FC<props> = ({
   const [engineerUsersFormGroup, setEngineerUsersFormGroup] = useState<
     ITSelectUsers[]
   >([]);
+  const [showModalUserPermission, setShowModalUserPermission] =
+    useState<boolean>(false);
+
   useEffect(() => {
     featchData();
   }, [groupSelect]);
@@ -105,7 +112,6 @@ const GroupManage: React.FC<props> = ({
       const groupDetail: any = await userGroupServices.getUserGroupByGroupId(
         groupSelect
       );
-
       const dataUser: any = await userGroupServices.getdataUserAll();
       const users = dataUser.map((user: any) => ({
         value: user.userId,
@@ -136,6 +142,11 @@ const GroupManage: React.FC<props> = ({
 
       setGroupDetail(groupDetail);
       setSeleceRole(resRole);
+
+      userpermissionform.setFieldsValue({
+        leaveGroupId: groupDetail.userGroupMapHeader[0].leaveGroupId,
+        leaveUserId: groupDetail.userGroupMapHeader[0].leaveUserId,
+      });
     }
   };
   const createTree = (obj: any[], parentId: string | null) => {
@@ -174,8 +185,7 @@ const GroupManage: React.FC<props> = ({
     });
   };
 
-  const onFinishFailed = (errorInfo: any) => {
-  };
+  const onFinishFailed = (errorInfo: any) => {};
 
   const onFinishEdit = async (values: groupDetail) => {
     setbuttonLoading(true);
@@ -255,6 +265,7 @@ const GroupManage: React.FC<props> = ({
   const onClickEdit = async () => {
     setEditState(!editState);
   };
+
   const onSetPermission = async (form: {
     exceptionalSatatus: boolean;
     saleUserGroupId: string[];
@@ -275,6 +286,27 @@ const GroupManage: React.FC<props> = ({
         .then(() => {
           message.success(`Edit success`);
           setShowModalPermission(false);
+        })
+        .catch((err) => message.error(err));
+    }
+  };
+  const setUserPermission = async (vleaue: {
+    leaveGroupId: string[];
+    leaveUserId: string[];
+  }): Promise<void> => {
+    // console.log(vleaue);
+
+    const data = {
+      leaveGroupId: vleaue.leaveGroupId,
+      leaveUserId: vleaue.leaveUserId,
+      userGroupId: groupSelect,
+    };
+    if (groupSelect) {
+      await userGroupServices
+        .createdUserGroupPermission(data)
+        .then(() => {
+          message.success(` success`);
+          setShowModalUserPermission(false);
         })
         .catch((err) => message.error(err));
     }
@@ -421,11 +453,22 @@ const GroupManage: React.FC<props> = ({
                 />
               </Form.Item>
             </div>
-            <div className=" text-right">
-              <Button onClick={onShowSetPermission} type="link">
-                Set CRM Permission
-              </Button>
+            <div style={{ display: "flex", justifyContent: "end" }}>
+              <div>
+                <Button onClick={onShowSetPermission} type="primary">
+                  Set CRM Permission
+                </Button>
+              </div>
+              <div style={{ marginLeft: "20px" }}>
+                <Button
+                  onClick={() => setShowModalUserPermission(true)}
+                  type="primary"
+                >
+                  {`Set User Permission`}
+                </Button>
+              </div>
             </div>
+
             {editState ? (
               <div className="flex justify-end space-x-4 ">
                 <Form.Item>
@@ -533,6 +576,22 @@ const GroupManage: React.FC<props> = ({
         }
         permissionform={permissionform}
         onSetPermission={onSetPermission}
+      />
+      <GroupUserPermission
+        groupOption={groupOption}
+        onChangeSaleGroupSelect={onChangeSaleGroupSelect}
+        onChangeEngineerGroupSelect={onChangeEngineerGroupSelect}
+        // saleUsersFormGroup={saleUsersFormGroup}
+        engineerUsersFormGroup={engineerUsersFormGroup}
+        showModalUserPermission={showModalUserPermission}
+        // onShowModalPermission={(status: boolean) =>
+        //   setShowModalPermission(status)
+        // }
+        setShowModalUserPermission={(e: boolean) =>
+          setShowModalUserPermission(e)
+        }
+        userpermissionform={userpermissionform}
+        setUserPermission={setUserPermission}
       />
     </>
   ) : (

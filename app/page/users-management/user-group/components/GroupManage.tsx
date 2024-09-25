@@ -92,6 +92,7 @@ const GroupManage: React.FC<props> = ({
   >([]);
   const [showModalUserPermission, setShowModalUserPermission] =
     useState<boolean>(false);
+  const [userGroupIds, setUserGroupIds] = useState<string[]>([]);
 
   useEffect(() => {
     featchData();
@@ -142,6 +143,14 @@ const GroupManage: React.FC<props> = ({
 
       setGroupDetail(groupDetail);
       setSeleceRole(resRole);
+
+      const userGroupMapHeader =
+        await userGroupServices.getUserGroupMapHeader();
+      // const userGroupIds = userGroupMapHeader.map(
+      //   (item: any) => item.userGroupId
+      // );
+      // console.log(userGroupIds);
+      setUserGroupIds(userGroupMapHeader.map((item: any) => item.userGroupId));
 
       userpermissionform.setFieldsValue({
         leaveGroupId: groupDetail.userGroupMapHeader[0].leaveGroupId,
@@ -290,27 +299,45 @@ const GroupManage: React.FC<props> = ({
         .catch((err) => message.error(err));
     }
   };
-  const setUserPermission = async (vleaue: {
+
+  const setUserPermission = async (value: {
     leaveGroupId: string[];
     leaveUserId: string[];
   }): Promise<void> => {
-    // console.log(vleaue);
-
     const data = {
-      leaveGroupId: vleaue.leaveGroupId,
-      leaveUserId: vleaue.leaveUserId,
+      leaveGroupId: value.leaveGroupId,
+      leaveUserId: value.leaveUserId,
       userGroupId: groupSelect,
     };
-    if (groupSelect) {
-      await userGroupServices
-        .createdUserGroupPermission(data)
-        .then(() => {
-          message.success(` success`);
-          setShowModalUserPermission(false);
-        })
-        .catch((err) => message.error(err));
+    const dataUp = {
+      leaveGroupId: value.leaveGroupId,
+      leaveUserId: value.leaveUserId,
+    };
+    console.log("groupSelect:", groupSelect);
+    console.log("userGroupIds:", userGroupIds);
+
+    if (groupSelect && userGroupIds.includes(groupSelect)) {
+      try {
+        console.log(1);
+        await userGroupServices.updateUserGroupHeaderPermission(groupSelect,dataUp);
+        message.success(`Updated successfully`);
+      } catch (err) {
+        message.error("Update failed");
+      }
+    } else {
+      try {
+        console.log(2);
+
+        await userGroupServices.createdUserGroupHeaderPermission(data);
+        message.success(`Created successfully`);
+      } catch (err) {
+        message.error("Creation failed");
+      }
     }
+
+    setShowModalUserPermission(false);
   };
+
   const onShowSetPermission = () => {
     setShowModalPermission(true);
   };

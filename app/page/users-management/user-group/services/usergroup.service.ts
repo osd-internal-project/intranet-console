@@ -109,8 +109,26 @@ const UserGroupServices = (axiosInstance: AxiosInstance) => {
         data
       );
     },
-    createdUserGroupPermission: async (data: Object) => {
+    createdUserGroupHeaderPermission: async (data: Object) => {
       return await axiosInstance.post(`/user-group-map-header/`, data);
+    },
+    updateUserGroupHeaderPermission: async (groupId: string, data: Object) => {
+      return await axiosInstance.patch(
+        `/user-group-map-header/permission/${groupId}`,
+        data
+      );
+    },
+
+    getUserGroupMapHeader: async () => {
+      return await axiosInstance
+        .get(`/user-group-map-header/`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
     },
 
     deleteUserGroup: async (groupId: string) => {

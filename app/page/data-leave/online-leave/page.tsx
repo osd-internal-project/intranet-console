@@ -49,6 +49,7 @@ export default function Page() {
     []
   );
   const [groupDetail, setGroupDetail] = useState<UserGroupType[]>([]);
+  const [groupUserId, setDataGroupUserId] = useState<any>();
   const [getStartDate, setStartDate] = useState<Date>();
   const [getEndDate, setEndDate] = useState<Date>();
   const [checkSwitch, setCheckSwitch] = useState<boolean>(false);
@@ -76,6 +77,7 @@ export default function Page() {
     const resTableUserTypeLeave = await dataleaveservice.findUserByUserId(
       getUser?.userId
     );
+
     const options = res.map((event: ITypetypeleave) => {
       return { value: event.typeId, label: event.typeName };
     });
@@ -84,12 +86,22 @@ export default function Page() {
       const dataGroupDetail = await dataleaveserviceUser.getUserGroupByGroupId(
         groupId
       );
-      const dataUserByID = await dataleaveserviceUser.getUsersByUserId(
+      const dataUserById = await dataleaveserviceUser.getUsersByUserId(
         dataGroupDetail.headId
       );
-      setUserOwner(dataUserByID);
+      setUserOwner(dataUserById);
       setGroupDetail(dataGroupDetail);
     }
+    const dataGroupUserId = await dataleaveservice.getdataLeaveByUserId(
+      session?.user.userId
+    );
+
+    for (const userId of dataGroupUserId) {
+      const dataUserById =
+        await dataleaveserviceUser.getUserGroupHeaderByUserId(userId);
+      setDataGroupUserId(dataUserById);
+    }
+
     setTypeLeaveTable(resTableDeatilTypeLeave);
     setTypeLeaveTableAll(resTableUserTypeLeave.typeLeaveDisabledMap);
     setTypeLeaveOption(options);
@@ -1000,6 +1012,7 @@ export default function Page() {
             getUserOwner={getUserOwner}
             onChangeParams={onChangeParams}
             groupDetail={groupDetail}
+            groupUserId={groupUserId}
           />
         </Col>
         <Col span={12}>

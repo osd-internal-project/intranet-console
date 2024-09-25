@@ -36,6 +36,7 @@ export interface props {
   getUserOwner: IDataUser | null;
   onChangeParams: (value: Dayjs, type: string) => void;
   groupDetail: any;
+  groupUserId: any;
 }
 export const CreateOnlineLeave: React.FC<props> = ({
   getUser,
@@ -54,9 +55,20 @@ export const CreateOnlineLeave: React.FC<props> = ({
   getUserOwner,
   onChangeParams,
   groupDetail,
+  groupUserId,
 }): React.ReactElement => {
+  // console.log(groupUserId);
+
   useEffect(() => {
     const getdatauser = () => {
+      // let ownerNames = "";
+      // if (Array.isArray(groupUserId)) {
+      //   ownerNames = groupUserId
+      //     .map((user) => `${user.firstNameTh} ${user.lastNameTh}`)
+      //     .join(", ");
+      // }
+      // console.log("ownerNames:", ownerNames);
+
       createdataleaveForm.setFieldsValue({
         userId: getUser?.userId,
         posId: getUser?.position?.posId,
@@ -64,20 +76,17 @@ export const CreateOnlineLeave: React.FC<props> = ({
         firstNameTh: getUser?.firstNameTh,
         lastNameTh: getUser?.lastNameTh,
         ownerName: `${getUserOwner?.firstNameTh} ${getUserOwner?.lastNameTh}`,
+        // ownerName: `${groupUserId?.firstNameTh} ${groupUserId?.lastNameTh}`,
+        // ownerName: ownerNames,
+
         ownerId: getUserOwner?.userId,
         groupName: groupDetail.groupName,
       });
     };
     getdatauser();
-  }, [getUserOwner, checkSwitch]);
+  }, [getUserOwner, checkSwitch, groupUserId]);
 
   const { Option } = Select;
-  const [timeSlot, setTimeSlot] = useState("morning");
-
-  const disabledTime = () => ({
-    disabledHours: () => [0, 1, 2, 3, 4, 5, 6, 7, 18, 19, 20, 21, 22, 23, 24],
-    disabledMinutes: () => [],
-  });
 
   const timeOptions = [
     "08:30",

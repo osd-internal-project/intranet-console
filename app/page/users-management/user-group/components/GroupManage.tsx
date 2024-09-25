@@ -312,7 +312,6 @@ const GroupManage: React.FC<props> = ({
       leaveUserId: value.leaveUserId,
       expenseGroupId: value.expenseGroupId,
       expenseUserId: value.expenseUserId,
-      userGroupId: groupSelect,
     };
     const dataUp = {
       leaveGroupId: value.leaveGroupId,
@@ -617,12 +616,8 @@ const GroupManage: React.FC<props> = ({
       <GroupUserPermission
         groupOption={groupOption}
         onChangeEngineerGroupSelect={onChangeEngineerGroupSelect}
-<<<<<<< HEAD
-        engineerUsersFormGroup={engineerUsersFormGroup}
-=======
         // saleUsersFormGroup={saleUsersFormGroup}
         usersFormGroup={engineerUsersFormGroup}
->>>>>>> 0f04ce1d33cce214687c34d70db2b2a7e6245fb8
         showModalUserPermission={showModalUserPermission}
         setShowModalUserPermission={(e: boolean) =>
           setShowModalUserPermission(e)

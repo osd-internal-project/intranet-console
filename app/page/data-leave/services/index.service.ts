@@ -132,6 +132,25 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    // getdataLeaveByUserId: async (userId: string | undefined) => {
+    // console.log('userId:', userId);
+
+    //   // const condition = {
+    //   //   // where: { groupId: userId },
+    //   //   where: { userId: userId },
+    //   //   // orderBy: { id: "asc" },
+    //   // };
+    //   return await axiosInstance
+    //     .get(`${baseUrlDataLeave}/leave/user/${userId}`, {
+    //       // condition: condition,
+    //     })
+    //     .then((res) => {
+    //       return res.data;
+    //     })
+    //     .catch((err) => {
+    //       return [];
+    //     });
+    // },
     getdataUserByTypeLeaveId: async (search: { typeid: string }) => {
       const condition = {
         where: {
@@ -208,15 +227,16 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    findDetailTypeLeaveByUserId: async (userId: string | undefined) => {
-      let url = `${baseUrlDataLeave}/find-detail-type-leave-by-userId/${userId}`;
+
+    getdataLeaveByUserId: async (userId: string | undefined) => {
+      let url = `${baseUrlDataLeave}/leave/${userId}`;
       return await axiosInstance
         .get(url)
         .then((res) => {
           return res.data;
         })
         .catch((err) => {
-          return [];
+          return;
         });
     },
 
@@ -231,6 +251,19 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+
+    findDetailTypeLeaveByUserId: async (userId: string | undefined) => {
+      let url = `${baseUrlDataLeave}/find-detail-type-leave-by-userId/${userId}`;
+      return await axiosInstance
+        .get(url)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
+
     getdataTypeLeaveMap: async (user_id: any) => {
       const condition = {
         where: {
@@ -443,6 +476,58 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+
+    getUserGroupHeaderByUserId: async (userId: string) => {
+      const condition = {
+        where: { userId: userId },
+        select: {
+          userId: true,
+          username: true,
+          firstNameTh: true,
+          lastNameTh: true,
+          firstNameEn: true,
+          lastNameEn: true,
+          ownerGroupId: true,
+        },
+      };
+      return await axiosInstance
+        .post(`${baseUrlUser}/condition-first`, { condition: condition })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+
+    // getUserGroupHeaderByUserId: async (userId: object) => {
+    //   const condition = {
+    //     where: { userId: userId },
+    //     select: {
+    //       userId: true,
+    //       username: true,
+    //       firstNameTh: true,
+    //       lastNameTh: true,
+    //       firstNameEn: true,
+    //       lastNameEn: true,
+    //       ownerGroupId: true,
+    //     },
+    //   };
+    //   return await axiosInstance
+    //     .post(`${baseUrlUser}/condition-user-header/${userId}`, {
+    //       condition: condition,
+    //     })
+    //     .then((res) => {
+    //       console.log("data:", res.data);
+
+    //       return res.data;
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //       return [];
+    //     });
+    // },
   };
 };
 export default DataLeaveService;

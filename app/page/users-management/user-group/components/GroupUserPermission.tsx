@@ -41,14 +41,15 @@ export interface props {
   onChangeSaleGroupSelect: (group: string[]) => void;
   onChangeEngineerGroupSelect: (group: string[]) => void;
   // saleUsersFormGroup: ITSelectUsers[];
-  engineerUsersFormGroup: ITSelectUsers[];
+  usersFormGroup: ITSelectUsers[];
   showModalUserPermission: boolean;
   setShowModalUserPermission: (e: boolean) => void;
   // onShowModalPermission: (status: boolean) => void;
   setUserPermission: (form: {
     leaveGroupId: string[];
     leaveUserId: string[];
-
+    expenseGroupId: string[];
+    expenseUserId: string[];
   }) => void;
   userpermissionform: FormInstance;
 }
@@ -58,7 +59,7 @@ const GroupUserPermission: React.FC<props> = ({
   onChangeSaleGroupSelect,
   onChangeEngineerGroupSelect,
   // saleUsersFormGroup,
-  engineerUsersFormGroup,
+  usersFormGroup,
   showModalUserPermission,
   setShowModalUserPermission,
   setUserPermission,
@@ -67,7 +68,7 @@ const GroupUserPermission: React.FC<props> = ({
   return (
     <Modal
       open={showModalUserPermission}
-      title={"Permission"}
+      title={"Approve Permission"}
       onCancel={() => setShowModalUserPermission(false)}
       footer={[]}
       width={800}
@@ -95,7 +96,32 @@ const GroupUserPermission: React.FC<props> = ({
             allowClear
             mode="multiple"
             showSearch={true}
-            options={engineerUsersFormGroup.map((user) => ({
+            options={usersFormGroup.map((user) => ({
+              label: `${user.firstNameTh} ${user.lastNameTh}`,
+              value: user.userId,
+            }))}
+          />
+        </Form.Item>
+
+        <Form.Item name={"expenseGroupId"} label={<b>Expense Group</b>}>
+          <TreeSelect
+            multiple
+            allowClear
+            showSearch={false}
+            style={{ width: "100%" }}
+            treeDefaultExpandAll
+            placeholder="Please select"
+            treeData={groupOption}
+            onChange={onChangeEngineerGroupSelect}
+          />
+        </Form.Item>
+
+        <Form.Item name={"expenseUserId"} label={<b>Expense User</b>}>
+          <Select
+            allowClear
+            mode="multiple"
+            showSearch={true}
+            options={usersFormGroup.map((user) => ({
               label: `${user.firstNameTh} ${user.lastNameTh}`,
               value: user.userId,
             }))}

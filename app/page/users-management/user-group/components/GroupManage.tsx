@@ -303,15 +303,21 @@ const GroupManage: React.FC<props> = ({
   const setUserPermission = async (value: {
     leaveGroupId: string[];
     leaveUserId: string[];
+    expenseGroupId: string[];
+    expenseUserId: string[];
   }): Promise<void> => {
     const data = {
       leaveGroupId: value.leaveGroupId,
       leaveUserId: value.leaveUserId,
+      expenseGroupId: value.expenseGroupId,
+      expenseUserId: value.expenseUserId,
       userGroupId: groupSelect,
     };
     const dataUp = {
       leaveGroupId: value.leaveGroupId,
       leaveUserId: value.leaveUserId,
+      expenseGroupId: value.expenseGroupId,
+      expenseUserId: value.expenseUserId,
     };
     console.log("groupSelect:", groupSelect);
     console.log("userGroupIds:", userGroupIds);
@@ -319,7 +325,10 @@ const GroupManage: React.FC<props> = ({
     if (groupSelect && userGroupIds.includes(groupSelect)) {
       try {
         console.log(1);
-        await userGroupServices.updateUserGroupHeaderPermission(groupSelect,dataUp);
+        await userGroupServices.updateUserGroupHeaderPermission(
+          groupSelect,
+          dataUp
+        );
         message.success(`Updated successfully`);
       } catch (err) {
         message.error("Update failed");
@@ -609,7 +618,7 @@ const GroupManage: React.FC<props> = ({
         onChangeSaleGroupSelect={onChangeSaleGroupSelect}
         onChangeEngineerGroupSelect={onChangeEngineerGroupSelect}
         // saleUsersFormGroup={saleUsersFormGroup}
-        engineerUsersFormGroup={engineerUsersFormGroup}
+        usersFormGroup={engineerUsersFormGroup}
         showModalUserPermission={showModalUserPermission}
         // onShowModalPermission={(status: boolean) =>
         //   setShowModalPermission(status)

@@ -65,17 +65,28 @@ const ExpenseFilterComponent: React.FC<props> = ({
               // form={filterForm}
             >
               <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-                {/* <Form.Item name={"projectcode"} label={"Project Code"}>
-                  <Input />
-                </Form.Item> */}
+                <Form.Item name={"formType"} label={"ประเภทการเบิก"}>
+                  <Select
+                    allowClear
+                    placeholder="Please Select"
+                    options={[
+                      { value: "normal", label: "Normal" },
+                      { value: "advance", label: "Advance" },
+                    ]}
+                  />
+                </Form.Item>
                 <Form.Item name={"expenseCode"} label={"ประเภทค่าใช้จ่าย"}>
                   <Select
                     allowClear
                     placeholder="Please Select"
-                    options={expenseType.map((expense) => ({
-                      value: expense.expenseCode,
-                      label: expense.expenseName,
-                    }))}
+                    options={
+                      expenseType
+                        ? expenseType.map((expense) => ({
+                            value: expense.expenseCode,
+                            label: expense.expenseName,
+                          }))
+                        : []
+                    }
                   />
                 </Form.Item>
                 <Form.Item name={"processStatus"} label={"สถานะ"}>

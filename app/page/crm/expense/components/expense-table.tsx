@@ -53,6 +53,21 @@ const ExpenseTableComponent: React.FC<props> = ({
       render: (id: number, record, index: number) => index + 1,
     },
     {
+      title: "ประเภทการเบิก",
+      key: "formType",
+      dataIndex: "formType",
+      width: "200px",
+      align: "center",
+      render: (data: string) =>
+        data === "normal" ? (
+          <div className="font-bold text-sky-700">Normal</div>
+        ) : data === "advance" ? (
+          <div className=" font-bold  text-orange-600">Advance</div>
+        ) : (
+          <></>
+        ),
+    },
+    {
       title: "ประเภทค่าใช้จ่าย",
       key: "expenseType",
       dataIndex: ["expenseType", "expenseCode"],

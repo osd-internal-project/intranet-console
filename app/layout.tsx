@@ -15,6 +15,7 @@ const sriracha = Sriracha({ weight: "400", subsets: ["latin"] });
 import AuthProvider from "@/app/provider/AuthProvider";
 import { ConfigProvider } from "antd";
 import { signIn, useSession } from "next-auth/react";
+import { StepBackwardOutlined } from "@ant-design/icons";
 export const metadata: Metadata = {
   title: "Intranet",
   description: "Intranet",

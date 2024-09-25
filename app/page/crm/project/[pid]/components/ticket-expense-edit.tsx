@@ -70,6 +70,16 @@ const TicketExpenseEdit: React.FC<props> = ({
         labelCol={{ sm: 5 }}
         onFinish={(value) => handleEditTicketExpense(editExpenseId, value)}
       >
+        <Form.Item name={"formType"} label={"ประเภทการเบิก"}>
+          <Select
+            allowClear
+            placeholder="Please Select"
+            options={[
+              { value: "normal", label: "Normal" },
+              { value: "advance", label: "Advance" },
+            ]}
+          />
+        </Form.Item>
         <Form.Item
           label={`รายการ`}
           name={`expenseCode`}

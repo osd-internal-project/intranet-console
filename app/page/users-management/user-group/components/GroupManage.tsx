@@ -303,21 +303,22 @@ const GroupManage: React.FC<props> = ({
   const setUserPermission = async (value: {
     leaveGroupId: string[];
     leaveUserId: string[];
-    expanseGroupId: string[];
-    expanseUserId: string[];
+    expenseGroupId: string[];
+    expenseUserId: string[];
   }): Promise<void> => {
     const data = {
       userGroupId: groupSelect,
       leaveGroupId: value.leaveGroupId,
       leaveUserId: value.leaveUserId,
-      expanseGroupId: value.expanseGroupId,
-      expanseUserId: value.expanseUserId,
+      expenseGroupId: value.expenseGroupId,
+      expenseUserId: value.expenseUserId,
+      userGroupId: groupSelect,
     };
     const dataUp = {
       leaveGroupId: value.leaveGroupId,
       leaveUserId: value.leaveUserId,
-      expanseGroupId: value.expanseGroupId,
-      expanseUserId: value.expanseUserId,
+      expenseGroupId: value.expenseGroupId,
+      expenseUserId: value.expenseUserId,
     };
     console.log("groupSelect:", groupSelect);
     console.log("userGroupIds:", userGroupIds);
@@ -616,7 +617,12 @@ const GroupManage: React.FC<props> = ({
       <GroupUserPermission
         groupOption={groupOption}
         onChangeEngineerGroupSelect={onChangeEngineerGroupSelect}
+<<<<<<< HEAD
         engineerUsersFormGroup={engineerUsersFormGroup}
+=======
+        // saleUsersFormGroup={saleUsersFormGroup}
+        usersFormGroup={engineerUsersFormGroup}
+>>>>>>> 0f04ce1d33cce214687c34d70db2b2a7e6245fb8
         showModalUserPermission={showModalUserPermission}
         setShowModalUserPermission={(e: boolean) =>
           setShowModalUserPermission(e)

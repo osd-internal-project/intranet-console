@@ -71,6 +71,16 @@ const TicketExpenseAdd: React.FC<props> = ({
         labelCol={{ sm: 5 }}
         onFinish={handleAddTicketExpense}
       >
+        <Form.Item name={"formType"} label={"ประเภทการเบิก"}>
+          <Select
+            allowClear
+            placeholder="Please Select"
+            options={[
+              { value: "normal", label: "Normal" },
+              { value: "advance", label: "Advance" },
+            ]}
+          />
+        </Form.Item>
         <Form.Item
           label={`รายการ`}
           name={`expenseCode`}

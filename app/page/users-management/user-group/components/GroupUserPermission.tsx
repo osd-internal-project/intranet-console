@@ -110,7 +110,7 @@ const GroupUserPermission: React.FC<props> = ({
             allowClear
             mode="multiple"
             showSearch={true}
-            options={engineerUsersFormGroup.map((user) => ({
+            options={usersFormGroup.map((user) => ({
               label: `${user.firstNameTh} ${user.lastNameTh}`,
               value: user.userId,
             }))}

@@ -95,13 +95,7 @@ export default function Page() {
     const dataGroupUserId = await dataleaveservice.getdataLeaveByUserId(
       session?.user.userId
     );
-
-    for (const userId of dataGroupUserId) {
-      const dataUserById =
-        await dataleaveserviceUser.getUserGroupHeaderByUserId(userId);
-      setDataGroupUserId(dataUserById);
-    }
-
+    setDataGroupUserId(dataGroupUserId);
     setTypeLeaveTable(resTableDeatilTypeLeave);
     setTypeLeaveTableAll(resTableUserTypeLeave.typeLeaveDisabledMap);
     setTypeLeaveOption(options);

@@ -7,7 +7,6 @@ import { FormInstance } from "antd/lib";
 export interface props {
   groupOption: SelectProps["options"];
   onChangeEngineerGroupSelect: (group: string[]) => void;
-  // saleUsersFormGroup: ITSelectUsers[];
   usersFormGroup: ITSelectUsers[];
   showModalUserPermission: boolean;
   setShowModalUserPermission: (e: boolean) => void;
@@ -23,7 +22,6 @@ export interface props {
 const GroupUserPermission: React.FC<props> = ({
   groupOption,
   onChangeEngineerGroupSelect,
-  // saleUsersFormGroup,
   usersFormGroup,
   showModalUserPermission,
   setShowModalUserPermission,
@@ -43,7 +41,11 @@ const GroupUserPermission: React.FC<props> = ({
         layout="vertical"
         onFinish={setUserPermission}
       >
-        <Form.Item name={"leaveGroupId"} label={<b>Leave Group</b>}>
+        <Form.Item
+          name={"leaveGroupId"}
+          label={<b>Leave Group</b>}
+          // initialValue={}
+        >
           <TreeSelect
             multiple
             allowClear
@@ -82,30 +84,6 @@ const GroupUserPermission: React.FC<props> = ({
         </Form.Item>
 
         <Form.Item name={"expenseUserId"} label={<b>Expense User</b>}>
-          <Select
-            allowClear
-            mode="multiple"
-            showSearch={true}
-            options={usersFormGroup.map((user) => ({
-              label: `${user.firstNameTh} ${user.lastNameTh}`,
-              value: user.userId,
-            }))}
-          />
-        </Form.Item>
-        <Form.Item name={"expanseGroupId"} label={<b>Expanse Group</b>}>
-          <TreeSelect
-            multiple
-            allowClear
-            showSearch={false}
-            style={{ width: "100%" }}
-            treeDefaultExpandAll
-            placeholder="Please select"
-            treeData={groupOption}
-            onChange={onChangeEngineerGroupSelect}
-          />
-        </Form.Item>
-
-        <Form.Item name={"expanseUserId"} label={<b>Expanse User</b>}>
           <Select
             allowClear
             mode="multiple"

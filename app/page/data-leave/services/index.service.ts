@@ -229,7 +229,7 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
     },
 
     getdataLeaveByUserId: async (userId: string | undefined) => {
-      let url = `${baseUrlDataLeave}/leave/${userId}`;
+      let url = `${baseUrlDataLeave}/leave-header/${userId}`;
       return await axiosInstance
         .get(url)
         .then((res) => {
@@ -477,21 +477,9 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
         });
     },
 
-    getUserGroupHeaderByUserId: async (userId: string) => {
-      const condition = {
-        where: { userId: userId },
-        select: {
-          userId: true,
-          username: true,
-          firstNameTh: true,
-          lastNameTh: true,
-          firstNameEn: true,
-          lastNameEn: true,
-          ownerGroupId: true,
-        },
-      };
+    getUserGroupMapHeader: async () => {
       return await axiosInstance
-        .post(`${baseUrlUser}/condition-first`, { condition: condition })
+        .get(`/user-group-map-header/`)
         .then((res) => {
           return res.data;
         })
@@ -500,34 +488,6 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-
-    // getUserGroupHeaderByUserId: async (userId: object) => {
-    //   const condition = {
-    //     where: { userId: userId },
-    //     select: {
-    //       userId: true,
-    //       username: true,
-    //       firstNameTh: true,
-    //       lastNameTh: true,
-    //       firstNameEn: true,
-    //       lastNameEn: true,
-    //       ownerGroupId: true,
-    //     },
-    //   };
-    //   return await axiosInstance
-    //     .post(`${baseUrlUser}/condition-user-header/${userId}`, {
-    //       condition: condition,
-    //     })
-    //     .then((res) => {
-    //       console.log("data:", res.data);
-
-    //       return res.data;
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //       return [];
-    //     });
-    // },
   };
 };
 export default DataLeaveService;

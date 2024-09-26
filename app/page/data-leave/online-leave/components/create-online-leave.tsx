@@ -61,27 +61,21 @@ export const CreateOnlineLeave: React.FC<props> = ({
 
   useEffect(() => {
     const getdatauser = () => {
-      // let ownerNames = "";
-      // if (Array.isArray(groupUserId)) {
-      //   ownerNames = groupUserId
-      //     .map((user) => `${user.firstNameTh} ${user.lastNameTh}`)
-      //     .join(", ");
-      // }
-      // console.log("ownerNames:", ownerNames);
-
-      createdataleaveForm.setFieldsValue({
-        userId: getUser?.userId,
-        posId: getUser?.position?.posId,
-        position: getUser?.position?.nameEn,
-        firstNameTh: getUser?.firstNameTh,
-        lastNameTh: getUser?.lastNameTh,
-        ownerName: `${getUserOwner?.firstNameTh} ${getUserOwner?.lastNameTh}`,
-        // ownerName: `${groupUserId?.firstNameTh} ${groupUserId?.lastNameTh}`,
-        // ownerName: ownerNames,
-
-        ownerId: getUserOwner?.userId,
-        groupName: groupDetail.groupName,
-      });
+      if (groupUserId && groupUserId.length > 0) {
+        let ownerName = groupUserId
+          .map((usersId: any) => `${usersId.firstNameTh} ${usersId.lastNameTh}`)
+          .join(", ");
+        createdataleaveForm.setFieldsValue({
+          userId: getUser?.userId,
+          posId: getUser?.position?.posId,
+          position: getUser?.position?.nameEn,
+          firstNameTh: getUser?.firstNameTh,
+          lastNameTh: getUser?.lastNameTh,
+          ownerName: ownerName,
+          ownerId: getUserOwner?.userId,
+          groupName: groupDetail.groupName,
+        });
+      }
     };
     getdatauser();
   }, [getUserOwner, checkSwitch, groupUserId]);

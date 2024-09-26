@@ -13,6 +13,7 @@ import {
 } from "antd";
 import { useRouter } from "next/navigation";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../services/index.service";
 import { useSession } from "next-auth/react";
 import { ITypeDataLeave } from "../common";
@@ -20,13 +21,16 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 
 export default function Page() {
   const router = useRouter();
+  const userAuth = useAxiosUser();
   const Auth = useAxiosIntranet();
   const dataleaveservice = DataLeaveService(Auth);
+  const userGroupServices = DataLeaveService(userAuth);
   const { data: session } = useSession();
   const [loading, setLoading] = useState<boolean>(true);
   const [dataLeaveUser, setDataLeaveUser] = useState<ITypeDataLeave[]>([]);
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
- 
+  const [userGroupIds, setUserGroupIds] = useState<string[]>([]);
+
   const [formdetail] = Form.useForm();
   useEffect(() => {
     if (loading) loadData();
@@ -34,6 +38,12 @@ export default function Page() {
 
   const loadData = async () => {
     const res = await dataleaveservice.getdataLeaveAll();
+    const userGroupMapHeader = await userGroupServices.getUserGroupMapHeader();
+    const leaveUserIds = userGroupMapHeader
+      .map((item: any) => item.leaveUserId)
+      .filter((arr: any) => arr.length > 0)
+      .flat();
+    setUserGroupIds(leaveUserIds);
     setDataLeaveUser(res);
     setLoading(false);
   };
@@ -167,6 +177,7 @@ export default function Page() {
             downloadFile={(id: number, filename: string) =>
               downloadFile(id, filename)
             }
+            userGroupIds={userGroupIds}
           />
         </Card>
       </div>

@@ -162,7 +162,7 @@ const Newoption: React.FC = () => {
       fixed: "left",
     },
     {
-      title: "ชื่อประเภทข่าว",
+      title: "ชื่อประเภทข่าวสาร",
       dataIndex: "nameType",
       key: "nameType",
       width: "300px",

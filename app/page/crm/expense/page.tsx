@@ -20,6 +20,7 @@ import { ITExpenseType, ITTicketExpense } from "./common";
 import CrmServices from "./services/index.service";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import ExpenseFilterComponent from "./components/expense-filter";
+import ExpenseDetailComponent from "./components/expense-detail";
 export default function MaTaskPage() {
   const rules = {
     ruleExpenseShow: checkRule("crm-ex"),
@@ -126,6 +127,14 @@ export default function MaTaskPage() {
                   pagination={pagination}
                   handdleChangeExpenseStatus={handdleChangeExpenseStatus}
                   changePagination={changePagination}
+                />
+                <ExpenseDetailComponent
+                  rules={rules}
+                  data={undefined}
+                  showState={false}
+                  handdleShowState={function (state: boolean): void {
+                    throw new Error("Function not implemented.");
+                  }}
                 />
               </Card>
             ) : (

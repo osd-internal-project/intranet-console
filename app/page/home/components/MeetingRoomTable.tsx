@@ -5,11 +5,12 @@ import { MasterRoomType } from "../common";
 
 export interface props {
   pagination: any;
-  bookingRoom: MasterRoomType[];
+  masterBookingRoom: MasterRoomType[];
 }
 const MeetingRoomTableComponent: React.FC<props> = ({
-  bookingRoom,
+  masterBookingRoom,
 }): React.ReactElement => {
+
   const columns: TableProps<MasterRoomType>["columns"] = [
     {
       title: "ชื่อห้องประชุม",
@@ -27,15 +28,19 @@ const MeetingRoomTableComponent: React.FC<props> = ({
           <Tag color="red">ไม่สามารถใช้งานได้</Tag>
         ),
     },
-    // {
-    //   title: "สถานะการจองห้องประชุม",
-    //   dataIndex: "",
-    //   key: "",
-    // },
+    {
+      title: "สถานะการจองห้องประชุม",
+      dataIndex: "roomsStatus",
+      key: "roomsStatus",
+    },
   ];
 
   return (
-    <Table columns={columns} dataSource={bookingRoom} pagination={false} />
+    <Table
+      columns={columns}
+      dataSource={masterBookingRoom}
+      pagination={false}
+    />
   );
 };
 

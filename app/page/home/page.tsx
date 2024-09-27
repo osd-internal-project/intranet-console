@@ -22,10 +22,12 @@ import { RcFile, UploadProps } from "antd/es/upload";
 
 export default function HomePage() {
   const intraAuth = useAxiosIntranet();
-  const slideImageService = SlideImageService(intraAuth);
+  const intraAuthService = SlideImageService(intraAuth);
   const [loading, setLoading] = useState<boolean>(true);
   const [slideImage, setSlideImage] = useState<any[]>([]);
-  const [bookingRoom, setBookingRoom] = useState<MasterRoomType[]>([]);
+  const [masterBookingRoom, setMasterBookingRoom] = useState<MasterRoomType[]>(
+    []
+  );
   const [handbookFile, setHandbookFile] = useState<HandbookFileType[]>([]);
   const [handbookQuery, setHandbookQuery] = useState<HandbookType[]>([]);
   const [informationNews, setInformationNews] = useState<InformationNewsType[]>(
@@ -34,20 +36,19 @@ export default function HomePage() {
   const [NewsImage, setNewsImage] = useState<NewsImageType[]>([]);
 
   const fetchData = async () => {
-    const dataSlideImage = await slideImageService.getSlideImageQuery();
-    const Bookingresponse = await slideImageService.getMasterRoomQuery();
-    const dataHandbookFileQuery =
-      await slideImageService.getHandbookFileQuery();
-    const dataHandbookQuery = await slideImageService.getHandbookQuery();
+    const dataSlideImage = await intraAuthService.getSlideImageQuery();
+    const MasterBookingresponse = await intraAuthService.getMasterRoomQuery();
+    const dataHandbookFileQuery = await intraAuthService.getHandbookFileQuery();
+    const dataHandbookQuery = await intraAuthService.getHandbookQuery();
     const dataInformationNews =
-      await slideImageService.getinformationNewsQuery();
-    const dataNewsImage = await slideImageService.getNewsImageQuery();
+      await intraAuthService.getinformationNewsQuery();
+    const dataNewsImage = await intraAuthService.getNewsImageQuery();
 
     setNewsImage(dataNewsImage);
     setInformationNews(dataInformationNews);
     setHandbookQuery(dataHandbookQuery);
     setHandbookFile(dataHandbookFileQuery);
-    setBookingRoom(Bookingresponse);
+    setMasterBookingRoom(MasterBookingresponse);
     setSlideImage(dataSlideImage);
     setLoading(false);
   };
@@ -58,7 +59,7 @@ export default function HomePage() {
 
   async function downloadFile(id: number, name: string): Promise<void> {
     if (id) {
-      const response = await slideImageService.downloadFile(id);
+      const response = await intraAuthService.downloadFile(id);
       const url = URL.createObjectURL(response);
       const a = document.createElement("a");
       a.href = url;
@@ -130,7 +131,7 @@ export default function HomePage() {
           <Card title="หอประชุม">
             <MeetingRoomTableComponent
               pagination={false}
-              bookingRoom={bookingRoom}
+              masterBookingRoom={masterBookingRoom}
             />
           </Card>
           <div className="my-4"></div>

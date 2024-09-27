@@ -90,6 +90,7 @@ const GroupManage: React.FC<props> = ({
   const [engineerUsersFormGroup, setEngineerUsersFormGroup] = useState<
     ITSelectUsers[]
   >([]);
+
   const [showModalUserPermission, setShowModalUserPermission] =
     useState<boolean>(false);
   const [userGroupIds, setUserGroupIds] = useState<string[]>([]);
@@ -140,21 +141,20 @@ const GroupManage: React.FC<props> = ({
         engineerUserGroupId: groupDetail.engineerUserGroupId,
         engineerUsersId: groupDetail.engineerUsersId,
       });
-
       setGroupDetail(groupDetail);
       setSeleceRole(resRole);
-
       const userGroupMapHeader =
         await userGroupServices.getUserGroupMapHeader();
-      // const userGroupIds = userGroupMapHeader.map(
-      //   (item: any) => item.userGroupId
-      // );
-      // console.log(userGroupIds);
       setUserGroupIds(userGroupMapHeader.map((item: any) => item.userGroupId));
 
       userpermissionform.setFieldsValue({
         leaveGroupId: groupDetail.userGroupMapHeader[0].leaveGroupId,
         leaveUserId: groupDetail.userGroupMapHeader[0].leaveUserId,
+        expenseGroupId: groupDetail.userGroupMapHeader[0].expenseGroupId,
+        expenseUserId: groupDetail.userGroupMapHeader[0].expenseUserId,
+
+        // leaveGroupId: userGroupMapHeader[0].leaveGroupId,
+        // leaveUserId: userGroupMapHeader[0].leaveUserId,
       });
     }
   };
@@ -319,12 +319,8 @@ const GroupManage: React.FC<props> = ({
       expenseGroupId: value.expenseGroupId,
       expenseUserId: value.expenseUserId,
     };
-    console.log("groupSelect:", groupSelect);
-    console.log("userGroupIds:", userGroupIds);
-
     if (groupSelect && userGroupIds.includes(groupSelect)) {
       try {
-        console.log(1);
         await userGroupServices.updateUserGroupHeaderPermission(
           groupSelect,
           dataUp
@@ -335,8 +331,6 @@ const GroupManage: React.FC<props> = ({
       }
     } else {
       try {
-        console.log(2);
-
         await userGroupServices.createdUserGroupHeaderPermission(data);
         message.success(`Created successfully`);
       } catch (err) {
@@ -616,7 +610,6 @@ const GroupManage: React.FC<props> = ({
       <GroupUserPermission
         groupOption={groupOption}
         onChangeEngineerGroupSelect={onChangeEngineerGroupSelect}
-        // saleUsersFormGroup={saleUsersFormGroup}
         usersFormGroup={engineerUsersFormGroup}
         showModalUserPermission={showModalUserPermission}
         setShowModalUserPermission={(e: boolean) =>

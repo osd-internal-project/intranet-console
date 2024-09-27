@@ -29,6 +29,8 @@ export const BookingRoomServices = (axiosInstance: AxiosInstance) => {
                 });
         },
         createBookingRoom: async (body: any) => {
+            console.log(body);
+            
             return await axiosInstance
                 .post(`${baseUrlApiBookingRoom}`, body)
                 .then((res) => {

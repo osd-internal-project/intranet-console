@@ -20,6 +20,26 @@ export interface MasterRoomType {
   roomName: string;
   roomsStatus: boolean;
   roomDescription: string;
+  bookingRoom: BookingRoomType[];
+}
+
+export interface BookingRoomType {
+  roomId: string;
+  roomName: String;
+  roomType: String;
+  bookerName: String;
+  bookerPhone: String;
+  bookerDepartment: String;
+  positionName: String;
+  bookingStatus: String;
+  startDate: String;
+  endDate: String;
+  approveDate: string;
+  title: String;
+  member: String;
+  approver: string;
+  outSider: String;
+  note: String;
 }
 
 export interface HandbookFileType {

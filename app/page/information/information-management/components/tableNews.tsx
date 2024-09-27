@@ -347,14 +347,14 @@ const Newoption: React.FC = () => {
       fixed: "left",
     },
     {
-      title: "ชื่อข่าว",
+      title: "ชื่อข่าวสาร",
       dataIndex: "newsName",
       key: "newsName",
       width: "350px",
       fixed: "left",
     },
     {
-      title: "ประเภทข่าว",
+      title: "ประเภทข่าวสาร",
       dataIndex: "newsType",
       key: "newsType",
       width: "150px",

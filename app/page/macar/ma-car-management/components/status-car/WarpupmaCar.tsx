@@ -309,11 +309,14 @@ const WarpupmaCar = () => {
     values
   ) => {
     setSubmitLoading(true);
+    console.log(values.status);
+    
     try {
       const updateMaCarWarpup = {
         status: values.status,
       };
-
+      console.log(updateMaCarWarpup);
+      
       await manageCarServices.updateMaCarWarpup(
         formchange.getFieldValue("carWrapupId"),
         updateMaCarWarpup
@@ -470,10 +473,12 @@ const WarpupmaCar = () => {
     return true;
   };
 
-  const dataWithKey = filteredData.map((item, index) => ({
+  const sortedData = filteredData.sort((a, b) => b.id - a.id);
+
+  const dataWithKey = sortedData.map((item, index) => ({
     ...item,
-    key: index + 1,
-    index: index + 1,
+    key: index,
+    index: sortedData.length - index, // เรียงจากมากไปน้อย
   }));
 
   const columns: TableProps<MaCarwarpup>["columns"] = [

@@ -19,7 +19,7 @@ export const TabeLeavManagement: React.FC<props> = ({
     {
       key: "id",
       dataIndex: "id",
-      title: "Id",
+      title: "No.",
       width: "50px",
       render: (values: string, row: any, index: number) => index + 1,
     },

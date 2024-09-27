@@ -255,17 +255,17 @@ const EditDetailComponent: React.FC<props> = ({
           autoComplete="off"
           layout="vertical"
         >
-          {/* <div className=" flex justify-center p-1">
-            <Avatar size={128} src={image ? URL.createObjectURL(image) : ""} />
-          </div> */}
           <div className=" flex justify-center p-1">
+            <Avatar size={128} src={image ? URL.createObjectURL(image) : ""} />
+          </div>
+          {/* <div className=" flex justify-center p-1">
             <Avatar
               size={128}
               src={
                 image && image instanceof Blob ? URL.createObjectURL(image) : ""
               }
             />
-          </div>
+          </div> */}
 
           <div className=" flex justify-center">
             <Form.Item name="image" hidden={disabledEdit}>

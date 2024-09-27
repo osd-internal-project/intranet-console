@@ -43,7 +43,6 @@ export default function HomePage() {
     const dataInformationNews =
       await intraAuthService.getinformationNewsQuery();
     const dataNewsImage = await intraAuthService.getNewsImageQuery();
-
     setNewsImage(dataNewsImage);
     setInformationNews(dataInformationNews);
     setHandbookQuery(dataHandbookQuery);

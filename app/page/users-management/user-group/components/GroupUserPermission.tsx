@@ -7,7 +7,8 @@ import { FormInstance } from "antd/lib";
 export interface props {
   groupOption: SelectProps["options"];
   onChangeEngineerGroupSelect: (group: string[]) => void;
-  usersFormGroup: ITSelectUsers[];
+  expenseUsersFormGroup: ITSelectUsers[];
+  leaveUsersFormGroup: ITSelectUsers[];
   showModalUserPermission: boolean;
   setShowModalUserPermission: (e: boolean) => void;
   setUserPermission: (form: {
@@ -17,16 +18,19 @@ export interface props {
     expenseUserId: string[];
   }) => void;
   userpermissionform: FormInstance;
+  onChangeLeaveGroupSelect: (group: string[]) => void;
 }
 
 const GroupUserPermission: React.FC<props> = ({
   groupOption,
   onChangeEngineerGroupSelect,
-  usersFormGroup,
+  expenseUsersFormGroup,
   showModalUserPermission,
   setShowModalUserPermission,
   setUserPermission,
   userpermissionform,
+  onChangeLeaveGroupSelect,
+  leaveUsersFormGroup,
 }): React.ReactElement => {
   return (
     <Modal
@@ -41,11 +45,7 @@ const GroupUserPermission: React.FC<props> = ({
         layout="vertical"
         onFinish={setUserPermission}
       >
-        <Form.Item
-          name={"leaveGroupId"}
-          label={<b>Leave Group</b>}
-          // initialValue={}
-        >
+        <Form.Item name={"leaveGroupId"} label={<b>Leave Group</b>}>
           <TreeSelect
             multiple
             allowClear
@@ -54,7 +54,7 @@ const GroupUserPermission: React.FC<props> = ({
             treeDefaultExpandAll
             placeholder="Please select"
             treeData={groupOption}
-            onChange={onChangeEngineerGroupSelect}
+            onChange={onChangeLeaveGroupSelect}
           />
         </Form.Item>
 
@@ -62,8 +62,9 @@ const GroupUserPermission: React.FC<props> = ({
           <Select
             allowClear
             mode="multiple"
+            placeholder="Please select"
             showSearch={true}
-            options={usersFormGroup.map((user) => ({
+            options={leaveUsersFormGroup.map((user) => ({
               label: `${user.firstNameTh} ${user.lastNameTh}`,
               value: user.userId,
             }))}
@@ -87,8 +88,9 @@ const GroupUserPermission: React.FC<props> = ({
           <Select
             allowClear
             mode="multiple"
+            placeholder="Please select"
             showSearch={true}
-            options={usersFormGroup.map((user) => ({
+            options={expenseUsersFormGroup.map((user) => ({
               label: `${user.firstNameTh} ${user.lastNameTh}`,
               value: user.userId,
             }))}
@@ -100,6 +102,7 @@ const GroupUserPermission: React.FC<props> = ({
             <Button onClick={() => setShowModalUserPermission(false)}>
               Cancel
             </Button>
+
             <Button type="primary" htmlType="submit">
               Save
             </Button>

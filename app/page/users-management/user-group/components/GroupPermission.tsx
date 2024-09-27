@@ -110,6 +110,7 @@ const GroupPermissionComponent: React.FC<props> = ({
         <Form.Item name={"saleUsersId"} label={<b>Sale</b>}>
           <Select
             allowClear
+            placeholder="Please select"
             mode="multiple"
             showSearch={true}
             options={saleUsersFormGroup.map((user) => ({
@@ -134,6 +135,7 @@ const GroupPermissionComponent: React.FC<props> = ({
           <Select
             allowClear
             mode="multiple"
+            placeholder="Please select"
             showSearch={true}
             options={engineerUsersFormGroup.map((user) => ({
               label: `${user.firstNameTh} ${user.lastNameTh}`,

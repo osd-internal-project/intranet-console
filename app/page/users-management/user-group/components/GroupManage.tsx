@@ -53,6 +53,13 @@ type groupDetail = {
   headId?: string;
   parentGroupId: string;
   // organizedGroupId: string;
+  userGroupMapHeader: userGroupMapHeaderType[];
+};
+type userGroupMapHeaderType = {
+  leaveGroupId: string;
+  leaveUserId: string;
+  expenseGroupId: string;
+  expenseUserId: string;
 };
 export type ITSelectUsers = {
   userId: string;
@@ -90,6 +97,12 @@ const GroupManage: React.FC<props> = ({
   const [engineerUsersFormGroup, setEngineerUsersFormGroup] = useState<
     ITSelectUsers[]
   >([]);
+  const [leaveUsersFormGroup, setLeaveUsersFormGroup] = useState<
+    ITSelectUsers[]
+  >([]);
+  const [expenseUsersFormGroup, setExpenseUsersFormGroup] = useState<
+    ITSelectUsers[]
+  >([]);
 
   const [showModalUserPermission, setShowModalUserPermission] =
     useState<boolean>(false);
@@ -119,6 +132,9 @@ const GroupManage: React.FC<props> = ({
         value: user.userId,
         label: `${user.firstNameTh} ${user.lastNameTh}`,
       }));
+      const userGroupMapHeader =
+        await userGroupServices.getUserGroupMapHeader();
+      setUserGroupIds(userGroupMapHeader.map((item: any) => item.userGroupId));
       setUserSelect(users);
       const resRole = await userRolesServices.getUserRoleAll();
       editform.setFieldsValue(groupDetail);
@@ -131,9 +147,17 @@ const GroupManage: React.FC<props> = ({
             )
           : []
       );
-
+      setGroupDetail(groupDetail);
+      setSeleceRole(resRole);
       await onChangeSaleGroupSelect(groupDetail.saleUserGroupId);
       await onChangeEngineerGroupSelect(groupDetail.engineerUserGroupId);
+      await onChangeLeaveGroupSelect(
+        groupDetail.userGroupMapHeader[0].leaveGroupId
+      );
+      await onChangeExpenseGroupSelect(
+        groupDetail.userGroupMapHeader[0].expenseGroupId
+      );
+
       permissionform.setFieldsValue({
         exceptionalSatatus: groupDetail.exceptionalSatatus,
         saleUserGroupId: groupDetail.saleUserGroupId,
@@ -141,21 +165,20 @@ const GroupManage: React.FC<props> = ({
         engineerUserGroupId: groupDetail.engineerUserGroupId,
         engineerUsersId: groupDetail.engineerUsersId,
       });
-      setGroupDetail(groupDetail);
-      setSeleceRole(resRole);
-      const userGroupMapHeader =
-        await userGroupServices.getUserGroupMapHeader();
-      setUserGroupIds(userGroupMapHeader.map((item: any) => item.userGroupId));
-
-      userpermissionform.setFieldsValue({
-        leaveGroupId: groupDetail.userGroupMapHeader[0].leaveGroupId,
-        leaveUserId: groupDetail.userGroupMapHeader[0].leaveUserId,
-        expenseGroupId: groupDetail.userGroupMapHeader[0].expenseGroupId,
-        expenseUserId: groupDetail.userGroupMapHeader[0].expenseUserId,
-
-        // leaveGroupId: userGroupMapHeader[0].leaveGroupId,
-        // leaveUserId: userGroupMapHeader[0].leaveUserId,
-      });
+      if (
+        groupDetail.userGroupMapHeader[0].leaveGroupId.includes(groupSelect) &&
+        groupSelect &&
+        groupDetail.userGroupMapHeader[0].expenseGroupId.includes(groupSelect)
+      ) {
+        userpermissionform.setFieldsValue({
+          leaveGroupId: groupDetail.userGroupMapHeader[0].leaveGroupId,
+          leaveUserId: groupDetail.userGroupMapHeader[0].leaveUserId,
+          expenseGroupId: groupDetail.userGroupMapHeader[0].expenseGroupId,
+          expenseUserId: groupDetail.userGroupMapHeader[0].expenseUserId,
+        });
+      } else {
+        userpermissionform.resetFields();
+      }
     }
   };
   const createTree = (obj: any[], parentId: string | null) => {
@@ -181,10 +204,22 @@ const GroupManage: React.FC<props> = ({
     const data = await userGroupServices.findUsersByOwnerGroup(group);
     setSaleUsersFormGroup(data);
   }
+
   async function onChangeEngineerGroupSelect(group: string[]): Promise<void> {
     const data = await userGroupServices.findUsersByOwnerGroup(group);
     setEngineerUsersFormGroup(data);
   }
+
+  async function onChangeLeaveGroupSelect(group: string[]): Promise<void> {
+    const data = await userGroupServices.findUsersByOwnerGroup(group);
+    setLeaveUsersFormGroup(data);
+  }
+
+  async function onChangeExpenseGroupSelect(group: string[]): Promise<void> {
+    const data = await userGroupServices.findUsersByOwnerGroup(group);
+    setExpenseUsersFormGroup(data);
+  }
+
   const onCloseDetail = () => {
     setGroupDetail(null);
     propDataManage({
@@ -325,14 +360,14 @@ const GroupManage: React.FC<props> = ({
           groupSelect,
           dataUp
         );
-        message.success(`Updated successfully`);
+        message.success(`Updated success`);
       } catch (err) {
         message.error("Update failed");
       }
     } else {
       try {
         await userGroupServices.createdUserGroupHeaderPermission(data);
-        message.success(`Created successfully`);
+        message.success(`Created success`);
       } catch (err) {
         message.error("Creation failed");
       }
@@ -483,25 +518,28 @@ const GroupManage: React.FC<props> = ({
                 />
               </Form.Item>
             </div>
-            <div style={{ display: "flex", justifyContent: "end" }}>
-              <div>
-                <Button onClick={onShowSetPermission} type="primary">
-                  Set CRM Permission
-                </Button>
+            {!editState && (
+              <div style={{ display: "flex", justifyContent: "end" }}>
+                <div>
+                  <Button onClick={onShowSetPermission} type="primary">
+                    Set CRM Permission
+                  </Button>
+                </div>
+                <div style={{ marginLeft: "20px" }}>
+                  <Button
+                    onClick={() => {
+                      setShowModalUserPermission(true);
+                    }}
+                    type="primary"
+                  >
+                    {`Set User Permission`}
+                  </Button>
+                </div>
               </div>
-              <div style={{ marginLeft: "20px" }}>
-                <Button
-                  onClick={() => setShowModalUserPermission(true)}
-                  type="primary"
-                >
-                  {`Set User Permission`}
-                </Button>
-              </div>
-            </div>
-
+            )}
             {editState ? (
               <div className="flex justify-end space-x-4 ">
-                <Form.Item>
+                <Form.Item style={{ marginTop: "20px" }}>
                   <Button
                     onClick={() => {
                       setEditState(false);
@@ -515,6 +553,7 @@ const GroupManage: React.FC<props> = ({
                   type="primary"
                   htmlType="submit"
                   loading={buttonLoading}
+                  style={{ marginTop: "20px" }}
                 >
                   Save Change
                 </Button>
@@ -594,6 +633,7 @@ const GroupManage: React.FC<props> = ({
           </Row>
         </Form>
       </Modal>
+
       <GroupPermissionComponent
         groupOption={groupOption}
         onChangeSaleGroupSelect={onChangeSaleGroupSelect}
@@ -610,7 +650,9 @@ const GroupManage: React.FC<props> = ({
       <GroupUserPermission
         groupOption={groupOption}
         onChangeEngineerGroupSelect={onChangeEngineerGroupSelect}
-        usersFormGroup={engineerUsersFormGroup}
+        onChangeLeaveGroupSelect={onChangeLeaveGroupSelect}
+        expenseUsersFormGroup={expenseUsersFormGroup}
+        leaveUsersFormGroup={leaveUsersFormGroup}
         showModalUserPermission={showModalUserPermission}
         setShowModalUserPermission={(e: boolean) =>
           setShowModalUserPermission(e)

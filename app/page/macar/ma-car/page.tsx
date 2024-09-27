@@ -125,12 +125,12 @@ const MaCar: React.FC = () => {
               <div className="flex justify-end space-x-4">
                 {" "}
                 <Link href="/page/macar/ma-car-booking?action=1">
-                  <Button type="primary" size="small">
+                  <Button type="primary" size="middle">
                     ทำการจองรถ
                   </Button>
                 </Link>
                 <Link href="/page/macar/ma-car-booking?action=2">
-                  <Button type="primary" size="small">
+                  <Button type="primary" size="middle">
                     คืนรถ
                   </Button>
                 </Link>

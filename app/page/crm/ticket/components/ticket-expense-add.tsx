@@ -27,34 +27,34 @@ import {
 } from "@/app/utils/format";
 
 import Link from "next/link";
-import { ITExpendType, ITTicketExpend } from "./../common";
+import { ITExpenseType, ITTicketExpense } from "./../common";
 import { PlusOutlined } from "@ant-design/icons";
 import { FormInstance } from "antd/lib";
 
 export interface props {
-  addform: FormInstance<ITTicketExpend>;
+  addform: FormInstance<ITTicketExpense>;
   ticketId: number;
   showModalAdd: boolean;
   closeAddModal: () => void;
-  expendType: ITExpendType[];
-  handleAddTicketExpend: (value: ITTicketExpend) => void;
+  expenseType: ITExpenseType[];
+  handleAddTicketExpense: (value: ITTicketExpense) => void;
 }
 
-const TicketExpendAdd: React.FC<props> = ({
+const TicketExpenseAdd: React.FC<props> = ({
   addform,
   ticketId,
   showModalAdd,
   closeAddModal,
-  expendType,
-  handleAddTicketExpend,
+  expenseType,
+  handleAddTicketExpense,
 }): React.ReactElement => {
   const [summaryPrice, setSummaryPrice] = useState(0);
   useEffect(() => {
     addform.resetFields();
   }, [showModalAdd]);
   const onCalSummaryPrice = () => {
-    const amount = addform.getFieldValue("expendAmount");
-    const price = addform.getFieldValue("expendPrice");
+    const amount = addform.getFieldValue("expenseAmount");
+    const price = addform.getFieldValue("expensePrice");
     console.log(amount * price);
     setSummaryPrice(amount && price ? amount * price : 0);
   };
@@ -69,19 +69,29 @@ const TicketExpendAdd: React.FC<props> = ({
       <Form
         form={addform}
         labelCol={{ sm: 5 }}
-        onFinish={handleAddTicketExpend}
+        onFinish={handleAddTicketExpense}
       >
+        <Form.Item name={"formType"} label={"ประเภทการเบิก"}>
+          <Select
+            allowClear
+            placeholder="Please Select"
+            options={[
+              { value: "normal", label: "Normal" },
+              { value: "advance", label: "Advance" },
+            ]}
+          />
+        </Form.Item>
         <Form.Item
           label={`รายการ`}
-          name={`expendCode`}
+          name={`expenseCode`}
           rules={[{ required: true, message: "Please Select" }]}
         >
           <Select
             showSearch
             optionFilterProp="label"
-            options={expendType.map((data) => ({
-              value: data.expendCode,
-              label: `${data.expendCode} : ${data.expendName}`,
+            options={expenseType.map((data) => ({
+              value: data.expenseCode,
+              label: `${data.expenseCode} : ${data.expenseName}`,
             }))}
           />
         </Form.Item>
@@ -90,7 +100,7 @@ const TicketExpendAdd: React.FC<props> = ({
         </Form.Item>
         <Form.Item
           label={`จำนวน`}
-          name={`expendAmount`}
+          name={`expenseAmount`}
           rules={[{ required: true, message: "Please Enter" }]}
         >
           <InputNumber
@@ -106,7 +116,7 @@ const TicketExpendAdd: React.FC<props> = ({
         </Form.Item>
         <Form.Item
           label={`ราคา/หน่วย`}
-          name={`expendPrice`}
+          name={`expensePrice`}
           rules={[{ required: true, message: "Please Enter" }]}
         >
           <InputNumber
@@ -134,4 +144,4 @@ const TicketExpendAdd: React.FC<props> = ({
   );
 };
 
-export default TicketExpendAdd;
+export default TicketExpenseAdd;

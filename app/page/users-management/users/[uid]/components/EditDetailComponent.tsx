@@ -245,7 +245,6 @@ const EditDetailComponent: React.FC<props> = ({
   }) => {
     return setImageFiles(newFileList);
   };
-
   return (
     <>
       <Card>

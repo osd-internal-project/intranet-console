@@ -85,7 +85,6 @@ export default function Page() {
   };
 
   const onFinishUpdate = async (type: string, id: number) => {
-
     Modal.confirm({
       title: <>{type === "cancel" ? "Cancel " : "Approved"}</>,
       icon: <ExclamationCircleFilled />,

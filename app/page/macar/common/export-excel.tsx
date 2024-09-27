@@ -1,7 +1,7 @@
 import React from "react";
 import * as XLSX from "xlsx";
 import { Button } from "antd";
-import { MaCarBookType } from "../../common/index";
+import { MaCarBookType, dataMaCarbook } from "./index";
 import { ExcelIcon } from "@/components/icon";
 
 interface ShareMaCarBookProps {
@@ -37,11 +37,8 @@ const ShareMaCarBook: React.FC<ShareMaCarBookProps> = ({ data }) => {
       ผู้อนุมัติ: dataItem.carBookApprovedByName,
       รายละเอียด: dataItem.detail,
     }));
-
     const workbook = XLSX.utils.book_new();
-    
     const worksheet = XLSX.utils.json_to_sheet(transdata);
-
     const colWidths = [
       { wch: 20 },
       { wch: 20 },
@@ -55,7 +52,6 @@ const ShareMaCarBook: React.FC<ShareMaCarBookProps> = ({ data }) => {
     ];
 
     worksheet["!cols"] = colWidths;
-
     XLSX.utils.book_append_sheet(workbook, worksheet, "การจองรถ");
     XLSX.writeFile(workbook, "การจองรถ.xlsx");
   };

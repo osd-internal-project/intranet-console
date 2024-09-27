@@ -17,7 +17,7 @@ import DescriptionCustomerComponent from "./components/description-form";
 import {
   ITBranchContact,
   ITBranchContactForm,
-  ITExpendType,
+  ITExpenseType,
   ITProject,
   ITProjectTask,
   ITProjectTaskForm,
@@ -26,7 +26,7 @@ import {
   ITProjectTicketEditForm,
   ITSelectUsers,
   ITTicketConfigs,
-  ITTicketExpend,
+  ITTicketExpense,
   ITTicketHistoryLog,
   ITTicketHistoryLogForm,
 } from "../common";
@@ -110,7 +110,7 @@ export default function CustomerDetailPage() {
     requestTypeList: [],
   });
   const [usersList, setUsersList] = useState<ITSelectUsers[]>([]);
-  const [expendType, setExpendType] = useState<ITExpendType[]>([]);
+  const [expenseType, setExpenseType] = useState<ITExpenseType[]>([]);
   // const [data, setData] = useState<ITCustomer>();
   useEffect(() => {
     if (loading === true) fetchData();
@@ -157,8 +157,8 @@ export default function CustomerDetailPage() {
     setloading(false);
   };
   const fetchConfigs = async () => {
-    const expendTyoe = await crmServices.findExpendType();
-    setExpendType(expendTyoe);
+    const expenseTyoe = await crmServices.findExpenseType();
+    setExpenseType(expenseTyoe);
     const ticketConfigs = await crmServices.findConfigsForTicket();
     if (ticketConfigs) {
       setTicketConfigs(ticketConfigs);
@@ -525,13 +525,13 @@ export default function CustomerDetailPage() {
     } else if (action === "rollback") {
       type = "Rollback";
       detail = "Rollback";
-    } else if (action === "add-expend") {
+    } else if (action === "add-expense") {
       type = "Add Expense";
       detail = "เพิ่มรายการขอเบิก";
-    } else if (action === "edit-expend") {
+    } else if (action === "edit-expense") {
       type = "Edit Expense";
       detail = "แก้ไขรายการขอเบิก";
-    } else if (action === "delete-expend") {
+    } else if (action === "delete-expense") {
       type = "Delete Expense";
       detail = "ลบรายการขอเบิก";
     }
@@ -592,16 +592,23 @@ export default function CustomerDetailPage() {
 
     setloading(true);
   }
-  async function handleAddTicketExpend(value: ITTicketExpend) {
+  async function handleAddTicketExpense(value: ITTicketExpense) {
     if (projectTicketDetail?.id) {
       const ticketId = projectTicketDetail.id;
       await crmServices
         .updateProjectTicket(ticketId, {
-          ticketExpend: { create: value },
+          ticketExpense: {
+            create: {
+              ...value,
+              processStatus: "wait",
+              updatedById: session?.user.userId,
+              updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+            },
+          },
         })
         .then(async (data) => {
           message.success("สำเร็จ");
-          await onSaveHistoryLogs(ticketId, "add-expend");
+          await onSaveHistoryLogs(ticketId, "add-expense");
           await onShowModalProjectTicketDetail(ticketId);
           setloading(true);
         })
@@ -610,17 +617,17 @@ export default function CustomerDetailPage() {
         });
     }
   }
-  async function handleEditTicketExpend(
-    expendId: number,
-    value: ITTicketExpend
+  async function handleEditTicketExpense(
+    expenseId: number,
+    value: ITTicketExpense
   ) {
     if (projectTicketDetail?.id) {
       const ticketId = projectTicketDetail.id;
       await crmServices
-        .updateProjectTicketExpend(expendId, value)
+        .updateProjectTicketExpense(expenseId, value)
         .then(async (data) => {
           message.success("สำเร็จ");
-          await onSaveHistoryLogs(ticketId, "edit-expend");
+          await onSaveHistoryLogs(ticketId, "edit-expense");
           await onShowModalProjectTicketDetail(ticketId);
           setloading(true);
         })
@@ -629,7 +636,7 @@ export default function CustomerDetailPage() {
         });
     }
   }
-  async function handleDeleteTicketExpend(expendId: number) {
+  async function handleDeleteTicketExpense(expenseId: number) {
     if (projectTicketDetail?.id) {
       const ticketId = projectTicketDetail.id;
       Modal.confirm({
@@ -640,12 +647,12 @@ export default function CustomerDetailPage() {
         okButtonProps: { type: "primary", danger: true },
         cancelText: "Cancel",
         onOk: async () => {
-          const dataResult = await crmServices.deleteProjectTicketExpend(
-            expendId
+          const dataResult = await crmServices.deleteProjectTicketExpense(
+            expenseId
           );
           if (dataResult) {
             message.success("สำเร็จ");
-            await onSaveHistoryLogs(ticketId, "delete-expend");
+            await onSaveHistoryLogs(ticketId, "delete-expense");
             await onShowModalProjectTicketDetail(ticketId);
             setloading(true);
           }
@@ -799,10 +806,10 @@ export default function CustomerDetailPage() {
                   onDeleteTicketFile={onDeleteTicketFile}
                   usersList={usersList}
                   saveRequestTicketFile={saveRequestTicketFile}
-                  expendType={expendType}
-                  handleAddTicketExpend={handleAddTicketExpend}
-                  handleEditTicketExpend={handleEditTicketExpend}
-                  handleDeleteTicketExpend={handleDeleteTicketExpend}
+                  expenseType={expenseType}
+                  handleAddTicketExpense={handleAddTicketExpense}
+                  handleEditTicketExpense={handleEditTicketExpense}
+                  handleDeleteTicketExpense={handleDeleteTicketExpense}
                 />
               ) : (
                 <></>

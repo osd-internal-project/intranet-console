@@ -92,7 +92,7 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return res.data;
         })
         .catch((err) => {
-          return ;
+          return;
         });
     },
     getdataLeaveAll: async () => {
@@ -116,6 +116,9 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
     getdataLeaveGroupById: async (groupId: string) => {
       const condition = {
         where: { groupId: groupId },
+        include: {
+          dataLeaveFiles: true,
+        },
         orderBy: { id: "asc" },
       };
       return await axiosInstance
@@ -129,6 +132,7 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    
     getdataUserByTypeLeaveId: async (search: { typeid: string }) => {
       const condition = {
         where: {
@@ -205,15 +209,16 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    findDetailTypeLeaveByUserId: async (userId: string | undefined) => {
-      let url = `${baseUrlDataLeave}/find-detail-type-leave-by-userId/${userId}`;
+
+    getdataLeaveByUserId: async (userId: string | undefined) => {
+      let url = `${baseUrlDataLeave}/leave-header/${userId}`;
       return await axiosInstance
         .get(url)
         .then((res) => {
           return res.data;
         })
         .catch((err) => {
-          return [];
+          return;
         });
     },
 
@@ -228,6 +233,19 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+
+    findDetailTypeLeaveByUserId: async (userId: string | undefined) => {
+      let url = `${baseUrlDataLeave}/find-detail-type-leave-by-userId/${userId}`;
+      return await axiosInstance
+        .get(url)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
+
     getdataTypeLeaveMap: async (user_id: any) => {
       const condition = {
         where: {
@@ -432,6 +450,18 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
       };
       return await axiosInstance
         .post(`${baseUrlUser}/condition-first`, { condition: condition })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+
+    getUserGroupMapHeader: async () => {
+      return await axiosInstance
+        .get(`/user-group-map-header/`)
         .then((res) => {
           return res.data;
         })

@@ -26,42 +26,42 @@ import {
 } from "@/app/utils/format";
 
 import Link from "next/link";
-import { ITExpendType, ITTicketExpend } from "../../common";
+import { ITExpenseType, ITTicketExpense } from "./../common";
 import { PlusOutlined } from "@ant-design/icons";
-import TicketExpendAdd from "./ticket-expend-add";
+import TicketExpenseAdd from "./ticket-expense-add";
 import { useForm } from "antd/es/form/Form";
-import TicketExpendEdit from "./ticket-expend-edit";
+import TicketExpenseEdit from "./ticket-expense-edit";
 
 export interface props {
-  ticketExpends: ITTicketExpend[];
+  ticketExpense: ITTicketExpense[];
   ticketId: number;
-  expendType: ITExpendType[];
-  handleAddTicketExpend: (value: ITTicketExpend) => void;
-  handleEditTicketExpend: (expendId: number, value: ITTicketExpend) => void;
-  handleDeleteTicketExpend: (expendId: number) => void;
+  expenseType: ITExpenseType[];
+  handleAddTicketExpense: (value: ITTicketExpense) => void;
+  handleEditTicketExpense: (expenseId: number, value: ITTicketExpense) => void;
+  handleDeleteTicketExpense: (expenseId: number) => void;
 }
 
-const TicketExpend: React.FC<props> = ({
-  ticketExpends,
+const TicketExpense: React.FC<props> = ({
+  ticketExpense,
   ticketId,
-  expendType,
-  handleAddTicketExpend,
-  handleEditTicketExpend,
-  handleDeleteTicketExpend,
+  expenseType,
+  handleAddTicketExpense,
+  handleEditTicketExpense,
+  handleDeleteTicketExpense,
 }): React.ReactElement => {
   const [addform] = useForm();
   const [editform] = useForm();
   const [showModalAdd, setShowModalAdd] = useState(false);
-  const [editExpendId, setEditExpendId] = useState<number | undefined>(
+  const [editExpenseId, setEditExpenseId] = useState<number | undefined>(
     undefined
   );
   useEffect(() => {
     setShowModalAdd(false);
-    setEditExpendId(undefined);
+    setEditExpenseId(undefined);
     addform.resetFields();
     editform.resetFields();
-  }, [ticketExpends]);
-  const customerColumns: TableColumnsType<ITTicketExpend> = [
+  }, [ticketExpense]);
+  const customerColumns: TableColumnsType<ITTicketExpense> = [
     {
       title: "No.",
       key: "id",
@@ -71,15 +71,30 @@ const TicketExpend: React.FC<props> = ({
       render: (id: number, record, index: number) => index + 1,
     },
     {
+      title: "ประเภทการเบิก",
+      key: "formType",
+      dataIndex: "formType",
+      width: "200px",
+      align: "center",
+      render: (data: string) =>
+        data === "normal" ? (
+          <div className="font-bold text-sky-700">Normal</div>
+        ) : data === "advance" ? (
+          <div className=" font-bold  text-orange-600">Advance</div>
+        ) : (
+          <></>
+        ),
+    },
+    {
       title: "ประเภทค่าใช้จ่าย",
-      key: "expendType",
-      dataIndex: ["expendType", "expendCode"],
+      key: "expenseType",
+      dataIndex: ["expenseType", "expenseCode"],
       width: "200px",
     },
     {
       title: "รายการ",
-      key: "expendType",
-      dataIndex: ["expendType", "expendName"],
+      key: "expenseType",
+      dataIndex: ["expenseType", "expenseName"],
       width: "200px",
     },
     {
@@ -90,8 +105,8 @@ const TicketExpend: React.FC<props> = ({
     },
     {
       title: "จำนวน",
-      key: "expendAmount",
-      dataIndex: "expendAmount",
+      key: "expenseAmount",
+      dataIndex: "expenseAmount",
       align: "right",
       width: "200px",
       render(value, record, index) {
@@ -101,8 +116,8 @@ const TicketExpend: React.FC<props> = ({
 
     {
       title: "ราคา/หน่วย",
-      key: "expendPrice",
-      dataIndex: "expendPrice",
+      key: "expensePrice",
+      dataIndex: "expensePrice",
       width: "100px",
       align: "right",
       render(value, record, index) {
@@ -115,8 +130,22 @@ const TicketExpend: React.FC<props> = ({
       title: "ราคารวม",
       width: "200px",
       align: "right",
-      render: (data: number, record: ITTicketExpend) =>
-        numberWithCommas(record.expendAmount * record.expendPrice),
+      render: (data: number, record: ITTicketExpense) =>
+        numberWithCommas(record.expenseAmount * record.expensePrice),
+    },
+    {
+      key: "processStatus",
+      dataIndex: "processStatus",
+      title: "ราคารวม",
+      width: "200px",
+      align: "center",
+      render: (data: string) => (
+        <>
+          {data === "wait" && <Tag color="blue">Wait Approve</Tag>}
+          {data === "approved" && <Tag color="green">Approved</Tag>}
+          {data === "canceled" && <Tag color="red">Canceled</Tag>}
+        </>
+      ),
     },
     {
       key: "id",
@@ -124,14 +153,14 @@ const TicketExpend: React.FC<props> = ({
       title: "Action",
       width: "200px",
       align: "center",
-      render: (id: number, record: ITTicketExpend) => (
+      render: (id: number, record: ITTicketExpense) => (
         <div className=" flex justify-center space-x-2">
           <Button
             type="link"
             onClick={() => {
               console.log(record);
               editform.setFieldsValue(record);
-              setEditExpendId(id);
+              setEditExpenseId(id);
             }}
           >
             Edit
@@ -139,7 +168,7 @@ const TicketExpend: React.FC<props> = ({
           <Button
             type="link"
             danger
-            onClick={() => handleDeleteTicketExpend(id)}
+            onClick={() => handleDeleteTicketExpense(id)}
           >
             Delete
           </Button>
@@ -163,33 +192,33 @@ const TicketExpend: React.FC<props> = ({
       </div>
       <Table
         columns={customerColumns}
-        dataSource={ticketExpends}
+        dataSource={ticketExpense}
         size="small"
         rowKey={(data: any) => data.id}
         pagination={false}
       />
       {showModalAdd && (
-        <TicketExpendAdd
+        <TicketExpenseAdd
           addform={addform}
           ticketId={ticketId}
           showModalAdd={showModalAdd}
           closeAddModal={() => setShowModalAdd(false)}
-          expendType={expendType}
-          handleAddTicketExpend={handleAddTicketExpend}
+          expenseType={expenseType}
+          handleAddTicketExpense={handleAddTicketExpense}
         />
       )}
-      {editExpendId && (
-        <TicketExpendEdit
+      {editExpenseId && (
+        <TicketExpenseEdit
           editform={editform}
           ticketId={ticketId}
-          editExpendId={editExpendId}
-          closeEditModal={() => setEditExpendId(undefined)}
-          expendType={expendType}
-          handleEditTicketExpend={handleEditTicketExpend}
+          editExpenseId={editExpenseId}
+          closeEditModal={() => setEditExpenseId(undefined)}
+          expenseType={expenseType}
+          handleEditTicketExpense={handleEditTicketExpense}
         />
       )}
     </>
   );
 };
 
-export default TicketExpend;
+export default TicketExpense;

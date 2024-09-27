@@ -312,17 +312,22 @@ export const MenuSider: MenuItem[] = [
       {
         key: `crm/customer`,
         label: `Customer`,
-        // rule: "crm-c-s",
+        rule: "crm-c-s",
       },
       {
         key: `crm/project`,
-        label: `Project `,
-        // rule: "crm-p-s",
+        label: `Project`,
+        rule: "crm-p-s",
       },
       {
         key: `crm/ticket`,
-        label: `Ticket `,
-        // rule: "crm-t-s",
+        label: `Ticket`,
+        rule: "crm-t-s",
+      },
+      {
+        key: `crm/expense`,
+        label: `Expense`,
+        rule: "crm-ex",
       },
     ],
   },
@@ -330,7 +335,7 @@ export const MenuSider: MenuItem[] = [
     key: "macar",
     icon: macarIcon,
     label: `Ma Car`,
-    // rule: "mac-s",
+    rule: "mac-s",
     children: [
       {
         key: `macar/ma-car`,
@@ -353,7 +358,7 @@ export const MenuSider: MenuItem[] = [
     key: "information",
     icon: <BarChartOutlined />,
     label: `Infomation`,
-    // rule: "ift-s",
+    rule: "ift-s",
     children: [
       {
         key: `information/information-data`,
@@ -369,7 +374,7 @@ export const MenuSider: MenuItem[] = [
     key: "handbook",
     icon: <BookOutlined />,
     label: `Handbook`,
-    // rule: "hb-s",
+    rule: "hb-s",
   },
 
   // {

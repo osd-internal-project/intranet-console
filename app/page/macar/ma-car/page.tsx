@@ -27,6 +27,7 @@ const MaCar: React.FC = () => {
   const [maCarBookData, setMaCarBookData] = useState<dataMaCarbook[]>([]);
   const [maFetchCalendar, setMaFetchCalendar] = useState([]);
   const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
+  const [maCarBookById, setMaCarBookById] = useState<MaCarBookType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -56,6 +57,7 @@ const MaCar: React.FC = () => {
           loading={loading}
           setLoading={setLoading}
           maCarData={maCarData}
+          maCarBookById={maCarBookById}
         />
       ),
     },
@@ -72,26 +74,21 @@ const MaCar: React.FC = () => {
     const take: number = Number(pagination.pageSize);
     try {
       const maCar = await maCarServices.getMaCarQuery();
-      setMaCarData(maCar);
-
       const createdById = session?.user.userId;
-
       const maCarBook = await maCarServices.findMaCarBook(
         createdById,
         skip,
         take
       );
-
       const maCalender = await maCarServices.getMaCarBookQuery(createdById);
-
+      const maCarBookById = await maCarServices.findMaCarBookById(createdById);
+      setMaCarBookById(maCarBookById);
+      setMaCarData(maCar);
       setMaCarBookData(maCarBook);
       setMaFetchCalendar(maCalender);
       setPagination({ ...pagination, total: maCarBook.count });
-
       setLoading(false);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -128,10 +125,14 @@ const MaCar: React.FC = () => {
               <div className="flex justify-end space-x-4">
                 {" "}
                 <Link href="/page/macar/ma-car-booking?action=1">
-                  <Button type="primary">ทำการจองรถ</Button>
+                  <Button type="primary" size="small">
+                    ทำการจองรถ
+                  </Button>
                 </Link>
                 <Link href="/page/macar/ma-car-booking?action=2">
-                  <Button type="primary">คืนรถ</Button>
+                  <Button type="primary" size="small">
+                    คืนรถ
+                  </Button>
                 </Link>
               </div>
 

@@ -43,6 +43,9 @@ export default function CustomerDetailPage() {
   const rules = {
     ruleCustomerShow: checkRule("crm-c-s"),
     ruleCustomerEdit: checkRule("crm-c-e"),
+    ruleCustomerSubAdd: checkRule("crm-cs-a"),
+    ruleCustomerSubEdit: checkRule("crm-cs-e"),
+    ruleCustomerSubDelete: checkRule("crm-cs-d"),
     ruleCustomerBranchAdd: checkRule("crm-cb-a"),
     ruleCustomerBranchEdit: checkRule("crm-cb-e"),
     ruleCustomerBranchDelete: checkRule("crm-cb-d"),

@@ -49,6 +49,7 @@ export default function Page() {
     []
   );
   const [groupDetail, setGroupDetail] = useState<UserGroupType[]>([]);
+  const [groupUserId, setDataGroupUserId] = useState<any>();
   const [getStartDate, setStartDate] = useState<Date>();
   const [getEndDate, setEndDate] = useState<Date>();
   const [checkSwitch, setCheckSwitch] = useState<boolean>(false);
@@ -76,21 +77,25 @@ export default function Page() {
     const resTableUserTypeLeave = await dataleaveservice.findUserByUserId(
       getUser?.userId
     );
+
     const options = res.map((event: ITypetypeleave) => {
       return { value: event.typeId, label: event.typeName };
     });
     const groupId = session?.user.ownerGroup;
-
     if (groupId) {
       const dataGroupDetail = await dataleaveserviceUser.getUserGroupByGroupId(
         groupId
       );
-      const dataUserByID = await dataleaveserviceUser.getUsersByUserId(
+      const dataUserById = await dataleaveserviceUser.getUsersByUserId(
         dataGroupDetail.headId
       );
-      setUserOwner(dataUserByID);
+      setUserOwner(dataUserById);
       setGroupDetail(dataGroupDetail);
     }
+    const dataGroupUserId = await dataleaveservice.getdataLeaveByUserId(
+      session?.user.userId
+    );
+    setDataGroupUserId(dataGroupUserId);
     setTypeLeaveTable(resTableDeatilTypeLeave);
     setTypeLeaveTableAll(resTableUserTypeLeave.typeLeaveDisabledMap);
     setTypeLeaveOption(options);
@@ -137,7 +142,7 @@ export default function Page() {
     if (value === true) {
       setParams((e: any) => ({ ...e, lengthDate: 1 }));
     } else if (value === false) {
-      setParams((e: any) => ({ ...e, lengthDate: -0.5 }));
+      setParams((e: any) => ({ ...e, lengthDate: value }));
     }
 
     setLoading(true);
@@ -257,8 +262,6 @@ export default function Page() {
     type_id: number,
     value: any
   ): Promise<boolean> => {
-    // console.log("value : " + value);
-    // console.log("type_id : " + type_id);
     try {
       let resultId: number;
       switch (type_id) {
@@ -409,7 +412,6 @@ export default function Page() {
     type_id: number,
     value: any
   ): Promise<boolean> => {
-
     const conflict = await checkLeaveHour(type_id, value);
     if (conflict) {
       message.warning({
@@ -422,8 +424,6 @@ export default function Page() {
   };
 
   const onfinishCreate = async (values: ITypeDataLeaveCreate) => {
-    // console.log(values);
-
     const userId = values.userId as string;
     const leaveStartDate = values.startDate as Date;
     const leaveEndDate = values.endDate as Date;
@@ -487,6 +487,7 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
             groupId: session?.user.ownerGroup,
+            attrachFile: attendFiles[0]?.name,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -494,7 +495,6 @@ export default function Page() {
           }
 
           if (await checkDataLeaveHour(type_id, values)) {
-            // console.log(values);
             return;
           }
 
@@ -595,6 +595,7 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
             groupId: session?.user.ownerGroup,
+            attrachFile: attendFiles[0].name,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -694,6 +695,7 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
             groupId: session?.user.ownerGroup,
+            attrachFile: attendFiles[0].name,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -792,6 +794,7 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
             groupId: session?.user.ownerGroup,
+            attrachFile: attendFiles[0].name,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -889,6 +892,7 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
             groupId: session?.user.ownerGroup,
+            attrachFile: attendFiles[0].name,
           };
 
           if (await checkDataLeaveCancel(type_id)) {
@@ -1002,6 +1006,7 @@ export default function Page() {
             getUserOwner={getUserOwner}
             onChangeParams={onChangeParams}
             groupDetail={groupDetail}
+            groupUserId={groupUserId}
           />
         </Col>
         <Col span={12}>

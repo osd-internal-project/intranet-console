@@ -11,7 +11,16 @@ import {
   Table,
   Tag,
   Tooltip,
+  Flex,
 } from "antd";
+import {
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  CloseCircleOutlined,
+  ExclamationCircleOutlined,
+  MinusCircleOutlined,
+  SyncOutlined,
+} from "@ant-design/icons";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { deleteIcon, editIcon, CancelIcon, CheckIcon } from "@/components/icon";
 import { PaperClipOutlined } from "@ant-design/icons";
@@ -19,6 +28,7 @@ import ExportDataLeaveAll from "../../common/export-excel";
 import dayjs from "dayjs";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../../services/index.service";
+import { useSession } from "next-auth/react";
 
 export interface props {
   dataLeaveUser: ITypeDataLeave[];
@@ -28,6 +38,7 @@ export interface props {
   onFinishUpdate: (type: string, id: number) => void;
   onFinishDelete: (type: string, id: number) => void;
   downloadFile: (id: number, filename: string) => void;
+  userGroupIds: string[];
 }
 
 export const TableDetail: React.FC<props> = ({
@@ -38,11 +49,13 @@ export const TableDetail: React.FC<props> = ({
   onFinishUpdate,
   onFinishDelete,
   downloadFile,
+  userGroupIds,
 }): React.ReactElement => {
   const Auth = useAxiosIntranet();
   const dataleaveservice = DataLeaveService(Auth);
   const [statusById, setStatusById] = useState<any | null>(null);
   const [dataById, setDataById] = useState<number | undefined>(undefined);
+  const { data: session } = useSession();
 
   const columns: any = [
     {
@@ -72,12 +85,37 @@ export const TableDetail: React.FC<props> = ({
       title: "Status",
       align: "center",
       render: (e: string) => {
-        return e === "waitting" ? (
-          <Tag color="blue">{`WAITTING`}</Tag>
-        ) : e === "approved" ? (
-          <Tag color="green">{`APPROVED`}</Tag>
-        ) : (
-          <Tag color="volcano">{`CANCEL`}</Tag>
+        let color = "";
+        let text = "";
+        let icon = null;
+
+        switch (e) {
+          case "waitting":
+            color = "DodgerBlue";
+            text = "WAITING";
+            icon = <SyncOutlined spin />;
+            break;
+          case "cancel":
+            color = "silver";
+            text = "CANCEL";
+            icon = <CloseCircleOutlined />;
+            break;
+          case "approved":
+            color = "LimeGreen";
+            text = "APPROVED";
+            icon = <CheckCircleOutlined />;
+            break;
+          default:
+            color = "gray";
+            text = "UNKNOWN";
+            icon = <MinusCircleOutlined />;
+            break;
+        }
+
+        return (
+          <Tag color={color} icon={icon}>
+            {text}
+          </Tag>
         );
       },
     },
@@ -290,6 +328,22 @@ export const TableDetail: React.FC<props> = ({
               >
                 {CheckIcon}
               </Button>
+              {/* {session?.user.userId &&
+                userGroupIds.includes(session?.user.userId) && (
+                  <Button
+                    size="small"
+                    type="primary"
+                    onClick={() => {
+                      onFinishUpdate("approved", dataById ? dataById : 0);
+                    }}
+                    style={{ width: "60px", height: "30px" }}
+                    disabled={
+                      statusById === "cancel" || statusById === "approved"
+                    }
+                  >
+                    {CheckIcon}
+                  </Button>
+                )} */}
             </Tooltip>
           </Col>
           <Col>

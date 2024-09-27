@@ -15,6 +15,7 @@ import {
 import UserGroupServices from "../services/usergroup.service";
 import { GroupManageSkeleton } from "./Skeleton";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
+import Link from "next/link";
 import {
   CarryOutOutlined,
   ExclamationCircleFilled,
@@ -23,6 +24,8 @@ import {
 import { checkRule } from "@/app/utils/rules";
 import RolesServices from "../../user-role/services/role.service";
 import GroupPermissionComponent from "./GroupPermission";
+import GroupUserPermission from "./GroupUserPermission";
+
 import { useSession } from "next-auth/react";
 import { Label } from "recharts";
 export interface props {
@@ -69,6 +72,7 @@ const GroupManage: React.FC<props> = ({
   const [addform] = Form.useForm();
   const [editform] = Form.useForm();
   const [permissionform] = Form.useForm();
+  const [userpermissionform] = Form.useForm();
   const userGroupServices = UserGroupServices(userAuth);
   const userRolesServices = RolesServices(userAuth);
   const [groupDetail, setGroupDetail] = useState<groupDetail | null>(null);
@@ -86,6 +90,11 @@ const GroupManage: React.FC<props> = ({
   const [engineerUsersFormGroup, setEngineerUsersFormGroup] = useState<
     ITSelectUsers[]
   >([]);
+
+  const [showModalUserPermission, setShowModalUserPermission] =
+    useState<boolean>(false);
+  const [userGroupIds, setUserGroupIds] = useState<string[]>([]);
+
   useEffect(() => {
     featchData();
   }, [groupSelect]);
@@ -105,7 +114,6 @@ const GroupManage: React.FC<props> = ({
       const groupDetail: any = await userGroupServices.getUserGroupByGroupId(
         groupSelect
       );
-
       const dataUser: any = await userGroupServices.getdataUserAll();
       const users = dataUser.map((user: any) => ({
         value: user.userId,
@@ -133,9 +141,21 @@ const GroupManage: React.FC<props> = ({
         engineerUserGroupId: groupDetail.engineerUserGroupId,
         engineerUsersId: groupDetail.engineerUsersId,
       });
-
       setGroupDetail(groupDetail);
       setSeleceRole(resRole);
+      const userGroupMapHeader =
+        await userGroupServices.getUserGroupMapHeader();
+      setUserGroupIds(userGroupMapHeader.map((item: any) => item.userGroupId));
+
+      userpermissionform.setFieldsValue({
+        leaveGroupId: groupDetail.userGroupMapHeader[0].leaveGroupId,
+        leaveUserId: groupDetail.userGroupMapHeader[0].leaveUserId,
+        expenseGroupId: groupDetail.userGroupMapHeader[0].expenseGroupId,
+        expenseUserId: groupDetail.userGroupMapHeader[0].expenseUserId,
+
+        // leaveGroupId: userGroupMapHeader[0].leaveGroupId,
+        // leaveUserId: userGroupMapHeader[0].leaveUserId,
+      });
     }
   };
   const createTree = (obj: any[], parentId: string | null) => {
@@ -174,9 +194,7 @@ const GroupManage: React.FC<props> = ({
     });
   };
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+  const onFinishFailed = (errorInfo: any) => {};
 
   const onFinishEdit = async (values: groupDetail) => {
     setbuttonLoading(true);
@@ -256,6 +274,7 @@ const GroupManage: React.FC<props> = ({
   const onClickEdit = async () => {
     setEditState(!editState);
   };
+
   const onSetPermission = async (form: {
     exceptionalSatatus: boolean;
     saleUserGroupId: string[];
@@ -280,6 +299,48 @@ const GroupManage: React.FC<props> = ({
         .catch((err) => message.error(err));
     }
   };
+
+  const setUserPermission = async (value: {
+    leaveGroupId: string[];
+    leaveUserId: string[];
+    expenseGroupId: string[];
+    expenseUserId: string[];
+  }): Promise<void> => {
+    const data = {
+      userGroupId: groupSelect,
+      leaveGroupId: value.leaveGroupId,
+      leaveUserId: value.leaveUserId,
+      expenseGroupId: value.expenseGroupId,
+      expenseUserId: value.expenseUserId,
+    };
+    const dataUp = {
+      leaveGroupId: value.leaveGroupId,
+      leaveUserId: value.leaveUserId,
+      expenseGroupId: value.expenseGroupId,
+      expenseUserId: value.expenseUserId,
+    };
+    if (groupSelect && userGroupIds.includes(groupSelect)) {
+      try {
+        await userGroupServices.updateUserGroupHeaderPermission(
+          groupSelect,
+          dataUp
+        );
+        message.success(`Updated successfully`);
+      } catch (err) {
+        message.error("Update failed");
+      }
+    } else {
+      try {
+        await userGroupServices.createdUserGroupHeaderPermission(data);
+        message.success(`Created successfully`);
+      } catch (err) {
+        message.error("Creation failed");
+      }
+    }
+
+    setShowModalUserPermission(false);
+  };
+
   const onShowSetPermission = () => {
     setShowModalPermission(true);
   };
@@ -288,7 +349,7 @@ const GroupManage: React.FC<props> = ({
       <Card className="mx-2 my-2 md:my-0  " style={{ minHeight: " 500px" }}>
         <div className="grid grid-cols-1 gap-0 space-y-5 ">
           <Row>
-            <Col span={12}>
+            <Col span={10}>
               <div>
                 <div className=" text-2xl  font-semibold inline-block mb-3">
                   Group Detail
@@ -300,7 +361,7 @@ const GroupManage: React.FC<props> = ({
                 </div>
               </div>
             </Col>
-            <Col span={12} style={{ justifyContent: "end", display: "flex" }}>
+            <Col span={14} style={{ justifyContent: "end", display: "flex" }}>
               <div className=" inline-block space-x-2 ">
                 <Button
                   type="primary"
@@ -422,11 +483,22 @@ const GroupManage: React.FC<props> = ({
                 />
               </Form.Item>
             </div>
-            <div className=" text-right">
-              <Button onClick={onShowSetPermission} type="link">
-                Set CRM Permission
-              </Button>
+            <div style={{ display: "flex", justifyContent: "end" }}>
+              <div>
+                <Button onClick={onShowSetPermission} type="primary">
+                  Set CRM Permission
+                </Button>
+              </div>
+              <div style={{ marginLeft: "20px" }}>
+                <Button
+                  onClick={() => setShowModalUserPermission(true)}
+                  type="primary"
+                >
+                  {`Set User Permission`}
+                </Button>
+              </div>
             </div>
+
             {editState ? (
               <div className="flex justify-end space-x-4 ">
                 <Form.Item>
@@ -534,6 +606,17 @@ const GroupManage: React.FC<props> = ({
         }
         permissionform={permissionform}
         onSetPermission={onSetPermission}
+      />
+      <GroupUserPermission
+        groupOption={groupOption}
+        onChangeEngineerGroupSelect={onChangeEngineerGroupSelect}
+        usersFormGroup={engineerUsersFormGroup}
+        showModalUserPermission={showModalUserPermission}
+        setShowModalUserPermission={(e: boolean) =>
+          setShowModalUserPermission(e)
+        }
+        userpermissionform={userpermissionform}
+        setUserPermission={setUserPermission}
       />
     </>
   ) : (

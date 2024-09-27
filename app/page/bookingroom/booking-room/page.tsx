@@ -28,6 +28,7 @@ import { useForm } from "antd/es/form/Form";
 import { useSession } from "next-auth/react";
 
 type BookingType = {
+  roomId: string;
   roomName: String;
   roomType: String;
   bookerName: String;
@@ -50,6 +51,8 @@ type MasterRoomType = {
   roomDescription: String;
   roomStatus: boolean;
   masterRoomTypeId: Number;
+  value: string;
+  label: string;
 };
 
 const BookingRoomPage: React.FC = () => {
@@ -141,6 +144,9 @@ const BookingRoomPage: React.FC = () => {
     const roomName = values.roomName as string;
     const startDate = values.startDate as string;
     const endDate = values.endDate as string;
+    const selectedOption = masterRoomData.find(
+      (option) => option.value === values.roomId
+    );
 
     const today = new Date();
     if (new Date(startDate) < today) {
@@ -157,7 +163,8 @@ const BookingRoomPage: React.FC = () => {
 
     const data = {
       userId: session?.user.userId,
-      roomName: roomName,
+      roomId: values.roomId,
+      roomName: selectedOption ? selectedOption.label : undefined,
       roomType: values.roomType,
       bookerName:
         session?.user.firstNameTh && session?.user.lastNameTh
@@ -219,7 +226,10 @@ const BookingRoomPage: React.FC = () => {
       const masterRoomActive = bookingRoom.filter(
         (room: any) => room.roomsStatus === true
       );
-      setMasterRoomData(masterRoomActive);
+      const options = bookingRoom.map((event: any) => {
+        return { value: event.roomId, label: event.roomName };
+      });
+      setMasterRoomData(options);
       const bookingCalendar = await bookingRoomServices.getBookingRoomQuery();
       const bookings = await bookingRoomServices.findBookingRoom(skip, take);
       setBookingFetchData(bookings.data);
@@ -306,19 +316,16 @@ const BookingRoomPage: React.FC = () => {
             <Col span={8}>
               <Form.Item<BookingType>
                 label="ชื่อห้อง"
-                name="roomName"
+                name="roomId"
                 rules={[{ required: true, message: "กรุณากเลือกห้องประชุม" }]}
               >
                 <Select
                   placeholder="โปรดเลือกห้องประชุม"
                   style={{ width: "100%" }}
-                >
-                  {masterRoomData.map((room, index) => (
-                    <Select.Option key={index} value={room.roomName}>
-                      {room.roomName}
-                    </Select.Option>
-                  ))}
-                </Select>
+                  options={masterRoomData}
+                  showSearch
+                  optionFilterProp="label"
+                />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -383,11 +390,25 @@ const BookingRoomPage: React.FC = () => {
             </Col>
             <Col span={8}>
               <Form.Item<BookingType> label="จำนวนสมาชิก" name="member">
-                <Input placeholder="กรอกจำนวนผู้เข้าใช้งาน" />
+                <Input
+                  placeholder="กรอกจำนวนผู้เข้าใช้งาน"
+                  maxLength={10}
+                  max={100}
+                  min={1}
+                  onKeyDown={(event) => {
+                    if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
+                      event.preventDefault();
+                    }
+                  }}
+                />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<BookingType> label="บุคคลภายนอก" name="outSider">
+              <Form.Item<BookingType>
+                label="บุคคลภายนอก"
+                name="outSider"
+                rules={[{ required: true, message: "กรุณาเลือกบุคคลภายนอก!" }]}
+              >
                 <Select
                   placeholder="บุคคลภายนอก"
                   style={{ width: "100%" }}

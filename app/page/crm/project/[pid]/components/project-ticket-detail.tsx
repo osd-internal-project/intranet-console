@@ -19,12 +19,12 @@ import {
 } from "antd";
 import {
   ITBranchContactForm,
-  ITExpendType,
+  ITExpenseType,
   ITProjectTicket,
   ITProjectTicketCreateForm,
   ITProjectTicketEditForm,
   ITSelectUsers,
-  ITTicketExpend,
+  ITTicketExpense,
   ITTicketHistoryLog,
 } from "../../common";
 import "../../style.css";
@@ -39,7 +39,7 @@ import { dateToStringThNoTime } from "@/app/utils/format";
 import TicketHistoryTableComponent from "./ticket-history-table";
 import { RcFile } from "antd/es/upload";
 import { deleteIcon } from "@/components/icon";
-import TicketExpend from "./ticket-expend";
+import TicketExpense from "./ticket-expense";
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 const layout = {
@@ -52,7 +52,7 @@ const layout = {
 };
 export interface props {
   rules: any;
-  expendType: ITExpendType[];
+  expenseType: ITExpenseType[];
   ticketSelectedDetail: ITProjectTicket;
   onShowModalProjectTicketDetail: (id: number | undefined) => void;
   onEditProjectTicket: (
@@ -69,14 +69,14 @@ export interface props {
   downloadFile: (id: number, name: string) => void;
   onDeleteTicketFile: (fileId: number, ticketId: number) => void;
   usersList: ITSelectUsers[];
-  handleAddTicketExpend: (value: ITTicketExpend) => void;
-  handleEditTicketExpend: (expendId: number, value: ITTicketExpend) => void;
-  handleDeleteTicketExpend: (expendId: number) => void;
+  handleAddTicketExpense: (value: ITTicketExpense) => void;
+  handleEditTicketExpense: (expenseId: number, value: ITTicketExpense) => void;
+  handleDeleteTicketExpense: (expenseId: number) => void;
 }
 
 const ProjectTicketDetailComponent: React.FC<props> = ({
   rules,
-  expendType,
+  expenseType,
   ticketSelectedDetail,
   onShowModalProjectTicketDetail,
   onEditProjectTicket,
@@ -85,9 +85,9 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
   downloadFile,
   onDeleteTicketFile,
   usersList,
-  handleAddTicketExpend,
-  handleEditTicketExpend,
-  handleDeleteTicketExpend,
+  handleAddTicketExpense,
+  handleEditTicketExpense,
+  handleDeleteTicketExpense,
 }): React.ReactElement => {
   const [editForm] = useForm();
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
@@ -751,16 +751,16 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
             ),
           },
           {
-            key: "expendTicket",
+            key: "expenseTicket",
             label: "รายการขอเบิก",
             children: (
-              <TicketExpend
-                ticketExpends={ticketSelectedDetail.ticketExpend}
+              <TicketExpense
+                ticketExpense={ticketSelectedDetail.ticketExpense}
                 ticketId={ticketSelectedDetail.id}
-                expendType={expendType}
-                handleAddTicketExpend={handleAddTicketExpend}
-                handleEditTicketExpend={handleEditTicketExpend}
-                handleDeleteTicketExpend={handleDeleteTicketExpend}
+                expenseType={expenseType}
+                handleAddTicketExpense={handleAddTicketExpense}
+                handleEditTicketExpense={handleEditTicketExpense}
+                handleDeleteTicketExpense={handleDeleteTicketExpense}
               />
             ),
           },

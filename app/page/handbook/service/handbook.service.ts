@@ -37,17 +37,6 @@ export const ManagehandbookFileServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    createhandbookFile: async (body: any) => {
-      return await axiosInstance
-        .post(`${baseUrlApihandbookFile}`, body)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
     uploadFiles: async (formData: FormData) => {
       return axiosInstance.post(
         `${baseUrlApihandbookFile}`,

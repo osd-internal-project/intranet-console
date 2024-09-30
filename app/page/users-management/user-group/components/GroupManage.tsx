@@ -151,8 +151,6 @@ const GroupManage: React.FC<props> = ({
       setSeleceRole(resRole);
       await onChangeSaleGroupSelect(groupDetail.saleUserGroupId);
       await onChangeEngineerGroupSelect(groupDetail.engineerUserGroupId);
-      console.log("groupDetail", groupDetail);
-
       await onChangeLeaveGroupSelect(
         groupDetail.userGroupMapHeader[0].leaveGroupId
       );
@@ -213,17 +211,12 @@ const GroupManage: React.FC<props> = ({
   }
 
   async function onChangeLeaveGroupSelect(group: string[]): Promise<void> {
-    console.log(group);
     const data = await userGroupServices.findUsersByOwnerGroup(group);
-    console.log(data);
     setLeaveUsersFormGroup(data);
   }
 
   async function onChangeExpenseGroupSelect(group: string[]): Promise<void> {
-    console.log(group);
-
     const data = await userGroupServices.findUsersByOwnerGroup(group);
-    console.log(data);
     setExpenseUsersFormGroup(data);
   }
 

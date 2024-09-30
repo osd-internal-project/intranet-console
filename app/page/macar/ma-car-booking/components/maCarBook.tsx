@@ -199,8 +199,8 @@ const MaCarBook: React.FC<props> = ({
 
       <Divider orientation="left">ข้อมูลการจองรถ</Divider>
 
-      <Row gutter={16}>
-        <Col span={8}>
+      <Row gutter={24}>
+        <Col span={6}>
           <Form.Item<MaCarBookType>
             name="carId"
             label="ชื่อรถ"
@@ -220,7 +220,7 @@ const MaCarBook: React.FC<props> = ({
             </Select>
           </Form.Item>
         </Col>
-        <Col span={8}>
+        <Col span={6}>
           <Form.Item<MaCarBookType>
             name="carBookTitle"
             label="วัตถุประสงค์การใช้งาน"
@@ -231,7 +231,7 @@ const MaCarBook: React.FC<props> = ({
             <Input placeholder="กรอกวัตถุประสงค์การใช้งาน" />
           </Form.Item>
         </Col>
-        <Col span={8}>
+        <Col span={6}>
           <Form.Item<MaCarBookType>
             name="carBookPlace"
             label="สถานที่ไป"
@@ -240,7 +240,7 @@ const MaCarBook: React.FC<props> = ({
             <Input placeholder="กรอกสถานที่ไป" />
           </Form.Item>
         </Col>
-        <Col span={8}>
+        <Col span={6}>
           <Form.Item<MaCarBookType>
             name="idProvinces"
             label="จังหวัด"
@@ -255,7 +255,9 @@ const MaCarBook: React.FC<props> = ({
             />
           </Form.Item>
         </Col>
-        <Col span={8}>
+      </Row>
+      <Row gutter={24}>
+        <Col span={6}>
           <Form.Item<MaCarBookType>
             name="carBookUsers"
             label="จำนวนผู้ใช้"
@@ -273,9 +275,7 @@ const MaCarBook: React.FC<props> = ({
             />
           </Form.Item>
         </Col>
-      </Row>
-      <Row gutter={24}>
-        <Col span={8}>
+        <Col span={6}>
           <Form.Item<MaCarBookType>
             name="carBookStartDate"
             label="วันที่เริ่มการจอง"
@@ -290,7 +290,7 @@ const MaCarBook: React.FC<props> = ({
             />
           </Form.Item>
         </Col>
-        <Col span={8}>
+        <Col span={6}>
           <Form.Item
             name="carBookEndDate"
             label="วันที่สิ้นสุดการจอง"
@@ -307,7 +307,7 @@ const MaCarBook: React.FC<props> = ({
         </Col>
       </Row>
       <Row gutter={24}>
-        <Col span={16}>
+        <Col span={8}>
           <Form.Item name="detail" label="รายยละเอียด">
             <TextArea placeholder="กรอกรายยละเอียด" rows={2} />
           </Form.Item>

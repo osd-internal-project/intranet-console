@@ -220,7 +220,7 @@ const Tablehandbook: React.FC = () => {
         bordered
         pagination={{ pageSize: 10 }}
       />
-    </div>
+    </div> 
   );
 };
 export default Tablehandbook;

@@ -356,7 +356,7 @@ const Managehandbook: React.FC = () => {
       title: "สถานะการมองเห็น",
       dataIndex: "status",
       key: "status",
-      width: "80px",
+      width: "80px", 
       align: "center",
       render: (status: boolean) =>
         status === true ? (

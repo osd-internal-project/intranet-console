@@ -430,7 +430,7 @@ const Newoption: React.FC = () => {
           >
             <Tooltip title="ลบ">
               <a>
-                {" "}
+                {" "} 
                 <DeleteIcon width="24" height="24" />{" "}
               </a>
             </Tooltip>

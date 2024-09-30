@@ -37,7 +37,7 @@ const dataform: React.FC = () => {
           fontStyle: "initial",
           borderBottom: "2px solid black",
         }}
-      >
+      > 
         หนังสือ และ เอกสาร
       </h1>
       <Col span={24}>

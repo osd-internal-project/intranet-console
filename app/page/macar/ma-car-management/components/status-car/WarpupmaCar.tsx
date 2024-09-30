@@ -310,13 +310,13 @@ const WarpupmaCar = () => {
   ) => {
     setSubmitLoading(true);
     console.log(values.status);
-    
+
     try {
       const updateMaCarWarpup = {
         status: values.status,
       };
       console.log(updateMaCarWarpup);
-      
+
       await manageCarServices.updateMaCarWarpup(
         formchange.getFieldValue("carWrapupId"),
         updateMaCarWarpup
@@ -819,14 +819,24 @@ const WarpupmaCar = () => {
             label="วันที่ตรวจสภาพ"
             rules={[{ required: true, message: "กรุณาเลือกเวลาเริ่มต้น" }]}
           >
-            <DatePicker style={{ width: "100%" }} />
+            <DatePicker
+              style={{ width: "100%" }}
+              disabledDate={(current) =>
+                current && current < moment().startOf("day")
+              }
+            />
           </Form.Item>
           <Form.Item
             name="dateEnd"
             label="วันที่่ตรวจสภาพครั้งถัดไป ( ** สามารถแก้ไขย้อนหลังได้ )"
             // rules={[{ required: true, message: "กรุณาเลือกเวลาสิ้นสุด" }]}
           >
-            <DatePicker style={{ width: "100%" }} />
+            <DatePicker
+              style={{ width: "100%" }}
+              disabledDate={(current) =>
+                current && current < moment().startOf("day")
+              }
+            />
           </Form.Item>
           <Form.Item name="remark" label="หมายเหตุ">
             <Input.TextArea rows={2} showCount maxLength={150} />

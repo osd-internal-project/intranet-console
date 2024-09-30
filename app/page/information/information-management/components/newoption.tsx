@@ -341,9 +341,9 @@ const Newoption: React.FC = () => {
             }}
           >
             <Input disabled />
-          </Form.Item>
+          </Form.Item> 
           <Form.Item
-            name="nameType"
+            name="nameType" 
             label="ชื่อประเภทข่าวสาร :"
             rules={[{ required: true, message: "กรุณากรอกชื่อประเภทข่าวสาร" }]}
             style={{ width: "460px" }}

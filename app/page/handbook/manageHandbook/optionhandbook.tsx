@@ -438,7 +438,7 @@ const Newoption: React.FC = () => {
       <Table
         dataSource={dataWithKey}
         columns={columns}
-        scroll={{ x: "max-content" }}
+        scroll={{ x: "max-content" }} 
         rowKey="id"
         bordered
         pagination={{ pageSize: 10 }}

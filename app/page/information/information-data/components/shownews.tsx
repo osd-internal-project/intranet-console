@@ -117,7 +117,7 @@ const ManagementNews: React.FC = () => {
         <Row gutter={16}>
           {currentNews
             .slice()
-            .reverse()
+            .reverse() 
             .map((item) => (
               <Col span={8} key={item.newsId.toString()}>
                 <Card

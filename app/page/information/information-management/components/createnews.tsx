@@ -266,7 +266,7 @@ const Infomation_management: React.FC<newsImage> = ({}) => {
               type="primary"
               loading={submitLoading}
               style={{ marginTop: 16 }}
-              htmlType="submit"
+              htmlType="submit" 
             >
               สร้างข่าวสาร
             </Button>

@@ -393,7 +393,7 @@ const MaCarReturn: React.FC<props> = ({
               name="carPetrol"
               rules={[{ required: true, message: "กรุณาเลือกระดับน้ำมัน!" }]}
             >
-              <Select placeholder="เลือกระดับน้ำมัน">
+              <Select>
                 <Select.Option value="high">มาก</Select.Option>
                 <Select.Option value="medium">ปานกลาง</Select.Option>
                 <Select.Option value="low">น้อย</Select.Option>
@@ -406,7 +406,7 @@ const MaCarReturn: React.FC<props> = ({
               name="status"
               rules={[{ required: true, message: "กรุณาเลือกสถานะรถ!" }]}
             >
-              <Select placeholder="เลือกสถานะรถ">
+              <Select>
                 <Select.Option value={true}>ใช้งานได้ปกติ</Select.Option>
                 <Select.Option value={false}>ไม่สามารถใช้งานได้</Select.Option>
               </Select>
@@ -452,7 +452,7 @@ const MaCarReturn: React.FC<props> = ({
                 label="ชื่อผู้จอง"
                 rules={[{ required: true, message: "กรุณากรอกชื่อผู้จอง" }]}
               >
-                <Input disabled placeholder="กรอกชื่อผู้จอง" />
+                <Input disabled />
               </Form.Item>
             </Col>
           </Row>
@@ -462,7 +462,7 @@ const MaCarReturn: React.FC<props> = ({
           <Row gutter={16}>
             <Col span={6}>
               <Form.Item name="carName1" label="ชื่อรถ">
-                <Input disabled placeholder="กรุณาเลือกรถ" />
+                <Input disabled />
               </Form.Item>
             </Col>
             <Col span={6}>
@@ -470,12 +470,12 @@ const MaCarReturn: React.FC<props> = ({
                 name="carBookTitle"
                 label="วัตถุประสงค์การใช้งาน"
               >
-                <Input disabled placeholder="กรอกวัตถุประสงค์การใช้งาน" />
+                <Input disabled />
               </Form.Item>
             </Col>
             <Col span={6}>
               <Form.Item<MaCarBookType> name="carBookPlace" label="สถานที่ไป">
-                <Input disabled placeholder="กรอกสถานที่ไป" />
+                <Input disabled />
               </Form.Item>
             </Col>
             <Col span={6}>
@@ -484,7 +484,7 @@ const MaCarReturn: React.FC<props> = ({
                 label="จังหวัด"
                 rules={[{ required: true, message: "กรุณากรอกจังหวัด" }]}
               >
-                <Input disabled placeholder="กรอกจังหวัด" />
+                <Input disabled />
               </Form.Item>
             </Col>
           </Row>
@@ -495,37 +495,14 @@ const MaCarReturn: React.FC<props> = ({
                 label="จำนวนผู้ใช้"
                 rules={[{ required: true, message: "กรุณากรอกจำนวนผู้ใช้" }]}
               >
-                <Input disabled placeholder="กรอกจำนวนผู้ใช้" />
+                <Input disabled />
               </Form.Item>
             </Col>
-            <Col span={9}>
-              <Form.Item name="detail" label="รายละเอียด">
-                <TextArea disabled placeholder="กรอกรายละเอียด" rows={1} />
-              </Form.Item>
-            </Col>
-            <Col span={9}>
-              <Form.Item name="remark" label="หมายเหตุการจองรถ">
-                <TextArea disabled rows={1} />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={24}>
             <Col span={6}>
               <Form.Item name="carBookStartDate" label="วันที่เริ่มการจอง">
                 <DatePicker
                   disabled
-                  format="DD-MM-YYYY"
-                  placeholder="กรอกวันที่เริ่มการจอง"
-                  style={{ width: "100%" }}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item name="carBookStartDate" label="เวลาเริ่มการจอง">
-                <TimePicker
-                  disabled
-                  format="HH:mm"
-                  placeholder="กรอกเวลาเริ่มการจอง"
+                  format="DD-MM-YYYY ,  HH:mm"
                   style={{ width: "100%" }}
                 />
               </Form.Item>
@@ -534,29 +511,21 @@ const MaCarReturn: React.FC<props> = ({
               <Form.Item name="carBookEndDate" label="วันที่สิ้นสุดการจอง">
                 <DatePicker
                   disabled
-                  format="DD-MM-YYYY"
-                  placeholder="กรอกวันที่สิ้นสุดการจอง"
+                  format="DD-MM-YYYY , HH:mm"
                   style={{ width: "100%" }}
                 />
               </Form.Item>
             </Col>
-            <Col span={6}>
-              <Form.Item
-                name="carBookEndDate"
-                label="เวลาสิ้นสุดการจอง"
-                rules={[
-                  {
-                    required: true,
-                    message: "กรุณาเลือกเวลาสิ้นสุดการจอง!",
-                  },
-                ]}
-              >
-                <TimePicker
-                  disabled
-                  format="HH:mm"
-                  placeholder="กรอกเวลาสิ้นสุดการจอง"
-                  style={{ width: "100%" }}
-                />
+          </Row>
+          <Row gutter={24}>
+            <Col span={9}>
+              <Form.Item name="detail" label="รายละเอียด">
+                <TextArea disabled rows={1} />
+              </Form.Item>
+            </Col>
+            <Col span={9}>
+              <Form.Item name="remark" label="หมายเหตุการจองรถ">
+                <TextArea disabled rows={1} />
               </Form.Item>
             </Col>
           </Row>
@@ -593,7 +562,7 @@ const MaCarReturn: React.FC<props> = ({
                     label="สถานนะรถ"
                     rules={[{ required: true, message: "สถานนะรถ" }]}
                   >
-                    <Select disabled placeholder="รออนุมัติรับคืนรถ">
+                    <Select disabled>
                       <Select.Option value={true}>ใช้งานได้ปกติ</Select.Option>
                       <Select.Option value={false}>
                         ไม่สามารถใช้งานได้
@@ -603,16 +572,12 @@ const MaCarReturn: React.FC<props> = ({
                 </Col>
                 <Col span={8}>
                   <Form.Item name="carMile" label="เลขไมล์รถ">
-                    <InputNumber
-                      disabled
-                      style={{ width: "100%" }}
-                      placeholder="รออนุมัติรับคืนรถ"
-                    />
+                    <InputNumber disabled style={{ width: "100%" }} />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item name="carPetrol" label="ระดับนํ้ามันรถ">
-                    <Select disabled placeholder="รออนุมัติรับคืนรถ">
+                    <Select disabled>
                       <Select.Option value="high">มาก</Select.Option>
                       <Select.Option value="medium">ปานกลาง</Select.Option>
                       <Select.Option value="low">น้อย</Select.Option>
@@ -631,7 +596,7 @@ const MaCarReturn: React.FC<props> = ({
                   >
                     <DatePicker
                       disabled
-                      format="DD-MM-YYYY"
+                      format="DD-MM-YYYY , HH:mm"
                       placeholder="รออนุมัติรับคืนรถ"
                       style={{ width: "100%" }}
                     />
@@ -677,7 +642,7 @@ const MaCarReturn: React.FC<props> = ({
               <Row gutter={24}>
                 <Col span={8}>
                   <Form.Item name="recipientName" label="ผู้รับคืนรถ">
-                    <Input disabled placeholder="รออนุมัติรับคืนรถ" />
+                    <Input disabled />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -691,7 +656,6 @@ const MaCarReturn: React.FC<props> = ({
                     <DatePicker
                       disabled
                       format="DD-MM-YYYY"
-                      placeholder="กรอกวันที่เริ่มการจอง"
                       style={{ width: "100%" }}
                     />
                   </Form.Item>
@@ -707,7 +671,6 @@ const MaCarReturn: React.FC<props> = ({
                     <TimePicker
                       disabled
                       format="HH:mm"
-                      placeholder="กรอกเวลาเริ่มการจอง"
                       style={{ width: "100%" }}
                     />
                   </Form.Item>

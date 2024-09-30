@@ -151,6 +151,8 @@ const GroupManage: React.FC<props> = ({
       setSeleceRole(resRole);
       await onChangeSaleGroupSelect(groupDetail.saleUserGroupId);
       await onChangeEngineerGroupSelect(groupDetail.engineerUserGroupId);
+      console.log("groupDetail", groupDetail);
+
       await onChangeLeaveGroupSelect(
         groupDetail.userGroupMapHeader[0].leaveGroupId
       );
@@ -170,12 +172,12 @@ const GroupManage: React.FC<props> = ({
       //   groupSelect &&
       //   groupDetail.userGroupMapHeader[0].expenseGroupId.includes(groupSelect)
       // ) {
-        userpermissionform.setFieldsValue({
-          leaveGroupId: groupDetail.userGroupMapHeader[0].leaveGroupId,
-          leaveUserId: groupDetail.userGroupMapHeader[0].leaveUserId,
-          expenseGroupId: groupDetail.userGroupMapHeader[0].expenseGroupId,
-          expenseUserId: groupDetail.userGroupMapHeader[0].expenseUserId,
-        });
+      userpermissionform.setFieldsValue({
+        leaveGroupId: groupDetail.userGroupMapHeader[0].leaveGroupId,
+        leaveUserId: groupDetail.userGroupMapHeader[0].leaveUserId,
+        expenseGroupId: groupDetail.userGroupMapHeader[0].expenseGroupId,
+        expenseUserId: groupDetail.userGroupMapHeader[0].expenseUserId,
+      });
       // } else {
       //   userpermissionform.resetFields();
       // }
@@ -211,12 +213,17 @@ const GroupManage: React.FC<props> = ({
   }
 
   async function onChangeLeaveGroupSelect(group: string[]): Promise<void> {
+    console.log(group);
     const data = await userGroupServices.findUsersByOwnerGroup(group);
+    console.log(data);
     setLeaveUsersFormGroup(data);
   }
 
   async function onChangeExpenseGroupSelect(group: string[]): Promise<void> {
+    console.log(group);
+
     const data = await userGroupServices.findUsersByOwnerGroup(group);
+    console.log(data);
     setExpenseUsersFormGroup(data);
   }
 
@@ -649,8 +656,8 @@ const GroupManage: React.FC<props> = ({
       />
       <GroupUserPermission
         groupOption={groupOption}
-        onChangeEngineerGroupSelect={onChangeEngineerGroupSelect}
         onChangeLeaveGroupSelect={onChangeLeaveGroupSelect}
+        onChangeExpenseGroupSelect={onChangeExpenseGroupSelect}
         expenseUsersFormGroup={expenseUsersFormGroup}
         leaveUsersFormGroup={leaveUsersFormGroup}
         showModalUserPermission={showModalUserPermission}

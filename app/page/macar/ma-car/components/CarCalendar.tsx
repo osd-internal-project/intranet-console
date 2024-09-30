@@ -150,7 +150,7 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
       <Modal
         title="รายละเอียดการจอง"
         open={modalMaCarBookDetail}
-        width={500}
+        width={600}
         onCancel={onCancelModalDetail}
         footer={null}
       >
@@ -174,16 +174,7 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
 
                 <Form.Item label="วันที่เริ่มจอง" name="carBookStartDate">
                   <DatePicker
-                    format="DD-MM-YYYY"
-                    disabled
-                    className="read-only-input"
-                    style={{ width: "100%" }}
-                  />
-                </Form.Item>
-
-                <Form.Item label="เวลาเริ่มจอง" name="carBookStartDate">
-                  <TimePicker
-                    format="HH:mm"
+                    format="DD-MM-YYYY , HH:mm"
                     disabled
                     className="read-only-input"
                     style={{ width: "100%" }}
@@ -192,16 +183,7 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
 
                 <Form.Item label="วันที่สิ้นสุดการจอง" name="carBookEndDate">
                   <DatePicker
-                    format="DD-MM-YYYY"
-                    disabled
-                    className="read-only-input"
-                    style={{ width: "100%" }}
-                  />
-                </Form.Item>
-
-                <Form.Item label="เวลาสิ้นสุดการจอง" name="carBookEndDate">
-                  <TimePicker
-                    format="HH:mm"
+                    format="DD-MM-YYYY , HH:mm"
                     disabled
                     className="read-only-input"
                     style={{ width: "100%" }}
@@ -239,15 +221,7 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
                     </Form.Item>
                     <Form.Item label="วันที่อนุมัติ" name="approveDate">
                       <DatePicker
-                        format="DD-MM-YYYY"
-                        disabled
-                        className="read-only-input"
-                        style={{ width: "100%" }}
-                      />
-                    </Form.Item>
-                    <Form.Item label="เวลาอนุมัติ" name="approveDate">
-                      <DatePicker
-                        format="HH:mm"
+                        format="DD-MM-YYYY , HH:mm"
                         disabled
                         className="read-only-input"
                         style={{ width: "100%" }}

@@ -6,7 +6,6 @@ import { ITSelectUsers } from "./GroupManage";
 import { FormInstance } from "antd/lib";
 export interface props {
   groupOption: SelectProps["options"];
-  onChangeEngineerGroupSelect: (group: string[]) => void;
   expenseUsersFormGroup: ITSelectUsers[];
   leaveUsersFormGroup: ITSelectUsers[];
   showModalUserPermission: boolean;
@@ -19,11 +18,11 @@ export interface props {
   }) => void;
   userpermissionform: FormInstance;
   onChangeLeaveGroupSelect: (group: string[]) => void;
+  onChangeExpenseGroupSelect: (group: string[]) => void;
 }
 
 const GroupUserPermission: React.FC<props> = ({
   groupOption,
-  onChangeEngineerGroupSelect,
   expenseUsersFormGroup,
   showModalUserPermission,
   setShowModalUserPermission,
@@ -31,6 +30,7 @@ const GroupUserPermission: React.FC<props> = ({
   userpermissionform,
   onChangeLeaveGroupSelect,
   leaveUsersFormGroup,
+  onChangeExpenseGroupSelect,
 }): React.ReactElement => {
   return (
     <Modal
@@ -80,7 +80,7 @@ const GroupUserPermission: React.FC<props> = ({
             treeDefaultExpandAll
             placeholder="Please select"
             treeData={groupOption}
-            onChange={onChangeEngineerGroupSelect}
+            onChange={onChangeExpenseGroupSelect}
           />
         </Form.Item>
 

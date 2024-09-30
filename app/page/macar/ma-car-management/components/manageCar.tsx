@@ -450,7 +450,7 @@ const ManageCar: React.FC<props> = ({
   return (
     <>
       <Modal
-        width={800}
+        width={1000}
         title="การอนุมัติการจองรถ"
         open={modalApproveMa}
         onCancel={handleApproveBook}
@@ -464,16 +464,16 @@ const ManageCar: React.FC<props> = ({
           size="small"
           autoComplete="off"
         >
-          <Row gutter={16}>
-            <Col span={8}>
+          <Row gutter={24}>
+            <Col span={6}>
               <Form.Item<MaCarBookType> name="createdByName" label="ชื่อผู้จอง">
                 <Input disabled />
               </Form.Item>
             </Col>
           </Row>
           <Divider orientation="left">ข้อมูลการจองรถ</Divider>
-          <Row gutter={16}>
-            <Col span={8}>
+          <Row gutter={24}>
+            <Col span={6}>
               <Form.Item<MaCarBookType>
                 name="carName"
                 label="ชื่อรถ"
@@ -482,7 +482,7 @@ const ManageCar: React.FC<props> = ({
                 <Input disabled />
               </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={6}>
               <Form.Item<MaCarBookType>
                 name="carBookTitle"
                 label="วัตถุประสงค์การใช้งาน"
@@ -493,7 +493,7 @@ const ManageCar: React.FC<props> = ({
                 <Input placeholder="กรอกวัตถุประสงค์การใช้งาน" disabled />
               </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={6}>
               <Form.Item<MaCarBookType>
                 name="carBookPlace"
                 label="สถานที่ไป"
@@ -502,7 +502,7 @@ const ManageCar: React.FC<props> = ({
                 <Input placeholder="กรอกสถานที่ไป" disabled />
               </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={6}>
               <Form.Item<MaCarBookType>
                 name="carBookProvince"
                 label="จังหวัด"
@@ -511,7 +511,9 @@ const ManageCar: React.FC<props> = ({
                 <Input placeholder="กรอกจังหวัด" disabled />
               </Form.Item>
             </Col>
-            <Col span={8}>
+          </Row>
+          <Row gutter={24}>
+            <Col span={6}>
               <Form.Item<MaCarBookType>
                 name="carBookUsers"
                 label="จำนวนผู้ใช้"
@@ -523,6 +525,38 @@ const ManageCar: React.FC<props> = ({
                   min={1}
                   max={12}
                   disabled
+                />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item
+                name="carBookStartDate"
+                label="วันที่เริ่มการจอง"
+                rules={[
+                  { required: true, message: "กรุณาเลือกวันที่เริ่มจอง!" },
+                ]}
+              >
+                <DatePicker
+                  disabled
+                  format="DD-MM-YYYY , HH:mm"
+                  placeholder="กรอกวันที่เริ่มการจอง"
+                  style={{ width: "100%" }}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item
+                name="carBookEndDate"
+                label="วันที่สิ้นสุดการจอง"
+                rules={[
+                  { required: true, message: "กรุณาเลือกวันที่สิ้นสุดการจอง!" },
+                ]}
+              >
+                <DatePicker
+                  disabled
+                  format="DD-MM-YYYY , HH:mm"
+                  placeholder="กรอกวันที่สิ้นสุดการจอง"
+                  style={{ width: "100%" }}
                 />
               </Form.Item>
             </Col>
@@ -539,70 +573,6 @@ const ManageCar: React.FC<props> = ({
                   placeholder="กรอกหมายเหตุการจองรถ"
                   rows={2}
                   disabled
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={24}>
-            <Col span={6}>
-              <Form.Item
-                name="carBookStartDate"
-                label="วันที่เริ่มการจอง"
-                rules={[
-                  { required: true, message: "กรุณาเลือกวันที่เริ่มจอง!" },
-                ]}
-              >
-                <DatePicker
-                  disabled
-                  format="DD-MM-YYYY"
-                  placeholder="กรอกวันที่เริ่มการจอง"
-                  style={{ width: "100%" }}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item
-                name="carBookStartDate"
-                label="เวลาเริ่มการจอง"
-                rules={[{ required: true, message: "กรุณาเลือกเวลาเริ่มจอง!" }]}
-              >
-                <TimePicker
-                  disabled
-                  format="HH:mm"
-                  placeholder="กรอกเวลาเริ่มการจอง"
-                  style={{ width: "100%" }}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item
-                name="carBookEndDate"
-                label="วันที่สิ้นสุดการจอง"
-                rules={[
-                  { required: true, message: "กรุณาเลือกวันที่สิ้นสุดการจอง!" },
-                ]}
-              >
-                <DatePicker
-                  disabled
-                  format="DD-MM-YYYY"
-                  placeholder="กรอกวันที่สิ้นสุดการจอง"
-                  style={{ width: "100%" }}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item
-                name="carBookEndDate"
-                label="เวลาสิ้นสุดการจอง"
-                rules={[
-                  { required: true, message: "กรุณาเลือกเวลาสิ้นสุดการจอง!" },
-                ]}
-              >
-                <TimePicker
-                  disabled
-                  format="HH:mm"
-                  placeholder="กรอกเวลาสิ้นสุดการจอง"
-                  style={{ width: "100%" }}
                 />
               </Form.Item>
             </Col>

@@ -108,6 +108,7 @@ export default function HomePage() {
             title="กิจกรรมและข่าวสาร"
             bordered={false}
             className="text-center"
+            style={{ width: "1090px", height: "560px", margin: "0px 10px" }}
           >
             <NewsCarouselComponent
               informationNews={informationNews}
@@ -115,7 +116,12 @@ export default function HomePage() {
             />
           </Card>
           <div className="my-4"></div>
-          <Card title="เอกสาร" bordered={false} className="text-center">
+          <Card
+            title="เอกสาร"
+            bordered={false}
+            className="text-center"
+            style={{ width: "1090px", height: "465px", margin: "10px 10px" }}
+          >
             <DocumentComponent
               handbookFile={handbookFile}
               handbookQuery={handbookQuery}

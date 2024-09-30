@@ -24,22 +24,21 @@ const DocumentComponent: React.FC<props> = ({
   const handleOk = () => setIsModalVisible(false);
   const handleCancel = () => setIsModalVisible(false);
 
-
-  if (!handbookQuery) {
+  if (!handbookFile) {
     return <div>No Data...</div>;
   }
 
-  const limitedFiles = handbookQuery.slice(0, 3);
+  const limitedFiles = handbookFile.slice(0, 3);
 
   return (
     <div style={{ textAlign: "left", padding: "20px", background: "#f0f2f5" }}>
-      {limitedFiles?.map((file, index) => (
+      {handbookFile?.map((file, index) => (
         <Card
-          key={file.idbook}
+          key={file.fileId}
           hoverable
           style={{
-            width: 900,
-            height: "auto",
+            width: "90px",
+            height: "1000px",
             marginBottom: 12,
             borderRadius: "8px",
             overflow: "hidden",
@@ -47,6 +46,7 @@ const DocumentComponent: React.FC<props> = ({
             backgroundColor: "#fff",
             padding: "8px",
             marginTop: 8,
+            overflowY: "auto",
           }}
           type="inner"
           title={
@@ -80,7 +80,7 @@ const DocumentComponent: React.FC<props> = ({
                 <Button
                   type="link"
                   onClick={() =>
-                    downloadFile(file.handbookFile[0].handbookid, file.fileName)
+                    downloadFile(file.handbookid, file.fileLocation)
                   }
                 >
                   <Space>
@@ -94,81 +94,68 @@ const DocumentComponent: React.FC<props> = ({
         </Card>
       ))}
 
-      <div style={{ textAlign: "right", marginTop: "20px" }}>
-        <Button type="primary" onClick={showModal}>
-          ทั้งหมด
-        </Button>
-      </div>
-
-      <Modal
-        title="เอกสาร ทั้งหมด"
-        open={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        width={1000}
-        footer={null}
+      {/* {handbookFile?.map((file, index) => (
+  <Card
+    key={file.fileId}
+    hoverable
+    style={{
+      width: "90px", // ขนาดของการ์ด
+      height: "auto", // ปรับให้ความสูงอัตโนมัติตามเนื้อหา
+      marginBottom: 12,
+      borderRadius: "8px",
+      overflow: "hidden",
+      boxShadow: "0 6px 12px rgba(0, 0, 0, 0.1)",
+      backgroundColor: "#fff",
+      padding: "8px",
+      marginTop: 8,
+      overflowY: "auto", // แสดงแถบเลื่อนเมื่อมีข้อมูลมาก
+      maxHeight: "500px", // กำหนดความสูงสูงสุดของการ์ด
+    }}
+    type="inner"
+    title={
+      <span
+        style={{
+          fontWeight: "bold",
+        }}
       >
-        {handbookQuery?.map((file, index) => (
-          <Card
-            key={file.idbook}
-            hoverable
-            style={{
-              marginBottom: 12,
-              borderRadius: "8px",
-              boxShadow: "0 6px 12px rgba(0, 0, 0, 0.1)",
-              backgroundColor: "#fff",
-              padding: "8px",
-              marginTop: 8,
-            }}
-            type="inner"
-            title={
-              <span
-                style={{
-                  fontWeight: "bold",
-                }}
-              >
-                {file.fileName || "Untitled"}
-              </span>
+        {file.fileName || "Untitled"}
+      </span>
+    }
+  >
+    <div style={{ display: "flex", flexDirection: "row", gap: "16px" }}>
+      <div style={{ flex: 1 }}>
+        <p style={{ fontSize: "14px", color: "#595959" }}>
+          <strong>ประเภทเอกสาร:</strong>{" "}
+          {file.filetype || "Not specified"}
+        </p>
+      </div>
+      <div style={{ flex: 1 }}>
+        <p style={{ fontSize: "14px", color: "#595959" }}>
+          <strong>วันที่เพิ่มไฟล์:</strong>{" "}
+          {file.createdAt
+            ? new Date(file.createdAt).toLocaleDateString()
+            : "Date not available"}
+        </p>
+      </div>
+      <div style={{ flex: 2 }} key={index}>
+        <p style={{ fontSize: "14px", color: "#595959" }}>
+          <strong>ไฟล์:</strong>{" "}
+          <Button
+            type="link"
+            onClick={() =>
+              downloadFile(file.handbookid, file.fileLocation)
             }
           >
-            <div style={{ display: "flex", flexDirection: "row", gap: "16px" }}>
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: "14px", color: "#595959" }}>
-                  <strong>ประเภทเอกสาร:</strong>{" "}
-                  {file.filetype || "Not specified"}
-                </p>
-              </div>
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: "14px", color: "#595959" }}>
-                  <strong>วันที่เพิ่มไฟล์:</strong>{" "}
-                  {file.createdAt
-                    ? new Date(file.createdAt).toLocaleDateString()
-                    : "Date not available"}
-                </p>
-              </div>
-              <div style={{ flex: 2 }} key={index}>
-                <p style={{ fontSize: "14px", color: "#595959" }}>
-                  <strong>ไฟล์:</strong>{" "}
-                  <Button
-                    type="link"
-                    onClick={() =>
-                      downloadFile(
-                        file.handbookFile[0].handbookid,
-                        file.fileName
-                      )
-                    }
-                  >
-                    <Space>
-                      <PaperClipOutlined />
-                      {file.fileName}
-                    </Space>
-                  </Button>
-                </p>
-              </div>
-            </div>
-          </Card>
-        ))}
-      </Modal>
+            <Space>
+              <PaperClipOutlined />
+              {file.fileName}
+            </Space>
+          </Button>
+        </p>
+      </div>
+    </div>
+  </Card>
+))} */}
     </div>
   );
 };

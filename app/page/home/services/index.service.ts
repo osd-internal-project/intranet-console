@@ -5,7 +5,7 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
   const baseUrlSlideImage = "/slide-image";
   const baseUrlApiMasterRoom = "/master-room";
   const baseUrlApiHandbookFile = "/handbook-file";
-  const baseUrlApiHandbook = "/hand-book";
+  const baseUrlApiHandbookType = "/handbook-type";
   const baseUrlApiInformationNews = "/informationNews";
   const baseUrlApiNewsImage = "/news-image";
 
@@ -66,7 +66,7 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
     },
     getHandbookFileQuery: async () => {
       return await axiosInstance
-        .get(`${baseUrlApiHandbookFile}`)
+        .get(`${baseUrlApiHandbookFile}/downloadfiles`)
         .then((res) => {
           return res.data;
         })
@@ -77,7 +77,7 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
 
     getHandbookQuery: async () => {
       return await axiosInstance
-        .get(`${baseUrlApiHandbook}`)
+        .get(`${baseUrlApiHandbookType}`)
         .then((res) => {
           return res.data;
         })

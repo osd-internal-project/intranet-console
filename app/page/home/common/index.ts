@@ -44,14 +44,15 @@ export interface BookingRoomType {
 
 export interface HandbookFileType {
   handbookid: number;
-  fileName?: string;
+  fileId: string;
+  fileName: string;
   filetype?: string;
-  fileLocation?: string;
+  fileoriginalName?: string;
+  fileLocation: string;
   author?: string;
   createdAt?: Date;
   updatedAt?: Date;
   status?: boolean;
-  idbook?: number;
 }
 
 export interface HandbookType {

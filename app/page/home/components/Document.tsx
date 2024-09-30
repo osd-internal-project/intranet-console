@@ -24,6 +24,7 @@ const DocumentComponent: React.FC<props> = ({
   const handleOk = () => setIsModalVisible(false);
   const handleCancel = () => setIsModalVisible(false);
 
+
   if (!handbookQuery) {
     return <div>No Data...</div>;
   }

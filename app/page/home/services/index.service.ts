@@ -101,7 +101,7 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
 
     getinformationNewsQuery: async () => {
       return await axiosInstance
-        .get(`${baseUrlApiInformationNews}`)
+        .get(`${baseUrlApiInformationNews}/home/news`)
         .then((res) => {
           return res.data;
         })

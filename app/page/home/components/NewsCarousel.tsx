@@ -1,7 +1,8 @@
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { Carousel, Card, Modal, Image } from "antd";
+import { Carousel, Card, Modal, Image, Input, Typography } from "antd";
 import React, { useState, useRef } from "react";
 import { InformationNewsType, NewsImageType } from "../common";
+import dayjs from "dayjs";
 
 export interface Props {
   informationNews: InformationNewsType[];
@@ -24,21 +25,13 @@ const NewsCarouselComponent: React.FC<Props> = ({
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
-    setSelectedNews(null);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-    setSelectedNews(null);
-  };
-
   const chunkedNews = [];
   if (informationNews)
     for (let i = 0; i < informationNews.length; i += 3) {
       chunkedNews.push(informationNews.slice(i, i + 3));
     }
+
+  const { Title, Text, Paragraph } = Typography;
 
   return (
     <>
@@ -58,23 +51,32 @@ const NewsCarouselComponent: React.FC<Props> = ({
                     key={fileIndex}
                     onClick={() => showModal(file)}
                     style={{
-                      margin: "20px",
-                      cursor: "pointer",
-                      transition: "transform 0.3s, box-shadow 0.3s",
+                      margin: "20px 0",
+                      backgroundColor: "#F0F8FF",
+                      width: "300px",
+                      height: "450px",
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      display: "flex",
+                      flexDirection: "column",
                     }}
-                    cover={
-                      file.newsImage.length > 0 &&
-                      file.newsImage[0]?.fileName ? (
-                        <Image
-                          alt="news"
-                          preview={false}
-                          crossOrigin="anonymous"
-                          src={`http://localhost:4003/api/informationNews/${file.newsImage[0].fileimagePath}`}
-                        />
-                      ) : null
-                    }
                     hoverable
                   >
+                    {file.newsImage.length > 0 &&
+                    file.newsImage[0]?.fileName ? (
+                      <Image
+                        alt="news"
+                        preview={false}
+                        crossOrigin="anonymous"
+                        src={`http://localhost:4003/api/informationNews/${file.newsImage[0].fileimagePath}`}
+                        style={{
+                          width: "100%",
+                          height: "300px",
+                          objectFit: "cover",
+                        }}
+                      />
+                    ) : null}
+
                     <Card.Meta
                       title={file.newsName || "Untitled"}
                       description={
@@ -82,12 +84,16 @@ const NewsCarouselComponent: React.FC<Props> = ({
                           style={{
                             display: "flex",
                             flexDirection: "column",
-                            height: "100%",
+                            marginTop: "10px",
                           }}
                         >
-                          <p className="truncate-text" style={{ flexGrow: 1 }}>
-                            {file.content || "No content available"}
-                          </p>
+                          <h4 style={{ margin: 0 }}>
+                            ผู้เขียน : {file.author}
+                          </h4>
+                          <h4 style={{ margin: 0 }}>
+                            วันที่ :{" "}
+                            {dayjs(file.updatedAt).format("DD-MM-YYYY , HH:mm")}
+                          </h4>
                         </div>
                       }
                     />
@@ -126,18 +132,21 @@ const NewsCarouselComponent: React.FC<Props> = ({
       </div>
 
       <Modal
-        title={selectedNews?.newsName}
         open={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
+        onCancel={() => setIsModalVisible(false)}
         width={700}
       >
         {selectedNews && (
           <div>
-            <p>
-              <strong>วันที่เผยแพร่:</strong>{" "}
-              {new Date(selectedNews.phblishedAt || "").toLocaleDateString()}
-            </p>
+            <h3
+              style={{
+                textAlign: "center",
+                margin: "10px 10px",
+              }}
+            >
+              {" "}
+              <strong>{selectedNews.newsName}</strong>
+            </h3>
             <Carousel
               arrows
               infinite={true}
@@ -155,7 +164,48 @@ const NewsCarouselComponent: React.FC<Props> = ({
                 />
               ))}
             </Carousel>
-            <div>{selectedNews.content}</div>
+            <div>
+              <Paragraph
+                style={{
+                  fontSize: "14px",
+                  padding: "10px",
+                  minHeight: "150px",
+                  maxHeight: "350px",
+                  overflowY: "auto",
+                }}
+              >
+                <Input.TextArea
+                  style={{
+                    fontSize: "14px",
+                    border: "none",
+                    outline: "none",
+                    resize: "none",
+                    boxShadow: "none",
+                    minHeight: "150px",
+                    maxHeight: "350px",
+                    overflowY: "auto",
+                    padding: "10px",
+                  }}
+                  value={selectedNews?.content || ""}
+                  readOnly
+                  autoSize={{ minRows: 4, maxRows: 10 }}
+                />
+              </Paragraph>
+            </div>
+            <p />
+            <h5>
+              <strong>ผู้เขียน:</strong> {selectedNews.author}
+            </h5>
+            <h5>
+              <strong>วันที่เผยแพร่:</strong>{" "}
+              {dayjs(selectedNews.phblishedAt).format("DD-MM-YYYY , HH:mm")}
+            </h5>
+            {selectedNews.updatedAt && (
+              <h5>
+                <strong>วันที่อัปเดตล่าสุด:</strong>{" "}
+                {dayjs(selectedNews.updatedAt).format("DD-MM-YYYY , HH:mm")}
+              </h5>
+            )}
           </div>
         )}
       </Modal>

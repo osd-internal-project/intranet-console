@@ -161,12 +161,12 @@ const Managehandbook: React.FC = () => {
   ) => {
     setSubmitLoading(true);
     const handbookCreateData = {
-        handbookid:values.handbookid,
-        fileName: values.fileName,
-        filetype: values.filetype,
-        author: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
-        updatedAt: new Date().toISOString(),
-        status: values?.status,
+      handbookid: values.handbookid,
+      fileName: values.fileName,
+      filetype: values.filetype,
+      author: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+      updatedAt: new Date().toISOString(),
+      status: values?.status,
     };
     console.log(handbookCreateData);
     try {
@@ -252,8 +252,6 @@ const Managehandbook: React.FC = () => {
         if (response.ok) {
           const blob = await response.blob();
           const link = document.createElement("a");
-
-          const cleanFileName = record.fileName.replace(/[^\w\s.-]/gi, "_");
 
           link.href = window.URL.createObjectURL(blob);
           link.download = String(record.fileName);
@@ -356,7 +354,7 @@ const Managehandbook: React.FC = () => {
       title: "สถานะการมองเห็น",
       dataIndex: "status",
       key: "status",
-      width: "80px", 
+      width: "80px",
       align: "center",
       render: (status: boolean) =>
         status === true ? (

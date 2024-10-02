@@ -17,8 +17,8 @@ const NewsCarouselComponent: React.FC<Props> = ({
   const [selectedNews, setSelectedNews] = useState<InformationNewsType | null>(
     null
   );
-
   const carouselRef = useRef<any>(null);
+  const { Paragraph } = Typography;
 
   const showModal = (news: InformationNewsType) => {
     setSelectedNews(news);
@@ -30,8 +30,6 @@ const NewsCarouselComponent: React.FC<Props> = ({
     for (let i = 0; i < informationNews.length; i += 3) {
       chunkedNews.push(informationNews.slice(i, i + 3));
     }
-
-  const { Title, Text, Paragraph } = Typography;
 
   return (
     <>
@@ -51,7 +49,7 @@ const NewsCarouselComponent: React.FC<Props> = ({
                     key={fileIndex}
                     onClick={() => showModal(file)}
                     style={{
-                      margin: "20px 0",
+                      margin: "0 0",
                       backgroundColor: "#F0F8FF",
                       width: "300px",
                       height: "450px",
@@ -76,7 +74,10 @@ const NewsCarouselComponent: React.FC<Props> = ({
                         }}
                       />
                     ) : null}
-
+                    <>
+                      {" "}
+                      <p />
+                    </>
                     <Card.Meta
                       title={file.newsName || "Untitled"}
                       description={
@@ -135,6 +136,7 @@ const NewsCarouselComponent: React.FC<Props> = ({
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         width={700}
+        footer={null}
       >
         {selectedNews && (
           <div>
@@ -188,7 +190,7 @@ const NewsCarouselComponent: React.FC<Props> = ({
                   }}
                   value={selectedNews?.content || ""}
                   readOnly
-                  autoSize={{ minRows: 4, maxRows: 10 }}
+                  autoSize={{ minRows: 5, maxRows: 10 }}
                 />
               </Paragraph>
             </div>

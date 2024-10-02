@@ -95,42 +95,42 @@ const CreateCustomerForm: React.FC<props> = ({
               name={["details", "prefixTh"]}
               rules={[{ required: true, message: "Please Enter" }]}
             >
-              <Input placeholder="Enter Text" maxLength={10} />
+              <Input placeholder="Enter Text" />
             </Form.Item>
             <Form.Item
               label="ชื่อ TH"
               name={["details", "firstNameTh"]}
               rules={[{ required: true, message: "Please Enter" }]}
             >
-              <Input placeholder="Enter Text" maxLength={200} />
+              <Input placeholder="Enter Text" />
             </Form.Item>
             <Form.Item
               label="นามสกุล TH"
               name={["details", "lastNameTh"]}
               rules={[{ required: true, message: "Please Enter" }]}
             >
-              <Input placeholder="Enter Text" maxLength={200} />
+              <Input placeholder="Enter Text" />
             </Form.Item>
             <Form.Item
               label="คำนำหน้า EN"
               name={["details", "prefixEn"]}
               rules={[{ required: true, message: "Please Enter" }]}
             >
-              <Input placeholder="Enter Text" maxLength={10} />
+              <Input placeholder="Enter Text" />
             </Form.Item>
             <Form.Item
               label="ชื่อ EN"
               name={["details", "firstNameEn"]}
               rules={[{ required: true, message: "Please Enter" }]}
             >
-              <Input placeholder="Enter Text" maxLength={200} />
+              <Input placeholder="Enter Text" />
             </Form.Item>
             <Form.Item
               label="นามสกุล EN"
               name={["details", "lastNameEn"]}
               rules={[{ required: true, message: "Please Enter" }]}
             >
-              <Input placeholder="Enter Text" maxLength={200} />
+              <Input placeholder="Enter Text" />
             </Form.Item>
           </div>
         ) : (
@@ -142,7 +142,7 @@ const CreateCustomerForm: React.FC<props> = ({
             name={["details", "customerNameTh"]}
             rules={[{ required: true, message: "Please Enter" }]}
           >
-            <Input placeholder="Enter Text" maxLength={10} />
+            <Input placeholder="Enter Text" />
           </Form.Item>
         )}
         {customerType === "juristic" && (
@@ -151,12 +151,12 @@ const CreateCustomerForm: React.FC<props> = ({
             name={["details", "customerNameEn"]}
             rules={[{ required: true, message: "Please Enter" }]}
           >
-            <Input placeholder="Enter Text" maxLength={10} />
+            <Input placeholder="Enter Text" />
           </Form.Item>
         )}
         {customerType === "juristic" && (
           <Form.Item label={"ชื่อย่อ"} name={["details", "initials"]}>
-            <Input placeholder="Enter Text" maxLength={50} />
+            <Input placeholder="Enter Text" />
           </Form.Item>
         )}
         <Form.Item
@@ -164,17 +164,17 @@ const CreateCustomerForm: React.FC<props> = ({
           name={["details", "identificationNo"]}
           rules={[{ required: true, message: "Please Enter" }]}
         >
-          <Input placeholder="Enter Text" maxLength={50} />
+          <Input placeholder="Enter Text" />
         </Form.Item>
         <Form.Item
           label="รหัส"
           name={"customerCode"}
           rules={[{ required: true, message: "Please Enter" }]}
         >
-          <Input placeholder="Enter Text" maxLength={50} />
+          <Input placeholder="Enter Text" />
         </Form.Item>
         <Form.Item label="รหัสอ้างอิงลูกค้า" name={"referenceCode"}>
-          <Input placeholder="Enter Text" maxLength={50} />
+          <Input placeholder="Enter Text" />
         </Form.Item>
 
         {/* <Form.Item
@@ -193,7 +193,7 @@ const CreateCustomerForm: React.FC<props> = ({
           <Input placeholder="Enter Text" />
         </Form.Item> */}
         <Form.Item label="เลขที่ทะเบียนบริษัท" name={"companyRegisNumber"}>
-          <Input placeholder="Enter Text" maxLength={20} />
+          <Input placeholder="Enter Text" />
         </Form.Item>
         {customerType === "juristic" && (
           <Form.Item

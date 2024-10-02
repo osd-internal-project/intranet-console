@@ -66,7 +66,7 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
     },
     getHandbookFileQuery: async () => {
       return await axiosInstance
-        .get(`${baseUrlApiHandbookFile}/downloadfiles`)
+        .post(`${baseUrlApiHandbookFile}/fileAlls`)
         .then((res) => {
           return res.data;
         })
@@ -75,7 +75,7 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
         });
     },
 
-    getHandbookQuery: async () => {
+    getHandbookTypeQuery: async () => {
       return await axiosInstance
         .get(`${baseUrlApiHandbookType}`)
         .then((res) => {

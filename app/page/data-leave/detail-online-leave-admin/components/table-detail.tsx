@@ -215,51 +215,63 @@ export const TableDetail: React.FC<props> = ({
         open={openModalDetail}
         footer={false}
         onCancel={() => setOpenModalDetail(false)}
+        width={600}
       >
         <div className="w-full justify-center flex mb-2 font-bold text-lg">{`< รายละเอียดการลา >`}</div>
-        <Form autoComplete="off" form={formdetail} layout="vertical">
-          <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`วันที่ :`} name={`createAt`}>
-              <Input disabled />
-            </Form.Item>
+        <Form
+          autoComplete="off"
+          form={formdetail}
+          // layout="vertical"
+        >
+          <div style={{ paddingLeft: "380px", margin: "10px  " }}>
+            <div className=" col-span-3 md:col-span-1 ml-1">
+              <Form.Item
+                label={`วันที่ :`}
+                name={`createAt`}
+                style={{ marginBottom: 0 }}
+              >
+                <Input disabled className="read-only-input" />
+              </Form.Item>
+            </div>
           </div>
+
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เรียนถึง :`} name={`ownerName`}>
-              <Input disabled />
+              <Input disabled className="read-only-input" />
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เนื่องจาก :`} name={`detail`}>
-              <Input disabled />
+              <Input disabled className="read-only-input" />
             </Form.Item>
           </div>
           <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`จึงขอ :`} name={`typeLeave`}>
-                <Input disabled />
+                <Input disabled className="read-only-input" />
               </Form.Item>
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`เป็นเวลา :`} name={`leaveHour`}>
-                <Input disabled />
+                <Input disabled className="read-only-input" />
               </Form.Item>
             </div>
           </div>
           <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`ตั้งแต่วันที่ :`} name={`startDate`}>
-                <Input disabled />
+                <Input disabled className="read-only-input" />
               </Form.Item>
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`ถึงวันที่ :`} name={`endDate`}>
-                <Input disabled />
+                <Input disabled className="read-only-input" />
               </Form.Item>
             </div>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เบอร์ติดต่อระหว่างลา :`} name={`phoneNumber`}>
-              <Input disabled />
+              <Input disabled className="read-only-input" />
             </Form.Item>
           </div>
           {Array.isArray(formdetail.getFieldValue("dataLeaveFiles")) &&
@@ -276,17 +288,19 @@ export const TableDetail: React.FC<props> = ({
                         .getFieldValue("dataLeaveFiles")
                         .map((file: any, index: number) => (
                           <div key={index}>
-                            <Button
-                              type="link"
-                              onClick={() =>
-                                downloadFile(file.id, file.fileName)
-                              }
-                            >
-                              <Space>
-                                <PaperClipOutlined />
-                                {file.fileName}
-                              </Space>
-                            </Button>
+                            <Tooltip title={`ดาวน์โหลด`}>
+                              <Button
+                                type="link"
+                                onClick={() =>
+                                  downloadFile(file.id, file.fileName)
+                                }
+                              >
+                                <Space>
+                                  <PaperClipOutlined />
+                                  {file.fileName}
+                                </Space>
+                              </Button>
+                            </Tooltip>
                           </div>
                         ))}
                     </Form.Item>
@@ -299,12 +313,12 @@ export const TableDetail: React.FC<props> = ({
               <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
                 <div className=" col-span-3 md:col-span-1 ml-5">
                   <Form.Item label={`ผู้อนุมัติ :`} name={`userApproved`}>
-                    <Input disabled />
+                    <Input disabled className="read-only-input" />
                   </Form.Item>
                 </div>
                 <div className=" col-span-3 md:col-span-1 ml-5">
                   <Form.Item label={`วันที่อนุมัติ :`} name={`approvedDate`}>
-                    <Input disabled />
+                    <Input disabled className="read-only-input" />
                   </Form.Item>
                 </div>
               </div>
@@ -354,8 +368,6 @@ export const TableDetail: React.FC<props> = ({
                 style={{
                   width: "60px",
                   height: "30px",
-                  // backgroundColor: "orange",
-                  // color: "white",
                 }}
                 onClick={() => {
                   onFinishUpdate("cancel", dataById ? dataById : 0);

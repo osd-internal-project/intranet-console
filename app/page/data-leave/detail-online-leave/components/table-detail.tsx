@@ -26,6 +26,7 @@ import { PaperClipOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../../services/index.service";
+import "../../common/style.css";
 
 export interface props {
   dataLeaveUser: ITypeDataLeave[];
@@ -161,22 +162,20 @@ export const TableDetail: React.FC<props> = ({
         };
         return (
           <>
-            <Tooltip title={`รายละเอียด`}>
-              <Button
-                type="primary"
-                ghost
-                onClick={async () => {
-                  const dataLeaveById = await dataleaveservice.getdataLeaveById(
-                    row.id as number
-                  );
-                  setStatusById(dataLeaveById[0].status);
-                  setDataById(row.id);
-                  setOpenModalDetail(true), formdetail.setFieldsValue(base);
-                }}
-              >
-                {`รายละเอียด`}
-              </Button>
-            </Tooltip>
+            <Button
+              type="primary"
+              ghost
+              onClick={async () => {
+                const dataLeaveById = await dataleaveservice.getdataLeaveById(
+                  row.id as number
+                );
+                setStatusById(dataLeaveById[0].status);
+                setDataById(row.id);
+                setOpenModalDetail(true), formdetail.setFieldsValue(base);
+              }}
+            >
+              {`รายละเอียด`}
+            </Button>
           </>
         );
       },
@@ -191,61 +190,81 @@ export const TableDetail: React.FC<props> = ({
         open={openModalDetail}
         footer={false}
         onCancel={() => setOpenModalDetail(false)}
+        width={600}
       >
         <div className="w-full justify-center flex mb-2 font-bold text-lg">{`< รายละเอียดการลา >`}</div>
-        <Form autoComplete="off" form={formdetail} layout="vertical">
-          <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`วันที่ :`} name={`createAt`}>
-              <Input disabled />
-            </Form.Item>
+        <Form autoComplete="off" form={formdetail}>
+          <div>
+            <p />
+          </div>{" "}
+          <div style={{ paddingLeft: "380px", margin: "10px  " }}>
+            <div className=" col-span-3 md:col-span-1 ml-5">
+              <Form.Item label={`วันที่ :`} name={`createAt`}>
+                <Input disabled className="read-only-input" />
+              </Form.Item>
+            </div>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เรียนถึง :`} name={`ownerName`}>
-              <Input disabled />
+              <Input disabled className="read-only-input" />
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เนื่องจาก :`} name={`detail`}>
-              <Input disabled />
+              <Input disabled className="read-only-input" />
             </Form.Item>
           </div>
           <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`จึงขอ :`} name={`typeLeave`}>
-                <Input disabled />
+                <Input disabled className="read-only-input" />
               </Form.Item>
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`เป็นเวลา :`} name={`leaveHour`}>
-                <Input disabled />
+                <Input disabled className="read-only-input" />
               </Form.Item>
-              {/* <Form.Item label={`เป็นเวลา :`} name={`leaveHour`}>
-                <Input
-                  value={
-                    dataLeaveDays % 8 === 0
-                      ? dataLeaveDays / 8
-                      : dataLeaveDays / 8
-                  }
-                  disabled
-                />
-              </Form.Item> */}
             </div>
           </div>
           <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`ตั้งแต่วันที่ :`} name={`startDate`}>
-                <Input disabled />
+                <Input disabled className="read-only-input" />
               </Form.Item>
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`ถึงวันที่ :`} name={`endDate`}>
-                <Input disabled />
+                <Input disabled className="read-only-input" />
               </Form.Item>
             </div>
           </div>
+          {/* <div className="col-span-3 md:col-span-1 ml-5">
+            <Form.Item name={`dateRange`} className="flex items-center">
+              <div className="flex items-center">
+                <label className="mr-2">วันที่ลา :</label>
+                <Form.Item name="startDate" noStyle>
+                  <Input
+                    disabled
+                    className="read-only-input"
+                    style={{ width: "100px" }}
+                    placeholder="ตั้งแต่วันที่"
+                  />
+                </Form.Item>
+                <span className="mx-1">-</span>
+                <Form.Item name="endDate" noStyle>
+                  <Input
+                    disabled
+                    className="read-only-input"
+                    style={{ width: "100px" }}
+                    placeholder="ถึงวันที่"
+                  />
+                </Form.Item>
+              </div>
+            </Form.Item>
+          </div> */}
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เบอร์ติดต่อระหว่างลา :`} name={`phoneNumber`}>
-              <Input disabled />
+              <Input disabled className="read-only-input" />
             </Form.Item>
           </div>
           {Array.isArray(formdetail.getFieldValue("dataLeaveFiles")) &&
@@ -262,17 +281,19 @@ export const TableDetail: React.FC<props> = ({
                         .getFieldValue("dataLeaveFiles")
                         .map((file: any, index: number) => (
                           <div key={index}>
-                            <Button
-                              type="link"
-                              onClick={() =>
-                                downloadFile(file.id, file.fileName)
-                              }
-                            >
-                              <Space>
-                                <PaperClipOutlined />
-                                {file.fileName}
-                              </Space>
-                            </Button>
+                            <Tooltip title={`ดาวน์โหลด`}>
+                              <Button
+                                type="link"
+                                onClick={() =>
+                                  downloadFile(file.id, file.fileName)
+                                }
+                              >
+                                <Space>
+                                  <PaperClipOutlined />
+                                  {file.fileName}
+                                </Space>
+                              </Button>
+                            </Tooltip>
                           </div>
                         ))}
                     </Form.Item>
@@ -285,12 +306,12 @@ export const TableDetail: React.FC<props> = ({
               <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
                 <div className=" col-span-3 md:col-span-1 ml-5">
                   <Form.Item label={`ผู้อนุมัติ :`} name={`userApproved`}>
-                    <Input disabled />
+                    <Input disabled className="read-only-input" />
                   </Form.Item>
                 </div>
                 <div className=" col-span-3 md:col-span-1 ml-5">
                   <Form.Item label={`วันที่อนุมัติ :`} name={`approvedDate`}>
-                    <Input disabled />
+                    <Input disabled className="read-only-input" />
                   </Form.Item>
                 </div>
               </div>

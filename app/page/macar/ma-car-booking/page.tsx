@@ -24,7 +24,7 @@ import axios from "axios";
 const MaCarBooking: React.FC = () => {
   const { data: session } = useSession();
   const intraAuth = useAxiosIntranet();
-  const maCarBookServices = MaCarBookServices(intraAuth);
+  const intraAuthService = MaCarBookServices(intraAuth);
   const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
   const [maCarBookData, setMaCarBookData] = useState<MaCarBookType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -78,9 +78,9 @@ const MaCarBooking: React.FC = () => {
     });
 
     try {
-      const maCar = await maCarBookServices.getMaCarQuery();
+      const maCar = await intraAuthService.getMaCarQuery();
       const userIdData = session?.user.userId;
-      const maCarBook = await maCarBookServices.getMaCarBookQuery(userIdData);
+      const maCarBook = await intraAuthService.getMaCarBookQuery(userIdData);
       const MaCarBook: MaCarBookType[] = maCarBook.map(
         (item: any, index: number) => ({
           ...item,

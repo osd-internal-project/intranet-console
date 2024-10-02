@@ -20,7 +20,7 @@ import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 
 const ManageMaCar = () => {
   const intraAuth = useAxiosIntranet();
-  const manageCarServices = ManageCarServices(intraAuth);
+  const intraAuthService = ManageCarServices(intraAuth);
   const [maCarBookData, setMaCarBookData] = useState<MaCarBookType[]>([]);
   const [maCarData, setmaCarData] = useState<MaCarType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -30,7 +30,6 @@ const ManageMaCar = () => {
     total: 0,
   });
   const [activeKey, setActiveKey] = useState<string>("1");
-
   const changePagination = (page: TablePaginationConfig) => {
     setPagination({ ...page });
     setLoading(true);
@@ -83,13 +82,10 @@ const ManageMaCar = () => {
       (Number(pagination.current) - 1) * Number(pagination.pageSize);
     const take: number = Number(pagination.pageSize);
     try {
-      const MaCarBook = await manageCarServices.findMaCarBook(skip, take);
-
+      const MaCarBook = await intraAuthService.findMaCarBook(skip, take);
+      const MaCar = await intraAuthService.getMaCarQuery();
       setMaCarBookData(MaCarBook);
-
-      const MaCar = await manageCarServices.getMaCarQuery();
       setmaCarData(MaCar);
-
       setLoading(false);
     } catch (error) {
       console.error("Failed to fetch data", error);

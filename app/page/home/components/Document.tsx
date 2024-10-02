@@ -1,10 +1,6 @@
-import {
-  RightOutlined,
-  ArrowRightOutlined,
-  PaperClipOutlined,
-} from "@ant-design/icons";
-import { Button, Card, Modal, Space } from "antd";
-import React, { useState } from "react";
+import { PaperClipOutlined } from "@ant-design/icons";
+import { Button, Card, Tooltip } from "antd";
+import React from "react";
 import { HandbookFileType, HandbookType } from "../common";
 
 export interface props {
@@ -18,144 +14,121 @@ const DocumentComponent: React.FC<props> = ({
   handbookQuery,
   downloadFile,
 }): React.ReactElement => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const showModal = () => setIsModalVisible(true);
-  const handleOk = () => setIsModalVisible(false);
-  const handleCancel = () => setIsModalVisible(false);
-
-  if (!handbookFile) {
+  if (!handbookFile || handbookFile.length === 0) {
     return <div>No Data...</div>;
   }
 
-  const limitedFiles = handbookFile.slice(0, 3);
-
   return (
-    <div style={{ textAlign: "left", padding: "20px", background: "#f0f2f5" }}>
-      {handbookFile?.map((file, index) => (
+    <div
+      style={{
+        textAlign: "left",
+        padding: "5px",
+        background: "#f0f2f5",
+        height: "370px",
+        overflowY: "auto",
+        // display: "flex",
+        // flexWrap: "wrap",
+        // justifyContent: "flex-start",
+      }}
+    >
+      {handbookFile.map((file, index) => (
         <Card
           key={file.fileId}
           hoverable
           style={{
-            width: "90px",
-            height: "1000px",
-            marginBottom: 12,
+            width: "98%",
+            margin: "5px",
             borderRadius: "8px",
-            overflow: "hidden",
             boxShadow: "0 6px 12px rgba(0, 0, 0, 0.1)",
             backgroundColor: "#fff",
-            padding: "8px",
-            marginTop: 8,
-            overflowY: "auto",
           }}
+          size="small"
           type="inner"
-          title={
-            <span
+        >
+          <div style={{ marginBottom: "8px" }}>
+            <h2
               style={{
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+                margin: 0,
+                fontSize: "16px",
+                lineHeight: "1.2",
                 fontWeight: "bold",
+                marginLeft: "10px",
               }}
             >
-              {file.fileName || "Untitled"}
-            </span>
-          }
-        >
-          <div style={{ display: "flex", flexDirection: "row", gap: "16px" }}>
-            <div style={{ flex: 1 }}>
-              <p style={{ fontSize: "14px", color: "#595959" }}>
-                <strong>ประเภทเอกสาร:</strong>{" "}
-                {file.filetype || "Not specified"}
-              </p>
-            </div>
-            <div style={{ flex: 1 }}>
-              <p style={{ fontSize: "14px", color: "#595959" }}>
-                <strong>วันที่เพิ่มไฟล์:</strong>{" "}
-                {file.createdAt
-                  ? new Date(file.createdAt).toLocaleDateString()
-                  : "Date not available"}
-              </p>
-            </div>
-            <div style={{ flex: 2 }} key={index}>
-              <p style={{ fontSize: "14px", color: "#595959" }}>
-                <strong>ไฟล์:</strong>{" "}
-                <Button
-                  type="link"
-                  onClick={() =>
-                    downloadFile(file.handbookid, file.fileLocation)
-                  }
-                >
-                  <Space>
-                    <PaperClipOutlined />
-                    {file.fileName}
-                  </Space>
-                </Button>
-              </p>
+              {file.fileName || "Not fileName"}
+            </h2>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginLeft: "10px",
+              }}
+            >
+              <div>
+                <h5 style={{ fontSize: "14px", margin: 0, color: "#595959" }}>
+                  <strong>ประเภทเอกสาร : </strong>{" "}
+                  {file.filetype || "Not specified"}
+                </h5>
+                <h5 style={{ fontSize: "14px", margin: 0, color: "#595959" }}>
+                  <strong>วันที่อัปโหลด : </strong>{" "}
+                  {file.createdAt
+                    ? new Date(file.createdAt).toLocaleDateString()
+                    : "Date not available"}
+                </h5>
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                  textOverflow: "ellipsis",
+                  margin: 0,
+                  fontSize: "16px",
+                  lineHeight: "1.2",
+                  flexBasis: "50%",
+                }}
+              >
+                <strong style={{ marginRight: "5px" }}>ไฟล์ : </strong>
+                <Tooltip title="ดาวน์โหลด">
+                  <Button
+                    type="link"
+                    onClick={() =>
+                      downloadFile(file.handbookid, file.fileLocation)
+                    }
+                    style={{
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                      padding: 0,
+                      display: "inline-flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <PaperClipOutlined style={{ marginRight: "5px" }} />
+                    <span
+                      style={{
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                        display: "inline-block",
+                        maxWidth: "180px",
+                      }}
+                    >
+                      {file.fileName}
+                    </span>
+                  </Button>
+                </Tooltip>
+              </div>
             </div>
           </div>
         </Card>
       ))}
-
-      {/* {handbookFile?.map((file, index) => (
-  <Card
-    key={file.fileId}
-    hoverable
-    style={{
-      width: "90px", // ขนาดของการ์ด
-      height: "auto", // ปรับให้ความสูงอัตโนมัติตามเนื้อหา
-      marginBottom: 12,
-      borderRadius: "8px",
-      overflow: "hidden",
-      boxShadow: "0 6px 12px rgba(0, 0, 0, 0.1)",
-      backgroundColor: "#fff",
-      padding: "8px",
-      marginTop: 8,
-      overflowY: "auto", // แสดงแถบเลื่อนเมื่อมีข้อมูลมาก
-      maxHeight: "500px", // กำหนดความสูงสูงสุดของการ์ด
-    }}
-    type="inner"
-    title={
-      <span
-        style={{
-          fontWeight: "bold",
-        }}
-      >
-        {file.fileName || "Untitled"}
-      </span>
-    }
-  >
-    <div style={{ display: "flex", flexDirection: "row", gap: "16px" }}>
-      <div style={{ flex: 1 }}>
-        <p style={{ fontSize: "14px", color: "#595959" }}>
-          <strong>ประเภทเอกสาร:</strong>{" "}
-          {file.filetype || "Not specified"}
-        </p>
-      </div>
-      <div style={{ flex: 1 }}>
-        <p style={{ fontSize: "14px", color: "#595959" }}>
-          <strong>วันที่เพิ่มไฟล์:</strong>{" "}
-          {file.createdAt
-            ? new Date(file.createdAt).toLocaleDateString()
-            : "Date not available"}
-        </p>
-      </div>
-      <div style={{ flex: 2 }} key={index}>
-        <p style={{ fontSize: "14px", color: "#595959" }}>
-          <strong>ไฟล์:</strong>{" "}
-          <Button
-            type="link"
-            onClick={() =>
-              downloadFile(file.handbookid, file.fileLocation)
-            }
-          >
-            <Space>
-              <PaperClipOutlined />
-              {file.fileName}
-            </Space>
-          </Button>
-        </p>
-      </div>
-    </div>
-  </Card>
-))} */}
     </div>
   );
 };

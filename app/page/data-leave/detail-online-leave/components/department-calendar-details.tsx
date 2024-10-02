@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Form, Input, Button, Space } from "antd";
+import { Modal, Form, Input, Button, Space, Tooltip } from "antd";
 import {
   Calendar,
   momentLocalizer,
@@ -11,6 +11,7 @@ import { useForm } from "antd/es/form/Form";
 import { ITypeDataLeave } from "../../common";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { PaperClipOutlined } from "@ant-design/icons";
+import "../../common/style.css";
 
 const localizer = momentLocalizer(moment);
 
@@ -42,7 +43,6 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({
   const onCancelModalDetail = () => {
     setModalDataLeaveDetail(false);
   };
-
 
   const onSelectEventCalendar = (event: CustomEvent) => {
     const dataLeaveCalendar = departmentId.find((b) => b.id === event.id);
@@ -114,51 +114,54 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({
         open={modalDataLeaveDetail}
         footer={false}
         onCancel={() => onCancelModalDetail()}
+        width={600}
       >
         <div className="w-full justify-center flex mb-2 font-bold text-lg">{`< รายละเอียดการลา >`}</div>
-        <Form autoComplete="off" form={formDetail} layout="vertical">
-          <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`วันที่ :`} name={`createAt`}>
-              <Input disabled />
-            </Form.Item>
+        <Form autoComplete="off" form={formDetail}>
+          <div style={{ paddingLeft: "380px", margin: "10px  " }}>
+            <div className=" col-span-3 md:col-span-1 ml-5">
+              <Form.Item label={`วันที่ :`} name={`createAt`}>
+                <Input disabled className="read-only-input" />
+              </Form.Item>
+            </div>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เรียนถึง :`} name={`ownerName`}>
-              <Input disabled />
+              <Input disabled className="read-only-input" />
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เนื่องจาก :`} name={`detail`}>
-              <Input disabled />
+              <Input disabled className="read-only-input" />
             </Form.Item>
           </div>
           <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`จึงขอ :`} name={`typeLeave`}>
-                <Input disabled />
+                <Input disabled className="read-only-input" />
               </Form.Item>
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`เป็นเวลา :`} name={`leaveHour`}>
-                <Input disabled />
+                <Input disabled className="read-only-input" />
               </Form.Item>
             </div>
           </div>
           <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`ตั้งแต่วันที่ :`} name={`startDate`}>
-                <Input disabled />
+                <Input disabled className="read-only-input" />
               </Form.Item>
             </div>
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`ถึงวันที่ :`} name={`endDate`}>
-                <Input disabled />
+                <Input disabled className="read-only-input" />
               </Form.Item>
             </div>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เบอร์ติดต่อระหว่างลา :`} name={`phoneNumber`}>
-              <Input disabled />
+              <Input disabled className="read-only-input" />
             </Form.Item>
           </div>
           {Array.isArray(formDetail.getFieldValue("dataLeaveFiles")) &&
@@ -175,17 +178,19 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({
                         .getFieldValue("dataLeaveFiles")
                         .map((file: any, index: number) => (
                           <div key={index}>
-                            <Button
-                              type="link"
-                              onClick={() =>
-                                downloadFile(file.id, file.fileName)
-                              }
-                            >
-                              <Space>
-                                <PaperClipOutlined />
-                                {file.fileName}
-                              </Space>
-                            </Button>
+                            <Tooltip title={`ดาวน์โหลด`}>
+                              <Button
+                                type="link"
+                                onClick={() =>
+                                  downloadFile(file.id, file.fileName)
+                                }
+                              >
+                                <Space>
+                                  <PaperClipOutlined />
+                                  {file.fileName}
+                                </Space>
+                              </Button>
+                            </Tooltip>
                           </div>
                         ))}
                     </Form.Item>
@@ -198,12 +203,12 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({
               <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
                 <div className=" col-span-3 md:col-span-1 ml-5">
                   <Form.Item label={`ผู้อนุมัติ :`} name={`userApproved`}>
-                    <Input disabled />
+                    <Input disabled className="read-only-input" />
                   </Form.Item>
                 </div>
                 <div className=" col-span-3 md:col-span-1 ml-5">
                   <Form.Item label={`วันที่อนุมัติ :`} name={`approvedDate`}>
-                    <Input disabled />
+                    <Input disabled className="read-only-input" />
                   </Form.Item>
                 </div>
               </div>

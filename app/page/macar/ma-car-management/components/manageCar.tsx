@@ -69,7 +69,7 @@ const ManageCar: React.FC<props> = ({
   const [submitLoading, setSubmitLoading] = useState(false);
   const [currentMaId, setCurrentMaId] = useState<number | null>(null);
   const [maBookData, setMaCarBookData] = useState<MaCarBookType[]>([]);
-  const manageCarServices = ManageCarServices(intraAuth);
+  const intraAuthService = ManageCarServices(intraAuth);
   const { data: session } = useSession();
   const [modalDisapProved, setModalDisapProved] = useState(false);
   const [formDisapProved] = Form.useForm();
@@ -319,7 +319,7 @@ const ManageCar: React.FC<props> = ({
   const handleDeleteMa = async (id: number) => {
     setSubmitLoading(true);
     try {
-      await manageCarServices.deleteMaCarBook(id);
+      await intraAuthService.deleteMaCarBook(id);
       setMaCarBookData(maBookData.filter((item) => item.id !== id));
 
       message.success("ลบข้อมูลการจองสำเร็จ");
@@ -339,7 +339,7 @@ const ManageCar: React.FC<props> = ({
         carBookApprovedStatus: "Cancel",
         remarkCancel: values.remarkCancel,
       };
-      await manageCarServices.updateMaCarBook(updatedCancelMa);
+      await intraAuthService.updateMaCarBook(updatedCancelMa);
       message.success("ยกเลิกการจองสำเร็จ");
       setSubmitLoading(false);
     } catch (error) {
@@ -364,7 +364,7 @@ const ManageCar: React.FC<props> = ({
         carBookApprovedDate: dayjs(),
         remarkApproved: values.remarkApproved,
       };
-      await manageCarServices.updateMaCarBook(updatedApproveMa);
+      await intraAuthService.updateMaCarBook(updatedApproveMa);
       message.success("ไม่อนุมัติการจองสำเร็จ");
       formDisapProved.resetFields;
       setModalApproveMa(false);
@@ -406,7 +406,7 @@ const ManageCar: React.FC<props> = ({
         carBookApprovedDate: dayjs(),
       };
 
-      await manageCarServices.updateMaCarBook(updatedApproveMa);
+      await intraAuthService.updateMaCarBook(updatedApproveMa);
 
       setModalApproveMa(false);
       message.success("อนุมัติการจองสำเร็จ");
@@ -431,7 +431,7 @@ const ManageCar: React.FC<props> = ({
         returnAt: dayjs(),
       };
 
-      await manageCarServices.updateMaCarBook(updatedReturn);
+      await intraAuthService.updateMaCarBook(updatedReturn);
       setModalReturn(false);
       message.success("รับคืนรถสำเร็จ");
       setSubmitLoading(false);

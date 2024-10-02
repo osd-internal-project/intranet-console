@@ -63,7 +63,7 @@ const MaCarBookTable: React.FC<props> = ({
   const [form] = Form.useForm();
   const [formCancel] = Form.useForm();
   const intraAuth = useAxiosIntranet();
-  const maCarServices = MaCarServices(intraAuth);
+  const intraAuthService = MaCarServices(intraAuth);
   const [modalEditMaCarBook, setModalEditMa] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [currentMaCarBookId, setCurrentMaCarBookId] = useState<number | null>(
@@ -268,7 +268,7 @@ const MaCarBookTable: React.FC<props> = ({
         carBookApprovedById: session?.user.userId,
         carBookApprovedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
       };
-      await maCarServices.updateMaCarBook(updatedApproveMa);
+      await intraAuthService.updateMaCarBook(updatedApproveMa);
       message.success("ยกเลิกการจองสำเร็จ");
       setModalCancel(false);
     } catch (error) {
@@ -323,7 +323,7 @@ const MaCarBookTable: React.FC<props> = ({
         updatedById: session?.user.userId,
         updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
       };
-      await maCarServices.updateMaCarBook(maCarBookData);
+      await intraAuthService.updateMaCarBook(maCarBookData);
       message.success("แก้ไขการจองสำเร็จ");
       setSubmitLoading(false);
       setModalEditMa(false);

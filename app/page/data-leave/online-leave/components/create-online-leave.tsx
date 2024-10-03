@@ -61,21 +61,24 @@ export const CreateOnlineLeave: React.FC<props> = ({
 
   useEffect(() => {
     const getdatauser = () => {
-      if (groupUserId && groupUserId.length > 0) {
-        let ownerName = groupUserId
-          .map((usersId: any) => `${usersId.firstNameTh} ${usersId.lastNameTh}`)
+      if (groupUserId?.length) {
+        const ownerName = groupUserId
+          .filter((u: ITypeDataLeaveCreate) => u.firstNameTh && u.lastNameTh)
+          .map((u: ITypeDataLeaveCreate) => `${u.firstNameTh} ${u.lastNameTh}`)
           .join(", ");
-        createdataleaveForm.setFieldsValue({
-          userId: getUser?.userId,
-          posId: getUser?.position?.posId,
-          position: getUser?.position?.nameEn,
-          firstNameTh: getUser?.firstNameTh,
-          lastNameTh: getUser?.lastNameTh,
-          ownerName: ownerName,
-          ownerId: getUserOwner?.userId,
-          groupName: groupDetail.groupName,
-        });
+
+        ownerName && createdataleaveForm.setFieldsValue({ ownerName });
       }
+
+      createdataleaveForm.setFieldsValue({
+        userId: getUser?.userId,
+        posId: getUser?.position?.posId,
+        position: getUser?.position?.nameEn,
+        firstNameTh: getUser?.firstNameTh,
+        lastNameTh: getUser?.lastNameTh,
+        ownerId: getUserOwner?.userId,
+        groupName: groupDetail.groupName,
+      });
     };
     getdatauser();
   }, [getUserOwner, checkSwitch, groupUserId]);

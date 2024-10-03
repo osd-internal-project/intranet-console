@@ -57,9 +57,9 @@ const CustomerSubAddComponent: React.FC<props> = ({
           <Input />
         </Form.Item>
         <Form.Item
-          label={"ชื่อสาขา"}
+          label={"ชื่อลูกค้า"}
           name={"name"}
-          rules={[{ required: true, message: `กรุณากรอกชื่อสาขา` }]}
+          rules={[{ required: true, message: `กรุณากรอกชื่อลูกค้า` }]}
         >
           <Input />
         </Form.Item>

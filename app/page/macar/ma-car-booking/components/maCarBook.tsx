@@ -308,8 +308,8 @@ const MaCarBook: React.FC<props> = ({
       </Row>
       <Row gutter={24}>
         <Col span={8}>
-          <Form.Item name="detail" label="รายยละเอียด">
-            <TextArea placeholder="กรอกรายยละเอียด" rows={2} />
+          <Form.Item name="detail" label="รายละเอียด">
+            <TextArea placeholder="กรอกรายละเอียด" rows={2} />
           </Form.Item>
         </Col>
         <Col span={8}>

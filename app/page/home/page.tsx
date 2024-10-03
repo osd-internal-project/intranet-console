@@ -39,7 +39,7 @@ export default function HomePage() {
     const dataSlideImage = await intraAuthService.getSlideImageQuery();
     const MasterBookingresponse = await intraAuthService.getMasterRoomQuery();
     const dataHandbookFileQuery = await intraAuthService.getHandbookFileQuery();
-    const dataHandbookQuery = await intraAuthService.getHandbookQuery();
+    const dataHandbookQuery = await intraAuthService.getHandbookTypeQuery();
     const dataInformationNews =
       await intraAuthService.getinformationNewsQuery();
     const dataNewsImage = await intraAuthService.getNewsImageQuery();

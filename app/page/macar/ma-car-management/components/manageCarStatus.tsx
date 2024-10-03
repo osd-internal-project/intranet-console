@@ -42,7 +42,7 @@ const ManageCarStatus: React.FC<props> = ({
 }: any): React.ReactElement => {
   const intraAuth = useAxiosIntranet();
   const [form] = useForm();
-  const manageCarServices = ManageCarServices(intraAuth);
+  const intraAuthService = ManageCarServices(intraAuth);
   const [maData, setMaData] = useState<MaCarType[]>([]);
   const [currentMaId, setCurrentMaId] = useState<string | null>(null);
   const [modalEditMaCar, setModalEditMaCar] = useState(false);
@@ -183,7 +183,7 @@ const ManageCarStatus: React.FC<props> = ({
     };
 
     try {
-      const response = await manageCarServices.createMaCar(maCarCreateData);
+      const response = await intraAuthService.createMaCar(maCarCreateData);
 
       if (response) {
         message.success("เพิ่มรถสำเร็จ");
@@ -208,7 +208,7 @@ const ManageCarStatus: React.FC<props> = ({
   const handleDeleteCarStatus = async (carId: string) => {
     setSubmitLoading(true);
     try {
-      await manageCarServices.deleteMaCar(carId);
+      await intraAuthService.deleteMaCar(carId);
       setMaData(maData.filter((item) => item.carId !== carId));
       message.success("ลบรถสำเร็จ");
     } catch (error) {
@@ -230,7 +230,7 @@ const ManageCarStatus: React.FC<props> = ({
         updatedById: session?.user.userId,
         updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
       };
-      await manageCarServices.updateMaCar(updatedMaCar);
+      await intraAuthService.updateMaCar(updatedMaCar);
 
       message.success("แก้ไขข้อมูลรถสำเร็จ");
 

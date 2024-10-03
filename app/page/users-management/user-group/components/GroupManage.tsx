@@ -474,7 +474,6 @@ const GroupManage: React.FC<props> = ({
               </Form.Item>
             </div>
             <div>
-              {" "}
               <ConfigProvider
                 theme={{
                   token: {
@@ -506,17 +505,29 @@ const GroupManage: React.FC<props> = ({
               </Form.Item>
             </div>
             <div>
-              <Form.Item name="userRole" label="user role :">
-                <Select
-                  mode="multiple"
-                  options={selectRole.map((item: TSelectRoleDto) => ({
-                    value: item.roleId,
-                    label: item.roleName,
-                  }))}
-                  disabled={editState === false ? true : false}
-                  className={!editState ? "read-only-input" : ""}
-                />
-              </Form.Item>
+              <ConfigProvider
+                theme={{
+                  token: {
+                    colorBgContainerDisabled: "#fff",
+                    colorTextDisabled: "#000",
+                  },
+                  components: {
+                    Select: { colorBorder: !editState ? "#fff" : "#d9d9d9" },
+                  },
+                }}
+              >
+                <Form.Item name="userRole" label="user role :">
+                  <Select
+                    mode="multiple"
+                    options={selectRole.map((item: TSelectRoleDto) => ({
+                      value: item.roleId,
+                      label: item.roleName,
+                    }))}
+                    disabled={editState === false ? true : false}
+                    className={!editState ? "read-only-input" : ""}
+                  />
+                </Form.Item>
+              </ConfigProvider>
             </div>
             {!editState && (
               <div style={{ display: "flex", justifyContent: "end" }}>

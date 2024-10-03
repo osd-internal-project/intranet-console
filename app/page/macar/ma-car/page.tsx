@@ -23,7 +23,7 @@ import { MaCarType, MaCarBookType, dataMaCarbook } from "../common/index";
 const MaCar: React.FC = () => {
   const { data: session } = useSession();
   const intraAuth = useAxiosIntranet();
-  const maCarServices = MaCarServices(intraAuth);
+  const intraAuthService = MaCarServices(intraAuth);
   const [maCarBookData, setMaCarBookData] = useState<dataMaCarbook[]>([]);
   const [maFetchCalendar, setMaFetchCalendar] = useState([]);
   const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
@@ -73,15 +73,15 @@ const MaCar: React.FC = () => {
       (Number(pagination.current) - 1) * Number(pagination.pageSize);
     const take: number = Number(pagination.pageSize);
     try {
-      const maCar = await maCarServices.getMaCarQuery();
+      const maCar = await intraAuthService.getMaCarQuery();
       const createdById = session?.user.userId;
-      const maCarBook = await maCarServices.findMaCarBook(
+      const maCarBook = await intraAuthService.findMaCarBook(
         createdById,
         skip,
         take
       );
-      const maCalender = await maCarServices.getMaCarBookQuery(createdById);
-      const maCarBookById = await maCarServices.findMaCarBookById(createdById);
+      const maCalender = await intraAuthService.getMaCarBookQuery(createdById);
+      const maCarBookById = await intraAuthService.findMaCarBookById(createdById);
       setMaCarBookById(maCarBookById);
       setMaCarData(maCar);
       setMaCarBookData(maCarBook);

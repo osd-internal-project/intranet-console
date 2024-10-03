@@ -188,7 +188,7 @@ const CustomerSubDetailComponent: React.FC<props> = ({
   return (
     <div className=" grid grid-cols-1 gap-3">
       <div className=" flex justify-end">
-        {rules?.ruleCustomerCustomerSubAdd ? (
+        {rules?.ruleCustomerSubAdd ? (
           <Button
             size="small"
             type="primary"

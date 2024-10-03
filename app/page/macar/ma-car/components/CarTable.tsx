@@ -501,9 +501,9 @@ const MaCarBookTable: React.FC<props> = ({
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item name="detail" label="รายยละเอียด">
+              <Form.Item name="detail" label="รายละเอียด">
                 <TextArea
-                  placeholder="กรอกรายยละเอียด"
+                  placeholder="กรอกรายละเอียด"
                   rows={2}
                   disabled={
                     carBookApprovedStatus === "Approve" ||

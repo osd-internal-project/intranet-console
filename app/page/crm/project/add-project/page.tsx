@@ -154,9 +154,9 @@ export default function AddProjectPage() {
       const data = await crmServices.findBranchSelectByCustomerSubId(id);
       setBranchList(data);
       const customer = customerList.findLast((customer) => customer.id === id);
-      if (customer?.responsible) {
-        setSaleList(customer.responsible);
-      }
+      // if (customer?.responsible) {
+      //   setSaleList(customer.responsible);
+      // }
     } else {
       setBranchList([]);
     }

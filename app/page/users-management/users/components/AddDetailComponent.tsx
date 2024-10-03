@@ -294,7 +294,7 @@ const AddDetailComponent: React.FC = (): React.ReactElement => {
                   ]}
                   style={{ marginBottom: "2px" }}
                 >
-                  <Input maxLength={12} />
+                  <Input />
                 </Form.Item>
               </div>
               <div>

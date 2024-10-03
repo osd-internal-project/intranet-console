@@ -106,7 +106,7 @@ const ProjectTicketAddComponent: React.FC<props> = ({
             <Select />
           </Form.Item>
           <Form.Item label="Title" name={"ticketTitle"}>
-            <Input maxLength={100} />
+            <Input />
           </Form.Item>
           <Form.Item label="Request Date" name={"requestDate"}>
             <DatePicker className=" w-full" format={"DD/MM/YYYY"} />

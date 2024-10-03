@@ -127,7 +127,7 @@ const ProjectTicketAddComponent: React.FC<props> = ({
             name={"ticketTitle"}
             rules={[{ required: true, message: "กรุณาเลือก Title" }]}
           >
-            <Input maxLength={100} />
+            <Input />
           </Form.Item>
           <Form.Item label="Request Date" name={"requestDate"}>
             <DatePicker className=" w-full" format={"DD/MM/YYYY"} />

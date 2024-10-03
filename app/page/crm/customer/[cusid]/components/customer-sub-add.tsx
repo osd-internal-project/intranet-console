@@ -92,13 +92,13 @@ const CustomerSubAddComponent: React.FC<props> = ({
                       label="เลขที่บ้าน"
                       name={[field.name, "houseNumber"]}
                     >
-                      <Input maxLength={10} />
+                      <Input  />
                     </Form.Item>
                     <Form.Item
                       label="เลขที่ห้อง"
                       name={[field.name, "roomNumber"]}
                     >
-                      <Input maxLength={10} />
+                      <Input  />
                     </Form.Item>
                     <Form.Item
                       label="อาคาร/หมู่บ้าน"
@@ -131,7 +131,7 @@ const CustomerSubAddComponent: React.FC<props> = ({
                       label="รหัสไปรษณีย์"
                       name={[field.name, "zipCode"]}
                     >
-                      <Input maxLength={10} />
+                      <Input  />
                     </Form.Item>
                   </div>
                 </Card>

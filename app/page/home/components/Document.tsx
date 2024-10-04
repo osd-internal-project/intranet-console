@@ -69,6 +69,7 @@ const DocumentComponent: React.FC<props> = ({
               }}
             >
               <div>
+                <p />
                 <h5 style={{ fontSize: "14px", margin: 0, color: "#595959" }}>
                   <strong>ประเภทเอกสาร : </strong>{" "}
                   {file.filetype || "Not specified"}

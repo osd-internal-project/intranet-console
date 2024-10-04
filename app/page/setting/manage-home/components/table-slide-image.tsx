@@ -11,12 +11,14 @@ import {
   Switch,
   Table,
   TablePaginationConfig,
+  Tooltip,
   Typography,
 } from "antd";
 import { SlideImageType } from "../common";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
 import React, { useState } from "react";
+import { DeleteIcon } from "@/components/icon";
 
 export interface props {
   loading: boolean;
@@ -77,7 +79,12 @@ export const TableSlideImage: React.FC<props> = ({
             okText="ใช่"
             cancelText="ไม่"
           >
-            <a>ลบ</a>
+            <Tooltip title="ลบ">
+              <a type="link">
+                {" "}
+                <DeleteIcon />{" "}
+              </a>
+            </Tooltip>
           </Popconfirm>
         </Space>
       ),

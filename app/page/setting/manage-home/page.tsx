@@ -31,6 +31,7 @@ export default function TypeLeave() {
   const [addFile, setAddFile] = useState<any[]>([]);
   const [createSlideImageForm] = useForm();
   const [modalAddSlide, setModalAddSlide] = useState<boolean>(false);
+  const [imageFiles, setImageFiles] = useState<any[]>([]);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -106,6 +107,21 @@ export default function TypeLeave() {
         }
         message.success("อัปโหลดสำเร็จ");
       }
+
+      if (imageFiles.length > 0) {
+        let createdByName =
+          session?.user.firstNameTh && session?.user.lastNameTh
+            ? `${session.user.firstNameTh} ${session.user.lastNameTh}`
+            : "";
+        let createdById = session?.user.userId;
+        let formData: any = new FormData();
+        formData.append("files", imageFiles[0].originFileObj);
+        formData.append("type", "attend");
+        formData.append("createdByName", createdByName);
+        formData.append("createdById", createdById);
+        await manageHomeService.uploadImage(formData);
+        createSlideImageForm.resetFields();
+      }
     } catch (error) {
       message.error("การอัปโหลดล้มเหลว");
     } finally {
@@ -153,6 +169,9 @@ export default function TypeLeave() {
               setModalAddSlide={setModalAddSlide}
               createSlideImageForm={createSlideImageForm}
               showModal={showModal}
+              setImageFiles={setImageFiles}
+              imageFiles={imageFiles}
+              slideImage={slideImage}
             />
 
             <TableSlideImage

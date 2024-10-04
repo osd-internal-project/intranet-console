@@ -29,6 +29,7 @@ import dayjs from "dayjs";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../../services/index.service";
 import { useSession } from "next-auth/react";
+import "../../common/style.css";
 
 export interface props {
   dataLeaveUser: ITypeDataLeave[];

@@ -1,20 +1,28 @@
 import { Carousel, Image } from "antd";
-import React from "react";
+import React, { useState } from "react";
 import { SlideImageType } from "../common";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import SlideImageService from "../services/index.service";
 
+// import * as dotenv from 'dotenv';
+
+// dotenv.config();
+
 export interface Props {
   loading: boolean;
   slideImage: SlideImageType[];
+  slideImages: Blob[];
 }
 
 export const BigCarouselComponent: React.FC<Props> = ({
   loading,
   slideImage,
+  slideImages,
 }) => {
   const intraAuth = useAxiosIntranet();
-  const slideImageService = SlideImageService(intraAuth);
+  const intraAuthService = SlideImageService(intraAuth);
+  const baseImageUrl = process.env.BACKEND_INTRANET_URL;
+  const [useFallback, setUseFallback] = useState(false);
 
   return (
     <Carousel
@@ -34,7 +42,7 @@ export const BigCarouselComponent: React.FC<Props> = ({
       {slideImage?.map((image, index) => (
         <div key={index}>
           <Image
-            src={`http://localhost:4003/api/slide-image/${image.filePath}`}
+            src={`${baseImageUrl}/slide-image/${image.filePath}`}
             crossOrigin="anonymous"
             preview={false}
           />

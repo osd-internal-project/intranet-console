@@ -34,9 +34,14 @@ export default function HomePage() {
     []
   );
   const [NewsImage, setNewsImage] = useState<NewsImageType[]>([]);
+  const [slideImages, setSlideImages] = useState<Blob[]>([]);
 
   const fetchData = async () => {
     const dataSlideImage = await intraAuthService.getSlideImageQuery();
+    const dataSlideImages = await intraAuthService.getImage(94);
+    setSlideImages(dataSlideImages);
+    // console.log("dataSlideImages:", dataSlideImages);
+
     const MasterBookingresponse = await intraAuthService.getMasterRoomQuery();
     const dataHandbookFileQuery = await intraAuthService.getHandbookFileQuery();
     const dataHandbookQuery = await intraAuthService.getHandbookTypeQuery();
@@ -71,7 +76,11 @@ export default function HomePage() {
 
   return (
     <>
-      <BigCarouselComponent loading={loading} slideImage={slideImage} />
+      <BigCarouselComponent
+        loading={loading}
+        slideImage={slideImage}
+        slideImages={slideImages}
+      />
       <div className="my-2" />
       <div className="grid md:grid-cols-3">
         <div className="px-2 mb-4">

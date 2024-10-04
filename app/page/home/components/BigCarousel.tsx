@@ -3,11 +3,6 @@ import React, { useState } from "react";
 import { SlideImageType } from "../common";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import SlideImageService from "../services/index.service";
-
-// import * as dotenv from 'dotenv';
-
-// dotenv.config();
-
 export interface Props {
   loading: boolean;
   slideImage: SlideImageType[];

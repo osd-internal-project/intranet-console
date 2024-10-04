@@ -392,7 +392,6 @@ const BookingRoomPage: React.FC = () => {
               <Form.Item<BookingType> label="จำนวนสมาชิก" name="member">
                 <Input
                   placeholder="กรอกจำนวนผู้เข้าใช้งาน"
-                  maxLength={10}
                   max={100}
                   min={1}
                   onKeyDown={(event) => {

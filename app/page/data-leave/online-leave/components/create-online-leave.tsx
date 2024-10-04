@@ -321,7 +321,6 @@ export const CreateOnlineLeave: React.FC<props> = ({
               >
                 <Input
                   placeholder="เบอร์โทรศัพท์"
-                  maxLength={10}
                   onKeyDown={(event) => {
                     if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
                       event.preventDefault();

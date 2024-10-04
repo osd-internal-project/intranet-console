@@ -50,7 +50,6 @@ export default function TypeLeave() {
   const loadData = async () => {
     const dataSlideImage = await manageHomeService.getSlideImageQuery();
     setSlideImage(dataSlideImage);
-
     setLoading(false);
   };
 
@@ -91,36 +90,47 @@ export default function TypeLeave() {
 
   const onfinishCreateSlide = async (values: any) => {
     try {
-      setSubmitLoading(true);
+      if (slideImage && slideImage.length >= 10) {
+        message.warning("ไม่สามารถอัปโหลดได้ เนื่องจากรูปภาพครบ 10 รูปแล้ว !");
+      } else {
+        setSubmitLoading(true);
+        const newFileName = values.addFile.fileList[0].name;
+        const isDuplicate = slideImage.some(
+          (image) => image.fileName === newFileName
+        );
+        if (!isDuplicate) {
+          if (addFile.length > 0) {
+            for (const file of addFile) {
+              const createdByName =
+                session?.user.firstNameTh && session?.user.lastNameTh
+                  ? `${session.user.firstNameTh} ${session.user.lastNameTh}`
+                  : "";
+              const formData: any = new FormData();
+              formData.append("type", "attend");
+              formData.append("files", file.originFileObj);
+              formData.append("createdByName", createdByName);
+              await manageHomeService.uploadFilesSlide(values.id, formData);
+            }
+            message.success("อัปโหลดสำเร็จ");
+          }
 
-      if (addFile.length > 0) {
-        for (const file of addFile) {
-          const createdByName =
-            session?.user.firstNameTh && session?.user.lastNameTh
-              ? `${session.user.firstNameTh} ${session.user.lastNameTh}`
-              : "";
-          const formData: any = new FormData();
-          formData.append("type", "attend");
-          formData.append("files", file.originFileObj);
-          formData.append("createdByName", createdByName);
-          await manageHomeService.uploadFilesSlide(values.id, formData);
+          if (imageFiles.length > 0) {
+            let createdByName =
+              session?.user.firstNameTh && session?.user.lastNameTh
+                ? `${session.user.firstNameTh} ${session.user.lastNameTh}`
+                : "";
+            let createdById = session?.user.userId;
+            let formData: any = new FormData();
+            formData.append("files", imageFiles[0].originFileObj);
+            formData.append("type", "attend");
+            formData.append("createdByName", createdByName);
+            formData.append("createdById", createdById);
+            await manageHomeService.uploadImage(formData);
+            createSlideImageForm.resetFields();
+          }
+        } else {
+          message.warning("ไม่สามารถอัปโหลดไฟล์ที่มีชื่อซ้ำกันได้");
         }
-        message.success("อัปโหลดสำเร็จ");
-      }
-
-      if (imageFiles.length > 0) {
-        let createdByName =
-          session?.user.firstNameTh && session?.user.lastNameTh
-            ? `${session.user.firstNameTh} ${session.user.lastNameTh}`
-            : "";
-        let createdById = session?.user.userId;
-        let formData: any = new FormData();
-        formData.append("files", imageFiles[0].originFileObj);
-        formData.append("type", "attend");
-        formData.append("createdByName", createdByName);
-        formData.append("createdById", createdById);
-        await manageHomeService.uploadImage(formData);
-        createSlideImageForm.resetFields();
       }
     } catch (error) {
       message.error("การอัปโหลดล้มเหลว");

@@ -6,18 +6,15 @@ import SlideImageService from "../services/index.service";
 export interface Props {
   loading: boolean;
   slideImage: SlideImageType[];
-  slideImages: Blob[];
 }
 
 export const BigCarouselComponent: React.FC<Props> = ({
   loading,
   slideImage,
-  slideImages,
 }) => {
   const intraAuth = useAxiosIntranet();
   const intraAuthService = SlideImageService(intraAuth);
   const baseImageUrl = process.env.BACKEND_INTRANET_URL;
-  const [useFallback, setUseFallback] = useState(false);
 
   return (
     <Carousel
@@ -35,7 +32,7 @@ export const BigCarouselComponent: React.FC<Props> = ({
       }}
     >
       {slideImage?.map((image, index) => (
-        <div key={index}>
+        <div key={image.id}>
           <Image
             src={`${baseImageUrl}/slide-image/${image.filePath}`}
             crossOrigin="anonymous"

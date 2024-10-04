@@ -12,7 +12,6 @@ const CarStatus: React.FC<props> = ({
   maCarData,
   setLoading,
 }: any): React.ReactElement => {
-  
   const columns: TableProps<MaCarType>["columns"] = [
     {
       title: "ลำดับ",
@@ -76,6 +75,6 @@ const CarStatus: React.FC<props> = ({
     setLoading();
   }, []);
 
-  return <Table columns={columns} dataSource={maCarData} />;
+  return <Table columns={columns} dataSource={maCarData} rowKey="id" />;
 };
 export default CarStatus;

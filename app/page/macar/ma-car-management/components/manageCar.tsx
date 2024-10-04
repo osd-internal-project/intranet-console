@@ -799,6 +799,7 @@ const ManageCar: React.FC<props> = ({
         onChange={changePagination}
         size="small"
         style={{ marginTop: "5px" }}
+        rowKey="id"
       />
     </>
   );

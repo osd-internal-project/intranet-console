@@ -57,7 +57,6 @@ export const CreateOnlineLeave: React.FC<props> = ({
   groupDetail,
   groupUserId,
 }): React.ReactElement => {
-  // console.log(groupUserId);
 
   useEffect(() => {
     const getdatauser = () => {

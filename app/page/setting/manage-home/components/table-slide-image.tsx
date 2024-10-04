@@ -11,6 +11,7 @@ import {
   Switch,
   Table,
   TablePaginationConfig,
+  Tag,
   Tooltip,
   Typography,
 } from "antd";
@@ -59,7 +60,7 @@ export const TableSlideImage: React.FC<props> = ({
       key: "createdAt",
       dataIndex: "createdAt",
       title: "Created At",
-      render: (text: string) => dayjs(text).format("DD-MM-YYYY"),
+      render: (text: string) => dayjs(text).format("DD-MM-YYYY, HH:mm"),
     },
     {
       key: "createdByName",

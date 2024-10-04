@@ -210,7 +210,12 @@ export const TableDetail: React.FC<props> = ({
           }}
         ></Col>
       </Row>
-      <Table dataSource={dataLeaveUser} columns={columns} size="small" />
+      <Table
+        dataSource={dataLeaveUser}
+        columns={columns}
+        size="small"
+        rowKey="id"
+      />
       <Modal
         title=""
         open={openModalDetail}

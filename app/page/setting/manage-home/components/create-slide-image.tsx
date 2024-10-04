@@ -13,6 +13,7 @@ import {
   Popover,
   Row,
   Switch,
+  Tag,
   Upload,
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
@@ -63,18 +64,28 @@ export const CreateSlideImage: React.FC<props> = ({
   };
   return (
     <>
-      <div style={{ textAlign: "right" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <p style={{ margin: 0 }}>
+          หมายเหตุ : สามารถอัปโหลดรูปภาพได้สูงสุด 10 รูป
+        </p>
         <Button
-          style={{
-            marginBottom: "20px",
-          }}
+          style={{ marginBottom: "20px" }}
           type="primary"
           onClick={() => {
             showModal();
             setImageFiles([]);
           }}
-        >{`Add Slide`}</Button>
+        >
+          {`Add Slide`}
+        </Button>
       </div>
+
       <Modal
         title="Add Slide"
         open={modalAddSlide}

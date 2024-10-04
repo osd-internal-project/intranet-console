@@ -87,45 +87,45 @@ const BranchAddressAddComponent: React.FC<props> = ({
             <Select options={addressType} placeholder="Please Select" />
           </Form.Item> */}
           <Form.Item label="เลขที่บ้าน" name={"houseNumber"}>
-            <Input maxLength={10} />
+            <Input />
           </Form.Item>
           <Form.Item label="เลขที่ห้อง" name={"roomNumber"}>
-            <Input maxLength={10} />
+            <Input />
           </Form.Item>
           <Form.Item label="อาคาร/หมู่บ้าน" name={"building"}>
-            <Input maxLength={150} />
+            <Input />
           </Form.Item>
           <Form.Item label="ชั้น" name={"floor"}>
-            <Input maxLength={5} />
+            <Input />
           </Form.Item>
           <Form.Item label="ซอย" name={"alley"}>
-            <Input maxLength={150} />
+            <Input />
           </Form.Item>
           <Form.Item label="หมู่ที่" name={"village"}>
-            <Input maxLength={10} />
+            <Input />
           </Form.Item>
           <Form.Item label="ถนน" name={"road"}>
-            <Input maxLength={150} />
+            <Input />
           </Form.Item>
           <Form.Item label="ตำบล/แขวง" name={"subDistrict"}>
-            <Input maxLength={150} />
+            <Input />
           </Form.Item>
           <Form.Item label="อำเภอ/เขต" name={"district"}>
-            <Input maxLength={150} />
+            <Input />
           </Form.Item>
           <Form.Item
             label="จังหวัด"
             name={"province"}
             rules={[{ required: true, message: "กรุณากรอกจังหวัด" }]}
           >
-            <Input maxLength={150} />
+            <Input />
           </Form.Item>
           <Form.Item
             label="รหัสไปรษณีย์"
             name={"zipCode"}
             rules={[{ required: true, message: "กรุณากรอกรหัสไปรษณีย์" }]}
           >
-            <Input maxLength={10} />
+            <Input />
           </Form.Item>
         </div>
         <div className=" flex justify-end space-x-2">

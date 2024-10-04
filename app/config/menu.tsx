@@ -1,27 +1,10 @@
-import {
-  LogoutOutlined,
-  UserOutlined,
-  HomeOutlined,
-  BarChartOutlined,
-  BookOutlined,
-} from "@ant-design/icons";
+import { LogoutOutlined, UserOutlined, HomeOutlined, BarChartOutlined, BookOutlined } from "@ant-design/icons";
 import { Icon } from "@iconify/react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
 import React from "react";
 import { signOut } from "next-auth/react";
-import {
-  gridIcon,
-  IconDataLeave,
-  bookingIcon,
-  maintenanceIcon,
-  organizeChart,
-  stockIcon,
-  contactListIcon,
-  macarIcon,
-  mindMappingIcon,
-} from "@/components/icon";
-import { icons } from "antd/es/image/PreviewGroup";
+import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, organizeChart, stockIcon, contactListIcon, macarIcon } from "@/components/icon";
 
 type MenuItem = Required<MenuProps>["items"][number];
 const MenuNav: MenuProps["items"] = [
@@ -37,8 +20,7 @@ const MenuNav: MenuProps["items"] = [
         href={"#"}
         onClick={async () => {
           signOut({ callbackUrl: "/signin" });
-        }}
-      >
+        }}>
         Sign Out
       </Link>
     ),
@@ -79,60 +61,37 @@ export const MenuSider: MenuItem[] = [
     children: [
       {
         key: `order-management`,
-        // icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
         label: `Order Management`,
         rule: "sm-order-s",
       },
       {
         key: `inventory`,
-        // icon: <Icon icon="ep:office-building" width="25" height="25" />,
         label: `Inventory`,
         rule: "sm-inventory-s",
       },
 
       {
         key: `product-list`,
-        // icon: <Icon icon="humbleicons:box" width="25" height="25" />,
         label: `Product List`,
         rule: "sm-productlist-s",
       },
-      // {
-      //   key: `suppliers`,
-      //   icon: <Icon icon="lucide:truck" width="25" height="25" />,
-      //   label: `Suppliers`,
-      // },
-      // {
-      //   key: `report`,
-      //   label: `REPORT`,
-      //   disabled: true,
-      // },
-      // {
-      //   key: `dashboard`,
-      //   icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
-      //   label: `Dashboard`,
-      //   // rule: "dashboard",
-      // },
       {
         key: `report-withdraw-ranking`,
-        // icon: persentationChartLoneIcon,
         label: `10 อันดับการเบิกจ่ายที่มากที่สุด`,
         rule: "sm-re-wr-h",
       },
       {
         key: `report-transaction`,
-        // icon: <Icon icon="bx:file" width="25" height="25" />,
         label: `การรับเข้าเบิกจ่าย`,
         rule: "sm-re-tr-h",
       },
       {
         key: `report-expired`,
-        // icon: <Icon icon="bx:bell" width="25" height="25" />,
         label: `รายงานการหมดอายุ`,
         rule: "sm-re-ex-h",
       },
       {
         key: `stock-management`,
-        // icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
         label: `Stock Management`,
         rule: "sm-s",
       },
@@ -192,12 +151,10 @@ export const MenuSider: MenuItem[] = [
     children: [
       {
         key: `bookingroom/booking-room`,
-        // icon: <Icon icon="mdi:book-sync-outline" width="20" height="20" />,
         label: `Booking room`,
       },
       {
         key: `bookingroom/booking-room-management`,
-        // icon: <Icon icon="mdi:book-plus-outline" width="20" height="20" />,
         label: `Booking room Management`,
       },
     ],
@@ -210,13 +167,11 @@ export const MenuSider: MenuItem[] = [
     children: [
       {
         key: `maintenance-management`,
-        // icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
         label: `Maintenance Management`,
         rule: "ma-m-s",
       },
     ],
   },
-  // { key: `admin`, label: `Admin`, disabled: true },
   {
     key: `setting`,
     icon: <Icon icon="uil:setting" width="15" height="15" />,
@@ -225,36 +180,26 @@ export const MenuSider: MenuItem[] = [
     children: [
       {
         key: `setting/maintenance-type`,
-        // icon: colorSwatchIcon,
         label: `MA Type`,
         rule: "ma-t-s",
       },
       {
         key: `setting/organize-chart`,
-        // icon: organizeChart,
         label: `Organize Chart`,
         // rule: "st-p-s",
       },
-      // {
-      //   key: `setting/location`,
-      //   // icon: buldingIcon,
-      //   label: `Location`,
-      // },
       {
         key: `setting/typeleave`,
-        // icon: IconTypeLeave,
         label: `Type Leave`,
         rule: "st-tl-s",
       },
       {
         key: `setting/master-holidays`,
-        // icon: IconHolidays,
         label: `Master Holidays`,
         rule: "st-mth-s",
       },
       {
         key: `setting/masterdata-position`,
-        // icon: IconPosition,
         label: `Master Position`,
         rule: "st-p-s",
       },
@@ -273,31 +218,26 @@ export const MenuSider: MenuItem[] = [
     children: [
       {
         key: `users-management/users`,
-        // icon: groupLineIcon,
         label: `Users`,
         // rule: "um-s",
       },
       {
         key: `users-management/user-organization`,
-        // icon: shieldExclamationIcon,
         label: `Organizations`,
         // rule: "user-organize-show",
       },
       {
         key: `users-management/user-group`,
-        // icon: userGroupIcon,
         label: `Groups`,
         // rule: "um-ug-s",
       },
       {
         key: `users-management/user-role`,
-        // icon: mindMappingIcon,
         label: `Roles`,
         rule: "um-ro-s",
       },
       {
         key: `users-management/user-rule`,
-        // icon: shieldExclamationIcon,
         label: `Rules`,
         rule: "um-ru-s",
       },
@@ -376,89 +316,7 @@ export const MenuSider: MenuItem[] = [
     label: `Handbook`,
     rule: "hb-s",
   },
-
-  // {
-  //   key: `stock-management`,
-  //   icon: stockSetting,
-  //   label: `Stock Management`,
-  //   // rule: "st-s",
-  //   children: [
-  //     {
-  //       key: `stock-management/location`,
-  //       // icon: buldingIcon,
-  //       label: `Location`,
-  //       rule: "sm-location-s",
-  //     },
-  //     {
-  //       key: `stock-management/inventory`,
-  //       // icon: cubeIcon,
-  //       label: `Inventory`,
-  //       rule: "inventory-show",
-  //     },
-  //     {
-  //       key: `stock-management/objective`,
-  //       // icon: colorSwatchIcon,
-  //       label: `Objective`,
-  //       rule: "objective-show",
-  //     },
-  //     {
-  //       key: `stock-management/master-product-management`,
-  //       // icon: cubeIcon,
-  //       label: `Master Product Management`,
-  //       rule: "sm-mp-s",
-  //     },
-  //     {
-  //       key: `stock-management/cetagory-group-type`,
-  //       // icon: circleSqureIcon,
-  //       label: `Set Category & Group`,
-  //       rule: "sm-c-s",
-  //     },
-  //     {
-  //       key: `stock-management/unit`,
-  //       // icon: gridIcon,
-  //       label: `Set Unit`,
-  //       rule: "sm-unit-s",
-  //     },
-  //     {
-  //       key: `stock-management/master-hazard-type`,
-  //       // icon: colorSwatchIcon,
-  //       label: `Set Hazard Type`,
-  //       rule: "sm-hz-h",
-  //     },
-  //     {
-  //       key: `stock-management/ghs`,
-  //       // icon: warningIcon,
-  //       label: `Set GHS`,
-  //       rule: "sm-ghs-s",
-  //     },
-  //     {
-  //       key: `stock-management/vender`,
-  //       // icon: truckIcon,
-  //       label: `Vender`,
-  //       rule: "vender-show",
-  //     },
-  //     {
-  //       key: `stock-management/brand`,
-  //       // icon: starIcon,
-  //       label: `Set Brand`,
-  //       rule: "sm-brand-s",
-  //     },
-  //   ],
-  // },
 ].map((item) => {
-  // if (item?.children) {
-  //   return {
-  //     ...item,
-  //     children: item.children.map((itemChild) => ({
-  //       ...itemChild,
-  //       label: (
-  //         <>
-  //           <Link href={`/page/${itemChild.key}`}>{itemChild.label}</Link>
-  //         </>
-  //       ),
-  //     })),
-  //   };
-  // }
   return {
     ...item,
     label: !item.children ? (

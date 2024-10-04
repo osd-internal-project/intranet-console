@@ -217,7 +217,7 @@ const CrmServices = (axiosInstance: AxiosInstance): TCrmServices => {
     createBranch: async (customerId, customerSubId, form) => {
       const formData = {
         ...form,
-        customerId: customerId,
+        customerDetailId: customerId,
         customerDetailSubId: customerSubId,
       };
       return await axiosInstance.post(`${customerBranchUrl}/`, formData);

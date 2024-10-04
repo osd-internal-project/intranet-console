@@ -93,7 +93,7 @@ const ProjectTaskEditComponent: React.FC<props> = ({
           name={"taskTitle"}
           rules={[{ required: true, message: "กรุณาเลือก Task Title" }]}
         >
-          <Input maxLength={100} />
+          <Input />
         </Form.Item>
         <Form.Item
           label="Start Date"

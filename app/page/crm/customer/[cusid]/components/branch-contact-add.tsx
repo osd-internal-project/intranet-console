@@ -89,25 +89,25 @@ const BranchContactAddComponent: React.FC<props> = ({
             name={"name"}
             rules={[{ required: true, message: "กรุณากรอกชื่อ" }]}
           >
-            <Input maxLength={10} />
+            <Input />
           </Form.Item>
           <Form.Item label="ชื่อเล่น" name={"nickName"}>
-            <Input maxLength={10} />
+            <Input />
           </Form.Item>
           <Form.Item label="ตำแหน่ง" name={"position"}>
-            <Input maxLength={150} />
+            <Input />
           </Form.Item>
           <Form.Item label="เบอร์มือถือ" name={"phone"}>
-            <Input maxLength={20} />
+            <Input />
           </Form.Item>
           <Form.Item label="เบอร์ออฟฟิศ" name={"officePhone"}>
-            <Input maxLength={150} />
+            <Input />
           </Form.Item>
           <Form.Item label="เบอร์แฟกซ์" name={"fax"}>
-            <Input maxLength={20} />
+            <Input />
           </Form.Item>
           <Form.Item label="อีเมล" name={"email"}>
-            <Input maxLength={50} />
+            <Input />
           </Form.Item>
           <Form.Item label="วันเกิด" name={"birthday"}>
             <DatePicker format={"DD/MM/YYYY"} />

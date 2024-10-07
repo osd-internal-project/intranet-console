@@ -29,8 +29,6 @@ const ManageHomeService = (axiosInstance: AxiosInstance) => {
     },
 
     uploadImage: async (formData: any) => {
-      console.log("formData:", formData);
-
       return await axiosInstance
         .post(`${baseUrlSlideImage}/upload-image`, formData, {
           headers: {

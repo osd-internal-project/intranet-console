@@ -101,6 +101,7 @@ export const TableSlideImage: React.FC<props> = ({
         loading={loading}
         pagination={pagination}
         onChange={changePagination}
+        rowKey="id"
       />
     </>
   );

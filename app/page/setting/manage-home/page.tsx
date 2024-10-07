@@ -24,7 +24,7 @@ import { useSession } from "next-auth/react";
 export default function TypeLeave() {
   const { data: session } = useSession();
   const Auth = useAxiosIntranet();
-  const manageHomeService = ManageHomeService(Auth);
+  const intraAuthService = ManageHomeService(Auth);
   const [slideImage, setSlideImage] = useState<SlideImageType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -48,7 +48,7 @@ export default function TypeLeave() {
   }, [loading]);
 
   const loadData = async () => {
-    const dataSlideImage = await manageHomeService.getSlideImageQuery();
+    const dataSlideImage = await intraAuthService.getSlideImageQuery();
     setSlideImage(dataSlideImage);
     setLoading(false);
   };
@@ -65,7 +65,7 @@ export default function TypeLeave() {
   const handleDeleteSlideImage = async (id: number) => {
     setSubmitLoading(true);
     try {
-      await manageHomeService.deleteSlideImage(id);
+      await intraAuthService.deleteSlideImage(id);
       setSlideImage(slideImage.filter((item) => item.id !== id));
       message.success("ลบข้อมูลรูปภาพสำเร็จ");
       setSubmitLoading(false);
@@ -99,20 +99,20 @@ export default function TypeLeave() {
           (image) => image.fileName === newFileName
         );
         if (!isDuplicate) {
-          if (addFile.length > 0) {
-            for (const file of addFile) {
-              const createdByName =
-                session?.user.firstNameTh && session?.user.lastNameTh
-                  ? `${session.user.firstNameTh} ${session.user.lastNameTh}`
-                  : "";
-              const formData: any = new FormData();
-              formData.append("type", "attend");
-              formData.append("files", file.originFileObj);
-              formData.append("createdByName", createdByName);
-              await manageHomeService.uploadFilesSlide(values.id, formData);
-            }
-            message.success("อัปโหลดสำเร็จ");
-          }
+          // if (addFile.length > 0) {
+          //   for (const file of addFile) {
+          //     const createdByName =
+          //       session?.user.firstNameTh && session?.user.lastNameTh
+          //         ? `${session.user.firstNameTh} ${session.user.lastNameTh}`
+          //         : "";
+          //     const formData: any = new FormData();
+          //     formData.append("type", "attend");
+          //     formData.append("files", file.originFileObj);
+          //     formData.append("createdByName", createdByName);
+          //     await intraAuthService.uploadFilesSlide(values.id, formData);
+          //   }
+          //   message.success("อัปโหลดรูปสำเร็จ");
+          // }
 
           if (imageFiles.length > 0) {
             let createdByName =
@@ -122,10 +122,9 @@ export default function TypeLeave() {
             let createdById = session?.user.userId;
             let formData: any = new FormData();
             formData.append("files", imageFiles[0].originFileObj);
-            formData.append("type", "attend");
             formData.append("createdByName", createdByName);
             formData.append("createdById", createdById);
-            await manageHomeService.uploadImage(formData);
+            await intraAuthService.uploadImage(formData);
             createSlideImageForm.resetFields();
           }
         } else {

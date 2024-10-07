@@ -27,10 +27,12 @@ const ManageHomeService = (axiosInstance: AxiosInstance) => {
         .then((result) => result.data)
         .catch((err) => err);
     },
-    
-    uploadImage: async (image: any) => {
+
+    uploadImage: async (formData: any) => {
+      console.log("formData:", formData);
+
       return await axiosInstance
-        .post(`${baseUrlSlideImage}/upload-image`, image, {
+        .post(`${baseUrlSlideImage}/upload-image`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -43,6 +45,7 @@ const ManageHomeService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+
     createSlideImage: async (body: any) => {
       return await axiosInstance
         .post(`${baseUrlSlideImage}`, body)

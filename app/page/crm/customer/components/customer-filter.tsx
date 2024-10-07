@@ -45,6 +45,7 @@ const CustomerFilterComponent: React.FC<props> = ({
     if (values.activestatus !== null || values.activestatus !== undefined) {
       search = { ...search, activestatus: values.activestatus };
     }
+
     onSearch(search);
   }
 

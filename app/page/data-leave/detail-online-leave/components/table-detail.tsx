@@ -184,7 +184,12 @@ export const TableDetail: React.FC<props> = ({
 
   return (
     <div>
-      <Table dataSource={dataLeaveUser} columns={columns} size="small" />
+      <Table
+        dataSource={dataLeaveUser}
+        columns={columns}
+        size="small"
+        rowKey={(e: any) => e.id}
+      />
       <Modal
         title=""
         open={openModalDetail}

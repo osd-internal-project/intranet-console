@@ -57,7 +57,6 @@ export const CreateOnlineLeave: React.FC<props> = ({
   groupDetail,
   groupUserId,
 }): React.ReactElement => {
-
   useEffect(() => {
     const getdatauser = () => {
       if (groupUserId?.length) {
@@ -151,17 +150,17 @@ export const CreateOnlineLeave: React.FC<props> = ({
             </div>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
+            <Form.Item label={`แผนก :`} name={`groupName`}>
+              <Input disabled />
+            </Form.Item>
+          </div>
+          <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`ตำแหน่ง :`} name={`posId`} hidden>
               <Input disabled />
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`ตำแหน่ง :`} name={`position`}>
-              <Input disabled />
-            </Form.Item>
-          </div>
-          <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`แผนก :`} name={`groupName`}>
               <Input disabled />
             </Form.Item>
           </div>

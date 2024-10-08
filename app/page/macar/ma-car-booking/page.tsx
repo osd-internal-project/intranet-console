@@ -29,7 +29,6 @@ const MaCarBooking: React.FC = () => {
   const [maCarBookData, setMaCarBookData] = useState<MaCarBookType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [form] = Form.useForm();
- 
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -64,7 +63,6 @@ const MaCarBooking: React.FC = () => {
           maCarBookData={maCarBookData}
           loading={loading}
           setLoading={setLoading}
-         
         />
       ),
     },

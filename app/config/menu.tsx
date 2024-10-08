@@ -1,10 +1,26 @@
-import { LogoutOutlined, UserOutlined, HomeOutlined, BarChartOutlined, BookOutlined } from "@ant-design/icons";
+import {
+  LogoutOutlined,
+  UserOutlined,
+  HomeOutlined,
+  BarChartOutlined,
+  BookOutlined,
+  MailOutlined,
+} from "@ant-design/icons";
 import { Icon } from "@iconify/react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
 import React from "react";
 import { signOut } from "next-auth/react";
-import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, organizeChart, stockIcon, contactListIcon, macarIcon } from "@/components/icon";
+import {
+  gridIcon,
+  IconDataLeave,
+  bookingIcon,
+  maintenanceIcon,
+  organizeChart,
+  stockIcon,
+  contactListIcon,
+  macarIcon,
+} from "@/components/icon";
 
 type MenuItem = Required<MenuProps>["items"][number];
 const MenuNav: MenuProps["items"] = [
@@ -20,7 +36,8 @@ const MenuNav: MenuProps["items"] = [
         href={"#"}
         onClick={async () => {
           signOut({ callbackUrl: "/signin" });
-        }}>
+        }}
+      >
         Sign Out
       </Link>
     ),
@@ -314,6 +331,12 @@ export const MenuSider: MenuItem[] = [
     key: "handbook",
     icon: <BookOutlined />,
     label: `Handbook`,
+    rule: "hb-s",
+  },
+  {
+    key: "emailtemplate",
+    icon: <MailOutlined />,
+    label: `e-mail template`,
     rule: "hb-s",
   },
 ].map((item) => {

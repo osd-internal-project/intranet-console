@@ -1,20 +1,40 @@
 export function dateToStringTh(date: Date) {
-  const result = new Date(date).toLocaleString("en-GB", { timeZone: "Asia/Bangkok" });
+  const result = new Date(date).toLocaleString("en-GB", {
+    timeZone: "Asia/Bangkok",
+  });
   return result;
 }
 export function dateToStringThNoTime(date: Date) {
-  const result = new Date(date).toLocaleDateString("en-GB", { timeZone: "Asia/Bangkok" });
+  const result = new Date(date).toLocaleDateString("en-GB", {
+    timeZone: "Asia/Bangkok",
+  });
   return result;
 }
 
 export function dateToStartofDay(data: Date) {
   const date = new Date(data);
-  const result = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0).toISOString();
+  const result = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    0,
+    0,
+    0,
+    0
+  ).toISOString();
   return result;
 }
 export function dateToEndofDay(data: Date) {
   const date = new Date(data);
-  const result = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 0).toISOString();
+  const result = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    23,
+    59,
+    59,
+    0
+  ).toISOString();
   return result;
 }
 

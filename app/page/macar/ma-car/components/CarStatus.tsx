@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Table, Tag } from "antd";
 import type { TableProps } from "antd";
 import { MaCarType } from "../../common/index";
+import "../../common/style.css";
 
 export interface props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;

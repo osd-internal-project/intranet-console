@@ -4,3 +4,21 @@
   border: 0 !important;
   font-weight: bold !important;
 }
+
+/* table*/
+thead[class*="ant-table-thead"] th {
+  /* background-color: #cfd8dc !important; */
+  border-bottom: 2px solid #b0bec5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+*/ .ant-table-tbody > tr:hover > td {
+  background-color: #cf0c0c;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ant-table-container {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}

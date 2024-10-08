@@ -1,10 +1,25 @@
-import { LogoutOutlined, UserOutlined, HomeOutlined, BarChartOutlined, BookOutlined } from "@ant-design/icons";
+import {
+  LogoutOutlined,
+  UserOutlined,
+  HomeOutlined,
+  BarChartOutlined,
+  BookOutlined,
+} from "@ant-design/icons";
 import { Icon } from "@iconify/react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
 import React from "react";
 import { signOut } from "next-auth/react";
-import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, organizeChart, stockIcon, contactListIcon, macarIcon } from "@/components/icon";
+import {
+  gridIcon,
+  IconDataLeave,
+  bookingIcon,
+  maintenanceIcon,
+  organizeChart,
+  stockIcon,
+  contactListIcon,
+  macarIcon,
+} from "@/components/icon";
 
 type MenuItem = Required<MenuProps>["items"][number];
 const MenuNav: MenuProps["items"] = [
@@ -20,7 +35,8 @@ const MenuNav: MenuProps["items"] = [
         href={"#"}
         onClick={async () => {
           signOut({ callbackUrl: "/signin" });
-        }}>
+        }}
+      >
         Sign Out
       </Link>
     ),
@@ -280,17 +296,17 @@ export const MenuSider: MenuItem[] = [
       {
         key: `macar/ma-car`,
         label: `Ma car`,
-        // rule: "mc-c-s",
+        rule: "mac-c-s",
       },
       {
         key: `macar/ma-car-booking`,
         label: `Ma car Booking`,
-        // rule: "mc-cb-s",
+        rule: "mac-b-s",
       },
       {
         key: `macar/ma-car-management`,
         label: `Ma car Management`,
-        rule: "mc-m-s",
+        rule: "mac-m-s",
       },
     ],
   },

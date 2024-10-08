@@ -27,10 +27,10 @@ import { useForm } from "antd/es/form/Form";
 import { CaretRightOutlined } from "@ant-design/icons";
 import { MaCarBookCalendarType } from "../../common/index";
 import dayjs from "dayjs";
+import "../../common/style.css";
 
 const localizer = momentLocalizer(moment);
 const { TextArea } = Input;
-
 interface Props {
   maFetchCalendar: MaCarBookCalendarType[];
 }
@@ -169,14 +169,14 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
             >
               <Collapse.Panel header="ข้อมูลการจอง" key="1">
                 <Form.Item label="ชื่อรถ" name="carName">
-                  <Input className="read-only-input" disabled />
+                  <Input className="read-only-input-calendar" disabled />
                 </Form.Item>
 
                 <Form.Item label="วันที่เริ่มจอง" name="carBookStartDate">
                   <DatePicker
                     format="DD-MM-YYYY , HH:mm"
-                    disabled
-                    className="read-only-input"
+                    // disabled
+                    className="read-only-input-calendar"
                     style={{ width: "100%" }}
                   />
                 </Form.Item>
@@ -184,29 +184,29 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
                 <Form.Item label="วันที่สิ้นสุดการจอง" name="carBookEndDate">
                   <DatePicker
                     format="DD-MM-YYYY , HH:mm"
-                    disabled
-                    className="read-only-input"
+                    // disabled
+                    className="read-only-input-calendar"
                     style={{ width: "100%" }}
                   />
                 </Form.Item>
 
                 <Form.Item label="จังหวัดที่จอดรถ" name="carBookProvince">
-                  <Input className="read-only-input" disabled />
+                  <Input className="read-only-input-calendar" disabled />
                 </Form.Item>
                 <Form.Item label="สถานที่จอดรถ" name="carBookPlace">
-                  <Input className="read-only-input" disabled />
+                  <Input className="read-only-input-calendar" disabled />
                 </Form.Item>
                 <Form.Item label="จำนวนผู้ใช้รถ" name="carBookUsers">
-                  <Input className="read-only-input" disabled />
+                  <Input className="read-only-input-calendar" disabled />
                 </Form.Item>
                 <Form.Item label="รายละเอียด" name="detail">
-                  <TextArea className="read-only-input" disabled />
+                  <TextArea className="read-only-input-calendar" disabled />
                 </Form.Item>
               </Collapse.Panel>
 
               <Collapse.Panel header="ข้อมูลผู้จอง" key="2">
                 <Form.Item label="ชื่อผู้จอง" name="createdByName">
-                  <Input className="read-only-input" disabled />
+                  <Input className="read-only-input-calendar" disabled />
                 </Form.Item>
               </Collapse.Panel>
 
@@ -217,13 +217,13 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
                 {selectedMa.carBookApprovedStatus !== "Process" && (
                   <div>
                     <Form.Item label="ผู้อนุมัติ" name="carBookApprovedByName">
-                      <Input className="read-only-input" disabled />
+                      <Input className="read-only-input-calendar" disabled />
                     </Form.Item>
                     <Form.Item label="วันที่อนุมัติ" name="approveDate">
                       <DatePicker
                         format="DD-MM-YYYY , HH:mm"
                         disabled
-                        className="read-only-input"
+                        className="read-only-input-calendar"
                         style={{ width: "100%" }}
                       />
                     </Form.Item>

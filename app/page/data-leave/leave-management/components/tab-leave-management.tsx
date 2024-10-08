@@ -3,6 +3,7 @@ import React from "react";
 import { Button, Table, Tabs } from "antd";
 import { ITpyeUser, ITypeDataleaveMap } from "../../common";
 import { deleteIcon } from "@/components/icon";
+import "../../common/style.css";
 
 export interface props {
   getdataUserByTypeId: ITpyeUser[];

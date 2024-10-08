@@ -1,3 +1,4 @@
+import { Button } from 'antd';
 import React, { useState } from 'react';
 
 const HtmlEditor = () => {
@@ -21,7 +22,7 @@ const HtmlEditor = () => {
         onChange={handleInputChange}
       ></textarea>
       <br />
-      <button onClick={convertToHtml}>Convert to HTML</button>
+      <Button type='primary' onClick={convertToHtml}>แปลง HTML</Button>
       <h3>HTML Output:</h3>
       <div
         style={{

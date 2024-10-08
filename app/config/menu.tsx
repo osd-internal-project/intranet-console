@@ -319,11 +319,11 @@ export const MenuSider: MenuItem[] = [
     children: [
       {
         key: `information/information-data`,
-        label: `information Data`,
+        label: `Information Data`,
       },
       {
         key: `information/information-management`,
-        label: `information management`,
+        label: `Information Management`,
       },
     ],
   },

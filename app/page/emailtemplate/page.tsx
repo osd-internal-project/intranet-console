@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Col, Card, Tabs, TabsProps } from "antd";
+import { Col, Card, Tabs, TabsProps, Breadcrumb, Divider } from "antd";
 import Createemail from "./createpage/create-page";
 import Datatemplate from "./createpage/template-data";
 
@@ -28,28 +28,47 @@ const emailpage: React.FC = () => {
     // },
   ];
   return (
-    <div style={{ backgroundColor: "#FFFFFF" }}>
-      <h1
-        style={{
-          margin: "0 0 0 10px",
-          fontSize: "32px",
-          fontStyle: "initial",
-          borderBottom: "2px solid black",
-        }}
-      >
-        เมลอิเล็กทรอนิกส์
-      </h1>
-      <Col span={24}>
-        <div className="grid-span-1 space-y-2">
-          <Card>
-            <Tabs
-              activeKey={activeKey}
-              onChange={handleTabChange}
-              items={items}
-            />
-          </Card>
+    <div>
+      <Breadcrumb
+        items={[
+          {
+            href: "/page",
+            title: <span>Home</span>,
+          },
+          {
+            title: <span>Email Template</span>,
+          },
+        ]}
+      />
+      <Divider orientation="left" orientationMargin="0">
+        <div
+          className="title-page-font"
+          style={{ display: "flex", alignItems: "left" }}
+        >
+          <span style={{ marginRight: "8px" }}>Email Template</span>
         </div>
-      </Col>
+      </Divider>
+
+      <div style={{ backgroundColor: "#FFFFFF" }}>
+        <h1
+          style={{
+            margin: "0 0 0 10px",
+            fontSize: "32px",
+            fontStyle: "initial",
+          }}
+        ></h1>
+        <Col span={24}>
+          <div className="grid-span-1 space-y-2">
+            <Card>
+              <Tabs
+                activeKey={activeKey}
+                onChange={handleTabChange}
+                items={items}
+              />
+            </Card>
+          </div>
+        </Col>
+      </div>
     </div>
   );
 };

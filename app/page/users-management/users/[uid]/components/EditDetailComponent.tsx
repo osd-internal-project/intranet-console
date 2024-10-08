@@ -108,8 +108,14 @@ const EditDetailComponent: React.FC<props> = ({
         value: d.posId,
       }));
       const dataUserGroup = await masterPositionServices.getUserGroupAll();
-
-      const userGroupOption: any = dataUserGroup.map((data: any) => ({
+      let byId = [
+        24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
+        36, 37, 38, 39, 40, 41, 42, 43, 60, 61, 65, 67
+      ]
+      const dataUserGroupMap = dataUserGroup.filter((data: any) =>
+        byId.includes(data.id)
+      );
+      const userGroupOption: any = dataUserGroupMap.map((data: any) => ({
         label: data.groupName,
         value: data.groupId,
       }));

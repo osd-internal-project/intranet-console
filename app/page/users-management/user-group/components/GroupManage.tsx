@@ -152,10 +152,10 @@ const GroupManage: React.FC<props> = ({
       await onChangeSaleGroupSelect(groupDetail.saleUserGroupId);
       await onChangeEngineerGroupSelect(groupDetail.engineerUserGroupId);
       await onChangeLeaveGroupSelect(
-        groupDetail.userGroupMapHeader[0].leaveGroupId
+        groupDetail.userGroupMapHeader?.[0]?.leaveGroupId
       );
       await onChangeExpenseGroupSelect(
-        groupDetail.userGroupMapHeader[0].expenseGroupId
+        groupDetail.userGroupMapHeader?.[0]?.expenseGroupId
       );
 
       permissionform.setFieldsValue({
@@ -165,20 +165,12 @@ const GroupManage: React.FC<props> = ({
         engineerUserGroupId: groupDetail.engineerUserGroupId,
         engineerUsersId: groupDetail.engineerUsersId,
       });
-      // if (
-      //   groupDetail.userGroupMapHeader[0].leaveGroupId.includes(groupSelect) &&
-      //   groupSelect &&
-      //   groupDetail.userGroupMapHeader[0].expenseGroupId.includes(groupSelect)
-      // ) {
       userpermissionform.setFieldsValue({
-        leaveGroupId: groupDetail.userGroupMapHeader[0].leaveGroupId,
-        leaveUserId: groupDetail.userGroupMapHeader[0].leaveUserId,
-        expenseGroupId: groupDetail.userGroupMapHeader[0].expenseGroupId,
-        expenseUserId: groupDetail.userGroupMapHeader[0].expenseUserId,
+        leaveGroupId: groupDetail.userGroupMapHeader?.[0]?.leaveGroupId,
+        leaveUserId: groupDetail.userGroupMapHeader?.[0]?.leaveUserId,
+        expenseGroupId: groupDetail.userGroupMapHeader?.[0]?.expenseGroupId,
+        expenseUserId: groupDetail.userGroupMapHeader?.[0]?.expenseUserId,
       });
-      // } else {
-      //   userpermissionform.resetFields();
-      // }
     }
   };
   const createTree = (obj: any[], parentId: string | null) => {

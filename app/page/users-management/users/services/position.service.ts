@@ -24,6 +24,17 @@ const MasterPositionServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    getOrganizeChartQuery: async () => {
+      return await axiosInstance
+        .get(`/organize-chart`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
   };
 };
 export default MasterPositionServices;

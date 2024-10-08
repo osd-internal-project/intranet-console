@@ -2,7 +2,7 @@
   background-color: #f9f9f9 !important;
   color: #555 !important;
   border: 0 !important;
-  font-weight: bold !important;
+  /* font-weight: bold !important; */
   cursor: not-allowed;
   pointer-events: none;
   /* border-radius: 50px; */ /* ขอบโค้ง*/
@@ -11,7 +11,7 @@
   background-color: #fff !important;
   color: #555 !important;
   border: 0 !important;
-  font-weight: bold !important;
+  /* font-weight: bold !important; */
   cursor: not-allowed;
   pointer-events: none;
   /* border-radius: 50px; */ /* ขอบโค้ง*/

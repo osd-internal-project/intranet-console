@@ -31,13 +31,12 @@ import {
 import type { FormProps, TableProps } from "antd";
 import { EditIcon, CancelMaCarIcon } from "@/components/icon";
 import dayjs from "dayjs";
-// import ShareMaCarBook from "../share-ma-car-book/share-xlsx";
 import ShareMaCarBook from "../../common/export-excel";
-
 import { MaCarServices } from "../services/ma-car.service";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useSession } from "next-auth/react";
 import { MaCarBookType } from "../../common/index";
+import "../../common/style.css";
 
 export interface props {
   loading: boolean;
@@ -98,7 +97,7 @@ const MaCarBookTable: React.FC<props> = ({
       align: "center",
       render: (_, record) => (
         <span>
-          {dayjs(record.carBookStartDate).format("DD-MM-YYYY , HH:mm:ss")}
+          {dayjs(record.carBookStartDate).format("DD-MM-YYYY , HH:mm")}
         </span>
       ),
     },
@@ -108,9 +107,7 @@ const MaCarBookTable: React.FC<props> = ({
       width: "150px",
       align: "center",
       render: (_, record) => (
-        <span>
-          {dayjs(record.carBookEndDate).format("DD-MM-YYYY , HH:mm:ss")}
-        </span>
+        <span>{dayjs(record.carBookEndDate).format("DD-MM-YYYY , HH:mm")}</span>
       ),
     },
     {
@@ -620,11 +617,11 @@ const MaCarBookTable: React.FC<props> = ({
 
       <div>
         <Flex gap="4px 4px" wrap>
-          <Tag icon={<CheckCircleOutlined />} color="LimeGreen">
-            อนุมัติแล้ว
-          </Tag>
           <Tag icon={<SyncOutlined spin />} color="DodgerBlue">
             กำลังรออนุมัติ
+          </Tag>
+          <Tag icon={<CheckCircleOutlined />} color="LimeGreen">
+            อนุมัติแล้ว
           </Tag>
           <Tag icon={<CloseCircleOutlined />} color="OrangeRed">
             ไม่อนุมัติ

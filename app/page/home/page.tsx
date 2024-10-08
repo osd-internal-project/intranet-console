@@ -74,10 +74,7 @@ export default function HomePage() {
 
   return (
     <>
-      <BigCarouselComponent
-        loading={loading}
-        slideImage={slideImage}
-      />
+      <BigCarouselComponent loading={loading} slideImage={slideImage} />
       <div className="my-2" />
       <div className="grid md:grid-cols-3">
         <div className="px-2 mb-4">
@@ -114,7 +111,6 @@ export default function HomePage() {
             title="กิจกรรมและข่าวสาร"
             bordered={false}
             className="text-center"
-            style={{ width: "1090px", height: "560px", margin: "0px 10px" }}
           >
             <NewsCarouselComponent
               informationNews={informationNews}
@@ -122,12 +118,7 @@ export default function HomePage() {
             />
           </Card>
           <div className="my-4"></div>
-          <Card
-            title="เอกสาร"
-            bordered={false}
-            className="text-center"
-            style={{ width: "1090px", height: "465px", margin: "10px 10px" }}
-          >
+          <Card title="เอกสาร" bordered={false} className="text-center">
             <DocumentComponent
               handbookFile={handbookFile}
               handbookQuery={handbookQuery}

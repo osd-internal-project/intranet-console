@@ -3,6 +3,7 @@ import React from "react";
 import { Button, Table, Tabs } from "antd";
 import { ITpyeUser, ITypeDataleaveMap } from "../../common";
 import { deleteIcon } from "@/components/icon";
+import "../../common/style.css";
 
 export interface props {
   getdataUserByTypeId: ITpyeUser[];
@@ -19,7 +20,7 @@ export const TabeLeavManagement: React.FC<props> = ({
     {
       key: "id",
       dataIndex: "id",
-      title: "No.",
+      title: "No",
       width: "50px",
       render: (values: string, row: any, index: number) => index + 1,
     },

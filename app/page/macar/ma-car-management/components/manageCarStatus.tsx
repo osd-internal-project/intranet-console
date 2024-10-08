@@ -24,6 +24,7 @@ import { useSession } from "next-auth/react";
 import dayjs from "dayjs";
 import { MaCarType } from "../../common/index";
 import { TablePaginationConfig } from "antd";
+import "../../common/style.css";
 
 export interface props {
   loading: boolean;

@@ -1,25 +1,29 @@
 "use client";
 import {
-  Button,
-  Col,
-  Form,
-  Input,
-  Modal,
   Popconfirm,
-  Row,
   Space,
-  Switch,
   Table,
   TablePaginationConfig,
-  Tag,
   Tooltip,
-  Typography,
+  Button,
 } from "antd";
 import { SlideImageType } from "../common";
-import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
-import React, { useState } from "react";
+import React, { useState, useContext, useMemo } from "react";
 import { DeleteIcon } from "@/components/icon";
+import { HolderOutlined } from "@ant-design/icons";
+import type { DragEndEvent } from "@dnd-kit/core";
+import { DndContext } from "@dnd-kit/core";
+import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import type { TableColumnsType } from "antd";
 
 export interface props {
   loading: boolean;

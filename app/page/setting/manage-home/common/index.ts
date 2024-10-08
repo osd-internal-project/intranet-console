@@ -12,5 +12,6 @@ export interface SlideImageType {
     updatedById?: string;
     updatedByName?: string;
     deletedAt?: Date;
+    key: string;
   }
   

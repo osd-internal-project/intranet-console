@@ -4,6 +4,7 @@ import {
   HomeOutlined,
   BarChartOutlined,
   BookOutlined,
+  MailOutlined,
 } from "@ant-design/icons";
 import { Icon } from "@iconify/react";
 import { MenuProps, Tooltip } from "antd";
@@ -318,11 +319,11 @@ export const MenuSider: MenuItem[] = [
     children: [
       {
         key: `information/information-data`,
-        label: `information Data`,
+        label: `Information Data`,
       },
       {
         key: `information/information-management`,
-        label: `information management`,
+        label: `Information Management`,
       },
     ],
   },
@@ -330,6 +331,12 @@ export const MenuSider: MenuItem[] = [
     key: "handbook",
     icon: <BookOutlined />,
     label: `Handbook`,
+    rule: "hb-s",
+  },
+  {
+    key: "emailtemplate",
+    icon: <MailOutlined />,
+    label: `e-mail template`,
     rule: "hb-s",
   },
 ].map((item) => {

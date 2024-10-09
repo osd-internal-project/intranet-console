@@ -32,6 +32,7 @@ import { MaCarBookServices } from "../services/ma-car-book.service";
 import { useSession } from "next-auth/react";
 import { MaCarType, MaCarBookType } from "../../common/index";
 import TextArea from "antd/es/input/TextArea";
+import "../../common/style.css";
 export interface props {
   maCarBookData: MaCarBookType[];
   loading: boolean;
@@ -85,7 +86,9 @@ const MaCarReturn: React.FC<props> = ({
       width: "200px",
       align: "center",
       render: (_, record) => (
-        <span>{dayjs(record.carBookStartDate).format("DD-MM-YYYY HH:mm")}</span>
+        <span>
+          {dayjs(record.carBookStartDate).format("DD-MM-YYYY , HH:mm")}
+        </span>
       ),
     },
     {
@@ -94,9 +97,7 @@ const MaCarReturn: React.FC<props> = ({
       width: "200px",
       align: "center",
       render: (_, record) => (
-        <span>
-          {dayjs(record.carBookEndDate).format("DD-MM-YYYY HH:mm:ss")}
-        </span>
+        <span>{dayjs(record.carBookEndDate).format("DD-MM-YYYY , HH:mm")}</span>
       ),
     },
     {
@@ -682,11 +683,11 @@ const MaCarReturn: React.FC<props> = ({
       </Modal>
       <div>
         <Flex gap="4px 4px" wrap>
-          <Tag icon={<CheckCircleOutlined />} color="LimeGreen">
-            อนุมัติแล้ว
-          </Tag>
           <Tag icon={<SyncOutlined spin />} color="DodgerBlue">
             กำลังรออนุมัติ
+          </Tag>
+          <Tag icon={<CheckCircleOutlined />} color="LimeGreen">
+            อนุมัติแล้ว
           </Tag>
           <Tag icon={<CloseCircleOutlined />} color="OrangeRed">
             ไม่อนุมัติ

@@ -320,7 +320,7 @@ const MaCarBook: React.FC<props> = ({
       </Row>
       <Col span={24} style={{ textAlign: "center" }}>
         <Form.Item>
-          <Button type="primary" htmlType="submit" loading={submitLoading}>
+          <Button type="primary" htmlType="submit" loading={submitLoading} size="middle">
             ทำการจองรถ
           </Button>
         </Form.Item>

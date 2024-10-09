@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Button, Form, Input, Modal } from "antd";
 import { ITBranchForm } from "../../common";
 import { FormInstance, useForm } from "antd/es/form/Form";
+const { TextArea } = Input;
 const layout = {
   labelCol: {
     xs: { span: 5 },
@@ -61,6 +62,9 @@ const BranchEditComponent: React.FC<props> = ({
           rules={[{ required: true, message: `กรุณากรอกชื่อสาขา` }]}
         >
           <Input />
+        </Form.Item>
+        <Form.Item label={"Remark"} name={"remark"}>
+          <TextArea rows={4} />
         </Form.Item>
         <div className=" flex justify-end space-x-2">
           <Button type="primary" htmlType="submit">

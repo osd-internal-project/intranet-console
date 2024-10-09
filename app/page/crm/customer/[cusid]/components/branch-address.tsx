@@ -136,6 +136,17 @@ const BranchAddressComponent: React.FC<props> = ({
       // width: "200px",
     },
     {
+      key: "maplink",
+      dataIndex: "maplink",
+      title: "แผนที่",
+      // width: "200px",
+      render: (map: string) => (
+        <a href={`${map}`} target="_blank">
+          Link
+        </a>
+      ),
+    },
+    {
       key: "id",
       dataIndex: "id",
       title: "",

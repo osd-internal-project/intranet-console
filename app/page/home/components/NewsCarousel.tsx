@@ -17,6 +17,7 @@ const NewsCarouselComponent: React.FC<Props> = ({
   const [selectedNews, setSelectedNews] = useState<InformationNewsType | null>(
     null
   );
+  const baseImageUrl = process.env.BACKEND_INTRANET_URL;
   const carouselRef = useRef<any>(null);
   const { Paragraph } = Typography;
 
@@ -66,7 +67,7 @@ const NewsCarouselComponent: React.FC<Props> = ({
                         alt="news"
                         preview={false}
                         crossOrigin="anonymous"
-                        src={`http://localhost:4003/api/informationNews/${file.newsImage[0].fileimagePath}`}
+                        src={`${baseImageUrl}/informationNews/${file.newsImage[0].fileimagePath}`}
                         style={{
                           width: "100%",
                           height: "300px",
@@ -160,7 +161,7 @@ const NewsCarouselComponent: React.FC<Props> = ({
                 <Image
                   key={index}
                   preview={true}
-                  src={`http://localhost:4003/api/news-image/${image.fileimagePath}`}
+                  src={`${baseImageUrl}/news-image/${image.fileimagePath}`}
                   crossOrigin="anonymous"
                   style={{ width: "calc(100% - 5px)", marginBottom: "5px" }}
                 />
@@ -199,7 +200,7 @@ const NewsCarouselComponent: React.FC<Props> = ({
               <strong>ผู้เขียน:</strong> {selectedNews.author}
             </h5>
             <h5>
-              <strong>วันที่เผยแพร่:</strong>{" "}
+              <strong>วันที่อัปโหลด:</strong>{" "}
               {dayjs(selectedNews.phblishedAt).format("DD-MM-YYYY , HH:mm")}
             </h5>
             {selectedNews.updatedAt && (

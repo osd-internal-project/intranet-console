@@ -2,6 +2,7 @@ import { PaperClipOutlined } from "@ant-design/icons";
 import { Button, Card, Tooltip } from "antd";
 import React from "react";
 import { HandbookFileType, HandbookType } from "../common";
+import { downloadLoopIcon } from "@/components/icon";
 
 export interface props {
   handbookFile: HandbookFileType[];
@@ -69,6 +70,7 @@ const DocumentComponent: React.FC<props> = ({
               }}
             >
               <div>
+                <p />
                 <h5 style={{ fontSize: "14px", margin: 0, color: "#595959" }}>
                   <strong>ประเภทเอกสาร : </strong>{" "}
                   {file.filetype || "Not specified"}
@@ -120,7 +122,12 @@ const DocumentComponent: React.FC<props> = ({
                         maxWidth: "180px",
                       }}
                     >
-                      {file.fileName}
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <span style={{ marginRight: "8px" }}>
+                          {file.fileName}
+                        </span>
+                        {downloadLoopIcon}
+                      </div>
                     </span>
                   </Button>
                 </Tooltip>

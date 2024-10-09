@@ -34,9 +34,12 @@ export default function HomePage() {
     []
   );
   const [NewsImage, setNewsImage] = useState<NewsImageType[]>([]);
+  // const [slideImages, setSlideImages] = useState<Blob[]>([]);
 
   const fetchData = async () => {
     const dataSlideImage = await intraAuthService.getSlideImageQuery();
+    // const dataSlideImages = await intraAuthService.getImage(94);
+    // setSlideImages(dataSlideImages);
     const MasterBookingresponse = await intraAuthService.getMasterRoomQuery();
     const dataHandbookFileQuery = await intraAuthService.getHandbookFileQuery();
     const dataHandbookQuery = await intraAuthService.getHandbookTypeQuery();
@@ -108,7 +111,6 @@ export default function HomePage() {
             title="กิจกรรมและข่าวสาร"
             bordered={false}
             className="text-center"
-            style={{ width: "1090px", height: "560px", margin: "0px 10px" }}
           >
             <NewsCarouselComponent
               informationNews={informationNews}
@@ -116,12 +118,7 @@ export default function HomePage() {
             />
           </Card>
           <div className="my-4"></div>
-          <Card
-            title="เอกสาร"
-            bordered={false}
-            className="text-center"
-            style={{ width: "1090px", height: "465px", margin: "10px 10px" }}
-          >
+          <Card title="เอกสาร" bordered={false} className="text-center">
             <DocumentComponent
               handbookFile={handbookFile}
               handbookQuery={handbookQuery}

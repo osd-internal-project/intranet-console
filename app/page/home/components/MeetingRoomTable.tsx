@@ -17,10 +17,9 @@ const MeetingRoomTableComponent: React.FC<props> = ({
       key: "roomName",
     },
     {
-      title: "สถานะการจองห้องประชุม",
+      title: "สถานะห้องประชุม",
       dataIndex: "roomsStatus",
       align: "center",
-      key: "id",
       render: (value: string, row: any) => {
         const now = new Date();
         const isRoomBooked = row.bookingRoom?.some((booking: any) => {
@@ -42,6 +41,7 @@ const MeetingRoomTableComponent: React.FC<props> = ({
       columns={columns}
       dataSource={masterBookingRoom}
       pagination={false}
+      rowKey="id"
     />
   );
 };

@@ -42,6 +42,7 @@ import { useSession } from "next-auth/react";
 import isBetween from "dayjs/plugin/isBetween";
 import { MaCarBookType } from "../../common/index";
 import TextArea from "antd/es/input/TextArea";
+import "../../common/style.css";
 
 dayjs.extend(isBetween);
 
@@ -100,7 +101,7 @@ const ManageCar: React.FC<props> = ({
       align: "center",
       render: (_, record) => (
         <span>
-          {dayjs(record.carBookStartDate).format("DD-MM-YYYY HH:mm:ss")}
+          {dayjs(record.carBookStartDate).format("DD-MM-YYYY , HH:mm")}
         </span>
       ),
     },
@@ -110,9 +111,7 @@ const ManageCar: React.FC<props> = ({
       width: "150px",
       align: "center",
       render: (_, record) => (
-        <span>
-          {dayjs(record.carBookEndDate).format("DD-MM-YYYY HH:mm:ss")}
-        </span>
+        <span>{dayjs(record.carBookEndDate).format("DD-MM-YYYY , HH:mm")}</span>
       ),
     },
     {
@@ -467,48 +466,51 @@ const ManageCar: React.FC<props> = ({
           <Row gutter={24}>
             <Col span={6}>
               <Form.Item<MaCarBookType> name="createdByName" label="ชื่อผู้จอง">
-                <Input disabled />
+                <Input disabled className="read-only-input" />
               </Form.Item>
             </Col>
           </Row>
           <Divider orientation="left">ข้อมูลการจองรถ</Divider>
           <Row gutter={24}>
             <Col span={6}>
-              <Form.Item<MaCarBookType>
-                name="carName"
-                label="ชื่อรถ"
-                rules={[{ required: true, message: "กรุณาเลือกรถ" }]}
-              >
-                <Input disabled />
+              <Form.Item<MaCarBookType> name="carName" label="ชื่อรถ :">
+                <Input disabled className="read-only-input" />
               </Form.Item>
             </Col>
             <Col span={6}>
               <Form.Item<MaCarBookType>
                 name="carBookTitle"
-                label="วัตถุประสงค์การใช้งาน"
-                rules={[
-                  { required: true, message: "กรุณากรอกวัตถุประสงค์การใช้งาน" },
-                ]}
+                label="วัตถุประสงค์การใช้งาน :"
               >
-                <Input placeholder="กรอกวัตถุประสงค์การใช้งาน" disabled />
+                <Input
+                  placeholder="กรอกวัตถุประสงค์การใช้งาน"
+                  disabled
+                  className="read-only-input"
+                />
               </Form.Item>
             </Col>
             <Col span={6}>
               <Form.Item<MaCarBookType>
                 name="carBookPlace"
-                label="สถานที่ไป"
-                rules={[{ required: true, message: "กรุณากรอกสถานที่ไป" }]}
+                label="สถานที่ไป : "
               >
-                <Input placeholder="กรอกสถานที่ไป" disabled />
+                <Input
+                  placeholder="กรอกสถานที่ไป"
+                  disabled
+                  className="read-only-input"
+                />
               </Form.Item>
             </Col>
             <Col span={6}>
               <Form.Item<MaCarBookType>
                 name="carBookProvince"
-                label="จังหวัด"
-                rules={[{ required: true, message: "กรุณากรอกจังหวัด" }]}
+                label="จังหวัด :"
               >
-                <Input placeholder="กรอกจังหวัด" disabled />
+                <Input
+                  placeholder="กรอกจังหวัด"
+                  disabled
+                  className="read-only-input"
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -516,8 +518,7 @@ const ManageCar: React.FC<props> = ({
             <Col span={6}>
               <Form.Item<MaCarBookType>
                 name="carBookUsers"
-                label="จำนวนผู้ใช้"
-                rules={[{ required: true, message: "กรุณากรอกจำนวนผู้ใช้" }]}
+                label="จำนวนผู้ใช้ :"
               >
                 <InputNumber
                   style={{ width: "100%" }}
@@ -525,19 +526,15 @@ const ManageCar: React.FC<props> = ({
                   min={1}
                   max={12}
                   disabled
+                  className="read-only-input"
                 />
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item
-                name="carBookStartDate"
-                label="วันที่เริ่มการจอง"
-                rules={[
-                  { required: true, message: "กรุณาเลือกวันที่เริ่มจอง!" },
-                ]}
-              >
+              <Form.Item name="carBookStartDate" label="วันที่เริ่มการจอง">
                 <DatePicker
-                  disabled
+                  // disabled
+                  className="read-only-input"
                   format="DD-MM-YYYY , HH:mm"
                   placeholder="กรอกวันที่เริ่มการจอง"
                   style={{ width: "100%" }}
@@ -553,7 +550,8 @@ const ManageCar: React.FC<props> = ({
                 ]}
               >
                 <DatePicker
-                  disabled
+                  // disabled
+                  className="read-only-input"
                   format="DD-MM-YYYY , HH:mm"
                   placeholder="กรอกวันที่สิ้นสุดการจอง"
                   style={{ width: "100%" }}
@@ -564,7 +562,12 @@ const ManageCar: React.FC<props> = ({
           <Row gutter={24}>
             <Col span={8}>
               <Form.Item name="detail" label="รายละเอียด">
-                <TextArea placeholder="กรอกรายละเอียด" rows={2} disabled />
+                <TextArea
+                  placeholder="กรอกรายละเอียด"
+                  rows={2}
+                  // disabled
+                  className="read-only-input"
+                />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -572,7 +575,8 @@ const ManageCar: React.FC<props> = ({
                 <TextArea
                   placeholder="กรอกหมายเหตุการจองรถ"
                   rows={2}
-                  disabled
+                  // disabled
+                  className="read-only-input"
                 />
               </Form.Item>
             </Col>
@@ -770,11 +774,11 @@ const ManageCar: React.FC<props> = ({
       </Modal>
       <div>
         <Flex gap="4px 4px" wrap>
-          <Tag icon={<CheckCircleOutlined />} color="LimeGreen">
-            อนุมัติแล้ว
-          </Tag>
           <Tag icon={<SyncOutlined spin />} color="DodgerBlue">
             กำลังรออนุมัติ
+          </Tag>
+          <Tag icon={<CheckCircleOutlined />} color="LimeGreen">
+            อนุมัติแล้ว
           </Tag>
           <Tag icon={<CloseCircleOutlined />} color="OrangeRed">
             ไม่อนุมัติ
@@ -799,6 +803,7 @@ const ManageCar: React.FC<props> = ({
         onChange={changePagination}
         size="small"
         style={{ marginTop: "5px" }}
+        rowKey="id"
       />
     </>
   );

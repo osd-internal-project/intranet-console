@@ -8,15 +8,17 @@ import {
   DatePicker,
   Form,
   Input,
+  message,
   Modal,
   Popover,
   Row,
   Switch,
+  Tag,
   Upload,
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { SlideImageType } from "../common";
-import { RcFile } from "antd/es/upload";
+import { RcFile, UploadProps } from "antd/es/upload";
 
 export interface props {
   addFile: any[];
@@ -28,6 +30,9 @@ export interface props {
   setModalAddSlide: (value: boolean) => void;
   createSlideImageForm: any;
   showModal: any;
+  setImageFiles: any;
+  imageFiles: any;
+  slideImage: any;
 }
 
 export const CreateSlideImage: React.FC<props> = ({
@@ -40,18 +45,47 @@ export const CreateSlideImage: React.FC<props> = ({
   setModalAddSlide,
   createSlideImageForm,
   showModal,
+  setImageFiles,
+  imageFiles,
+  slideImage,
 }): React.ReactElement => {
+  const beforeUploadImageFiles = (file: RcFile) => {
+    if (slideImage.find((oneFile: any) => oneFile.fileName === file.name)) {
+      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
+      return false;
+    }
+    return false;
+  };
+
+  const handleChangeImageFiles: UploadProps["onChange"] = async ({
+    fileList: newFileList,
+  }) => {
+    return setImageFiles(newFileList);
+  };
   return (
     <>
-      <div style={{ textAlign: "right" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <p style={{ margin: 0 }}>
+          หมายเหตุ : สามารถอัปโหลดรูปภาพได้สูงสุด 10 รูป
+        </p>
         <Button
-          style={{
-            marginBottom: "20px",
-          }}
+          style={{ marginBottom: "20px" }}
           type="primary"
-          onClick={showModal}
-        >{`Add Slide`}</Button>
+          onClick={() => {
+            showModal();
+            setImageFiles([]);
+          }}
+        >
+          {`Add Slide`}
+        </Button>
       </div>
+
       <Modal
         title="Add Slide"
         open={modalAddSlide}
@@ -67,7 +101,7 @@ export const CreateSlideImage: React.FC<props> = ({
             onFinish={onfinishCreateSlide}
             autoComplete="off"
           >
-            <Form.Item
+            {/* <Form.Item
               label={`แนบไฟล์ :`}
               name={"addFile"}
               rules={[{ required: true, message: "กรุณาแนบไฟล์" }]}
@@ -82,6 +116,23 @@ export const CreateSlideImage: React.FC<props> = ({
               >
                 <Button icon={<UploadOutlined />}>{`Click to Upload`}</Button>
               </Upload>
+            </Form.Item> */}
+            <Form.Item
+              label={`แนบไฟล์ :`}
+              name={"addFile"}
+              rules={[{ required: true, message: "กรุณาแนบไฟล์" }]}
+            >
+              <Upload
+                accept="image/png, image/jpeg"
+                fileList={imageFiles}
+                onChange={handleChangeImageFiles}
+                beforeUpload={beforeUploadImageFiles}
+                multiple={false}
+                maxCount={1}
+                listType="picture"
+              >
+                <Button icon={<UploadOutlined />}>Click to upload</Button>
+              </Upload>
             </Form.Item>
             <Form.Item name={"addSlide"}>
               <div style={{ textAlign: "right" }}>
@@ -92,7 +143,6 @@ export const CreateSlideImage: React.FC<props> = ({
                 >
                   ตกลง
                 </Button>
-                {/* <Button htmlType="submit" type="primary">{`Add`}</Button> */}
               </div>
             </Form.Item>
           </Form>

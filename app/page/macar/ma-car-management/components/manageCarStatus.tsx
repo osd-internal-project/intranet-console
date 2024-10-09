@@ -24,6 +24,7 @@ import { useSession } from "next-auth/react";
 import dayjs from "dayjs";
 import { MaCarType } from "../../common/index";
 import { TablePaginationConfig } from "antd";
+import "../../common/style.css";
 
 export interface props {
   loading: boolean;
@@ -431,11 +432,7 @@ const ManageCarStatus: React.FC<props> = ({
           marginBottom: "20px",
         }}
       >
-        <Button
-          type="primary"
-          size="small"
-          onClick={showModalCreateMaCar}
-        >
+        <Button type="primary" size="small" onClick={showModalCreateMaCar}>
           เพิ่มรถ
         </Button>
       </div>
@@ -447,6 +444,7 @@ const ManageCarStatus: React.FC<props> = ({
         pagination={pagination}
         onChange={changePagination}
         size="small"
+        rowKey="id"
       />
     </>
   );

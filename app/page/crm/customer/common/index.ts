@@ -59,6 +59,7 @@ export type ITBranchForm = {
   id: number;
   branchCode: string;
   branchName: string;
+  remark?: string;
 };
 
 export type ITBranch = { id: number } & ITBranchForm;

@@ -11,6 +11,7 @@ import React, { useState } from "react";
 import dayjs from "dayjs";
 import { IDataUser, ITypetypeleave } from "../../common";
 import { MouseIcon } from "@/components/icon";
+import "../../common/style.css";
 
 export interface props {
   typeLeaveTable: ITypetypeleave[];
@@ -80,7 +81,7 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
           wholeDays += 1;
           totalHours = 0;
         }
-        
+
         let timeDisplay = `${totalHours} ชม.`;
 
         if (totalMinutes > 0) {

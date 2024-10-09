@@ -78,6 +78,7 @@ const BranchAddressAddComponent: React.FC<props> = ({
               subDistrict: undefined,
               village: undefined,
               zipCode: undefined,
+              maplink: undefined,
             },
           ],
         }}
@@ -125,6 +126,9 @@ const BranchAddressAddComponent: React.FC<props> = ({
             name={"zipCode"}
             rules={[{ required: true, message: "กรุณากรอกรหัสไปรษณีย์" }]}
           >
+            <Input />
+          </Form.Item>
+          <Form.Item label="ลิงค์แผนที่" name={"maplink"}>
             <Input />
           </Form.Item>
         </div>

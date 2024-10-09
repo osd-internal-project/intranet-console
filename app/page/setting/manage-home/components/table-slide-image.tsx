@@ -1,22 +1,29 @@
 "use client";
 import {
-  Button,
-  Col,
-  Form,
-  Input,
-  Modal,
   Popconfirm,
-  Row,
   Space,
-  Switch,
   Table,
   TablePaginationConfig,
-  Typography,
+  Tooltip,
+  Button,
 } from "antd";
 import { SlideImageType } from "../common";
-import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
-import React, { useState } from "react";
+import React, { useState, useContext, useMemo } from "react";
+import { DeleteIcon } from "@/components/icon";
+import { HolderOutlined } from "@ant-design/icons";
+import type { DragEndEvent } from "@dnd-kit/core";
+import { DndContext } from "@dnd-kit/core";
+import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import type { TableColumnsType } from "antd";
 
 export interface props {
   loading: boolean;
@@ -57,7 +64,7 @@ export const TableSlideImage: React.FC<props> = ({
       key: "createdAt",
       dataIndex: "createdAt",
       title: "Created At",
-      render: (text: string) => dayjs(text).format("DD-MM-YYYY"),
+      render: (text: string) => dayjs(text).format("DD-MM-YYYY, HH:mm"),
     },
     {
       key: "createdByName",
@@ -77,7 +84,12 @@ export const TableSlideImage: React.FC<props> = ({
             okText="ใช่"
             cancelText="ไม่"
           >
-            <a>ลบ</a>
+            <Tooltip title="ลบ">
+              <a type="link">
+                {" "}
+                <DeleteIcon />{" "}
+              </a>
+            </Tooltip>
           </Popconfirm>
         </Space>
       ),
@@ -93,6 +105,7 @@ export const TableSlideImage: React.FC<props> = ({
         loading={loading}
         pagination={pagination}
         onChange={changePagination}
+        rowKey="id"
       />
     </>
   );

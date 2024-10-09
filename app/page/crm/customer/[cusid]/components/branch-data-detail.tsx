@@ -76,7 +76,7 @@ const BranchDetailComponent: React.FC<props> = ({
         maskClosable={false}
       >
         <div className=" space-y-3">
-          <div className=" grid grid-cols-4">
+          <div className=" grid grid-cols-1  md:grid-cols-4 ">
             <div>
               <b>Code :</b>
               {branchDetail?.branchCode}
@@ -85,6 +85,10 @@ const BranchDetailComponent: React.FC<props> = ({
               <b>Name :</b>
               {branchDetail?.branchName}
             </div>
+          </div>
+          <div className=" grid grid-cols-1">
+            <b>Remark :</b>
+            <TextArea readOnly rows={4} value={branchDetail?.remark} />
           </div>
           <Divider />
           <Tabs

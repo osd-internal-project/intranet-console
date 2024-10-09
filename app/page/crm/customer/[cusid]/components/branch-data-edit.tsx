@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, Form, Input, Modal } from "antd";
+import { Button, Form, Input, Modal, Switch } from "antd";
 import { ITBranchForm } from "../../common";
 import { FormInstance, useForm } from "antd/es/form/Form";
 const { TextArea } = Input;
@@ -62,6 +62,13 @@ const BranchEditComponent: React.FC<props> = ({
           rules={[{ required: true, message: `กรุณากรอกชื่อสาขา` }]}
         >
           <Input />
+        </Form.Item>
+        <Form.Item
+          valuePropName="checked"
+          label={"สถานะ"}
+          name={"activeStatus"}
+        >
+          <Switch size="default" />
         </Form.Item>
         <Form.Item label={"Remark"} name={"remark"}>
           <TextArea rows={4} />

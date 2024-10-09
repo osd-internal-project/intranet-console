@@ -1,6 +1,6 @@
 import React from "react";
 import type { FormInstance, TableColumnsType } from "antd";
-import { Button, ConfigProvider, Input, Modal, Table } from "antd";
+import { Button, ConfigProvider, Input, Modal, Table, Tag } from "antd";
 import {
   ITBranch,
   ITBranchAddressForm,
@@ -82,6 +82,17 @@ const BranchComponent: React.FC<props> = ({
       key: "branchName",
       dataIndex: "branchName",
       title: "ชื่อสาขา",
+    },
+    {
+      key: "activeStatus",
+      dataIndex: "activeStatus",
+      title: "สถานะ",
+      render: (status?: boolean) =>
+        status ? (
+          <Tag color="green">{`Active`}</Tag>
+        ) : (
+          <Tag color="volcano">{`Inactive`}</Tag>
+        ),
     },
     {
       key: "id",

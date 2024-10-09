@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { FormInstance, TableColumnsType } from "antd";
-import { Button, ConfigProvider, Input, Modal, Table } from "antd";
+import { Button, ConfigProvider, Input, Modal, Table, Tag } from "antd";
 import {
   ITBranch,
   ITBranchAddressForm,
@@ -118,6 +118,17 @@ const CustomerSubDetailComponent: React.FC<props> = ({
       key: "name",
       dataIndex: "name",
       title: "ชื่อลูกค้า",
+    },
+    {
+      key: "activeStatus",
+      dataIndex: "activeStatus",
+      title: "สถานะ",
+      render: (status?: boolean) =>
+        status ? (
+          <Tag color="green">{`Active`}</Tag>
+        ) : (
+          <Tag color="volcano">{`Inactive`}</Tag>
+        ),
     },
     // {
     //   key: "id",

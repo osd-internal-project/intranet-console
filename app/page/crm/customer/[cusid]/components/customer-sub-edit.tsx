@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, Form, Input, Modal } from "antd";
+import { Button, Form, Input, Modal, Switch } from "antd";
 import { ITCustomerSubForm } from "../../common";
 import { FormInstance, useForm } from "antd/es/form/Form";
 const layout = {
@@ -57,6 +57,13 @@ const CustomerSubEditComponent: React.FC<props> = ({
           rules={[{ required: true, message: `กรุณากรอกชื่อลูกค้า` }]}
         >
           <Input />
+        </Form.Item>{" "}
+        <Form.Item
+          valuePropName="checked"
+          label={"สถานะ"}
+          name={"activeStatus"}
+        >
+          <Switch size="default" />
         </Form.Item>
         <div className=" flex justify-end space-x-2">
           <Button type="primary" htmlType="submit">

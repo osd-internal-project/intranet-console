@@ -27,9 +27,6 @@ const DocumentComponent: React.FC<props> = ({
         background: "#f0f2f5",
         height: "370px",
         overflowY: "auto",
-        // display: "flex",
-        // flexWrap: "wrap",
-        // justifyContent: "flex-start",
       }}
     >
       {handbookFile.map((file, index) => (

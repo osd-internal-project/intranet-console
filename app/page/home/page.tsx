@@ -34,12 +34,9 @@ export default function HomePage() {
     []
   );
   const [NewsImage, setNewsImage] = useState<NewsImageType[]>([]);
-  // const [slideImages, setSlideImages] = useState<Blob[]>([]);
 
   const fetchData = async () => {
-    const dataSlideImage = await intraAuthService.getSlideImageQuery();
-    // const dataSlideImages = await intraAuthService.getImage(94);
-    // setSlideImages(dataSlideImages);
+    const dataSlideImage = await intraAuthService.getSlideImageByOrder();
     const MasterBookingresponse = await intraAuthService.getMasterRoomQuery();
     const dataHandbookFileQuery = await intraAuthService.getHandbookFileQuery();
     const dataHandbookQuery = await intraAuthService.getHandbookTypeQuery();

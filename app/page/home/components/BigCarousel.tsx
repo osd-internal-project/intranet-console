@@ -1,8 +1,14 @@
-import { Carousel, Image } from "antd";
+import { Card, Carousel, ConfigProvider, Image } from "antd";
 import React, { useState } from "react";
 import { SlideImageType } from "../common";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import SlideImageService from "../services/index.service";
+import {
+  CaretLeftOutlined,
+  CaretRightOutlined,
+  LeftOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 export interface Props {
   loading: boolean;
   slideImage: SlideImageType[];
@@ -17,30 +23,33 @@ export const BigCarouselComponent: React.FC<Props> = ({
   const baseImageUrl = process.env.BACKEND_INTRANET_URL;
 
   return (
-    <Carousel
-      autoplay={true}
-      arrows
-      infinite
-      effect="fade"
-      lazyLoad="progressive"
-      responsive={[{ breakpoint: 768, settings: { slidesToShow: 1 } }]}
-      style={{
-        width: "1640px",
-        height: "925px",
-        marginLeft: "10px",
-        marginRight: "10px",
-      }}
+    <Card
+      className="  text-center   bg-zinc-300 bg-opacity-80"
+      styles={{ body: { paddingBottom: 0, paddingTop: 0 } }}
     >
-      {slideImage?.map((image, index) => (
-        <div key={image.id}>
-          <Image
-            src={`${baseImageUrl}/slide-image/${image.filePath}`}
-            crossOrigin="anonymous"
-            preview={false}
-          />
-        </div>
-      ))}
-    </Carousel>
+      <ConfigProvider theme={{ components: { Carousel: { arrowSize: 35 } } }}>
+        <Carousel
+          autoplay={true}
+          adaptiveHeight={true}
+          arrows
+          // prevArrow={<CaretLeftOutlined />}
+          infinite
+          effect="fade"
+          lazyLoad="progressive"
+        >
+          {slideImage?.map((image, index) => (
+            <div key={image.id}>
+              <Image
+                src={`${baseImageUrl}/slide-image/${image.filePath}`}
+                crossOrigin="anonymous"
+                preview={false}
+                style={{ height: "100%" }}
+              />
+            </div>
+          ))}
+        </Carousel>
+      </ConfigProvider>
+    </Card>
   );
 };
 

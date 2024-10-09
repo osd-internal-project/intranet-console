@@ -5,8 +5,6 @@ import {
   Card,
   Col,
   Divider,
-  Form,
-  Modal,
   Row,
   TablePaginationConfig,
   message,
@@ -16,7 +14,6 @@ import { TableSlideImage } from "./components/table-slide-image";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import ManageHomeService from "./services/index.service";
 import { SlideImageType } from "./common";
-import { dateToEndofDay, dateToStartofDay } from "@/app/utils/format";
 import { RcFile, UploadProps } from "antd/es/upload";
 import { useForm } from "antd/es/form/Form";
 import { useSession } from "next-auth/react";
@@ -32,23 +29,13 @@ export default function TypeLeave() {
   const [createSlideImageForm] = useForm();
   const [modalAddSlide, setModalAddSlide] = useState<boolean>(false);
   const [imageFiles, setImageFiles] = useState<any[]>([]);
-  const [pagination, setPagination] = useState<TablePaginationConfig>({
-    current: 1,
-    pageSize: 10,
-    total: 0,
-  });
-
-  const changePagination = (page: TablePaginationConfig) => {
-    setPagination({ ...page });
-    setLoading(true);
-  };
 
   useEffect(() => {
     if (loading) loadData();
   }, [loading]);
 
   const loadData = async () => {
-    const dataSlideImage = await intraAuthService.getSlideImageQuery();
+    const dataSlideImage = await intraAuthService.getSlideImageByOrder();
     setSlideImage(dataSlideImage);
     setLoading(false);
   };
@@ -93,27 +80,11 @@ export default function TypeLeave() {
       if (slideImage && slideImage.length >= 10) {
         message.warning("ไม่สามารถอัปโหลดได้ เนื่องจากรูปภาพครบ 10 รูปแล้ว !");
       } else {
-        setSubmitLoading(true);
         const newFileName = values.addFile.fileList[0].name;
         const isDuplicate = slideImage.some(
           (image) => image.fileName === newFileName
         );
         if (!isDuplicate) {
-          // if (addFile.length > 0) {
-          //   for (const file of addFile) {
-          //     const createdByName =
-          //       session?.user.firstNameTh && session?.user.lastNameTh
-          //         ? `${session.user.firstNameTh} ${session.user.lastNameTh}`
-          //         : "";
-          //     const formData: any = new FormData();
-          //     formData.append("type", "attend");
-          //     formData.append("files", file.originFileObj);
-          //     formData.append("createdByName", createdByName);
-          //     await intraAuthService.uploadFilesSlide(values.id, formData);
-          //   }
-          //   message.success("อัปโหลดรูปสำเร็จ");
-          // }
-
           if (imageFiles.length > 0) {
             let createdByName =
               session?.user.firstNameTh && session?.user.lastNameTh
@@ -182,13 +153,9 @@ export default function TypeLeave() {
               imageFiles={imageFiles}
               slideImage={slideImage}
             />
-
             <TableSlideImage
-              loading={loading}
               slideImage={slideImage}
               handleDeleteSlideImage={handleDeleteSlideImage}
-              pagination={pagination}
-              changePagination={changePagination}
             />
           </Card>
         </Col>

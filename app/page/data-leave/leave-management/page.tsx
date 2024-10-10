@@ -218,7 +218,6 @@ const page = () => {
                     <TabeLeavManagement
                       getdataUserByTypeId={getdataUserByTypeId}
                       onFinishDel={(e: number) => onFinishDel(e)}
-                      getLoading={getLoading}
                     />
                   </div>
                 ),

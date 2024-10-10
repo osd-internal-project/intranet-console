@@ -24,15 +24,38 @@ const ManageMaCar = () => {
   const [maCarBookData, setMaCarBookData] = useState<MaCarBookType[]>([]);
   const [maCarData, setmaCarData] = useState<MaCarType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [activeKey, setActiveKey] = useState<string>("1");
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
     total: 0,
   });
-  const [activeKey, setActiveKey] = useState<string>("1");
   const changePagination = (page: TablePaginationConfig) => {
     setPagination({ ...page });
     setLoading(true);
+  };
+
+  useEffect(() => {
+    if (loading) fetchData();
+  }, [loading]);
+
+  const fetchData = async () => {
+    const skip: number =
+      (Number(pagination.current) - 1) * Number(pagination.pageSize);
+    const take: number = Number(pagination.pageSize);
+    try {
+      const MaCarBook = await intraAuthService.findMaCarBook(skip, take);
+      const MaCar = await intraAuthService.getMaCarQuery();
+      setMaCarBookData(MaCarBook);
+      setmaCarData(MaCar);
+      setLoading(false);
+    } catch (error) {
+      console.error("Failed to fetch data", error);
+    }
+  };
+
+  const handleTabChange = (key: string) => {
+    setActiveKey(key);
   };
 
   const items: TabsProps["items"] = [
@@ -46,7 +69,6 @@ const ManageMaCar = () => {
           setLoading={setLoading}
           pagination={pagination}
           changePagination={changePagination}
-
         />
       ),
     },
@@ -74,27 +96,6 @@ const ManageMaCar = () => {
       children: activeKey === "4" ? <WarpupmaCar /> : null,
     },
   ];
-  const handleTabChange = (key: string) => {
-    setActiveKey(key);
-  };
-  const fetchData = async () => {
-    const skip: number =
-      (Number(pagination.current) - 1) * Number(pagination.pageSize);
-    const take: number = Number(pagination.pageSize);
-    try {
-      const MaCarBook = await intraAuthService.findMaCarBook(skip, take);
-      const MaCar = await intraAuthService.getMaCarQuery();
-      setMaCarBookData(MaCarBook);
-      setmaCarData(MaCar);
-      setLoading(false);
-    } catch (error) {
-      console.error("Failed to fetch data", error);
-    }
-  };
-
-  useEffect(() => {
-    if (loading) fetchData();
-  }, [loading]);
 
   return (
     <>

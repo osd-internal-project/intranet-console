@@ -19,7 +19,6 @@ import {
 } from "antd";
 import {
   CheckCircleOutlined,
-  ClockCircleOutlined,
   CloseCircleOutlined,
   ExclamationCircleOutlined,
   MinusCircleOutlined,
@@ -145,7 +144,6 @@ const MaCarReturn: React.FC<props> = ({
           updatedById: session?.user.userId,
           updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
         };
-
         const maCarBook = {
           carBookApprovedStatus: "Return",
           returnNotifAt: dayjs().toISOString(),
@@ -454,9 +452,7 @@ const MaCarReturn: React.FC<props> = ({
               </Form.Item>
             </Col>
           </Row>
-
           <Divider orientation="left">ข้อมูลการจองรถ</Divider>
-
           <Row gutter={16}>
             <Col span={6}>
               <Form.Item name="carName1" label="ชื่อรถ :">
@@ -546,9 +542,7 @@ const MaCarReturn: React.FC<props> = ({
               </Form.Item>
             </Col>
           </Row>
-
           <Divider orientation="left">ข้อมูลการคืนรถ</Divider>
-
           {(statusApprove === "Return" || statusApprove === "Completed") && (
             <>
               <Row gutter={24}>
@@ -629,7 +623,6 @@ const MaCarReturn: React.FC<props> = ({
                       className="read-only-input"
                       format="DD-MM-YYYY , HH:mm"
                       style={{ width: "100%" }}
-                      
                     />
                   </Form.Item>
                 </Col>

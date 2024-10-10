@@ -6,13 +6,11 @@ import { downloadLoopIcon } from "@/components/icon";
 
 export interface props {
   handbookFile: HandbookFileType[];
-  handbookQuery: HandbookType[];
   downloadFile: (id: number, filename: string) => void;
 }
 
 const DocumentComponent: React.FC<props> = ({
   handbookFile,
-  handbookQuery,
   downloadFile,
 }): React.ReactElement => {
   if (!handbookFile || handbookFile.length === 0) {

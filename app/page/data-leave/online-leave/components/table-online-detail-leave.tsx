@@ -9,10 +9,8 @@ import {
 } from "antd";
 import React, { useState } from "react";
 import dayjs from "dayjs";
-import { IDataUser, ITypetypeleave } from "../../common";
-import { MouseIcon } from "@/components/icon";
+import { ITypetypeleave } from "../../common";
 import "../../common/style.css";
-
 export interface props {
   typeLeaveTable: ITypetypeleave[];
   params: any;
@@ -106,23 +104,19 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       title: "ลาครั้งนี้",
       render: (value: string, row: ITypetypeleave) => {
         const isSelected = row.typeId === params.typeId;
+        const rowClass = rowClassName(row);
         let days = isSelected ? (params.lengthDate ? params.lengthDate : 0) : 0;
         let hours = isSelected
           ? params.lengthTime
             ? params.lengthTime
             : 0
           : 0;
-
+        let color: string | undefined;
         days = days < 0 ? 1 : days;
         hours = hours < 0 ? 1 : hours;
-
-        const rowClass = rowClassName(row);
-        let color: string | undefined;
-
         if (rowClass === "disabled-row") {
           color = "#e0e0e0";
         }
-
         return (
           <div className="flex justify-center">
             <Tag className="w-full flex justify-center" color={color}>
@@ -138,10 +132,10 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       title: "รวม",
       render: (value: number, row: ITypetypeleave) => {
         const isSelected = row.typeId === params.typeId;
+        const totalHoursDecimal = parseFloat((value % 1).toFixed(2));
         let totalDays = Math.floor(
           value + (isSelected ? params.lengthDate : 0)
         );
-        const totalHoursDecimal = parseFloat((value % 1).toFixed(2));
         let totalHours = Math.floor(totalHoursDecimal * 10);
         let lengthTime = params.lengthTime;
         let totalMinutesRaw = (totalHoursDecimal * 10) % 1;
@@ -179,7 +173,6 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         if (totalMinutes > 0) {
           timeDisplay = `${totalHours}.${totalMinutes} ชม.`;
         }
-
         return (
           <div className="flex justify-center">
             <Tag className="w-full flex justify-center" color={color}>
@@ -256,7 +249,6 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
                     <span style={{ fontSize: "16px" }}>
                       {`เงื่อนไขในการลาตามแต่ละประเภท`}
                     </span>
-                    {/* {MouseIcon} */}
                   </div>
                 </Button>
               </div>

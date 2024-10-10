@@ -14,14 +14,12 @@ import {
 } from "antd";
 import {
   CheckCircleOutlined,
-  ClockCircleOutlined,
   CloseCircleOutlined,
-  ExclamationCircleOutlined,
   MinusCircleOutlined,
   SyncOutlined,
 } from "@ant-design/icons";
 import { dateToStringThNoTime } from "@/app/utils/format";
-import { deleteIcon, editIcon, CancelIcon } from "@/components/icon";
+import { CancelIcon } from "@/components/icon";
 import { PaperClipOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";

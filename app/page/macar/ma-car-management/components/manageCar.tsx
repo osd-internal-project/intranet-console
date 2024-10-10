@@ -21,13 +21,11 @@ import {
 } from "antd";
 import {
   DeleteIcon,
-  ApproveIcon,
   CancelMaCarIcon,
   CarApproveIcon,
 } from "@/components/icon";
 import {
   CheckCircleOutlined,
-  ClockCircleOutlined,
   CloseCircleOutlined,
   ExclamationCircleOutlined,
   MinusCircleOutlined,
@@ -42,7 +40,6 @@ import isBetween from "dayjs/plugin/isBetween";
 import { MaCarBookType } from "../../common/index";
 import TextArea from "antd/es/input/TextArea";
 import "../../common/style.css";
-
 dayjs.extend(isBetween);
 
 export interface props {
@@ -160,7 +157,6 @@ const ManageCar: React.FC<props> = ({
     values
   ) => {
     setModalApproveMa(false);
-
     try {
       const updatedApproveMa = {
         id: currentMaId,
@@ -211,9 +207,7 @@ const ManageCar: React.FC<props> = ({
         carBookApprovedStatus: "Approve",
         carBookApprovedDate: dayjs(),
       };
-
       await intraAuthService.updateMaCarBook(updatedApproveMa);
-
       setModalApproveMa(false);
       message.success("อนุมัติการจองสำเร็จ");
       setSubmitLoading(false);
@@ -236,7 +230,6 @@ const ManageCar: React.FC<props> = ({
         carBookApprovedStatus: "Completed",
         returnAt: dayjs(),
       };
-
       await intraAuthService.updateMaCarBook(updatedReturn);
       setModalReturn(false);
       message.success("รับคืนรถสำเร็จ");
@@ -343,7 +336,6 @@ const ManageCar: React.FC<props> = ({
             text = "Unknown Status";
             break;
         }
-
         return (
           <Tag color={color} icon={icon}>
             {text}
@@ -615,7 +607,6 @@ const ManageCar: React.FC<props> = ({
           size="small"
         >
           <Divider orientation="left">ข้อมูลการคืนรถ</Divider>
-
           <Col span={24}>
             <Form.Item
               name="carName"
@@ -625,13 +616,11 @@ const ManageCar: React.FC<props> = ({
               <Input disabled placeholder="กรอกชื่อรถ" />
             </Form.Item>
           </Col>
-
           <Col span={24}>
             <Form.Item name="createdByName" label="ชื่อผู้คืนรถ">
               <Input disabled placeholder="กรอกชื่อ" />
             </Form.Item>
           </Col>
-
           <Col span={24}>
             <Form.Item name="carMile" label="เลขไมล์รถ">
               <InputNumber
@@ -666,7 +655,6 @@ const ManageCar: React.FC<props> = ({
               </Select>
             </Form.Item>
           </Col>
-
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Row justify="end" gutter={16}>
               <Button

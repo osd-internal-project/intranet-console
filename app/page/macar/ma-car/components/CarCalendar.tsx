@@ -16,10 +16,8 @@ import {
 } from "react-big-calendar";
 import {
   CheckCircleOutlined,
-  ClockCircleOutlined,
   CloseCircleOutlined,
   ExclamationCircleOutlined,
-  MinusCircleOutlined,
   SyncOutlined,
 } from "@ant-design/icons";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -94,7 +92,6 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
         text = "Unknown Status";
         break;
     }
-
     return (
       <Tag color={color} icon={icon}>
         {text}
@@ -170,25 +167,20 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
                 <Form.Item label="ชื่อรถ" name="carName">
                   <Input className="read-only-input-calendar" disabled />
                 </Form.Item>
-
                 <Form.Item label="วันที่เริ่มจอง" name="carBookStartDate">
                   <DatePicker
                     format="DD-MM-YYYY , HH:mm"
-                    // disabled
                     className="read-only-input-calendar"
                     style={{ width: "100%" }}
                   />
                 </Form.Item>
-
                 <Form.Item label="วันที่สิ้นสุดการจอง" name="carBookEndDate">
                   <DatePicker
                     format="DD-MM-YYYY , HH:mm"
-                    // disabled
                     className="read-only-input-calendar"
                     style={{ width: "100%" }}
                   />
                 </Form.Item>
-
                 <Form.Item label="จังหวัดที่จอดรถ" name="carBookProvince">
                   <Input className="read-only-input-calendar" disabled />
                 </Form.Item>
@@ -202,13 +194,11 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
                   <TextArea className="read-only-input-calendar" disabled />
                 </Form.Item>
               </Collapse.Panel>
-
               <Collapse.Panel header="ข้อมูลผู้จอง" key="2">
                 <Form.Item label="ชื่อผู้จอง" name="createdByName">
                   <Input className="read-only-input-calendar" disabled />
                 </Form.Item>
               </Collapse.Panel>
-
               <Collapse.Panel header="สถานะ" key="3">
                 <Form.Item label="สถานะ">
                   {renderStatusTag(selectedMa.carBookApprovedStatus)}

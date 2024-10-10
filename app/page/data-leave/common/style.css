@@ -12,11 +12,6 @@ thead[class*="ant-table-thead"] th {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-*/ .ant-table-tbody > tr:hover > td {
-  background-color: #cf0c0c;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
 .ant-table-container {
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

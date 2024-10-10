@@ -3,19 +3,12 @@ import React, { useState } from "react";
 import { SlideImageType } from "../common";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import SlideImageService from "../services/index.service";
-import {
-  CaretLeftOutlined,
-  CaretRightOutlined,
-  LeftOutlined,
-  RightOutlined,
-} from "@ant-design/icons";
+
 export interface Props {
-  loading: boolean;
   slideImage: SlideImageType[];
 }
 
 export const BigCarouselComponent: React.FC<Props> = ({
-  loading,
   slideImage,
 }) => {
   const intraAuth = useAxiosIntranet();
@@ -32,7 +25,6 @@ export const BigCarouselComponent: React.FC<Props> = ({
           autoplay={true}
           adaptiveHeight={true}
           arrows
-          // prevArrow={<CaretLeftOutlined />}
           infinite
           effect="fade"
           lazyLoad="progressive"

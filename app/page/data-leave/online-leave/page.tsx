@@ -22,8 +22,6 @@ import {
   ITypeDataLeave,
   ITypetypeleave,
   ITypeDataLeaveCreate,
-  IDepartMent,
-  ISelectDepartment,
   UserGroupType,
 } from "../common";
 import { CreateOnlineLeave } from "./components/create-online-leave";
@@ -138,13 +136,11 @@ export default function Page() {
     if (type === "selectEndTime") {
       setParams((e: any) => ({ ...e, endTime: value }));
     }
-
     if (value === true) {
       setParams((e: any) => ({ ...e, lengthDate: 1 }));
     } else if (value === false) {
       setParams((e: any) => ({ ...e, lengthDate: value }));
     }
-
     setLoading(true);
   };
 
@@ -153,7 +149,6 @@ export default function Page() {
     const endDate = value2 ? dayjs(value2).endOf("day") : null;
     const totalDays =
       startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
-
     setParams((e: any) => ({
       ...e,
       lengthDate:
@@ -170,17 +165,14 @@ export default function Page() {
     const endTime = dayjs(value2, "HH:mm");
     const breakStart = dayjs("12:00", "HH:mm");
     const breakEnd = dayjs("13:00", "HH:mm");
-
     let totalHours =
       startTime && endTime ? endTime.diff(startTime, "hour", true) : 0;
-
     if (startTime.isBefore(breakEnd) && endTime.isAfter(breakStart)) {
       const overlapStart = startTime.isBefore(breakStart)
         ? breakStart
         : startTime;
       const overlapEnd = endTime.isAfter(breakEnd) ? breakEnd : endTime;
       const breakDuration = overlapEnd.diff(overlapStart, "hour", true);
-
       totalHours -= breakDuration;
     }
     totalHours = totalHours > 0 ? parseFloat(totalHours.toFixed(1)) : 0;
@@ -202,7 +194,6 @@ export default function Page() {
     endDate: Date
   ) => {
     const existingDataLeave = await dataleaveservice.getdataLeaveAll();
-
     return existingDataLeave.some((record: any) => {
       return (
         record.userId === userId &&
@@ -262,6 +253,7 @@ export default function Page() {
     type_id: number,
     value: any
   ): Promise<boolean> => {
+
     try {
       let resultId: number;
       switch (type_id) {
@@ -430,7 +422,6 @@ export default function Page() {
     const today = new Date() as Date;
     const type_id = values.type_id as number;
     const id = values.id as number;
-
     const twoDayAdvance = new Date(today);
     twoDayAdvance.setDate(today.getDate() + 2);
     const fiveDayAdvance = new Date(today);
@@ -439,7 +430,6 @@ export default function Page() {
     fifteenDayAdvance.setDate(today.getDate() + 15);
     const thirtyDayAdvance = new Date(today);
     thirtyDayAdvance.setDate(today.getDate() + 30);
-
     const startDate = values.startDate
       ? dayjs(values.startDate).startOf("day")
       : null;
@@ -451,15 +441,12 @@ export default function Page() {
     const selectedOption = getTypeLeaveOption.find(
       (option) => option.value === values.type_id
     );
-
     const totalDays =
       startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
-
     const totalHours =
       startTime && endTime
         ? endTime.diff(startTime, "hour", true).toFixed(1)
         : 0;
-
     if (new Date(leaveEndDate) < new Date(leaveStartDate)) {
       message.error("วันที่สิ้นสุดการลาต้องหลังวันที่เริ่มการลา");
       return;
@@ -489,15 +476,12 @@ export default function Page() {
             groupId: session?.user.ownerGroup,
             attrachFile: attendFiles[0]?.name,
           };
-
           if (await checkDataLeaveCancel(type_id)) {
             return;
           }
-
           if (await checkDataLeaveHour(type_id, values)) {
             return;
           }
-
           try {
             if (
               await checkLeaveConflict(userId, leaveStartDate, leaveEndDate)
@@ -572,7 +556,6 @@ export default function Page() {
     try {
       if (type_id) {
         const hasTypeId = type_id === 2;
-
         if (hasTypeId) {
           if (new Date(leaveStartDate) < twoDayAdvance) {
             message.warning("ต้องลาล่วงหน้า 2 วัน");
@@ -597,19 +580,15 @@ export default function Page() {
             groupId: session?.user.ownerGroup,
             attrachFile: attendFiles[0].name,
           };
-
           if (await checkDataLeaveCancel(type_id)) {
             return;
           }
-
           if (await checkDataLeaveHour(type_id, values)) {
             return;
           }
-
           try {
             if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate))
               return;
-
             const condition: ITypeDataLeave = {
               ...base,
               ...(values.time_start_check
@@ -697,19 +676,15 @@ export default function Page() {
             groupId: session?.user.ownerGroup,
             attrachFile: attendFiles[0].name,
           };
-
           if (await checkDataLeaveCancel(type_id)) {
             return;
           }
-
           if (await checkDataLeaveHour(type_id, values)) {
             return;
           }
-
           try {
             if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate))
               return;
-
             const condition: ITypeDataLeave = {
               ...base,
               ...(values.time_start_check
@@ -796,15 +771,12 @@ export default function Page() {
             groupId: session?.user.ownerGroup,
             attrachFile: attendFiles[0].name,
           };
-
           if (await checkDataLeaveCancel(type_id)) {
             return;
           }
-
           if (await checkDataLeaveHour(type_id, values)) {
             return;
           }
-
           try {
             if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate))
               return;
@@ -894,19 +866,15 @@ export default function Page() {
             groupId: session?.user.ownerGroup,
             attrachFile: attendFiles[0].name,
           };
-
           if (await checkDataLeaveCancel(type_id)) {
             return;
           }
-
           if (await checkDataLeaveHour(type_id, values)) {
             return;
           }
-
           try {
             if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate))
               return;
-
             const condition: ITypeDataLeave = {
               ...base,
               ...(values.time_start_check

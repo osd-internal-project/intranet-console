@@ -67,7 +67,7 @@ const NewsCarouselComponent: React.FC<Props> = ({
                         alt="news"
                         preview={false}
                         crossOrigin="anonymous"
-                        src={`${baseImageUrl}/informationNews/${file.newsImage[0].fileimagePath}`}
+                        src={`${baseImageUrl}/news-image/${file.newsImage[0].fileimagePath}`}
                         style={{
                           width: "100%",
                           height: "300px",

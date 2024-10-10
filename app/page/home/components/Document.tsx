@@ -98,7 +98,7 @@ const DocumentComponent: React.FC<props> = ({
                   <Button
                     type="link"
                     onClick={() =>
-                      downloadFile(file.handbookid, file.fileLocation)
+                      downloadFile(file.handbookid, file.fileName)
                     }
                     style={{
                       overflow: "hidden",

@@ -77,7 +77,7 @@ export default function TypeLeave() {
 
   const onfinishCreateSlide = async (values: any) => {
     try {
-      if (slideImage && slideImage.length >= 10) {
+      if (slideImage.length >= 10) {
         message.warning("ไม่สามารถอัปโหลดได้ เนื่องจากรูปภาพครบ 10 รูปแล้ว !");
       } else {
         const newFileName = values.addFile.fileList[0].name;

@@ -119,7 +119,7 @@ export const CreateSlideImage: React.FC<props> = ({
                 <Button icon={<UploadOutlined />}>Click to upload</Button>
               </Upload>
             </Form.Item>
-            <Form.Item name={"addSlide"}>
+            <Form.Item name={"addFile"}>
               <div style={{ textAlign: "right" }}>
                 <Button
                   type="primary"

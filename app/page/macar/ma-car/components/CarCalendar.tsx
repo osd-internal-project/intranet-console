@@ -106,7 +106,6 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
     const maCarCalendar = maFetchCalendar.find((b) => b.id === event.id);
     if (maCarCalendar) {
       setSelectedMa(maCarCalendar);
-
       formUpdate.setFieldsValue({
         ...maCarCalendar,
         carBookStartDate: dayjs(maCarCalendar.carBookStartDate),

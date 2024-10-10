@@ -57,6 +57,114 @@ const MaCarReturn: React.FC<props> = ({
   const [oldCarMile, setOldCarMile] = useState<number>(0);
   const [statusApprove, setStatusApprove] = useState("");
 
+  const showModalReturn = (record: MaCarBookType) => {
+    setModalEditReturn(true);
+    setCurrentMaId(record.carId);
+    setCurrentMaBookId(record.id);
+    setOldCarMile(record.maCar.carMile);
+
+    formReturn.setFieldsValue({
+      carName: record.maCar.carName,
+      carMile: record.maCar.carMile,
+      carPetrol: record.maCar.carPetrol,
+      status: record.maCar.status,
+    });
+  };
+
+  const handleModalReturn = () => {
+    setModalEditReturn(false);
+  };
+
+  const showModalDetail = (record: MaCarBookType) => {
+    setModalEditDetail(true);
+    setCurrentMaBookId(record.id);
+    setStatusApprove(record.carBookApprovedStatus);
+    let displayText = "";
+
+    switch (record.carBookApprovedStatus) {
+      case "statusApprove":
+        displayText = "แจ้งคืนรถ";
+        break;
+      case "Return":
+        displayText = "แจ้งคืนรถแล้ว";
+        break;
+      case "Completed":
+        displayText = "คืนรถสำเร็จ";
+        break;
+      case "Cancel":
+        displayText = "ยกเลิกการจองนี้ไปแล้ว";
+        break;
+      case "DisapProved":
+        displayText = "ไม่อนุมัติการจองรถ";
+        break;
+      case "Process":
+        displayText = "ไม่สามารถแจ้งคืนรถได้";
+        break;
+      case "Approve":
+        displayText = "อนุมัติแล้ว";
+        break;
+      default:
+        displayText = "ไม่สามารถแจ้งคืนรถได้";
+        break;
+    }
+
+    formBookData.setFieldsValue({
+      ...record,
+      carBookStartDate: dayjs(record.carBookStartDate),
+      carBookEndDate: dayjs(record.carBookEndDate),
+      maCarName: record.maCar.carName,
+      carName: record.maCar.carName,
+      status: record.maCar.status,
+      carMile: record.maCar.carMile,
+      carPetrol: record.maCar.carPetrol,
+      returnNotifAt: dayjs(record.returnNotifAt),
+      carBookApprovedStatus: record.carBookApprovedStatus,
+      recipientName: record.recipientName,
+      returnAt: dayjs(record.returnAt),
+      carName1: record.carName,
+      statusApprove: displayText,
+    });
+  };
+
+  const handleModalDetail = () => {
+    setModalEditDetail(false);
+  };
+
+  const updatedMaCarReturn: FormProps<MaCarType>["onFinish"] = async (
+    values
+  ) => {
+    if (currentMaId && currentMaBookId) {
+      try {
+        const { ...restValues } = values;
+        const updatedMaCar = {
+          ...restValues,
+          carMile: values.carMile,
+          carPetrol: values.carPetrol,
+          status: values.status === true,
+          updatedAt: dayjs().toISOString(),
+          updatedById: session?.user.userId,
+          updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+        };
+
+        const maCarBook = {
+          carBookApprovedStatus: "Return",
+          returnNotifAt: dayjs().toISOString(),
+        };
+        await maCarBookServices.updateMaCarBook(currentMaBookId, maCarBook);
+        await maCarBookServices.updateMaCar(currentMaId, updatedMaCar);
+        message.success("คืนรถสำเร็จ");
+        handleModalReturn();
+        setSubmitLoading(false);
+        formReturn.resetFields();
+      } catch (error) {
+        message.error("คืนรถไม่สำเร็จ");
+        setSubmitLoading(false);
+      }
+    }
+    setModalEditReturn(false);
+    setLoading(true);
+  };
+
   const columns: TableProps<MaCarBookType>["columns"] = [
     {
       title: "ลำดับ",
@@ -229,113 +337,6 @@ const MaCarReturn: React.FC<props> = ({
     },
   ];
 
-  const showModalReturn = (record: MaCarBookType) => {
-    setModalEditReturn(true);
-    setCurrentMaId(record.carId);
-    setCurrentMaBookId(record.id);
-    setOldCarMile(record.maCar.carMile);
-
-    formReturn.setFieldsValue({
-      carName: record.maCar.carName,
-      carMile: record.maCar.carMile,
-      carPetrol: record.maCar.carPetrol,
-      status: record.maCar.status,
-    });
-  };
-
-  const handleModalReturn = () => {
-    setModalEditReturn(false);
-  };
-
-  const showModalDetail = (record: MaCarBookType) => {
-    setModalEditDetail(true);
-    setCurrentMaBookId(record.id);
-    setStatusApprove(record.carBookApprovedStatus);
-    let displayText = "";
-
-    switch (record.carBookApprovedStatus) {
-      case "statusApprove":
-        displayText = "แจ้งคืนรถ";
-        break;
-      case "Return":
-        displayText = "แจ้งคืนรถแล้ว";
-        break;
-      case "Completed":
-        displayText = "คืนรถสำเร็จ";
-        break;
-      case "Cancel":
-        displayText = "ยกเลิกการจองนี้ไปแล้ว";
-        break;
-      case "DisapProved":
-        displayText = "ไม่อนุมัติการจองรถ";
-        break;
-      case "Process":
-        displayText = "ไม่สามารถแจ้งคืนรถได้";
-        break;
-      case "Approve":
-        displayText = "อนุมัติแล้ว";
-        break;
-      default:
-        displayText = "ไม่สามารถแจ้งคืนรถได้";
-        break;
-    }
-
-    formBookData.setFieldsValue({
-      ...record,
-      carBookStartDate: dayjs(record.carBookStartDate),
-      carBookEndDate: dayjs(record.carBookEndDate),
-      maCarName: record.maCar.carName,
-      carName: record.maCar.carName,
-      status: record.maCar.status,
-      carMile: record.maCar.carMile,
-      carPetrol: record.maCar.carPetrol,
-      returnNotifAt: dayjs(record.returnNotifAt),
-      carBookApprovedStatus: record.carBookApprovedStatus,
-      recipientName: record.recipientName,
-      returnAt: dayjs(record.returnAt),
-      carName1: record.carName,
-      statusApprove: displayText,
-    });
-  };
-
-  const handleModalDetail = () => {
-    setModalEditDetail(false);
-  };
-
-  const updatedMaCarReturn: FormProps<MaCarType>["onFinish"] = async (
-    values
-  ) => {
-    if (currentMaId && currentMaBookId) {
-      try {
-        const { ...restValues } = values;
-        const updatedMaCar = {
-          ...restValues,
-          carMile: values.carMile,
-          carPetrol: values.carPetrol,
-          status: values.status === true,
-          updatedAt: dayjs().toISOString(),
-          updatedById: session?.user.userId,
-          updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
-        };
-
-        const maCarBook = {
-          carBookApprovedStatus: "Return",
-          returnNotifAt: dayjs().toISOString(),
-        };
-        await maCarBookServices.updateMaCarBook(currentMaBookId, maCarBook);
-        await maCarBookServices.updateMaCar(currentMaId, updatedMaCar);
-        message.success("คืนรถสำเร็จ");
-        handleModalReturn();
-        setSubmitLoading(false);
-        formReturn.resetFields();
-      } catch (error) {
-        message.error("คืนรถไม่สำเร็จ");
-        setSubmitLoading(false);
-      }
-    }
-    setModalEditReturn(false);
-    setLoading(true);
-  };
   return (
     <>
       <Modal
@@ -448,12 +449,8 @@ const MaCarReturn: React.FC<props> = ({
           <Divider orientation="left">ข้อมูลผู้จอง</Divider>
           <Row gutter={8}>
             <Col span={6}>
-              <Form.Item<MaCarType>
-                name="createdByName"
-                label="ชื่อผู้จอง"
-                rules={[{ required: true, message: "กรุณากรอกชื่อผู้จอง" }]}
-              >
-                <Input disabled />
+              <Form.Item<MaCarType> name="createdByName" label="ชื่อผู้จอง :">
+                <Input disabled className="read-only-input" />
               </Form.Item>
             </Col>
           </Row>
@@ -462,30 +459,29 @@ const MaCarReturn: React.FC<props> = ({
 
           <Row gutter={16}>
             <Col span={6}>
-              <Form.Item name="carName1" label="ชื่อรถ">
-                <Input disabled />
+              <Form.Item name="carName1" label="ชื่อรถ :">
+                <Input disabled className="read-only-input" />
               </Form.Item>
             </Col>
             <Col span={6}>
               <Form.Item<MaCarBookType>
                 name="carBookTitle"
-                label="วัตถุประสงค์การใช้งาน"
+                label="วัตถุประสงค์การใช้งาน :"
               >
-                <Input disabled />
+                <Input disabled className="read-only-input" />
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item<MaCarBookType> name="carBookPlace" label="สถานที่ไป">
-                <Input disabled />
+              <Form.Item<MaCarBookType> name="carBookPlace" label="สถานที่ไป :">
+                <Input disabled className="read-only-input" />
               </Form.Item>
             </Col>
             <Col span={6}>
               <Form.Item<MaCarBookType>
                 name="carBookProvince"
-                label="จังหวัด"
-                rules={[{ required: true, message: "กรุณากรอกจังหวัด" }]}
+                label="จังหวัด :"
               >
-                <Input disabled />
+                <Input disabled className="read-only-input" />
               </Form.Item>
             </Col>
           </Row>
@@ -493,25 +489,24 @@ const MaCarReturn: React.FC<props> = ({
             <Col span={6}>
               <Form.Item<MaCarBookType>
                 name="carBookUsers"
-                label="จำนวนผู้ใช้"
-                rules={[{ required: true, message: "กรุณากรอกจำนวนผู้ใช้" }]}
+                label="จำนวนผู้ใช้ :"
               >
-                <Input disabled />
+                <Input disabled className="read-only-input" />
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item name="carBookStartDate" label="วันที่เริ่มการจอง">
+              <Form.Item name="carBookStartDate" label="วันที่เริ่มการจอง :">
                 <DatePicker
-                  disabled
+                  className="read-only-input"
                   format="DD-MM-YYYY ,  HH:mm"
                   style={{ width: "100%" }}
                 />
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item name="carBookEndDate" label="วันที่สิ้นสุดการจอง">
+              <Form.Item name="carBookEndDate" label="วันที่สิ้นสุดการจอง :">
                 <DatePicker
-                  disabled
+                  className="read-only-input"
                   format="DD-MM-YYYY , HH:mm"
                   style={{ width: "100%" }}
                 />
@@ -520,34 +515,34 @@ const MaCarReturn: React.FC<props> = ({
           </Row>
           <Row gutter={24}>
             <Col span={9}>
-              <Form.Item name="detail" label="รายละเอียด">
-                <TextArea disabled rows={1} />
+              <Form.Item name="detail" label="รายละเอียด :">
+                <TextArea disabled rows={1} className="read-only-input" />
               </Form.Item>
             </Col>
             <Col span={9}>
-              <Form.Item name="remark" label="หมายเหตุการจองรถ">
-                <TextArea disabled rows={1} />
+              <Form.Item name="remark" label="หมายเหตุการจองรถ :">
+                <TextArea disabled rows={1} className="read-only-input" />
               </Form.Item>
             </Col>
           </Row>
           <Divider orientation="left">ข้อมูลสถานะการจองรถ</Divider>
           <Row gutter={24}>
             <Col span={6}>
-              <Form.Item name="statusApprove" label="สถานะการจองรถ">
-                <Input disabled />
+              <Form.Item name="statusApprove" label="สถานะการจองรถ :">
+                <Input disabled className="read-only-input" />
               </Form.Item>
             </Col>
             <Col span={9}>
               <Form.Item
                 name="remarkApproved"
-                label="หมายเหตุการไม่อนุมัติการจองรถ"
+                label="หมายเหตุการไม่อนุมัติการจองรถ :"
               >
-                <TextArea disabled rows={1} />
+                <TextArea disabled rows={1} className="read-only-input" />
               </Form.Item>
             </Col>
             <Col span={9}>
-              <Form.Item name="remarkCancel" label="หมายเหตุการยกเลิก">
-                <TextArea disabled rows={1} />
+              <Form.Item name="remarkCancel" label="หมายเหตุการยกเลิก :">
+                <TextArea disabled rows={1} className="read-only-input" />
               </Form.Item>
             </Col>
           </Row>
@@ -558,12 +553,8 @@ const MaCarReturn: React.FC<props> = ({
             <>
               <Row gutter={24}>
                 <Col span={8}>
-                  <Form.Item<MaCarType>
-                    name="status"
-                    label="สถานนะรถ"
-                    rules={[{ required: true, message: "สถานนะรถ" }]}
-                  >
-                    <Select disabled>
+                  <Form.Item<MaCarType> name="status" label="สถานนะรถ :">
+                    <Select className="read-only-input">
                       <Select.Option value={true}>ใช้งานได้ปกติ</Select.Option>
                       <Select.Option value={false}>
                         ไม่สามารถใช้งานได้
@@ -572,13 +563,17 @@ const MaCarReturn: React.FC<props> = ({
                   </Form.Item>
                 </Col>
                 <Col span={8}>
-                  <Form.Item name="carMile" label="เลขไมล์รถ">
-                    <InputNumber disabled style={{ width: "100%" }} />
+                  <Form.Item name="carMile" label="เลขไมล์รถ :">
+                    <InputNumber
+                      disabled
+                      style={{ width: "100%" }}
+                      className="read-only-input"
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
-                  <Form.Item name="carPetrol" label="ระดับนํ้ามันรถ">
-                    <Select disabled>
+                  <Form.Item name="carPetrol" label="ระดับนํ้ามันรถ :">
+                    <Select className="read-only-input">
                       <Select.Option value="high">มาก</Select.Option>
                       <Select.Option value="medium">ปานกลาง</Select.Option>
                       <Select.Option value="low">น้อย</Select.Option>
@@ -588,43 +583,25 @@ const MaCarReturn: React.FC<props> = ({
               </Row>
               <Row gutter={24}>
                 <Col span={8}>
-                  <Form.Item
-                    name="returnNotifAt"
-                    label="วันที่แจ้งคืน"
-                    rules={[
-                      { required: true, message: "กรุณาเลือกวันที่เริ่มจอง!" },
-                    ]}
-                  >
+                  <Form.Item name="returnNotifAt" label="วันที่แจ้งคืน :">
                     <DatePicker
-                      disabled
+                      className="read-only-input"
                       format="DD-MM-YYYY , HH:mm"
                       placeholder="รออนุมัติรับคืนรถ"
                       style={{ width: "100%" }}
                     />
                   </Form.Item>
                 </Col>
-                <Col span={8}>
-                  <Form.Item
-                    name="returnNotifAt"
-                    label="เวลาแจ้งคืน"
-                    rules={[
-                      { required: true, message: "กรุณาเลือกเวลาเริ่มจอง!" },
-                    ]}
-                  >
-                    <TimePicker
-                      disabled
-                      format="HH:mm"
-                      placeholder="รออนุมัติรับคืนรถ"
-                      style={{ width: "100%" }}
-                    />
-                  </Form.Item>
-                </Col>
+
                 <Col span={8}>
                   <Form.Item
                     name="carBookApprovedStatus"
-                    label="สถานนะการคืนรถ"
+                    label="สถานนะการคืนรถ :"
                   >
-                    <Select disabled placeholder="รออนุมัติรับคืนรถ">
+                    <Select
+                      placeholder="รออนุมัติรับคืนรถ"
+                      className="read-only-input"
+                    >
                       <Select.Option value="Process">
                         กำลังรออนุมัติ
                       </Select.Option>
@@ -642,37 +619,17 @@ const MaCarReturn: React.FC<props> = ({
               </Row>
               <Row gutter={24}>
                 <Col span={8}>
-                  <Form.Item name="recipientName" label="ผู้รับคืนรถ">
-                    <Input disabled />
+                  <Form.Item name="recipientName" label="ผู้รับคืนรถ :">
+                    <Input disabled className="read-only-input" />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
-                  <Form.Item
-                    name="returnAt"
-                    label="วันที่รับคืน"
-                    rules={[
-                      { required: true, message: "กรุณาเลือกวันที่เริ่มจอง!" },
-                    ]}
-                  >
+                  <Form.Item name="returnAt" label="วันที่รับคืน :">
                     <DatePicker
-                      disabled
-                      format="DD-MM-YYYY"
+                      className="read-only-input"
+                      format="DD-MM-YYYY , HH:mm"
                       style={{ width: "100%" }}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item
-                    name="returnAt"
-                    label="เวลารับคืน"
-                    rules={[
-                      { required: true, message: "กรุณาเลือกเวลาเริ่มจอง!" },
-                    ]}
-                  >
-                    <TimePicker
-                      disabled
-                      format="HH:mm"
-                      style={{ width: "100%" }}
+                      
                     />
                   </Form.Item>
                 </Col>

@@ -39,7 +39,7 @@ const MaCarBook: React.FC<props> = ({
   const maCarBookServices = MaCarBookServices(intraAuth);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [carName, setCarName] = useState<MaCarType[]>([]);
-  const [form] = Form.useForm();
+  const [formUser] = Form.useForm();
   const { TextArea } = Input;
 
   const checkMaCarBookConflict = async (
@@ -152,7 +152,6 @@ const MaCarBook: React.FC<props> = ({
       const maCarBook = await maCarBookServices.createMaCarBook(data);
       if (maCarBook) {
         message.success("จองรถสำเร็จ");
-        form.resetFields();
         router.push("/page/macar/ma-car");
       } else {
         message.error("จองรถไม่สำเร็จ");
@@ -177,22 +176,31 @@ const MaCarBook: React.FC<props> = ({
     if (maCarData) {
       setCarName(maCarData);
     }
-    form.setFieldsValue({
-      createdByName: maCarBookName(),
+    formUser.setFieldsValue({
+      userName: `${session?.user.firstNameTh || ""} ${
+        session?.user.lastNameTh || ""
+      }`,
+      phoneNumber: session?.user.phoneNumber,
     });
   }, [maCarData]);
 
   return (
-    <Form form={form} layout="vertical" onFinish={createMaCarBook} size="small">
+    <Form
+      form={formUser}
+      layout="vertical"
+      onFinish={createMaCarBook}
+      size="small"
+    >
       <Divider orientation="left">ข้อมูลผู้จอง</Divider>
-      <Row gutter={16}>
-        <Col span={8}>
-          <Form.Item<MaCarType>
-            name="createdByName"
-            label="ชื่อผู้จอง"
-            rules={[{ required: true, message: "กรุณากรอกชื่อผู้จอง" }]}
-          >
-            <Input disabled placeholder="กรอกชื่อผู้จอง" />
+      <Row gutter={24}>
+        <Col span={6}>
+          <Form.Item name="userName" label="ชื่อผู้จอง">
+            <Input disabled />
+          </Form.Item>
+        </Col>
+        <Col span={6}>
+          <Form.Item name="phoneNumber" label="เบอร์โทรศัทร์">
+            <Input disabled />
           </Form.Item>
         </Col>
       </Row>
@@ -320,7 +328,12 @@ const MaCarBook: React.FC<props> = ({
       </Row>
       <Col span={24} style={{ textAlign: "center" }}>
         <Form.Item>
-          <Button type="primary" htmlType="submit" loading={submitLoading} size="middle">
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={submitLoading}
+            size="middle"
+          >
             ทำการจองรถ
           </Button>
         </Form.Item>

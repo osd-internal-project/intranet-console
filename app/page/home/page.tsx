@@ -127,14 +127,14 @@ export default function HomePage() {
         </div>
 
         <div className="lg:col-span-1">
-          <Card title="หอประชุม">
+          <Card title="หอประชุม" className="text-center">
             <MeetingRoomTableComponent
               pagination={false}
               masterBookingRoom={masterBookingRoom}
             />
           </Card>
           <div className="my-4"></div>
-          <Card title="วันหยุดประจำปี">
+          <Card title="วันหยุดประจำปี" className="text-center">
             <HolidaysCalendarComponent />
           </Card>
         </div>

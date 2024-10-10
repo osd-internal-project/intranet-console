@@ -97,6 +97,7 @@ export default function TypeLeave() {
             formData.append("createdById", createdById);
             await intraAuthService.uploadImage(formData);
             createSlideImageForm.resetFields();
+            message.success("อัปโหลดรูปสำเร็จ");
           }
         } else {
           message.warning("ไม่สามารถอัปโหลดไฟล์ที่มีชื่อซ้ำกันได้");

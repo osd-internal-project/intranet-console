@@ -31,7 +31,7 @@ export default function Page() {
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
   const [userGroupIds, setUserGroupIds] = useState<string[]>([]);
   const [formdetail] = Form.useForm();
-  
+
   useEffect(() => {
     if (loading) loadData();
   }, [loading]);
@@ -143,6 +143,8 @@ export default function Page() {
       document.body.removeChild(a);
     }
   }
+
+
   return (
     <Row>
       <Col span={24}>

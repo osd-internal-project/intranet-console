@@ -57,6 +57,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
   groupDetail,
   groupUserId,
 }): React.ReactElement => {
+  
   useEffect(() => {
     const getdatauser = () => {
       if (groupUserId?.length) {
@@ -316,6 +317,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
                 ]}
               >
                 <Input
+                  maxLength={10}
                   placeholder="เบอร์โทรศัพท์"
                   onKeyDown={(event) => {
                     if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {

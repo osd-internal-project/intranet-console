@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ITypeDataLeave } from "../../common";
 import {
   Button,
   Col,
+  Collapse,
+  DatePicker,
   Form,
   Input,
   Modal,
@@ -49,11 +51,28 @@ export const TableDetail: React.FC<props> = ({
   downloadFile,
   userGroupIds,
 }): React.ReactElement => {
+  const { data: session } = useSession();
   const Auth = useAxiosIntranet();
   const dataleaveservice = DataLeaveService(Auth);
   const [statusById, setStatusById] = useState<any | null>(null);
   const [dataById, setDataById] = useState<number | undefined>(undefined);
-  const { data: session } = useSession();
+  const { Search } = Input;
+  const [dataSource, setDataSource] = React.useState<any[]>([]);
+
+  useEffect(() => {
+    setDataSource(dataLeaveUser);
+  }, [dataLeaveUser]);
+
+  const dataLeaveSearch = (value: string) => {
+    const filteredData = dataLeaveUser.filter(
+      (item) =>
+        item.firstName?.toLowerCase().includes(value.toLowerCase()) ||
+        item.lastName?.toLowerCase().includes(value.toLowerCase()) ||
+        item.userApproved?.toLowerCase().includes(value.toLowerCase()) ||
+        item.typeName?.toLowerCase().includes(value.toLowerCase())
+    );
+    setDataSource(filteredData);
+  };
 
   const columns: any = [
     {
@@ -193,25 +212,55 @@ export const TableDetail: React.FC<props> = ({
 
   return (
     <div>
-      <Row gutter={[18, 18]}>
-        <Col md={18}>
-          <ExportDataLeaveAll data={dataLeaveUser} />
-        </Col>
-        <Col
-          md={6}
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
-          }}
-        ></Col>
-      </Row>
+      <div>
+        <Collapse
+          bordered={false}
+          items={[
+            {
+              key: "1",
+              label: <b>Filter</b>,
+              children: (
+                <Form size="small" layout="inline">
+                  <Row gutter={24}>
+                    <Col span={24}>
+                      <Form.Item label="Search">
+                        <Search
+                          placeholder="input search text"
+                          onSearch={dataLeaveSearch}
+                          enterButton
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Form>
+              ),
+            },
+          ]}
+          defaultActiveKey={[]}
+        />
+      </div>
+      <div>
+        <Row gutter={[18, 18]}>
+          <Col md={18}>
+            <ExportDataLeaveAll data={dataLeaveUser} />
+          </Col>
+          <Col
+            md={6}
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
+          ></Col>
+        </Row>
+      </div>
       <Table
-        dataSource={dataLeaveUser}
+        dataSource={dataSource}
         columns={columns}
         size="small"
         rowKey="id"
       />
+
       <Modal
         title=""
         open={openModalDetail}
@@ -220,10 +269,7 @@ export const TableDetail: React.FC<props> = ({
         width={600}
       >
         <div className="w-full justify-center flex mb-2 font-bold text-lg">{`< รายละเอียดการลา >`}</div>
-        <Form
-          autoComplete="off"
-          form={formdetail}
-        >
+        <Form autoComplete="off" form={formdetail}>
           <div style={{ paddingLeft: "380px", margin: "10px  " }}>
             <div className=" col-span-3 md:col-span-1 ml-1">
               <Form.Item

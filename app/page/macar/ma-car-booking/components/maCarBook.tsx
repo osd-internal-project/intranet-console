@@ -106,7 +106,9 @@ const MaCarBook: React.FC<props> = ({
       carId: values.carId,
       carName: carSelected?.carName,
       createdById: session?.user.userId,
-      createdByName: values.createdByName,
+      createdByName: `${session?.user.firstNameTh || ""} ${
+        session?.user.lastNameTh || ""
+      }`,
       carBookProvince: selectedOptionProvinces
         ? selectedOptionProvinces.label
         : undefined,

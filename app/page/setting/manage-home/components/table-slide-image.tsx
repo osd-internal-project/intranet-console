@@ -1,5 +1,16 @@
 import React, { useContext, useMemo, useEffect } from "react";
-import { Table, Button, message, Space, Popconfirm, Tooltip } from "antd";
+import {
+  Table,
+  Button,
+  message,
+  Space,
+  Popconfirm,
+  Tooltip,
+  Collapse,
+  Form,
+  Input,
+  Col,
+} from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import ManageHomeService from "../services/index.service";
 import dayjs from "dayjs";
@@ -16,8 +27,9 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { TableColumnsType } from "antd";
+import type { GetProps, TableColumnsType } from "antd";
 import { SlideImageType } from "../common";
+import "../common/style.css";
 
 interface RowContextProps {
   setActivatorNodeRef?: (element: HTMLElement | null) => void;
@@ -86,6 +98,8 @@ export const TableSlideImage: React.FC<propss> = ({
   const Auth = useAxiosIntranet();
   const intraAuthService = ManageHomeService(Auth);
   const [dataSource, setDataSource] = React.useState<SlideImageType[]>([]);
+  const { Search } = Input;
+
   useEffect(() => {
     setDataSource(slideImage);
   }, [slideImage]);
@@ -118,6 +132,15 @@ export const TableSlideImage: React.FC<propss> = ({
         message.error("Error updating slide");
       }
     }
+  };
+
+  const fileNameSearch = (value: string) => {
+    const filteredData = slideImage.filter(
+      (item) =>
+        item.fileName?.toLowerCase().includes(value.toLowerCase()) ||
+        item.createdByName?.toLowerCase().includes(value.toLowerCase())
+    );
+    setDataSource(filteredData);
   };
 
   const columns: TableColumnsType<SlideImageType> = [
@@ -160,18 +183,49 @@ export const TableSlideImage: React.FC<propss> = ({
   ];
 
   return (
-    <DndContext modifiers={[restrictToVerticalAxis]} onDragEnd={onDragEnd}>
-      <SortableContext
-        items={dataSource ? dataSource.map((i) => i.id) : []}
-        strategy={verticalListSortingStrategy}
-      >
-        <Table
-          rowKey={"id"}
-          components={{ body: { row: Row } }}
-          columns={columns}
-          dataSource={dataSource}
+    <div>
+      <div>
+        <Collapse
+          bordered={false}
+          items={[
+            {
+              key: "1",
+              label: <b>Filter</b>,
+              children: (
+                <Form size="small" layout="vertical">
+                  <div style={{ display: "flex" }}>
+                    <Col span={6}>
+                      <Form.Item label="Search">
+                        <Search
+                          placeholder="input search text"
+                          onSearch={fileNameSearch}
+                          enterButton
+                        />
+                      </Form.Item>
+                    </Col>
+                  </div>
+                </Form>
+              ),
+            },
+          ]}
+          defaultActiveKey={[]}
         />
-      </SortableContext>
-    </DndContext>
+      </div>
+      <div style={{ marginTop: "16px" }}>
+        <DndContext modifiers={[restrictToVerticalAxis]} onDragEnd={onDragEnd}>
+          <SortableContext
+            items={dataSource ? dataSource.map((i) => i.id) : []}
+            strategy={verticalListSortingStrategy}
+          >
+            <Table
+              rowKey={"id"}
+              components={{ body: { row: Row } }}
+              columns={columns}
+              dataSource={dataSource}
+            />
+          </SortableContext>
+        </DndContext>
+      </div>
+    </div>
   );
 };

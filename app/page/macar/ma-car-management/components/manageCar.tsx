@@ -18,12 +18,9 @@ import {
   Input,
   DatePicker,
   Flex,
+  Collapse,
 } from "antd";
-import {
-  DeleteIcon,
-  CancelMaCarIcon,
-  CarApproveIcon,
-} from "@/components/icon";
+import { DeleteIcon, CancelMaCarIcon, CarApproveIcon } from "@/components/icon";
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -37,7 +34,7 @@ import { ManageCarServices } from "../services/manage-car.service";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import isBetween from "dayjs/plugin/isBetween";
-import { MaCarBookType } from "../../common/index";
+import { MaCarBookType, dataMaCarbook } from "../../common/index";
 import TextArea from "antd/es/input/TextArea";
 import "../../common/style.css";
 dayjs.extend(isBetween);
@@ -45,7 +42,7 @@ dayjs.extend(isBetween);
 export interface props {
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  maCarBookData: any[];
+  maCarBookData: dataMaCarbook[];
   pagination: TablePaginationConfig;
   changePagination: (pagination: TablePaginationConfig) => void;
 }
@@ -57,22 +54,28 @@ const ManageCar: React.FC<props> = ({
   pagination,
   changePagination,
 }: any): React.ReactElement => {
+  const { data: session } = useSession();
   const intraAuth = useAxiosIntranet();
+  const intraAuthService = ManageCarServices(intraAuth);
   const [formReturn] = Form.useForm();
   const [form] = Form.useForm();
+  const [formDisapProved] = Form.useForm();
+  const [formCancel] = Form.useForm();
   const [modalApproveMa, setModalApproveMa] = useState(false);
   const [modalReturn, setModalReturn] = useState(false);
   const [carBookApprovedStatus, setMaCarBookStatus] = useState("");
   const [submitLoading, setSubmitLoading] = useState(false);
   const [currentMaId, setCurrentMaId] = useState<number | null>(null);
-  const [maBookData, setMaCarBookData] = useState<MaCarBookType[]>([]);
-  const intraAuthService = ManageCarServices(intraAuth);
-  const { data: session } = useSession();
+  const [maBookData, setMaBookData] = useState<MaCarBookType[]>([]);
+  const { Search } = Input;
   const [modalDisapProved, setModalDisapProved] = useState(false);
-  const [formDisapProved] = Form.useForm();
-  const [formCancel] = Form.useForm();
   const [modalCancel, setModalCancel] = useState(false);
   const [columnId, setColumnId] = useState<number | undefined>(undefined);
+  const [dataSource, setDataSource] = React.useState<any>([]);
+
+  useEffect(() => {
+    setDataSource(maCarBookData.docs || []);
+  }, [maCarBookData]);
 
   const showModalApproveBook = (record: MaCarBookType) => {
     form.setFieldsValue({
@@ -88,11 +91,9 @@ const ManageCar: React.FC<props> = ({
       carBookStartDate: dayjs(record.carBookStartDate),
       carBookEndDate: dayjs(record.carBookEndDate),
     });
-
     formDisapProved.setFieldsValue({
       remarkApproved: record.remarkApproved,
     });
-
     setModalApproveMa(true);
     setMaCarBookStatus(record.carBookApprovedStatus);
     setCurrentMaId(record.id);
@@ -123,7 +124,7 @@ const ManageCar: React.FC<props> = ({
     setSubmitLoading(true);
     try {
       await intraAuthService.deleteMaCarBook(id);
-      setMaCarBookData(maBookData.filter((item) => item.id !== id));
+      setMaBookData(maBookData.filter((item) => item.id !== id));
 
       message.success("ลบข้อมูลการจองสำเร็จ");
       setSubmitLoading(false);
@@ -245,6 +246,17 @@ const ManageCar: React.FC<props> = ({
   const onFinishFailed: FormProps<MaCarBookType>["onFinishFailed"] = (
     errorInfo
   ) => {};
+
+  const maCarBookSearch = (value: string) => {
+    const filteredData =
+      maCarBookData.docs?.filter(
+        (item: any) =>
+          item.carName?.toLowerCase().includes(value.toLowerCase()) ||
+          item.createdByName?.toLowerCase().includes(value.toLowerCase())
+      ) || [];
+
+    setDataSource(filteredData);
+  };
 
   const columns: TableProps<MaCarBookType>["columns"] = [
     {
@@ -439,6 +451,67 @@ const ManageCar: React.FC<props> = ({
 
   return (
     <>
+      <div>
+        <Collapse
+          bordered={false}
+          items={[
+            {
+              key: "1",
+              label: <b>Filter</b>,
+              children: (
+                <Form size="small" layout="inline">
+                  <Row gutter={24}>
+                    <Col span={24}>
+                      <Form.Item label="Search">
+                        <Search
+                          placeholder="input search text"
+                          onSearch={maCarBookSearch}
+                          enterButton
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Form>
+              ),
+            },
+          ]}
+          defaultActiveKey={[]}
+        />
+      </div>
+      <div style={{ marginTop: "14px" }}>
+        <Flex gap="4px 4px" wrap>
+          <Tag icon={<SyncOutlined spin />} color="DodgerBlue">
+            กำลังรออนุมัติ
+          </Tag>
+          <Tag icon={<CheckCircleOutlined />} color="LimeGreen">
+            อนุมัติแล้ว
+          </Tag>
+          <Tag icon={<CloseCircleOutlined />} color="OrangeRed">
+            ไม่อนุมัติ
+          </Tag>
+          <Tag icon={<ExclamationCircleOutlined />} color="Gold">
+            แจ้งคืนรถแล้ว
+          </Tag>
+          <Tag icon={<CheckCircleOutlined />} color="MediumPurple">
+            คืนรถสำเร็จ
+          </Tag>
+          <Tag icon={<MinusCircleOutlined />} color="silver">
+            ยกเลิก
+          </Tag>
+        </Flex>
+      </div>
+
+      <Table
+        columns={columns}
+        dataSource={dataSource}
+        loading={loading}
+        pagination={{ total: maCarBookData.total }}
+        onChange={changePagination}
+        size="small"
+        style={{ marginTop: "5px" }}
+        rowKey={"id"}
+      />
+
       <Modal
         width={1000}
         title="การอนุมัติการจองรถ"
@@ -756,39 +829,6 @@ const ManageCar: React.FC<props> = ({
           </Form.Item>
         </Form>
       </Modal>
-      <div>
-        <Flex gap="4px 4px" wrap>
-          <Tag icon={<SyncOutlined spin />} color="DodgerBlue">
-            กำลังรออนุมัติ
-          </Tag>
-          <Tag icon={<CheckCircleOutlined />} color="LimeGreen">
-            อนุมัติแล้ว
-          </Tag>
-          <Tag icon={<CloseCircleOutlined />} color="OrangeRed">
-            ไม่อนุมัติ
-          </Tag>
-          <Tag icon={<ExclamationCircleOutlined />} color="Gold">
-            แจ้งคืนรถแล้ว
-          </Tag>
-          <Tag icon={<CheckCircleOutlined />} color="MediumPurple">
-            คืนรถสำเร็จ
-          </Tag>
-          <Tag icon={<MinusCircleOutlined />} color="silver">
-            ยกเลิก
-          </Tag>
-        </Flex>
-      </div>
-
-      <Table
-        columns={columns}
-        dataSource={maCarBookData.docs}
-        loading={loading}
-        pagination={{ total: maCarBookData.total }}
-        onChange={changePagination}
-        size="small"
-        style={{ marginTop: "5px" }}
-        rowKey="id"
-      />
     </>
   );
 };

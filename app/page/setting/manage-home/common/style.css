@@ -1,0 +1,17 @@
+thead[class*="ant-table-thead"] th {
+  /* background-color: #e6ffff !important; */
+  border-bottom: 2px solid #b0bec5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-bottom: 2px solid #b0bec5; 
+  border-right: none; 
+}
+
+thead[class*="ant-table-thead"] th:last-child {
+  border-right: none;
+}
+
+.ant-table-container {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}

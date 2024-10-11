@@ -8,6 +8,8 @@ import {
   Tabs,
   TabsProps,
   TablePaginationConfig,
+  GetProps,
+  Input,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import ManageCar from "./components/manageCar";
@@ -15,13 +17,14 @@ import ManageCarStatus from "./components/manageCarStatus";
 import MasterType from "./components/status-car/masterType";
 import WarpupmaCar from "./components/status-car/WarpupmaCar";
 import { ManageCarServices } from "./services/manage-car.service";
-import { MaCarBookType, MaCarType } from "../common/index";
+import { MaCarBookType, MaCarType, dataMaCarbook } from "../common/index";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 
 const ManageMaCar = () => {
   const intraAuth = useAxiosIntranet();
   const intraAuthService = ManageCarServices(intraAuth);
-  const [maCarBookData, setMaCarBookData] = useState<MaCarBookType[]>([]);
+  const [maCarBookData, setMaCarBookData] = useState<dataMaCarbook[]>([]);
+  const [maCarBookAll, setMaCarBookAll] = useState<MaCarBookType[]>([]);
   const [maCarData, setmaCarData] = useState<MaCarType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeKey, setActiveKey] = useState<string>("1");
@@ -37,7 +40,7 @@ const ManageMaCar = () => {
 
   useEffect(() => {
     if (loading) fetchData();
-  }, [loading]);
+  }, [loading, maCarBookAll]);
 
   const fetchData = async () => {
     const skip: number =
@@ -47,6 +50,8 @@ const ManageMaCar = () => {
       const MaCarBook = await intraAuthService.findMaCarBook(skip, take);
       const MaCar = await intraAuthService.getMaCarQuery();
       setMaCarBookData(MaCarBook);
+      setMaCarBookAll(MaCarBook.docs);
+
       setmaCarData(MaCar);
       setLoading(false);
     } catch (error) {

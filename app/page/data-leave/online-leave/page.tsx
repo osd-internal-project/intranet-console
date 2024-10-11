@@ -22,6 +22,8 @@ import {
   ITypeDataLeave,
   ITypetypeleave,
   ITypeDataLeaveCreate,
+  IDepartMent,
+  ISelectDepartment,
   UserGroupType,
 } from "../common";
 import { CreateOnlineLeave } from "./components/create-online-leave";
@@ -127,7 +129,6 @@ export default function Page() {
     if (type === "endDate") {
       setParams((e: any) => ({ ...e, endDate: value }));
     }
-
     if (type === "selectStartTime") {
       setParams((e: any) => ({ ...e, startTime: value }));
     } else if (type === "selectEndTime" && params.startTime) {
@@ -194,6 +195,7 @@ export default function Page() {
     endDate: Date
   ) => {
     const existingDataLeave = await dataleaveservice.getdataLeaveAll();
+
     return existingDataLeave.some((record: any) => {
       return (
         record.userId === userId &&
@@ -253,7 +255,6 @@ export default function Page() {
     type_id: number,
     value: any
   ): Promise<boolean> => {
-    
     try {
       let resultId: number;
       switch (type_id) {
@@ -430,6 +431,7 @@ export default function Page() {
     fifteenDayAdvance.setDate(today.getDate() + 15);
     const thirtyDayAdvance = new Date(today);
     thirtyDayAdvance.setDate(today.getDate() + 30);
+
     const startDate = values.startDate
       ? dayjs(values.startDate).startOf("day")
       : null;
@@ -441,12 +443,15 @@ export default function Page() {
     const selectedOption = getTypeLeaveOption.find(
       (option) => option.value === values.type_id
     );
+
     const totalDays =
       startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
+
     const totalHours =
       startTime && endTime
         ? endTime.diff(startTime, "hour", true).toFixed(1)
         : 0;
+
     if (new Date(leaveEndDate) < new Date(leaveStartDate)) {
       message.error("วันที่สิ้นสุดการลาต้องหลังวันที่เริ่มการลา");
       return;
@@ -476,12 +481,15 @@ export default function Page() {
             groupId: session?.user.ownerGroup,
             attrachFile: attendFiles[0]?.name,
           };
+
           if (await checkDataLeaveCancel(type_id)) {
             return;
           }
+
           if (await checkDataLeaveHour(type_id, values)) {
             return;
           }
+
           try {
             if (
               await checkLeaveConflict(userId, leaveStartDate, leaveEndDate)
@@ -578,17 +586,20 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
             groupId: session?.user.ownerGroup,
-            attrachFile: attendFiles[0].name,
+            attrachFile: attendFiles[0]?.name,
           };
           if (await checkDataLeaveCancel(type_id)) {
             return;
           }
+
           if (await checkDataLeaveHour(type_id, values)) {
             return;
           }
+
           try {
             if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate))
               return;
+
             const condition: ITypeDataLeave = {
               ...base,
               ...(values.time_start_check
@@ -674,7 +685,7 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
             groupId: session?.user.ownerGroup,
-            attrachFile: attendFiles[0].name,
+            attrachFile: attendFiles[0]?.name,
           };
           if (await checkDataLeaveCancel(type_id)) {
             return;
@@ -769,14 +780,17 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
             groupId: session?.user.ownerGroup,
-            attrachFile: attendFiles[0].name,
+            attrachFile: attendFiles[0]?.name,
           };
+
           if (await checkDataLeaveCancel(type_id)) {
             return;
           }
+
           if (await checkDataLeaveHour(type_id, values)) {
             return;
           }
+
           try {
             if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate))
               return;
@@ -849,6 +863,7 @@ export default function Page() {
             return;
           }
           const base: ITypeDataLeave = {
+            id: id,
             userId: values.userId,
             firstName: values.firstNameTh,
             lastName: values.lastNameTh,
@@ -864,17 +879,21 @@ export default function Page() {
             ownerId: values.ownerId,
             ownerName: values.ownerName,
             groupId: session?.user.ownerGroup,
-            attrachFile: attendFiles[0].name,
+            attrachFile: attendFiles[0]?.name,
           };
+
           if (await checkDataLeaveCancel(type_id)) {
             return;
           }
+
           if (await checkDataLeaveHour(type_id, values)) {
             return;
           }
+
           try {
             if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate))
               return;
+
             const condition: ITypeDataLeave = {
               ...base,
               ...(values.time_start_check

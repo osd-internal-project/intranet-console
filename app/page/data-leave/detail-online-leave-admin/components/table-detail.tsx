@@ -11,18 +11,15 @@ import {
   Table,
   Tag,
   Tooltip,
-  Flex,
 } from "antd";
 import {
   CheckCircleOutlined,
-  ClockCircleOutlined,
   CloseCircleOutlined,
-  ExclamationCircleOutlined,
   MinusCircleOutlined,
   SyncOutlined,
 } from "@ant-design/icons";
 import { dateToStringThNoTime } from "@/app/utils/format";
-import { deleteIcon, editIcon, CancelIcon, CheckIcon } from "@/components/icon";
+import { deleteIcon, CancelIcon, CheckIcon } from "@/components/icon";
 import { PaperClipOutlined } from "@ant-design/icons";
 import ExportDataLeaveAll from "../../common/export-excel";
 import dayjs from "dayjs";
@@ -172,7 +169,6 @@ export const TableDetail: React.FC<props> = ({
           <>
             <Row gutter={[8, 8]} className="flex justify-center">
               <Col>
-                {/* <Tooltip title={`รายละเอียด`}> */}
                 <Button
                   type="primary"
                   ghost
@@ -187,7 +183,6 @@ export const TableDetail: React.FC<props> = ({
                 >
                   {`รายละเอียด`}
                 </Button>
-                {/* </Tooltip> */}
               </Col>
             </Row>
           </>
@@ -195,6 +190,7 @@ export const TableDetail: React.FC<props> = ({
       },
     },
   ];
+
   return (
     <div>
       <Row gutter={[18, 18]}>
@@ -227,7 +223,6 @@ export const TableDetail: React.FC<props> = ({
         <Form
           autoComplete="off"
           form={formdetail}
-          // layout="vertical"
         >
           <div style={{ paddingLeft: "380px", margin: "10px  " }}>
             <div className=" col-span-3 md:col-span-1 ml-1">
@@ -240,7 +235,6 @@ export const TableDetail: React.FC<props> = ({
               </Form.Item>
             </div>
           </div>
-
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เรียนถึง :`} name={`ownerName`}>
               <Input disabled className="read-only-input" />

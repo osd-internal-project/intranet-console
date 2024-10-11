@@ -6,13 +6,11 @@ import { downloadLoopIcon } from "@/components/icon";
 
 export interface props {
   handbookFile: HandbookFileType[];
-  handbookQuery: HandbookType[];
   downloadFile: (id: number, filename: string) => void;
 }
 
 const DocumentComponent: React.FC<props> = ({
   handbookFile,
-  handbookQuery,
   downloadFile,
 }): React.ReactElement => {
   if (!handbookFile || handbookFile.length === 0) {
@@ -27,9 +25,6 @@ const DocumentComponent: React.FC<props> = ({
         background: "#f0f2f5",
         height: "370px",
         overflowY: "auto",
-        // display: "flex",
-        // flexWrap: "wrap",
-        // justifyContent: "flex-start",
       }}
     >
       {handbookFile.map((file, index) => (
@@ -101,7 +96,7 @@ const DocumentComponent: React.FC<props> = ({
                   <Button
                     type="link"
                     onClick={() =>
-                      downloadFile(file.handbookid, file.fileLocation)
+                      downloadFile(file.handbookid, file.fileName)
                     }
                     style={{
                       overflow: "hidden",

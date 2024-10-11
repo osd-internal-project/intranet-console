@@ -95,28 +95,13 @@ export const CreateSlideImage: React.FC<props> = ({
       >
         {" "}
         <div className=" col-span-3 md:col-span-1 ml-5">
+          <p>หมายเหตุ: อัปโหลดรูปภาพได้ครั้งละ 1 รูปเท่านั้น</p>
           <Form
             form={createSlideImageForm}
             name="create"
             onFinish={onfinishCreateSlide}
             autoComplete="off"
           >
-            {/* <Form.Item
-              label={`แนบไฟล์ :`}
-              name={"addFile"}
-              rules={[{ required: true, message: "กรุณาแนบไฟล์" }]}
-            >
-              <Upload
-                fileList={addFile}
-                onChange={handleChangeAddFile}
-                beforeUpload={beforeUploadAddFiles}
-                multiple={false}
-                maxCount={1}
-                accept=".jpg,.jpeg,.png,.gif"
-              >
-                <Button icon={<UploadOutlined />}>{`Click to Upload`}</Button>
-              </Upload>
-            </Form.Item> */}
             <Form.Item
               label={`แนบไฟล์ :`}
               name={"addFile"}
@@ -134,7 +119,7 @@ export const CreateSlideImage: React.FC<props> = ({
                 <Button icon={<UploadOutlined />}>Click to upload</Button>
               </Upload>
             </Form.Item>
-            <Form.Item name={"addSlide"}>
+            <Form.Item name={"addFile"}>
               <div style={{ textAlign: "right" }}>
                 <Button
                   type="primary"

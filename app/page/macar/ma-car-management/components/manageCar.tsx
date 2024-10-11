@@ -16,19 +16,16 @@ import {
   InputNumber,
   Divider,
   Input,
-  TimePicker,
   DatePicker,
   Flex,
 } from "antd";
 import {
   DeleteIcon,
-  ApproveIcon,
   CancelMaCarIcon,
   CarApproveIcon,
 } from "@/components/icon";
 import {
   CheckCircleOutlined,
-  ClockCircleOutlined,
   CloseCircleOutlined,
   ExclamationCircleOutlined,
   MinusCircleOutlined,
@@ -43,7 +40,6 @@ import isBetween from "dayjs/plugin/isBetween";
 import { MaCarBookType } from "../../common/index";
 import TextArea from "antd/es/input/TextArea";
 import "../../common/style.css";
-
 dayjs.extend(isBetween);
 
 export interface props {
@@ -77,6 +73,178 @@ const ManageCar: React.FC<props> = ({
   const [formCancel] = Form.useForm();
   const [modalCancel, setModalCancel] = useState(false);
   const [columnId, setColumnId] = useState<number | undefined>(undefined);
+
+  const showModalApproveBook = (record: MaCarBookType) => {
+    form.setFieldsValue({
+      createdByName: record.createdByName,
+      carName: record.maCar.carName,
+      status: record.maCar.status,
+      carBookTitle: record.carBookTitle,
+      carBookPlace: record.carBookPlace,
+      carBookProvince: record.carBookProvince,
+      carBookUsers: record.carBookUsers,
+      detail: record.detail,
+      remark: record.remark,
+      carBookStartDate: dayjs(record.carBookStartDate),
+      carBookEndDate: dayjs(record.carBookEndDate),
+    });
+
+    formDisapProved.setFieldsValue({
+      remarkApproved: record.remarkApproved,
+    });
+
+    setModalApproveMa(true);
+    setMaCarBookStatus(record.carBookApprovedStatus);
+    setCurrentMaId(record.id);
+  };
+
+  const handleApproveBook = () => {
+    setModalApproveMa(false);
+  };
+
+  const showModalReturn = (record: MaCarBookType) => {
+    setModalReturn(true);
+    setMaCarBookStatus(record.carBookApprovedStatus);
+    setCurrentMaId(record.id);
+    formReturn.setFieldsValue({
+      carName: record.maCar.carName,
+      carMile: record.maCar.carMile,
+      carPetrol: record.maCar.carPetrol,
+      status: record.maCar.status,
+      createdByName: record.createdByName,
+    });
+  };
+
+  const handleReturn = () => {
+    setModalReturn(false);
+  };
+
+  const handleDeleteMa = async (id: number) => {
+    setSubmitLoading(true);
+    try {
+      await intraAuthService.deleteMaCarBook(id);
+      setMaCarBookData(maBookData.filter((item) => item.id !== id));
+
+      message.success("ลบข้อมูลการจองสำเร็จ");
+      setSubmitLoading(false);
+    } catch (error) {
+      message.error("ลบข้อมูลการจองไม่สำเร็จ");
+    }
+    setLoading(true);
+  };
+
+  const handleCancelMa: FormProps<MaCarBookType>["onFinish"] = async (
+    values
+  ) => {
+    try {
+      const updatedCancelMa = {
+        id: columnId,
+        carBookApprovedStatus: "Cancel",
+        remarkCancel: values.remarkCancel,
+      };
+      await intraAuthService.updateMaCarBook(updatedCancelMa);
+      message.success("ยกเลิกการจองสำเร็จ");
+      setSubmitLoading(false);
+    } catch (error) {
+      message.error("ยกเลิกการจองไม่สำเร็จ");
+    } finally {
+      setSubmitLoading(false);
+    }
+    setLoading(true);
+  };
+
+  const onFinishCancel: FormProps<MaCarBookType>["onFinish"] = async (
+    values
+  ) => {
+    setModalApproveMa(false);
+    try {
+      const updatedApproveMa = {
+        id: currentMaId,
+        carBookApprovedById: session?.user.userId,
+        carBookApprovedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+        carBookApprovedStatus: "DisapProved",
+        carBookApprovedDate: dayjs(),
+        remarkApproved: values.remarkApproved,
+      };
+      await intraAuthService.updateMaCarBook(updatedApproveMa);
+      message.success("ไม่อนุมัติการจองสำเร็จ");
+      formDisapProved.resetFields;
+      setModalApproveMa(false);
+      setModalDisapProved(false);
+      setSubmitLoading(false);
+    } catch (error) {
+      message.error("อนุมัติการจองไม่สำเร็จ");
+    } finally {
+      setSubmitLoading(false);
+    }
+    setLoading(true);
+  };
+
+  const onFinishApprove: FormProps<MaCarBookType>["onFinish"] = async () => {
+    setSubmitLoading(false);
+    if (carBookApprovedStatus === "Approve") {
+      message.warning("อนุมัติการจองนี้ไปแล้ว");
+      return;
+    }
+    if (carBookApprovedStatus === "Return") {
+      message.warning("ไม่สามารถอนุมัติการจองที่แจ้งคืนรถได้");
+      return;
+    }
+    if (carBookApprovedStatus === "Completed") {
+      message.warning("ไม่สามารถอนุมัติการจองที่คืนรถได้");
+      return;
+    }
+    if (carBookApprovedStatus === "Cancel") {
+      message.warning("ไม่สามารถอนุมัติการจองที่ยกเลิกได้ได้");
+      return;
+    }
+
+    try {
+      const updatedApproveMa = {
+        id: currentMaId,
+        carBookApprovedById: session?.user.userId,
+        carBookApprovedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+        carBookApprovedStatus: "Approve",
+        carBookApprovedDate: dayjs(),
+      };
+      await intraAuthService.updateMaCarBook(updatedApproveMa);
+      setModalApproveMa(false);
+      message.success("อนุมัติการจองสำเร็จ");
+      setSubmitLoading(false);
+    } catch (error) {
+      message.error("อนุมัติการจองไม่สำเร็จ");
+    } finally {
+      setSubmitLoading(false);
+    }
+    setLoading(true);
+  };
+
+  const onFinishReturn: FormProps<MaCarBookType>["onFinish"] = async () => {
+    setSubmitLoading(true);
+
+    try {
+      const updatedReturn = {
+        id: currentMaId,
+        recipientId: session?.user.userId,
+        recipientName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+        carBookApprovedStatus: "Completed",
+        returnAt: dayjs(),
+      };
+      await intraAuthService.updateMaCarBook(updatedReturn);
+      setModalReturn(false);
+      message.success("รับคืนรถสำเร็จ");
+      setSubmitLoading(false);
+    } catch (error) {
+      message.error("รับคืนรถไม่สำเร็จ");
+    } finally {
+      setSubmitLoading(false);
+    }
+    setLoading(true);
+  };
+
+  const onFinishFailed: FormProps<MaCarBookType>["onFinishFailed"] = (
+    errorInfo
+  ) => {};
 
   const columns: TableProps<MaCarBookType>["columns"] = [
     {
@@ -168,7 +336,6 @@ const ManageCar: React.FC<props> = ({
             text = "Unknown Status";
             break;
         }
-
         return (
           <Tag color={color} icon={icon}>
             {text}
@@ -270,182 +437,6 @@ const ManageCar: React.FC<props> = ({
     },
   ];
 
-  const showModalApproveBook = (record: MaCarBookType) => {
-    form.setFieldsValue({
-      createdByName: record.createdByName,
-      carName: record.maCar.carName,
-      status: record.maCar.status,
-      carBookTitle: record.carBookTitle,
-      carBookPlace: record.carBookPlace,
-      carBookProvince: record.carBookProvince,
-      carBookUsers: record.carBookUsers,
-      detail: record.detail,
-      remark: record.remark,
-      carBookStartDate: dayjs(record.carBookStartDate),
-      carBookEndDate: dayjs(record.carBookEndDate),
-    });
-
-    formDisapProved.setFieldsValue({
-      remarkApproved: record.remarkApproved,
-    });
-
-    setModalApproveMa(true);
-    setMaCarBookStatus(record.carBookApprovedStatus);
-    setCurrentMaId(record.id);
-  };
-
-  const handleApproveBook = () => {
-    setModalApproveMa(false);
-  };
-
-  const showModalReturn = (record: MaCarBookType) => {
-    setModalReturn(true);
-    setMaCarBookStatus(record.carBookApprovedStatus);
-    setCurrentMaId(record.id);
-    formReturn.setFieldsValue({
-      carName: record.maCar.carName,
-      carMile: record.maCar.carMile,
-      carPetrol: record.maCar.carPetrol,
-      status: record.maCar.status,
-      createdByName: record.createdByName,
-    });
-  };
-
-  const handleReturn = () => {
-    setModalReturn(false);
-  };
-
-  const handleDeleteMa = async (id: number) => {
-    setSubmitLoading(true);
-    try {
-      await intraAuthService.deleteMaCarBook(id);
-      setMaCarBookData(maBookData.filter((item) => item.id !== id));
-
-      message.success("ลบข้อมูลการจองสำเร็จ");
-      setSubmitLoading(false);
-    } catch (error) {
-      message.error("ลบข้อมูลการจองไม่สำเร็จ");
-    }
-    setLoading(true);
-  };
-
-  const handleCancelMa: FormProps<MaCarBookType>["onFinish"] = async (
-    values
-  ) => {
-    try {
-      const updatedCancelMa = {
-        id: columnId,
-        carBookApprovedStatus: "Cancel",
-        remarkCancel: values.remarkCancel,
-      };
-      await intraAuthService.updateMaCarBook(updatedCancelMa);
-      message.success("ยกเลิกการจองสำเร็จ");
-      setSubmitLoading(false);
-    } catch (error) {
-      message.error("ยกเลิกการจองไม่สำเร็จ");
-    } finally {
-      setSubmitLoading(false);
-    }
-    setLoading(true);
-  };
-
-  const onFinishCancel: FormProps<MaCarBookType>["onFinish"] = async (
-    values
-  ) => {
-    setModalApproveMa(false);
-
-    try {
-      const updatedApproveMa = {
-        id: currentMaId,
-        carBookApprovedById: session?.user.userId,
-        carBookApprovedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
-        carBookApprovedStatus: "DisapProved",
-        carBookApprovedDate: dayjs(),
-        remarkApproved: values.remarkApproved,
-      };
-      await intraAuthService.updateMaCarBook(updatedApproveMa);
-      message.success("ไม่อนุมัติการจองสำเร็จ");
-      formDisapProved.resetFields;
-      setModalApproveMa(false);
-      setModalDisapProved(false);
-      setSubmitLoading(false);
-    } catch (error) {
-      message.error("อนุมัติการจองไม่สำเร็จ");
-    } finally {
-      setSubmitLoading(false);
-    }
-    setLoading(true);
-  };
-
-  const onFinishApprove: FormProps<MaCarBookType>["onFinish"] = async () => {
-    setSubmitLoading(false);
-    if (carBookApprovedStatus === "Approve") {
-      message.warning("อนุมัติการจองนี้ไปแล้ว");
-      return;
-    }
-    if (carBookApprovedStatus === "Return") {
-      message.warning("ไม่สามารถอนุมัติการจองที่แจ้งคืนรถได้");
-      return;
-    }
-    if (carBookApprovedStatus === "Completed") {
-      message.warning("ไม่สามารถอนุมัติการจองที่คืนรถได้");
-      return;
-    }
-    if (carBookApprovedStatus === "Cancel") {
-      message.warning("ไม่สามารถอนุมัติการจองที่ยกเลิกได้ได้");
-      return;
-    }
-
-    try {
-      const updatedApproveMa = {
-        id: currentMaId,
-        carBookApprovedById: session?.user.userId,
-        carBookApprovedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
-        carBookApprovedStatus: "Approve",
-        carBookApprovedDate: dayjs(),
-      };
-
-      await intraAuthService.updateMaCarBook(updatedApproveMa);
-
-      setModalApproveMa(false);
-      message.success("อนุมัติการจองสำเร็จ");
-      setSubmitLoading(false);
-    } catch (error) {
-      message.error("อนุมัติการจองไม่สำเร็จ");
-    } finally {
-      setSubmitLoading(false);
-    }
-    setLoading(true);
-  };
-
-  const onFinishReturn: FormProps<MaCarBookType>["onFinish"] = async () => {
-    setSubmitLoading(true);
-
-    try {
-      const updatedReturn = {
-        id: currentMaId,
-        recipientId: session?.user.userId,
-        recipientName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
-        carBookApprovedStatus: "Completed",
-        returnAt: dayjs(),
-      };
-
-      await intraAuthService.updateMaCarBook(updatedReturn);
-      setModalReturn(false);
-      message.success("รับคืนรถสำเร็จ");
-      setSubmitLoading(false);
-    } catch (error) {
-      message.error("รับคืนรถไม่สำเร็จ");
-    } finally {
-      setSubmitLoading(false);
-    }
-    setLoading(true);
-  };
-
-  const onFinishFailed: FormProps<MaCarBookType>["onFinishFailed"] = (
-    errorInfo
-  ) => {};
-
   return (
     <>
       <Modal
@@ -533,7 +524,6 @@ const ManageCar: React.FC<props> = ({
             <Col span={6}>
               <Form.Item name="carBookStartDate" label="วันที่เริ่มการจอง">
                 <DatePicker
-                  // disabled
                   className="read-only-input"
                   format="DD-MM-YYYY , HH:mm"
                   placeholder="กรอกวันที่เริ่มการจอง"
@@ -550,7 +540,6 @@ const ManageCar: React.FC<props> = ({
                 ]}
               >
                 <DatePicker
-                  // disabled
                   className="read-only-input"
                   format="DD-MM-YYYY , HH:mm"
                   placeholder="กรอกวันที่สิ้นสุดการจอง"
@@ -565,7 +554,6 @@ const ManageCar: React.FC<props> = ({
                 <TextArea
                   placeholder="กรอกรายละเอียด"
                   rows={2}
-                  // disabled
                   className="read-only-input"
                 />
               </Form.Item>
@@ -619,7 +607,6 @@ const ManageCar: React.FC<props> = ({
           size="small"
         >
           <Divider orientation="left">ข้อมูลการคืนรถ</Divider>
-
           <Col span={24}>
             <Form.Item
               name="carName"
@@ -629,13 +616,11 @@ const ManageCar: React.FC<props> = ({
               <Input disabled placeholder="กรอกชื่อรถ" />
             </Form.Item>
           </Col>
-
           <Col span={24}>
             <Form.Item name="createdByName" label="ชื่อผู้คืนรถ">
               <Input disabled placeholder="กรอกชื่อ" />
             </Form.Item>
           </Col>
-
           <Col span={24}>
             <Form.Item name="carMile" label="เลขไมล์รถ">
               <InputNumber
@@ -670,7 +655,6 @@ const ManageCar: React.FC<props> = ({
               </Select>
             </Form.Item>
           </Col>
-
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Row justify="end" gutter={16}>
               <Button

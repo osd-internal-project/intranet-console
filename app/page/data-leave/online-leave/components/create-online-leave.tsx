@@ -67,7 +67,6 @@ export const CreateOnlineLeave: React.FC<props> = ({
 
         ownerName && createdataleaveForm.setFieldsValue({ ownerName });
       }
-
       createdataleaveForm.setFieldsValue({
         userId: getUser?.userId,
         posId: getUser?.position?.posId,
@@ -289,7 +288,6 @@ export const CreateOnlineLeave: React.FC<props> = ({
               </div>
             ) : null}
           </>
-
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item
               label={`วัตถุประสงค์การลา :`}

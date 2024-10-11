@@ -59,6 +59,7 @@ export type ITBranchForm = {
   id: number;
   branchCode: string;
   branchName: string;
+  activeStatus?: boolean;
   remark?: string;
 };
 
@@ -100,6 +101,7 @@ export type ITCustomerSubForm = {
   id: number;
   code: string;
   name: string;
+  activeStatus?: boolean;
 };
 export type ITCustomerSub = { id: number } & ITCustomerSubForm;
 export type ITCustomerSubDetail = {

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import type { FormInstance } from "antd";
-import { Button, Card, Form, Input, Modal, Select } from "antd";
+import { Button, Card, Form, Input, Modal, Select, Switch } from "antd";
 import { ITCustomerSubForm } from "../../common";
 import { CloseOutlined } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
@@ -62,6 +62,14 @@ const CustomerSubAddComponent: React.FC<props> = ({
           rules={[{ required: true, message: `กรุณากรอกชื่อลูกค้า` }]}
         >
           <Input />
+        </Form.Item>
+        <Form.Item
+          valuePropName="checked"
+          label={"สถานะ"}
+          name={"activeStatus"}
+          initialValue={true}
+        >
+          <Switch size="default" />
         </Form.Item>
         {/* <Form.List name="address">
           {(fields, { add, remove }) => (

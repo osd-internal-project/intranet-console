@@ -1,11 +1,14 @@
 import { AxiosInstance } from "axios";
 
 export const ManageemailTemplateServices = (axiosInstance: AxiosInstance) => {
-  const baseUrlApiemailTemplate = "/emailtemplate";
+  const baseUrl = "/email-template";
+  const baseTemplateFieldsUrl = "/email-template-fields";
+  const baseTemplateTypeUrl = "/email-template-type";
+
   return {
-    getemailTemplateQuery: async () => {
+    findAll: async () => {
       return await axiosInstance
-        .get(`${baseUrlApiemailTemplate}`)
+        .get(`${baseUrl}`)
         .then((res) => {
           return res.data;
         })
@@ -14,9 +17,9 @@ export const ManageemailTemplateServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    findemailTemplate: async (skip: number, take: number) => {
+    findOne: async (body: any) => {
       return await axiosInstance
-        .get(`${baseUrlApiemailTemplate}?take=${take}&skip=${skip}`)
+        .get(`${baseUrl}/${body}`)
         .then((res) => {
           return res.data;
         })
@@ -25,20 +28,9 @@ export const ManageemailTemplateServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    findOneemailTemplate: async (body: any) => {
+    optionsType: async () => {
       return await axiosInstance
-        .get(`${baseUrlApiemailTemplate}/${body}`)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
-    createemailTemplate: async (body: any) => {
-      return await axiosInstance
-        .post(`${baseUrlApiemailTemplate}`, body)
+        .get(`${baseTemplateTypeUrl}`)
         .then((res) => {
           return res.data;
         })
@@ -48,9 +40,9 @@ export const ManageemailTemplateServices = (axiosInstance: AxiosInstance) => {
         });
     },
 
-    updateemailTemplate: async (body: any) => {
+    create: async (body: any) => {
       return await axiosInstance
-        .patch(`${baseUrlApiemailTemplate}/${body.handbookid}`, body)
+        .post(`${baseUrl}`, body)
         .then((res) => {
           return res.data;
         })
@@ -59,9 +51,21 @@ export const ManageemailTemplateServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    deleteemailTemplate: async (handbookid: any) => {
+
+    update: async (body: any) => {
       return await axiosInstance
-        .delete(`${baseUrlApiemailTemplate}/${handbookid}`)
+        .patch(`${baseUrl}/${body.handbookid}`, body)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    delete: async (handbookid: any) => {
+      return await axiosInstance
+        .delete(`${baseUrl}/${handbookid}`)
         .then((res) => {
           return res.data;
         })

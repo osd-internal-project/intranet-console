@@ -253,7 +253,7 @@ export default function Page() {
     type_id: number,
     value: any
   ): Promise<boolean> => {
-
+    
     try {
       let resultId: number;
       switch (type_id) {

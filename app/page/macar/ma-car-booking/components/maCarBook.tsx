@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import {
@@ -13,7 +12,6 @@ import {
   Divider,
   Select,
   DatePicker,
-  InputNumber,
 } from "antd";
 import { MaCarBookServices } from "../services/ma-car-book.service";
 import { useSession } from "next-auth/react";
@@ -21,7 +19,6 @@ import { useRouter } from "next/navigation";
 import { MaCarType, MaCarBookType, ProvincesType } from "../../common/index";
 import { RangePickerProps } from "antd/es/date-picker";
 import dayjs from "dayjs";
-import axios from "axios";
 export interface props {
   maCarData: MaCarType[];
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -39,8 +36,20 @@ const MaCarBook: React.FC<props> = ({
   const maCarBookServices = MaCarBookServices(intraAuth);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [carName, setCarName] = useState<MaCarType[]>([]);
-  const [form] = Form.useForm();
+  const [formUser] = Form.useForm();
   const { TextArea } = Input;
+
+  useEffect(() => {
+    if (maCarData) {
+      setCarName(maCarData);
+    }
+    formUser.setFieldsValue({
+      userName: `${session?.user.firstNameTh || ""} ${
+        session?.user.lastNameTh || ""
+      }`,
+      phoneNumber: session?.user.phoneNumber,
+    });
+  }, [maCarData]);
 
   const checkMaCarBookConflict = async (
     carName: string,
@@ -69,17 +78,14 @@ const MaCarBook: React.FC<props> = ({
     values
   ) => {
     setSubmitLoading(true);
-
     const carSelected = [...maCarData]
       .reverse()
       .find((car): car is any => car.carId === values.carId);
-
     if (carSelected.status === false) {
       message.warning("รถคันนี้ไม่พร้อมใช้งาน");
       setSubmitLoading(false);
       return;
     }
-
     const carBookStartDate = values.carBookStartDate as Date;
     const carBookEndDate = values.carBookEndDate as Date;
     const today = new Date();
@@ -91,7 +97,6 @@ const MaCarBook: React.FC<props> = ({
     const selectedOptionProvinces = dataoptionsProvinces.find(
       (option: ProvincesType) => option.value === values.idProvinces
     );
-
     if (new Date(carBookEndDate) < new Date(carBookStartDate)) {
       message.error("วันที่สิ้นสุดการจองต้องหลังวันที่เริ่มการจอง");
       setSubmitLoading(false);
@@ -101,7 +106,9 @@ const MaCarBook: React.FC<props> = ({
       carId: values.carId,
       carName: carSelected?.carName,
       createdById: session?.user.userId,
-      createdByName: values.createdByName,
+      createdByName: `${session?.user.firstNameTh || ""} ${
+        session?.user.lastNameTh || ""
+      }`,
       carBookProvince: selectedOptionProvinces
         ? selectedOptionProvinces.label
         : undefined,
@@ -152,12 +159,10 @@ const MaCarBook: React.FC<props> = ({
       const maCarBook = await maCarBookServices.createMaCarBook(data);
       if (maCarBook) {
         message.success("จองรถสำเร็จ");
-        form.resetFields();
         router.push("/page/macar/ma-car");
       } else {
         message.error("จองรถไม่สำเร็จ");
       }
-
       setSubmitLoading(false);
     } catch (error) {
       message.error("จองรถไม่สำเร็จ");
@@ -166,33 +171,23 @@ const MaCarBook: React.FC<props> = ({
     setLoading(true);
   };
 
-  const maCarBookName = () => {
-    const createdByName = `${session?.user.firstNameTh || ""} ${
-      session?.user.lastNameTh || ""
-    }`;
-    return createdByName;
-  };
-
-  useEffect(() => {
-    if (maCarData) {
-      setCarName(maCarData);
-    }
-    form.setFieldsValue({
-      createdByName: maCarBookName(),
-    });
-  }, [maCarData]);
-
   return (
-    <Form form={form} layout="vertical" onFinish={createMaCarBook} size="small">
+    <Form
+      form={formUser}
+      layout="vertical"
+      onFinish={createMaCarBook}
+      size="small"
+    >
       <Divider orientation="left">ข้อมูลผู้จอง</Divider>
-      <Row gutter={16}>
-        <Col span={8}>
-          <Form.Item<MaCarType>
-            name="createdByName"
-            label="ชื่อผู้จอง"
-            rules={[{ required: true, message: "กรุณากรอกชื่อผู้จอง" }]}
-          >
-            <Input disabled placeholder="กรอกชื่อผู้จอง" />
+      <Row gutter={24}>
+        <Col span={6}>
+          <Form.Item name="userName" label="ชื่อผู้จอง">
+            <Input disabled />
+          </Form.Item>
+        </Col>
+        <Col span={6}>
+          <Form.Item name="phoneNumber" label="เบอร์โทรศัทร์">
+            <Input disabled />
           </Form.Item>
         </Col>
       </Row>
@@ -320,7 +315,12 @@ const MaCarBook: React.FC<props> = ({
       </Row>
       <Col span={24} style={{ textAlign: "center" }}>
         <Form.Item>
-          <Button type="primary" htmlType="submit" loading={submitLoading} size="middle">
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={submitLoading}
+            size="middle"
+          >
             ทำการจองรถ
           </Button>
         </Form.Item>

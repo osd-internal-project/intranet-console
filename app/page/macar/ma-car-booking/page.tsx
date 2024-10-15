@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import {
   Breadcrumb,
@@ -29,44 +28,20 @@ const MaCarBooking: React.FC = () => {
   const [maCarBookData, setMaCarBookData] = useState<MaCarBookType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [form] = Form.useForm();
+  const [dataoptionsProvinces, setDataoptionsProvinces] = useState<
+    ProvincesType[]
+  >([]);
+  const searchParams = useSearchParams();
+  const action = searchParams.get("action");
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
     total: 0,
   });
 
-  const [dataoptionsProvinces, setDataoptionsProvinces] = useState<
-    ProvincesType[]
-  >([]);
-
-  const searchParams = useSearchParams();
-
-  const action = searchParams.get("action");
-
-  const items: TabsProps["items"] = [
-    {
-      key: "1",
-      label: "ทำการจองรถ",
-      children: (
-        <MaCarBook
-          maCarData={maCarData}
-          setLoading={setLoading}
-          dataoptionsProvinces={dataoptionsProvinces}
-        />
-      ),
-    },
-    {
-      key: "2",
-      label: "การคืนรถ",
-      children: (
-        <MaCarReturn
-          maCarBookData={maCarBookData}
-          loading={loading}
-          setLoading={setLoading}
-        />
-      ),
-    },
-  ];
+  useEffect(() => {
+    if (loading) fetchData();
+  }, [loading]);
 
   const fetchData = async () => {
     form.setFieldsValue({
@@ -105,9 +80,30 @@ const MaCarBooking: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    if (loading) fetchData();
-  }, [loading]);
+  const items: TabsProps["items"] = [
+    {
+      key: "1",
+      label: "ทำการจองรถ",
+      children: (
+        <MaCarBook
+          maCarData={maCarData}
+          setLoading={setLoading}
+          dataoptionsProvinces={dataoptionsProvinces}
+        />
+      ),
+    },
+    {
+      key: "2",
+      label: "การคืนรถ",
+      children: (
+        <MaCarReturn
+          maCarBookData={maCarBookData}
+          loading={loading}
+          setLoading={setLoading}
+        />
+      ),
+    },
+  ];
 
   return (
     <>

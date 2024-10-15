@@ -35,6 +35,35 @@ const MaCar: React.FC = () => {
     total: 0,
   });
 
+  useEffect(() => {
+    if (loading) fetchData();
+  }, [loading]);
+
+  const fetchData = async () => {
+    const skip: number =
+      (Number(pagination.current) - 1) * Number(pagination.pageSize);
+    const take: number = Number(pagination.pageSize);
+    try {
+      const maCar = await intraAuthService.getMaCarQuery();
+      const createdById = session?.user.userId;
+      const maCarBook = await intraAuthService.findMaCarBook(
+        createdById,
+        skip,
+        take
+      );
+      const maCalender = await intraAuthService.getMaCarBookQuery(createdById);
+      const maCarBookById = await intraAuthService.findMaCarBookById(
+        createdById
+      );
+      setMaCarBookById(maCarBookById);
+      setMaCarData(maCar);
+      setMaCarBookData(maCarBook);
+      setMaFetchCalendar(maCalender);
+      setPagination({ ...pagination, total: maCarBook.count });
+      setLoading(false);
+    } catch (error) {}
+  };
+
   const changePagination = (page: TablePaginationConfig) => {
     setPagination({ ...page });
     setLoading(true);
@@ -67,33 +96,6 @@ const MaCar: React.FC = () => {
       children: <CarStatus maCarData={maCarData} setLoading={setLoading} />,
     },
   ];
-
-  const fetchData = async () => {
-    const skip: number =
-      (Number(pagination.current) - 1) * Number(pagination.pageSize);
-    const take: number = Number(pagination.pageSize);
-    try {
-      const maCar = await intraAuthService.getMaCarQuery();
-      const createdById = session?.user.userId;
-      const maCarBook = await intraAuthService.findMaCarBook(
-        createdById,
-        skip,
-        take
-      );
-      const maCalender = await intraAuthService.getMaCarBookQuery(createdById);
-      const maCarBookById = await intraAuthService.findMaCarBookById(createdById);
-      setMaCarBookById(maCarBookById);
-      setMaCarData(maCar);
-      setMaCarBookData(maCarBook);
-      setMaFetchCalendar(maCalender);
-      setPagination({ ...pagination, total: maCarBook.count });
-      setLoading(false);
-    } catch (error) {}
-  };
-
-  useEffect(() => {
-    if (loading) fetchData();
-  }, [loading]);
 
   return (
     <>

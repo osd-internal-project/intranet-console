@@ -57,6 +57,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
   groupDetail,
   groupUserId,
 }): React.ReactElement => {
+  
   useEffect(() => {
     const getdatauser = () => {
       if (groupUserId?.length) {
@@ -67,7 +68,6 @@ export const CreateOnlineLeave: React.FC<props> = ({
 
         ownerName && createdataleaveForm.setFieldsValue({ ownerName });
       }
-
       createdataleaveForm.setFieldsValue({
         userId: getUser?.userId,
         posId: getUser?.position?.posId,
@@ -289,7 +289,6 @@ export const CreateOnlineLeave: React.FC<props> = ({
               </div>
             ) : null}
           </>
-
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item
               label={`วัตถุประสงค์การลา :`}
@@ -318,6 +317,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
                 ]}
               >
                 <Input
+                  maxLength={10}
                   placeholder="เบอร์โทรศัพท์"
                   onKeyDown={(event) => {
                     if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {

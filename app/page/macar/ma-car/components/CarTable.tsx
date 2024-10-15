@@ -15,14 +15,11 @@ import {
   DatePicker,
   TablePaginationConfig,
   InputNumber,
-  TimePicker,
   Tooltip,
-  Popconfirm,
   Flex,
 } from "antd";
 import {
   CheckCircleOutlined,
-  ClockCircleOutlined,
   CloseCircleOutlined,
   ExclamationCircleOutlined,
   MinusCircleOutlined,
@@ -73,6 +70,95 @@ const MaCarBookTable: React.FC<props> = ({
   const [carBookApprovedStatus, setcarBookApprovedStatus] = useState<
     string | undefined
   >(undefined);
+
+  const showModalEditMaCarBook = (record: MaCarBookType) => {
+    setCurrentMaCarBookId(record.id);
+    form.setFieldsValue({
+      ...record,
+      carBookStartDate: dayjs(record.carBookStartDate),
+      carBookEndDate: dayjs(record.carBookEndDate),
+    });
+    setModalEditMa(true);
+    setLoading(true);
+  };
+
+  const handleCancelMa: FormProps<MaCarBookType>["onFinish"] = async (
+    values
+  ) => {
+    try {
+      const updatedApproveMa = {
+        id: columnId,
+        carBookApprovedStatus: "Cancel",
+        remarkCancel: values.remarkCancel,
+        carBookApprovedDate: dayjs().toISOString(),
+        carBookApprovedById: session?.user.userId,
+        carBookApprovedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+      };
+      await intraAuthService.updateMaCarBook(updatedApproveMa);
+      message.success("ยกเลิกการจองสำเร็จ");
+      setModalCancel(false);
+    } catch (error) {
+      message.error("ยกเลิกการจองไม่สำเร็จ");
+    } finally {
+      setSubmitLoading(false);
+    }
+    setLoading(true);
+  };
+
+  const handleEditMaCancel = () => {
+    setModalEditMa(false);
+  };
+
+  const updatedMaCarBook: FormProps<MaCarBookType>["onFinish"] = async (
+    values
+  ) => {
+    if (currentMaCarBookId === null) {
+      message.error("No ma selected for update");
+      return;
+    }
+    const carSelected = maCarData.findLast(
+      (car: any) => car.carId === values.carId
+    );
+    try {
+      const { carBookStartDate, carBookEndDate, carName, ...restValues } =
+        values;
+      const updatedStartDate = carBookStartDate.toISOString();
+      const updatedEndDate = carBookEndDate.toISOString();
+      const today = new Date();
+      if (new Date(updatedStartDate) < today) {
+        message.error("ไม่สามารถจองในวันที่ผ่านมาได้");
+        setSubmitLoading(false);
+        return;
+      }
+      if (new Date(updatedEndDate) < new Date(updatedStartDate)) {
+        message.error("วันที่สิ้นสุดการจองต้องหลังวันที่เริ่มการจอง");
+        setSubmitLoading(false);
+        return;
+      }
+      const maCarBookData = {
+        ...restValues,
+        id: currentMaCarBookId,
+        carName: carSelected.carName,
+        carBookStartDate: updatedStartDate,
+        carBookEndDate: updatedEndDate,
+        carBookTitle: values.carBookTitle,
+        carBookUsers: Number(values.carBookUsers),
+        detail: values.detail,
+        remark: values.remark || null,
+        updatedAt: dayjs().toISOString(),
+        updatedById: session?.user.userId,
+        updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+      };
+      await intraAuthService.updateMaCarBook(maCarBookData);
+      message.success("แก้ไขการจองสำเร็จ");
+      setSubmitLoading(false);
+      setModalEditMa(false);
+    } catch (error) {
+      message.error("แก้ไขการจองไม่สำเร็จ");
+      setSubmitLoading(false);
+    }
+    setLoading(true);
+  };
 
   const columns: TableProps<MaCarBookType>["columns"] = [
     {
@@ -164,10 +250,7 @@ const MaCarBookTable: React.FC<props> = ({
             text = "Unknown Status";
             break;
         }
-
         return (
-          // <div className=" flex justify-center p-1"></div>
-
           <Tag color={color} icon={icon}>
             {text}
           </Tag>
@@ -242,95 +325,6 @@ const MaCarBookTable: React.FC<props> = ({
     },
   ];
 
-  const showModalEditMaCarBook = (record: MaCarBookType) => {
-    setCurrentMaCarBookId(record.id);
-    form.setFieldsValue({
-      ...record,
-      carBookStartDate: dayjs(record.carBookStartDate),
-      carBookEndDate: dayjs(record.carBookEndDate),
-    });
-    setModalEditMa(true);
-    setLoading(true);
-  };
-
-  const handleCancelMa: FormProps<MaCarBookType>["onFinish"] = async (
-    values
-  ) => {
-    try {
-      const updatedApproveMa = {
-        id: columnId,
-        carBookApprovedStatus: "Cancel",
-        remarkCancel: values.remarkCancel,
-        carBookApprovedDate: dayjs().toISOString(),
-        carBookApprovedById: session?.user.userId,
-        carBookApprovedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
-      };
-      await intraAuthService.updateMaCarBook(updatedApproveMa);
-      message.success("ยกเลิกการจองสำเร็จ");
-      setModalCancel(false);
-    } catch (error) {
-      message.error("ยกเลิกการจองไม่สำเร็จ");
-    } finally {
-      setSubmitLoading(false);
-    }
-    setLoading(true);
-  };
-
-  const handleEditMaCancel = () => {
-    setModalEditMa(false);
-  };
-
-  const updatedMaCarBook: FormProps<MaCarBookType>["onFinish"] = async (
-    values
-  ) => {
-    if (currentMaCarBookId === null) {
-      message.error("No ma selected for update");
-      return;
-    }
-    const carSelected = maCarData.findLast(
-      (car: any) => car.carId === values.carId
-    );
-    try {
-      const { carBookStartDate, carBookEndDate, carName, ...restValues } =
-        values;
-      const updatedStartDate = carBookStartDate.toISOString();
-      const updatedEndDate = carBookEndDate.toISOString();
-      const today = new Date();
-      if (new Date(updatedStartDate) < today) {
-        message.error("ไม่สามารถจองในวันที่ผ่านมาได้");
-        setSubmitLoading(false);
-        return;
-      }
-      if (new Date(updatedEndDate) < new Date(updatedStartDate)) {
-        message.error("วันที่สิ้นสุดการจองต้องหลังวันที่เริ่มการจอง");
-        setSubmitLoading(false);
-        return;
-      }
-      const maCarBookData = {
-        ...restValues,
-        id: currentMaCarBookId,
-        carName: carSelected.carName,
-        carBookStartDate: updatedStartDate,
-        carBookEndDate: updatedEndDate,
-        carBookTitle: values.carBookTitle,
-        carBookUsers: Number(values.carBookUsers),
-        detail: values.detail,
-        remark: values.remark || null,
-        updatedAt: dayjs().toISOString(),
-        updatedById: session?.user.userId,
-        updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
-      };
-      await intraAuthService.updateMaCarBook(maCarBookData);
-      message.success("แก้ไขการจองสำเร็จ");
-      setSubmitLoading(false);
-      setModalEditMa(false);
-    } catch (error) {
-      message.error("แก้ไขการจองไม่สำเร็จ");
-      setSubmitLoading(false);
-    }
-    setLoading(true);
-  };
-
   return (
     <>
       <Modal
@@ -359,9 +353,7 @@ const MaCarBookTable: React.FC<props> = ({
               </Form.Item>
             </Col>
           </Row>
-
           <Divider orientation="left">ข้อมูลการจองรถ</Divider>
-
           <Row gutter={16}>
             <Col span={6}>
               <Form.Item<MaCarBookType>
@@ -614,7 +606,6 @@ const MaCarBookTable: React.FC<props> = ({
           }}
         ></Col>
       </Row>
-
       <div>
         <Flex gap="4px 4px" wrap>
           <Tag icon={<SyncOutlined spin />} color="DodgerBlue">
@@ -637,7 +628,6 @@ const MaCarBookTable: React.FC<props> = ({
           </Tag>
         </Flex>
       </div>
-
       <Table
         columns={columns}
         dataSource={maCarBookData.docs}

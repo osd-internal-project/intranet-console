@@ -51,6 +51,100 @@ const ManageCarStatus: React.FC<props> = ({
   const [submitLoading, setSubmitLoading] = useState(true);
   const { data: session } = useSession();
 
+  const handleEditMaCarCancel = () => {
+    setModalEditMaCar(false);
+    form.resetFields();
+  };
+
+  const showModalEditMaCar = (record: MaCarType) => {
+    setCurrentMaId(record.carId);
+    setSubmitLoading(false);
+    form.setFieldsValue(record);
+    setModalEditMaCar(true);
+  };
+
+  const showModalCreateMaCar = () => {
+    setModalCreateMaCar(true);
+    setSubmitLoading(false);
+    form.resetFields();
+  };
+
+  const handleCancelCreateMaCar = () => {
+    form.resetFields();
+    setModalCreateMaCar(false);
+    setSubmitLoading(true);
+  };
+
+  const createMaCar: FormProps<MaCarType>["onFinish"] = async (values) => {
+    setSubmitLoading(true);
+    const carName = values.carName as string;
+    const maCarCreateData = {
+      carId: values.carId,
+      carName: carName,
+      carPetrol: values.carPetrol,
+      carMile: values.carMile,
+      detail: values.detail || "",
+      status: values.status,
+      createdById: session?.user.userId,
+      createdByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+    };
+
+    try {
+      const response = await intraAuthService.createMaCar(maCarCreateData);
+      if (response) {
+        message.success("เพิ่มรถสำเร็จ");
+        form.resetFields();
+      } else {
+        message.error("เพิ่มรถไม่สำเร็จ");
+      }
+    } catch (error) {
+      message.error("เพิ่มรถไม่สำเร็จ");
+      setSubmitLoading(false);
+    }
+    setModalCreateMaCar(false);
+    setLoading(true);
+  };
+
+  const onFinishFailed: FormProps<MaCarType>["onFinishFailed"] = (
+    errorInfo
+  ) => {
+    console.log("Failed:", errorInfo);
+  };
+
+  const handleDeleteCarStatus = async (carId: string) => {
+    setSubmitLoading(true);
+    try {
+      await intraAuthService.deleteMaCar(carId);
+      setMaData(maData.filter((item) => item.carId !== carId));
+      message.success("ลบรถสำเร็จ");
+    } catch (error) {
+      message.error("ลบรถไม่สำเร็จ");
+      setSubmitLoading(false);
+    }
+    setLoading(true);
+  };
+
+  const updatedCar: FormProps<MaCarType>["onFinish"] = async (values) => {
+    setSubmitLoading(true);
+    try {
+      const { ...restValues } = values;
+      const updatedMaCar = {
+        ...restValues,
+        carId: currentMaId,
+        updatedAt: dayjs().toISOString(),
+        updatedById: session?.user.userId,
+        updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+      };
+      await intraAuthService.updateMaCar(updatedMaCar);
+      message.success("แก้ไขข้อมูลรถสำเร็จ");
+      handleEditMaCarCancel();
+      setSubmitLoading(false);
+    } catch (error) {
+      message.error("แก้ไขข้อมูลรถไม่สำเร็จ");
+    }
+    setLoading(true);
+  };
+
   const columns: TableProps<MaCarType>["columns"] = [
     {
       title: "ลำดับ",
@@ -83,7 +177,6 @@ const ManageCarStatus: React.FC<props> = ({
         }
       },
     },
-
     {
       title: "สถานะ",
       dataIndex: "status",
@@ -142,107 +235,6 @@ const ManageCarStatus: React.FC<props> = ({
     },
   ];
 
-  const handleEditMaCarCancel = () => {
-    setModalEditMaCar(false);
-    form.resetFields();
-  };
-
-  const showModalEditMaCar = (record: MaCarType) => {
-    setCurrentMaId(record.carId);
-    setSubmitLoading(false);
-    form.setFieldsValue(record);
-    setModalEditMaCar(true);
-  };
-
-  const showModalCreateMaCar = () => {
-    setModalCreateMaCar(true);
-    setSubmitLoading(false);
-    form.resetFields();
-  };
-
-  const handleCancelCreateMaCar = () => {
-    form.resetFields();
-    setModalCreateMaCar(false);
-    setSubmitLoading(true);
-  };
-
-  const createMaCar: FormProps<MaCarType>["onFinish"] = async (values) => {
-    console.log(values);
-
-    setSubmitLoading(true);
-    const carName = values.carName as string;
-
-    const maCarCreateData = {
-      carId: values.carId,
-      carName: carName,
-      carPetrol: values.carPetrol,
-      carMile: values.carMile,
-      detail: values.detail || "",
-      status: values.status,
-      createdById: session?.user.userId,
-      createdByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
-    };
-
-    try {
-      const response = await intraAuthService.createMaCar(maCarCreateData);
-
-      if (response) {
-        message.success("เพิ่มรถสำเร็จ");
-        form.resetFields();
-      } else {
-        message.error("เพิ่มรถไม่สำเร็จ");
-      }
-    } catch (error) {
-      message.error("เพิ่มรถไม่สำเร็จ");
-      setSubmitLoading(false);
-    }
-    setModalCreateMaCar(false);
-    setLoading(true);
-  };
-
-  const onFinishFailed: FormProps<MaCarType>["onFinishFailed"] = (
-    errorInfo
-  ) => {
-    console.log("Failed:", errorInfo);
-  };
-
-  const handleDeleteCarStatus = async (carId: string) => {
-    setSubmitLoading(true);
-    try {
-      await intraAuthService.deleteMaCar(carId);
-      setMaData(maData.filter((item) => item.carId !== carId));
-      message.success("ลบรถสำเร็จ");
-    } catch (error) {
-      message.error("ลบรถไม่สำเร็จ");
-      setSubmitLoading(false);
-    }
-    setLoading(true);
-  };
-
-  const updatedCar: FormProps<MaCarType>["onFinish"] = async (values) => {
-    setSubmitLoading(true);
-
-    try {
-      const { ...restValues } = values;
-      const updatedMaCar = {
-        ...restValues,
-        carId: currentMaId,
-        updatedAt: dayjs().toISOString(),
-        updatedById: session?.user.userId,
-        updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
-      };
-      await intraAuthService.updateMaCar(updatedMaCar);
-
-      message.success("แก้ไขข้อมูลรถสำเร็จ");
-
-      handleEditMaCarCancel();
-      setSubmitLoading(false);
-    } catch (error) {
-      message.error("แก้ไขข้อมูลรถไม่สำเร็จ");
-    }
-    setLoading(true);
-  };
-
   return (
     <>
       <Modal
@@ -267,7 +259,6 @@ const ManageCarStatus: React.FC<props> = ({
           >
             <Input placeholder="กรอกชื่อรถ" />
           </Form.Item>
-
           <Form.Item
             label="ระดับน้ำมันรถ"
             name="carPetrol"
@@ -279,7 +270,6 @@ const ManageCarStatus: React.FC<props> = ({
               <Select.Option value="low">น้อย</Select.Option>
             </Select>
           </Form.Item>
-
           <Form.Item
             label="สถานะของรถ"
             name="status"
@@ -311,7 +301,6 @@ const ManageCarStatus: React.FC<props> = ({
           >
             <Input.TextArea rows={2} placeholder="กรอกรายละเอียดรถ" />
           </Form.Item>
-
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Row justify="end">
               <Button
@@ -379,7 +368,6 @@ const ManageCarStatus: React.FC<props> = ({
               </Select>
             </Form.Item>
           </Col>
-
           <Col span={24}>
             <Form.Item
               label="เลขไมล์รถ"
@@ -405,7 +393,6 @@ const ManageCarStatus: React.FC<props> = ({
               <Input.TextArea rows={4} placeholder="รายละเอียด" />
             </Form.Item>
           </Col>
-
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Row justify="end">
               <Button
@@ -422,7 +409,6 @@ const ManageCarStatus: React.FC<props> = ({
           </Form.Item>
         </Form>
       </Modal>
-
       <div
         style={{
           display: "flex",
@@ -436,7 +422,6 @@ const ManageCarStatus: React.FC<props> = ({
           เพิ่มรถ
         </Button>
       </div>
-
       <Table
         columns={columns}
         dataSource={maCarData}

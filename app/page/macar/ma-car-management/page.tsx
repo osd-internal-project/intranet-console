@@ -8,6 +8,8 @@ import {
   Tabs,
   TabsProps,
   TablePaginationConfig,
+  GetProps,
+  Input,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import ManageCar from "./components/manageCar";
@@ -15,24 +17,50 @@ import ManageCarStatus from "./components/manageCarStatus";
 import MasterType from "./components/status-car/masterType";
 import WarpupmaCar from "./components/status-car/WarpupmaCar";
 import { ManageCarServices } from "./services/manage-car.service";
-import { MaCarBookType, MaCarType } from "../common/index";
+import { MaCarBookType, MaCarType, dataMaCarbook } from "../common/index";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 
 const ManageMaCar = () => {
   const intraAuth = useAxiosIntranet();
   const intraAuthService = ManageCarServices(intraAuth);
-  const [maCarBookData, setMaCarBookData] = useState<MaCarBookType[]>([]);
+  const [maCarBookData, setMaCarBookData] = useState<dataMaCarbook[]>([]);
+  const [maCarBookAll, setMaCarBookAll] = useState<MaCarBookType[]>([]);
   const [maCarData, setmaCarData] = useState<MaCarType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [activeKey, setActiveKey] = useState<string>("1");
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
     total: 0,
   });
-  const [activeKey, setActiveKey] = useState<string>("1");
   const changePagination = (page: TablePaginationConfig) => {
     setPagination({ ...page });
     setLoading(true);
+  };
+
+  useEffect(() => {
+    if (loading) fetchData();
+  }, [loading, maCarBookAll]);
+
+  const fetchData = async () => {
+    const skip: number =
+      (Number(pagination.current) - 1) * Number(pagination.pageSize);
+    const take: number = Number(pagination.pageSize);
+    try {
+      const MaCarBook = await intraAuthService.findMaCarBook(skip, take);
+      const MaCar = await intraAuthService.getMaCarQuery();
+      setMaCarBookData(MaCarBook);
+      setMaCarBookAll(MaCarBook.docs);
+
+      setmaCarData(MaCar);
+      setLoading(false);
+    } catch (error) {
+      console.error("Failed to fetch data", error);
+    }
+  };
+
+  const handleTabChange = (key: string) => {
+    setActiveKey(key);
   };
 
   const items: TabsProps["items"] = [
@@ -46,7 +74,6 @@ const ManageMaCar = () => {
           setLoading={setLoading}
           pagination={pagination}
           changePagination={changePagination}
-
         />
       ),
     },
@@ -74,27 +101,6 @@ const ManageMaCar = () => {
       children: activeKey === "4" ? <WarpupmaCar /> : null,
     },
   ];
-  const handleTabChange = (key: string) => {
-    setActiveKey(key);
-  };
-  const fetchData = async () => {
-    const skip: number =
-      (Number(pagination.current) - 1) * Number(pagination.pageSize);
-    const take: number = Number(pagination.pageSize);
-    try {
-      const MaCarBook = await intraAuthService.findMaCarBook(skip, take);
-      const MaCar = await intraAuthService.getMaCarQuery();
-      setMaCarBookData(MaCarBook);
-      setmaCarData(MaCar);
-      setLoading(false);
-    } catch (error) {
-      console.error("Failed to fetch data", error);
-    }
-  };
-
-  useEffect(() => {
-    if (loading) fetchData();
-  }, [loading]);
 
   return (
     <>

@@ -8,13 +8,11 @@ import "../../common/style.css";
 export interface props {
   getdataUserByTypeId: ITpyeUser[];
   onFinishDel: (event: number) => void;
-  getLoading: boolean;
 }
 
 export const TabeLeavManagement: React.FC<props> = ({
   getdataUserByTypeId,
   onFinishDel,
-  getLoading,
 }): React.ReactElement => {
   const columns: any = [
     {

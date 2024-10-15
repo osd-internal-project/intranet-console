@@ -17,6 +17,18 @@ const ManageHomeService = (axiosInstance: AxiosInstance) => {
         });
     },
 
+    getSlideImageByOrder: async () => {
+      return await axiosInstance
+        .get(`${baseUrlSlideImage}/order`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return;
+        });
+    },
+
     uploadFilesSlide: async (id: number, form: any) => {
       return await axiosInstance
         .post(`${baseUrlSlideImage}/${id}`, form, {
@@ -58,6 +70,17 @@ const ManageHomeService = (axiosInstance: AxiosInstance) => {
     deleteSlideImage: async (id: any) => {
       return await axiosInstance
         .delete(`${baseUrlSlideImage}/${id}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    updateTebleSlide: async (fileId: string, data: any) => {
+      return await axiosInstance
+        .patch(`${baseUrlSlideImage}/order/${fileId}`, data)
         .then((res) => {
           return res.data;
         })

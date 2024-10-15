@@ -17,6 +17,9 @@ import { ManageemailTemplateServices } from "../service/emailtemplate.service";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { FormProps, useForm } from "antd/es/form/Form";
 import { DeleteIcon, EditIcon } from "@/components/icon";
+import dayjs from "dayjs";
+import { EyeOutlined } from "@ant-design/icons";
+import moment from "moment";
 export interface emailTemplate {
   id: number;
   name: String;
@@ -35,9 +38,13 @@ const HtmlEditor = () => {
 
   const manageemailTemplateServices = ManageemailTemplateServices(intraAuth);
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [Ismodladetail, setIsmodladetail] = useState(false);
   const [form] = useForm();
   const [formEdit] = useForm();
+  const [formdetail] = useForm();
   const [searchTerm, setSearchTerm] = useState("");
+  const [htmlContent, setHtmlContent] = useState<string>("");
+  
 
   useEffect(() => {
     fetchDataemailTemplate();
@@ -59,6 +66,15 @@ const HtmlEditor = () => {
       message.error("ไม่สามารถเรียกข้อมูลได้");
     }
   };
+  const detailnews = (record: emailTemplate) => {
+    formdetail.setFieldsValue({
+      ...record,
+      phblishedAt: dayjs(record.createAt),
+      updatedAt: dayjs(record.updateAt),
+    });
+    setHtmlContent(String(record.formdoc))
+    setIsmodladetail(true);
+  };
   const emailTemplateCreateDatacreate: FormProps<emailTemplate>["onFinish"] =
     async (values) => {
       setSubmitLoading(true);
@@ -76,16 +92,16 @@ const HtmlEditor = () => {
           informationNewsCreateData
         );
         if (response) {
-          message.success("เพิ่มประเภทข่าวสารสำเร็จ");
+          message.success("เพิ่มเทมเพลดสำเร็จ");
           form.resetFields();
           setIsmodlaOpencreate(false);
         } else {
-          message.error("เพิ่มประเภทข่าวสารไม่สำเร็จ");
+          message.error("เพิ่มเทมเพลดไม่สำเร็จ");
         }
         setSubmitLoading(false);
         fetchDataemailTemplate();
       } catch (error) {
-        message.error("เพิ่มประเภทข่าวสารไม่สำเร็จ");
+        message.error("เพิ่มเทมเพลดไม่สำเร็จ");
         setSubmitLoading(false);
       }
     };
@@ -105,13 +121,13 @@ const HtmlEditor = () => {
       await manageemailTemplateServices.updateemailTemplate(
         updatedemailTemplate
       );
-      message.success("แก้ไขประเภทข่าวสารสำเร็จ");
+      message.success("แก้ไขเทมเพลดสำเร็จ");
       fetchDataemailTemplate();
       setSubmitLoading(false);
       setIsmodlaOpenupdate(false);
     } catch (error) {
       fetchDataemailTemplate();
-      message.error("แก้ไขประเภทข่าวสารไม่สำเร็จ");
+      message.error("แก้ไขเทมเพลดไม่สำเร็จ");
     }
   };
 
@@ -119,7 +135,7 @@ const HtmlEditor = () => {
     try {
       await manageemailTemplateServices.deleteemailTemplate(id);
       setemailTemplate(emailTemplate.filter((item) => item.id !== id));
-      message.success("ลบประเภทข่าวสารสำเร็จ");
+      message.success("ลบเทมเพลดสำเร็จ");
       fetchDataemailTemplate();
     } catch (error) {
       message.error("ลบประเภทไม่ข่าวสารสำเร็จ");
@@ -150,6 +166,9 @@ const HtmlEditor = () => {
     formEdit.setFieldsValue(record);
     setIsmodlaOpenupdate(true);
   };
+  const handledetail = () => {
+    setIsmodladetail(false);
+  };
 
   const dataWithKey = emailTemplate.map((item, index) => ({
     ...item,
@@ -178,18 +197,31 @@ const HtmlEditor = () => {
       dataIndex: "formdoc",
       key: "formdoc",
       width: "170px",
+      render: (_: any, record: emailTemplate) => (
+        <a onClick={() => detailnews(record)}>
+          <Tooltip title="View">
+            <EyeOutlined
+              style={{ fontSize: "24px", color: "#08c", cursor: "pointer" }}
+            />
+          </Tooltip>
+        </a>
+      ),
     },
     {
       title: "วันที่สร้าง",
       dataIndex: "createAt",
       key: "createAt",
       width: "170px",
+      render: (createAt: Date) =>
+        moment(createAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
       title: "วันที่อัปเดต",
       dataIndex: "updateAt",
       key: "updateAt",
       width: "170px",
+      render: (updateAt: Date) =>
+        moment(updateAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
       title: "การจัดการ",
@@ -203,8 +235,8 @@ const HtmlEditor = () => {
             <a onClick={() => handleOpenupdate(row)}>{EditIcon}</a>
           </Tooltip>
           <Popconfirm
-            title="คุณแน่ใจหรือไม่ว่าต้องการลบประเภทข่าวสารนี้ ? "
-            onConfirm={() => handleDeleteemailTemplate(row.idType)}
+            title="คุณแน่ใจหรือไม่ว่าต้องการลบเทมเพลดนี้ ? "
+            onConfirm={() => handleDeleteemailTemplate(row.id)}
             okText="ใช่"
             cancelText="ไม่"
           >
@@ -246,31 +278,22 @@ const HtmlEditor = () => {
           layout="vertical"
         >
           <Form.Item
-            name="id"
-            label="ลำดับ :"
-            rules={[{ required: true, message: "กรุณากรอกชื่อประเภทข่าวสาร" }]}
-            style={{ width: "460px" }}
-          >
-            <Input placeholder="ชื่อประเภทข่าวสาร" showCount maxLength={50} />
-          </Form.Item>
-
-          <Form.Item
             name="name"
-            label="ชื่ออีเมล:"
-            rules={[{ required: true, message: "กรุณากรอกชื่อประเภทข่าวสาร" }]}
+            label="ชื่อเทมเพลด:"
+            rules={[{ required: true, message: "กรุณากรอกชื่อเทมเพลด" }]}
             style={{ width: "460px" }}
           >
-            <Input placeholder="ชื่อประเภทข่าวสาร" showCount maxLength={50} />
+            <Input placeholder="ชื่อเทมเพลด" showCount maxLength={50} />
           </Form.Item>
 
           <Form.Item
             name="formdoc"
-            label="ฟอร์มเอกสาร :"
-            rules={[{ required: true, message: "กรุณากรอกชื่อประเภทข่าวสาร" }]}
+            label="ฟอร์มเทมเพลด :"
+            rules={[{ required: true, message: "กรุณากรอกฟอร์มเทมเพลด" }]}
             style={{ width: "460px" }}
           >
             <Input.TextArea
-              placeholder="ชื่อประเภทข่าวสาร"
+              placeholder="ฟอร์มเทมเพลด"
               showCount
               rows={12}
             />
@@ -309,29 +332,29 @@ const HtmlEditor = () => {
           <Form.Item
             name="id"
             label="ลำดับ :"
-            rules={[{ required: true, message: "กรุณากรอกชื่อประเภทข่าวสาร" }]}
-            style={{ width: "460px" }}
+            rules={[{ required: true, message: "กรุณากรอกชื่อเทมเพลด" }]}
+            style={{ visibility:'hidden',margin:" 0 0 -65px 0"}}
           >
-            <Input placeholder="ชื่อประเภทข่าวสาร" showCount maxLength={50} />
+            <Input placeholder="ชื่อเทมเพลด" showCount maxLength={50} style={{visibility:'hidden'}} />
           </Form.Item>
 
           <Form.Item
             name="name"
-            label="ชื่ออีเมล:"
-            rules={[{ required: true, message: "กรุณากรอกชื่อประเภทข่าวสาร" }]}
-            style={{ width: "460px" }}
+            label="ชื่อเทมเพลด:"
+            rules={[{ required: true, message: "กรุณากรอกชื่อเทมเพลด" }]}
+            style={{ width: "460px"}}
           >
-            <Input placeholder="ชื่อประเภทข่าวสาร" showCount maxLength={50} />
+            <Input placeholder="ชื่อเทมเพลด" showCount maxLength={50} />
           </Form.Item>
 
           <Form.Item
             name="formdoc"
-            label="ฟอร์มเอกสาร :"
-            rules={[{ required: true, message: "กรุณากรอกชื่อประเภทข่าวสาร" }]}
+            label="ฟอร์มเทมเพลด :"
+            rules={[{ required: true, message: "กรุณากรอกฟอร์มเทมเพลด" }]}
             style={{ width: "460px" }}
           >
             <Input.TextArea
-              placeholder="ชื่อประเภทข่าวสาร"
+              placeholder="ฟอร์มเทมเพลด"
               showCount
               rows={12}
             />
@@ -353,6 +376,31 @@ const HtmlEditor = () => {
               </Button>
             </Form.Item>
           </div>
+        </Form>
+      </Modal>
+      <Modal
+        title="ฟอร์มเอกสาร"
+        width={1000}
+        open={Ismodladetail}
+        onCancel={handledetail}
+        footer={null}
+        destroyOnClose
+        style={{ textAlign: "center" }}
+      >
+        <Form form={formdetail}>
+        <Form.Item name='formdoc'>
+            <div
+              style={{
+                fontSize: "16px",
+                border: "none",
+                outline: "none",
+                resize: "none",
+                boxShadow: "none",
+                padding: "10px",
+              }}
+              dangerouslySetInnerHTML={{ __html: htmlContent }}
+            />
+          </Form.Item>
         </Form>
       </Modal>
       <Table

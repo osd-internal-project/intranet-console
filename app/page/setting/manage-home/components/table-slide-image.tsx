@@ -138,7 +138,8 @@ export const TableSlideImage: React.FC<propss> = ({
     const filteredData = slideImage.filter(
       (item) =>
         item.fileName?.toLowerCase().includes(value.toLowerCase()) ||
-        item.createdByName?.toLowerCase().includes(value.toLowerCase())
+        item.createdByName?.toLowerCase().includes(value.toLowerCase()) ||
+        item.fileType?.toLowerCase().includes(value.toLowerCase())
     );
     setDataSource(filteredData);
   };
@@ -185,33 +186,31 @@ export const TableSlideImage: React.FC<propss> = ({
   return (
     <div>
       <div>
-        <Collapse
+        {/* <Collapse
           bordered={false}
           items={[
             {
               key: "1",
               label: <b>Filter</b>,
-              children: (
-                <Form size="small" layout="vertical">
-                  <div style={{ display: "flex" }}>
-                    <Col span={6}>
-                      <Form.Item label="Search">
-                        <Search
-                          placeholder="input search text"
-                          onSearch={fileNameSearch}
-                          enterButton
-                        />
-                      </Form.Item>
-                    </Col>
-                  </div>
-                </Form>
-              ),
+              children: ( */}
+        <Form size="small" layout="horizontal">
+          <Col span={6}>
+            <Form.Item label="Search :">
+              <Search
+                placeholder="input search text"
+                onSearch={fileNameSearch}
+                enterButton
+              />
+            </Form.Item>
+          </Col>
+        </Form>
+        {/* ),
             },
           ]}
           defaultActiveKey={[]}
-        />
+        /> */}
       </div>
-      <div style={{ marginTop: "16px" }}>
+      <div>
         <DndContext modifiers={[restrictToVerticalAxis]} onDragEnd={onDragEnd}>
           <SortableContext
             items={dataSource ? dataSource.map((i) => i.id) : []}

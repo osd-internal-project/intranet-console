@@ -1,45 +1,26 @@
 import React, { useState } from "react";
-import {
-  Modal,
-  Tag,
-  Form,
-  Input,
-  DatePicker,
-  Collapse,
-  TimePicker,
-} from "antd";
+import { Modal, Form, Input, DatePicker, Collapse } from "antd";
 import moment from "moment";
 import {
   Calendar,
   momentLocalizer,
   Event as RbcEvent,
 } from "react-big-calendar";
-import {
-  CheckCircleOutlined,
-  ClockCircleOutlined,
-  CloseCircleOutlined,
-  ExclamationCircleOutlined,
-  MinusCircleOutlined,
-  SyncOutlined,
-} from "@ant-design/icons";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useForm } from "antd/es/form/Form";
 import { CaretRightOutlined } from "@ant-design/icons";
 import { MaCarBookCalendarType } from "../../common/index";
 import dayjs from "dayjs";
-import "../../common/style.css";
-
-const localizer = momentLocalizer(moment);
-const { TextArea } = Input;
-interface Props {
-  maFetchCalendar: MaCarBookCalendarType[];
-}
-
+import { dateFormatTime } from "@/app/utils";
+import { CheckTypeTag } from "@/app/utils/validatefield";
 interface CustomEvent extends RbcEvent {
   id: number;
   carBookApprovedStatus: string;
   description: string;
   userName: string;
+}
+interface Props {
+  maFetchCalendar: MaCarBookCalendarType[];
 }
 
 const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
@@ -48,65 +29,18 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
   const [selectedMa, setSelectedMa] = useState<MaCarBookCalendarType | null>(
     null
   );
+  const localizer = momentLocalizer(moment);
+  const { TextArea } = Input;
 
   const onCancelModalDetail = () => {
     setModalMaCarBookDetail(false);
     setSelectedMa(null);
   };
 
-  const renderStatusTag = (status: string) => {
-    let color = "";
-    let text = "";
-    let icon = null;
-    switch (status) {
-      case "Process":
-        color = "DodgerBlue";
-        text = "กำลังรออนุมัติ";
-        icon = <SyncOutlined spin />;
-        break;
-      case "Cancel":
-        color = "silver";
-        text = "ยกเลิก";
-        icon = <CloseCircleOutlined />;
-        break;
-      case "Approve":
-        color = "LimeGreen";
-        text = "อนุมัติแล้ว";
-        icon = <CheckCircleOutlined />;
-        break;
-      case "DisapProved":
-        color = "OrangeRed";
-        text = "ไม่อนุมัติ";
-        icon = <CloseCircleOutlined />;
-        break;
-      case "Return":
-        color = "Gold";
-        text = "แจ้งคืนรถแล้ว";
-        icon = <ExclamationCircleOutlined />;
-        break;
-      case "Completed":
-        color = "MediumPurple";
-        text = "คืนรถสำเร็จ";
-        icon = <CheckCircleOutlined />;
-        break;
-      default:
-        color = "default";
-        text = "Unknown Status";
-        break;
-    }
-
-    return (
-      <Tag color={color} icon={icon}>
-        {text}
-      </Tag>
-    );
-  };
-
   const onSelectEventCalendar = (event: CustomEvent) => {
     const maCarCalendar = maFetchCalendar.find((b) => b.id === event.id);
     if (maCarCalendar) {
       setSelectedMa(maCarCalendar);
-
       formUpdate.setFieldsValue({
         ...maCarCalendar,
         carBookStartDate: dayjs(maCarCalendar.carBookStartDate),
@@ -171,25 +105,24 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
                 <Form.Item label="ชื่อรถ" name="carName">
                   <Input className="read-only-input-calendar" disabled />
                 </Form.Item>
-
                 <Form.Item label="วันที่เริ่มจอง" name="carBookStartDate">
                   <DatePicker
-                    format="DD-MM-YYYY , HH:mm"
-                    // disabled
+                    format={dateFormatTime(
+                      formUpdate.getFieldValue("carBookStartDate")
+                    )}
                     className="read-only-input-calendar"
                     style={{ width: "100%" }}
                   />
                 </Form.Item>
-
                 <Form.Item label="วันที่สิ้นสุดการจอง" name="carBookEndDate">
                   <DatePicker
-                    format="DD-MM-YYYY , HH:mm"
-                    // disabled
+                    format={dateFormatTime(
+                      formUpdate.getFieldValue("carBookEndDate")
+                    )}
                     className="read-only-input-calendar"
                     style={{ width: "100%" }}
                   />
                 </Form.Item>
-
                 <Form.Item label="จังหวัดที่จอดรถ" name="carBookProvince">
                   <Input className="read-only-input-calendar" disabled />
                 </Form.Item>
@@ -203,16 +136,14 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
                   <TextArea className="read-only-input-calendar" disabled />
                 </Form.Item>
               </Collapse.Panel>
-
               <Collapse.Panel header="ข้อมูลผู้จอง" key="2">
                 <Form.Item label="ชื่อผู้จอง" name="createdByName">
                   <Input className="read-only-input-calendar" disabled />
                 </Form.Item>
               </Collapse.Panel>
-
               <Collapse.Panel header="สถานะ" key="3">
                 <Form.Item label="สถานะ">
-                  {renderStatusTag(selectedMa.carBookApprovedStatus)}
+                  {CheckTypeTag(selectedMa.carBookApprovedStatus)}
                 </Form.Item>
                 {selectedMa.carBookApprovedStatus !== "Process" && (
                   <div>
@@ -221,8 +152,9 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
                     </Form.Item>
                     <Form.Item label="วันที่อนุมัติ" name="approveDate">
                       <DatePicker
-                        format="DD-MM-YYYY , HH:mm"
-                        disabled
+                        format={dateFormatTime(
+                          formUpdate.getFieldValue("approveDate")
+                        )}
                         className="read-only-input-calendar"
                         style={{ width: "100%" }}
                       />

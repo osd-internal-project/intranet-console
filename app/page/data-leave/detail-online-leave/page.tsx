@@ -34,39 +34,6 @@ export default function Page() {
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
   const [formdetail] = Form.useForm();
 
-  const items: TabsProps["items"] = [
-    {
-      key: "1",
-      label: "Calendar",
-      children: (
-        <DepartmentCalendarDetail
-          departmentId={departmentId}
-          downloadFile={(id: number, filename: string) =>
-            downloadFile(id, filename)
-          }
-        />
-      ),
-    },
-    {
-      key: "2",
-      label: "Detail",
-      children: (
-        <TableDetail
-          dataLeaveUser={dataLeaveUser}
-          setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
-          openModalDetail={openModalDetail}
-          formdetail={formdetail}
-          onFinishUpdate={(type: string, id: number) =>
-            onFinishUpdate(type, id)
-          }
-          downloadFile={(id: number, filename: string) =>
-            downloadFile(id, filename)
-          }
-        />
-      ),
-    },
-  ];
-
   useEffect(() => {
     if (loading) loadData();
   }, [loading]);
@@ -128,6 +95,40 @@ export default function Page() {
       document.body.removeChild(a);
     }
   }
+
+  const items: TabsProps["items"] = [
+    {
+      key: "1",
+      label: "Calendar",
+      children: (
+        <DepartmentCalendarDetail
+          departmentId={departmentId}
+          downloadFile={(id: number, filename: string) =>
+            downloadFile(id, filename)
+          }
+        />
+      ),
+    },
+    {
+      key: "2",
+      label: "Detail",
+      children: (
+        <TableDetail
+          dataLeaveUser={dataLeaveUser}
+          setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
+          openModalDetail={openModalDetail}
+          formdetail={formdetail}
+          onFinishUpdate={(type: string, id: number) =>
+            onFinishUpdate(type, id)
+          }
+          downloadFile={(id: number, filename: string) =>
+            downloadFile(id, filename)
+          }
+        />
+      ),
+    },
+  ];
+
   return (
     <Row>
       <Col span={24}>

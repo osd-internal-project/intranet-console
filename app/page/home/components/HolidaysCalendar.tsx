@@ -3,7 +3,6 @@ import { Alert, Calendar } from "antd";
 import axios from "axios";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
-//import './HolidaysCalendar.css';
 
 export interface props {}
 

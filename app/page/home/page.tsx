@@ -18,7 +18,6 @@ import {
   InformationNewsType,
   NewsImageType,
 } from "./common";
-import { RcFile, UploadProps } from "antd/es/upload";
 
 export default function HomePage() {
   const intraAuth = useAxiosIntranet();
@@ -29,26 +28,20 @@ export default function HomePage() {
     []
   );
   const [handbookFile, setHandbookFile] = useState<HandbookFileType[]>([]);
-  const [handbookQuery, setHandbookQuery] = useState<HandbookType[]>([]);
   const [informationNews, setInformationNews] = useState<InformationNewsType[]>(
     []
   );
   const [NewsImage, setNewsImage] = useState<NewsImageType[]>([]);
-  // const [slideImages, setSlideImages] = useState<Blob[]>([]);
 
   const fetchData = async () => {
-    const dataSlideImage = await intraAuthService.getSlideImageQuery();
-    // const dataSlideImages = await intraAuthService.getImage(94);
-    // setSlideImages(dataSlideImages);
+    const dataSlideImage = await intraAuthService.getSlideImageByOrder();
     const MasterBookingresponse = await intraAuthService.getMasterRoomQuery();
     const dataHandbookFileQuery = await intraAuthService.getHandbookFileQuery();
-    const dataHandbookQuery = await intraAuthService.getHandbookTypeQuery();
     const dataInformationNews =
       await intraAuthService.getinformationNewsQuery();
     const dataNewsImage = await intraAuthService.getNewsImageQuery();
     setNewsImage(dataNewsImage);
     setInformationNews(dataInformationNews);
-    setHandbookQuery(dataHandbookQuery);
     setHandbookFile(dataHandbookFileQuery);
     setMasterBookingRoom(MasterBookingresponse);
     setSlideImage(dataSlideImage);
@@ -74,7 +67,7 @@ export default function HomePage() {
 
   return (
     <>
-      <BigCarouselComponent loading={loading} slideImage={slideImage} />
+      <BigCarouselComponent slideImage={slideImage} />
       <div className="my-2" />
       <div className="grid md:grid-cols-3">
         <div className="px-2 mb-4">
@@ -121,7 +114,6 @@ export default function HomePage() {
           <Card title="เอกสาร" bordered={false} className="text-center">
             <DocumentComponent
               handbookFile={handbookFile}
-              handbookQuery={handbookQuery}
               downloadFile={(id: number, filename: string) =>
                 downloadFile(id, filename)
               }
@@ -130,14 +122,14 @@ export default function HomePage() {
         </div>
 
         <div className="lg:col-span-1">
-          <Card title="หอประชุม">
+          <Card title="หอประชุม" className="text-center">
             <MeetingRoomTableComponent
               pagination={false}
               masterBookingRoom={masterBookingRoom}
             />
           </Card>
           <div className="my-4"></div>
-          <Card title="วันหยุดประจำปี">
+          <Card title="วันหยุดประจำปี" className="text-center">
             <HolidaysCalendarComponent />
           </Card>
         </div>

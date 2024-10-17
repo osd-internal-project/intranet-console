@@ -1,9 +1,9 @@
 import dayjs from "dayjs";
 export const defaultDateFormat = "DD-MM-BBBB";
 export const defaultDatePickerFormat = "DD-MM-YYYY";
-export const dateTimeFormatBB = "YYYY-MM-DD hh:mm:ss";
-export const dateTimeFormat = "YYYY-MM-DD hh:mm:ss";
-export const dateTimeFormatNoTime = "YYYY-MM-DD";
+export const dateTimeFormatBB = "DD-MM-YYYY , hh:mm";
+export const dateTimeFormat = "DD-MM-YYYY , hh:mm";
+export const dateTimeFormatNoTime = "DD-MM-YYYY";
 
 // import { dateTimeFormatBB, dateTimeFormat, defaultDatePickerFormat, defaultDateFormat } from "../configs";
 // import { differenceInYears } from "date-fns";
@@ -25,10 +25,14 @@ export const dateFormatdate = (date: any) => {
   const birthDate = new Date(`${year}-${month}-${day}`);
   return birthDate ? dayjs(birthDate).format(defaultDateFormat) : "-";
 };
-export const dateFormat = (date: string) => (date ? dayjs(date).add(543, "year").format(dateTimeFormatBB) : "-");
+export const dateFormat = (date: string) =>
+  date ? dayjs(date).add(543, "year").format(dateTimeFormatBB) : "-";
 
-export const dateFormatTime = (date: string) => (date ? dayjs(date).format(dateTimeFormat) : "-");
-export const dateFormatTimeNoTIme = (date: string) => (date ? dayjs(date).format(dateTimeFormatNoTime) : "-");
+export const dateFormatTime = (date: string) =>
+  date ? `${dayjs(date).format(dateTimeFormat)} น.` : "-";
+export const dateFormatTimeNoTIme = (date: string) => {
+  return date ? `${dayjs(date).format(dateTimeFormatNoTime)} น.` : "-";
+};
 
 export const numberFormat = (n: number): string =>
   n && !isNaN(n)
@@ -54,7 +58,11 @@ export const phoneFormat = (input: any) => {
 export const diffDayDate = (startDate: Date, endDate: Date) => {
   const sday = new Date(startDate);
   const eday = new Date(endDate);
-  return Math.floor((Date.UTC(eday.getFullYear(), eday.getMonth(), eday.getDate()) - Date.UTC(sday.getFullYear(), sday.getMonth(), sday.getDate())) / (1000 * 60 * 60 * 24));
+  return Math.floor(
+    (Date.UTC(eday.getFullYear(), eday.getMonth(), eday.getDate()) -
+      Date.UTC(sday.getFullYear(), sday.getMonth(), sday.getDate())) /
+      (1000 * 60 * 60 * 24)
+  );
 };
 
 const Formatter = (value: any) => {

@@ -39,7 +39,6 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({
   );
   const [modalDataLeaveDetail, setModalDataLeaveDetail] = useState(false);
   const [formDetail] = useForm();
-
   const onCancelModalDetail = () => {
     setModalDataLeaveDetail(false);
   };

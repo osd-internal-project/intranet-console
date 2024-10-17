@@ -21,14 +21,9 @@ thead[class*="ant-table-thead"] th {
   /* background-color: #e6ffff !important; */
   border-bottom: 2px solid #b0bec5;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-bottom: 2px solid #b0bec5; /* เส้นคัดด้านล่าง */
-  border-right: none; /* ลบเส้นขอบด้านขวา */
+  border-bottom: 2px solid #b0bec5;
+  border-right: none;
 }
-
-/* .ant-table-tbody > tr:hover > td {
-  background-color: #cf0c0c;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-} */
 
 thead[class*="ant-table-thead"] th:last-child {
   border-right: none;

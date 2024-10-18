@@ -1,14 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  Breadcrumb,
-  Card,
-  Col,
-  Divider,
-  Row,
-  TablePaginationConfig,
-  message,
-} from "antd";
+import { Breadcrumb, Card, Col, Divider, Row, message } from "antd";
 import { CreateSlideImage } from "./components/create-slide-image";
 import { TableSlideImage } from "./components/table-slide-image";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";

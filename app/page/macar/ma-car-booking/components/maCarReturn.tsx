@@ -22,7 +22,7 @@ import { MaCarType, MaCarBookType } from "../../common/index";
 import {
   checkApprovedStatus,
   checkStatusReturn,
-  CheckTypeTag,
+  CheckStatusMaCarBookType,
   showStatus,
 } from "@/app/utils/validatefield";
 import { dateFormatTime } from "@/app/utils";
@@ -179,7 +179,7 @@ const MaCarReturn: React.FC<props> = ({
       dataIndex: "carBookApprovedStatus",
       key: "carBookApprovedStatus",
       align: "center",
-      render: (status: string) => CheckTypeTag(status),
+      render: (status: string) => CheckStatusMaCarBookType(status),
     },
     {
       title: "รายละเอียด",

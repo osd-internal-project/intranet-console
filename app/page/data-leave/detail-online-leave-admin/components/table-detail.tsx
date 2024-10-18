@@ -1,33 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { ITypeDataLeave } from "../../common";
-import {
-  Button,
-  Col,
-  Collapse,
-  DatePicker,
-  Form,
-  Input,
-  Modal,
-  Row,
-  Space,
-  Table,
-  Tag,
-  Tooltip,
-} from "antd";
-import {
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-  MinusCircleOutlined,
-  SyncOutlined,
-} from "@ant-design/icons";
+import { Button, Col, Form, Input, Modal, Row, Table, Tooltip } from "antd";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { deleteIcon, CancelIcon, CheckIcon } from "@/components/icon";
-import { PaperClipOutlined } from "@ant-design/icons";
 import ExportDataLeaveAll from "../../common/export-excel";
-import dayjs from "dayjs";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { ITypeDataLeave } from "../../common";
 import DataLeaveService from "../../services/index.service";
-import { useSession } from "next-auth/react";
+import { CheckStatusLeaveType } from "@/app/utils/validatefield";
+import { dateFormatTime } from "@/app/utils";
+import { LeaveDetailForm } from "./leave-detail-form";
 import "../../common/style.css";
 
 export interface props {
@@ -38,7 +19,6 @@ export interface props {
   onFinishUpdate: (type: string, id: number) => void;
   onFinishDelete: (type: string, id: number) => void;
   downloadFile: (id: number, filename: string) => void;
-  userGroupIds: string[];
 }
 
 export const TableDetail: React.FC<props> = ({
@@ -49,9 +29,7 @@ export const TableDetail: React.FC<props> = ({
   onFinishUpdate,
   onFinishDelete,
   downloadFile,
-  userGroupIds,
 }): React.ReactElement => {
-  const { data: session } = useSession();
   const Auth = useAxiosIntranet();
   const dataleaveservice = DataLeaveService(Auth);
   const [statusById, setStatusById] = useState<any | null>(null);
@@ -101,58 +79,21 @@ export const TableDetail: React.FC<props> = ({
       dataIndex: "status",
       title: "Status",
       align: "center",
-      render: (e: string) => {
-        let color = "";
-        let text = "";
-        let icon = null;
-
-        switch (e) {
-          case "waitting":
-            color = "DodgerBlue";
-            text = "WAITING";
-            icon = <SyncOutlined spin />;
-            break;
-          case "cancel":
-            color = "silver";
-            text = "CANCEL";
-            icon = <CloseCircleOutlined />;
-            break;
-          case "approved":
-            color = "LimeGreen";
-            text = "APPROVED";
-            icon = <CheckCircleOutlined />;
-            break;
-          default:
-            color = "gray";
-            text = "UNKNOWN";
-            icon = <MinusCircleOutlined />;
-            break;
-        }
-
-        return (
-          <Tag color={color} icon={icon}>
-            {text}
-          </Tag>
-        );
+      render: (status: string) => {
+        CheckStatusLeaveType(status);
       },
     },
     {
       key: "userApproved",
       dataIndex: "userApproved",
       title: "Approved By",
-      render: (text: any) => (text ? text : "-"),
+      render: (userApproved: string) => (userApproved ? userApproved : "-"),
     },
     {
       key: "approvedDate",
       dataIndex: "approvedDate",
       title: "Approved Date",
-      render: (_: any, row: any) => (
-        <span>
-          {row.approvedDate
-            ? dayjs(row.approvedDate).format("DD-MM-YYYY")
-            : "-"}
-        </span>
-      ),
+      render: (value: any) => dateFormatTime(value),
     },
     {
       key: "id",
@@ -213,46 +154,34 @@ export const TableDetail: React.FC<props> = ({
   return (
     <div>
       <div>
-        <Collapse
+        {/* <Collapse
           bordered={false}
           items={[
             {
               key: "1",
               label: <b>Filter</b>,
-              children: (
-                <Form size="small" layout="inline">
-                  <Row gutter={24}>
-                    <Col span={24}>
-                      <Form.Item label="Search">
-                        <Search
-                          placeholder="input search text"
-                          onSearch={dataLeaveSearch}
-                          enterButton
-                        />
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                </Form>
-              ),
+              children: ( */}
+        {/* ),
             },
           ]}
           defaultActiveKey={[]}
-        />
+        /> */}
       </div>
-      <div>
-        <Row gutter={[18, 18]}>
-          <Col md={18}>
-            <ExportDataLeaveAll data={dataLeaveUser} />
-          </Col>
-          <Col
-            md={6}
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "center",
-            }}
-          ></Col>
-        </Row>
+      <div style={{ display: "flex" }}>
+        <div style={{ marginTop: "15px" }}>
+          <Form size="small" layout="inline">
+            <Form.Item label="Search">
+              <Search
+                placeholder="input search text"
+                onSearch={dataLeaveSearch}
+                enterButton
+              />
+            </Form.Item>
+          </Form>
+        </div>
+        <div style={{ marginLeft: "10px" }}>
+          <ExportDataLeaveAll data={dataLeaveUser} />
+        </div>
       </div>
       <Table
         dataSource={dataSource}
@@ -260,7 +189,6 @@ export const TableDetail: React.FC<props> = ({
         size="small"
         rowKey="id"
       />
-
       <Modal
         title=""
         open={openModalDetail}
@@ -268,112 +196,12 @@ export const TableDetail: React.FC<props> = ({
         onCancel={() => setOpenModalDetail(false)}
         width={600}
       >
-        <div className="w-full justify-center flex mb-2 font-bold text-lg">{`< รายละเอียดการลา >`}</div>
-        <Form autoComplete="off" form={formdetail}>
-          <div style={{ paddingLeft: "380px", margin: "10px  " }}>
-            <div className=" col-span-3 md:col-span-1 ml-1">
-              <Form.Item
-                label={`วันที่ :`}
-                name={`createAt`}
-                style={{ marginBottom: 0 }}
-              >
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-          </div>
-          <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`เรียนถึง :`} name={`ownerName`}>
-              <Input disabled className="read-only-input" />
-            </Form.Item>
-          </div>
-          <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`เนื่องจาก :`} name={`detail`}>
-              <Input disabled className="read-only-input" />
-            </Form.Item>
-          </div>
-          <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
-            <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`จึงขอ :`} name={`typeLeave`}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`เป็นเวลา :`} name={`leaveHour`}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-          </div>
-          <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
-            <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`ตั้งแต่วันที่ :`} name={`startDate`}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`ถึงวันที่ :`} name={`endDate`}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-          </div>
-          <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`เบอร์ติดต่อระหว่างลา :`} name={`phoneNumber`}>
-              <Input disabled className="read-only-input" />
-            </Form.Item>
-          </div>
-          {Array.isArray(formdetail.getFieldValue("dataLeaveFiles")) &&
-            formdetail.getFieldValue("dataLeaveFiles").length > 0 && (
-              <>
-                {
-                  <div className=" col-span-3 md:col-span-1 ml-5">
-                    <Form.Item
-                      label={`ไฟล์ `}
-                      name={`endDate`}
-                      layout={`horizontal`}
-                    >
-                      {formdetail
-                        .getFieldValue("dataLeaveFiles")
-                        .map((file: any, index: number) => (
-                          <div key={index}>
-                            <Tooltip title={`ดาวน์โหลด`}>
-                              <Button
-                                type="link"
-                                onClick={() =>
-                                  downloadFile(file.id, file.fileName)
-                                }
-                              >
-                                <Space>
-                                  <PaperClipOutlined />
-                                  {file.fileName}
-                                </Space>
-                              </Button>
-                            </Tooltip>
-                          </div>
-                        ))}
-                    </Form.Item>
-                  </div>
-                }
-              </>
-            )}
-          {formdetail.getFieldValue("userApproved") ? (
-            <>
-              <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
-                <div className=" col-span-3 md:col-span-1 ml-5">
-                  <Form.Item label={`ผู้อนุมัติ :`} name={`userApproved`}>
-                    <Input disabled className="read-only-input" />
-                  </Form.Item>
-                </div>
-                <div className=" col-span-3 md:col-span-1 ml-5">
-                  <Form.Item label={`วันที่อนุมัติ :`} name={`approvedDate`}>
-                    <Input disabled className="read-only-input" />
-                  </Form.Item>
-                </div>
-              </div>
-            </>
-          ) : null}
-          <Form.Item hidden name={`id`}>
-            <Input />{" "}
-          </Form.Item>
-        </Form>
+        <LeaveDetailForm
+          formdetail={formdetail}
+          downloadFile={(id: number, filename: string) =>
+            downloadFile(id, filename)
+          }
+        />
         <Row gutter={[12, 12]} className="flex justify-center">
           <Col>
             <Tooltip title={`Approved`}>
@@ -388,22 +216,6 @@ export const TableDetail: React.FC<props> = ({
               >
                 {CheckIcon}
               </Button>
-              {/* {session?.user.userId &&
-                userGroupIds.includes(session?.user.userId) && (
-                  <Button
-                    size="small"
-                    type="primary"
-                    onClick={() => {
-                      onFinishUpdate("approved", dataById ? dataById : 0);
-                    }}
-                    style={{ width: "60px", height: "30px" }}
-                    disabled={
-                      statusById === "cancel" || statusById === "approved"
-                    }
-                  >
-                    {CheckIcon}
-                  </Button>
-                )} */}
             </Tooltip>
           </Col>
           <Col>

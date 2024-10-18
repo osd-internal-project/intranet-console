@@ -7,6 +7,7 @@ import {
 } from "@ant-design/icons";
 import { Flex, message, Tag } from "antd";
 import { MaCarBookType } from "../page/macar/common";
+import dayjs from "dayjs";
 
 export const validatesUploadfileImage = (
   rule: any,
@@ -26,7 +27,7 @@ export const validateCheckData = (rule: any, value: string, callback: any) => {
   }
 };
 
-export const CheckTypeTag = (status: string) => {
+export const CheckStatusMaCarBookType = (status: string) => {
   let color = "";
   let text = "";
   let icon = null;
@@ -233,3 +234,39 @@ export const checkStatusMaCarApprove = (carBookApprovedStatus: string) => {
     return;
   }
 };
+
+export const CheckStatusLeaveType = (status: string) => {
+  let color = "";
+  let text = "";
+  let icon = null;
+  switch (status) {
+    case "waitting":
+      color = "DodgerBlue";
+      text = "WAITING";
+      icon = <SyncOutlined spin />;
+      break;
+    case "cancel":
+      color = "silver";
+      text = "CANCEL";
+      icon = <CloseCircleOutlined />;
+      break;
+    case "approved":
+      color = "LimeGreen";
+      text = "APPROVED";
+      icon = <CheckCircleOutlined />;
+      break;
+    default:
+      color = "gray";
+      text = "UNKNOWN";
+      icon = <MinusCircleOutlined />;
+      break;
+  }
+
+  return (
+    <Tag color={color} icon={icon}>
+      {text}
+    </Tag>
+  );
+};
+
+

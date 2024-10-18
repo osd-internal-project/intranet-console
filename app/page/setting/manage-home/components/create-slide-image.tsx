@@ -93,7 +93,6 @@ export const CreateSlideImage: React.FC<props> = ({
         width={400}
         footer={false}
       >
-        {" "}
         <div className=" col-span-3 md:col-span-1 ml-5">
           <p>หมายเหตุ: อัปโหลดรูปภาพได้ครั้งละ 1 รูปเท่านั้น</p>
           <Form

@@ -24,7 +24,7 @@ import TextArea from "antd/es/input/TextArea";
 import {
   checkStatusMaCarApprove,
   checkStatusMaCarCancel,
-  CheckTypeTag,
+  CheckStatusMaCarBookType,
   showStatus,
 } from "@/app/utils/validatefield";
 import { dateFormatTime } from "@/app/utils";
@@ -287,7 +287,7 @@ const ManageCar: React.FC<props> = ({
       key: "carBookApprovedStatus",
       dataIndex: "carBookApprovedStatus",
       align: "center",
-      render: (status: string) => CheckTypeTag(status),
+      render: (status: string) => CheckStatusMaCarBookType(status),
     },
     {
       title: "จัดการ",

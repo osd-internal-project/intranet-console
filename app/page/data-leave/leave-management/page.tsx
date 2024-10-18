@@ -31,15 +31,15 @@ const page = () => {
   const AuthUser = useAxiosUser();
   const dataleaveserviceIntra = DataLeaveService(AuthIntra);
   const dataleaveserviceUser = DataLeaveService(AuthUser);
+  const [formcreate] = Form.useForm();
   const [getdataTypeLeave, setdataTypeLeave] = useState<ITypetypeleave[]>([]);
   const [getdataUser, setdataUser] = useState<ISelect[]>([]);
   const [getdataUserByTypeId, setdataUserByTypeId] = useState<ITpyeUser[]>([]);
   const [getLoading, setLoading] = useState<boolean>(true);
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const [getSearch, setSearch] = useState<{ typeid: string } | undefined>(
     undefined
   );
-  const [openModal, setOpenModal] = useState<boolean>(false);
-  const [formcreate] = Form.useForm();
 
   useEffect(() => {
     if (getLoading) {

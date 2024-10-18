@@ -186,6 +186,7 @@ export interface ITypeDataLeaveCreate {
   time_start_check: boolean;
   ownerId?: string;
   ownerName?: string;
+  groupName: string;
 }
 
 export interface ITypeDataleaveMap {
@@ -194,12 +195,27 @@ export interface ITypeDataleaveMap {
   masterTypeleaveId: number;
 }
 
-
 export interface UserGroupType {
   id: number;
   groupId: string;
   groupName: string;
   description: string;
-
 }
 
+export interface MasterTypeleaveType {
+  id: number;
+  typeId?: number | null;
+  typeName?: string | null;
+  forwardLeave?: string | null;
+  limitLeaveOne?: string | null;
+  limitLeaveTwo?: string | null;
+  limitLeaveThree?: string | null;
+  limitLeaveFour?: string | null;
+  descriptionLeave?: string | null;
+  typeEveryDay?: boolean | null;
+  typeNameEn?: string | null;
+  typeNameTh?: string | null;
+  createdAt?: Date | null;
+  updatedAt?: Date | null;
+  // typeLeaveDisabledMap?: TypeLeaveDisabledMapType[];
+}

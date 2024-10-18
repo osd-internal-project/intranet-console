@@ -144,7 +144,6 @@ export default function Page() {
     }
   }
 
-
   return (
     <Row>
       <Col span={24}>
@@ -179,7 +178,6 @@ export default function Page() {
             downloadFile={(id: number, filename: string) =>
               downloadFile(id, filename)
             }
-            userGroupIds={userGroupIds}
           />
         </Card>
       </div>

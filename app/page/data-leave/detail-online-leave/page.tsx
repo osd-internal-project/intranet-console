@@ -1,7 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { TableDetail } from "./components/table-detail";
-import { DepartmentCalendarDetail } from "./components/department-calendar-details";
 import {
   Breadcrumb,
   Card,
@@ -14,15 +12,15 @@ import {
   TabsProps,
   message,
 } from "antd";
-import { useRouter } from "next/navigation";
+import { TableDetail } from "./components/table-detail";
+import { DepartmentCalendarDetail } from "./components/department-calendar-details";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../services/index.service";
 import { useSession } from "next-auth/react";
-import { IDepartMent, ITypeDataLeave } from "../common";
+import { ITypeDataLeave } from "../common";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 
 export default function Page() {
-  const router = useRouter();
   const Auth = useAxiosIntranet();
   const dataleaveservice = DataLeaveService(Auth);
   const { data: session } = useSession();

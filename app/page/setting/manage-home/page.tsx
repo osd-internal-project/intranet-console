@@ -78,7 +78,7 @@ export default function TypeLeave() {
   const onfinishCreateSlide = async (values: any) => {
     try {
       if (slideImage && slideImage.length >= 10) {
-        message.warning("ไม่สามารถอัปโหลดได้ เนื่องจากรูปภาพครบ 10 รูปแล้ว !");
+        message.error("ไม่สามารถอัปโหลดได้ เนื่องจากรูปภาพครบ 10 รูปแล้ว !");
         return;
       }
       const newFileName = values.addFile.fileList[0].name;
@@ -86,7 +86,7 @@ export default function TypeLeave() {
         (image) => image.fileName === newFileName
       );
       if (isDuplicate) {
-        message.warning("ไม่สามารถอัปโหลดไฟล์ที่มีชื่อซ้ำกันได้");
+        message.error("ไม่สามารถอัปโหลดไฟล์ที่มีชื่อซ้ำกันได้");
         return;
       }
       if (imageFiles.length > 0) {

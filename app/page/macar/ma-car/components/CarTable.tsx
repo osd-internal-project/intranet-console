@@ -27,7 +27,7 @@ import {
 } from "../../common/index";
 import {
   checkStatus,
-  CheckTypeTag,
+  CheckStatusMaCarBookType,
   isSelectDisabled,
   showStatus,
 } from "@/app/utils/validatefield";
@@ -62,11 +62,11 @@ const MaCarBookTable: React.FC<props> = ({
   const intraAuthService = MaCarServices(intraAuth);
   const [modalEditMaCarBook, setModalEditMa] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [modalCancel, setModalCancel] = useState(false);
+  const [columnId, setColumnId] = useState<number | undefined>(undefined);
   const [currentMaCarBookId, setCurrentMaCarBookId] = useState<number | null>(
     null
   );
-  const [modalCancel, setModalCancel] = useState(false);
-  const [columnId, setColumnId] = useState<number | undefined>(undefined);
   const [carBookApprovedStatus, setcarBookApprovedStatus] = useState<
     string | undefined
   >(undefined);
@@ -223,7 +223,7 @@ const MaCarBookTable: React.FC<props> = ({
       title: "สถานะ",
       dataIndex: "carBookApprovedStatus",
       align: "center",
-      render: (status: string) => CheckTypeTag(status),
+      render: (status: string) => CheckStatusMaCarBookType(status),
     },
     {
       key: "carBookApprovedByName",

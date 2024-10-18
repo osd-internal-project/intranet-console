@@ -1,7 +1,7 @@
 "use-client";
 import React from "react";
-import { Button, Table, Tabs } from "antd";
-import { ITpyeUser, ITypeDataleaveMap } from "../../common";
+import { Button, Table } from "antd";
+import { ITpyeUser } from "../../common";
 import { deleteIcon } from "@/components/icon";
 import "../../common/style.css";
 
@@ -19,13 +19,12 @@ export const TabeLeavManagement: React.FC<props> = ({
       key: "id",
       dataIndex: "id",
       title: "No",
-      width: "50px",
+      align: "center",
       render: (values: string, row: any, index: number) => index + 1,
     },
     {
       key: "id",
       title: "Full Name",
-      width: "300px",
       dataIndex: "id",
       render: (event: number, row: ITpyeUser, index: number) => {
         return `${row.user.firstNameTh} ${row.user.lastNameTh}`;
@@ -35,7 +34,6 @@ export const TabeLeavManagement: React.FC<props> = ({
       key: "id",
       title: "Active",
       align: "center",
-      width: "100px",
       render: (row: any, event: number, index: number) => {
         return (
           <>
@@ -61,6 +59,7 @@ export const TabeLeavManagement: React.FC<props> = ({
         size="small"
         dataSource={getdataUserByTypeId}
         columns={columns}
+        scroll={{ x: "max-content" }}
         rowKey={(e: any) => e.id}
       />
     </div>

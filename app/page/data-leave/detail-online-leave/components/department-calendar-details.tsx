@@ -13,8 +13,6 @@ import { dateToStringThNoTime } from "@/app/utils/format";
 import { PaperClipOutlined } from "@ant-design/icons";
 import "../../common/style.css";
 
-const localizer = momentLocalizer(moment);
-
 interface CustomEvent extends RbcEvent {
   id: number | undefined;
   title: string;
@@ -33,20 +31,17 @@ export interface Props {
 export const DepartmentCalendarDetail: React.FC<Props> = ({
   departmentId,
   downloadFile,
-}) => {
-  const [dataLeaveUsers, setDataLeaveUsers] = useState<ITypeDataLeave | null>(
-    null
-  );
+}: any) => {
+  const localizer = momentLocalizer(moment);
   const [modalDataLeaveDetail, setModalDataLeaveDetail] = useState(false);
-  const [formDetail] = useForm();
+  const [formDetail] = Form.useForm();
   const onCancelModalDetail = () => {
     setModalDataLeaveDetail(false);
   };
 
   const onSelectEventCalendar = (event: CustomEvent) => {
-    const dataLeaveCalendar = departmentId.find((b) => b.id === event.id);
+    const dataLeaveCalendar = departmentId.find((b: any) => b.id === event.id);
     if (dataLeaveCalendar) {
-      setDataLeaveUsers(dataLeaveCalendar);
       formDetail.setFieldsValue({
         ...dataLeaveCalendar,
         name: `${dataLeaveCalendar.firstName} ${dataLeaveCalendar.lastName}`,

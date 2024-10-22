@@ -369,6 +369,8 @@ export default function Page() {
   };
 
   const onfinishCreate = async (values: ITypeDataLeaveCreate) => {
+    // console.log("values: ", values);
+
     const userId = values.userId as string;
     const leaveStartDate = values.startDate as Date;
     const leaveEndDate = values.endDate as Date;
@@ -385,34 +387,39 @@ export default function Page() {
     fifteenDayAdvance.setDate(today.getDate() + 15);
     const thirtyDayAdvance = new Date(today);
     thirtyDayAdvance.setDate(today.getDate() + 30);
-    const breakStart = dayjs("12:00", "HH:mm");
-    const breakEnd = dayjs("13:00", "HH:mm");
 
     const startDate = values.startDate
       ? dayjs(values.startDate).startOf("day")
       : null;
     const endDate = values.endDate ? dayjs(values.endDate).endOf("day") : null;
-    const startTime = values.startTime
-      ? dayjs(values.startTime, "HH:mm")
-      : null;
-    const endTime = values.endTime ? dayjs(values.endTime, "HH:mm") : null;
 
     const totalDays =
       startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
     const selectedOption = getTypeLeaveOption.find(
       (option) => option.value === values.type_id
     );
-    let adjustedEndTime =
-      startTime &&
-      endTime &&
-      startTime.isBefore(breakEnd) &&
-      endTime.isAfter(breakStart)
-        ? startTime.isBefore(breakStart) && endTime.isAfter(breakEnd)
-          ? endTime.subtract(1, "hour")
-          : startTime.isBefore(breakEnd) && startTime.isAfter(breakStart)
-          ? endTime.subtract(endTime.diff(breakEnd, "hour", true), "hour")
-          : endTime
-        : endTime;
+
+    const breakStart = dayjs("12:00", "HH:mm");
+    const breakEnd = dayjs("13:00", "HH:mm");
+    const startTime = values.startTime
+      ? dayjs(values.startTime, "HH:mm")
+      : null;
+    const endTime = values.endTime ? dayjs(values.endTime, "HH:mm") : null;
+
+    let adjustedEndTime = endTime;
+    if (startTime && endTime) {
+      if (startTime.isBefore(breakEnd) && endTime.isAfter(breakStart)) {
+        if (startTime.isBefore(breakStart) && endTime.isAfter(breakEnd)) {
+          adjustedEndTime = endTime.subtract(1, "hour");
+        } else if (startTime.isAfter(breakStart)) {
+          adjustedEndTime = endTime.subtract(
+            endTime.diff(breakEnd, "hour", true),
+            "hour"
+          );
+        }
+      }
+    }
+
     const totalHours =
       startTime && adjustedEndTime
         ? adjustedEndTime.diff(startTime, "hour", true).toFixed(1)

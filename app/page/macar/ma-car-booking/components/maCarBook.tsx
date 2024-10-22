@@ -27,6 +27,7 @@ const MaCarBook: React.FC<props> = ({
   const [submitLoading, setSubmitLoading] = useState(false);
   const [carName, setCarName] = useState<MaCarType[]>([]);
   const [formUser] = Form.useForm();
+  const [messages, messageHeader] = message.useMessage();
 
   useEffect(() => {
     if (maCarData) {
@@ -71,7 +72,7 @@ const MaCarBook: React.FC<props> = ({
       .reverse()
       .find((car): car is any => car.carId === values.carId);
     if (carSelected.status === false) {
-      message.warning("รถคันนี้ไม่พร้อมใช้งาน");
+      messages.warning("รถคันนี้ไม่พร้อมใช้งาน");
       setSubmitLoading(false);
       return;
     }
@@ -79,7 +80,7 @@ const MaCarBook: React.FC<props> = ({
     const carBookEndDate = values.carBookEndDate as Date;
     const today = new Date();
     if (new Date(carBookStartDate) < today) {
-      message.error("ไม่สามารถจองในวันที่ผ่านมาได้");
+      messages.error("ไม่สามารถจองในวันที่ผ่านมาได้");
       setSubmitLoading(false);
       return;
     }
@@ -87,7 +88,7 @@ const MaCarBook: React.FC<props> = ({
       (option: ProvincesType) => option.value === values.idProvinces
     );
     if (new Date(carBookEndDate) < new Date(carBookStartDate)) {
-      message.error("วันที่สิ้นสุดการจองต้องหลังวันที่เริ่มการจอง");
+      messages.error("วันที่สิ้นสุดการจองต้องหลังวันที่เริ่มการจอง");
       setSubmitLoading(false);
       return;
     }
@@ -125,7 +126,7 @@ const MaCarBook: React.FC<props> = ({
             carBookEndDate
           );
           if (conflict) {
-            message.error(
+            messages.error(
               "รถคันนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่ !"
             );
             setSubmitLoading(false);
@@ -136,12 +137,12 @@ const MaCarBook: React.FC<props> = ({
       const maCarBook = await intraAuthService.createMaCarBook(data);
 
       maCarBook
-        ? (message.success("จองรถสำเร็จ"), router.push("/page/macar/ma-car"))
-        : message.error("จองรถไม่สำเร็จ");
+        ? (messages.success("จองรถสำเร็จ"), router.push("/page/macar/ma-car"))
+        : messages.error("จองรถไม่สำเร็จ");
 
       setSubmitLoading(false);
     } catch (error) {
-      message.error("จองรถไม่สำเร็จ");
+      messages.error("จองรถไม่สำเร็จ");
       setSubmitLoading(false);
     }
     setLoading(true);
@@ -149,6 +150,7 @@ const MaCarBook: React.FC<props> = ({
 
   return (
     <>
+      {messageHeader}
       <CarBookForm
         formUser={formUser}
         createMaCarBook={createMaCarBook}

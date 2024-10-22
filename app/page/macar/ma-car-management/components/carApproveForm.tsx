@@ -41,6 +41,7 @@ export const CarApproveForm: React.FC<props> = ({
         size="small"
         autoComplete="off"
       >
+        <Divider orientation="left">ข้อมูลผู้จอง</Divider>
         <Row gutter={24}>
           <Col span={6}>
             <Form.Item<MaCarBookType> name="createdByName" label="ชื่อผู้จอง">

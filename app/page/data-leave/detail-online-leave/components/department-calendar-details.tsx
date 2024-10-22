@@ -104,6 +104,7 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({
       />
 
       <Modal
+        forceRender
         title=""
         open={modalDataLeaveDetail}
         footer={false}

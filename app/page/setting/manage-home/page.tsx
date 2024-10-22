@@ -21,6 +21,7 @@ export default function TypeLeave() {
   const [createSlideImageForm] = useForm();
   const [modalAddSlide, setModalAddSlide] = useState<boolean>(false);
   const [imageFiles, setImageFiles] = useState<any[]>([]);
+  const [messages, messageHeader] = message.useMessage();
 
   useEffect(() => {
     if (loading) loadData();
@@ -46,16 +47,16 @@ export default function TypeLeave() {
     try {
       await intraAuthService.deleteSlideImage(id);
       setSlideImage(slideImage.filter((item) => item.id !== id));
-      message.success("ลบข้อมูลรูปภาพสำเร็จ");
+      messages.success("ลบข้อมูลรูปภาพสำเร็จ");
       setSubmitLoading(false);
     } catch (error) {
-      message.error("ลบข้อมูลรูปภาพไม่สำเร็จ");
+      messages.error("ลบข้อมูลรูปภาพไม่สำเร็จ");
     }
   };
 
   const beforeUploadAddFiles = (file: RcFile) => {
     if (slideImage.find((oneFile) => oneFile.fileName === file.name)) {
-      message.warning(`ชื่อไฟล์นี้ซ้ำ ${file.name} `);
+      messages.warning(`ชื่อไฟล์นี้ซ้ำ ${file.name} `);
       return false;
     }
     return false;
@@ -70,7 +71,7 @@ export default function TypeLeave() {
   const onfinishCreateSlide = async (values: any) => {
     try {
       if (slideImage && slideImage.length >= 10) {
-        message.error("ไม่สามารถอัปโหลดได้ เนื่องจากรูปภาพครบ 10 รูปแล้ว !");
+        messages.error("ไม่สามารถอัปโหลดได้ เนื่องจากรูปภาพครบ 10 รูปแล้ว !");
         return;
       }
       const newFileName = values.addFile.fileList[0].name;
@@ -78,7 +79,7 @@ export default function TypeLeave() {
         (image) => image.fileName === newFileName
       );
       if (isDuplicate) {
-        message.error("ไม่สามารถอัปโหลดไฟล์ที่มีชื่อซ้ำกันได้");
+        messages.error("ไม่สามารถอัปโหลดไฟล์ที่มีชื่อซ้ำกันได้");
         return;
       }
       if (imageFiles.length > 0) {
@@ -93,10 +94,10 @@ export default function TypeLeave() {
         formData.append("createdById", createdById);
         await intraAuthService.uploadImage(formData);
         createSlideImageForm.resetFields();
-        message.success("อัปโหลดรูปสำเร็จ");
+        messages.success("อัปโหลดรูปสำเร็จ");
       }
     } catch (error) {
-      message.error("การอัปโหลดล้มเหลว");
+      messages.error("การอัปโหลดล้มเหลว");
     } finally {
       setSubmitLoading(false);
       setModalAddSlide(false);
@@ -108,6 +109,7 @@ export default function TypeLeave() {
 
   return (
     <>
+      {messageHeader}
       <Row gutter={[8, 8]}>
         <Col span={24}>
           <Breadcrumb

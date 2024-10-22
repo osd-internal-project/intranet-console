@@ -6,7 +6,6 @@ import {
   Space,
   Popconfirm,
   Tooltip,
-  Collapse,
   Form,
   Input,
   Col,
@@ -186,13 +185,6 @@ export const TableSlideImage: React.FC<propss> = ({
   return (
     <div>
       <div>
-        {/* <Collapse
-          bordered={false}
-          items={[
-            {
-              key: "1",
-              label: <b>Filter</b>,
-              children: ( */}
         <Form size="small" layout="horizontal">
           <Col span={6}>
             <Form.Item label="Search :">

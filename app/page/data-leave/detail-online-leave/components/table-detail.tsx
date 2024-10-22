@@ -13,7 +13,6 @@ import {
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { CancelIcon } from "@/components/icon";
 import { PaperClipOutlined } from "@ant-design/icons";
-import dayjs from "dayjs";
 import { ITypeDataLeave } from "../../common";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../../services/index.service";
@@ -146,6 +145,7 @@ export const TableDetail: React.FC<props> = ({
         rowKey={(e: any) => e.id}
       />
       <Modal
+        forceRender
         title=""
         open={openModalDetail}
         footer={false}
@@ -156,7 +156,7 @@ export const TableDetail: React.FC<props> = ({
         <Form autoComplete="off" form={formdetail}>
           <div>
             <p />
-          </div>{" "}
+          </div>
           <div style={{ paddingLeft: "380px", margin: "10px  " }}>
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`วันที่ :`} name={`createAt`}>
@@ -212,6 +212,7 @@ export const TableDetail: React.FC<props> = ({
                       label={`ไฟล์ `}
                       name={`endDate`}
                       layout={`horizontal`}
+                      // noStyle
                     >
                       {formdetail
                         .getFieldValue("dataLeaveFiles")
@@ -254,13 +255,13 @@ export const TableDetail: React.FC<props> = ({
             </>
           ) : null}
           <Form.Item hidden name={`id`}>
-            <Input />{" "}
+            <Input />
           </Form.Item>
           <Form.Item hidden name={`approvedDate`}>
-            <Input />{" "}
+            <Input />
           </Form.Item>
           <Form.Item hidden name={`status`}>
-            <Input />{" "}
+            <Input />
           </Form.Item>
         </Form>
         <>

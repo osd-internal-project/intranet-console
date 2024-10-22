@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  App,
   Button,
   DatePicker,
   Form,
@@ -285,13 +284,11 @@ export const CreateLeaveForm: React.FC<props> = ({
           </div>
         </div>
         <div className=" col-span-12 md:col-span-1 ml-5 justify-center flex w-full">
-          <App>
-            <Button
-              htmlType="submit"
-              type="primary"
-              style={{ fontSize: "16px", padding: "18px 15px 15px" }}
-            >{`ยื่นใบลา`}</Button>
-          </App>
+          <Button
+            htmlType="submit"
+            type="primary"
+            style={{ fontSize: "16px", padding: "18px 15px 15px" }}
+          >{`ยื่นใบลา`}</Button>
         </div>
       </Form>
     </div>

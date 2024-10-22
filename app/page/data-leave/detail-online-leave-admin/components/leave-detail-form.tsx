@@ -14,7 +14,7 @@ export const LeaveDetailForm: React.FC<props> = ({
   return (
     <>
       <div className="w-full justify-center flex mb-2 font-bold text-lg">{`< รายละเอียดการลา >`}</div>
-      <Form autoComplete="off" form={formdetail}>
+      <Form autoComplete="off" form={formdetail} >
         <div style={{ paddingLeft: "380px", margin: "10px  " }}>
           <div className=" col-span-3 md:col-span-1 ml-1">
             <Form.Item

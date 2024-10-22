@@ -190,6 +190,7 @@ export const TableDetail: React.FC<props> = ({
         rowKey="id"
       />
       <Modal
+        forceRender
         title=""
         open={openModalDetail}
         footer={false}

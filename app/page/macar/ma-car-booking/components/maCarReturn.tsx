@@ -50,6 +50,7 @@ const MaCarReturn: React.FC<props> = ({
   const [submitLoading, setSubmitLoading] = useState(false);
   const [oldCarMile, setOldCarMile] = useState<number>(0);
   const [statusApprove, setStatusApprove] = useState("");
+  const [messages, messageHeader] = message.useMessage();
 
   const showModalReturn = (record: MaCarBookType) => {
     checkStatusReturn(record);
@@ -121,12 +122,12 @@ const MaCarReturn: React.FC<props> = ({
         };
         await maCarBookServices.updateMaCarBook(currentMaBookId, maCarBook);
         await maCarBookServices.updateMaCar(currentMaId, updatedMaCar);
-        message.success("คืนรถสำเร็จ");
+        messages.success("คืนรถสำเร็จ");
         handleModalReturn();
         setSubmitLoading(false);
         formReturn.resetFields();
       } catch (error) {
-        message.error("คืนรถไม่สำเร็จ");
+        messages.error("คืนรถไม่สำเร็จ");
         setSubmitLoading(false);
       }
     }
@@ -218,6 +219,7 @@ const MaCarReturn: React.FC<props> = ({
 
   return (
     <>
+      {messageHeader}
       <Modal
         title="การคืนรถ"
         open={modalEditReturn}

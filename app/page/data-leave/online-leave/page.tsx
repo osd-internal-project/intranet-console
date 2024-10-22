@@ -9,6 +9,7 @@ import {
   Row,
   UploadFile,
   message,
+  Form,
 } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { useSession } from "next-auth/react";
@@ -53,7 +54,9 @@ export default function Page() {
   const [checkSwitch, setCheckSwitch] = useState<boolean>(false);
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [createdataleaveForm] = useForm();
+  const [createdataleaveForm] = Form.useForm();
+  const [messages, messageHeader] = message.useMessage();
+  const [Modals, modelsHeader] = Modal.useModal();
   const [typeLeaveTableAll, setTypeLeaveTableAll] = useState<ITypetypeleave[]>(
     []
   );
@@ -105,7 +108,7 @@ export default function Page() {
 
   const beforeUploadAttendFiles = (file: RcFile) => {
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
-      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
+      messages.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return false;
     }
     return false;
@@ -126,8 +129,13 @@ export default function Page() {
     } else if (type === "endDate" && params.startDate) {
       checklenghtDay(params.startDate, value);
     }
+    // if (type === "endDate") {
+    //   setParams((e: any) => ({ ...e, endDate: value }));
+    // }
     if (type === "endDate") {
       setParams((e: any) => ({ ...e, endDate: value }));
+    } else if (type === "startDate" && params.endDate) {
+      checklenghtDay(value, params.endDate);
     }
     if (type === "selectStartTime") {
       setParams((e: any) => ({ ...e, startTime: value }));
@@ -136,7 +144,12 @@ export default function Page() {
     }
     if (type === "selectEndTime") {
       setParams((e: any) => ({ ...e, endTime: value }));
+    } else if (type === "selectStartTime" && params.endTime) {
+      checklenghtTime(value, params.endTime);
     }
+    // if (type === "selectEndTime") {
+    //   setParams((e: any) => ({ ...e, endTime: value }));
+    // }
     if (value === true) {
       setParams((e: any) => ({ ...e, lengthDate: 1 }));
     } else if (value === false) {
@@ -149,7 +162,13 @@ export default function Page() {
     const startDate = value1 ? dayjs(value1).startOf("day") : null;
     const endDate = value2 ? dayjs(value2).endOf("day") : null;
     const totalDays =
-      startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
+      startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : "0";
+
+    // console.log(startDate);
+    // console.log(endDate);
+    // if (startDate && endDate && startDate.isSame(endDate)) {
+    //   return;
+    // }
     setParams((e: any) => ({
       ...e,
       lengthDate:
@@ -215,7 +234,7 @@ export default function Page() {
   ) => {
     const conflict = await checkDataLeaveConflict(userId, startDate, endDate);
     if (conflict) {
-      message.warning("คุณลาในช่วงเวลานี้แล้ว กรุณาเลือกช่วงเวลาใหม่.");
+      messages.warning("คุณลาในช่วงเวลานี้แล้ว กรุณาเลือกช่วงเวลาใหม่.");
       return true;
     }
     return false;
@@ -244,7 +263,7 @@ export default function Page() {
   const checkDataLeaveCancel = async (type_id: number) => {
     const conflict = await checkLeaveCancel(type_id);
     if (conflict) {
-      message.error("คุณไม่มีสิทธิลาประเภทการลานี้!");
+      messages.error("คุณไม่มีสิทธิลาประเภทการลานี้!");
       return true;
     }
     return false;
@@ -300,7 +319,7 @@ export default function Page() {
                       differenceInMilliseconds / (1000 * 60 * 60);
                     totalHourvalue = differenceInHours;
                   } else {
-                    message.error("ตรวจสอบจำนวนเวลาลาไม่สำเร็จ");
+                    messages.error("ตรวจสอบจำนวนเวลาลาไม่สำเร็จ");
                   }
                 }
               }
@@ -340,7 +359,7 @@ export default function Page() {
   ): Promise<boolean> => {
     const conflict = await checkLeaveHour(type_id, value);
     if (conflict) {
-      message.warning({
+      messages.warning({
         content: "คุณใช้สิทธิ์การลาประเภทนี้ครบหรือเกินจำนวนที่กำหนด",
         duration: 5,
       });
@@ -400,11 +419,11 @@ export default function Page() {
         : 0;
 
     if (new Date(leaveEndDate) < new Date(leaveStartDate)) {
-      message.error("วันที่สิ้นสุดการลาต้องหลังวันที่เริ่มการลา");
+      messages.error("วันที่สิ้นสุดการลาต้องหลังวันที่เริ่มการลา");
       return;
     }
     if (dayjs(leaveEndTime, "HH:mm").isBefore(dayjs(leaveStartTime, "HH:mm"))) {
-      return message.error("เวลาที่สิ้นสุดการลาต้องหลังเวลาที่เริ่มการลา");
+      return messages.error("เวลาที่สิ้นสุดการลาต้องหลังเวลาที่เริ่มการลา");
     }
 
     try {
@@ -458,7 +477,7 @@ export default function Page() {
                         : Number(totalDays) * 8,
                   }),
             };
-            Modal.confirm({
+            Modals.confirm({
               title: "Add ",
               icon: <ExclamationCircleFilled />,
               content: "Are you sure you want to add this ?",
@@ -484,7 +503,7 @@ export default function Page() {
                       await dataleaveservice.uploadFiles(result.id, formData);
                     });
                   }
-                  message.success(`Add success`);
+                  messages.success(`Add success`);
                   createdataleaveForm.resetFields();
                   setStartDate(undefined);
                   setEndDate(undefined);
@@ -498,17 +517,17 @@ export default function Page() {
               },
             });
           } catch (err) {
-            message.error("ลาไม่สำเร็จ");
+            messages.error("ลาไม่สำเร็จ");
           }
           return;
         }
         if (new Date(leaveStartDate) < today) {
-          message.error("ไม่สามารถลาในวันที่ผ่านมาได้");
+          messages.error("ไม่สามารถลาในวันที่ผ่านมาได้");
           return;
         }
       }
     } catch (error) {
-      message.error("ลาย้อนหลังไม่สำเร็จ");
+      messages.error("ลาย้อนหลังไม่สำเร็จ");
     }
 
     try {
@@ -516,7 +535,7 @@ export default function Page() {
         const hasTypeId = type_id === 2;
         if (hasTypeId) {
           if (new Date(leaveStartDate) < twoDayAdvance) {
-            message.warning("ต้องลาล่วงหน้า 2 วัน");
+            messages.warning("ต้องลาล่วงหน้า 2 วัน");
             return;
           }
           const base: ITypeDataLeave = {
@@ -561,7 +580,7 @@ export default function Page() {
                         : Number(totalDays) * 8,
                   }),
             };
-            Modal.confirm({
+            Modals.confirm({
               title: "Add ",
               icon: <ExclamationCircleFilled />,
               content: "Are you sure you want to add this ?",
@@ -586,7 +605,7 @@ export default function Page() {
                       await dataleaveservice.uploadFiles(result.id, formData);
                     });
                   }
-                  message.success(`Add success`);
+                  messages.success(`Add success`);
                   createdataleaveForm.resetFields();
                   setStartDate(undefined);
                   setEndDate(undefined);
@@ -600,14 +619,14 @@ export default function Page() {
               },
             });
           } catch (err) {
-            message.error("ลาไม่สำเร็จ");
+            messages.error("ลาไม่สำเร็จ");
           }
 
           return;
         }
       }
     } catch (error) {
-      message.error("ลาส่วงหน้า 2วัน ไม่สำเร็จ");
+      messages.error("ลาส่วงหน้า 2วัน ไม่สำเร็จ");
     }
 
     try {
@@ -615,7 +634,7 @@ export default function Page() {
         const hasTypeId = type_id === 3 || type_id === 6 || type_id === 10;
         if (hasTypeId) {
           if (new Date(leaveStartDate) < fiveDayAdvance) {
-            message.warning("ต้องลาล่วงหน้า 5 วัน");
+            messages.warning("ต้องลาล่วงหน้า 5 วัน");
             return;
           }
           const base: ITypeDataLeave = {
@@ -657,7 +676,7 @@ export default function Page() {
                         : Number(totalDays) * 8,
                   }),
             };
-            Modal.confirm({
+            Modals.confirm({
               title: "Add ",
               icon: <ExclamationCircleFilled />,
               content: "Are you sure you want to add this ?",
@@ -682,7 +701,7 @@ export default function Page() {
                       await dataleaveservice.uploadFiles(result.id, formData);
                     });
                   }
-                  message.success(`Add success`);
+                  messages.success(`Add success`);
                   createdataleaveForm.resetFields();
                   setStartDate(undefined);
                   setEndDate(undefined);
@@ -696,13 +715,13 @@ export default function Page() {
               },
             });
           } catch (err) {
-            message.error("ลาไม่สำเร็จ");
+            messages.error("ลาไม่สำเร็จ");
           }
           return;
         }
       }
     } catch (error) {
-      message.error("ลาล่วงหน้า 5วัน ไม่สำเร็จ");
+      messages.error("ลาล่วงหน้า 5วัน ไม่สำเร็จ");
     }
 
     try {
@@ -710,7 +729,7 @@ export default function Page() {
         const hasTypeId = type_id === 7;
         if (hasTypeId) {
           if (new Date(leaveStartDate) < fifteenDayAdvance) {
-            message.warning("ต้องลาล่วงหน้า 15 วัน");
+            messages.warning("ต้องลาล่วงหน้า 15 วัน");
             return;
           }
           const base: ITypeDataLeave = {
@@ -755,7 +774,7 @@ export default function Page() {
                         : Number(totalDays) * 8,
                   }),
             };
-            Modal.confirm({
+            Modals.confirm({
               title: "Add ",
               icon: <ExclamationCircleFilled />,
               content: "Are you sure you want to add this ?",
@@ -780,7 +799,7 @@ export default function Page() {
                       await dataleaveservice.uploadFiles(result.id, formData);
                     });
                   }
-                  message.success(`Add success`);
+                  messages.success(`Add success`);
                   createdataleaveForm.resetFields();
                   setStartDate(undefined);
                   setEndDate(undefined);
@@ -794,13 +813,13 @@ export default function Page() {
               },
             });
           } catch (err) {
-            message.error("ลาไม่สำเร็จ");
+            messages.error("ลาไม่สำเร็จ");
           }
           return;
         }
       }
     } catch (error) {
-      message.error("ลาล่วงหน้า 15วัน ไม่สำเร็จ");
+      messages.error("ลาล่วงหน้า 15วัน ไม่สำเร็จ");
     }
 
     try {
@@ -809,7 +828,7 @@ export default function Page() {
           type_id === 5 || type_id === 9 || type_id === 11 || type_id === 12;
         if (hasTypeId) {
           if (new Date(leaveStartDate) < thirtyDayAdvance) {
-            message.warning("ต้องลาล่วงหน้า 30 วัน");
+            messages.warning("ต้องลาล่วงหน้า 30 วัน");
             return;
           }
           const base: ITypeDataLeave = {
@@ -855,7 +874,7 @@ export default function Page() {
                         : Number(totalDays) * 8,
                   }),
             };
-            Modal.confirm({
+            Modals.confirm({
               title: "Add ",
               icon: <ExclamationCircleFilled />,
               content: "Are you sure you want to add this ?",
@@ -880,7 +899,7 @@ export default function Page() {
                       await dataleaveservice.uploadFiles(result.id, formData);
                     });
                   }
-                  message.success(`Add success`);
+                  messages.success(`Add success`);
                   createdataleaveForm.resetFields();
                   setStartDate(undefined);
                   setEndDate(undefined);
@@ -894,18 +913,20 @@ export default function Page() {
               },
             });
           } catch (err) {
-            message.error("ลาไม่สำเร็จ");
+            messages.error("ลาไม่สำเร็จ");
           }
           return;
         }
       }
     } catch (error) {
-      message.error("ลาล่วงหน้า 30วัน ไม่สำเร็จ");
+      messages.error("ลาล่วงหน้า 30วัน ไม่สำเร็จ");
     }
   };
 
   return getUserOwner ? (
     <div>
+      {modelsHeader}
+      {messageHeader}
       <Row>
         <Col span={24}>
           <Breadcrumb

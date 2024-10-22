@@ -64,6 +64,7 @@ const ManageCar: React.FC<props> = ({
   const [modalCancel, setModalCancel] = useState(false);
   const [columnId, setColumnId] = useState<number | undefined>(undefined);
   const [dataSource, setDataSource] = React.useState<any>([]);
+  const [messages, messageHeader] = message.useMessage();
 
   useEffect(() => {
     setDataSource(maCarBookData.docs || []);
@@ -121,10 +122,10 @@ const ManageCar: React.FC<props> = ({
     try {
       await intraAuthService.deleteMaCarBook(id);
       setMaBookData(maBookData.filter((item) => item.id !== id));
-      message.success("ลบข้อมูลการจองสำเร็จ");
+      messages.success("ลบข้อมูลการจองสำเร็จ");
       setSubmitLoading(false);
     } catch (error) {
-      message.error("ลบข้อมูลการจองไม่สำเร็จ");
+      messages.error("ลบข้อมูลการจองไม่สำเร็จ");
     }
     setLoading(true);
   };
@@ -151,10 +152,10 @@ const ManageCar: React.FC<props> = ({
         remarkCancel: values.remarkCancel,
       };
       await intraAuthService.updateMaCarBook(updatedCancelMa);
-      message.success("ยกเลิกการจองสำเร็จ");
+      messages.success("ยกเลิกการจองสำเร็จ");
       setSubmitLoading(false);
     } catch (error) {
-      message.error("ยกเลิกการจองไม่สำเร็จ");
+      messages.error("ยกเลิกการจองไม่สำเร็จ");
     } finally {
       setSubmitLoading(false);
     }
@@ -175,13 +176,13 @@ const ManageCar: React.FC<props> = ({
         remarkApproved: values.remarkApproved,
       };
       await intraAuthService.updateMaCarBook(updatedApproveMa);
-      message.success("ไม่อนุมัติการจองสำเร็จ");
+      messages.success("ไม่อนุมัติการจองสำเร็จ");
       formDisapProved.resetFields;
       setModalApproveMa(false);
       setModalDisapProved(false);
       setSubmitLoading(false);
     } catch (error) {
-      message.error("อนุมัติการจองไม่สำเร็จ");
+      messages.error("อนุมัติการจองไม่สำเร็จ");
     } finally {
       setSubmitLoading(false);
     }
@@ -200,10 +201,10 @@ const ManageCar: React.FC<props> = ({
       };
       await intraAuthService.updateMaCarBook(updatedApproveMa);
       setModalApproveMa(false);
-      message.success("อนุมัติการจองสำเร็จ");
+      messages.success("อนุมัติการจองสำเร็จ");
       setSubmitLoading(false);
     } catch (error) {
-      message.error("อนุมัติการจองไม่สำเร็จ");
+      messages.error("อนุมัติการจองไม่สำเร็จ");
     } finally {
       setSubmitLoading(false);
     }
@@ -223,10 +224,10 @@ const ManageCar: React.FC<props> = ({
       };
       await intraAuthService.updateMaCarBook(updatedReturn);
       setModalReturn(false);
-      message.success("รับคืนรถสำเร็จ");
+      messages.success("รับคืนรถสำเร็จ");
       setSubmitLoading(false);
     } catch (error) {
-      message.error("รับคืนรถไม่สำเร็จ");
+      messages.error("รับคืนรถไม่สำเร็จ");
     } finally {
       setSubmitLoading(false);
     }
@@ -344,6 +345,7 @@ const ManageCar: React.FC<props> = ({
 
   return (
     <>
+      {messageHeader}
       <Modal
         width={1000}
         title="การอนุมัติการจองรถ"

@@ -136,11 +136,12 @@ export const CarBookForm: React.FC<props> = ({
               rules={[{ required: true, message: "กรุณาเลือกวันที่เริ่มจอง!" }]}
             >
               <DatePicker
+                className="w-full"
                 placeholder="กรอกวันที่เริ่มการจอง"
                 showTime
                 disabledDate={disabledDate}
                 format="DD/MM/YYYY HH:mm"
-                style={{ width: "100%" }}
+                // style={{ width: "100%" }}
               />
             </Form.Item>
           </Col>
@@ -151,11 +152,12 @@ export const CarBookForm: React.FC<props> = ({
               rules={[{ required: true, message: "กรุณาเลือกวันที่สิ้นสุด" }]}
             >
               <DatePicker
+                className="w-full"
                 placeholder="กรอกวันที่สิ้นสุดการจอง"
                 showTime
                 disabledDate={disabledDate}
                 format="DD/MM/YYYY HH:mm"
-                style={{ width: "100%" }}
+                // style={{ width: "100%" }}
               />
             </Form.Item>
           </Col>

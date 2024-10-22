@@ -49,9 +49,11 @@ export const CreateSlideImage: React.FC<props> = ({
   imageFiles,
   slideImage,
 }): React.ReactElement => {
+  const [messages, messageHeader] = message.useMessage();
+
   const beforeUploadImageFiles = (file: RcFile) => {
     if (slideImage.find((oneFile: any) => oneFile.fileName === file.name)) {
-      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
+      messages.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return false;
     }
     return false;
@@ -64,6 +66,7 @@ export const CreateSlideImage: React.FC<props> = ({
   };
   return (
     <>
+      {messageHeader}
       <div
         style={{
           display: "flex",

@@ -118,6 +118,7 @@ const CustomerSubDetailComponent: React.FC<props> = ({
       key: "name",
       dataIndex: "name",
       title: "ชื่อลูกค้า",
+      width: "300px",
     },
     {
       key: "activeStatus",

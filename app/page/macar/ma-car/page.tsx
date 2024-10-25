@@ -18,7 +18,13 @@ import CarStatus from "./components/CarStatus";
 import { MaCarServices } from "./services/ma-car.service";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { MaCarType, MaCarBookType, dataMaCarbook } from "../common/index";
+import {
+  MaCarType,
+  MaCarBookType,
+  dataMaCarbook,
+  ProvincesType,
+} from "../common/index";
+import axios from "axios";
 
 const MaCar: React.FC = () => {
   const { data: session } = useSession();
@@ -29,6 +35,7 @@ const MaCar: React.FC = () => {
   const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
   const [maCarBookById, setMaCarBookById] = useState<MaCarBookType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [dataProvinces, setDataProvinces] = useState<ProvincesType[]>([]);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -55,6 +62,15 @@ const MaCar: React.FC = () => {
       const maCarBookById = await intraAuthService.findMaCarBookById(
         createdById
       );
+      const response = await axios.get(
+        "https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json"
+      );
+      const provincesData = response.data;
+      const optionsProvinces = provincesData.map((event: ProvincesType) => ({
+        value: event.id,
+        label: event.name_th,
+      }));
+      setDataProvinces(optionsProvinces);
       setMaCarBookById(maCarBookById);
       setMaCarData(maCar);
       setMaCarBookData(maCarBook);
@@ -87,13 +103,14 @@ const MaCar: React.FC = () => {
           setLoading={setLoading}
           maCarData={maCarData}
           maCarBookById={maCarBookById}
+          dataProvinces={dataProvinces}
         />
       ),
     },
     {
       key: "3",
       label: "สถานะรถ",
-      children: <CarStatus maCarData={maCarData} setLoading={setLoading} />,
+      children: <CarStatus maCarData={maCarData} />,
     },
   ];
 

@@ -131,6 +131,9 @@ const BranchAddressAddComponent: React.FC<props> = ({
           <Form.Item label="ลิงค์แผนที่" name={"maplink"}>
             <Input />
           </Form.Item>
+          <Form.Item label="Remark" name={"remark"}>
+            <TextArea />
+          </Form.Item>
         </div>
         <div className=" flex justify-end space-x-2">
           <Button type="primary" htmlType="submit">

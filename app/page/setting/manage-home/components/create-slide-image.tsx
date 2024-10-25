@@ -49,9 +49,11 @@ export const CreateSlideImage: React.FC<props> = ({
   imageFiles,
   slideImage,
 }): React.ReactElement => {
+  const [messages, messageHeader] = message.useMessage();
+
   const beforeUploadImageFiles = (file: RcFile) => {
     if (slideImage.find((oneFile: any) => oneFile.fileName === file.name)) {
-      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
+      messages.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return false;
     }
     return false;
@@ -64,6 +66,7 @@ export const CreateSlideImage: React.FC<props> = ({
   };
   return (
     <>
+      {messageHeader}
       <div
         style={{
           display: "flex",
@@ -93,7 +96,6 @@ export const CreateSlideImage: React.FC<props> = ({
         width={400}
         footer={false}
       >
-        {" "}
         <div className=" col-span-3 md:col-span-1 ml-5">
           <p>หมายเหตุ: อัปโหลดรูปภาพได้ครั้งละ 1 รูปเท่านั้น</p>
           <Form

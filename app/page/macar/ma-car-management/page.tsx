@@ -8,8 +8,6 @@ import {
   Tabs,
   TabsProps,
   TablePaginationConfig,
-  GetProps,
-  Input,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import ManageCar from "./components/manageCar";
@@ -51,7 +49,6 @@ const ManageMaCar = () => {
       const MaCar = await intraAuthService.getMaCarQuery();
       setMaCarBookData(MaCarBook);
       setMaCarBookAll(MaCarBook.docs);
-
       setmaCarData(MaCar);
       setLoading(false);
     } catch (error) {

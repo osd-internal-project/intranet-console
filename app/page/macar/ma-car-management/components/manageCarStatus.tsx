@@ -50,6 +50,7 @@ const ManageCarStatus: React.FC<props> = ({
   const [modalCreateMaCar, setModalCreateMaCar] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(true);
   const { data: session } = useSession();
+  const [messages, messageHeader] = message.useMessage();
 
   const handleEditMaCarCancel = () => {
     setModalEditMaCar(false);
@@ -91,14 +92,11 @@ const ManageCarStatus: React.FC<props> = ({
 
     try {
       const response = await intraAuthService.createMaCar(maCarCreateData);
-      if (response) {
-        message.success("เพิ่มรถสำเร็จ");
-        form.resetFields();
-      } else {
-        message.error("เพิ่มรถไม่สำเร็จ");
-      }
+      response
+        ? (messages.success("เพิ่มรถสำเร็จ"), form.resetFields())
+        : messages.error("เพิ่มรถไม่สำเร็จ");
     } catch (error) {
-      message.error("เพิ่มรถไม่สำเร็จ");
+      messages.error("เพิ่มรถไม่สำเร็จ");
       setSubmitLoading(false);
     }
     setModalCreateMaCar(false);
@@ -107,18 +105,16 @@ const ManageCarStatus: React.FC<props> = ({
 
   const onFinishFailed: FormProps<MaCarType>["onFinishFailed"] = (
     errorInfo
-  ) => {
-    console.log("Failed:", errorInfo);
-  };
+  ) => {};
 
   const handleDeleteCarStatus = async (carId: string) => {
     setSubmitLoading(true);
     try {
       await intraAuthService.deleteMaCar(carId);
       setMaData(maData.filter((item) => item.carId !== carId));
-      message.success("ลบรถสำเร็จ");
+      messages.success("ลบรถสำเร็จ");
     } catch (error) {
-      message.error("ลบรถไม่สำเร็จ");
+      messages.error("ลบรถไม่สำเร็จ");
       setSubmitLoading(false);
     }
     setLoading(true);
@@ -136,11 +132,11 @@ const ManageCarStatus: React.FC<props> = ({
         updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
       };
       await intraAuthService.updateMaCar(updatedMaCar);
-      message.success("แก้ไขข้อมูลรถสำเร็จ");
+      messages.success("แก้ไขข้อมูลรถสำเร็จ");
       handleEditMaCarCancel();
       setSubmitLoading(false);
     } catch (error) {
-      message.error("แก้ไขข้อมูลรถไม่สำเร็จ");
+      messages.error("แก้ไขข้อมูลรถไม่สำเร็จ");
     }
     setLoading(true);
   };
@@ -167,15 +163,14 @@ const ManageCarStatus: React.FC<props> = ({
       dataIndex: "carPetrol",
       key: "carPetrol",
       align: "center",
-      render: (carPetrol: string) => {
-        if (carPetrol === "high") {
-          return <Tag color="green">มาก</Tag>;
-        } else if (carPetrol === "medium") {
-          return <Tag color="orange">ปานกลาง</Tag>;
-        } else if (carPetrol === "low") {
-          return <Tag color="red">น้อย</Tag>;
-        }
-      },
+      render: (carPetrol: string) =>
+        carPetrol === "high" ? (
+          <Tag color="green">มาก</Tag>
+        ) : carPetrol === "medium" ? (
+          <Tag color="orange">ปานกลาง</Tag>
+        ) : carPetrol === "low" ? (
+          <Tag color="red">น้อย</Tag>
+        ) : null,
     },
     {
       title: "สถานะ",
@@ -193,7 +188,6 @@ const ManageCarStatus: React.FC<props> = ({
       title: "เลขไมล์รถ",
       dataIndex: "carMile",
       key: "carMile",
-      width: "100px",
       align: "center",
     },
     {
@@ -225,8 +219,7 @@ const ManageCarStatus: React.FC<props> = ({
           >
             <Tooltip title="ลบ">
               <a type="link">
-                {" "}
-                <DeleteIcon />{" "}
+                <DeleteIcon />
               </a>
             </Tooltip>
           </Popconfirm>
@@ -237,6 +230,7 @@ const ManageCarStatus: React.FC<props> = ({
 
   return (
     <>
+      {messageHeader}
       <Modal
         title="แก้ไขรถ"
         open={modalEditMaCar}
@@ -414,8 +408,7 @@ const ManageCarStatus: React.FC<props> = ({
           display: "flex",
           justifyContent: "flex-end",
           marginRight: "50px",
-          marginTop: "10px",
-          marginBottom: "20px",
+          marginBottom: "10px",
         }}
       >
         <Button type="primary" size="small" onClick={showModalCreateMaCar}>
@@ -429,7 +422,8 @@ const ManageCarStatus: React.FC<props> = ({
         pagination={pagination}
         onChange={changePagination}
         size="small"
-        rowKey="id"
+        scroll={{ x: "max-content" }}
+        rowKey={(e: any) => e.id}
       />
     </>
   );

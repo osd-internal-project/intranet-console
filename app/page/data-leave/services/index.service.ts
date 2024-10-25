@@ -132,7 +132,7 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    
+
     getdataUserByTypeLeaveId: async (search: { typeid: string }) => {
       const condition = {
         where: {
@@ -192,6 +192,16 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrlTypeleave}/condition`, {
           condition: condition,
         })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
+    getdataMasterTypeLeaveAll: async () => {
+      return await axiosInstance
+        .get(`${baseUrlTypeleave}`)
         .then((res) => {
           return res.data;
         })

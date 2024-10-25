@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import {
+  App,
   Breadcrumb,
   Col,
   Divider,
@@ -8,6 +9,7 @@ import {
   Row,
   UploadFile,
   message,
+  Form,
 } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { useSession } from "next-auth/react";
@@ -22,9 +24,8 @@ import {
   ITypeDataLeave,
   ITypetypeleave,
   ITypeDataLeaveCreate,
-  IDepartMent,
-  ISelectDepartment,
   UserGroupType,
+  MasterTypeleaveType,
 } from "../common";
 import { CreateOnlineLeave } from "./components/create-online-leave";
 import { TableOnlineDetailLeave } from "./components/table-online-detail-leave";
@@ -32,6 +33,7 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
 import { useRouter } from "next/navigation";
 import { RcFile, UploadProps } from "antd/es/upload";
+import { calculateTime } from "../common/function-data-leave";
 
 export default function Page() {
   const router = useRouter();
@@ -45,9 +47,6 @@ export default function Page() {
   const [getTypeLeaveOption, setTypeLeaveOption] = useState<ISelect[]>([]);
   const [getTypeLeave, setTypeLeave] = useState<ITypetypeleave[]>([]);
   const [typeLeaveTable, setTypeLeaveTable] = useState<ITypetypeleave[]>([]);
-  const [typeLeaveTableAll, setTypeLeaveTableAll] = useState<ITypetypeleave[]>(
-    []
-  );
   const [groupDetail, setGroupDetail] = useState<UserGroupType[]>([]);
   const [groupUserId, setDataGroupUserId] = useState<any>();
   const [getStartDate, setStartDate] = useState<Date>();
@@ -55,7 +54,12 @@ export default function Page() {
   const [checkSwitch, setCheckSwitch] = useState<boolean>(false);
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [createdataleaveForm] = useForm();
+  const [createdataleaveForm] = Form.useForm();
+  const [messages, messageHeader] = message.useMessage();
+  const [Modals, modelsHeader] = Modal.useModal();
+  const [typeLeaveTableAll, setTypeLeaveTableAll] = useState<ITypetypeleave[]>(
+    []
+  );
   const [params, setParams] = useState<any>({
     typeId: null,
     startDate: null,
@@ -77,7 +81,6 @@ export default function Page() {
     const resTableUserTypeLeave = await dataleaveservice.findUserByUserId(
       getUser?.userId
     );
-
     const options = res.map((event: ITypetypeleave) => {
       return { value: event.typeId, label: event.typeName };
     });
@@ -105,7 +108,7 @@ export default function Page() {
 
   const beforeUploadAttendFiles = (file: RcFile) => {
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
-      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
+      messages.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return false;
     }
     return false;
@@ -126,8 +129,13 @@ export default function Page() {
     } else if (type === "endDate" && params.startDate) {
       checklenghtDay(params.startDate, value);
     }
+    // if (type === "endDate") {
+    //   setParams((e: any) => ({ ...e, endDate: value }));
+    // }
     if (type === "endDate") {
       setParams((e: any) => ({ ...e, endDate: value }));
+    } else if (type === "startDate" && params.endDate) {
+      checklenghtDay(value, params.endDate);
     }
     if (type === "selectStartTime") {
       setParams((e: any) => ({ ...e, startTime: value }));
@@ -136,7 +144,12 @@ export default function Page() {
     }
     if (type === "selectEndTime") {
       setParams((e: any) => ({ ...e, endTime: value }));
+    } else if (type === "selectStartTime" && params.endTime) {
+      checklenghtTime(value, params.endTime);
     }
+    // if (type === "selectEndTime") {
+    //   setParams((e: any) => ({ ...e, endTime: value }));
+    // }
     if (value === true) {
       setParams((e: any) => ({ ...e, lengthDate: 1 }));
     } else if (value === false) {
@@ -149,7 +162,13 @@ export default function Page() {
     const startDate = value1 ? dayjs(value1).startOf("day") : null;
     const endDate = value2 ? dayjs(value2).endOf("day") : null;
     const totalDays =
-      startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
+      startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : "0";
+
+    // console.log(startDate);
+    // console.log(endDate);
+    // if (startDate && endDate && startDate.isSame(endDate)) {
+    //   return;
+    // }
     setParams((e: any) => ({
       ...e,
       lengthDate:
@@ -195,7 +214,6 @@ export default function Page() {
     endDate: Date
   ) => {
     const existingDataLeave = await dataleaveservice.getdataLeaveAll();
-
     return existingDataLeave.some((record: any) => {
       return (
         record.userId === userId &&
@@ -216,7 +234,7 @@ export default function Page() {
   ) => {
     const conflict = await checkDataLeaveConflict(userId, startDate, endDate);
     if (conflict) {
-      message.warning("คุณลาในช่วงเวลานี้แล้ว กรุณาเลือกช่วงเวลาใหม่.");
+      messages.warning("คุณลาในช่วงเวลานี้แล้ว กรุณาเลือกช่วงเวลาใหม่.");
       return true;
     }
     return false;
@@ -245,7 +263,7 @@ export default function Page() {
   const checkDataLeaveCancel = async (type_id: number) => {
     const conflict = await checkLeaveCancel(type_id);
     if (conflict) {
-      message.error("คุณไม่มีสิทธิลาประเภทการลานี้!");
+      messages.error("คุณไม่มีสิทธิลาประเภทการลานี้!");
       return true;
     }
     return false;
@@ -256,143 +274,77 @@ export default function Page() {
     value: any
   ): Promise<boolean> => {
     try {
-      let resultId: number;
-      switch (type_id) {
-        case 1:
-          resultId = 240;
-          break;
-        case 2:
-        case 3:
-        case 4:
-        case 7:
-        case 10:
-          resultId = 24;
-          break;
-        case 5:
-          resultId = 48;
-          break;
-        case 6:
-          resultId = 784;
-          break;
-        case 8:
-          resultId = 40;
-          break;
-        case 9:
-        case 11:
-          resultId = 120;
-          break;
-        case 12:
-          resultId = 480;
-          break;
-        case 13:
-          resultId = 1440;
-          break;
-        default:
-          resultId = 0;
-      }
-      const dataLeaveUserById = await dataleaveservice.getdataLeaveUserById(
-        value.userId
-      );
-      const dataLeaveTypeId = dataLeaveUserById.filter(
-        (typeId: any) => typeId.typeId === type_id
-      );
-      const hasLeaveHour = dataLeaveTypeId.map(
-        (leaveTime: any) => leaveTime.leaveHour
-      );
-      const totalLeaveHours = hasLeaveHour.reduce(
-        (total: any, hour: any) => total + (Number(hour) || 0),
-        0
-      );
-      if (totalLeaveHours < resultId) {
-        if (typeof value === "object" && value !== null) {
-          let totalHourvalue = 0;
-          for (const data in value) {
-            if (value.hasOwnProperty(data)) {
-              const hour = value;
-              if (hour.startDate && hour.endDate) {
-                const startDate = new Date(hour.startDate);
-                const endDate = new Date(hour.endDate);
-                if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
-                  const differenceInMilliseconds =
-                    endDate.getTime() - startDate.getTime();
-                  const differenceInHours =
-                    differenceInMilliseconds / (1000 * 60 * 60);
-                  totalHourvalue = differenceInHours;
-                } else {
-                  message.error("ตรวจสอบจำนวนเวลาลาไม่สำเร็จ");
+      const MasterTypeLeave =
+        await dataleaveservice.getdataMasterTypeLeaveAll();
+      const MasterLeaves = MasterTypeLeave.filter(
+        (e: any) => e.typeId === type_id
+      ).map((e: any) => {
+        return {
+          typeId: e.typeId,
+          limitLeave: e.limitLeaveOne,
+        };
+      });
+      if (MasterLeaves.length > 0) {
+        const LimitLeave = MasterLeaves[0].limitLeave;
+        let limitDataLeave = LimitLeave * 8;
+        const dataLeaveUserById = await dataleaveservice.getdataLeaveUserById(
+          value.userId
+        );
+        const dataLeaveTypeId = dataLeaveUserById.filter(
+          (typeId: MasterTypeleaveType) => typeId.typeId === type_id
+        );
+        const hasLeaveHour = dataLeaveTypeId.map(
+          (leaveTime: any) => leaveTime.leaveHour
+        );
+        const totalLeaveHours = hasLeaveHour.reduce(
+          (total: number, hour: number) => total + (Number(hour) || 0),
+          0
+        );
+        if (totalLeaveHours < limitDataLeave) {
+          if (typeof value === "object" && value !== null) {
+            let totalHourvalue = 0;
+            for (const data in value) {
+              if (value.hasOwnProperty(data)) {
+                const hour = value;
+                if (hour.startDate && hour.endDate) {
+                  const startDate = new Date(hour.startDate);
+                  const endDate = new Date(hour.endDate);
+                  if (
+                    !isNaN(startDate.getTime()) &&
+                    !isNaN(endDate.getTime())
+                  ) {
+                    const differenceInMilliseconds =
+                      endDate.getTime() - startDate.getTime();
+                    const differenceInHours =
+                      differenceInMilliseconds / (1000 * 60 * 60);
+                    totalHourvalue = differenceInHours;
+                  } else {
+                    messages.error("ตรวจสอบจำนวนเวลาลาไม่สำเร็จ");
+                  }
                 }
               }
             }
-          }
-
-          let result: number;
-          switch (type_id) {
-            case 1:
-              result = 721;
-              break;
-            case 2:
-            case 3:
-            case 4:
-            case 7:
-            case 10:
-              result = 73;
-              break;
-            case 5:
-              result = 49;
-              break;
-            case 6:
-              result = 145;
-              break;
-            case 8:
-              result = 121;
-              break;
-            case 9:
-            case 11:
-              result = 361;
-              break;
-            case 12:
-              result = 1441;
-              break;
-            case 13:
-              result = 4321;
-              break;
-            default:
-              result = 0;
-          }
-
-          if (!dataLeaveTypeId || dataLeaveTypeId.length === 0) {
-          } else {
-            if (totalHourvalue > resultId) {
-              return true;
+            const hourvalue = (totalHourvalue / 24) * 8;
+            if (!dataLeaveTypeId || dataLeaveTypeId.length === 0) {
+            } else {
+              if (hourvalue > limitDataLeave) {
+                return true;
+              }
             }
-          }
-
-          const dataHoru = dataLeaveTypeId.map((ho: any) => {
-            const startDate = new Date(ho.startDate);
-            const endDate = new Date(ho.endDate);
-            const differenceInMilliseconds =
-              endDate.getTime() - startDate.getTime();
-            const differenceInHours = Math.ceil(
-              differenceInMilliseconds / (1000 * 60 * 60)
+            const totalMinute = calculateTime(value.startTime, value.endTime);
+            const dataleaveHour = dataLeaveTypeId.map((e: any) => e.leaveHour);
+            const totalLeaveHour = dataleaveHour.reduce(
+              (accumulator: number, currentValue: number) =>
+                accumulator + currentValue,
+              0
             );
-            return {
-              startDate: startDate.toISOString().split("T")[0],
-              endDate: endDate.toISOString().split("T")[0],
-              differenceInHours,
-            };
-          });
-
-          const totalHour = dataHoru.reduce(
-            (accumulator: any, item: any) =>
-              accumulator + item.differenceInHours,
-            0
-          );
-          const totalAll = totalHour + totalHourvalue;
-          if (totalAll < result) {
-            return false;
+            const totalSeconds = totalLeaveHour + totalMinute;
+            const totalAll = totalSeconds + hourvalue;
+            if (totalAll <= limitDataLeave) {
+              return false;
+            }
+            return true;
           }
-
-          return true;
         }
       }
       return true;
@@ -407,7 +359,7 @@ export default function Page() {
   ): Promise<boolean> => {
     const conflict = await checkLeaveHour(type_id, value);
     if (conflict) {
-      message.warning({
+      messages.warning({
         content: "คุณใช้สิทธิ์การลาประเภทนี้ครบหรือเกินจำนวนที่กำหนด",
         duration: 5,
       });
@@ -417,9 +369,13 @@ export default function Page() {
   };
 
   const onfinishCreate = async (values: ITypeDataLeaveCreate) => {
+    // console.log("values: ", values);
+
     const userId = values.userId as string;
     const leaveStartDate = values.startDate as Date;
     const leaveEndDate = values.endDate as Date;
+    const leaveStartTime = values.startTime as string;
+    const leaveEndTime = values.endTime as string;
     const today = new Date() as Date;
     const type_id = values.type_id as number;
     const id = values.id as number;
@@ -436,25 +392,45 @@ export default function Page() {
       ? dayjs(values.startDate).startOf("day")
       : null;
     const endDate = values.endDate ? dayjs(values.endDate).endOf("day") : null;
-    const startTime = values.startTime
-      ? dayjs(values.startTime, "HH:mm")
-      : null;
-    const endTime = values.endTime ? dayjs(values.endTime, "HH:mm") : null;
+
+    const totalDays =
+      startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
     const selectedOption = getTypeLeaveOption.find(
       (option) => option.value === values.type_id
     );
 
-    const totalDays =
-      startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
+    const breakStart = dayjs("12:00", "HH:mm");
+    const breakEnd = dayjs("13:00", "HH:mm");
+    const startTime = values.startTime
+      ? dayjs(values.startTime, "HH:mm")
+      : null;
+    const endTime = values.endTime ? dayjs(values.endTime, "HH:mm") : null;
+
+    let adjustedEndTime = endTime;
+    if (startTime && endTime) {
+      if (startTime.isBefore(breakEnd) && endTime.isAfter(breakStart)) {
+        if (startTime.isBefore(breakStart) && endTime.isAfter(breakEnd)) {
+          adjustedEndTime = endTime.subtract(1, "hour");
+        } else if (startTime.isAfter(breakStart)) {
+          adjustedEndTime = endTime.subtract(
+            endTime.diff(breakEnd, "hour", true),
+            "hour"
+          );
+        }
+      }
+    }
 
     const totalHours =
-      startTime && endTime
-        ? endTime.diff(startTime, "hour", true).toFixed(1)
+      startTime && adjustedEndTime
+        ? adjustedEndTime.diff(startTime, "hour", true).toFixed(1)
         : 0;
 
     if (new Date(leaveEndDate) < new Date(leaveStartDate)) {
-      message.error("วันที่สิ้นสุดการลาต้องหลังวันที่เริ่มการลา");
+      messages.error("วันที่สิ้นสุดการลาต้องหลังวันที่เริ่มการลา");
       return;
+    }
+    if (dayjs(leaveEndTime, "HH:mm").isBefore(dayjs(leaveStartTime, "HH:mm"))) {
+      return messages.error("เวลาที่สิ้นสุดการลาต้องหลังเวลาที่เริ่มการลา");
     }
 
     try {
@@ -508,7 +484,7 @@ export default function Page() {
                         : Number(totalDays) * 8,
                   }),
             };
-            Modal.confirm({
+            Modals.confirm({
               title: "Add ",
               icon: <ExclamationCircleFilled />,
               content: "Are you sure you want to add this ?",
@@ -534,7 +510,7 @@ export default function Page() {
                       await dataleaveservice.uploadFiles(result.id, formData);
                     });
                   }
-                  message.success(`Add success`);
+                  messages.success(`Add success`);
                   createdataleaveForm.resetFields();
                   setStartDate(undefined);
                   setEndDate(undefined);
@@ -548,17 +524,17 @@ export default function Page() {
               },
             });
           } catch (err) {
-            message.error("ลาไม่สำเร็จ");
+            messages.error("ลาไม่สำเร็จ");
           }
           return;
         }
         if (new Date(leaveStartDate) < today) {
-          message.error("ไม่สามารถลาในวันที่ผ่านมาได้");
+          messages.error("ไม่สามารถลาในวันที่ผ่านมาได้");
           return;
         }
       }
     } catch (error) {
-      message.error("ลาย้อนหลังไม่สำเร็จ");
+      messages.error("ลาย้อนหลังไม่สำเร็จ");
     }
 
     try {
@@ -566,7 +542,7 @@ export default function Page() {
         const hasTypeId = type_id === 2;
         if (hasTypeId) {
           if (new Date(leaveStartDate) < twoDayAdvance) {
-            message.warning("ต้องลาล่วงหน้า 2 วัน");
+            messages.warning("ต้องลาล่วงหน้า 2 วัน");
             return;
           }
           const base: ITypeDataLeave = {
@@ -611,7 +587,7 @@ export default function Page() {
                         : Number(totalDays) * 8,
                   }),
             };
-            Modal.confirm({
+            Modals.confirm({
               title: "Add ",
               icon: <ExclamationCircleFilled />,
               content: "Are you sure you want to add this ?",
@@ -636,7 +612,7 @@ export default function Page() {
                       await dataleaveservice.uploadFiles(result.id, formData);
                     });
                   }
-                  message.success(`Add success`);
+                  messages.success(`Add success`);
                   createdataleaveForm.resetFields();
                   setStartDate(undefined);
                   setEndDate(undefined);
@@ -650,14 +626,14 @@ export default function Page() {
               },
             });
           } catch (err) {
-            message.error("ลาไม่สำเร็จ");
+            messages.error("ลาไม่สำเร็จ");
           }
 
           return;
         }
       }
     } catch (error) {
-      message.error("ลาส่วงหน้า 2วัน ไม่สำเร็จ");
+      messages.error("ลาส่วงหน้า 2วัน ไม่สำเร็จ");
     }
 
     try {
@@ -665,7 +641,7 @@ export default function Page() {
         const hasTypeId = type_id === 3 || type_id === 6 || type_id === 10;
         if (hasTypeId) {
           if (new Date(leaveStartDate) < fiveDayAdvance) {
-            message.warning("ต้องลาล่วงหน้า 5 วัน");
+            messages.warning("ต้องลาล่วงหน้า 5 วัน");
             return;
           }
           const base: ITypeDataLeave = {
@@ -707,7 +683,7 @@ export default function Page() {
                         : Number(totalDays) * 8,
                   }),
             };
-            Modal.confirm({
+            Modals.confirm({
               title: "Add ",
               icon: <ExclamationCircleFilled />,
               content: "Are you sure you want to add this ?",
@@ -732,7 +708,7 @@ export default function Page() {
                       await dataleaveservice.uploadFiles(result.id, formData);
                     });
                   }
-                  message.success(`Add success`);
+                  messages.success(`Add success`);
                   createdataleaveForm.resetFields();
                   setStartDate(undefined);
                   setEndDate(undefined);
@@ -746,13 +722,13 @@ export default function Page() {
               },
             });
           } catch (err) {
-            message.error("ลาไม่สำเร็จ");
+            messages.error("ลาไม่สำเร็จ");
           }
           return;
         }
       }
     } catch (error) {
-      message.error("ลาล่วงหน้า 5วัน ไม่สำเร็จ");
+      messages.error("ลาล่วงหน้า 5วัน ไม่สำเร็จ");
     }
 
     try {
@@ -760,7 +736,7 @@ export default function Page() {
         const hasTypeId = type_id === 7;
         if (hasTypeId) {
           if (new Date(leaveStartDate) < fifteenDayAdvance) {
-            message.warning("ต้องลาล่วงหน้า 15 วัน");
+            messages.warning("ต้องลาล่วงหน้า 15 วัน");
             return;
           }
           const base: ITypeDataLeave = {
@@ -805,7 +781,7 @@ export default function Page() {
                         : Number(totalDays) * 8,
                   }),
             };
-            Modal.confirm({
+            Modals.confirm({
               title: "Add ",
               icon: <ExclamationCircleFilled />,
               content: "Are you sure you want to add this ?",
@@ -830,7 +806,7 @@ export default function Page() {
                       await dataleaveservice.uploadFiles(result.id, formData);
                     });
                   }
-                  message.success(`Add success`);
+                  messages.success(`Add success`);
                   createdataleaveForm.resetFields();
                   setStartDate(undefined);
                   setEndDate(undefined);
@@ -844,13 +820,13 @@ export default function Page() {
               },
             });
           } catch (err) {
-            message.error("ลาไม่สำเร็จ");
+            messages.error("ลาไม่สำเร็จ");
           }
           return;
         }
       }
     } catch (error) {
-      message.error("ลาล่วงหน้า 15วัน ไม่สำเร็จ");
+      messages.error("ลาล่วงหน้า 15วัน ไม่สำเร็จ");
     }
 
     try {
@@ -859,7 +835,7 @@ export default function Page() {
           type_id === 5 || type_id === 9 || type_id === 11 || type_id === 12;
         if (hasTypeId) {
           if (new Date(leaveStartDate) < thirtyDayAdvance) {
-            message.warning("ต้องลาล่วงหน้า 30 วัน");
+            messages.warning("ต้องลาล่วงหน้า 30 วัน");
             return;
           }
           const base: ITypeDataLeave = {
@@ -905,7 +881,7 @@ export default function Page() {
                         : Number(totalDays) * 8,
                   }),
             };
-            Modal.confirm({
+            Modals.confirm({
               title: "Add ",
               icon: <ExclamationCircleFilled />,
               content: "Are you sure you want to add this ?",
@@ -930,7 +906,7 @@ export default function Page() {
                       await dataleaveservice.uploadFiles(result.id, formData);
                     });
                   }
-                  message.success(`Add success`);
+                  messages.success(`Add success`);
                   createdataleaveForm.resetFields();
                   setStartDate(undefined);
                   setEndDate(undefined);
@@ -944,18 +920,20 @@ export default function Page() {
               },
             });
           } catch (err) {
-            message.error("ลาไม่สำเร็จ");
+            messages.error("ลาไม่สำเร็จ");
           }
           return;
         }
       }
     } catch (error) {
-      message.error("ลาล่วงหน้า 30วัน ไม่สำเร็จ");
+      messages.error("ลาล่วงหน้า 30วัน ไม่สำเร็จ");
     }
   };
 
   return getUserOwner ? (
     <div>
+      {modelsHeader}
+      {messageHeader}
       <Row>
         <Col span={24}>
           <Breadcrumb
@@ -976,25 +954,29 @@ export default function Page() {
       </Row>
       <Row gutter={{ xs: 3, sm: 3, md: 3, lg: 3 }}>
         <Col span={12}>
-          <CreateOnlineLeave
-            getUser={getUser}
-            getTypeLeaveOption={getTypeLeaveOption}
-            onfinishCreate={(e: ITypeDataLeaveCreate) => onfinishCreate(e)}
-            createdataleaveForm={createdataleaveForm}
-            setStartDate={(e: Date) => setStartDate(e)}
-            setEndDate={(e: Date) => setEndDate(e)}
-            setCheckSwitch={(e: boolean) => setCheckSwitch(e)}
-            getStartDate={getStartDate}
-            getEndDate={getEndDate}
-            checkSwitch={checkSwitch}
-            beforeUploadAttendFiles={(e: RcFile) => beforeUploadAttendFiles(e)}
-            handleChangeAttendFiles={(e: any) => handleChangeAttendFiles(e)}
-            attendFiles={attendFiles}
-            getUserOwner={getUserOwner}
-            onChangeParams={onChangeParams}
-            groupDetail={groupDetail}
-            groupUserId={groupUserId}
-          />
+          <App>
+            <CreateOnlineLeave
+              getUser={getUser}
+              getTypeLeaveOption={getTypeLeaveOption}
+              onfinishCreate={(e: ITypeDataLeaveCreate) => onfinishCreate(e)}
+              createdataleaveForm={createdataleaveForm}
+              setStartDate={(e: Date) => setStartDate(e)}
+              setEndDate={(e: Date) => setEndDate(e)}
+              setCheckSwitch={(e: boolean) => setCheckSwitch(e)}
+              getStartDate={getStartDate}
+              getEndDate={getEndDate}
+              checkSwitch={checkSwitch}
+              beforeUploadAttendFiles={(e: RcFile) =>
+                beforeUploadAttendFiles(e)
+              }
+              handleChangeAttendFiles={(e: any) => handleChangeAttendFiles(e)}
+              attendFiles={attendFiles}
+              getUserOwner={getUserOwner}
+              onChangeParams={onChangeParams}
+              groupDetail={groupDetail}
+              groupUserId={groupUserId}
+            />
+          </App>
         </Col>
         <Col span={12}>
           <TableOnlineDetailLeave

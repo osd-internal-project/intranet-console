@@ -31,15 +31,17 @@ const page = () => {
   const AuthUser = useAxiosUser();
   const dataleaveserviceIntra = DataLeaveService(AuthIntra);
   const dataleaveserviceUser = DataLeaveService(AuthUser);
+  const [formcreate] = Form.useForm();
   const [getdataTypeLeave, setdataTypeLeave] = useState<ITypetypeleave[]>([]);
   const [getdataUser, setdataUser] = useState<ISelect[]>([]);
   const [getdataUserByTypeId, setdataUserByTypeId] = useState<ITpyeUser[]>([]);
   const [getLoading, setLoading] = useState<boolean>(true);
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [messages, messageHeader] = message.useMessage();
+  const [Modals, modelsHeader] = Modal.useModal();
   const [getSearch, setSearch] = useState<{ typeid: string } | undefined>(
     undefined
   );
-  const [openModal, setOpenModal] = useState<boolean>(false);
-  const [formcreate] = Form.useForm();
 
   useEffect(() => {
     if (getLoading) {
@@ -91,12 +93,12 @@ const page = () => {
     );
     if (event.userId && resTypeLeaveMap.length > 0) {
       if (resTypeLeaveMap[0].userId === event.userId) {
-        message.warning(`ประเภทการลานี้มีการเพิ่มชื่อผู้ใช้นี้แล้ว!`);
+        messages.warning(`ประเภทการลานี้มีการเพิ่มชื่อผู้ใช้นี้แล้ว!`);
         return {};
       }
     }
 
-    Modal.confirm({
+    Modals.confirm({
       title: "Add ",
       icon: <ExclamationCircleFilled />,
       content: "Are you sure you want to add this ?",
@@ -115,7 +117,7 @@ const page = () => {
           );
           setLoading(true);
           if (result) {
-            message.success("Add success");
+            messages.success("Add success");
             formcreate.resetFields();
             setOpenModal(false);
             if (getSearch) {
@@ -129,7 +131,7 @@ const page = () => {
             }
           }
         } catch (error) {
-          message.error("Failed to add data.");
+          messages.error("Failed to add data.");
         } finally {
         }
       },
@@ -140,7 +142,7 @@ const page = () => {
   };
 
   const onFinishDel = (id: number) => {
-    Modal.confirm({
+    Modals.confirm({
       title: "Delete this unit",
       icon: <ExclamationCircleFilled />,
       content: "Are you sure you want to delete this?",
@@ -152,7 +154,7 @@ const page = () => {
           const dataResult =
             await dataleaveserviceIntra.deleteTypeLeaveDisabled(id);
           if (dataResult) {
-            message.success("Delete success");
+            messages.success("Delete success");
             setLoading(true);
             if (getSearch) {
               setSearch(
@@ -165,7 +167,7 @@ const page = () => {
             }
           }
         } catch (error) {
-          message.error("Failed to delete data.");
+          messages.error("Failed to delete data.");
         } finally {
           setLoading(false);
         }
@@ -177,56 +179,60 @@ const page = () => {
   };
 
   return (
-    <Row>
-      <Col span={24}>
-        <Breadcrumb
-          items={[
-            {
-              href: "/page/home",
-              title: <span>Home</span>,
-            },
-            {
-              title: <span>Leave Management</span>,
-            },
-          ]}
-        />
-      </Col>
-      <Divider orientation="left" orientationMargin="0">
-        <div className="title-page-font">{`Leave Management`}</div>
-      </Divider>
-      <div className="w-full">
-        <Card>
-          <Tabs
-            defaultActiveKey={getSearch?.typeid ? getSearch.typeid : ""}
-            tabPosition={"left"}
-            onChange={handleChangeTab}
-            destroyInactiveTabPane={false}
-            items={getdataTypeLeave.map((type, i) => {
-              return {
-                label: `${type.typeName}`,
-                key: String(type.typeId),
-                children: (
-                  <div className=" space-y-3">
-                    <CreateLeaveManagement
-                      onFinishCreate={(event: any) => onFinishCreate(event)}
-                      TypeId={type.id}
-                      getdataUser={getdataUser}
-                      setOpenModal={(event: boolean) => setOpenModal(event)}
-                      openModal={openModal}
-                      formcreate={formcreate}
-                    />
-                    <TabeLeavManagement
-                      getdataUserByTypeId={getdataUserByTypeId}
-                      onFinishDel={(e: number) => onFinishDel(e)}
-                    />
-                  </div>
-                ),
-              };
-            })}
+    <>
+      {modelsHeader}
+      {messageHeader}
+      <Row>
+        <Col span={24}>
+          <Breadcrumb
+            items={[
+              {
+                href: "/page/home",
+                title: <span>Home</span>,
+              },
+              {
+                title: <span>Leave Management</span>,
+              },
+            ]}
           />
-        </Card>
-      </div>
-    </Row>
+        </Col>
+        <Divider orientation="left" orientationMargin="0">
+          <div className="title-page-font">{`Leave Management`}</div>
+        </Divider>
+        <div className="w-full">
+          <Card>
+            <Tabs
+              defaultActiveKey={getSearch?.typeid ? getSearch.typeid : ""}
+              tabPosition={"left"}
+              onChange={handleChangeTab}
+              destroyInactiveTabPane={false}
+              items={getdataTypeLeave.map((type, i) => {
+                return {
+                  label: `${type.typeName}`,
+                  key: String(type.typeId),
+                  children: (
+                    <div className=" space-y-3">
+                      <CreateLeaveManagement
+                        onFinishCreate={(event: any) => onFinishCreate(event)}
+                        TypeId={type.id}
+                        getdataUser={getdataUser}
+                        setOpenModal={(event: boolean) => setOpenModal(event)}
+                        openModal={openModal}
+                        formcreate={formcreate}
+                      />
+                      <TabeLeavManagement
+                        getdataUserByTypeId={getdataUserByTypeId}
+                        onFinishDel={(e: number) => onFinishDel(e)}
+                      />
+                    </div>
+                  ),
+                };
+              })}
+            />
+          </Card>
+        </div>
+      </Row>
+    </>
   );
 };
 

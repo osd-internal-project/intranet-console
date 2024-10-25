@@ -31,6 +31,9 @@ export default function Page() {
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
   const [userGroupIds, setUserGroupIds] = useState<string[]>([]);
   const [formdetail] = Form.useForm();
+  const [formValues, setFormValues] = useState({});
+  const [messages, messageHeader] = message.useMessage();
+  const [Modals, modelsHeader] = Modal.useModal();
 
   useEffect(() => {
     if (loading) loadData();
@@ -49,7 +52,7 @@ export default function Page() {
   };
 
   const onFinishUpdate = (type: string, id: number) => {
-    Modal.confirm({
+    Modals.confirm({
       title: <>{type === "cancel" ? "Cancel " : "Approved"}</>,
       icon: <ExclamationCircleFilled />,
       content: (
@@ -84,8 +87,8 @@ export default function Page() {
         );
         if (res) {
           type === "cancel"
-            ? message.error("cancel success")
-            : message.success("approved success");
+            ? messages.error("cancel success")
+            : messages.success("approved success");
           setLoading(true);
           setOpenModalDetail(false);
         }
@@ -95,7 +98,7 @@ export default function Page() {
   };
 
   const onFinishDelete = (type: string, id: number) => {
-    Modal.confirm({
+    Modals.confirm({
       title: <>{type === "delete" ? "Delete" : "Delete"}</>,
       icon: <ExclamationCircleFilled />,
       content: "Are you sure you want to delete this ?",
@@ -116,14 +119,14 @@ export default function Page() {
         try {
           const res = await dataleaveservice.deleteDataLeave(id);
           if (res) {
-            message.success("Delete success");
+            messages.success("Delete success");
           } else {
-            message.error("Delete failed");
+            messages.error("Delete failed");
           }
           setLoading(true);
           setOpenModalDetail(false);
         } catch (error) {
-          message.error("Delete failed");
+          messages.error("Delete failed");
         }
       },
 
@@ -144,45 +147,47 @@ export default function Page() {
     }
   }
 
-
   return (
-    <Row>
-      <Col span={24}>
-        <Breadcrumb
-          items={[
-            {
-              href: "/page/home",
-              title: <span>Home</span>,
-            },
-            {
-              title: <span>detail-online-leave-admin</span>,
-            },
-          ]}
-        />
-      </Col>
-      <Divider orientation="left" orientationMargin="0">
-        <div className="title-page-font">{`Detail Online Leave Admin`}</div>
-      </Divider>
-      <div className="w-full">
-        <Card>
-          <TableDetail
-            dataLeaveUser={dataLeaveUser}
-            setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
-            openModalDetail={openModalDetail}
-            formdetail={formdetail}
-            onFinishUpdate={(type: string, id: number) =>
-              onFinishUpdate(type, id)
-            }
-            onFinishDelete={(type: string, id: number) =>
-              onFinishDelete(type, id)
-            }
-            downloadFile={(id: number, filename: string) =>
-              downloadFile(id, filename)
-            }
-            userGroupIds={userGroupIds}
+    <>
+      {modelsHeader}
+      {messageHeader}
+      <Row>
+        <Col span={24}>
+          <Breadcrumb
+            items={[
+              {
+                href: "/page/home",
+                title: <span>Home</span>,
+              },
+              {
+                title: <span>detail-online-leave-admin</span>,
+              },
+            ]}
           />
-        </Card>
-      </div>
-    </Row>
+        </Col>
+        <Divider orientation="left" orientationMargin="0">
+          <div className="title-page-font">{`Detail Online Leave Admin`}</div>
+        </Divider>
+        <div className="w-full">
+          <Card>
+            <TableDetail
+              dataLeaveUser={dataLeaveUser}
+              setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
+              openModalDetail={openModalDetail}
+              formdetail={formdetail}
+              onFinishUpdate={(type: string, id: number) =>
+                onFinishUpdate(type, id)
+              }
+              onFinishDelete={(type: string, id: number) =>
+                onFinishDelete(type, id)
+              }
+              downloadFile={(id: number, filename: string) =>
+                downloadFile(id, filename)
+              }
+            />
+          </Card>
+        </div>
+      </Row>
+    </>
   );
 }

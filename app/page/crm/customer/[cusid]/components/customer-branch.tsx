@@ -82,6 +82,7 @@ const BranchComponent: React.FC<props> = ({
       key: "branchName",
       dataIndex: "branchName",
       title: "ชื่อสาขา",
+      width: "300px",
     },
     {
       key: "activeStatus",

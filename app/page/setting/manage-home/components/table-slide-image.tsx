@@ -26,7 +26,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { GetProps, TableColumnsType } from "antd";
+import type { TableColumnsType } from "antd";
 import { SlideImageType } from "../common";
 import "../common/style.css";
 
@@ -196,11 +196,6 @@ export const TableSlideImage: React.FC<propss> = ({
             </Form.Item>
           </Col>
         </Form>
-        {/* ),
-            },
-          ]}
-          defaultActiveKey={[]}
-        /> */}
       </div>
       <div>
         <DndContext modifiers={[restrictToVerticalAxis]} onDragEnd={onDragEnd}>

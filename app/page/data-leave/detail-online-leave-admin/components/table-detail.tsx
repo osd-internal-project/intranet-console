@@ -191,7 +191,6 @@ export const TableDetail: React.FC<props> = ({
       />
       <Modal
         forceRender
-        title=""
         open={openModalDetail}
         footer={false}
         onCancel={() => setOpenModalDetail(false)}

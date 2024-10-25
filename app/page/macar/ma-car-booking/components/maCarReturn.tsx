@@ -185,7 +185,7 @@ const MaCarReturn: React.FC<props> = ({
     {
       title: "รายละเอียด",
       align: "center",
-      render: (_: any, record: MaCarBookType) => {
+      render: (_: string, record: MaCarBookType) => {
         return (
           <Space>
             <Button
@@ -203,7 +203,7 @@ const MaCarReturn: React.FC<props> = ({
     {
       title: "จัดการ",
       align: "center",
-      render: (_: any, record: MaCarBookType) => (
+      render: (record: MaCarBookType) => (
         <Space>
           {record.carBookApprovedStatus === "Approve" ? (
             <Button type="link" onClick={() => showModalReturn(record)}>

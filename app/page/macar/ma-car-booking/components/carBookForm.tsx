@@ -13,6 +13,7 @@ import {
 import { MaCarBookType, MaCarType, ProvincesType } from "../../common/index";
 import TextArea from "antd/es/input/TextArea";
 import { RangePickerProps } from "antd/es/date-picker";
+import dayjs, { Dayjs } from "dayjs";
 
 interface props {
   formUser: FormInstance<MaCarBookType>;
@@ -21,6 +22,8 @@ interface props {
   dataoptionsProvinces: ProvincesType[];
   disabledDate: RangePickerProps["disabledDate"];
   submitLoading: boolean;
+  setStartDate: (date: Dayjs | null) => void;
+  setEndDate: (date: Dayjs | null) => void;
 }
 
 export const CarBookForm: React.FC<props> = ({
@@ -30,7 +33,23 @@ export const CarBookForm: React.FC<props> = ({
   dataoptionsProvinces,
   disabledDate,
   submitLoading,
+  setStartDate,
+  setEndDate,
 }) => {
+  const handleStartDateChange = (date: dayjs.Dayjs | null) => {
+    if (date) {
+      const startDate = date.startOf("day");
+      setStartDate(startDate);
+    }
+  };
+
+  const handleEndDateChange = (date: dayjs.Dayjs | null) => {
+    if (date) {
+      const endDate = date.endOf("day");
+      setEndDate(endDate);
+    }
+  };
+  
   return (
     <>
       <Form
@@ -136,12 +155,10 @@ export const CarBookForm: React.FC<props> = ({
               rules={[{ required: true, message: "กรุณาเลือกวันที่เริ่มจอง!" }]}
             >
               <DatePicker
-                className="w-full"
-                placeholder="กรอกวันที่เริ่มการจอง"
-                showTime
+                onChange={handleStartDateChange}
                 disabledDate={disabledDate}
-                format="DD/MM/YYYY HH:mm"
-                // style={{ width: "100%" }}
+                placeholder="กรอกวันที่เริ่มการจอง"
+                style={{ width: "100%" }}
               />
             </Form.Item>
           </Col>
@@ -152,12 +169,10 @@ export const CarBookForm: React.FC<props> = ({
               rules={[{ required: true, message: "กรุณาเลือกวันที่สิ้นสุด" }]}
             >
               <DatePicker
-                className="w-full"
+                onChange={handleEndDateChange}
                 placeholder="กรอกวันที่สิ้นสุดการจอง"
-                showTime
                 disabledDate={disabledDate}
-                format="DD/MM/YYYY HH:mm"
-                // style={{ width: "100%" }}
+                style={{ width: "100%" }}
               />
             </Form.Item>
           </Col>

@@ -445,7 +445,7 @@ const BookingRoomPage: React.FC = () => {
           <Breadcrumb
             items={[
               {
-                href: "/page",
+                href: "/page/home",
                 title: <span>Home</span>,
               },
               {

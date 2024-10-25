@@ -13,6 +13,7 @@ import { MaCarBookCalendarType } from "../../common/index";
 import dayjs from "dayjs";
 import { dateFormatTime } from "@/app/utils";
 import { CheckStatusMaCarBookType } from "@/app/utils/validatefield";
+import "../../common/style.css";
 interface CustomEvent extends RbcEvent {
   id: number;
   carBookApprovedStatus: string;

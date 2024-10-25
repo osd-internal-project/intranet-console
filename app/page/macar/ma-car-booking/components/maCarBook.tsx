@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { MaCarType, MaCarBookType, ProvincesType } from "../../common/index";
 import { RangePickerProps } from "antd/es/date-picker";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { CarBookForm } from "./carBookForm";
 export interface props {
   maCarData: MaCarType[];
@@ -28,6 +28,8 @@ const MaCarBook: React.FC<props> = ({
   const [carName, setCarName] = useState<MaCarType[]>([]);
   const [formUser] = Form.useForm();
   const [messages, messageHeader] = message.useMessage();
+  const [startDate, setStartDate] = useState<Dayjs | null>(null);
+  const [endtDate, setEndDate] = useState<Dayjs | null>(null);
 
   useEffect(() => {
     if (maCarData) {
@@ -92,6 +94,7 @@ const MaCarBook: React.FC<props> = ({
       setSubmitLoading(false);
       return;
     }
+
     const data = {
       carId: values.carId,
       carName: carSelected?.carName,
@@ -104,8 +107,8 @@ const MaCarBook: React.FC<props> = ({
         : undefined,
       carBookPlace: values.carBookPlace,
       carBookUsers: Number(values.carBookUsers),
-      carBookStartDate: values.carBookStartDate,
-      carBookEndDate: values.carBookEndDate,
+      carBookStartDate: startDate,
+      carBookEndDate: endtDate,
       detail: values.detail,
       carBookTitle: values.carBookTitle,
       carBookApprovedStatus: "Process",
@@ -158,6 +161,8 @@ const MaCarBook: React.FC<props> = ({
         dataoptionsProvinces={dataoptionsProvinces}
         disabledDate={disabledDate}
         submitLoading={submitLoading}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
       />
     </>
   );

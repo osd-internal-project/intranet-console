@@ -142,13 +142,13 @@ export default function Page() {
                 title: <span>Home</span>,
               },
               {
-                title: <span>Detail Online Leave</span>,
+                title: <span>Detail Data Leave User</span>,
               },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
-          <div className="title-page-font">{`Detail Online Leave`}</div>
+          <div className="title-page-font">{`Detail Data Leave User`}</div>
         </Divider>
         <div className="w-full">
           <Card>

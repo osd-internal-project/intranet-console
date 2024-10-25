@@ -212,7 +212,6 @@ export const TableDetail: React.FC<props> = ({
                       label={`ไฟล์ `}
                       name={`endDate`}
                       layout={`horizontal`}
-                      // noStyle
                     >
                       {formdetail
                         .getFieldValue("dataLeaveFiles")

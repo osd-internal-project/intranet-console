@@ -17,7 +17,6 @@ export default function TypeLeave() {
   const [slideImage, setSlideImage] = useState<SlideImageType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [addFile, setAddFile] = useState<any[]>([]);
   const [createSlideImageForm] = useForm();
   const [modalAddSlide, setModalAddSlide] = useState<boolean>(false);
   const [imageFiles, setImageFiles] = useState<any[]>([]);
@@ -62,12 +61,6 @@ export default function TypeLeave() {
     return false;
   };
 
-  const handleChangeAddFile: UploadProps["onChange"] = async ({
-    fileList: newFileList,
-  }) => {
-    return setAddFile(newFileList);
-  };
-
   const onfinishCreateSlide = async (values: any) => {
     try {
       if (slideImage && slideImage.length >= 10) {
@@ -103,7 +96,6 @@ export default function TypeLeave() {
       setModalAddSlide(false);
       setLoading(true);
       createSlideImageForm.resetFields();
-      setAddFile([]);
     }
   };
 
@@ -135,9 +127,6 @@ export default function TypeLeave() {
         <Col span={24}>
           <Card className="grid grid-cols-1 ">
             <CreateSlideImage
-              addFile={addFile}
-              handleChangeAddFile={handleChangeAddFile}
-              beforeUploadAddFiles={beforeUploadAddFiles}
               submitLoading={submitLoading}
               onfinishCreateSlide={onfinishCreateSlide}
               modalAddSlide={modalAddSlide}

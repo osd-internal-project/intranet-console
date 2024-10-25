@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
 export const defaultDateFormat = "DD-MM-BBBB";
 export const defaultDatePickerFormat = "DD-MM-YYYY";
-export const dateTimeFormatBB = "DD-MM-YYYY , hh:mm";
-export const dateTimeFormat = "DD-MM-YYYY , hh:mm";
+export const dateTimeFormatBB = "DD-MM-YYYY , HH:mm";
+export const dateTimeFormat = "DD-MM-YYYY , HH:mm";
 export const dateTimeFormatNoTime = "DD-MM-YYYY";
 
 // import { dateTimeFormatBB, dateTimeFormat, defaultDatePickerFormat, defaultDateFormat } from "../configs";

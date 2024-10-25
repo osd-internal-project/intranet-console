@@ -1,23 +1,11 @@
 "use client";
 import React, { useEffect } from "react";
-import {
-  App,
-  Button,
-  Card,
-  DatePicker,
-  Form,
-  Input,
-  Select,
-  Switch,
-  Typography,
-  UploadFile,
-} from "antd";
-import dayjs, { Dayjs } from "dayjs";
+import { App, Card, UploadFile } from "antd";
+import { Dayjs } from "dayjs";
 import { IDataUser, ISelect, ITypeDataLeaveCreate } from "../../common";
 import { RcFile } from "antd/es/upload";
-import { FormInstance, Upload } from "antd/lib";
+import { FormInstance } from "antd/lib";
 import { CreateLeaveForm } from "./create-online-leave-form";
-import { UploadOutlined } from "@ant-design/icons";
 
 export interface props {
   getUser?: IDataUser | null;
@@ -57,7 +45,6 @@ export const CreateOnlineLeave: React.FC<props> = ({
   groupDetail,
   groupUserId,
 }: any): React.ReactElement => {
-  const { Option } = Select;
   useEffect(() => {
     const getdatauser = () => {
       if (groupUserId?.length) {

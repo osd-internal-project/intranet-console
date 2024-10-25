@@ -1,29 +1,11 @@
 "use client";
-import React, { useState } from "react";
-import { FilterOutlined, UploadOutlined } from "@ant-design/icons";
-import {
-  Button,
-  Carousel,
-  Col,
-  DatePicker,
-  Form,
-  Input,
-  message,
-  Modal,
-  Popover,
-  Row,
-  Switch,
-  Tag,
-  Upload,
-} from "antd";
-import TextArea from "antd/es/input/TextArea";
+import React from "react";
+import { UploadOutlined } from "@ant-design/icons";
+import { Button, Form, message, Modal, Upload } from "antd";
 import { SlideImageType } from "../common";
 import { RcFile, UploadProps } from "antd/es/upload";
 
 export interface props {
-  addFile: any[];
-  handleChangeAddFile: (e: any) => void;
-  beforeUploadAddFiles: (e: RcFile) => void;
   submitLoading: boolean;
   onfinishCreateSlide: (values: SlideImageType) => void;
   modalAddSlide: boolean;
@@ -36,9 +18,6 @@ export interface props {
 }
 
 export const CreateSlideImage: React.FC<props> = ({
-  addFile,
-  handleChangeAddFile,
-  beforeUploadAddFiles,
   submitLoading,
   onfinishCreateSlide,
   modalAddSlide,

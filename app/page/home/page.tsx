@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, message, Avatar } from "antd";
+import { Card } from "antd";
 import MeetingRoomTableComponent from "./components/MeetingRoomTable";
 import NewsCarouselComponent from "./components/NewsCarousel";
 import HolidaysCalendarComponent from "./components/HolidaysCalendar";
@@ -11,12 +11,9 @@ import { CarFilled, FileFilled, TeamOutlined } from "@ant-design/icons";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import SlideImageService from "./services/index.service";
 import {
-  SlideImageType,
   MasterRoomType,
   HandbookFileType,
-  HandbookType,
   InformationNewsType,
-  NewsImageType,
 } from "./common";
 
 export default function HomePage() {
@@ -31,7 +28,6 @@ export default function HomePage() {
   const [informationNews, setInformationNews] = useState<InformationNewsType[]>(
     []
   );
-  const [NewsImage, setNewsImage] = useState<NewsImageType[]>([]);
 
   const fetchData = async () => {
     const dataSlideImage = await intraAuthService.getSlideImageByOrder();
@@ -39,8 +35,6 @@ export default function HomePage() {
     const dataHandbookFileQuery = await intraAuthService.getHandbookFileQuery();
     const dataInformationNews =
       await intraAuthService.getinformationNewsQuery();
-    const dataNewsImage = await intraAuthService.getNewsImageQuery();
-    setNewsImage(dataNewsImage);
     setInformationNews(dataInformationNews);
     setHandbookFile(dataHandbookFileQuery);
     setMasterBookingRoom(MasterBookingresponse);
@@ -105,10 +99,7 @@ export default function HomePage() {
             bordered={false}
             className="text-center"
           >
-            <NewsCarouselComponent
-              informationNews={informationNews}
-              NewsImage={NewsImage}
-            />
+            <NewsCarouselComponent informationNews={informationNews} />
           </Card>
           <div className="my-4"></div>
           <Card title="เอกสาร" bordered={false} className="text-center">

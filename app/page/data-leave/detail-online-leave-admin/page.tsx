@@ -11,27 +11,20 @@ import {
   Row,
   message,
 } from "antd";
-import { useRouter } from "next/navigation";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../services/index.service";
 import { useSession } from "next-auth/react";
 import { ITypeDataLeave } from "../common";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 
 export default function Page() {
-  const router = useRouter();
-  const userAuth = useAxiosUser();
   const Auth = useAxiosIntranet();
   const dataleaveservice = DataLeaveService(Auth);
-  const userGroupServices = DataLeaveService(userAuth);
   const { data: session } = useSession();
   const [loading, setLoading] = useState<boolean>(true);
   const [dataLeaveUser, setDataLeaveUser] = useState<ITypeDataLeave[]>([]);
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
-  const [userGroupIds, setUserGroupIds] = useState<string[]>([]);
   const [formdetail] = Form.useForm();
-  const [formValues, setFormValues] = useState({});
   const [messages, messageHeader] = message.useMessage();
   const [Modals, modelsHeader] = Modal.useModal();
 
@@ -41,12 +34,6 @@ export default function Page() {
 
   const loadData = async () => {
     const res = await dataleaveservice.getdataLeaveAll();
-    const userGroupMapHeader = await userGroupServices.getUserGroupMapHeader();
-    const leaveUserIds = userGroupMapHeader
-      .map((item: any) => item.leaveUserId)
-      .filter((arr: any) => arr.length > 0)
-      .flat();
-    setUserGroupIds(leaveUserIds);
     setDataLeaveUser(res);
     setLoading(false);
   };
@@ -160,13 +147,13 @@ export default function Page() {
                 title: <span>Home</span>,
               },
               {
-                title: <span>detail-online-leave-admin</span>,
+                title: <span>Detail Data Leave Admin</span>,
               },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
-          <div className="title-page-font">{`Detail Online Leave Admin`}</div>
+          <div className="title-page-font">{`Detail Data Leave Admin`}</div>
         </Divider>
         <div className="w-full">
           <Card>

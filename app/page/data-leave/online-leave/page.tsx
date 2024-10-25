@@ -11,7 +11,7 @@ import {
   message,
   Form,
 } from "antd";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import {
   useAxiosIntranet,
@@ -30,7 +30,6 @@ import {
 import { CreateOnlineLeave } from "./components/create-online-leave";
 import { TableOnlineDetailLeave } from "./components/table-online-detail-leave";
 import { ExclamationCircleFilled } from "@ant-design/icons";
-import { useForm } from "antd/es/form/Form";
 import { useRouter } from "next/navigation";
 import { RcFile, UploadProps } from "antd/es/upload";
 import { calculateTime } from "../common/function-data-leave";
@@ -129,9 +128,6 @@ export default function Page() {
     } else if (type === "endDate" && params.startDate) {
       checklenghtDay(params.startDate, value);
     }
-    // if (type === "endDate") {
-    //   setParams((e: any) => ({ ...e, endDate: value }));
-    // }
     if (type === "endDate") {
       setParams((e: any) => ({ ...e, endDate: value }));
     } else if (type === "startDate" && params.endDate) {
@@ -147,9 +143,6 @@ export default function Page() {
     } else if (type === "selectStartTime" && params.endTime) {
       checklenghtTime(value, params.endTime);
     }
-    // if (type === "selectEndTime") {
-    //   setParams((e: any) => ({ ...e, endTime: value }));
-    // }
     if (value === true) {
       setParams((e: any) => ({ ...e, lengthDate: 1 }));
     } else if (value === false) {
@@ -163,12 +156,6 @@ export default function Page() {
     const endDate = value2 ? dayjs(value2).endOf("day") : null;
     const totalDays =
       startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : "0";
-
-    // console.log(startDate);
-    // console.log(endDate);
-    // if (startDate && endDate && startDate.isSame(endDate)) {
-    //   return;
-    // }
     setParams((e: any) => ({
       ...e,
       lengthDate:
@@ -369,8 +356,6 @@ export default function Page() {
   };
 
   const onfinishCreate = async (values: ITypeDataLeaveCreate) => {
-    // console.log("values: ", values);
-
     const userId = values.userId as string;
     const leaveStartDate = values.startDate as Date;
     const leaveEndDate = values.endDate as Date;
@@ -943,13 +928,13 @@ export default function Page() {
                 title: <span>Home</span>,
               },
               {
-                title: <span>Set Data Leave </span>,
+                title: <span>Create Data Leave </span>,
               },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
-          <div className="title-page-font">{`Set Date Leave`}</div>
+          <div className="title-page-font">{`Create Data Leave`}</div>
         </Divider>
       </Row>
       <Row gutter={{ xs: 3, sm: 3, md: 3, lg: 3 }}>

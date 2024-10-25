@@ -76,6 +76,7 @@ const Newoption: React.FC = () => {
   const [existingFiles, setExistingFiles] = useState<UploadFile[]>([]);
   const [searchFileName, setSearchFileName] = useState("");
   const [searchFileType, setSearchFileType] = useState("");
+  const baseImageUrl = process.env.BACKEND_INTRANET_URL;
   const [selectedNews, setSelectedNews] = useState<informationNews | null>(
     null
   );
@@ -274,7 +275,7 @@ const Newoption: React.FC = () => {
       uid: String(image.imageId),
       name: image.fileimageName as string,
       status: "done" as UploadFileStatus,
-      url: `http://localhost:4003/api/public/news-image/${image.fileName}`,
+      url: `${baseImageUrl}/public/news-image/${image.fileName}`,
     }));
     console.log(existingFilesList);
     setExistingFiles(existingFilesList);

@@ -13,7 +13,7 @@ import {
   TableProps,
 } from "antd";
 import React, { useEffect, useState } from "react";
-import { ManageemailTemplateServices } from "../service/emailtemplate.service";
+// import { ManageemailTemplateServices } from "../service/emailtemplate.service";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { FormProps, useForm } from "antd/es/form/Form";
 import { DeleteIcon, EditIcon } from "@/components/icon";
@@ -36,7 +36,7 @@ const HtmlEditor = () => {
   const [IsmodlaOpencreate, setIsmodlaOpencreate] = useState(false);
   const [IsmodlaOpenupdate, setIsmodlaOpenupdate] = useState(false);
 
-  const manageemailTemplateServices = ManageemailTemplateServices(intraAuth);
+  // const manageemailTemplateServices = ManageemailTemplateServices(intraAuth);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [Ismodladetail, setIsmodladetail] = useState(false);
   const [form] = useForm();
@@ -52,14 +52,14 @@ const HtmlEditor = () => {
 
   const fetchDataemailTemplate = async () => {
     try {
-      const maresponse =
-        await manageemailTemplateServices.getemailTemplateQuery();
-      const emailTemplate: emailTemplate[] = maresponse.map(
-        (item: any, index: number) => ({
-          ...item,
-          key: index.toString(),
-        })
-      );
+      // const maresponse =
+      //   await manageemailTemplateServices.getemailTemplateQuery();
+      // const emailTemplate: emailTemplate[] = maresponse.map(
+      //   (item: any, index: number) => ({
+      //     ...item,
+      //     key: index.toString(),
+      //   })
+      // );
       setemailTemplate(emailTemplate);
       setSubmitLoading(false);
     } catch (error) {
@@ -88,16 +88,16 @@ const HtmlEditor = () => {
         },
       };
       try {
-        const response = await manageemailTemplateServices.createemailTemplate(
-          informationNewsCreateData
-        );
-        if (response) {
-          message.success("เพิ่มเทมเพลดสำเร็จ");
-          form.resetFields();
-          setIsmodlaOpencreate(false);
-        } else {
-          message.error("เพิ่มเทมเพลดไม่สำเร็จ");
-        }
+        // const response = await manageemailTemplateServices.createemailTemplate(
+        //   informationNewsCreateData
+        // );
+        // if (response) {
+        //   message.success("เพิ่มเทมเพลดสำเร็จ");
+        //   form.resetFields();
+        //   setIsmodlaOpencreate(false);
+        // } else {
+        //   message.error("เพิ่มเทมเพลดไม่สำเร็จ");
+        // }
         setSubmitLoading(false);
         fetchDataemailTemplate();
       } catch (error) {
@@ -112,19 +112,19 @@ const HtmlEditor = () => {
     setSubmitLoading(true);
 
     try {
-      const updatedemailTemplate = {
-        id: values?.id,
-        name: values?.name,
-        formdoc: values?.formdoc,
-        updatedAt: new Date().toISOString(),
-      };
-      await manageemailTemplateServices.updateemailTemplate(
-        updatedemailTemplate
-      );
-      message.success("แก้ไขเทมเพลดสำเร็จ");
-      fetchDataemailTemplate();
-      setSubmitLoading(false);
-      setIsmodlaOpenupdate(false);
+      // const updatedemailTemplate = {
+      //   id: values?.id,
+      //   name: values?.name,
+      //   formdoc: values?.formdoc,
+      //   updatedAt: new Date().toISOString(),
+      // };
+      // await manageemailTemplateServices.updateemailTemplate(
+      //   updatedemailTemplate
+      // );
+      // message.success("แก้ไขเทมเพลดสำเร็จ");
+      // fetchDataemailTemplate();
+      // setSubmitLoading(false);
+      // setIsmodlaOpenupdate(false);
     } catch (error) {
       fetchDataemailTemplate();
       message.error("แก้ไขเทมเพลดไม่สำเร็จ");
@@ -132,14 +132,14 @@ const HtmlEditor = () => {
   };
 
   const handleDeleteemailTemplate = async (id: number) => {
-    try {
-      await manageemailTemplateServices.deleteemailTemplate(id);
-      setemailTemplate(emailTemplate.filter((item) => item.id !== id));
-      message.success("ลบเทมเพลดสำเร็จ");
-      fetchDataemailTemplate();
-    } catch (error) {
-      message.error("ลบประเภทไม่ข่าวสารสำเร็จ");
-    }
+    // try {
+    //   await manageemailTemplateServices.deleteemailTemplate(id);
+    //   setemailTemplate(emailTemplate.filter((item) => item.id !== id));
+    //   message.success("ลบเทมเพลดสำเร็จ");
+    //   fetchDataemailTemplate();
+    // } catch (error) {
+    //   message.error("ลบประเภทไม่ข่าวสารสำเร็จ");
+    // }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

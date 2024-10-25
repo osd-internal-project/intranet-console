@@ -23,6 +23,7 @@ const Tablehandbook: React.FC = () => {
   const managehandbookFileServices = ManagehandbookFileServices(intraAuth);
   const [searchFileName, setSearchFileName] = useState("");
   const [searchFileType, setSearchFileType] = useState("");
+  const baseImageUrl = process.env.BACKEND_INTRANET_URL;
   useEffect(() => {
     fetchDataHandbookfile();
   }, []);
@@ -48,7 +49,7 @@ const Tablehandbook: React.FC = () => {
     console.log(record.fileName);
 
     if (record && record.fileId) {
-      const fileUrl = `http://localhost:4003/api/public/handbook-file/${
+      const fileUrl = `${baseImageUrl}/public/handbook-file/${
         record.fileId
       }?fileName=${encodeURIComponent(String(record.fileName))}`;
       console.log(fileUrl);
@@ -91,7 +92,9 @@ const Tablehandbook: React.FC = () => {
         handbookFile.fileName
           .toLowerCase()
           .includes(searchFileName.toLowerCase()) &&
-        handbookFile.filetype.toLowerCase().includes(searchFileType.toLowerCase())
+        handbookFile.filetype
+          .toLowerCase()
+          .includes(searchFileType.toLowerCase())
     );
 
   const dataWithKey = filteredData.map((item, index) => ({
@@ -137,7 +140,7 @@ const Tablehandbook: React.FC = () => {
       title: "ดาวโหลดไฟล์",
       dataIndex: "x",
       key: "x",
-      
+
       align: "center",
       render: (_record: number, row: any, _index: number) => (
         <Button
@@ -196,7 +199,7 @@ const Tablehandbook: React.FC = () => {
         bordered
         pagination={{ pageSize: 10 }}
       />
-    </div> 
+    </div>
   );
 };
 export default Tablehandbook;

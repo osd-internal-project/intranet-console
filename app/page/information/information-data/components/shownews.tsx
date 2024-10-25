@@ -45,6 +45,7 @@ const ManagementNews: React.FC = () => {
   const intraAuth = useAxiosIntranet();
   const manageInformationNewsServices =
     ManageinformationNewsServices(intraAuth);
+  const baseImageUrl = process.env.BACKEND_INTRANET_URL;
   useEffect(() => {
     fetchDatainformationNews();
   }, []);
@@ -117,7 +118,7 @@ const ManagementNews: React.FC = () => {
         <Row gutter={16}>
           {currentNews
             .slice()
-            .reverse() 
+            .reverse()
             .map((item) => (
               <Col span={8} key={item.newsId.toString()}>
                 <Card
@@ -130,7 +131,7 @@ const ManagementNews: React.FC = () => {
                         preview={false}
                         alt="news"
                         crossOrigin="anonymous"
-                        src={`http://localhost:4003/api/public/news-image/${item.images[0].fileName}`}
+                        src={`${baseImageUrl}/public/news-image/${item.images[0].fileName}`}
                         style={{
                           width: "400px",
                           height: "350px",
@@ -209,7 +210,7 @@ const ManagementNews: React.FC = () => {
                         preview={false}
                         crossOrigin="anonymous"
                         alt="news"
-                        src={`http://localhost:4003/api/public/news-image/${image.fileName}`}
+                        src={`${baseImageUrl}/public/news-image/${image.fileName}`}
                         style={{ width: "600px", height: "600px" }}
                       />
                     </div>
@@ -217,13 +218,13 @@ const ManagementNews: React.FC = () => {
                 : null}
             </Carousel>
             <div style={{ fontSize: "20px" }}>
-              <Input.TextArea 
+              <Input.TextArea
                 style={{
                   fontSize: "20px",
                   width: "900px",
                   border: "none",
                   outline: "none",
-                  resize: "none", 
+                  resize: "none",
                   boxShadow: "none",
                 }}
                 value={selectedNews?.content?.toString()}
@@ -236,30 +237,28 @@ const ManagementNews: React.FC = () => {
             </p>
             <p>
               <strong>วันที่เผยแพร่ : </strong>{" "}
-              {new Date(selectedNews.phblishedAt.toString()).toLocaleDateString(
-                "en-GB",
-                {
+              {new Date(selectedNews.phblishedAt.toString())
+                .toLocaleDateString("en-GB", {
                   year: "numeric",
                   month: "2-digit",
                   day: "2-digit",
                   hour: "2-digit",
                   minute: "2-digit",
-                }
-              ).replace(',', '')}{" "}
+                })
+                .replace(",", "")}{" "}
               น.
             </p>
             <p>
               <strong>อัปเดตล่าสุด : </strong>{" "}
-              {new Date(selectedNews.updatedAt.toString()).toLocaleDateString(
-                "en-GB",
-                {
+              {new Date(selectedNews.updatedAt.toString())
+                .toLocaleDateString("en-GB", {
                   year: "numeric",
                   month: "2-digit",
                   day: "2-digit",
                   hour: "2-digit",
                   minute: "2-digit",
-                }
-              ).replace(',', '')}{" "}
+                })
+                .replace(",", "")}{" "}
               น.
             </p>
           </div>

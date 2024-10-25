@@ -275,7 +275,7 @@ const Newoption: React.FC = () => {
       uid: String(image.imageId),
       name: image.fileimageName as string,
       status: "done" as UploadFileStatus,
-      url: `${baseImageUrl}/news-image/${image.fileimagePath}`,
+      url: `${baseImageUrl}/public/news-image/${image.fileName}`,
     }));
     console.log(existingFilesList);
     setExistingFiles(existingFilesList);

@@ -65,6 +65,7 @@ const Managehandbook: React.FC = () => {
   const [form] = useForm();
   const [searchFileName, setSearchFileName] = useState("");
   const [searchFileType, setSearchFileType] = useState("");
+  const baseImageUrl = process.env.BACKEND_INTRANET_URL;
   const [handbooktypeOptions, sethandbooktypeOptions] = useState<
     {
       value: number;
@@ -241,7 +242,7 @@ const Managehandbook: React.FC = () => {
     console.log(record.fileName);
 
     if (record && record.fileId) {
-      const fileUrl = `http://localhost:4003/api/public/handbook-file/${
+      const fileUrl = `${baseImageUrl}/public/handbook-file/${
         record.fileId
       }?fileName=${encodeURIComponent(String(record.fileName))}`;
       console.log(fileUrl);

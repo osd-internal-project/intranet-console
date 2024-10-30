@@ -319,7 +319,18 @@ export const MenuSider: MenuItem[] = [
   {
     key: "email-template",
     icon: <MailOutlined />,
-    label: `e-mail template`,
+    label: `Email template`,
+    rule: "mac-s",
+    children: [
+      {
+        key: `email-template/email-template`,
+        label: `Email Template`,
+      },
+      // {
+      //   key: `email-template/add-template`,
+      //   label: `Add Email Template`,
+      // },
+    ],
   },
 ].map((item) => {
   return {

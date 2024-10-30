@@ -1,18 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, Breadcrumb, Divider, Form } from "antd";
+import { Card, Breadcrumb, Divider, Form, Button } from "antd";
 import EmailTemplateTable from "./components/email-template-table";
-import EmailTemplateCreate from "./components/email-template-create";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { ManageemailTemplateServices } from "./service/email-template.service";
+import { ManageemailTemplateServices } from "../service/email-template.service";
+import Link from "next/link";
 
 const emailTemplatePage: React.FC = () => {
   const intraAuth = useAxiosIntranet();
   const manageemailtemplateservices = ManageemailTemplateServices(intraAuth);
   const [dataSource, setDataSource] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [openModalCreate, setOpenModalCreate] = useState<boolean>(false);
-  const [optionsType, setoptionsType] = useState<any[]>([]);
 
   useEffect(() => {
     if (loading) fechdataSource();
@@ -20,10 +18,7 @@ const emailTemplatePage: React.FC = () => {
 
   const fechdataSource = async () => {
     const getdataAll = await manageemailtemplateservices.findAll();
-    const getdataOptionsType = await manageemailtemplateservices.optionsType();
-
     setDataSource(getdataAll);
-    setoptionsType(getdataOptionsType);
     setLoading(false);
   };
 
@@ -47,7 +42,13 @@ const emailTemplatePage: React.FC = () => {
       </Divider>
       <Card>
         <div>
-          <EmailTemplateCreate />
+          <div className="w-full mb-2">
+            <div className="flex justify-end">
+              <Link href="/page/email-template/add-template">
+                <Button type="primary">{`Add Email Template`}</Button>
+              </Link>
+            </div>
+          </div>
         </div>
         <div>
           <EmailTemplateTable dataSource={dataSource} loading={loading} />

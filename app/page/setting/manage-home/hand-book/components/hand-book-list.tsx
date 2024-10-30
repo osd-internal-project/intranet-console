@@ -17,7 +17,7 @@ export interface handbookFile {
   filetype: String;
   status?: boolean;
 }
-const Tablehandbook: React.FC = () => {
+const HandBookList: React.FC = () => {
   const intraAuth = useAxiosIntranet();
   const [handbookFile, sethandbookFile] = useState<handbookFile[]>([]);
   const managehandbookFileServices = ManagehandbookFileServices(intraAuth);
@@ -30,30 +30,19 @@ const Tablehandbook: React.FC = () => {
 
   const fetchDataHandbookfile = async () => {
     try {
-      const maresponse =
-        await managehandbookFileServices.gethandbookFileQuery();
-      const handbookFile: handbookFile[] = maresponse.map(
-        (item: any, index: number) => ({
-          ...item,
-          key: index.toString(),
-        })
-      );
+      const maresponse = await managehandbookFileServices.gethandbookFileQuery();
+      const handbookFile: handbookFile[] = maresponse.map((item: any, index: number) => ({
+        ...item,
+        key: index.toString(),
+      }));
       sethandbookFile(handbookFile);
     } catch (error) {
       message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
     }
   };
   const handleDownload = async (record: handbookFile) => {
-    console.log(record);
-    console.log(record.fileId);
-    console.log(record.fileName);
-
     if (record && record.fileId) {
-      const fileUrl = `${baseImageUrl}/public/handbook-file/${
-        record.fileId
-      }?fileName=${encodeURIComponent(String(record.fileName))}`;
-      console.log(fileUrl);
-
+      const fileUrl = `${baseImageUrl}/public/handbook-file/${record.fileId}?fileName=${encodeURIComponent(String(record.fileName))}`;
       try {
         const response = await fetch(fileUrl);
 
@@ -89,12 +78,8 @@ const Tablehandbook: React.FC = () => {
     .filter((handbookFile) => handbookFile.status)
     .filter(
       (handbookFile) =>
-        handbookFile.fileName
-          .toLowerCase()
-          .includes(searchFileName.toLowerCase()) &&
-        handbookFile.filetype
-          .toLowerCase()
-          .includes(searchFileType.toLowerCase())
+        handbookFile.fileName.toLowerCase().includes(searchFileName.toLowerCase()) &&
+        handbookFile.filetype.toLowerCase().includes(searchFileType.toLowerCase())
     );
 
   const dataWithKey = filteredData.map((item, index) => ({
@@ -127,8 +112,7 @@ const Tablehandbook: React.FC = () => {
       dataIndex: "updatedAt",
       key: "updatedAt",
       width: "180px",
-      render: (updatedAt: Date) =>
-        moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
+      render: (updatedAt: Date) => moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
       title: "ผู้อัปโหลด",
@@ -143,11 +127,7 @@ const Tablehandbook: React.FC = () => {
 
       align: "center",
       render: (_record: number, row: any, _index: number) => (
-        <Button
-          icon={<DownloadOutlined />}
-          size="small"
-          onClick={() => handleDownload(row)}
-        >
+        <Button icon={<DownloadOutlined />} size="small" type="primary" onClick={() => handleDownload(row)}>
           ดาวน์โหลด
         </Button>
       ),
@@ -193,6 +173,7 @@ const Tablehandbook: React.FC = () => {
       </div>
       <Table
         dataSource={dataWithKey}
+        size="small"
         columns={columns}
         scroll={{ x: "max-content" }}
         rowKey="id"
@@ -202,4 +183,4 @@ const Tablehandbook: React.FC = () => {
     </div>
   );
 };
-export default Tablehandbook;
+export default HandBookList;

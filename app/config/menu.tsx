@@ -20,7 +20,8 @@ const MenuNav: MenuProps["items"] = [
         href={"#"}
         onClick={async () => {
           signOut({ callbackUrl: "/signin" });
-        }}>
+        }}
+      >
         Sign Out
       </Link>
     ),
@@ -293,28 +294,6 @@ export const MenuSider: MenuItem[] = [
         rule: "mac-m-s",
       },
     ],
-  },
-  {
-    key: "information",
-    icon: <BarChartOutlined />,
-    label: `Infomation`,
-    rule: "ift-s",
-    children: [
-      {
-        key: `information/information-data`,
-        label: `Information Data`,
-      },
-      {
-        key: `information/information-management`,
-        label: `Information Management`,
-      },
-    ],
-  },
-  {
-    key: "handbook",
-    icon: <BookOutlined />,
-    label: `Handbook`,
-    rule: "hb-s",
   },
   {
     key: "email-template",

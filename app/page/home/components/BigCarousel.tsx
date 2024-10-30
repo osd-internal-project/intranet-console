@@ -9,36 +9,19 @@ export const BigCarouselComponent: React.FC<Props> = ({ slideImage }) => {
   const baseImageUrl = process.env.BACKEND_INTRANET_URL;
 
   return (
-    <Card
-      className="text-center bg-zinc-300 bg-opacity-80"
-      style={{ paddingBottom: 0, paddingTop: 0 }}
-    >
+    <Card styles={{ body: { padding: 0 } }}>
       {slideImage?.length > 0 ? (
         <ConfigProvider theme={{ components: { Carousel: { arrowSize: 35 } } }}>
-          <Carousel
-            autoplay={true}
-            adaptiveHeight={true}
-            arrows
-            infinite
-            effect="fade"
-            lazyLoad="progressive"
-          >
+          <Carousel autoplay={true} adaptiveHeight={true} arrows infinite effect="fade" lazyLoad="progressive">
             {slideImage.map((image) => (
               <div key={image.id}>
-                <Image
-                  src={`${baseImageUrl}/slide-image/${image.filePath}`}
-                  crossOrigin="anonymous"
-                  preview={false}
-                  style={{ height: "100%" }}
-                />
+                <Image src={`${baseImageUrl}/slide-image/${image.filePath}`} crossOrigin="anonymous" preview={false} style={{ height: "100%" }} />
               </div>
             ))}
           </Carousel>
         </ConfigProvider>
       ) : (
-        <div style={{ padding: "450px", color: "#888" }}>
-          No images available
-        </div>
+        <div style={{ padding: "450px", color: "#888" }}>No images available</div>
       )}
     </Card>
   );

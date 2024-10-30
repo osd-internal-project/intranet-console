@@ -222,7 +222,7 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         }
       >
         <Table
-          size="small"
+          // size="small"
           columns={columns}
           dataSource={typeLeaveTable}
           rowKey={(e: ITypetypeleave) => e.id}

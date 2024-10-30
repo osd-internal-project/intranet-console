@@ -52,7 +52,7 @@ export const CreateLeaveForm: React.FC<props> = ({
   return (
     <div>
       <Form
-        size="small"
+        // size="small"
         form={createdataleaveForm}
         className=" grid grid-cols-1"
         layout="vertical"

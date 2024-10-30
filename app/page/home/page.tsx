@@ -10,31 +10,22 @@ import "antd/dist/reset.css";
 import { CarFilled, FileFilled, TeamOutlined } from "@ant-design/icons";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import SlideImageService from "./services/index.service";
-import {
-  MasterRoomType,
-  HandbookFileType,
-  InformationNewsType,
-} from "./common";
+import { MasterRoomType, HandbookFileType, InformationNewsType } from "./common";
 
 export default function HomePage() {
   const intraAuth = useAxiosIntranet();
   const intraAuthService = SlideImageService(intraAuth);
   const [loading, setLoading] = useState<boolean>(true);
   const [slideImage, setSlideImage] = useState<any[]>([]);
-  const [masterBookingRoom, setMasterBookingRoom] = useState<MasterRoomType[]>(
-    []
-  );
+  const [masterBookingRoom, setMasterBookingRoom] = useState<MasterRoomType[]>([]);
   const [handbookFile, setHandbookFile] = useState<HandbookFileType[]>([]);
-  const [informationNews, setInformationNews] = useState<InformationNewsType[]>(
-    []
-  );
+  const [informationNews, setInformationNews] = useState<InformationNewsType[]>([]);
 
   const fetchData = async () => {
     const dataSlideImage = await intraAuthService.getSlideImageByOrder();
     const MasterBookingresponse = await intraAuthService.getMasterRoomQuery();
     const dataHandbookFileQuery = await intraAuthService.getHandbookFileQuery();
-    const dataInformationNews =
-      await intraAuthService.getinformationNewsQuery();
+    const dataInformationNews = await intraAuthService.getinformationNewsQuery();
     setInformationNews(dataInformationNews);
     setHandbookFile(dataHandbookFileQuery);
     setMasterBookingRoom(MasterBookingresponse);
@@ -94,30 +85,18 @@ export default function HomePage() {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2">
-          <Card
-            title="กิจกรรมและข่าวสาร"
-            bordered={false}
-            className="text-center"
-          >
+          <Card title="กิจกรรมและข่าวสาร" bordered={false} className="text-center">
             <NewsCarouselComponent informationNews={informationNews} />
           </Card>
           <div className="my-4"></div>
           <Card title="เอกสาร" bordered={false} className="text-center">
-            <DocumentComponent
-              handbookFile={handbookFile}
-              downloadFile={(id: number, filename: string) =>
-                downloadFile(id, filename)
-              }
-            />
+            <DocumentComponent handbookFile={handbookFile} downloadFile={(id: number, filename: string) => downloadFile(id, filename)} />
           </Card>
         </div>
 
         <div className="lg:col-span-1">
           <Card title="หอประชุม" className="text-center">
-            <MeetingRoomTableComponent
-              pagination={false}
-              masterBookingRoom={masterBookingRoom}
-            />
+            <MeetingRoomTableComponent pagination={false} masterBookingRoom={masterBookingRoom} />
           </Card>
           <div className="my-4"></div>
           <Card title="วันหยุดประจำปี" className="text-center">

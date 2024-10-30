@@ -5,22 +5,11 @@ import { DeleteIcon, EditIcon } from "@/components/icon";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManagehandbookFileServices } from "../service/handbook.service";
 import { useForm } from "antd/es/form/Form";
-import {
-  Table,
-  Space,
-  Button,
-  Modal,
-  Form,
-  Input,
-  Tag,
-  message,
-  Popconfirm,
-  Tooltip,
-  Switch,
-} from "antd";
+import { Table, Space, Button, Modal, Form, Input, Tag, message, Popconfirm, Tooltip, Switch } from "antd";
 import moment from "moment";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
+import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
 export interface handbooktype {
   idhandtype: Number;
   nameType: String;
@@ -52,7 +41,7 @@ export interface handbook {
   image: handbookFile[];
 }
 
-const Newoption: React.FC = () => {
+const HandBookOption: React.FC = () => {
   const intraAuth = useAxiosIntranet();
   const [handbooktype, sethandbooktype] = useState<handbooktype[]>([]);
   const [handbook, sethandbook] = useState<handbook[]>([]);
@@ -73,14 +62,11 @@ const Newoption: React.FC = () => {
 
   const fetchDatahandbooktype = async () => {
     try {
-      const maresponse =
-        await managehandbookFileServices.gethandbooktypeQuery();
-      const handbooktype: handbooktype[] = maresponse.map(
-        (item: any, index: number) => ({
-          ...item,
-          key: index.toString(),
-        })
-      );
+      const maresponse = await managehandbookFileServices.gethandbooktypeQuery();
+      const handbooktype: handbooktype[] = maresponse.map((item: any, index: number) => ({
+        ...item,
+        key: index.toString(),
+      }));
       sethandbooktype(handbooktype);
       setSubmitLoading(false);
     } catch (error) {
@@ -89,14 +75,11 @@ const Newoption: React.FC = () => {
   };
   const fetchDataHandbookfile = async () => {
     try {
-      const maresponse =
-        await managehandbookFileServices.gethandbookFileQuery();
-      const handbookFile: handbookFile[] = maresponse.map(
-        (item: any, index: number) => ({
-          ...item,
-          key: index.toString(),
-        })
-      );
+      const maresponse = await managehandbookFileServices.gethandbookFileQuery();
+      const handbookFile: handbookFile[] = maresponse.map((item: any, index: number) => ({
+        ...item,
+        key: index.toString(),
+      }));
       sethandbookFile(handbookFile);
     } catch (error) {
       message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
@@ -115,9 +98,7 @@ const Newoption: React.FC = () => {
       message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
     }
   };
-  const newsTypeCreateDatacreate: FormProps<handbooktype>["onFinish"] = async (
-    values
-  ) => {
+  const newsTypeCreateDatacreate: FormProps<handbooktype>["onFinish"] = async (values) => {
     setSubmitLoading(true);
     const informationNewsCreateData = {
       data: {
@@ -128,9 +109,7 @@ const Newoption: React.FC = () => {
       },
     };
     try {
-      const response = await managehandbookFileServices.createhandbooktype(
-        informationNewsCreateData
-      );
+      const response = await managehandbookFileServices.createhandbooktype(informationNewsCreateData);
       if (response) {
         message.success("เพิ่มประเภทเอกสารสำเร็จ");
         form.resetFields();
@@ -148,9 +127,7 @@ const Newoption: React.FC = () => {
     }
   };
 
-  const updatednewType: FormProps<handbooktype>["onFinish"] = async (
-    values
-  ) => {
+  const updatednewType: FormProps<handbooktype>["onFinish"] = async (values) => {
     setSubmitLoading(true);
 
     try {
@@ -175,13 +152,9 @@ const Newoption: React.FC = () => {
   };
 
   const handleDeletenewType = async (record: handbooktype) => {
-    record.idhandtype;
-    console.log(record.idhandtype);
     try {
       await managehandbookFileServices.deletehandbooktype(record.idhandtype);
-      sethandbooktype(
-        handbooktype.filter((item) => item.idhandtype !== record.idhandtype)
-      );
+      sethandbooktype(handbooktype.filter((item) => item.idhandtype !== record.idhandtype));
       message.success("ลบประเภทเอกสารสำเร็จ");
       fetchDatahandbooktype();
     } catch (error) {
@@ -193,9 +166,7 @@ const Newoption: React.FC = () => {
     setSearchTerm(e.target.value);
   };
 
-  const searthnews = handbooktype.filter((handbooktype) =>
-    handbooktype.nameType.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const searthnews = handbooktype.filter((handbooktype) => handbooktype.nameType.toLowerCase().includes(searchTerm.toLowerCase()));
 
   const showModalEditnewType = (record: handbooktype) => {
     formEdit.setFieldsValue({
@@ -241,16 +212,14 @@ const Newoption: React.FC = () => {
       dataIndex: "createAt",
       key: "createAt",
       width: "170px",
-      render: (createAt: Date) =>
-        moment(createAt).format("DD/MM/YYYY HH:mm" + " น."),
+      render: (createAt: Date) => moment(createAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
       title: "วันที่อัปเดต",
       dataIndex: "updatedAt",
       key: "updatedAt",
       width: "170px",
-      render: (updatedAt: Date) =>
-        moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
+      render: (updatedAt: Date) => moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
       title: "การมองเห็น",
@@ -258,12 +227,7 @@ const Newoption: React.FC = () => {
       key: "status",
       width: "80px",
       align: "center",
-      render: (status: boolean) =>
-        status ? (
-          <Tag color="green">เปิดการมองเห็น</Tag>
-        ) : (
-          <Tag color="red">ปิดการมองเห็น</Tag>
-        ),
+      render: (status: boolean) => (status ? <Tag color="green">เปิดการมองเห็น</Tag> : <Tag color="red">ปิดการมองเห็น</Tag>),
     },
     {
       title: "ผู้อัปโหลด",
@@ -280,19 +244,15 @@ const Newoption: React.FC = () => {
       render: (row: number, record: handbooktype) => (
         <Space size="middle">
           <Tooltip title="แก้ไข">
-            <a onClick={() => showModalEditnewType(record)}>{EditIcon}</a>
+            <Button size="small" type="link" onClick={() => showModalEditnewType(record)}>
+              <FormOutlined />
+            </Button>
           </Tooltip>
-          <Popconfirm
-            title="คุณแน่ใจหรือไม่ว่าต้องการลบการเอกสารนี้?"
-            onConfirm={() => handleDeletenewType(record)}
-            okText="ใช่"
-            cancelText="ไม่"
-          >
+          <Popconfirm title="คุณแน่ใจหรือไม่ว่าต้องการลบการเอกสารนี้?" onConfirm={() => handleDeletenewType(record)} okText="ใช่" cancelText="ไม่">
             <Tooltip title="ลบ">
-              <a>
-                {" "}
-                <DeleteIcon width="24" height="24" />{" "}
-              </a>
+              <Button size="small" type="link">
+                <DeleteOutlined style={{ color: "red" }} />
+              </Button>
             </Tooltip>
           </Popconfirm>
         </Space>
@@ -325,21 +285,11 @@ const Newoption: React.FC = () => {
           </div>
         </div>
         <div></div>
-        <Button
-          style={{ alignContent: "right" }}
-          type="primary"
-          onClick={modalopencreate}
-        >
+        <Button style={{ alignContent: "right" }} type="primary" onClick={modalopencreate}>
           การอัพโหลดไฟล์
         </Button>
       </div>
-      <Modal
-        title="เพิ่มข้อมูลตรวจสภาพรถ"
-        open={IsmodlaOpencreate}
-        onCancel={handleclosecreate}
-        footer={null}
-        destroyOnClose
-      >
+      <Modal title="เพิ่มข้อมูลตรวจสภาพรถ" open={IsmodlaOpencreate} onCancel={handleclosecreate} footer={null} destroyOnClose>
         <Form form={form} onFinish={newsTypeCreateDatacreate} layout="vertical">
           <Form.Item
             name="nameType"
@@ -349,24 +299,12 @@ const Newoption: React.FC = () => {
           >
             <Input placeholder="ชื่อประเภทเอกสาร" showCount maxLength={50} />
           </Form.Item>
-          <Form.Item
-            name="status"
-            label="สถานะการมอง :"
-            style={{ width: "300px" }}
-          >
-            <Switch
-              checkedChildren="เปิดการมอง"
-              unCheckedChildren="ปิดการมอง"
-              defaultChecked
-            />
+          <Form.Item name="status" label="สถานะการมอง :" style={{ width: "300px" }}>
+            <Switch checkedChildren="เปิดการมอง" unCheckedChildren="ปิดการมอง" defaultChecked />
           </Form.Item>
           <div className="flex justify-end w-full">
             <Form.Item>
-              <Button
-                type="default"
-                onClick={handleclosecreate}
-                style={{ marginRight: 8 }}
-              >
+              <Button type="default" onClick={handleclosecreate} style={{ marginRight: 8 }}>
                 ยกเลิก
               </Button>
             </Form.Item>
@@ -379,13 +317,7 @@ const Newoption: React.FC = () => {
         </Form>
       </Modal>
 
-      <Modal
-        title="แก้ไขการมองเอกสาร"
-        open={modalEditnewType}
-        onCancel={handleCancel1edit}
-        footer={null}
-        destroyOnClose
-      >
+      <Modal title="แก้ไขการมองเอกสาร" open={modalEditnewType} onCancel={handleCancel1edit} footer={null} destroyOnClose>
         <Form form={formEdit} onFinish={updatednewType} layout="vertical">
           <Form.Item<handbooktype>
             name="idhandtype"
@@ -406,24 +338,12 @@ const Newoption: React.FC = () => {
           >
             <Input placeholder="ชื่อประเภทเอกสาร" showCount maxLength={50} />
           </Form.Item>
-          <Form.Item
-            name="status"
-            label="สถานะการมอง :"
-            style={{ width: "300px" }}
-          >
-            <Switch
-              checkedChildren="เปิดการมอง"
-              unCheckedChildren="ปิดการมอง"
-              defaultChecked
-            />
+          <Form.Item name="status" label="สถานะการมอง :" style={{ width: "300px" }}>
+            <Switch checkedChildren="เปิดการมอง" unCheckedChildren="ปิดการมอง" defaultChecked />
           </Form.Item>
           <div className="flex justify-end w-full">
             <Form.Item>
-              <Button
-                type="default"
-                onClick={handleCancel1edit}
-                style={{ marginRight: 8 }}
-              >
+              <Button type="default" onClick={handleCancel1edit} style={{ marginRight: 8 }}>
                 ยกเลิก
               </Button>
             </Form.Item>
@@ -436,9 +356,10 @@ const Newoption: React.FC = () => {
         </Form>
       </Modal>
       <Table
+        size="small"
         dataSource={dataWithKey}
         columns={columns}
-        scroll={{ x: "max-content" }} 
+        scroll={{ x: "max-content" }}
         rowKey="id"
         bordered
         pagination={{ pageSize: 10 }}
@@ -446,4 +367,4 @@ const Newoption: React.FC = () => {
     </div>
   );
 };
-export default Newoption;
+export default HandBookOption;

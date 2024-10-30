@@ -3,22 +3,11 @@ import React, { useState, useEffect } from "react";
 import type { TableProps, FormProps } from "antd";
 import { DeleteIcon, EditIcon } from "@/components/icon";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { ManageinformationNewsServices } from "../../service/information.service";
 import { useForm } from "antd/es/form/Form";
-import {
-  Table,
-  Space,
-  Button,
-  Modal,
-  Form,
-  Input,
-  Tag,
-  message,
-  Popconfirm,
-  Tooltip,
-  Switch,
-} from "antd";
+import { Table, Space, Button, Modal, Form, Input, Tag, message, Popconfirm, Tooltip, Switch } from "antd";
 import moment from "moment";
+import { ManageinformationNewsServices } from "../services/information.service";
+import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
 export interface newType {
   idType: Number;
   nameType: string;
@@ -28,11 +17,10 @@ export interface newType {
   status: boolean;
 }
 
-const Newoption: React.FC = () => {
+const InfoTypeNews: React.FC = () => {
   const intraAuth = useAxiosIntranet();
   const [newType, setnewType] = useState<newType[]>([]);
-  const manageinformationNewsServices =
-    ManageinformationNewsServices(intraAuth);
+  const manageinformationNewsServices = ManageinformationNewsServices(intraAuth);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [IsmodlaOpencreate, setIsmodlaOpencreate] = useState(false);
   const [modalEditnewType, setModalEditnewType] = useState(false);
@@ -58,9 +46,7 @@ const Newoption: React.FC = () => {
     }
   };
 
-  const newsTypeCreateDatacreate: FormProps<newType>["onFinish"] = async (
-    values
-  ) => {
+  const newsTypeCreateDatacreate: FormProps<newType>["onFinish"] = async (values) => {
     setSubmitLoading(true);
 
     const informationNewsCreateData = {
@@ -73,9 +59,7 @@ const Newoption: React.FC = () => {
       },
     };
     try {
-      const response = await manageinformationNewsServices.createnewsType(
-        informationNewsCreateData
-      );
+      const response = await manageinformationNewsServices.createnewsType(informationNewsCreateData);
       if (response) {
         message.success("เพิ่มประเภทข่าวสารสำเร็จ");
         form.resetFields();
@@ -128,9 +112,7 @@ const Newoption: React.FC = () => {
     setSearchTerm(e.target.value);
   };
 
-  const searthnews = newType.filter((newType) =>
-    newType.nameType.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const searthnews = newType.filter((newType) => newType.nameType.toLowerCase().includes(searchTerm.toLowerCase()));
 
   const showModalEditnewType = (record: newType) => {
     formEdit.setFieldsValue(record);
@@ -179,16 +161,14 @@ const Newoption: React.FC = () => {
       dataIndex: "createAt",
       key: "createAt",
       width: "170px",
-      render: (createdAt: Date) =>
-        moment(createdAt).format("DD/MM/YYYY HH:mm" + " น."),
+      render: (createdAt: Date) => moment(createdAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
       title: "วันที่อัปเดต",
       dataIndex: "updatedAt",
       key: "updatedAt",
       width: "170px",
-      render: (updatedAt: Date) =>
-        moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
+      render: (updatedAt: Date) => moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
       title: "การมองเห็น",
@@ -196,12 +176,7 @@ const Newoption: React.FC = () => {
       key: "status",
       align: "center",
       width: "80px",
-      render: (status: boolean) =>
-        status ? (
-          <Tag color="green">เปิดการมองเห็น</Tag>
-        ) : (
-          <Tag color="red">ปิดการมองเห็น</Tag>
-        ),
+      render: (status: boolean) => (status ? <Tag color="green">เปิดการมองเห็น</Tag> : <Tag color="red">ปิดการมองเห็น</Tag>),
     },
     {
       title: "การจัดการ",
@@ -212,9 +187,9 @@ const Newoption: React.FC = () => {
       render: (record: newType, row: any) => (
         <Space size="middle">
           <Tooltip title="แก้ไข">
-            <a onClick={() => showModalEditnewType(row)}>
-             {EditIcon}
-            </a>
+            <Button size="small" type="link" onClick={() => showModalEditnewType(row)}>
+              <FormOutlined />
+            </Button>
           </Tooltip>
           <Popconfirm
             title="คุณแน่ใจหรือไม่ว่าต้องการลบประเภทข่าวสารนี้ ? "
@@ -223,10 +198,9 @@ const Newoption: React.FC = () => {
             cancelText="ไม่"
           >
             <Tooltip title="ลบ">
-              <a>
-                {" "}
-                <DeleteIcon width="24" height="24" />{" "}
-              </a>
+              <Button size="small" type="link">
+                <DeleteOutlined style={{ color: "red" }} />
+              </Button>
             </Tooltip>
           </Popconfirm>
         </Space>
@@ -260,22 +234,11 @@ const Newoption: React.FC = () => {
             }}
           />
         </div>
-        <div></div>
-        <Button
-          style={{ alignContent: "right" }}
-          type="primary"
-          onClick={modalopencreate}
-        >
+        <Button style={{ alignContent: "right" }} type="primary" onClick={modalopencreate}>
           สร้างประเภทข่าวสาร
         </Button>
       </div>
-      <Modal
-        title="สร้างประเภทข้อมูลข่าวสาร"
-        open={IsmodlaOpencreate}
-        onCancel={handleclosecreate}
-        footer={null}
-        destroyOnClose
-      >
+      <Modal title="สร้างประเภทข้อมูลข่าวสาร" open={IsmodlaOpencreate} onCancel={handleclosecreate} footer={null} destroyOnClose>
         <Form form={form} onFinish={newsTypeCreateDatacreate} layout="vertical">
           <Form.Item
             name="nameType"
@@ -293,24 +256,12 @@ const Newoption: React.FC = () => {
           >
             <Input.TextArea rows={12} placeholder="รายละเอียดข่าวสาร" showCount maxLength={200} />
           </Form.Item>
-          <Form.Item
-            name="status"
-            label="สถานะการมอง :"
-            style={{ width: "460px" }}
-          >
-            <Switch
-              checkedChildren="เปิดการมอง"
-              unCheckedChildren="ปิดการมอง"
-              defaultChecked
-            />
+          <Form.Item name="status" label="สถานะการมอง :" style={{ width: "460px" }}>
+            <Switch checkedChildren="เปิดการมอง" unCheckedChildren="ปิดการมอง" defaultChecked />
           </Form.Item>
           <div className="flex justify-end w-full">
             <Form.Item>
-              <Button
-                type="default"
-                onClick={handleclosecreate}
-                style={{ marginRight: 8 }}
-              >
+              <Button type="default" onClick={handleclosecreate} style={{ marginRight: 8 }}>
                 ยกเลิก
               </Button>
             </Form.Item>
@@ -323,13 +274,7 @@ const Newoption: React.FC = () => {
         </Form>
       </Modal>
 
-      <Modal
-        title="แก้ไขประเภทข้อมูลข่าวสาร"
-        open={modalEditnewType}
-        onCancel={handleCancel1edit}
-        footer={null}
-        destroyOnClose
-      >
+      <Modal title="แก้ไขประเภทข้อมูลข่าวสาร" open={modalEditnewType} onCancel={handleCancel1edit} footer={null} destroyOnClose>
         <Form form={formEdit} onFinish={updatednewType} layout="vertical">
           <Form.Item
             name="idType"
@@ -341,14 +286,14 @@ const Newoption: React.FC = () => {
             }}
           >
             <Input disabled />
-          </Form.Item> 
+          </Form.Item>
           <Form.Item
-            name="nameType" 
+            name="nameType"
             label="ชื่อประเภทข่าวสาร :"
             rules={[{ required: true, message: "กรุณากรอกชื่อประเภทข่าวสาร" }]}
             style={{ width: "460px" }}
           >
-            <Input placeholder="ชื่อประเภทข่าวสาร" showCount maxLength={50}/>
+            <Input placeholder="ชื่อประเภทข่าวสาร" showCount maxLength={50} />
           </Form.Item>
           <Form.Item
             name="deteil"
@@ -356,35 +301,19 @@ const Newoption: React.FC = () => {
             rules={[{ required: true, message: "กรุณากรอกรายละเอียดข่าวสาร" }]}
             style={{ width: "460px" }}
           >
-            <Input.TextArea rows={12} placeholder="รายละเอียดข่าวสาร" showCount maxLength={200}/>
+            <Input.TextArea rows={12} placeholder="รายละเอียดข่าวสาร" showCount maxLength={200} />
           </Form.Item>
-          <Form.Item
-            name="status"
-            label="สถานะการมอง :"
-            style={{ width: "460px" }}
-          >
-            <Switch
-              checkedChildren="เปิดการมอง"
-              unCheckedChildren="ปิดการมอง"
-              defaultChecked
-            />
+          <Form.Item name="status" label="สถานะการมอง :" style={{ width: "460px" }}>
+            <Switch checkedChildren="เปิดการมอง" unCheckedChildren="ปิดการมอง" defaultChecked />
           </Form.Item>
           <div className="flex justify-end w-full">
             <Form.Item>
-              <Button
-                type="default"
-                onClick={handleCancel1edit}
-                style={{ marginRight: 8 }}
-              >
+              <Button type="default" onClick={handleCancel1edit} style={{ marginRight: 8 }}>
                 ยกเลิก
               </Button>
             </Form.Item>
             <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={submitLoading}
-              >
+              <Button type="primary" htmlType="submit" loading={submitLoading}>
                 ตกลง
               </Button>
             </Form.Item>
@@ -392,14 +321,15 @@ const Newoption: React.FC = () => {
         </Form>
       </Modal>
       <Table
+        size="small"
         dataSource={dataWithKey}
         columns={columns}
         scroll={{ x: "max-content" }}
-        rowKey="id"
+        rowKey="key"
         bordered
         pagination={{ pageSize: 10 }}
       />
     </div>
   );
 };
-export default Newoption;
+export default InfoTypeNews;

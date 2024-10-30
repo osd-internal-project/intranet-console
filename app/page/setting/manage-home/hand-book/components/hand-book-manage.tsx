@@ -3,36 +3,15 @@ import React, { useState, useEffect } from "react";
 import type { FormProps } from "antd";
 import type { UploadFile, UploadProps } from "antd";
 import { RcFile } from "antd/es/upload";
-import {
-  DownloadOutlined,
-  FilePdfOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, DownloadOutlined, FilePdfOutlined, FormOutlined, UploadOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { DeleteIcon, EditIcon } from "@/components/icon";
 import { useSession } from "next-auth/react";
 import dayjs from "dayjs";
-import {
-  Button,
-  Modal,
-  Input,
-  Table,
-  TableProps,
-  message,
-  Form,
-  Space,
-  Upload,
-  Switch,
-  Tooltip,
-  Popconfirm,
-  Select,
-  Tag,
-} from "antd";
+import { Button, Modal, Input, Table, TableProps, message, Form, Space, Upload, Switch, Tooltip, Popconfirm, Select, Tag } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManagehandbookFileServices } from "../service/handbook.service";
 import { useForm } from "antd/es/form/Form";
-import { UploadFileStatus } from "antd/es/upload/interface";
-import { log } from "util";
 export interface handbookFile {
   [x: string]: any;
   handbookid?: Number | null;
@@ -50,7 +29,7 @@ export interface handbooktype {
   createAt: String;
   status: boolean;
 }
-const Managehandbook: React.FC = () => {
+const HandBookManage: React.FC = () => {
   const intraAuth = useAxiosIntranet();
   const [handbooktype, sethandbooktype] = useState<handbooktype[]>([]);
   const [handbookFile, sethandbookFile] = useState<handbookFile[]>([]);
@@ -79,14 +58,11 @@ const Managehandbook: React.FC = () => {
 
   const fetchDataHandbookfile = async () => {
     try {
-      const maresponse =
-        await managehandbookFileServices.gethandbookFileQuery();
-      const handbookFile: handbookFile[] = maresponse.map(
-        (item: any, index: number) => ({
-          ...item,
-          key: index.toString(),
-        })
-      );
+      const maresponse = await managehandbookFileServices.gethandbookFileQuery();
+      const handbookFile: handbookFile[] = maresponse.map((item: any, index: number) => ({
+        ...item,
+        key: index.toString(),
+      }));
       sethandbookFile(handbookFile);
       setSubmitLoading(false);
     } catch (error) {
@@ -95,16 +71,13 @@ const Managehandbook: React.FC = () => {
   };
   const fetchDataType = async () => {
     try {
-      const handbookoption =
-        await managehandbookFileServices.gethandbooktypeQuery();
-      const handoptionsmaResponse = handbookoption.map(
-        (event: handbooktype) => {
-          return {
-            value: event.nameType,
-            label: event.nameType,
-          };
-        }
-      );
+      const handbookoption = await managehandbookFileServices.gethandbooktypeQuery();
+      const handoptionsmaResponse = handbookoption.map((event: handbooktype) => {
+        return {
+          value: event.nameType,
+          label: event.nameType,
+        };
+      });
       sethandbooktypeOptions(handoptionsmaResponse);
       sethandbooktype(handbookoption);
     } catch (error) {
@@ -112,28 +85,18 @@ const Managehandbook: React.FC = () => {
     }
   };
 
-  const handbookfileCreate: FormProps<handbookFile>["onFinish"] = async (
-    values
-  ) => {
+  const handbookfileCreate: FormProps<handbookFile>["onFinish"] = async (values) => {
     setSubmitLoading(true);
 
     try {
-      console.log(attendFiles);
-
       if (attendFiles.length > 0) {
         const formData: any = new FormData();
         formData.append("fileName", values.fileName);
         formData.append("filetype", values.filetype);
-        formData.append(
-          "author",
-          `${session?.user.firstNameTh} ${session?.user.lastNameTh}`
-        );
+        formData.append("author", `${session?.user.firstNameTh} ${session?.user.lastNameTh}`);
         formData.append("status", values?.status);
         formData.append("file", attendFiles[0].originFileObj as RcFile);
         const response = await managehandbookFileServices.uploadFiles(formData);
-        console.log("response:", formData);
-        console.log("response:", response);
-
         if (response) {
           formupload.resetFields();
           message.success("เพิ่มเอกสารสำเร็จ");
@@ -157,9 +120,7 @@ const Managehandbook: React.FC = () => {
     }
   };
 
-  const handbookFileUpdate: FormProps<handbookFile>["onFinish"] = async (
-    values
-  ) => {
+  const handbookFileUpdate: FormProps<handbookFile>["onFinish"] = async (values) => {
     setSubmitLoading(true);
     const handbookCreateData = {
       handbookid: values.handbookid,
@@ -169,12 +130,8 @@ const Managehandbook: React.FC = () => {
       updatedAt: new Date().toISOString(),
       status: values?.status,
     };
-    console.log(handbookCreateData);
     try {
-      const response = await managehandbookFileServices.updatehandbookFile(
-        handbookCreateData
-      );
-      console.log(response);
+      const response = await managehandbookFileServices.updatehandbookFile(handbookCreateData);
 
       if (response !== undefined) {
         formupload.resetFields();
@@ -217,9 +174,7 @@ const Managehandbook: React.FC = () => {
     setshowmodalupdate(true);
   };
 
-  const handleChangeAttendFiles: UploadProps["onChange"] = async ({
-    fileList: newFileList,
-  }) => {
+  const handleChangeAttendFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
     const totalFilesCount = existingFiles.length + newFileList.length;
     if (totalFilesCount > 1) {
       message.warning("คุณไม่สามารถอัปโหลดไฟล์เกิน 1 ไฟล์");
@@ -237,16 +192,8 @@ const Managehandbook: React.FC = () => {
   };
 
   const handleDownload = async (record: handbookFile) => {
-    console.log(record);
-    console.log(record.fileId);
-    console.log(record.fileName);
-
     if (record && record.fileId) {
-      const fileUrl = `${baseImageUrl}/public/handbook-file/${
-        record.fileId
-      }?fileName=${encodeURIComponent(String(record.fileName))}`;
-      console.log(fileUrl);
-
+      const fileUrl = `${baseImageUrl}/public/handbook-file/${record.fileId}?fileName=${encodeURIComponent(String(record.fileName))}`;
       try {
         const response = await fetch(fileUrl);
 
@@ -280,9 +227,7 @@ const Managehandbook: React.FC = () => {
 
   const filteredData = handbookFile.filter(
     (handbookFile) =>
-      handbookFile.fileName
-        .toLowerCase()
-        .includes(searchFileName.toLowerCase()) &&
+      handbookFile.fileName.toLowerCase().includes(searchFileName.toLowerCase()) &&
       handbookFile.filetype.toLowerCase().includes(searchFileType.toLowerCase())
   );
 
@@ -334,16 +279,14 @@ const Managehandbook: React.FC = () => {
       dataIndex: "createdAt",
       key: "createdAt",
       width: "170px",
-      render: (createdAt: Date) =>
-        moment(createdAt).format("DD/MM/YYYY HH:mm" + " น."),
+      render: (createdAt: Date) => moment(createdAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
       title: "วันที่อัปเดต",
       dataIndex: "updatedAt",
       key: "updatedAt",
       width: "170px",
-      render: (updatedAt: Date) =>
-        moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
+      render: (updatedAt: Date) => moment(updatedAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
       title: "ผู้อัปโหลด",
@@ -357,12 +300,19 @@ const Managehandbook: React.FC = () => {
       key: "status",
       width: "80px",
       align: "center",
-      render: (status: boolean) =>
-        status === true ? (
-          <Tag color="green">เปิดการมองเห็น</Tag>
-        ) : (
-          <Tag color="red">ปิดการมองเห็น</Tag>
-        ),
+      render: (status: boolean) => (status === true ? <Tag color="green">เปิดการมองเห็น</Tag> : <Tag color="red">ปิดการมองเห็น</Tag>),
+    },
+    {
+      title: "ดาวโหลดไฟล์",
+      dataIndex: "O",
+      key: "O",
+      width: "50px",
+      align: "center",
+      render: (_record: number, row: any, _index: number) => (
+        <Button icon={<DownloadOutlined />} size="small" onClick={() => handleDownload(row)}>
+          ดาวน์โหลด
+        </Button>
+      ),
     },
     {
       title: "การจัดการ",
@@ -373,46 +323,24 @@ const Managehandbook: React.FC = () => {
       render: (_record: number, row: any, _index: number) => (
         <Space size="middle">
           <Tooltip title="แก้ไข">
-            <a onClick={() => showModalinformationNews(row)}>{EditIcon}</a>
+            <Button size="small" type="link" onClick={() => showModalinformationNews(row)}>
+              <FormOutlined />
+            </Button>
           </Tooltip>
-          <Popconfirm
-            title="คุณแน่ใจหรือไม่ว่าต้องการลบเอกสารนี้?"
-            onConfirm={() => handleDeletehandbook(row)}
-            okText="ใช่"
-            cancelText="ไม่"
-          >
+          <Popconfirm title="คุณแน่ใจหรือไม่ว่าต้องการลบเอกสารนี้?" onConfirm={() => handleDeletehandbook(row)} okText="ใช่" cancelText="ไม่">
             <Tooltip title="ลบ">
-              <a>
-                {" "}
-                <DeleteIcon width="24" height="24" />{" "}
-              </a>
+              <Button size="small" type="link">
+                <DeleteOutlined style={{ color: "red" }} />
+              </Button>
             </Tooltip>
           </Popconfirm>
         </Space>
       ),
     },
-    {
-      title: "ดาวโหลดไฟล์",
-      dataIndex: "O",
-      key: "O",
-      width: "50px",
-      align: "center",
-      render: (_record: number, row: any, _index: number) => (
-        <Button
-          icon={<DownloadOutlined />}
-          size="small"
-          onClick={() => handleDownload(row)}
-        >
-          ดาวน์โหลด
-        </Button>
-      ),
-    },
   ];
   return (
     <div>
-      <div style={{ margin: " 10px 40px 20px 0px ", fontSize: "20px" }}>
-        คำเตือน : การบันทึกเอกสารของคุณ ไม่สามารถอัพโหลดได้เกิน 1 เอกสาร
-      </div>
+      <div style={{ margin: " 10px 40px 20px 0px ", fontSize: "20px" }}>คำเตือน : การบันทึกเอกสารของคุณ ไม่สามารถอัพโหลดได้เกิน 1 เอกสาร</div>
       <div
         style={{
           display: "flex",
@@ -448,43 +376,21 @@ const Managehandbook: React.FC = () => {
           </div>
         </div>
         <div></div>
-        <Button
-          style={{ alignContent: "right" }}
-          type="primary"
-          onClick={opencreate}
-        >
+        <Button style={{ alignContent: "right" }} type="primary" onClick={opencreate}>
           การอัพโหลดไฟล์
         </Button>
       </div>
 
-      <Modal
-        title="สร้างข้อมูลเอกสาร"
-        open={showmodalupload}
-        onCancel={closecreate}
-        footer={null}
-        destroyOnClose
-      >
+      <Modal title="สร้างข้อมูลเอกสาร" open={showmodalupload} onCancel={closecreate} footer={null} destroyOnClose>
         <Form form={formupload} onFinish={handbookfileCreate} layout="vertical">
-          <Form.Item
-            name="fileName"
-            label="ชื่อเอกสาร :"
-            rules={[{ required: true, message: "กรุณากรอกชื่อเอกสาร" }]}
-            style={{ width: "300px" }}
-          >
+          <Form.Item name="fileName" label="ชื่อเอกสาร :" rules={[{ required: true, message: "กรุณากรอกชื่อเอกสาร" }]} style={{ width: "300px" }}>
             <Input placeholder="ชื่อเอกสาร" showCount maxLength={50} />
           </Form.Item>
-          <Form.Item
-            name="filetype"
-            label="ประเภทเอกสาร :"
-            rules={[{ required: true, message: "กรุณากรอกประเภทเอกสาร" }]}
-            style={{ width: "300px" }}
-          >
+          <Form.Item name="filetype" label="ประเภทเอกสาร :" rules={[{ required: true, message: "กรุณากรอกประเภทเอกสาร" }]} style={{ width: "300px" }}>
             <Select placeholder="ประเภทเอกสาร">
               {handbooktypeOptions
                 .filter((option) => {
-                  const type = handbooktype.find(
-                    (type) => type.nameType === option.label
-                  );
+                  const type = handbooktype.find((type) => type.nameType === option.label);
                   return type && type.status;
                 })
                 .map((option) => (
@@ -495,26 +401,12 @@ const Managehandbook: React.FC = () => {
             </Select>
           </Form.Item>
           <Form.Item valuePropName="filelist">
-            <Upload
-              fileList={attendFiles}
-              onChange={handleChangeAttendFiles}
-              beforeUpload={beforeUploadAttendFiles}
-              maxCount={1}
-              accept=".pdf"
-            >
+            <Upload fileList={attendFiles} onChange={handleChangeAttendFiles} beforeUpload={beforeUploadAttendFiles} maxCount={1} accept=".pdf">
               <Button icon={<UploadOutlined />}>อัปโหลดเอกสาร</Button>
             </Upload>
           </Form.Item>
-          <Form.Item
-            name="status"
-            label="สถานะการมองเห็น"
-            style={{ width: "300px" }}
-          >
-            <Switch
-              checkedChildren="เปิดการมอง"
-              unCheckedChildren="ปิดการมอง"
-              defaultChecked={true}
-            />
+          <Form.Item name="status" label="สถานะการมองเห็น" style={{ width: "300px" }}>
+            <Switch checkedChildren="เปิดการมอง" unCheckedChildren="ปิดการมอง" defaultChecked={true} />
           </Form.Item>
           <Form.Item>
             <Space style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -526,13 +418,7 @@ const Managehandbook: React.FC = () => {
           </Form.Item>
         </Form>
       </Modal>
-      <Modal
-        title="แก้ไขข้อมูลเอกสาร"
-        open={showmodalupdate}
-        onCancel={closeupdate}
-        footer={null}
-        destroyOnClose
-      >
+      <Modal title="แก้ไขข้อมูลเอกสาร" open={showmodalupdate} onCancel={closeupdate} footer={null} destroyOnClose>
         <Form form={form} onFinish={handbookFileUpdate} layout="vertical">
           <Form.Item
             name="handbookid"
@@ -545,26 +431,14 @@ const Managehandbook: React.FC = () => {
           >
             <Input />
           </Form.Item>
-          <Form.Item
-            name="fileName"
-            label="ชื่อเอกสาร :"
-            rules={[{ required: true, message: "กรุณากรอกชื่อเอกสาร" }]}
-            style={{ width: "300px" }}
-          >
+          <Form.Item name="fileName" label="ชื่อเอกสาร :" rules={[{ required: true, message: "กรุณากรอกชื่อเอกสาร" }]} style={{ width: "300px" }}>
             <Input placeholder="ชื่อเอกสาร" showCount maxLength={50} />
           </Form.Item>
-          <Form.Item
-            name="filetype"
-            label="ประเภทเอกสาร :"
-            rules={[{ required: true, message: "กรุณากรอกประเภทเอกสาร" }]}
-            style={{ width: "300px" }}
-          >
+          <Form.Item name="filetype" label="ประเภทเอกสาร :" rules={[{ required: true, message: "กรุณากรอกประเภทเอกสาร" }]} style={{ width: "300px" }}>
             <Select placeholder="ประเภทเอกสาร">
               {handbooktypeOptions
                 .filter((option) => {
-                  const type = handbooktype.find(
-                    (type) => type.nameType === option.label
-                  );
+                  const type = handbooktype.find((type) => type.nameType === option.label);
                   return type && type.status;
                 })
                 .map((option) => (
@@ -574,16 +448,8 @@ const Managehandbook: React.FC = () => {
                 ))}
             </Select>
           </Form.Item>
-          <Form.Item
-            name="status"
-            label="สถานะการมองเห็น"
-            style={{ width: "300px" }}
-          >
-            <Switch
-              checkedChildren="เปิดการมอง"
-              unCheckedChildren="ปิดการมอง"
-              defaultChecked
-            />
+          <Form.Item name="status" label="สถานะการมองเห็น" style={{ width: "300px" }}>
+            <Switch checkedChildren="เปิดการมอง" unCheckedChildren="ปิดการมอง" defaultChecked />
           </Form.Item>
           <Form.Item>
             <Space style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -598,6 +464,7 @@ const Managehandbook: React.FC = () => {
       <Table
         dataSource={dataWithKey}
         columns={columns}
+        size="small"
         scroll={{ x: "max-content" }}
         rowKey="id"
         bordered
@@ -606,4 +473,4 @@ const Managehandbook: React.FC = () => {
     </div>
   );
 };
-export default Managehandbook;
+export default HandBookManage;

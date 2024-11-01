@@ -19,7 +19,9 @@ import {
   ITContractCompany,
 } from "../common";
 import { useAxiosCrm, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
-import CrmServices from "../services/index.service";
+import ProjectServices from "../services/index.service";
+import ProductsServices from "@/app/services/customer-product.service";
+import CustomerGroupServices from "@/app/services/customer-group.service";
 import CrmCustomerServices from "../../customer/services/index.service";
 import UserServices from "../services/user.service";
 import { checkRule } from "@/app/utils/rules";
@@ -29,16 +31,22 @@ import { useSession } from "next-auth/react";
 import { CarryOutOutlined } from "@ant-design/icons";
 import { ITBranch, ITBranchDetail } from "../../customer/common";
 import { ITCustomerSub } from "../../ticket/common";
+import { ITCustomerProduct } from "@/app/common/product";
+import { ITCustomerGroup } from "@/app/common/customer";
 
 export default function AddProjectPage() {
   const { data: session } = useSession();
   const crmAuth = useAxiosCrm();
   const userAuth = useAxiosUser();
-  const crmServices = CrmServices(crmAuth);
-  const crmCustomerServices = CrmCustomerServices(crmAuth);
+  const projectServices = ProjectServices(crmAuth);
+  const productsServices = ProductsServices(crmAuth);
+  const customerGroupServices = CustomerGroupServices(crmAuth);
   const userServices = UserServices(userAuth);
   const rounter = useRouter();
   const [loading, setloading] = useState<boolean>(true);
+  const [customerGroupList, setCustomerGroupList] = useState<ITCustomerGroup[]>(
+    []
+  );
   const [customerList, setCustomerList] = useState<ITCustomerForSelect[]>([]);
   const [branchList, setBranchList] = useState<ITBranchForSelect[]>([]);
   const [customerSubList, setCustomerSubList] = useState<ITCustomerSub[]>([]);
@@ -49,12 +57,12 @@ export default function AddProjectPage() {
   const [cntractCompany, setContractCompany] = useState<ITContractCompany[]>(
     []
   );
+  const [productOptions, setProductOptions] = useState<ITCustomerProduct[]>([]);
   useEffect(() => {
     if (loading === true) fetchData();
   }, [loading]);
   const fetchData = async () => {
-    const data = await crmServices.findCustomerActive();
-    const resContractCompany = await crmServices.findContractCompany();
+    const resContractCompany = await projectServices.findContractCompany();
     setContractCompany(resContractCompany);
     if (session?.user.userId) {
       const users = await userServices.findOrganizeUserByUserId(
@@ -63,7 +71,10 @@ export default function AddProjectPage() {
       selectOrganize(session?.user.userId);
       setUserList(users);
     }
-    setCustomerList(data);
+    const productOptions = await productsServices.findProductOptions();
+    setProductOptions(productOptions);
+    const data = await customerGroupServices.findMany();
+    setCustomerGroupList(data);
     setloading(false);
   };
   const selectOrganize = async (userId: string) => {
@@ -91,7 +102,20 @@ export default function AddProjectPage() {
   };
 
   async function onFinishAdd(form: ITProjectCreateForm): Promise<void> {
-    let data = { ...form };
+    console.log(form.productDetails);
+    let data = {
+      ...form,
+      ...(form?.productDetails && {
+        customerProjectProductMap: {
+          createMany: {
+            data: form.productDetails.map((data) => ({
+              customerProductId: data.id,
+              details: data.value,
+            })),
+          },
+        },
+      }),
+    };
     if (form.projectManagerId) {
       const user = userList.findLast(
         (user) => user.userId === form.projectManagerId
@@ -124,23 +148,40 @@ export default function AddProjectPage() {
         };
       }
     }
+    delete data["productDetails"];
+    delete data["customerGroupId"];
     delete data["customerId"];
     delete data["customerDetailSubId"];
-    await crmServices
+
+    await projectServices
       .createProject(data)
       .then((data) => {
         message.success("สร้าง Project สำเร็จ");
-        rounter.push("/page/crm/project");
+        // rounter.push("/page/crm/project");
       })
       .catch(() => {
         message.error("ผิดพลาด กรุณาลองใหม่");
       });
+    console.log(data);
+  }
+  async function changeCustomerGroupSelect(id: number): Promise<void> {
+    if (id) {
+      const data = await projectServices.findCustomerSelectByCustomerGroupId(
+        id
+      );
+      setCustomerList(data);
+      const customer = customerList.findLast((customer) => customer.id === id);
+      if (customer?.responsible) {
+        setSaleList(customer.responsible);
+      }
+    } else {
+      setCustomerSubList([]);
+    }
   }
   async function changeCustomerSelect(id: number): Promise<void> {
     if (id) {
-      const data = await crmServices.findCustomerSubSelectByCustomerId(id);
-
-      setCustomerSubList(data);
+      const data = await projectServices.findBranchSelectByCustomerId(id);
+      setBranchList(data);
       const customer = customerList.findLast((customer) => customer.id === id);
       if (customer?.responsible) {
         setSaleList(customer.responsible);
@@ -151,7 +192,7 @@ export default function AddProjectPage() {
   }
   async function changeCustomerSubSelect(id: number): Promise<void> {
     if (id) {
-      const data = await crmServices.findBranchSelectByCustomerSubId(id);
+      const data = await projectServices.findBranchSelectByCustomerSubId(id);
       setBranchList(data);
       const customer = customerList.findLast((customer) => customer.id === id);
       // if (customer?.responsible) {
@@ -201,10 +242,12 @@ export default function AddProjectPage() {
           <div className="grid grid-cols-1 ">
             <Card>
               <CreateCustomerForm
+                customerGroupList={customerGroupList}
                 customerList={customerList}
                 customerSubList={customerSubList}
                 branchList={branchList}
                 onFinishAdd={onFinishAdd}
+                changeCustomerGroupSelect={changeCustomerGroupSelect}
                 changeCustomerSelect={changeCustomerSelect}
                 changeCustomerSubSelect={changeCustomerSubSelect}
                 userList={userList}
@@ -213,6 +256,7 @@ export default function AddProjectPage() {
                 onChangeGroupSelect={onChangeGroupSelect}
                 usersFormGroup={usersFormGroup}
                 cntractCompany={cntractCompany}
+                productOptions={productOptions}
               />
             </Card>
           </div>

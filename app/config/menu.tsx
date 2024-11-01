@@ -1,10 +1,26 @@
-import { LogoutOutlined, UserOutlined, HomeOutlined, BarChartOutlined, BookOutlined, MailOutlined } from "@ant-design/icons";
+import {
+  LogoutOutlined,
+  UserOutlined,
+  HomeOutlined,
+  BarChartOutlined,
+  BookOutlined,
+  MailOutlined,
+} from "@ant-design/icons";
 import { Icon } from "@iconify/react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
 import React from "react";
 import { signOut } from "next-auth/react";
-import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, organizeChart, stockIcon, contactListIcon, macarIcon } from "@/components/icon";
+import {
+  gridIcon,
+  IconDataLeave,
+  bookingIcon,
+  maintenanceIcon,
+  organizeChart,
+  stockIcon,
+  contactListIcon,
+  macarIcon,
+} from "@/components/icon";
 
 type MenuItem = Required<MenuProps>["items"][number];
 const MenuNav: MenuProps["items"] = [
@@ -20,7 +36,8 @@ const MenuNav: MenuProps["items"] = [
         href={"#"}
         onClick={async () => {
           signOut({ callbackUrl: "/signin" });
-        }}>
+        }}
+      >
         Sign Out
       </Link>
     ),
@@ -250,8 +267,8 @@ export const MenuSider: MenuItem[] = [
     rule: "crm-s",
     children: [
       {
-        key: `crm/customer`,
-        label: `Customer`,
+        key: `crm/customer-group`,
+        label: `Customer Group`,
         rule: "crm-c-s",
       },
       {
@@ -263,6 +280,11 @@ export const MenuSider: MenuItem[] = [
         key: `crm/ticket`,
         label: `Ticket`,
         rule: "crm-t-s",
+      },
+      {
+        key: `crm/products`,
+        label: `Products`,
+        rule: "crm-ex",
       },
       {
         key: `crm/expense`,

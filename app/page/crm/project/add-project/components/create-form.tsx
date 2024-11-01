@@ -11,10 +11,12 @@ import {
   Badge,
   Button,
   Calendar,
+  Card,
   DatePicker,
   Divider,
   Form,
   Input,
+  InputNumber,
   message,
   Modal,
   Popover,
@@ -36,16 +38,19 @@ import {
   ITSelectUsers,
 } from "../../common";
 import { ColumnType } from "antd/es/table";
-import { dateToStringThNoTime } from "@/app/utils/format";
-import { FilterOutlined } from "@ant-design/icons";
+import { dateToStringThNoTime, numberWithCommas } from "@/app/utils/format";
+import { CloseOutlined, FilterOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import "../../style.css";
 import { useForm } from "antd/es/form/Form";
 import moment from "moment";
 import { ITCustomerSub, ITCustomerSubForm } from "../../../customer/common";
+import { ITCustomerProduct } from "@/app/common/product";
+import { ITCustomerGroup } from "@/app/common/customer";
 const { RangePicker } = DatePicker;
 export interface props {
   customerList: ITCustomerForSelect[];
+  customerGroupList: ITCustomerGroup[];
   customerSubList: ITCustomerSubForm[];
   branchList: ITBranchForSelect[];
   userList: ITSelectUsers[];
@@ -53,10 +58,12 @@ export interface props {
   saleList: { uid: string; name: string }[];
   usersFormGroup: ITSelectUsers[];
   onFinishAdd: (form: ITProjectCreateForm) => void;
+  changeCustomerGroupSelect: (id: number) => void;
   changeCustomerSelect: (id: number) => void;
   changeCustomerSubSelect: (id: number) => void;
   onChangeGroupSelect: (value: string[]) => void;
   cntractCompany: ITContractCompany[];
+  productOptions: ITCustomerProduct[];
 }
 
 const layout = {
@@ -70,6 +77,7 @@ const layout = {
 
 const CreateProjectForm: React.FC<props> = ({
   customerList,
+  customerGroupList,
   customerSubList,
   branchList,
   groupOption,
@@ -77,14 +85,17 @@ const CreateProjectForm: React.FC<props> = ({
   userList,
   usersFormGroup,
   onFinishAdd,
+  changeCustomerGroupSelect,
   changeCustomerSelect,
   changeCustomerSubSelect,
   onChangeGroupSelect,
   cntractCompany,
+  productOptions,
 }): React.ReactElement => {
   const [form] = useForm();
   const [addressSelect, setAddressSelect] = useState<ITBranchAddress[]>([]);
   const [contactSelect, setContactSelect] = useState<ITBranchContact[]>([]);
+  const [productSelects, setProductSelects] = useState<ITCustomerProduct[]>([]);
   useEffect(() => {
     const users = usersFormGroup.map((user) => user.userId);
     form.setFieldValue("relatedUsersId", users);
@@ -92,7 +103,6 @@ const CreateProjectForm: React.FC<props> = ({
   const calculateDuration = (type: string) => {
     let startDate = form.getFieldValue("startDate");
     let endDate = form.getFieldValue("endDate");
-    console.log(1);
     if (startDate && endDate) {
       if (startDate.valueOf() > endDate.valueOf()) {
         if (type === "start") {
@@ -123,15 +133,38 @@ const CreateProjectForm: React.FC<props> = ({
       setContactSelect(branch.customerContact);
     }
   }
+  const onChangeCustomerGroupSelect = (id: number) => {
+    form.setFieldValue("customerId", undefined);
+    form.setFieldValue("customerBranchId", undefined);
+    form.setFieldValue("customerDetaulSubId", undefined);
+    changeCustomerGroupSelect(id);
+  };
+
   const onChangeCustomerSelect = (id: number) => {
     form.setFieldValue("customerBranchId", undefined);
     form.setFieldValue("customerDetaulSubId", undefined);
     changeCustomerSelect(id);
   };
+
   const onChangeSubCustomerSelect = (id: number) => {
     form.setFieldValue("customerBranchId", undefined);
     changeCustomerSubSelect(id);
   };
+  function selectProducts(fieldIndex: number, value: any): void {
+    const productDetails = form.getFieldValue("productDetails");
+
+    const product = productOptions.find((product) => product.id === value);
+    if (product) {
+      productDetails[fieldIndex] = {
+        id: value,
+        details: product.details,
+        fields: product.fields,
+      };
+      form.setFieldValue("productDetails", productDetails);
+    }
+    console.log(productDetails);
+  }
+
   return (
     <Form
       form={form}
@@ -143,19 +176,103 @@ const CreateProjectForm: React.FC<props> = ({
     >
       <div className="fix-form grid grid-cols-1 md:grid-cols-3 md:mb-0 md:mt-0">
         <div className=" md:col-span-3 font-bold">ข้อมูลเบื้องต้น </div>
+
         <div className=" md:col-span-3">
           <Form.Item
-            label="Project Name"
+            label="Project"
             name={"projectName"}
-            rules={[{ required: true, message: "กรุณากรอก Project Name" }]}
+            rules={[{ required: true, message: "กรุณากรอก Project" }]}
           >
-            <Input placeholder="Enter Text" />
+            <Input />
           </Form.Item>
-        </div>
-        <div className=" md:col-span-3">
-          <Form.Item label="Product Name" name={"productName"}>
-            <Input placeholder="Enter Text" />
-          </Form.Item>
+          <Form.List name={"productDetails"}>
+            {(fields, { add, remove }) => (
+              <div className=" p-2 bg-blue-50">
+                <div className=" flex justify-between mb-2 ">
+                  <div className=" font-semibold"> Products</div>
+                  <div>
+                    <Button type="primary" size="small" onClick={add}>
+                      Add
+                    </Button>
+                  </div>
+                </div>
+                {fields.map((field, key) => {
+                  const pdetails = form.getFieldValue([
+                    "productDetails",
+                    key,
+                    "details",
+                  ]);
+                  const pfields = form.getFieldValue([
+                    "productDetails",
+                    key,
+                    "fields",
+                  ]);
+                  return (
+                    <Card key={`product-${key}`} className=" mb-2">
+                      <div className=" flex justify-end">
+                        <Button type="link" danger onClick={() => remove(key)}>
+                          <CloseOutlined />
+                        </Button>
+                      </div>
+                      <Form.Item
+                        label="Product Name"
+                        layout="horizontal"
+                        name={[key, "id"]}
+                        rules={[
+                          { required: true, message: "กรุณากรอก Project" },
+                        ]}
+                      >
+                        <Select
+                          allowClear
+                          onChange={(value) => selectProducts(key, value)}
+                          placeholder="Enter Text"
+                          options={productOptions.map((product) => ({
+                            value: product.id,
+                            label: product.name,
+                          }))}
+                        />
+                      </Form.Item>
+
+                      {pdetails && (
+                        <div className=" grid grid-cols-3">
+                          {pdetails.map((detail: any, index: number) => (
+                            <div key={`pdetails${index}`}>
+                              {detail.label} :{" "}
+                              {detail.type === "string"
+                                ? detail.value
+                                : detail.type === "number"
+                                ? numberWithCommas(detail.value)
+                                : detail.value}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {pfields && (
+                        <div className=" grid grid-cols-3">
+                          {pfields.map((field: any, index: number) => (
+                            <div key={`pfields${index}`}>
+                              <Form.Item
+                                name={[key, "value", field.name]}
+                                label={field.label}
+                              >
+                                {field.type === "string" && <Input />}
+                                {field.type === "number" && (
+                                  <InputNumber className=" w-full" />
+                                )}
+                                {field.type === "date" && (
+                                  <DatePicker className=" w-full" />
+                                )}
+                              </Form.Item>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
+          </Form.List>
         </div>
         <Form.Item
           label="Start Date"
@@ -183,7 +300,7 @@ const CreateProjectForm: React.FC<props> = ({
         </Form.Item>
         <Form.Item label="Duration" name={"duration"}>
           <Input readOnly className=" w-20" />
-        </Form.Item>{" "}
+        </Form.Item>
         <div>
           <Form.Item label="ออกโดย" name={"contractCompanyId"}>
             <Select
@@ -197,6 +314,25 @@ const CreateProjectForm: React.FC<props> = ({
         </div>
         <Form.Item
           label="Customer Group"
+          name={"customerGroupId"}
+          rules={[{ required: true, message: "กรุณาเลือก Customer" }]}
+        >
+          <Select
+            allowClear
+            showSearch
+            placeholder="Please select Customer Group"
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+            onChange={onChangeCustomerGroupSelect}
+            options={customerGroupList.map((customerGroup) => ({
+              value: customerGroup.id,
+              label: customerGroup.customerGroupName,
+            }))}
+          />
+        </Form.Item>
+        <Form.Item
+          label="Customer"
           name={"customerId"}
           rules={[{ required: true, message: "กรุณาเลือก Customer" }]}
         >
@@ -208,6 +344,7 @@ const CreateProjectForm: React.FC<props> = ({
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
             onChange={onChangeCustomerSelect}
+            disabled={customerList.length > 0 ? false : true}
             options={customerList.map((customer) => ({
               value: customer.id,
               label:
@@ -228,26 +365,6 @@ const CreateProjectForm: React.FC<props> = ({
                   : customer.customerTypeId === "juristic"
                   ? customer.details?.customerNameTh
                   : "",
-            }))}
-          />
-        </Form.Item>
-        <Form.Item
-          label="Customer"
-          name={"customerDetailSubId"}
-          rules={[{ required: true, message: "กรุณาเลือก Customer  " }]}
-        >
-          <Select
-            showSearch
-            placeholder="Please select Customer "
-            filterOption={(input, option) =>
-              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-            }
-            disabled={customerSubList.length > 0 ? false : true}
-            allowClear
-            onChange={onChangeSubCustomerSelect}
-            options={customerSubList.map((customer) => ({
-              value: customer.id,
-              label: customer.name,
             }))}
           />
         </Form.Item>

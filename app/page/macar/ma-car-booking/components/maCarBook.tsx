@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { MaCarType, MaCarBookType, ProvincesType } from "../../common/index";
 import { RangePickerProps } from "antd/es/date-picker";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { CarBookForm } from "./carBookForm";
 export interface props {
   maCarData: MaCarType[];
@@ -27,6 +27,9 @@ const MaCarBook: React.FC<props> = ({
   const [submitLoading, setSubmitLoading] = useState(false);
   const [carName, setCarName] = useState<MaCarType[]>([]);
   const [formUser] = Form.useForm();
+  const [messages, messageHeader] = message.useMessage();
+  const [startDate, setStartDate] = useState<Dayjs | null>(null);
+  const [endtDate, setEndDate] = useState<Dayjs | null>(null);
 
   useEffect(() => {
     if (maCarData) {
@@ -71,7 +74,7 @@ const MaCarBook: React.FC<props> = ({
       .reverse()
       .find((car): car is any => car.carId === values.carId);
     if (carSelected.status === false) {
-      message.warning("รถคันนี้ไม่พร้อมใช้งาน");
+      messages.warning("รถคันนี้ไม่พร้อมใช้งาน");
       setSubmitLoading(false);
       return;
     }
@@ -79,7 +82,7 @@ const MaCarBook: React.FC<props> = ({
     const carBookEndDate = values.carBookEndDate as Date;
     const today = new Date();
     if (new Date(carBookStartDate) < today) {
-      message.error("ไม่สามารถจองในวันที่ผ่านมาได้");
+      messages.error("ไม่สามารถจองในวันที่ผ่านมาได้");
       setSubmitLoading(false);
       return;
     }
@@ -87,10 +90,11 @@ const MaCarBook: React.FC<props> = ({
       (option: ProvincesType) => option.value === values.idProvinces
     );
     if (new Date(carBookEndDate) < new Date(carBookStartDate)) {
-      message.error("วันที่สิ้นสุดการจองต้องหลังวันที่เริ่มการจอง");
+      messages.error("วันที่สิ้นสุดการจองต้องหลังวันที่เริ่มการจอง");
       setSubmitLoading(false);
       return;
     }
+
     const data = {
       carId: values.carId,
       carName: carSelected?.carName,
@@ -103,8 +107,8 @@ const MaCarBook: React.FC<props> = ({
         : undefined,
       carBookPlace: values.carBookPlace,
       carBookUsers: Number(values.carBookUsers),
-      carBookStartDate: values.carBookStartDate,
-      carBookEndDate: values.carBookEndDate,
+      carBookStartDate: startDate,
+      carBookEndDate: endtDate,
       detail: values.detail,
       carBookTitle: values.carBookTitle,
       carBookApprovedStatus: "Process",
@@ -125,7 +129,7 @@ const MaCarBook: React.FC<props> = ({
             carBookEndDate
           );
           if (conflict) {
-            message.error(
+            messages.error(
               "รถคันนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่ !"
             );
             setSubmitLoading(false);
@@ -136,12 +140,12 @@ const MaCarBook: React.FC<props> = ({
       const maCarBook = await intraAuthService.createMaCarBook(data);
 
       maCarBook
-        ? (message.success("จองรถสำเร็จ"), router.push("/page/macar/ma-car"))
-        : message.error("จองรถไม่สำเร็จ");
+        ? (messages.success("จองรถสำเร็จ"), router.push("/page/macar/ma-car"))
+        : messages.error("จองรถไม่สำเร็จ");
 
       setSubmitLoading(false);
     } catch (error) {
-      message.error("จองรถไม่สำเร็จ");
+      messages.error("จองรถไม่สำเร็จ");
       setSubmitLoading(false);
     }
     setLoading(true);
@@ -149,6 +153,7 @@ const MaCarBook: React.FC<props> = ({
 
   return (
     <>
+      {messageHeader}
       <CarBookForm
         formUser={formUser}
         createMaCarBook={createMaCarBook}
@@ -156,6 +161,8 @@ const MaCarBook: React.FC<props> = ({
         dataoptionsProvinces={dataoptionsProvinces}
         disabledDate={disabledDate}
         submitLoading={submitLoading}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
       />
     </>
   );

@@ -22,7 +22,7 @@ import { MaCarType, MaCarBookType } from "../../common/index";
 import {
   checkApprovedStatus,
   checkStatusReturn,
-  CheckTypeTag,
+  CheckStatusMaCarBookType,
   showStatus,
 } from "@/app/utils/validatefield";
 import { dateFormatTime } from "@/app/utils";
@@ -50,6 +50,7 @@ const MaCarReturn: React.FC<props> = ({
   const [submitLoading, setSubmitLoading] = useState(false);
   const [oldCarMile, setOldCarMile] = useState<number>(0);
   const [statusApprove, setStatusApprove] = useState("");
+  const [messages, messageHeader] = message.useMessage();
 
   const showModalReturn = (record: MaCarBookType) => {
     checkStatusReturn(record);
@@ -121,12 +122,12 @@ const MaCarReturn: React.FC<props> = ({
         };
         await maCarBookServices.updateMaCarBook(currentMaBookId, maCarBook);
         await maCarBookServices.updateMaCar(currentMaId, updatedMaCar);
-        message.success("คืนรถสำเร็จ");
+        messages.success("คืนรถสำเร็จ");
         handleModalReturn();
         setSubmitLoading(false);
         formReturn.resetFields();
       } catch (error) {
-        message.error("คืนรถไม่สำเร็จ");
+        messages.error("คืนรถไม่สำเร็จ");
         setSubmitLoading(false);
       }
     }
@@ -179,12 +180,12 @@ const MaCarReturn: React.FC<props> = ({
       dataIndex: "carBookApprovedStatus",
       key: "carBookApprovedStatus",
       align: "center",
-      render: (status: string) => CheckTypeTag(status),
+      render: (status: string) => CheckStatusMaCarBookType(status),
     },
     {
       title: "รายละเอียด",
       align: "center",
-      render: (_: any, record: MaCarBookType) => {
+      render: (_: string, record: MaCarBookType) => {
         return (
           <Space>
             <Button
@@ -202,7 +203,7 @@ const MaCarReturn: React.FC<props> = ({
     {
       title: "จัดการ",
       align: "center",
-      render: (_: any, record: MaCarBookType) => (
+      render: (record: MaCarBookType) => (
         <Space>
           {record.carBookApprovedStatus === "Approve" ? (
             <Button type="link" onClick={() => showModalReturn(record)}>
@@ -218,6 +219,7 @@ const MaCarReturn: React.FC<props> = ({
 
   return (
     <>
+      {messageHeader}
       <Modal
         title="การคืนรถ"
         open={modalEditReturn}

@@ -83,7 +83,7 @@ const MaCarBooking: React.FC = () => {
   const items: TabsProps["items"] = [
     {
       key: "1",
-      label: "ทำการจองรถ",
+      label: "การจองรถ",
       children: (
         <MaCarBook
           maCarData={maCarData}
@@ -112,7 +112,7 @@ const MaCarBooking: React.FC = () => {
           <Breadcrumb
             items={[
               {
-                href: "/page",
+                href: "/page/home",
                 title: <span>Home</span>,
               },
               {

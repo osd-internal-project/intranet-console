@@ -1,7 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { TableDetail } from "./components/table-detail";
-import { DepartmentCalendarDetail } from "./components/department-calendar-details";
 import {
   Breadcrumb,
   Card,
@@ -14,15 +12,15 @@ import {
   TabsProps,
   message,
 } from "antd";
-import { useRouter } from "next/navigation";
+import { TableDetail } from "./components/table-detail";
+import { DepartmentCalendarDetail } from "./components/department-calendar-details";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../services/index.service";
 import { useSession } from "next-auth/react";
-import { IDepartMent, ITypeDataLeave } from "../common";
+import { ITypeDataLeave } from "../common";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 
 export default function Page() {
-  const router = useRouter();
   const Auth = useAxiosIntranet();
   const dataleaveservice = DataLeaveService(Auth);
   const { data: session } = useSession();
@@ -33,6 +31,8 @@ export default function Page() {
   );
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
   const [formdetail] = Form.useForm();
+  const [messages, messageHeader] = message.useMessage();
+  const [Modals, modelsHeader] = Modal.useModal();
 
   useEffect(() => {
     if (loading) loadData();
@@ -52,7 +52,7 @@ export default function Page() {
   };
 
   const onFinishUpdate = async (type: string, id: number) => {
-    Modal.confirm({
+    Modals.confirm({
       title: <>{type === "cancel" ? "Cancel " : "Approved"}</>,
       icon: <ExclamationCircleFilled />,
       content: (
@@ -73,8 +73,8 @@ export default function Page() {
         );
         if (res) {
           type === "cancel"
-            ? message.error("cancel success")
-            : message.success("approved success");
+            ? messages.error("cancel success")
+            : messages.success("approved success");
           setLoading(true);
           setOpenModalDetail(false);
         }
@@ -130,28 +130,32 @@ export default function Page() {
   ];
 
   return (
-    <Row>
-      <Col span={24}>
-        <Breadcrumb
-          items={[
-            {
-              href: "/page/home",
-              title: <span>Home</span>,
-            },
-            {
-              title: <span>Detail Online Leave</span>,
-            },
-          ]}
-        />
-      </Col>
-      <Divider orientation="left" orientationMargin="0">
-        <div className="title-page-font">{`Detail Online Leave`}</div>
-      </Divider>
-      <div className="w-full">
-        <Card>
-          <Tabs defaultActiveKey="1" items={items} />
-        </Card>
-      </div>
-    </Row>
+    <>
+      {modelsHeader}
+      {messageHeader}
+      <Row>
+        <Col span={24}>
+          <Breadcrumb
+            items={[
+              {
+                href: "/page/home",
+                title: <span>Home</span>,
+              },
+              {
+                title: <span>Detail Data Leave User</span>,
+              },
+            ]}
+          />
+        </Col>
+        <Divider orientation="left" orientationMargin="0">
+          <div className="title-page-font">{`Detail Data Leave User`}</div>
+        </Divider>
+        <div className="w-full">
+          <Card>
+            <Tabs defaultActiveKey="1" items={items} />
+          </Card>
+        </div>
+      </Row>
+    </>
   );
 }

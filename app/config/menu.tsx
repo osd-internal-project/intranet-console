@@ -189,44 +189,7 @@ export const MenuSider: MenuItem[] = [
       },
     ],
   },
-  {
-    key: `setting`,
-    icon: <Icon icon="uil:setting" width="15" height="15" />,
-    label: `Setting`,
-    rule: "st-s",
-    children: [
-      {
-        key: `setting/maintenance-type`,
-        label: `MA Type`,
-        rule: "ma-t-s",
-      },
-      {
-        key: `setting/organize-chart`,
-        label: `Organize Chart`,
-        // rule: "st-p-s",
-      },
-      {
-        key: `setting/typeleave`,
-        label: `Type Leave`,
-        rule: "st-tl-s",
-      },
-      {
-        key: `setting/master-holidays`,
-        label: `Master Holidays`,
-        rule: "st-mth-s",
-      },
-      {
-        key: `setting/masterdata-position`,
-        label: `Master Position`,
-        rule: "st-p-s",
-      },
-      {
-        key: `setting/manage-home`,
-        label: `Manage Home`,
-        rule: "ma-h-s",
-      },
-    ],
-  },
+
   {
     key: `users-management`,
     icon: gridIcon,
@@ -317,31 +280,46 @@ export const MenuSider: MenuItem[] = [
     ],
   },
   {
-    key: "information",
-    icon: <BarChartOutlined />,
-    label: `Infomation`,
-    rule: "ift-s",
+    key: `setting`,
+    icon: <Icon icon="uil:setting" width="15" height="15" />,
+    label: `Setting`,
+    rule: "st-s",
     children: [
       {
-        key: `information/information-data`,
-        label: `Information Data`,
+        key: `setting/maintenance-type`,
+        label: `MA Type`,
+        rule: "ma-t-s",
       },
       {
-        key: `information/information-management`,
-        label: `Information Management`,
+        key: `setting/organize-chart`,
+        label: `Organize Chart`,
+        // rule: "st-p-s",
+      },
+      {
+        key: `setting/typeleave`,
+        label: `Type Leave`,
+        rule: "st-tl-s",
+      },
+      {
+        key: `setting/master-holidays`,
+        label: `Master Holidays`,
+        rule: "st-mth-s",
+      },
+      {
+        key: `setting/masterdata-position`,
+        label: `Master Position`,
+        rule: "st-p-s",
+      },
+      {
+        key: `setting/manage-home`,
+        label: `Manage Home`,
+        rule: "ma-h-s",
+      },
+      {
+        key: `setting/email-template`,
+        label: `Email Template`,
       },
     ],
-  },
-  {
-    key: "handbook",
-    icon: <BookOutlined />,
-    label: `Handbook`,
-    rule: "hb-s",
-  },
-  {
-    key: "email-template",
-    icon: <MailOutlined />,
-    label: `e-mail template`,
   },
 ].map((item) => {
   return {

@@ -1,17 +1,15 @@
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { Carousel, Card, Modal, Image, Input, Typography } from "antd";
 import React, { useState, useRef } from "react";
-import { InformationNewsType, NewsImageType } from "../common";
+import { InformationNewsType } from "../common";
 import dayjs from "dayjs";
 
 export interface Props {
   informationNews: InformationNewsType[];
-  NewsImage: NewsImageType[];
 }
 
 const NewsCarouselComponent: React.FC<Props> = ({
   informationNews,
-  NewsImage,
 }): React.ReactElement => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedNews, setSelectedNews] = useState<InformationNewsType | null>(
@@ -76,7 +74,6 @@ const NewsCarouselComponent: React.FC<Props> = ({
                       />
                     ) : null}
                     <>
-                      {" "}
                       <p />
                     </>
                     <Card.Meta
@@ -147,7 +144,6 @@ const NewsCarouselComponent: React.FC<Props> = ({
                 margin: "10px 10px",
               }}
             >
-              {" "}
               <strong>{selectedNews.newsName}</strong>
             </h3>
             <Carousel
@@ -167,6 +163,7 @@ const NewsCarouselComponent: React.FC<Props> = ({
                 />
               ))}
             </Carousel>
+
             <div>
               <Paragraph
                 style={{
@@ -195,17 +192,14 @@ const NewsCarouselComponent: React.FC<Props> = ({
                 />
               </Paragraph>
             </div>
+
             <p />
             <h5>
               <strong>ผู้เขียน:</strong> {selectedNews.author}
             </h5>
-            <h5>
-              <strong>วันที่อัปโหลด:</strong>{" "}
-              {dayjs(selectedNews.phblishedAt).format("DD-MM-YYYY , HH:mm")}
-            </h5>
             {selectedNews.updatedAt && (
               <h5>
-                <strong>วันที่อัปเดตล่าสุด:</strong>{" "}
+                <strong>วันที่อัปเดต:</strong>
                 {dayjs(selectedNews.updatedAt).format("DD-MM-YYYY , HH:mm")}
               </h5>
             )}

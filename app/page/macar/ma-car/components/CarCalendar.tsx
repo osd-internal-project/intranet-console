@@ -12,7 +12,8 @@ import { CaretRightOutlined } from "@ant-design/icons";
 import { MaCarBookCalendarType } from "../../common/index";
 import dayjs from "dayjs";
 import { dateFormatTime } from "@/app/utils";
-import { CheckTypeTag } from "@/app/utils/validatefield";
+import { CheckStatusMaCarBookType } from "@/app/utils/validatefield";
+import "../../common/style.css";
 interface CustomEvent extends RbcEvent {
   id: number;
   carBookApprovedStatus: string;
@@ -143,7 +144,7 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
               </Collapse.Panel>
               <Collapse.Panel header="สถานะ" key="3">
                 <Form.Item label="สถานะ">
-                  {CheckTypeTag(selectedMa.carBookApprovedStatus)}
+                  {CheckStatusMaCarBookType(selectedMa.carBookApprovedStatus)}
                 </Form.Item>
                 {selectedMa.carBookApprovedStatus !== "Process" && (
                   <div>

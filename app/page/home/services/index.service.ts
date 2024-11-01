@@ -33,7 +33,7 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
         });
     },
 
-    getImage: async (id:number) => {
+    getImage: async (id: number) => {
       return await axiosInstance
         .get(`${baseUrlSlideImage}/upload-image/${id}`, { responseType: "blob" })
         .then((res) => {

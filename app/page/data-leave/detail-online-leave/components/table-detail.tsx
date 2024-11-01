@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { ITypeDataLeave } from "../../common";
 import {
   Button,
   Col,
@@ -9,22 +8,16 @@ import {
   Row,
   Space,
   Table,
-  Tag,
   Tooltip,
 } from "antd";
-import {
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-  MinusCircleOutlined,
-  SyncOutlined,
-} from "@ant-design/icons";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { CancelIcon } from "@/components/icon";
 import { PaperClipOutlined } from "@ant-design/icons";
-import dayjs from "dayjs";
+import { ITypeDataLeave } from "../../common";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../../services/index.service";
-import "../../common/style.css";
+import { CheckStatusLeaveType } from "@/app/utils/validatefield";
+import { dateFormatTime } from "@/app/utils";
 
 export interface props {
   dataLeaveUser: ITypeDataLeave[];
@@ -75,58 +68,19 @@ export const TableDetail: React.FC<props> = ({
       dataIndex: "status",
       title: "Status",
       align: "center",
-      render: (e: string) => {
-        let color = "";
-        let text = "";
-        let icon = null;
-
-        switch (e) {
-          case "waitting":
-            color = "DodgerBlue";
-            text = "WAITING";
-            icon = <SyncOutlined spin />;
-            break;
-          case "cancel":
-            color = "silver";
-            text = "CANCEL";
-            icon = <CloseCircleOutlined />;
-            break;
-          case "approved":
-            color = "LimeGreen";
-            text = "APPROVED";
-            icon = <CheckCircleOutlined />;
-            break;
-          default:
-            color = "gray";
-            text = "UNKNOWN";
-            icon = <MinusCircleOutlined />;
-            break;
-        }
-
-        return (
-          <Tag color={color} icon={icon}>
-            {text}
-          </Tag>
-        );
-      },
+      render: (status: string) => CheckStatusLeaveType(status),
     },
     {
       key: "userApproved",
       dataIndex: "userApproved",
       title: "Approved By",
-      render: (text: any) => (text ? text : "-"),
+      render: (text: string) => (text ? text : "-"),
     },
     {
       key: "approvedDate",
       dataIndex: "approvedDate",
       title: "Approved Date",
-      render: (_: any, row: any) => (
-        <span>
-          {row.approvedDate
-            ? dayjs(row.approvedDate).format("DD-MM-YYYY")
-            : "-"}
-        </span>
-      ),
+      render: (value: any) => dateFormatTime(value),
     },
     {
       key: "id",
@@ -169,7 +123,8 @@ export const TableDetail: React.FC<props> = ({
                 );
                 setStatusById(dataLeaveById[0].status);
                 setDataById(row.id);
-                setOpenModalDetail(true), formdetail.setFieldsValue(base);
+                setOpenModalDetail(true);
+                formdetail.setFieldsValue(base);
               }}
             >
               {`รายละเอียด`}
@@ -186,9 +141,11 @@ export const TableDetail: React.FC<props> = ({
         dataSource={dataLeaveUser}
         columns={columns}
         size="small"
+        scroll={{ x: "max-content" }}
         rowKey={(e: any) => e.id}
       />
       <Modal
+        forceRender
         title=""
         open={openModalDetail}
         footer={false}
@@ -199,7 +156,7 @@ export const TableDetail: React.FC<props> = ({
         <Form autoComplete="off" form={formdetail}>
           <div>
             <p />
-          </div>{" "}
+          </div>
           <div style={{ paddingLeft: "380px", margin: "10px  " }}>
             <div className=" col-span-3 md:col-span-1 ml-5">
               <Form.Item label={`วันที่ :`} name={`createAt`}>
@@ -241,30 +198,6 @@ export const TableDetail: React.FC<props> = ({
               </Form.Item>
             </div>
           </div>
-          {/* <div className="col-span-3 md:col-span-1 ml-5">
-            <Form.Item name={`dateRange`} className="flex items-center">
-              <div className="flex items-center">
-                <label className="mr-2">วันที่ลา :</label>
-                <Form.Item name="startDate" noStyle>
-                  <Input
-                    disabled
-                    className="read-only-input"
-                    style={{ width: "100px" }}
-                    placeholder="ตั้งแต่วันที่"
-                  />
-                </Form.Item>
-                <span className="mx-1">-</span>
-                <Form.Item name="endDate" noStyle>
-                  <Input
-                    disabled
-                    className="read-only-input"
-                    style={{ width: "100px" }}
-                    placeholder="ถึงวันที่"
-                  />
-                </Form.Item>
-              </div>
-            </Form.Item>
-          </div> */}
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เบอร์ติดต่อระหว่างลา :`} name={`phoneNumber`}>
               <Input disabled className="read-only-input" />
@@ -321,13 +254,13 @@ export const TableDetail: React.FC<props> = ({
             </>
           ) : null}
           <Form.Item hidden name={`id`}>
-            <Input />{" "}
+            <Input />
           </Form.Item>
           <Form.Item hidden name={`approvedDate`}>
-            <Input />{" "}
+            <Input />
           </Form.Item>
           <Form.Item hidden name={`status`}>
-            <Input />{" "}
+            <Input />
           </Form.Item>
         </Form>
         <>

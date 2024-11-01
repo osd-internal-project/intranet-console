@@ -50,6 +50,7 @@ const ManageCarStatus: React.FC<props> = ({
   const [modalCreateMaCar, setModalCreateMaCar] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(true);
   const { data: session } = useSession();
+  const [messages, messageHeader] = message.useMessage();
 
   const handleEditMaCarCancel = () => {
     setModalEditMaCar(false);
@@ -92,10 +93,10 @@ const ManageCarStatus: React.FC<props> = ({
     try {
       const response = await intraAuthService.createMaCar(maCarCreateData);
       response
-        ? (message.success("เพิ่มรถสำเร็จ"), form.resetFields())
-        : message.error("เพิ่มรถไม่สำเร็จ");
+        ? (messages.success("เพิ่มรถสำเร็จ"), form.resetFields())
+        : messages.error("เพิ่มรถไม่สำเร็จ");
     } catch (error) {
-      message.error("เพิ่มรถไม่สำเร็จ");
+      messages.error("เพิ่มรถไม่สำเร็จ");
       setSubmitLoading(false);
     }
     setModalCreateMaCar(false);
@@ -111,9 +112,9 @@ const ManageCarStatus: React.FC<props> = ({
     try {
       await intraAuthService.deleteMaCar(carId);
       setMaData(maData.filter((item) => item.carId !== carId));
-      message.success("ลบรถสำเร็จ");
+      messages.success("ลบรถสำเร็จ");
     } catch (error) {
-      message.error("ลบรถไม่สำเร็จ");
+      messages.error("ลบรถไม่สำเร็จ");
       setSubmitLoading(false);
     }
     setLoading(true);
@@ -131,11 +132,11 @@ const ManageCarStatus: React.FC<props> = ({
         updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
       };
       await intraAuthService.updateMaCar(updatedMaCar);
-      message.success("แก้ไขข้อมูลรถสำเร็จ");
+      messages.success("แก้ไขข้อมูลรถสำเร็จ");
       handleEditMaCarCancel();
       setSubmitLoading(false);
     } catch (error) {
-      message.error("แก้ไขข้อมูลรถไม่สำเร็จ");
+      messages.error("แก้ไขข้อมูลรถไม่สำเร็จ");
     }
     setLoading(true);
   };
@@ -229,6 +230,7 @@ const ManageCarStatus: React.FC<props> = ({
 
   return (
     <>
+      {messageHeader}
       <Modal
         title="แก้ไขรถ"
         open={modalEditMaCar}

@@ -21,7 +21,6 @@ export interface props {
 export const TableOnlineDetailLeave: React.FC<props> = ({
   typeLeaveTable,
   params,
-  typeLeaveTableAll,
   rowClassName,
 }): React.ReactElement => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,15 +44,12 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         const totalMinutesRaw = (totalHoursDecimal * 10) % 1;
         let totalMinutes = Math.round(totalMinutesRaw * 10);
         let timeDisplay = `${totalHours} ชม.`;
-
         if (totalMinutes > 0) {
           timeDisplay = `${totalHours}.${totalMinutes} ชม.`;
         }
-
         if (rowClass === "disabled-row") {
           color = "#e0e0e0";
         }
-
         return (
           <div className="flex justify-center">
             <Tag className="w-full flex justify-center" color={color}>
@@ -79,16 +75,13 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
           wholeDays += 1;
           totalHours = 0;
         }
-
         let timeDisplay = `${totalHours} ชม.`;
-
         if (totalMinutes > 0) {
           timeDisplay = `${totalHours}.${totalMinutes} ชม.`;
         }
         if (rowClass === "disabled-row") {
           color = "#e0e0e0";
         }
-
         return (
           <div className="flex justify-center">
             <Tag className="w-full flex justify-center" color={color}>
@@ -140,7 +133,6 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         let lengthTime = params.lengthTime;
         let totalMinutesRaw = (totalHoursDecimal * 10) % 1;
         let totalMinutes = Math.round(totalMinutesRaw * 10);
-
         if (isSelected) {
           const lengthTimeHours = Math.floor(lengthTime);
           const lengthTimeMinutes = Math.round((lengthTime % 1) * 10);
@@ -155,7 +147,6 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
           totalDays += Math.floor(totalHours / 8);
           totalHours = totalHours % 8;
         }
-
         const isOverLimit = totalDays > row.limitLeaveLastResult;
         const hasDateRange = params.startDate && params.endDate;
         const rowClass = rowClassName(row);
@@ -231,7 +222,7 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         }
       >
         <Table
-          size="small"
+          // size="small"
           columns={columns}
           dataSource={typeLeaveTable}
           rowKey={(e: ITypetypeleave) => e.id}

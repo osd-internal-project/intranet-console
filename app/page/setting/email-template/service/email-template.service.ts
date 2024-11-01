@@ -63,7 +63,7 @@ export const ManageemailTemplateServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    delete: async (id: number) => {
+    delete: async (id: string) => {
       return await axiosInstance
         .delete(`${baseUrl}/${id}`)
         .then((res) => {

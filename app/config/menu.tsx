@@ -20,8 +20,7 @@ const MenuNav: MenuProps["items"] = [
         href={"#"}
         onClick={async () => {
           signOut({ callbackUrl: "/signin" });
-        }}
-      >
+        }}>
         Sign Out
       </Link>
     ),
@@ -173,44 +172,7 @@ export const MenuSider: MenuItem[] = [
       },
     ],
   },
-  {
-    key: `setting`,
-    icon: <Icon icon="uil:setting" width="15" height="15" />,
-    label: `Setting`,
-    rule: "st-s",
-    children: [
-      {
-        key: `setting/maintenance-type`,
-        label: `MA Type`,
-        rule: "ma-t-s",
-      },
-      {
-        key: `setting/organize-chart`,
-        label: `Organize Chart`,
-        // rule: "st-p-s",
-      },
-      {
-        key: `setting/typeleave`,
-        label: `Type Leave`,
-        rule: "st-tl-s",
-      },
-      {
-        key: `setting/master-holidays`,
-        label: `Master Holidays`,
-        rule: "st-mth-s",
-      },
-      {
-        key: `setting/masterdata-position`,
-        label: `Master Position`,
-        rule: "st-p-s",
-      },
-      {
-        key: `setting/manage-home`,
-        label: `Manage Home`,
-        rule: "ma-h-s",
-      },
-    ],
-  },
+
   {
     key: `users-management`,
     icon: gridIcon,
@@ -296,19 +258,45 @@ export const MenuSider: MenuItem[] = [
     ],
   },
   {
-    key: "email-template",
-    icon: <MailOutlined />,
-    label: `Email template`,
-    rule: "mac-s",
+    key: `setting`,
+    icon: <Icon icon="uil:setting" width="15" height="15" />,
+    label: `Setting`,
+    rule: "st-s",
     children: [
       {
-        key: `email-template/email-template`,
+        key: `setting/maintenance-type`,
+        label: `MA Type`,
+        rule: "ma-t-s",
+      },
+      {
+        key: `setting/organize-chart`,
+        label: `Organize Chart`,
+        // rule: "st-p-s",
+      },
+      {
+        key: `setting/typeleave`,
+        label: `Type Leave`,
+        rule: "st-tl-s",
+      },
+      {
+        key: `setting/master-holidays`,
+        label: `Master Holidays`,
+        rule: "st-mth-s",
+      },
+      {
+        key: `setting/masterdata-position`,
+        label: `Master Position`,
+        rule: "st-p-s",
+      },
+      {
+        key: `setting/manage-home`,
+        label: `Manage Home`,
+        rule: "ma-h-s",
+      },
+      {
+        key: `setting/email-template`,
         label: `Email Template`,
       },
-      // {
-      //   key: `email-template/add-template`,
-      //   label: `Add Email Template`,
-      // },
     ],
   },
 ].map((item) => {

@@ -1,23 +1,26 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Card, Col, Divider, Form, Input, message, Row, Select } from "antd";
+import { useParams, useRouter } from "next/navigation";
+import { Button, Card, Col, Divider, Form, Input, message, Row, Select, Switch } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageemailTemplateServices } from "../service/email-template.service";
-import ReactQuill from "react-quill";
+import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 
-const addEmailTemplate = () => {
+const ReactQuill = dynamic(() => import("react-quill"), {
+  ssr: false,
+});
+
+export default function addEmailTemplatePage() {
   const [FormCreateTemplate] = Form.useForm();
+  const router = useRouter();
   const intraAuth = useAxiosIntranet();
   const manageemailtemplateservices = ManageemailTemplateServices(intraAuth);
   const [optionsType, setoptionsType] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [emailTemplateFields, setEmailTemplateFields] = useState<any[]>([]);
   const [typeName, setTypeName] = useState<string>("");
-
-  useEffect(() => {
-    if (loading) fechdataSource();
-  }, [loading]);
+  const [isChecked, setIsChecked] = useState<boolean>(false);
 
   const fechdataSource = async () => {
     const getdataOptionsType = await manageemailtemplateservices.optionsType();
@@ -25,10 +28,13 @@ const addEmailTemplate = () => {
     setLoading(false);
   };
 
+  useEffect(() => {
+    if (loading) fechdataSource();
+  }, [loading]);
+
   const checkField = (value: number) => {
     setEmailTemplateFields([]);
     setTypeName("");
-
     if (value) {
       let data = optionsType.filter((e: any) => e.id === value);
       setEmailTemplateFields(data[0].emailTemplateFields);
@@ -37,16 +43,30 @@ const addEmailTemplate = () => {
   };
 
   const onFinish = async (value: any) => {
-    const onFinish = await manageemailtemplateservices.create(value);
+    const base = {
+      ...value,
+      status: isChecked ? "active" : "inactive",
+    };
+    const onFinish = await manageemailtemplateservices.create(base);
     if (onFinish) {
       message.success(`create success`);
+      router.push("/page/setting/email-template");
     }
+  };
+
+  const handleChange = (checked: boolean) => {
+    setIsChecked(checked);
   };
 
   return (
     <div>
       <Card title={`Add Template`}>
         <Form name="createForm" autoComplete="off" layout="vertical" form={FormCreateTemplate} onFinish={onFinish}>
+          <div className="justify-end flex">
+            <Form.Item layout="horizontal" name={"status"} label="Status" required>
+              <Switch checked={isChecked} onChange={handleChange} />
+            </Form.Item>
+          </div>
           <Row gutter={[8, 8]}>
             <Col span={12}>
               <Form.Item name={"name"} label="Name" required>
@@ -78,14 +98,15 @@ const addEmailTemplate = () => {
                 }}>
                 <div style={{ justifyContent: "center", display: "flex", fontSize: "32px", marginTop: "-18px" }}>{`${typeName}`}</div>
                 <Divider style={{ marginTop: "-2px", marginBottom: "10px" }}></Divider>
-                {emailTemplateFields.map((e: any, index: number) => {
-                  return (
-                    <Row gutter={[8, 8]} style={{ marginBottom: "10px" }} key={index}>
-                      <Col span={12} style={{ color: "grey", fontWeight: "bold" }}>{`${e.name}`}</Col>
-                      <Col span={12}>{`: ${e.description}`}</Col>
-                    </Row>
-                  );
-                })}
+                {emailTemplateFields.length > 0 &&
+                  emailTemplateFields.map((e: any, index: number) => {
+                    return (
+                      <Row gutter={[8, 8]} style={{ marginBottom: "10px" }} key={index}>
+                        <Col span={12} style={{ color: "grey", fontWeight: "bold" }}>{`${e.name}`}</Col>
+                        <Col span={12}>{`: ${e.description}`}</Col>
+                      </Row>
+                    );
+                  })}
               </Card>
             </Col>
           </Row>
@@ -96,6 +117,6 @@ const addEmailTemplate = () => {
       </Card>
     </div>
   );
-};
+}
 
-export default addEmailTemplate;
+// export default addEmailTemplatePage;

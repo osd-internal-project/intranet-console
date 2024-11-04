@@ -1,10 +1,26 @@
-import { LogoutOutlined, UserOutlined, HomeOutlined, BarChartOutlined, BookOutlined, MailOutlined } from "@ant-design/icons";
+import {
+  LogoutOutlined,
+  UserOutlined,
+  HomeOutlined,
+  BarChartOutlined,
+  BookOutlined,
+  MailOutlined,
+} from "@ant-design/icons";
 import { Icon } from "@iconify/react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
 import React from "react";
 import { signOut } from "next-auth/react";
-import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, organizeChart, stockIcon, contactListIcon, macarIcon } from "@/components/icon";
+import {
+  gridIcon,
+  IconDataLeave,
+  bookingIcon,
+  maintenanceIcon,
+  organizeChart,
+  stockIcon,
+  contactListIcon,
+  macarIcon,
+} from "@/components/icon";
 
 type MenuItem = Required<MenuProps>["items"][number];
 const MenuNav: MenuProps["items"] = [
@@ -174,44 +190,6 @@ export const MenuSider: MenuItem[] = [
     ],
   },
   {
-    key: `setting`,
-    icon: <Icon icon="uil:setting" width="15" height="15" />,
-    label: `Setting`,
-    rule: "st-s",
-    children: [
-      {
-        key: `setting/maintenance-type`,
-        label: `MA Type`,
-        rule: "ma-t-s",
-      },
-      {
-        key: `setting/organize-chart`,
-        label: `Organize Chart`,
-        // rule: "st-p-s",
-      },
-      {
-        key: `setting/typeleave`,
-        label: `Type Leave`,
-        rule: "st-tl-s",
-      },
-      {
-        key: `setting/master-holidays`,
-        label: `Master Holidays`,
-        // rule: "st-mth-s",
-      },
-      {
-        key: `setting/masterdata-position`,
-        label: `Master Position`,
-        rule: "st-p-s",
-      },
-      {
-        key: `setting/manage-home`,
-        label: `Manage Home`,
-        rule: "ma-h-s",
-      },
-    ],
-  },
-  {
     key: `users-management`,
     icon: gridIcon,
     label: `User Management`,
@@ -251,8 +229,8 @@ export const MenuSider: MenuItem[] = [
     rule: "crm-s",
     children: [
       {
-        key: `crm/customer`,
-        label: `Customer`,
+        key: `crm/customer-group`,
+        label: `Customer Group`,
         rule: "crm-c-s",
       },
       {
@@ -264,6 +242,11 @@ export const MenuSider: MenuItem[] = [
         key: `crm/ticket`,
         label: `Ticket`,
         rule: "crm-t-s",
+      },
+      {
+        key: `crm/products`,
+        label: `Products`,
+        rule: "crm-ex",
       },
       {
         key: `crm/expense`,
@@ -296,9 +279,46 @@ export const MenuSider: MenuItem[] = [
     ],
   },
   {
-    key: "email-template",
-    icon: <MailOutlined />,
-    label: `e-mail template`,
+    key: `setting`,
+    icon: <Icon icon="uil:setting" width="15" height="15" />,
+    label: `Setting`,
+    rule: "st-s",
+    children: [
+      {
+        key: `setting/maintenance-type`,
+        label: `MA Type`,
+        rule: "ma-t-s",
+      },
+      {
+        key: `setting/organize-chart`,
+        label: `Organize Chart`,
+        // rule: "st-p-s",
+      },
+      {
+        key: `setting/typeleave`,
+        label: `Type Leave`,
+        rule: "st-tl-s",
+      },
+      {
+        key: `setting/master-holidays`,
+        label: `Master Holidays`,
+        rule: "st-mth-s",
+      },
+      {
+        key: `setting/masterdata-position`,
+        label: `Master Position`,
+        rule: "st-p-s",
+      },
+      {
+        key: `setting/manage-home`,
+        label: `Manage Home`,
+        rule: "ma-h-s",
+      },
+      {
+        key: `setting/email-template`,
+        label: `Email Template`,
+      },
+    ],
   },
 ].map((item) => {
   return {

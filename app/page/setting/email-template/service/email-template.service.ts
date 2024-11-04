@@ -2,7 +2,7 @@ import { AxiosInstance } from "axios";
 
 export const ManageemailTemplateServices = (axiosInstance: AxiosInstance) => {
   const baseUrl = "/email-template";
-  const baseTemplateFieldsUrl = "/email-template-fields";
+  // const baseTemplateFieldsUrl = "/email-template-fields";
   const baseTemplateTypeUrl = "/email-template-type";
 
   return {
@@ -52,9 +52,9 @@ export const ManageemailTemplateServices = (axiosInstance: AxiosInstance) => {
         });
     },
 
-    update: async (body: any) => {
+    update: async (id: string, body: any) => {
       return await axiosInstance
-        .patch(`${baseUrl}/${body.handbookid}`, body)
+        .patch(`${baseUrl}/${id}`, body)
         .then((res) => {
           return res.data;
         })
@@ -63,9 +63,9 @@ export const ManageemailTemplateServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    delete: async (handbookid: any) => {
+    delete: async (id: string) => {
       return await axiosInstance
-        .delete(`${baseUrl}/${handbookid}`)
+        .delete(`${baseUrl}/${id}`)
         .then((res) => {
           return res.data;
         })

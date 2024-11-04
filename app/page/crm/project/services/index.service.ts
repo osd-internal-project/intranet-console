@@ -19,6 +19,8 @@ import {
 import { ITMaTaskFiles } from "@/app/page/maintenance-management/common";
 import { FormInstance } from "antd";
 import { ITCustomerSub } from "../../ticket/common";
+import { ITCustomerProduct } from "@/app/common/product";
+import { ITCustomer } from "../../customer/common";
 export interface TMaServices {
   findProjectDataTable: (
     search: object,
@@ -27,9 +29,15 @@ export interface TMaServices {
     userId: string
   ) => Promise<{ data: ITProject[]; count: number }>;
   findCustomerActive: () => Promise<ITCustomerForSelect[]>;
+  findCustomerSelectByCustomerGroupId: (
+    customerGroupId: number
+  ) => Promise<ITCustomerForSelect[]>;
   findCustomerSubSelectByCustomerId: (
     customerId: number
   ) => Promise<ITCustomerSub[]>;
+  findBranchSelectByCustomerId: (
+    customerId: number
+  ) => Promise<ITBranchForSelect[]>;
   findBranchSelectByCustomerSubId: (
     customerSubId: number
   ) => Promise<ITBranchForSelect[]>;
@@ -83,9 +91,11 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
   const customerUrl = "/customer-detail";
   const customerBranchUrl = "/customer-branch";
   const customerProjectUrl = "/customer-project";
+  const customerProductUrl = "/customer-product";
   const customerContactUrl = "/customer-contact";
   const projectTaskUrl = "/customer-project-task";
   const projectTicketUrl = "/customer-project-ticket";
+
   const ticketHistoryLogsUrl = "/ticket-history-logs";
   const filesUrl = "/customer-files";
   const customerSubUrl = "/customer-detail-sub";
@@ -101,9 +111,31 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
           return [];
         });
     },
+    findCustomerSelectByCustomerGroupId: async (customerGroup) => {
+      return await axiosInstance
+        .get(`${customerUrl}/list-by-customer-group/${customerGroup}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
     findCustomerSubSelectByCustomerId: async (customer) => {
       return await axiosInstance
         .get(`${customerSubUrl}/detail-list-by-customer/${customer}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    findBranchSelectByCustomerId: async (customerId) => {
+      return await axiosInstance
+        .get(`${customerBranchUrl}/detail-list-by-customer/${customerId}`)
         .then((res) => {
           return res.data;
         })
@@ -160,6 +192,7 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
           return;
         });
     },
+
     findContactlById: async (id) => {
       return await axiosInstance
         .get(`${customerContactUrl}/${id}`)

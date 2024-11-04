@@ -1,17 +1,8 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import {
-  Roboto,
-  Noto_Sans_Thai,
-  Kanit,
-  Prompt,
-  Kodchasan,
-  Sriracha,
-} from "next/font/google";
-const kodchasan = Kodchasan({ weight: "400", subsets: ["latin"] });
-const notoSanThai = Noto_Sans_Thai({ subsets: ["latin"] });
-const kanit = Kanit({ weight: "400", subsets: ["latin"] });
-const sriracha = Sriracha({ weight: "400", subsets: ["latin"] });
+import { Sarabun } from "next/font/google";
+
+const sarabun = Sarabun({ weight: "400", subsets: ["thai"] });
 import AuthProvider from "@/app/provider/AuthProvider";
 import { ConfigProvider } from "antd";
 import { signIn, useSession } from "next-auth/react";
@@ -27,14 +18,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${notoSanThai.className} m-0 `}>
+      <body className={` m-0 `}>
         <AuthProvider>
           <ConfigProvider
             theme={{
               token: {
                 fontSize: 14,
                 colorPrimary: "#00a1df",
-                fontFamily: `${notoSanThai}`,
+                fontFamily: sarabun.style.fontFamily,
               },
             }}
           >

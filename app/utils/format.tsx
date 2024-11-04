@@ -1,10 +1,12 @@
 export function dateToStringTh(date: Date) {
+  if (!date) return "-";
   const result = new Date(date).toLocaleString("en-GB", {
     timeZone: "Asia/Bangkok",
   });
   return result;
 }
 export function dateToStringThNoTime(date: Date) {
+  if (!date) return "-";
   const result = new Date(date).toLocaleDateString("en-GB", {
     timeZone: "Asia/Bangkok",
   });

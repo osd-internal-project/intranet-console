@@ -8,6 +8,7 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
   const baseUrlApiHandbookType = "/handbook-type";
   const baseUrlApiInformationNews = "/informationNews";
   const baseUrlApiNewsImage = "/news-image";
+  const baseUrlApiHoliday = "/holiday";
 
   return {
     getSlideImageQuery: async () => {
@@ -125,6 +126,16 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
     getNewsImageQuery: async (newsId?: any) => {
       return await axiosInstance
         .get(`${baseUrlApiNewsImage}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return;
+        });
+    },
+    getHoliday: async (year: string) => {
+      return await axiosInstance
+        .get(`${baseUrlApiHoliday}`)
         .then((res) => {
           return res.data;
         })

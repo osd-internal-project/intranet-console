@@ -14,24 +14,28 @@ const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
   const [holidayName, setHolidayName] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchHolidays = async () => {
-      try {
-        const response = await axios.get(
-          `https://calendarific.com/api/v2/holidays?&api_key=LLiN3LnZeoqxhqoioo89X6u1e5Vbf2Bv&country=TH&year=2024`
-        );
-        const holidaysData = response.data.response.holidays.map(
-          (holiday: any) => ({
-            date: dayjs(holiday.date.iso),
-            name: holiday.name,
-          })
-        );
-        setHolidays(holidaysData);
-      } catch (error) {
-        console.error("Error fetching holidays", error);
-      }
-    };
-    fetchHolidays();
+    // const fetchHolidays = async () => {
+    //   try {
+    //     const response = await axios.get(
+    //       `https://calendarific.com/api/v2/holidays?&api_key=LLiN3LnZeoqxhqoioo89X6u1e5Vbf2Bv&country=TH&year=2024`
+    //     );
+    //     const holidaysData = response.data.response.holidays.map(
+    //       (holiday: any) => ({
+    //         date: dayjs(holiday.date.iso),
+    //         name: holiday.name,
+    //       })
+    //     );
+    //     setHolidays(holidaysData);
+    //   } catch (error) {
+    //     console.error("Error fetching holidays", error);
+    //   }
+    // };
+    // fetchHolidays();
   }, []);
+
+  const featchData = async ()=>{
+    
+  }
 
   const getHolidayName = (date: Dayjs) => {
     const holiday = holidays.find((holiday) =>

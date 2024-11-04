@@ -1,22 +1,34 @@
-export interface ITypeMasterdataHolidys {
+// YEAR
+export interface ICreateMasterHolidayYearDto {
+  holidaysDate: Date | string;
+  holidaysYear: string;
+}
+export interface IFindAllYearDto {
   id: number;
-  holidaysName: string;
-  holidaysDate: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  holidaysYear: string;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+}
+export interface IManagePageYear {
+  statusModal: boolean;
+  statusAction?: "create" | "update";
 }
 
-export interface ITypeMasterdataHolidysUpadte {
-  where: {
-    id: number;
-  };
-  data: {
-    holidaysName: string;
-    holidaysDate: Date;
-    updatedAt: Date;
-  };
+// DAY
+export interface ICreateMasterHolidayDto {
+  holidaysName: string;
+  holidaysDate: Date | string;
+  holidaysYear: string;
 }
-export interface FilterMasterdataHolidys {
-  holidaysName?: string;
-  createdAt?: Date[];
+export interface IFindAllDayDto {
+  id: number;
+  holidaysName: string;
+  masterHolidaysYearId: number;
+  holidaysDate: string;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface IManagePageDay {
+  statusModal: boolean;
+  statusAction?: "create" | "update";
 }

@@ -1,17 +1,40 @@
 import { AxiosInstance } from "axios";
-import { ITypeMasterdataHolidys, ITypeMasterdataHolidysUpadte, FilterMasterdataHolidys } from "../common";
+import { ICreateMasterHolidayDto, ICreateMasterHolidayYearDto } from "../common";
 const MasterHolidaysService = (axiosInstance: AxiosInstance) => {
   const baseUrl = "/master-holidays";
+  const baseUrlYear = "/master-holidays-year";
+
   return {
-    getdataAll: async (search: FilterMasterdataHolidys) => {
-      const condition = {
-        where: search,
-        orderBy: { id: "asc" },
-      };
+    getAllYear: async () => {
       return await axiosInstance
-        .post(`${baseUrl}/condition`, {
-          condition: condition,
-        })
+        .get(`${baseUrlYear}`)
+        .then((res) => res.data)
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    getHolidayByYear: async (year: string) => {
+      return await axiosInstance
+        .get(`${baseUrl}/year/${year}`)
+        .then((res) => res.data)
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    deleteMasterHoliday: async (id: number) => {
+      return await axiosInstance
+        .delete(`${baseUrl}/${id}`)
+        .then((res) => res.data)
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    createMasterHolidaysYear: async (event: ICreateMasterHolidayYearDto) => {
+      return await axiosInstance
+        .post(`${baseUrlYear}`, event)
         .then((res) => {
           return res.data;
         })
@@ -20,16 +43,9 @@ const MasterHolidaysService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    createMasterHolidays: async (event: ITypeMasterdataHolidys) => {
-      const condition = {
-        data: {
-          ...event,
-        },
-      };
+    createMasterHolidays: async (event: ICreateMasterHolidayDto) => {
       return await axiosInstance
-        .post(`${baseUrl}`, {
-          condition: condition,
-        })
+        .post(`${baseUrl}`, event)
         .then((res) => {
           return res.data;
         })
@@ -38,25 +54,10 @@ const MasterHolidaysService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    updateMasterHolidays: async (event: ITypeMasterdataHolidysUpadte) => {
+    validateNameYear: async (holidaysYear: string) => {
       return await axiosInstance
-        .patch(`${baseUrl}`, {
-          condition: event,
-        })
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
-    deleteMasterHolidays: async (event: number) => {
-      return await axiosInstance
-        .delete(`${baseUrl}/${event}`)
-        .then((res) => {
-          return res.data;
-        })
+        .post(`${baseUrlYear}/validate-name`, { holidaysYear: holidaysYear })
+        .then((response) => response.data.message)
         .catch((err) => {
           console.log(err);
           return [];

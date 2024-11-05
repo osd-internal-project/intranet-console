@@ -38,7 +38,7 @@ export interface props {
   parentId: string;
   parentType: string;
   projectDatas: ITProject[];
-  getProductDataTable: (
+  getProjectDataTable: (
     productId: string,
     parentId: string,
     type: string
@@ -50,13 +50,13 @@ const ProjectTable: React.FC<props> = ({
   parentId,
   parentType,
   projectDatas,
-  getProductDataTable,
+  getProjectDataTable,
 }): React.ReactElement => {
   useEffect(() => {
     fetchData();
   }, [parentId, productId]);
   const fetchData = async () => {
-    getProductDataTable(productId, parentId, parentType);
+    getProjectDataTable(productId, parentId, parentType);
   };
   const columns: TableColumnsType<ITProject> = [
     {
@@ -74,9 +74,9 @@ const ProjectTable: React.FC<props> = ({
       width: "200px",
     },
     {
-      key: "productName",
-      dataIndex: "productName",
-      title: "Product Name",
+      key: "customerName",
+      dataIndex: ["customerBranch", "customerDetail", "customerNameTh"],
+      title: "Customer Name",
       width: "200px",
     },
     {
@@ -137,7 +137,7 @@ const ProjectTable: React.FC<props> = ({
         dataSource={projectDatas}
         size="small"
         scroll={{ x: "max-content" }}
-        rowKey={(data: ITProject) => data.id}
+        rowKey={"id"}
       />
     </Row>
   );

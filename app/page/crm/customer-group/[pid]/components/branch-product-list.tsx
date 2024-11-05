@@ -37,7 +37,7 @@ export interface props {
   customerProductsByBranch: ITCustomerProduct[];
   parentId: string;
   projectDatas: ITProject[];
-  getProductDataTable: (
+  getProjectDataTable: (
     productId: string,
     parentId: string,
     type: string
@@ -48,7 +48,7 @@ const BranchProductList: React.FC<props> = ({
   customerProductsByBranch,
   parentId,
   projectDatas,
-  getProductDataTable,
+  getProjectDataTable,
 }): React.ReactElement => {
   const panelStyle: React.CSSProperties = {
     marginBottom: 10,
@@ -89,7 +89,7 @@ const BranchProductList: React.FC<props> = ({
             parentId={parentId}
             parentType={"branch"}
             projectDatas={projectDatas}
-            getProductDataTable={getProductDataTable}
+            getProjectDataTable={getProjectDataTable}
           />
         ),
         style: panelStyle,
@@ -125,8 +125,10 @@ const BranchProductList: React.FC<props> = ({
             className=" bg-slate-100 mt-2  overflow-x-auto"
           >
             <Collapse
+              collapsible="icon"
               accordion
               bordered={false}
+              destroyInactivePanel
               expandIcon={({ isActive }) => (
                 <CaretRightOutlined rotate={isActive ? 90 : 0} />
               )}

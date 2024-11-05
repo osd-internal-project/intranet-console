@@ -3,6 +3,8 @@ import { ITCustomerSub } from "../../customer/common";
 export type ITCustomerForSelect = {
   id: number;
   customerTypeId: string;
+  customerNameTh?: string;
+  customerNameEn?: string;
   details?: {
     prefixEn?: string;
     prefixTh?: string;

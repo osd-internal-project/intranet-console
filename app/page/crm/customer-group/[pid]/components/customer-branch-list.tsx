@@ -40,7 +40,7 @@ export interface props {
   onOpenCustomerCreateForm: (state: boolean) => void;
   getCustomerProductsByBranch: (branchId: number) => void;
 
-  getProductDataTable: (
+  getProjectDataTable: (
     productId: string,
     parentId: string,
     type: string
@@ -53,7 +53,7 @@ const CustomerBranchList: React.FC<props> = ({
   projectDatas,
   onOpenCustomerCreateForm,
   getCustomerProductsByBranch,
-  getProductDataTable,
+  getProjectDataTable,
 }): React.ReactElement => {
   const panelStyle: React.CSSProperties = {
     marginBottom: 10,
@@ -102,7 +102,7 @@ const CustomerBranchList: React.FC<props> = ({
           customerProductsByBranch={customerProductsByBranch}
           getCustomerProductsByBranch={getCustomerProductsByBranch}
           projectDatas={projectDatas}
-          getProductDataTable={getProductDataTable}
+          getProjectDataTable={getProjectDataTable}
         />
       );
       return {
@@ -116,17 +116,17 @@ const CustomerBranchList: React.FC<props> = ({
   return (
     <div>
       <div className=" flex justify-between mb-2">
-        <div className=" font-bold text-base">Customers</div>
+        <div className=" font-bold text-base">Branch</div>
         <Button
           type="primary"
           size="small"
           onClick={() => onOpenCustomerCreateForm(true)}
         >
-          Add Customer
+          Add Branch
         </Button>
       </div>
       <div>
-        <Form layout="vertical" size="small">
+        {/* <Form layout="vertical" size="small">
           <div className=" grid grid-cols-4 gap-2">
             <Form.Item name={"referenceCode"} label={"Reference Code"}>
               <Input />
@@ -143,19 +143,21 @@ const CustomerBranchList: React.FC<props> = ({
               Search
             </Button>
           </div>
-        </Form>
+        </Form> */}
         <div className=" mt-2 p-2 bg-slate-100" style={{ borderRadius: 5 }}>
           <div
             style={{ maxHeight: "500px" }}
             className=" bg-slate-100 mt-2  overflow-x-auto"
           >
             <Collapse
+              collapsible="icon"
               accordion
               bordered={false}
               expandIcon={({ isActive }) => (
                 <CaretRightOutlined rotate={isActive ? 90 : 0} />
               )}
               style={{ background: " #f1f5f9" }}
+              destroyInactivePanel
               items={dataList(panelStyle)}
             />
           </div>

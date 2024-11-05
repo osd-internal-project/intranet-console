@@ -230,7 +230,7 @@ export const MenuSider: MenuItem[] = [
     rule: "crm-s",
     children: [
       {
-        key: `crm/customer-group`,
+        key: `crm/customer`,
         label: `Customer Group`,
         rule: "crm-c-s",
       },

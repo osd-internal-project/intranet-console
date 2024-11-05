@@ -10,7 +10,6 @@ import {
   Button,
   Calendar,
   Card,
-  Collapse,
   DatePicker,
   Form,
   Input,
@@ -128,7 +127,7 @@ const CustomerCustomerDetails: React.FC<props> = ({
                 customerProductsByBranch={customerProductsByBranch}
                 getCustomerProductsByBranch={getCustomerProductsByBranch}
                 projectDatas={[]}
-                getProductDataTable={function (
+                getProjectDataTable={function (
                   productId: string,
                   parentId: string,
                   type: string

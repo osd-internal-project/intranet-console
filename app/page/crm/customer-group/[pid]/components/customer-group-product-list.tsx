@@ -37,7 +37,7 @@ export interface props {
   customerGroupId: string;
   customerProductsByCustomerGroup: ITCustomerProduct[];
   projectDatas: ITProject[];
-  getProductDataTable: (
+  getProjectDataTable: (
     productId: string,
     parentId: string,
     type: string
@@ -48,7 +48,7 @@ const CustomerGroupProductList: React.FC<props> = ({
   customerGroupId,
   customerProductsByCustomerGroup,
   projectDatas,
-  getProductDataTable,
+  getProjectDataTable,
 }): React.ReactElement => {
   const panelStyle: React.CSSProperties = {
     marginBottom: 10,
@@ -87,7 +87,7 @@ const CustomerGroupProductList: React.FC<props> = ({
             productId={product.id}
             projectDatas={projectDatas}
             parentId={customerGroupId}
-            getProductDataTable={getProductDataTable}
+            getProjectDataTable={getProjectDataTable}
             parentType={"customer-group"}
           />
         ),
@@ -125,6 +125,7 @@ const CustomerGroupProductList: React.FC<props> = ({
             className=" bg-slate-100 mt-2  overflow-x-auto"
           >
             <Collapse
+              collapsible="icon"
               accordion
               destroyInactivePanel={true}
               bordered={false}

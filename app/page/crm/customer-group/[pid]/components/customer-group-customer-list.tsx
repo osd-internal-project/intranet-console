@@ -31,6 +31,7 @@ import { ITCustomer } from "@/app/common/customer";
 import CustomerDetails from "./customer-details";
 import { ITCustomerProduct } from "@/app/common/product";
 import { ITProject } from "@/app/common/project";
+import data from "@iconify/icons-icon-park-outline/setting-two";
 
 export interface props {
   customerList: ITCustomer[];
@@ -42,11 +43,13 @@ export interface props {
   getCustomerProductsByCustomer: (customerId: number) => void;
   getCustomerBrachList: (customerId: number) => void;
   getCustomerProductsByBranch: (branch: number) => void;
-  getProductDataTable: (
+  getProjectDataTable: (
     productId: string,
     parentId: string,
     type: string
   ) => void;
+  onDeleteCustomer: (customerId: number) => void;
+  onOpenCustomerDescription: (customerId: number) => void;
 }
 
 const CustomerGroupCustomerList: React.FC<props> = ({
@@ -59,7 +62,9 @@ const CustomerGroupCustomerList: React.FC<props> = ({
   getCustomerProductsByCustomer,
   getCustomerBrachList,
   getCustomerProductsByBranch,
-  getProductDataTable,
+  getProjectDataTable,
+  onDeleteCustomer,
+  onOpenCustomerDescription,
 }): React.ReactElement => {
   const panelStyle: React.CSSProperties = {
     marginBottom: 10,
@@ -80,49 +85,13 @@ const CustomerGroupCustomerList: React.FC<props> = ({
           <div>
             <div>Name TH</div>
             <div className=" font-bold">
-              {customer?.customerTypeId
-                ? customer?.customerTypeId === "natural"
-                  ? `${
-                      customer.details?.prefixTh
-                        ? customer.details?.prefixTh
-                        : ""
-                    }${
-                      customer.details?.firstNameTh
-                        ? customer.details?.firstNameTh
-                        : ""
-                    }${
-                      customer.details?.lastNameTh
-                        ? ` ${customer.details?.lastNameTh}`
-                        : ""
-                    }`
-                  : customer.customerTypeId === "juristic"
-                  ? customer.details?.customerNameTh
-                  : ""
-                : ""}
+              {customer?.customerNameTh ? customer.customerNameTh : ""}
             </div>
           </div>
           <div>
             <div>Name EN</div>
             <div className=" font-bold">
-              {customer?.customerTypeId
-                ? customer?.customerTypeId === "natural"
-                  ? `${
-                      customer.details?.prefixEn
-                        ? customer.details?.prefixEn
-                        : ""
-                    }${
-                      customer.details?.firstNameEn
-                        ? customer.details?.firstNameEn
-                        : ""
-                    }${
-                      customer.details?.lastNameEn
-                        ? ` ${customer.details?.lastNameEn}`
-                        : ""
-                    }`
-                  : customer.customerTypeId === "juristic"
-                  ? customer.details?.customerNameEn
-                  : ""
-                : ""}
+              {customer?.customerNameEn ? customer.customerNameEn : ""}
             </div>
           </div>
           <div>
@@ -153,8 +122,17 @@ const CustomerGroupCustomerList: React.FC<props> = ({
           </div>
           <div>
             <div className=" space-x-2">
-              <Button type="link">Edit</Button>
-              <Button type="link" danger>
+              <Button
+                type="link"
+                onClick={() => onOpenCustomerDescription(customer.id)}
+              >
+                Edit
+              </Button>
+              <Button
+                type="link"
+                danger
+                onClick={() => onDeleteCustomer(customer.id)}
+              >
                 Delete
               </Button>
             </div>
@@ -171,7 +149,7 @@ const CustomerGroupCustomerList: React.FC<props> = ({
           customerProductsByBranch={customerProductsByBranch}
           getCustomerProductsByBranch={getCustomerProductsByBranch}
           projectDatas={projectDatas}
-          getProductDataTable={getProductDataTable}
+          getProjectDataTable={getProjectDataTable}
         />
       );
       return {
@@ -219,6 +197,8 @@ const CustomerGroupCustomerList: React.FC<props> = ({
             className=" bg-blue-100 mt-2  overflow-x-auto"
           >
             <Collapse
+              collapsible="icon"
+              destroyInactivePanel
               accordion
               bordered={false}
               expandIcon={({ isActive }) => (

@@ -10,7 +10,6 @@ import {
   Button,
   Calendar,
   Card,
-  Collapse,
   DatePicker,
   Form,
   Input,
@@ -38,7 +37,7 @@ export interface props {
   getCustomerProductsByCustomer: (id: number) => void;
   getCustomerBrachList: (id: number) => void;
   getCustomerProductsByBranch: (branchId: number) => void;
-  getProductDataTable: (
+  getProjectDataTable: (
     productId: string,
     parentId: string,
     type: string
@@ -54,16 +53,16 @@ const CustomerDetails: React.FC<props> = ({
   getCustomerProductsByCustomer,
   getCustomerBrachList,
   getCustomerProductsByBranch,
-  getProductDataTable,
+  getProjectDataTable,
 }): React.ReactElement => {
   const [customerTabsKey, setCustomerTabsKey] = useState<string>("products");
   useEffect(() => {
-    console.log(details.id, customerTabsKey);
     if (details.id) {
       fetchData(details.id, customerTabsKey);
     }
   }, [details.id, customerTabsKey]);
   const fetchData = async (customerId: number, tabKey: string) => {
+    console.log(customerId);
     if (customerTabsKey === "products") {
       await getCustomerProductsByCustomer(customerId);
     } else if (customerTabsKey === "branch") {
@@ -82,13 +81,13 @@ const CustomerDetails: React.FC<props> = ({
         items={[
           {
             key: "products",
-            label: `Products`,
+            label: `Customer Products`,
             children: (
               <CustomerProductList
                 customerId={details.id}
                 customerProductsByCustomer={customerProductsByCustomer}
                 projectDatas={projectDatas}
-                getProductDataTable={getProductDataTable}
+                getProjectDataTable={getProjectDataTable}
               />
             ),
           },
@@ -104,7 +103,7 @@ const CustomerDetails: React.FC<props> = ({
                 customerProductsByBranch={customerProductsByBranch}
                 getCustomerProductsByBranch={getCustomerProductsByBranch}
                 projectDatas={projectDatas}
-                getProductDataTable={getProductDataTable}
+                getProjectDataTable={getProjectDataTable}
               />
             ),
             // icon: <Icon />,

@@ -22,7 +22,7 @@ import {
   TablePaginationConfig,
   Tabs,
 } from "antd";
-import { useAxiosCrm } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosCrm, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { checkRule } from "@/app/utils/rules";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
@@ -34,10 +34,13 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import CustomerGroupServices from "@/app/services/customer-group.service";
+
 import CustomerServices from "@/app/services/customer.service";
 import CustomerBranchServices from "@/app/services/customer-branch.service";
 import CustomerProductServices from "@/app/services/customer-product.service";
 import CustomerProjectServices from "@/app/services/customer-project.service";
+import UserServices from "@/app/services/user.service";
+
 import { useParams, useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import modal from "antd/es/modal";
@@ -46,6 +49,8 @@ import {
   ITBranch,
   ITCustomer,
   ITCustomerForm,
+  ITSelectUsers,
+  ITConfigData,
 } from "@/app/common/customer";
 import CustomerGroupDetails from "./components/customer-group-details";
 import CustomerGroupCustomerList from "./components/customer-group-customer-list";
@@ -53,12 +58,32 @@ import CustomerGroupProductList from "./components/customer-group-product-list";
 import CustomerCreateForm from "./components/customer-create-form";
 import { ITCustomerProduct } from "@/app/common/product";
 import { ITProject } from "@/app/common/project";
+import CusomterEditForm from "./components/customer-edit-form";
 const { useForm } = Form;
 export default function ProductsAddPage() {
   const { data: session } = useSession();
   const { pid } = useParams();
+
   const crmAuth = useAxiosCrm();
+  const userAuth = useAxiosUser();
+  const rules = {
+    ruleCustomerShow: checkRule("crm-c-s"),
+    ruleCustomerEdit: checkRule("crm-c-e"),
+    ruleCustomerSubAdd: checkRule("crm-cs-a"),
+    ruleCustomerSubEdit: checkRule("crm-cs-e"),
+    ruleCustomerSubDelete: checkRule("crm-cs-d"),
+    ruleCustomerBranchAdd: checkRule("crm-cb-a"),
+    ruleCustomerBranchEdit: checkRule("crm-cb-e"),
+    ruleCustomerBranchDelete: checkRule("crm-cb-d"),
+    ruleCustomerAddressAdd: checkRule("crm-ca-a"),
+    ruleCustomerAddressDelete: checkRule("crm-ca-d"),
+    ruleCustomerContactAdd: checkRule("crm-cc-a"),
+    ruleCustomerContactDelete: checkRule("crm-cc-d"),
+    ruleProjectShow: checkRule("crm-p-s"),
+  };
+  const [descriptionCustomerForm] = useForm();
   const customerGroupServices = CustomerGroupServices(crmAuth);
+  const userServices = UserServices(userAuth);
   const customerServices = CustomerServices(crmAuth);
   const customerBranchServices = CustomerBranchServices(crmAuth);
   const customerProductServices = CustomerProductServices(crmAuth);
@@ -71,6 +96,9 @@ export default function ProductsAddPage() {
   const [loading, setloading] = useState<boolean>(true);
   const [activeTabsKey, setActiveTabKey] = useState<string>("products");
   const [openCustomerCreate, setOpenCustomerCreate] = useState<boolean>(false);
+  const [openCustomerUpdateId, setOpenCustomerUpdateId] = useState<
+    number | undefined
+  >(undefined);
   const [customerList, setCustomerList] = useState<ITCustomer[]>([]);
   const [branchList, setBranchList] = useState<ITBranch[]>([]);
   const [customerProductsByCustomerGroup, setCustomerProductsByCustomerGroup] =
@@ -82,6 +110,17 @@ export default function ProductsAddPage() {
     ITCustomerProduct[]
   >([]);
   const [projectDatas, setProjectDatas] = useState<ITProject[]>([]);
+  const [customerTypeGroup, setCustomerTypeGroup] = useState<ITConfigData[]>(
+    []
+  );
+  const [customerResponsibles, setCustomerResponsibles] = useState<
+    ITSelectUsers[]
+  >([]);
+  const [customerTypes, setCustomerTypes] = useState<ITConfigData[]>([]);
+  useEffect(() => {
+    fetchData();
+    fetchConfigs();
+  }, []);
   useEffect(() => {
     fetchData();
   }, [activeTabsKey, customerGroupId]);
@@ -102,7 +141,23 @@ export default function ProductsAddPage() {
     }
     setloading(false);
   };
+  const fetchConfigs = async () => {
+    const group = await customerServices.findConfigCustomerTypeGroup();
+    setCustomerTypeGroup(group);
+    if (session?.user.userId) {
+      const responsibles = await userServices.findSaleUserBySalePermission(
+        session?.user.userId
+      );
+      if (responsibles && responsibles.length > 0) {
+        setCustomerResponsibles(responsibles);
+      }
+    }
+
+    const types = await customerServices.findConfigCustomerType();
+    setCustomerTypes(types);
+  };
   const fetchDataCustomers = async () => {
+    setloading(true);
     const res = await customerServices.findCustomerListByCustomerGroup(
       Number(customerGroupId),
       { userid: session?.user.userId ? session.user.userId : null }
@@ -110,6 +165,7 @@ export default function ProductsAddPage() {
     if (res) {
       setCustomerList(res.data);
     }
+    setloading(false);
   };
   const fetchDataProductsByCustomerGroup = async () => {
     const data = await customerProductServices.findManyByCustomerGroup(
@@ -139,7 +195,7 @@ export default function ProductsAddPage() {
   };
   const getCustomerProductsByBranch = async (bracnchId: number) => {
     const products = await customerProductServices.findManyByBranch(bracnchId);
-    console.log(products);
+
     if (products) {
       console.log(products);
       setCustomerProductsByBranch(products);
@@ -157,7 +213,7 @@ export default function ProductsAddPage() {
     setloading(false);
   };
 
-  async function getProductDataTable(
+  async function getProjectDataTable(
     productId: string,
     parentId: string,
     type: string
@@ -169,6 +225,174 @@ export default function ProductsAddPage() {
         type
       );
     setProjectDatas(projects);
+  }
+  function onFinishAddCustomer(form: ITCustomerForm): void {
+    let createForm = form;
+    const customerNameTh =
+      form.customerTypeId === "natural"
+        ? `${form.details?.firstNameTh} ${form.details?.lastNameTh}`
+        : form.details?.customerNameTh;
+    const customerNameEn =
+      form.customerTypeId === "natural"
+        ? `${form.details?.firstNameTh} ${form.details?.lastNameTh}`
+        : form.details?.customerNameEn;
+    if (form.customerTypeId) {
+      const customerTypeSelected = customerTypes.findLast(
+        (group) => group.id === form.customerTypeGroupId
+      );
+      if (customerTypeSelected?.name) {
+        createForm = {
+          ...createForm,
+          customerTypeName: customerTypeSelected.name,
+        };
+      }
+    }
+    if (form.customerTypeGroupId) {
+      const customerTypeGroupSelected = customerTypeGroup.findLast(
+        (group) => group.id === form.customerTypeGroupId
+      );
+      if (customerTypeGroupSelected?.name) {
+        createForm = {
+          ...createForm,
+          customerTypeGroupName: customerTypeGroupSelected.name,
+        };
+      }
+    }
+
+    if (form.responsibleId && form.responsibleId.length > 0) {
+      const responsibleIded = customerResponsibles
+        .filter((user) => form.responsibleId?.includes(user.userId))
+        .map((user) => ({
+          uid: user.userId,
+          name: `${user.firstNameTh} ${user.lastNameTh}`,
+        }));
+      if (responsibleIded) {
+        createForm = {
+          ...createForm,
+          customerNameTh: customerNameTh,
+          customerNameEn: customerNameEn,
+          responsibleId: form.responsibleId,
+          responsible: responsibleIded,
+        };
+      }
+    }
+    customerServices
+      .create(createForm)
+      .then((res) => {
+        message.success("สร้าง customer สำเร็จ");
+        fetchDataCustomers();
+      })
+      .catch(() => {
+        message.error("ผิดพลาด กรุณาลองใหม่");
+      });
+  }
+
+  function onDeleteCustomer(customerId: number): void {
+    console.log(1);
+    Modal.confirm({
+      title: "Delete this Customer",
+      icon: <ExclamationCircleFilled />,
+      content: "Are you sure you want to delete this ?",
+      okText: "Confirm",
+      okButtonProps: { type: "primary", danger: true },
+      cancelText: "Cancel",
+      onOk: async () => {
+        await customerServices.delete(customerId).then((data) => {
+          message.success("ลบสำเร็จ");
+        });
+        fetchDataCustomers();
+      },
+      // onCancel() {
+      //   setDeleteId(undefined);
+      // },
+    });
+  }
+
+  function onOpenCustomerDescription(customerId: number): void {
+    const customerSelected = customerList.find((cus) => cus.id === customerId);
+    descriptionCustomerForm.setFieldsValue(customerSelected);
+    setOpenCustomerUpdateId(customerId);
+  }
+  async function onCloseUpdateCustomer(): Promise<void> {
+    setOpenCustomerUpdateId(undefined);
+    descriptionCustomerForm.resetFields();
+  }
+
+  async function updateCustomer(data: ITCustomerForm): Promise<void> {
+    setloading(true);
+    if (!openCustomerUpdateId) {
+      return;
+    }
+
+    let form = {
+      ...data,
+      ...(data.registration && { registration: Number(data.registration) }),
+      updatedById: session?.user.userId,
+      updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+    };
+    let updateForm = form;
+    if (form.customerTypeId) {
+      const customerTypeSelected = customerTypes.findLast(
+        (d) => d.id === form.customerTypeGroupId
+      );
+      if (customerTypeSelected?.name) {
+        updateForm = {
+          ...updateForm,
+          customerTypeName: customerTypeSelected.name,
+        };
+      }
+    }
+    if (form.customerTypeGroupId) {
+      const customerTypeGroupSelected = customerTypeGroup.findLast(
+        (d) => d.id === form.customerTypeGroupId
+      );
+      if (customerTypeGroupSelected?.name) {
+        updateForm = {
+          ...updateForm,
+          customerTypeGroupName: customerTypeGroupSelected.name,
+        };
+      }
+    }
+    if (form.responsibleId && form.responsibleId.length > 0) {
+      const responsibleIded = customerResponsibles
+        .filter((user) => form.responsibleId?.includes(user.userId))
+        .map((user) => ({
+          uid: user.userId,
+          name: `${user.firstNameTh} ${user.lastNameTh}`,
+        }));
+      if (responsibleIded) {
+        updateForm = {
+          ...updateForm,
+          responsibleId: form.responsibleId,
+          responsible: responsibleIded,
+        };
+      }
+    }
+    const customerNameTh =
+      form.customerTypeId === "natural"
+        ? `${form.details?.firstNameTh} ${form.details?.lastNameTh}`
+        : form.details?.customerNameTh;
+    const customerNameEn =
+      form.customerTypeId === "natural"
+        ? `${form.details?.firstNameTh} ${form.details?.lastNameTh}`
+        : form.details?.customerNameEn;
+    updateForm = {
+      ...updateForm,
+      responsibleId: form.responsibleId,
+      customerNameEn: customerNameEn,
+      customerNameTh: customerNameTh,
+    };
+    await customerServices
+      .update(openCustomerUpdateId, updateForm)
+      .then(async (res) => {
+        message.success("อัพเดท customer สำเร็จ");
+        await onCloseUpdateCustomer();
+        fetchDataCustomers();
+      })
+      .catch(() => {
+        message.error("ผิดพลาด กรุณาลองใหม่");
+        setloading(false);
+      });
   }
 
   return (
@@ -213,7 +437,7 @@ export default function ProductsAddPage() {
               items={[
                 {
                   key: "products",
-                  label: `Products`,
+                  label: `Customer Group Products`,
                   children: details ? (
                     <CustomerGroupProductList
                       customerGroupId={String(customerGroupId)}
@@ -221,7 +445,7 @@ export default function ProductsAddPage() {
                         customerProductsByCustomerGroup
                       }
                       projectDatas={projectDatas}
-                      getProductDataTable={getProductDataTable}
+                      getProjectDataTable={getProjectDataTable}
                     />
                   ) : (
                     <Card>ไม่พบข้อมูล</Card>
@@ -243,7 +467,9 @@ export default function ProductsAddPage() {
                       getCustomerBrachList={getCustomerBrachList}
                       getCustomerProductsByBranch={getCustomerProductsByBranch}
                       projectDatas={projectDatas}
-                      getProductDataTable={getProductDataTable}
+                      getProjectDataTable={getProjectDataTable}
+                      onDeleteCustomer={onDeleteCustomer}
+                      onOpenCustomerDescription={onOpenCustomerDescription}
                     />
                   ) : (
                     <Card>ไม่พบข้อมูล</Card>
@@ -257,14 +483,24 @@ export default function ProductsAddPage() {
       </Row>
       {openCustomerCreate && (
         <CustomerCreateForm
-          customerTypeGroup={[]}
-          customerTypes={[]}
-          customerResponsibles={[]}
-          onFinishAdd={function (form: ITCustomerForm): void {
-            throw new Error("Function not implemented.");
-          }}
+          customerTypeGroup={customerTypeGroup}
+          customerTypes={customerTypes}
+          customerResponsibles={customerResponsibles}
+          onFinishAdd={onFinishAddCustomer}
           openCustomerCreate={openCustomerCreate}
           onOpenCustomerCreateForm={onOpenCustomerCreateForm}
+        />
+      )}
+      {openCustomerUpdateId && (
+        <CusomterEditForm
+          rules={rules}
+          customerTypeGroup={customerTypeGroup}
+          customerTypes={customerTypes}
+          customerResponsibles={customerResponsibles}
+          descriptionForm={descriptionCustomerForm}
+          openCustomerUpdateId={openCustomerUpdateId}
+          onCloseUpdate={onCloseUpdateCustomer}
+          onFinishEdit={updateCustomer}
         />
       )}
     </Spin>

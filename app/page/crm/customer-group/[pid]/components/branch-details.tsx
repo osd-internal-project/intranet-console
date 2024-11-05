@@ -10,7 +10,6 @@ import {
   Button,
   Calendar,
   Card,
-  Collapse,
   DatePicker,
   Form,
   Input,
@@ -34,7 +33,7 @@ export interface props {
   customerProductsByBranch: ITCustomerProduct[];
   projectDatas: ITProject[];
   getCustomerProductsByBranch: (branchId: number) => void;
-  getProductDataTable: (
+  getProjectDataTable: (
     productId: string,
     parentId: string,
     type: string
@@ -46,7 +45,7 @@ const BranchDetails: React.FC<props> = ({
   customerProductsByBranch,
   projectDatas,
   getCustomerProductsByBranch,
-  getProductDataTable,
+  getProjectDataTable,
 }): React.ReactElement => {
   const [branchTabsKey, setBranchTabsKey] = useState<string>("products");
   useEffect(() => {
@@ -140,13 +139,13 @@ const BranchDetails: React.FC<props> = ({
         items={[
           {
             key: "products",
-            label: `Products`,
+            label: `Branch Products`,
             children: (
               <BranchProductList
                 customerProductsByBranch={customerProductsByBranch}
                 parentId={String(details.id)}
                 projectDatas={projectDatas}
-                getProductDataTable={getProductDataTable}
+                getProjectDataTable={getProjectDataTable}
               />
             ),
           },

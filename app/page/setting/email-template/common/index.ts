@@ -5,3 +5,11 @@ export interface emailTemplate {
   createAt: Date;
   updateAt: Date;
 }
+
+export type TEmailTemplate = {
+  createAt: Date;
+  emailTemplateFields: [];
+  id: number;
+  name: string;
+  updateAt: Date;
+};

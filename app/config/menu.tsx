@@ -189,7 +189,6 @@ export const MenuSider: MenuItem[] = [
       },
     ],
   },
-
   {
     key: `users-management`,
     icon: gridIcon,
@@ -303,7 +302,7 @@ export const MenuSider: MenuItem[] = [
       {
         key: `setting/master-holidays`,
         label: `Master Holidays`,
-        rule: "st-mth-s",
+        // rule: "st-mth-s",
       },
       {
         key: `setting/masterdata-position`,

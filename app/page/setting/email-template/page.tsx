@@ -1,14 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, Breadcrumb, Divider, Form, Button } from "antd";
-import EmailTemplateTable from "./components/email-template-table";
+import { Card, Breadcrumb, Divider, Button, Form } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageemailTemplateServices } from "./service/email-template.service";
 import Link from "next/link";
+import { EmailTemplateTab } from "./components/email-template-tab";
 
 const emailTemplatePage: React.FC = (): React.ReactElement => {
   const intraAuth = useAxiosIntranet();
   const manageemailtemplateservices = ManageemailTemplateServices(intraAuth);
+  const [formusetemplate] = Form.useForm();
   const [dataSource, setDataSource] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -17,7 +18,7 @@ const emailTemplatePage: React.FC = (): React.ReactElement => {
   }, [loading]);
 
   const fechdataSource = async () => {
-    const getdataAll = await manageemailtemplateservices.findAll();
+    const getdataAll = await manageemailtemplateservices.optionsType();
     setDataSource(getdataAll);
     setLoading(false);
   };
@@ -51,7 +52,7 @@ const emailTemplatePage: React.FC = (): React.ReactElement => {
           </div>
         </div>
         <div>
-          <EmailTemplateTable dataSource={dataSource} loading={loading} setLoading={setLoading} />
+          <EmailTemplateTab dataSource={dataSource} loading={loading} setLoading={setLoading} formusetemplate={formusetemplate} />
         </div>
       </Card>
     </div>

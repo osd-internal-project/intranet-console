@@ -18,7 +18,7 @@ export interface IManagePageYear {
 export interface ICreateMasterHolidayDto {
   holidaysName: string;
   holidaysDate: Date | string;
-  holidaysYear: string;
+  holidaysYear: number;
 }
 export interface IFindAllDayDto {
   id: number;

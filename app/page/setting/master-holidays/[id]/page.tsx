@@ -11,6 +11,13 @@ import { useForm } from "antd/es/form/Form";
 import dayjs from "dayjs";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 
+interface THoliday {
+  id: number;
+  holidaysYear: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export default function MasterdataHolidaysByYear() {
   const Auth = useAxiosIntranet();
   const masterholidaysService = MasterHolidaysService(Auth);
@@ -20,6 +27,10 @@ export default function MasterdataHolidaysByYear() {
   const [loading, setLoading] = useState<boolean>(true);
   const [manageStatusDay, setManageStatusDay] = useState<IManagePageDay>({ statusModal: false, statusAction: "create" });
   const [dataHolidayDay, setDataHolidayDay] = useState<IFindAllDayDto[]>([]);
+  const [holidayDay, setHolidayDay] = useState<THoliday>({
+    id: 0,
+    holidaysYear: "1999",
+  });
 
   useEffect(() => {
     if (loading) featchData();
@@ -27,6 +38,8 @@ export default function MasterdataHolidaysByYear() {
 
   const featchData = async () => {
     const resDataYear = await masterholidaysService.getHolidayByYear(year);
+    const resDataOne = await masterholidaysService.getOneHolidayByYear(year);
+    setHolidayDay(resDataOne);
     setDataHolidayDay(resDataYear);
     formAction.setFieldValue("holidaysYear", year);
     setLoading(false);
@@ -36,7 +49,7 @@ export default function MasterdataHolidaysByYear() {
     const dataCreate = {
       holidaysName: event.holidaysName,
       holidaysDate: dayjs(event.holidaysDate).format("YYYY-MM-DD"),
-      holidaysYear: event.holidaysYear,
+      holidaysYear: holidayDay.id,
     };
     Modal.confirm({
       title: "Add ",

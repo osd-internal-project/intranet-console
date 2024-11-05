@@ -23,6 +23,15 @@ const MasterHolidaysService = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    getOneHolidayByYear: async (year: string) => {
+      return await axiosInstance
+        .get(`${baseUrlYear}/${year}`)
+        .then((res) => res.data)
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
     deleteMasterHoliday: async (id: number) => {
       return await axiosInstance
         .delete(`${baseUrl}/${id}`)

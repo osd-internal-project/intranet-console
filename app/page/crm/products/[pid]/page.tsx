@@ -31,8 +31,8 @@ import {
   MinusCircleOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import CrmServices from "../services/index.service";
-import { ITCustomerProduct } from "../common";
+import CrmServices from "@/app/services/customer-product.service";
+import { ITCustomerProduct } from "@/app/common/product";
 import { useParams, useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import modal from "antd/es/modal";

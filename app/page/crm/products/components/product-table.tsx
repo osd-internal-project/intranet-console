@@ -19,13 +19,13 @@ import {
   Tag,
 } from "antd";
 import type { Dayjs } from "dayjs";
-import { ITCustomerProduct } from "../common";
 import { ColumnType } from "antd/es/table";
 import { dateToStringTh, dateToStringThNoTime } from "@/app/utils/format";
 import { deleteIcon, editIcon } from "@/components/icon";
 import { useForm } from "antd/es/form/Form";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import Link from "next/link";
+import { ITCustomerProduct } from "@/app/common/product";
 
 export interface props {
   dataTable: ITCustomerProduct[];

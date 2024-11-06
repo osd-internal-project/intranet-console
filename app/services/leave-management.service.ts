@@ -76,13 +76,8 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
         });
     },
     getdataLeaveById: async (id: number) => {
-      const condition = {
-        where: { id: id },
-      };
       return await axiosInstance
-        .post(`${baseUrlDataLeave}/condition`, {
-          condition: condition,
-        })
+        .get(`${baseUrlDataLeave}/${id}`)
         .then((res) => {
           return res.data;
         })

@@ -62,19 +62,14 @@ const ExportDataLeaveAll: React.FC<ExportDataLeaveProps> = ({ data }) => {
 
   return (
     <Button
-      type="text"
+      type="default"
       onClick={handleOnExport}
       style={{
         marginRight: "8px",
         marginTop: "10px",
         marginBottom: "10px",
-        border: "none",
-        backgroundColor: "transparent",
-        color: "inherit",
-        padding: 0,
       }}
-      icon={<ExcelIcon width="1.5rem" height="1.5rem" />}
-    >
+      icon={<ExcelIcon width="1.5rem" height="1.5rem" />}>
       Export Excel
     </Button>
   );

@@ -1,16 +1,12 @@
 import React, { useState } from "react";
 import { Modal, Form, Input, Button, Space, Tooltip } from "antd";
-import {
-  Calendar,
-  momentLocalizer,
-  Event as RbcEvent,
-} from "react-big-calendar";
+import { Calendar, momentLocalizer, Event as RbcEvent } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from "moment";
 import { ITypeDataLeave } from "../../common";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { PaperClipOutlined } from "@ant-design/icons";
-import "../../common/style.css";
+import "../../styles/style.css";
 
 interface CustomEvent extends RbcEvent {
   id: number | undefined;
@@ -27,10 +23,7 @@ export interface Props {
   downloadFile: (id: number, filename: string) => void;
 }
 
-export const DepartmentCalendarDetail: React.FC<Props> = ({
-  departmentId,
-  downloadFile,
-}: any) => {
+export const DepartmentCalendarDetail: React.FC<Props> = ({ departmentId, downloadFile }: any) => {
   const localizer = momentLocalizer(moment);
   const [modalDataLeaveDetail, setModalDataLeaveDetail] = useState(false);
   const [formDetail] = Form.useForm();
@@ -51,18 +44,10 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({
             ? `${dataLeaveCalendar.leaveHour / 8} วัน`
             : `${dataLeaveCalendar.leaveHour} ชม.`
           : "ไม่มีข้อมูล",
-        startDate: dataLeaveCalendar.startDate
-          ? dateToStringThNoTime(dataLeaveCalendar.startDate)
-          : "-",
-        endDate: dataLeaveCalendar.endDate
-          ? dateToStringThNoTime(dataLeaveCalendar.endDate)
-          : "-",
-        createAt: dataLeaveCalendar.createdAt
-          ? dateToStringThNoTime(dataLeaveCalendar.createdAt)
-          : "-",
-        approvedDate: dataLeaveCalendar.approvedDate
-          ? dateToStringThNoTime(dataLeaveCalendar.approvedDate)
-          : "-",
+        startDate: dataLeaveCalendar.startDate ? dateToStringThNoTime(dataLeaveCalendar.startDate) : "-",
+        endDate: dataLeaveCalendar.endDate ? dateToStringThNoTime(dataLeaveCalendar.endDate) : "-",
+        createAt: dataLeaveCalendar.createdAt ? dateToStringThNoTime(dataLeaveCalendar.createdAt) : "-",
+        approvedDate: dataLeaveCalendar.approvedDate ? dateToStringThNoTime(dataLeaveCalendar.approvedDate) : "-",
         phoneNumber: dataLeaveCalendar.phoneNumber,
         userApproved: dataLeaveCalendar.userApproved,
         dataLeaveFiles: dataLeaveCalendar.dataLeaveFiles,
@@ -89,12 +74,7 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({
         style={{ height: 500 }}
         onSelectEvent={onSelectEventCalendar}
         eventPropGetter={(event: CustomEvent) => {
-          const backgroundColor =
-            event.status === "approved"
-              ? "DodgerBlue"
-              : event.status === "cancel"
-              ? "silver"
-              : "DodgerBlue";
+          const backgroundColor = event.status === "approved" ? "DodgerBlue" : event.status === "cancel" ? "silver" : "DodgerBlue";
 
           return {
             style: { backgroundColor, color: "#fff", fontSize: 10 },
@@ -102,14 +82,7 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({
         }}
       />
 
-      <Modal
-        forceRender
-        title=""
-        open={modalDataLeaveDetail}
-        footer={false}
-        onCancel={() => onCancelModalDetail()}
-        width={600}
-      >
+      <Modal forceRender title="" open={modalDataLeaveDetail} footer={false} onCancel={() => onCancelModalDetail()} width={600}>
         <div className="w-full justify-center flex mb-2 font-bold text-lg">{`< รายละเอียดการลา >`}</div>
         <Form autoComplete="off" form={formDetail}>
           <div style={{ paddingLeft: "380px", margin: "10px  " }}>
@@ -158,40 +131,28 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({
               <Input disabled className="read-only-input" />
             </Form.Item>
           </div>
-          {Array.isArray(formDetail.getFieldValue("dataLeaveFiles")) &&
-            formDetail.getFieldValue("dataLeaveFiles").length > 0 && (
-              <>
-                {
-                  <div className=" col-span-3 md:col-span-1 ml-5">
-                    <Form.Item
-                      label={`ไฟล์ `}
-                      name={`endDate`}
-                      layout={`horizontal`}
-                    >
-                      {formDetail
-                        .getFieldValue("dataLeaveFiles")
-                        .map((file: any, index: number) => (
-                          <div key={index}>
-                            <Tooltip title={`ดาวน์โหลด`}>
-                              <Button
-                                type="link"
-                                onClick={() =>
-                                  downloadFile(file.id, file.fileName)
-                                }
-                              >
-                                <Space>
-                                  <PaperClipOutlined />
-                                  {file.fileName}
-                                </Space>
-                              </Button>
-                            </Tooltip>
-                          </div>
-                        ))}
-                    </Form.Item>
-                  </div>
-                }
-              </>
-            )}
+          {Array.isArray(formDetail.getFieldValue("dataLeaveFiles")) && formDetail.getFieldValue("dataLeaveFiles").length > 0 && (
+            <>
+              {
+                <div className=" col-span-3 md:col-span-1 ml-5">
+                  <Form.Item label={`ไฟล์ `} name={`endDate`} layout={`horizontal`}>
+                    {formDetail.getFieldValue("dataLeaveFiles").map((file: any, index: number) => (
+                      <div key={index}>
+                        <Tooltip title={`ดาวน์โหลด`}>
+                          <Button type="link" onClick={() => downloadFile(file.id, file.fileName)}>
+                            <Space>
+                              <PaperClipOutlined />
+                              {file.fileName}
+                            </Space>
+                          </Button>
+                        </Tooltip>
+                      </div>
+                    ))}
+                  </Form.Item>
+                </div>
+              }
+            </>
+          )}
           {formDetail.getFieldValue("userApproved") ? (
             <>
               <div className="w-full grid grid-cols-2 gap-y-2 mt-2">

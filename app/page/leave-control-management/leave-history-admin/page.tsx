@@ -65,7 +65,7 @@ export default function Page() {
 
   const onFinishDelete = (type: string, id: number) => {
     Modals.confirm({
-      title: <>{type === "delete" ? "Delete" : "Delete"}</>,
+      title: <>{"Delete"}</>,
       icon: <ExclamationCircleFilled />,
       content: "Are you sure you want to delete this ?",
       okText: "Confirm",
@@ -95,7 +95,6 @@ export default function Page() {
           messages.error("Delete failed");
         }
       },
-
       onCancel() {},
     });
   };

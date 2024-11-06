@@ -1,15 +1,5 @@
 import React, { useState } from "react";
-import {
-  Button,
-  Col,
-  Form,
-  Input,
-  Modal,
-  Row,
-  Space,
-  Table,
-  Tooltip,
-} from "antd";
+import { Button, Col, Form, Input, Modal, Row, Space, Table, Tooltip } from "antd";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { CancelIcon } from "@/components/icon";
 import { PaperClipOutlined } from "@ant-design/icons";
@@ -56,11 +46,7 @@ export const TableDetail: React.FC<props> = ({
       dataIndex: "id",
       title: "Date Leave",
       render: (e: string, row: ITypeDataLeave) => {
-        return row?.startDate && row?.endDate
-          ? `${dateToStringThNoTime(row?.startDate)} ถึง ${dateToStringThNoTime(
-              row?.endDate
-            )}`
-          : "-";
+        return row?.startDate && row?.endDate ? `${dateToStringThNoTime(row?.startDate)} ถึง ${dateToStringThNoTime(row?.endDate)}` : "-";
       },
     },
     {
@@ -93,20 +79,12 @@ export const TableDetail: React.FC<props> = ({
           name: `${row.firstName} ${row.lastName}`,
           createAt: row.createdAt ? dateToStringThNoTime(row.createdAt) : "-",
           detail: row.detail,
-          leaveHour: row.leaveHour
-            ? row.leaveHour % 8 === 0
-              ? `${row.leaveHour / 8} วัน`
-              : `${row.leaveHour} ชม.`
-            : "ไม่มีข้อมูล",
-          startDate: row?.startDate
-            ? dateToStringThNoTime(row?.startDate)
-            : "-",
+          leaveHour: row.leaveHour ? (row.leaveHour % 8 === 0 ? `${row.leaveHour / 8} วัน` : `${row.leaveHour} ชม.`) : "ไม่มีข้อมูล",
+          startDate: row?.startDate ? dateToStringThNoTime(row?.startDate) : "-",
           endDate: row?.endDate ? dateToStringThNoTime(row?.endDate) : "-",
           phoneNumber: row.phoneNumber,
           typeLeave: row.typeName,
-          approvedDate: row.approvedDate
-            ? dateToStringThNoTime(row?.approvedDate)
-            : "-",
+          approvedDate: row.approvedDate ? dateToStringThNoTime(row?.approvedDate) : "-",
           userApproved: row.userApproved,
           dataLeaveFiles: row.dataLeaveFiles,
           ownerId: row.ownerId,
@@ -118,15 +96,12 @@ export const TableDetail: React.FC<props> = ({
               type="primary"
               ghost
               onClick={async () => {
-                const dataLeaveById = await dataleaveservice.getdataLeaveById(
-                  row.id as number
-                );
-                setStatusById(dataLeaveById[0].status);
+                const dataLeaveById = await dataleaveservice.getdataLeaveById(row.id as number);
+                setStatusById(dataLeaveById.status);
                 setDataById(row.id);
                 setOpenModalDetail(true);
                 formdetail.setFieldsValue(base);
-              }}
-            >
+              }}>
               {`รายละเอียด`}
             </Button>
           </>
@@ -137,21 +112,8 @@ export const TableDetail: React.FC<props> = ({
 
   return (
     <div>
-      <Table
-        dataSource={dataLeaveUser}
-        columns={columns}
-        size="small"
-        scroll={{ x: "max-content" }}
-        rowKey={(e: any) => e.id}
-      />
-      <Modal
-        forceRender
-        title=""
-        open={openModalDetail}
-        footer={false}
-        onCancel={() => setOpenModalDetail(false)}
-        width={600}
-      >
+      <Table dataSource={dataLeaveUser} columns={columns} size="small" scroll={{ x: "max-content" }} rowKey={(e: any) => e.id} />
+      <Modal forceRender title="" open={openModalDetail} footer={false} onCancel={() => setOpenModalDetail(false)} width={600}>
         <div className="w-full justify-center flex mb-2 font-bold text-lg">{`< รายละเอียดการลา >`}</div>
         <Form autoComplete="off" form={formdetail}>
           <div>
@@ -203,40 +165,28 @@ export const TableDetail: React.FC<props> = ({
               <Input disabled className="read-only-input" />
             </Form.Item>
           </div>
-          {Array.isArray(formdetail.getFieldValue("dataLeaveFiles")) &&
-            formdetail.getFieldValue("dataLeaveFiles").length > 0 && (
-              <>
-                {
-                  <div className=" col-span-3 md:col-span-1 ml-5">
-                    <Form.Item
-                      label={`ไฟล์ `}
-                      name={`endDate`}
-                      layout={`horizontal`}
-                    >
-                      {formdetail
-                        .getFieldValue("dataLeaveFiles")
-                        .map((file: any, index: number) => (
-                          <div key={index}>
-                            <Tooltip title={`ดาวน์โหลด`}>
-                              <Button
-                                type="link"
-                                onClick={() =>
-                                  downloadFile(file.id, file.fileName)
-                                }
-                              >
-                                <Space>
-                                  <PaperClipOutlined />
-                                  {file.fileName}
-                                </Space>
-                              </Button>
-                            </Tooltip>
-                          </div>
-                        ))}
-                    </Form.Item>
-                  </div>
-                }
-              </>
-            )}
+          {Array.isArray(formdetail.getFieldValue("dataLeaveFiles")) && formdetail.getFieldValue("dataLeaveFiles").length > 0 && (
+            <>
+              {
+                <div className=" col-span-3 md:col-span-1 ml-5">
+                  <Form.Item label={`ไฟล์ `} name={`endDate`} layout={`horizontal`}>
+                    {formdetail.getFieldValue("dataLeaveFiles").map((file: any, index: number) => (
+                      <div key={index}>
+                        <Tooltip title={`ดาวน์โหลด`}>
+                          <Button type="link" onClick={() => downloadFile(file.id, file.fileName)}>
+                            <Space>
+                              <PaperClipOutlined />
+                              {file.fileName}
+                            </Space>
+                          </Button>
+                        </Tooltip>
+                      </div>
+                    ))}
+                  </Form.Item>
+                </div>
+              }
+            </>
+          )}
           {formdetail.getFieldValue("userApproved") ? (
             <>
               <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
@@ -277,11 +227,8 @@ export const TableDetail: React.FC<props> = ({
                   onClick={() => {
                     onFinishUpdate("cancel", dataById ? dataById : 0);
                   }}
-                  disabled={
-                    statusById === "cancel" || statusById === "approved"
-                  }
-                  danger
-                >
+                  disabled={statusById === "cancel" || statusById === "approved"}
+                  danger>
                   {CancelIcon}
                 </Button>
               </Tooltip>

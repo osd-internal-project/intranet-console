@@ -15,7 +15,7 @@ import { CancelIcon } from "@/components/icon";
 import { PaperClipOutlined } from "@ant-design/icons";
 import { ITypeDataLeave } from "../../common";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import DataLeaveService from "../../services/index.service";
+import DataLeaveService from "../../../../services/leave-management.service";
 import { CheckStatusLeaveType } from "@/app/utils/validatefield";
 import { dateFormatTime } from "@/app/utils";
 

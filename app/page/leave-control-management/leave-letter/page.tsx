@@ -1,38 +1,17 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  App,
-  Breadcrumb,
-  Col,
-  Divider,
-  Modal,
-  Row,
-  UploadFile,
-  message,
-  Form,
-} from "antd";
+import { App, Breadcrumb, Col, Divider, Modal, Row, UploadFile, message, Form } from "antd";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
-import {
-  useAxiosIntranet,
-  useAxiosUser,
-} from "@/app/lib/axios/hooks/userAxiosAuth";
-import DataLeaveService from "../services/index.service";
-import {
-  IDataUser,
-  ISelect,
-  ITypeDataLeave,
-  ITypetypeleave,
-  ITypeDataLeaveCreate,
-  UserGroupType,
-  MasterTypeleaveType,
-} from "../common";
+import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
+import DataLeaveService from "../../../services/leave-management.service";
+import { IDataUser, ISelect, ITypeDataLeave, ITypetypeleave, ITypeDataLeaveCreate, UserGroupType, MasterTypeleaveType } from "../common";
 import { CreateOnlineLeave } from "./components/create-online-leave";
 import { TableOnlineDetailLeave } from "./components/table-online-detail-leave";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { RcFile, UploadProps } from "antd/es/upload";
-import { calculateTime } from "../common/function-data-leave";
+import { calculateTime } from "../until/function-data-leave";
 
 export default function Page() {
   const router = useRouter();
@@ -56,9 +35,7 @@ export default function Page() {
   const [createdataleaveForm] = Form.useForm();
   const [messages, messageHeader] = message.useMessage();
   const [Modals, modelsHeader] = Modal.useModal();
-  const [typeLeaveTableAll, setTypeLeaveTableAll] = useState<ITypetypeleave[]>(
-    []
-  );
+  const [typeLeaveTableAll, setTypeLeaveTableAll] = useState<ITypetypeleave[]>([]);
   const [params, setParams] = useState<any>({
     typeId: null,
     startDate: null,
@@ -75,28 +52,19 @@ export default function Page() {
 
   const loadDataTypeLeave = async () => {
     const res = await dataleaveservice.getdataAll();
-    const resTableDeatilTypeLeave =
-      await dataleaveservice.findDetailTypeLeaveByUserId(getUser?.userId);
-    const resTableUserTypeLeave = await dataleaveservice.findUserByUserId(
-      getUser?.userId
-    );
+    const resTableDeatilTypeLeave = await dataleaveservice.findDetailTypeLeaveByUserId(getUser?.userId);
+    const resTableUserTypeLeave = await dataleaveservice.findUserByUserId(getUser?.userId);
     const options = res.map((event: ITypetypeleave) => {
       return { value: event.typeId, label: event.typeName };
     });
     const groupId = session?.user.ownerGroup;
     if (groupId) {
-      const dataGroupDetail = await dataleaveserviceUser.getUserGroupByGroupId(
-        groupId
-      );
-      const dataUserById = await dataleaveserviceUser.getUsersByUserId(
-        dataGroupDetail.headId
-      );
+      const dataGroupDetail = await dataleaveserviceUser.getUserGroupByGroupId(groupId);
+      const dataUserById = await dataleaveserviceUser.getUsersByUserId(dataGroupDetail.headId);
       setUserOwner(dataUserById);
       setGroupDetail(dataGroupDetail);
     }
-    const dataGroupUserId = await dataleaveservice.getdataLeaveByUserId(
-      session?.user.userId
-    );
+    const dataGroupUserId = await dataleaveservice.getdataLeaveByUserId(session?.user.userId);
     setDataGroupUserId(dataGroupUserId);
     setTypeLeaveTable(resTableDeatilTypeLeave);
     setTypeLeaveTableAll(resTableUserTypeLeave.typeLeaveDisabledMap);
@@ -114,9 +82,7 @@ export default function Page() {
   };
 
   const rowClassName = (record: any) => {
-    return typeLeaveTableAll.some((e: any) => record.id === e.masterTypeleaveId)
-      ? "disabled-row"
-      : "";
+    return typeLeaveTableAll.some((e: any) => record.id === e.masterTypeleaveId) ? "disabled-row" : "";
   };
 
   const onChangeParams = (value: any, type: string) => {
@@ -154,16 +120,10 @@ export default function Page() {
   const checklenghtDay = async (value1: any, value2: any) => {
     const startDate = value1 ? dayjs(value1).startOf("day") : null;
     const endDate = value2 ? dayjs(value2).endOf("day") : null;
-    const totalDays =
-      startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : "0";
+    const totalDays = startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : "0";
     setParams((e: any) => ({
       ...e,
-      lengthDate:
-        totalDays !== "0"
-          ? Number(totalDays)
-          : createdataleaveForm.getFieldValue("time_start_check")
-          ? 1
-          : 0,
+      lengthDate: totalDays !== "0" ? Number(totalDays) : createdataleaveForm.getFieldValue("time_start_check") ? 1 : 0,
     }));
   };
 
@@ -172,12 +132,9 @@ export default function Page() {
     const endTime = dayjs(value2, "HH:mm");
     const breakStart = dayjs("12:00", "HH:mm");
     const breakEnd = dayjs("13:00", "HH:mm");
-    let totalHours =
-      startTime && endTime ? endTime.diff(startTime, "hour", true) : 0;
+    let totalHours = startTime && endTime ? endTime.diff(startTime, "hour", true) : 0;
     if (startTime.isBefore(breakEnd) && endTime.isAfter(breakStart)) {
-      const overlapStart = startTime.isBefore(breakStart)
-        ? breakStart
-        : startTime;
+      const overlapStart = startTime.isBefore(breakStart) ? breakStart : startTime;
       const overlapEnd = endTime.isAfter(breakEnd) ? breakEnd : endTime;
       const breakDuration = overlapEnd.diff(overlapStart, "hour", true);
       totalHours -= breakDuration;
@@ -189,36 +146,23 @@ export default function Page() {
     }));
   };
 
-  const handleChangeAttendFiles: UploadProps["onChange"] = async ({
-    fileList: newFileList,
-  }) => {
+  const handleChangeAttendFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
     return setAttendFiles(newFileList);
   };
 
-  const checkDataLeaveConflict = async (
-    userId: string,
-    startDate: Date,
-    endDate: Date
-  ) => {
+  const checkDataLeaveConflict = async (userId: string, startDate: Date, endDate: Date) => {
     const existingDataLeave = await dataleaveservice.getdataLeaveAll();
     return existingDataLeave.some((record: any) => {
       return (
         record.userId === userId &&
-        ((new Date(startDate) >= new Date(record.startDate) &&
-          new Date(startDate) < new Date(record.endDate)) ||
-          (new Date(endDate) > new Date(record.startDate) &&
-            new Date(endDate) <= new Date(record.endDate)) ||
-          (new Date(startDate) <= new Date(record.startDate) &&
-            new Date(endDate) >= new Date(record.endDate)))
+        ((new Date(startDate) >= new Date(record.startDate) && new Date(startDate) < new Date(record.endDate)) ||
+          (new Date(endDate) > new Date(record.startDate) && new Date(endDate) <= new Date(record.endDate)) ||
+          (new Date(startDate) <= new Date(record.startDate) && new Date(endDate) >= new Date(record.endDate)))
       );
     });
   };
 
-  const checkLeaveConflict = async (
-    userId: string,
-    startDate: Date,
-    endDate: Date
-  ) => {
+  const checkLeaveConflict = async (userId: string, startDate: Date, endDate: Date) => {
     const conflict = await checkDataLeaveConflict(userId, startDate, endDate);
     if (conflict) {
       messages.warning("คุณลาในช่วงเวลานี้แล้ว กรุณาเลือกช่วงเวลาใหม่.");
@@ -236,10 +180,7 @@ export default function Page() {
       const user_id = session?.user.typeLeaveDisabledMap[0].userId;
       const existingLeave = await dataleaveservice.getdataTypeLeaveMap(user_id);
       return existingLeave.some((record: any) => {
-        if (
-          record.masterTypeleaveId === undefined ||
-          record.masterTypeleaveId === null
-        ) {
+        if (record.masterTypeleaveId === undefined || record.masterTypeleaveId === null) {
           return false;
         }
         return record.masterTypeleaveId === type_id;
@@ -256,16 +197,10 @@ export default function Page() {
     return false;
   };
 
-  const checkLeaveHour = async (
-    type_id: number,
-    value: any
-  ): Promise<boolean> => {
+  const checkLeaveHour = async (type_id: number, value: any): Promise<boolean> => {
     try {
-      const MasterTypeLeave =
-        await dataleaveservice.getdataMasterTypeLeaveAll();
-      const MasterLeaves = MasterTypeLeave.filter(
-        (e: any) => e.typeId === type_id
-      ).map((e: any) => {
+      const MasterTypeLeave = await dataleaveservice.getdataMasterTypeLeaveAll();
+      const MasterLeaves = MasterTypeLeave.filter((e: any) => e.typeId === type_id).map((e: any) => {
         return {
           typeId: e.typeId,
           limitLeave: e.limitLeaveOne,
@@ -274,19 +209,10 @@ export default function Page() {
       if (MasterLeaves.length > 0) {
         const LimitLeave = MasterLeaves[0].limitLeave;
         let limitDataLeave = LimitLeave * 8;
-        const dataLeaveUserById = await dataleaveservice.getdataLeaveUserById(
-          value.userId
-        );
-        const dataLeaveTypeId = dataLeaveUserById.filter(
-          (typeId: MasterTypeleaveType) => typeId.typeId === type_id
-        );
-        const hasLeaveHour = dataLeaveTypeId.map(
-          (leaveTime: any) => leaveTime.leaveHour
-        );
-        const totalLeaveHours = hasLeaveHour.reduce(
-          (total: number, hour: number) => total + (Number(hour) || 0),
-          0
-        );
+        const dataLeaveUserById = await dataleaveservice.getdataLeaveUserById(value.userId);
+        const dataLeaveTypeId = dataLeaveUserById.filter((typeId: MasterTypeleaveType) => typeId.typeId === type_id);
+        const hasLeaveHour = dataLeaveTypeId.map((leaveTime: any) => leaveTime.leaveHour);
+        const totalLeaveHours = hasLeaveHour.reduce((total: number, hour: number) => total + (Number(hour) || 0), 0);
         if (totalLeaveHours < limitDataLeave) {
           if (typeof value === "object" && value !== null) {
             let totalHourvalue = 0;
@@ -296,14 +222,9 @@ export default function Page() {
                 if (hour.startDate && hour.endDate) {
                   const startDate = new Date(hour.startDate);
                   const endDate = new Date(hour.endDate);
-                  if (
-                    !isNaN(startDate.getTime()) &&
-                    !isNaN(endDate.getTime())
-                  ) {
-                    const differenceInMilliseconds =
-                      endDate.getTime() - startDate.getTime();
-                    const differenceInHours =
-                      differenceInMilliseconds / (1000 * 60 * 60);
+                  if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+                    const differenceInMilliseconds = endDate.getTime() - startDate.getTime();
+                    const differenceInHours = differenceInMilliseconds / (1000 * 60 * 60);
                     totalHourvalue = differenceInHours;
                   } else {
                     messages.error("ตรวจสอบจำนวนเวลาลาไม่สำเร็จ");
@@ -320,11 +241,7 @@ export default function Page() {
             }
             const totalMinute = calculateTime(value.startTime, value.endTime);
             const dataleaveHour = dataLeaveTypeId.map((e: any) => e.leaveHour);
-            const totalLeaveHour = dataleaveHour.reduce(
-              (accumulator: number, currentValue: number) =>
-                accumulator + currentValue,
-              0
-            );
+            const totalLeaveHour = dataleaveHour.reduce((accumulator: number, currentValue: number) => accumulator + currentValue, 0);
             const totalSeconds = totalLeaveHour + totalMinute;
             const totalAll = totalSeconds + hourvalue;
             if (totalAll <= limitDataLeave) {
@@ -340,10 +257,7 @@ export default function Page() {
     }
   };
 
-  const checkDataLeaveHour = async (
-    type_id: number,
-    value: any
-  ): Promise<boolean> => {
+  const checkDataLeaveHour = async (type_id: number, value: any): Promise<boolean> => {
     const conflict = await checkLeaveHour(type_id, value);
     if (conflict) {
       messages.warning({
@@ -373,22 +287,15 @@ export default function Page() {
     const thirtyDayAdvance = new Date(today);
     thirtyDayAdvance.setDate(today.getDate() + 30);
 
-    const startDate = values.startDate
-      ? dayjs(values.startDate).startOf("day")
-      : null;
+    const startDate = values.startDate ? dayjs(values.startDate).startOf("day") : null;
     const endDate = values.endDate ? dayjs(values.endDate).endOf("day") : null;
 
-    const totalDays =
-      startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
-    const selectedOption = getTypeLeaveOption.find(
-      (option) => option.value === values.type_id
-    );
+    const totalDays = startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
+    const selectedOption = getTypeLeaveOption.find((option) => option.value === values.type_id);
 
     const breakStart = dayjs("12:00", "HH:mm");
     const breakEnd = dayjs("13:00", "HH:mm");
-    const startTime = values.startTime
-      ? dayjs(values.startTime, "HH:mm")
-      : null;
+    const startTime = values.startTime ? dayjs(values.startTime, "HH:mm") : null;
     const endTime = values.endTime ? dayjs(values.endTime, "HH:mm") : null;
 
     let adjustedEndTime = endTime;
@@ -397,18 +304,12 @@ export default function Page() {
         if (startTime.isBefore(breakStart) && endTime.isAfter(breakEnd)) {
           adjustedEndTime = endTime.subtract(1, "hour");
         } else if (startTime.isAfter(breakStart)) {
-          adjustedEndTime = endTime.subtract(
-            endTime.diff(breakEnd, "hour", true),
-            "hour"
-          );
+          adjustedEndTime = endTime.subtract(endTime.diff(breakEnd, "hour", true), "hour");
         }
       }
     }
 
-    const totalHours =
-      startTime && adjustedEndTime
-        ? adjustedEndTime.diff(startTime, "hour", true).toFixed(1)
-        : 0;
+    const totalHours = startTime && adjustedEndTime ? adjustedEndTime.diff(startTime, "hour", true).toFixed(1) : 0;
 
     if (new Date(leaveEndDate) < new Date(leaveStartDate)) {
       messages.error("วันที่สิ้นสุดการลาต้องหลังวันที่เริ่มการลา");
@@ -420,8 +321,7 @@ export default function Page() {
 
     try {
       if (type_id) {
-        const hasTypeId =
-          type_id === 1 || type_id === 4 || type_id === 8 || type_id === 13;
+        const hasTypeId = type_id === 1 || type_id === 4 || type_id === 8 || type_id === 13;
         if (hasTypeId) {
           const base: ITypeDataLeave = {
             id: id,
@@ -452,9 +352,7 @@ export default function Page() {
           }
 
           try {
-            if (
-              await checkLeaveConflict(userId, leaveStartDate, leaveEndDate)
-            ) {
+            if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate)) {
               return;
             }
 
@@ -463,10 +361,7 @@ export default function Page() {
               ...(values.time_start_check
                 ? { leaveHour: 8 }
                 : {
-                    leaveHour:
-                      values.startTime && values.endTime
-                        ? Number(totalHours)
-                        : Number(totalDays) * 8,
+                    leaveHour: values.startTime && values.endTime ? Number(totalHours) : Number(totalDays) * 8,
                   }),
             };
             Modals.confirm({
@@ -482,9 +377,7 @@ export default function Page() {
                 },
               },
               onOk: async () => {
-                const result = await dataleaveservice.createDataLeave(
-                  condition
-                );
+                const result = await dataleaveservice.createDataLeave(condition);
 
                 if (result) {
                   if (attendFiles.length > 0) {
@@ -558,18 +451,14 @@ export default function Page() {
           }
 
           try {
-            if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate))
-              return;
+            if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate)) return;
 
             const condition: ITypeDataLeave = {
               ...base,
               ...(values.time_start_check
                 ? { leaveHour: 8 }
                 : {
-                    leaveHour:
-                      values.startTime && values.endTime
-                        ? Number(totalHours)
-                        : Number(totalDays) * 8,
+                    leaveHour: values.startTime && values.endTime ? Number(totalHours) : Number(totalDays) * 8,
                   }),
             };
             Modals.confirm({
@@ -585,9 +474,7 @@ export default function Page() {
                 },
               },
               onOk: async () => {
-                const result = await dataleaveservice.createDataLeave(
-                  condition
-                );
+                const result = await dataleaveservice.createDataLeave(condition);
                 if (result) {
                   if (attendFiles.length > 0) {
                     attendFiles.forEach(async (file) => {
@@ -655,17 +542,13 @@ export default function Page() {
             return;
           }
           try {
-            if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate))
-              return;
+            if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate)) return;
             const condition: ITypeDataLeave = {
               ...base,
               ...(values.time_start_check
                 ? { leaveHour: 8 }
                 : {
-                    leaveHour:
-                      values.startTime && values.endTime
-                        ? Number(totalHours)
-                        : Number(totalDays) * 8,
+                    leaveHour: values.startTime && values.endTime ? Number(totalHours) : Number(totalDays) * 8,
                   }),
             };
             Modals.confirm({
@@ -681,9 +564,7 @@ export default function Page() {
                 },
               },
               onOk: async () => {
-                const result = await dataleaveservice.createDataLeave(
-                  condition
-                );
+                const result = await dataleaveservice.createDataLeave(condition);
                 if (result) {
                   if (attendFiles.length > 0) {
                     attendFiles.forEach(async (file) => {
@@ -753,17 +634,13 @@ export default function Page() {
           }
 
           try {
-            if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate))
-              return;
+            if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate)) return;
             const condition: ITypeDataLeave = {
               ...base,
               ...(values.time_start_check
                 ? { leaveHour: 8 }
                 : {
-                    leaveHour:
-                      values.startTime && values.endTime
-                        ? Number(totalHours)
-                        : Number(totalDays) * 8,
+                    leaveHour: values.startTime && values.endTime ? Number(totalHours) : Number(totalDays) * 8,
                   }),
             };
             Modals.confirm({
@@ -779,9 +656,7 @@ export default function Page() {
                 },
               },
               onOk: async () => {
-                const result = await dataleaveservice.createDataLeave(
-                  condition
-                );
+                const result = await dataleaveservice.createDataLeave(condition);
                 if (result) {
                   if (attendFiles.length > 0) {
                     attendFiles.forEach(async (file) => {
@@ -816,8 +691,7 @@ export default function Page() {
 
     try {
       if (type_id) {
-        const hasTypeId =
-          type_id === 5 || type_id === 9 || type_id === 11 || type_id === 12;
+        const hasTypeId = type_id === 5 || type_id === 9 || type_id === 11 || type_id === 12;
         if (hasTypeId) {
           if (new Date(leaveStartDate) < thirtyDayAdvance) {
             messages.warning("ต้องลาล่วงหน้า 30 วัน");
@@ -852,18 +726,14 @@ export default function Page() {
           }
 
           try {
-            if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate))
-              return;
+            if (await checkLeaveConflict(userId, leaveStartDate, leaveEndDate)) return;
 
             const condition: ITypeDataLeave = {
               ...base,
               ...(values.time_start_check
                 ? { leaveHour: 8 }
                 : {
-                    leaveHour:
-                      values.startTime && values.endTime
-                        ? Number(totalHours)
-                        : Number(totalDays) * 8,
+                    leaveHour: values.startTime && values.endTime ? Number(totalHours) : Number(totalDays) * 8,
                   }),
             };
             Modals.confirm({
@@ -879,9 +749,7 @@ export default function Page() {
                 },
               },
               onOk: async () => {
-                const result = await dataleaveservice.createDataLeave(
-                  condition
-                );
+                const result = await dataleaveservice.createDataLeave(condition);
                 if (result) {
                   if (attendFiles.length > 0) {
                     attendFiles.forEach(async (file) => {
@@ -928,13 +796,13 @@ export default function Page() {
                 title: <span>Home</span>,
               },
               {
-                title: <span>Create Data Leave </span>,
+                title: <span>Leave Letter</span>,
               },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
-          <div className="title-page-font">{`Create Data Leave`}</div>
+          <div className="title-page-font">{`Leave Letter`}</div>
         </Divider>
       </Row>
       <Row gutter={{ xs: 3, sm: 3, md: 3, lg: 3 }}>
@@ -951,9 +819,7 @@ export default function Page() {
               getStartDate={getStartDate}
               getEndDate={getEndDate}
               checkSwitch={checkSwitch}
-              beforeUploadAttendFiles={(e: RcFile) =>
-                beforeUploadAttendFiles(e)
-              }
+              beforeUploadAttendFiles={(e: RcFile) => beforeUploadAttendFiles(e)}
               handleChangeAttendFiles={(e: any) => handleChangeAttendFiles(e)}
               attendFiles={attendFiles}
               getUserOwner={getUserOwner}
@@ -964,12 +830,7 @@ export default function Page() {
           </App>
         </Col>
         <Col span={12}>
-          <TableOnlineDetailLeave
-            typeLeaveTable={typeLeaveTable}
-            params={params}
-            typeLeaveTableAll={typeLeaveTableAll}
-            rowClassName={rowClassName}
-          />
+          <TableOnlineDetailLeave typeLeaveTable={typeLeaveTable} params={params} typeLeaveTableAll={typeLeaveTableAll} rowClassName={rowClassName} />
         </Col>
       </Row>
     </div>

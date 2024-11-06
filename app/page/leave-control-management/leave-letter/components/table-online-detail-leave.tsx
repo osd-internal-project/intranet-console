@@ -10,7 +10,7 @@ import {
 import React, { useState } from "react";
 import dayjs from "dayjs";
 import { ITypetypeleave } from "../../common";
-import "../../common/style.css";
+import "../../styles/style.css";
 export interface props {
   typeLeaveTable: ITypetypeleave[];
   params: any;

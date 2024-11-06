@@ -1,18 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { TableDetail } from "./components/table-detail";
-import {
-  Breadcrumb,
-  Card,
-  Col,
-  Divider,
-  Form,
-  Modal,
-  Row,
-  message,
-} from "antd";
+import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, message } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import DataLeaveService from "../services/index.service";
+import DataLeaveService from "../../../services/leave-management.service";
 import { useSession } from "next-auth/react";
 import { ITypeDataLeave } from "../common";
 import { ExclamationCircleFilled } from "@ant-design/icons";
@@ -42,13 +33,7 @@ export default function Page() {
     Modals.confirm({
       title: <>{type === "cancel" ? "Cancel " : "Approved"}</>,
       icon: <ExclamationCircleFilled />,
-      content: (
-        <>
-          {type === "cancel"
-            ? "Are you sure you want to cancel this ?"
-            : "Are you sure you want to Approved this ?"}
-        </>
-      ),
+      content: <>{type === "cancel" ? "Are you sure you want to cancel this ?" : "Are you sure you want to Approved this ?"}</>,
       okText: "Confirm",
       okButtonProps: {
         type: "primary",
@@ -67,15 +52,9 @@ export default function Page() {
         },
       },
       onOk: async () => {
-        const res = await dataleaveservice.approvedDataLeave(
-          type,
-          id,
-          session?.user
-        );
+        const res = await dataleaveservice.approvedDataLeave(type, id, session?.user);
         if (res) {
-          type === "cancel"
-            ? messages.error("cancel success")
-            : messages.success("approved success");
+          type === "cancel" ? messages.error("cancel success") : messages.success("approved success");
           setLoading(true);
           setOpenModalDetail(false);
         }
@@ -147,13 +126,13 @@ export default function Page() {
                 title: <span>Home</span>,
               },
               {
-                title: <span>Detail Data Leave Admin</span>,
+                title: <span>Leave History (Admin)</span>,
               },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
-          <div className="title-page-font">{`Detail Data Leave Admin`}</div>
+          <div className="title-page-font">{`Leave History ( Admin )`}</div>
         </Divider>
         <div className="w-full">
           <Card>
@@ -162,15 +141,9 @@ export default function Page() {
               setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
               openModalDetail={openModalDetail}
               formdetail={formdetail}
-              onFinishUpdate={(type: string, id: number) =>
-                onFinishUpdate(type, id)
-              }
-              onFinishDelete={(type: string, id: number) =>
-                onFinishDelete(type, id)
-              }
-              downloadFile={(id: number, filename: string) =>
-                downloadFile(id, filename)
-              }
+              onFinishUpdate={(type: string, id: number) => onFinishUpdate(type, id)}
+              onFinishDelete={(type: string, id: number) => onFinishDelete(type, id)}
+              downloadFile={(id: number, filename: string) => downloadFile(id, filename)}
             />
           </Card>
         </div>

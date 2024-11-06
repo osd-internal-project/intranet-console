@@ -21,19 +21,8 @@ export const CreateLeaveManagement: React.FC<props> = ({
 }): React.ReactElement => {
   return (
     <div>
-      <Modal
-        title="Add"
-        open={openModal}
-        onOk={() => setOpenModal(false)}
-        onCancel={() => setOpenModal(false)}
-        footer={false}
-      >
-        <Form
-          layout="vertical"
-          form={formcreate}
-          autoComplete="off"
-          onFinish={onFinishCreate}
-        >
+      <Modal title="Add" open={openModal} onOk={() => setOpenModal(false)} onCancel={() => setOpenModal(false)} footer={false}>
+        <Form layout="vertical" form={formcreate} autoComplete="off" onFinish={onFinishCreate}>
           <Row gutter={[8, 8]}>
             <Col span={24}>
               <Form.Item name="masterTypeleaveId" hidden>
@@ -49,14 +38,8 @@ export const CreateLeaveManagement: React.FC<props> = ({
                     required: true,
                     message: "กรุณาเลือกชื่อพนักงาน",
                   },
-                ]}
-              >
-                <Select
-                  options={getdataUser}
-                  placeholder={`Please Select`}
-                  showSearch
-                  optionFilterProp="label"
-                />
+                ]}>
+                <Select options={getdataUser} placeholder={`Please Select`} showSearch optionFilterProp="label" />
               </Form.Item>
             </Col>
           </Row>
@@ -77,8 +60,7 @@ export const CreateLeaveManagement: React.FC<props> = ({
             formcreate.resetFields();
             setOpenModal(true);
             formcreate.setFieldsValue({ masterTypeleaveId: TypeId });
-          }}
-        >{`Add User Disabled`}</Button>
+          }}>{`Add User`}</Button>
       </div>
     </div>
   );

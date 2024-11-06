@@ -3,13 +3,13 @@ import { Button, Col, Form, Input, Modal, Row, Table, Tooltip } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { deleteIcon, CancelIcon, CheckIcon } from "@/components/icon";
-import ExportDataLeaveAll from "../../common/export-excel";
+import ExportDataLeaveAll from "../../until/export-excel";
 import { ITypeDataLeave } from "../../common";
-import DataLeaveService from "../../services/index.service";
+import DataLeaveService from "../../../../services/leave-management.service";
 import { CheckStatusLeaveType } from "@/app/utils/validatefield";
 import { dateFormatTime } from "@/app/utils";
 import { LeaveDetailForm } from "./leave-detail-form";
-import "../../common/style.css";
+import "../../styles/style.css";
 
 export interface props {
   dataLeaveUser: ITypeDataLeave[];

@@ -1,7 +1,7 @@
 import React from "react";
 import * as XLSX from "xlsx";
 import { Button } from "antd";
-import { ITypeDataLeave } from "./../common/index";
+import { ITypeDataLeave } from "../common/index";
 import { ExcelIcon } from "@/components/icon";
 
 interface ExportDataLeaveProps {

@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import { Button, Col, Form, Input, Modal, Row, Space, Table, Tooltip } from "antd";
+import { Button, Table } from "antd";
 import { dateToStringThNoTime } from "@/app/utils/format";
-import { CancelIcon } from "@/components/icon";
-import { PaperClipOutlined } from "@ant-design/icons";
 import { ITypeDataLeave } from "../../common";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../../../../services/leave-management.service";
 import { CheckStatusLeaveType } from "@/app/utils/validatefield";
 import { dateFormatTime } from "@/app/utils";
+import { LeaveHistoryDetail } from "./leave-history-detail";
 
 export interface props {
   dataLeaveUser: ITypeDataLeave[];
@@ -30,6 +29,34 @@ export const TableDetail: React.FC<props> = ({
   const dataleaveservice = DataLeaveService(Auth);
   const [statusById, setStatusById] = useState<any | null>(null);
   const [dataById, setDataById] = useState<number | undefined>(undefined);
+
+  const fecthDataDetail = async (record: ITypeDataLeave) => {
+    try {
+      const base = {
+        id: record.id,
+        name: `${record.firstName} ${record.lastName}`,
+        createAt: record.createdAt ? dateToStringThNoTime(record.createdAt) : "-",
+        detail: record.detail,
+        leaveHour: record.leaveHour ? (record.leaveHour % 8 === 0 ? `${record.leaveHour / 8} วัน` : `${record.leaveHour} ชม.`) : "ไม่มีข้อมูล",
+        startDate: record?.startDate ? dateToStringThNoTime(record?.startDate) : "-",
+        endDate: record?.endDate ? dateToStringThNoTime(record?.endDate) : "-",
+        phoneNumber: record.phoneNumber,
+        typeLeave: record.typeName,
+        approvedDate: record.approvedDate ? dateToStringThNoTime(record?.approvedDate) : "-",
+        userApproved: record.userApproved,
+        dataLeaveFiles: record.dataLeaveFiles,
+        ownerId: record.ownerId,
+        ownerName: record.ownerName,
+      };
+      const dataLeaveById = await dataleaveservice.getdataLeaveById(record.id as number);
+      setStatusById(dataLeaveById.status);
+      setDataById(record.id);
+      setOpenModalDetail(true);
+      formdetail.setFieldsValue(base);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const columns: any = [
     {
@@ -74,34 +101,9 @@ export const TableDetail: React.FC<props> = ({
       title: "Active",
       align: "center",
       render: (e: string, row: ITypeDataLeave, index: number) => {
-        const base = {
-          id: row.id,
-          name: `${row.firstName} ${row.lastName}`,
-          createAt: row.createdAt ? dateToStringThNoTime(row.createdAt) : "-",
-          detail: row.detail,
-          leaveHour: row.leaveHour ? (row.leaveHour % 8 === 0 ? `${row.leaveHour / 8} วัน` : `${row.leaveHour} ชม.`) : "ไม่มีข้อมูล",
-          startDate: row?.startDate ? dateToStringThNoTime(row?.startDate) : "-",
-          endDate: row?.endDate ? dateToStringThNoTime(row?.endDate) : "-",
-          phoneNumber: row.phoneNumber,
-          typeLeave: row.typeName,
-          approvedDate: row.approvedDate ? dateToStringThNoTime(row?.approvedDate) : "-",
-          userApproved: row.userApproved,
-          dataLeaveFiles: row.dataLeaveFiles,
-          ownerId: row.ownerId,
-          ownerName: row.ownerName,
-        };
         return (
           <>
-            <Button
-              type="primary"
-              ghost
-              onClick={async () => {
-                const dataLeaveById = await dataleaveservice.getdataLeaveById(row.id as number);
-                setStatusById(dataLeaveById.status);
-                setDataById(row.id);
-                setOpenModalDetail(true);
-                formdetail.setFieldsValue(base);
-              }}>
+            <Button type="primary" ghost onClick={() => fecthDataDetail(row)}>
               {`รายละเอียด`}
             </Button>
           </>
@@ -113,129 +115,17 @@ export const TableDetail: React.FC<props> = ({
   return (
     <div>
       <Table dataSource={dataLeaveUser} columns={columns} size="small" scroll={{ x: "max-content" }} rowKey={(e: any) => e.id} />
-      <Modal forceRender title="" open={openModalDetail} footer={false} onCancel={() => setOpenModalDetail(false)} width={600}>
-        <div className="w-full justify-center flex mb-2 font-bold text-lg">{`< รายละเอียดการลา >`}</div>
-        <Form autoComplete="off" form={formdetail}>
-          <div>
-            <p />
-          </div>
-          <div style={{ paddingLeft: "380px", margin: "10px  " }}>
-            <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`วันที่ :`} name={`createAt`}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-          </div>
-          <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`เรียนถึง :`} name={`ownerName`}>
-              <Input disabled className="read-only-input" />
-            </Form.Item>
-          </div>
-          <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`เนื่องจาก :`} name={`detail`}>
-              <Input disabled className="read-only-input" />
-            </Form.Item>
-          </div>
-          <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
-            <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`จึงขอ :`} name={`typeLeave`}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`เป็นเวลา :`} name={`leaveHour`}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-          </div>
-          <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
-            <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`ตั้งแต่วันที่ :`} name={`startDate`}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`ถึงวันที่ :`} name={`endDate`}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-          </div>
-          <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`เบอร์ติดต่อระหว่างลา :`} name={`phoneNumber`}>
-              <Input disabled className="read-only-input" />
-            </Form.Item>
-          </div>
-          {Array.isArray(formdetail.getFieldValue("dataLeaveFiles")) && formdetail.getFieldValue("dataLeaveFiles").length > 0 && (
-            <>
-              {
-                <div className=" col-span-3 md:col-span-1 ml-5">
-                  <Form.Item label={`ไฟล์ `} name={`endDate`} layout={`horizontal`}>
-                    {formdetail.getFieldValue("dataLeaveFiles").map((file: any, index: number) => (
-                      <div key={index}>
-                        <Tooltip title={`ดาวน์โหลด`}>
-                          <Button type="link" onClick={() => downloadFile(file.id, file.fileName)}>
-                            <Space>
-                              <PaperClipOutlined />
-                              {file.fileName}
-                            </Space>
-                          </Button>
-                        </Tooltip>
-                      </div>
-                    ))}
-                  </Form.Item>
-                </div>
-              }
-            </>
-          )}
-          {formdetail.getFieldValue("userApproved") ? (
-            <>
-              <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
-                <div className=" col-span-3 md:col-span-1 ml-5">
-                  <Form.Item label={`ผู้อนุมัติ :`} name={`userApproved`}>
-                    <Input disabled className="read-only-input" />
-                  </Form.Item>
-                </div>
-                <div className=" col-span-3 md:col-span-1 ml-5">
-                  <Form.Item label={`วันที่อนุมัติ :`} name={`approvedDate`}>
-                    <Input disabled className="read-only-input" />
-                  </Form.Item>
-                </div>
-              </div>
-            </>
-          ) : null}
-          <Form.Item hidden name={`id`}>
-            <Input />
-          </Form.Item>
-          <Form.Item hidden name={`approvedDate`}>
-            <Input />
-          </Form.Item>
-          <Form.Item hidden name={`status`}>
-            <Input />
-          </Form.Item>
-        </Form>
-        <>
-          <Row gutter={[8, 8]} className="flex justify-center">
-            <Col>
-              <Tooltip title={`Cancel`}>
-                <Button
-                  size="small"
-                  type="primary"
-                  style={{
-                    width: "60px",
-                    height: "30px",
-                  }}
-                  onClick={() => {
-                    onFinishUpdate("cancel", dataById ? dataById : 0);
-                  }}
-                  disabled={statusById === "cancel" || statusById === "approved"}
-                  danger>
-                  {CancelIcon}
-                </Button>
-              </Tooltip>
-            </Col>
-          </Row>
-        </>
-      </Modal>
+      {openModalDetail ? (
+        <LeaveHistoryDetail
+          openModalDetail={openModalDetail}
+          setOpenModalDetail={setOpenModalDetail}
+          formdetail={formdetail}
+          downloadFile={downloadFile}
+          onFinishUpdate={onFinishUpdate}
+          dataById={dataById}
+          statusById={statusById}
+        />
+      ) : null}
     </div>
   );
 };

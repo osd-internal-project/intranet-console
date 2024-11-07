@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Breadcrumb, Card, Col, Tabs, Divider, Form, Modal, Row, TabsProps, message } from "antd";
 import { TableDetail } from "./components/table-detail";
-import { DepartmentCalendarDetail } from "./components/department-calendar-details";
+import { DepartmentCalendarDetail } from "./components/leave-history-calendar";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../../../services/leave-management.service";
 import { useSession } from "next-auth/react";

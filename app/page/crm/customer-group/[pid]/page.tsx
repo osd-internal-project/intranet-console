@@ -64,6 +64,7 @@ import { ITCustomerProduct } from "@/app/common/product";
 import { ITProject } from "@/app/common/project";
 import CusomterEditForm from "./components/customer-edit-form";
 import BranchEdit from "./components/branch-edit";
+import CustomerGroupSearch from "./components/customer-group-search";
 const { useForm } = Form;
 export default function ProductsAddPage() {
   const { data: session } = useSession();
@@ -95,11 +96,11 @@ export default function ProductsAddPage() {
   const customerProductServices = CustomerProductServices(crmAuth);
   const customerProjectServices = CustomerProjectServices(crmAuth);
   const customerGroupId = String(pid);
-  const router = useRouter();
+  // const router = useRouter();
   const [descriptionCustomerForm] = useForm();
   const [customerBrahEditForm] = useForm();
   const [details, setDetails] = useState<ITCustomerGroup>();
-
+  const [allSearch, setAllSearch] = useState<object>({});
   const [loading, setloading] = useState<boolean>(true);
   const [activeTabsKey, setActiveTabKey] = useState<string>("products");
   const [openCustomerCreate, setOpenCustomerCreate] = useState<boolean>(false);
@@ -133,19 +134,30 @@ export default function ProductsAddPage() {
     fetchData();
     fetchConfigs();
   }, []);
+
   useEffect(() => {
     fetchData();
   }, [activeTabsKey, customerGroupId]);
-
+  useEffect(() => {
+    fetchDataOnSearch();
+  }, [allSearch]);
   const fetchData = async () => {
     setloading(true);
-    console.log(1);
     const data = await customerGroupServices.findDetailsById(
       Number(customerGroupId)
     );
     if (data) {
       setDetails(data);
     }
+    if (activeTabsKey === "customers") {
+      await fetchDataCustomers();
+    } else if (activeTabsKey === "products") {
+      await fetchDataProductsByCustomerGroup();
+    }
+    setloading(false);
+  };
+  const fetchDataOnSearch = async () => {
+    setloading(true);
     if (activeTabsKey === "customers") {
       await fetchDataCustomers();
     } else if (activeTabsKey === "products") {
@@ -172,9 +184,12 @@ export default function ProductsAddPage() {
     setloading(true);
     const res = await customerServices.findCustomerListByCustomerGroup(
       Number(customerGroupId),
-      { userid: session?.user.userId ? session.user.userId : null }
+      {
+        ...allSearch,
+        userid: session?.user.userId ? session.user.userId : null,
+      }
     );
-    if (res) {
+    if (res.data) {
       setCustomerList(res.data);
     }
     setloading(false);
@@ -182,7 +197,7 @@ export default function ProductsAddPage() {
   const fetchDataProductsByCustomerGroup = async () => {
     const data = await customerProductServices.findManyByCustomerGroup(
       Number(customerGroupId),
-      {}
+      allSearch
     );
     if (data) {
       setCustomerProductsByCustomerGroup(data);
@@ -567,6 +582,16 @@ export default function ProductsAddPage() {
         <Col span={24}>
           <div className="grid grid-cols-1 ">
             {details && <CustomerGroupDetails details={details} />}
+          </div>
+        </Col>
+        <Col span={24}>
+          <div className="grid grid-cols-1 ">
+            <CustomerGroupSearch
+              onSearch={(search: object) => {
+                console.log(search);
+                setAllSearch(search);
+              }}
+            />
           </div>
         </Col>
         <Col span={24}>

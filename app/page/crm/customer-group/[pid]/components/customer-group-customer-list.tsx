@@ -221,24 +221,6 @@ const CustomerGroupCustomerList: React.FC<props> = ({
         )}
       </div>
       <div>
-        <Form layout="vertical" size="small">
-          <div className=" grid grid-cols-4 gap-2">
-            <Form.Item name={"referenceCode"} label={"Reference Code"}>
-              <Input />
-            </Form.Item>
-            <Form.Item name={"name"} label={"Name"}>
-              <Input />
-            </Form.Item>
-            <Form.Item name={"status"} label={"Status"}>
-              <Select />
-            </Form.Item>
-          </div>
-          <div className=" flex justify-end">
-            <Button type="primary" size="small">
-              Search
-            </Button>
-          </div>
-        </Form>
         <div className=" mt-2 p-2 bg-blue-100" style={{ borderRadius: 5 }}>
           <div
             style={{ maxHeight: "500px" }}

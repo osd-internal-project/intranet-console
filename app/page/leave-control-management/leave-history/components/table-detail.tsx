@@ -1,0 +1,131 @@
+import React, { useState } from "react";
+import { Button, Table } from "antd";
+import { dateToStringThNoTime } from "@/app/utils/format";
+import { ITypeDataLeave } from "../../common";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import DataLeaveService from "../../../../services/leave-management.service";
+import { CheckStatusLeaveType } from "@/app/utils/validatefield";
+import { dateFormatTime } from "@/app/utils";
+import { LeaveHistoryDetail } from "./leave-history-detail";
+
+export interface props {
+  dataLeaveUser: ITypeDataLeave[];
+  setOpenModalDetail: (e: boolean) => void;
+  openModalDetail: boolean;
+  formdetail: any;
+  onFinishUpdate: (type: string, id: number) => void;
+  downloadFile: (id: number, filename: string) => void;
+}
+
+export const TableDetail: React.FC<props> = ({
+  dataLeaveUser,
+  setOpenModalDetail,
+  openModalDetail,
+  formdetail,
+  onFinishUpdate,
+  downloadFile,
+}): React.ReactElement => {
+  const Auth = useAxiosIntranet();
+  const dataleaveservice = DataLeaveService(Auth);
+  const [statusById, setStatusById] = useState<any | null>(null);
+  const [dataById, setDataById] = useState<number | undefined>(undefined);
+
+  const fecthDataDetail = async (record: ITypeDataLeave) => {
+    try {
+      const base = {
+        id: record.id,
+        name: `${record.firstName} ${record.lastName}`,
+        createAt: record.createdAt ? dateToStringThNoTime(record.createdAt) : "-",
+        detail: record.detail,
+        leaveHour: record.leaveHour ? (record.leaveHour % 8 === 0 ? `${record.leaveHour / 8} วัน` : `${record.leaveHour} ชม.`) : "ไม่มีข้อมูล",
+        startDate: record?.startDate ? dateToStringThNoTime(record?.startDate) : "-",
+        endDate: record?.endDate ? dateToStringThNoTime(record?.endDate) : "-",
+        phoneNumber: record.phoneNumber,
+        typeLeave: record.typeName,
+        approvedDate: record.approvedDate ? dateToStringThNoTime(record?.approvedDate) : "-",
+        userApproved: record.userApproved,
+        dataLeaveFiles: record.dataLeaveFiles,
+        ownerId: record.ownerId,
+        ownerName: record.ownerName,
+      };
+      const dataLeaveById = await dataleaveservice.getdataLeaveById(record.id as number);
+      setStatusById(dataLeaveById.status);
+      setDataById(record.id);
+      setOpenModalDetail(true);
+      formdetail.setFieldsValue(base);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const columns: any = [
+    {
+      key: "id",
+      dataIndex: "id",
+      title: "Full Name",
+      render: (e: string, row: ITypeDataLeave) => {
+        return <p>{`${row.firstName} ${row.lastName}`}</p>;
+      },
+    },
+    { key: "typeName", dataIndex: "typeName", title: "Type Leave" },
+    {
+      key: "id",
+      dataIndex: "id",
+      title: "Date Leave",
+      render: (e: string, row: ITypeDataLeave) => {
+        return row?.startDate && row?.endDate ? `${dateToStringThNoTime(row?.startDate)} ถึง ${dateToStringThNoTime(row?.endDate)}` : "-";
+      },
+    },
+    {
+      key: "status",
+      dataIndex: "status",
+      title: "Status",
+      align: "center",
+      render: (status: string) => CheckStatusLeaveType(status),
+    },
+    {
+      key: "userApproved",
+      dataIndex: "userApproved",
+      title: "Approved By",
+      render: (text: string) => (text ? text : "-"),
+    },
+    {
+      key: "approvedDate",
+      dataIndex: "approvedDate",
+      title: "Approved Date",
+      render: (value: any) => dateFormatTime(value),
+    },
+    {
+      key: "id",
+      dataIndex: "id",
+      title: "Active",
+      align: "center",
+      render: (e: string, row: ITypeDataLeave, index: number) => {
+        return (
+          <>
+            <Button type="primary" ghost onClick={() => fecthDataDetail(row)}>
+              {`รายละเอียด`}
+            </Button>
+          </>
+        );
+      },
+    },
+  ];
+
+  return (
+    <div>
+      <Table dataSource={dataLeaveUser} columns={columns} size="small" scroll={{ x: "max-content" }} rowKey={(e: any) => e.id} />
+      {openModalDetail ? (
+        <LeaveHistoryDetail
+          openModalDetail={openModalDetail}
+          setOpenModalDetail={setOpenModalDetail}
+          formdetail={formdetail}
+          downloadFile={downloadFile}
+          onFinishUpdate={onFinishUpdate}
+          dataById={dataById}
+          statusById={statusById}
+        />
+      ) : null}
+    </div>
+  );
+};

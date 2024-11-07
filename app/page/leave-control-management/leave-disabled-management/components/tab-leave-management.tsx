@@ -1,25 +1,24 @@
 "use-client";
 import React from "react";
-import { Button, Table } from "antd";
+import { Button, Empty, Skeleton, Table } from "antd";
 import { ITpyeUser } from "../../common";
 import { deleteIcon } from "@/components/icon";
-import "../../common/style.css";
+import "../../styles/style.css";
 
 export interface props {
   getdataUserByTypeId: ITpyeUser[];
   onFinishDel: (event: number) => void;
+  getLoading: boolean;
 }
 
-export const TabeLeavManagement: React.FC<props> = ({
-  getdataUserByTypeId,
-  onFinishDel,
-}): React.ReactElement => {
+export const TabeLeavManagement: React.FC<props> = ({ getdataUserByTypeId, onFinishDel, getLoading }): React.ReactElement => {
   const columns: any = [
     {
       key: "id",
       dataIndex: "id",
       title: "No",
       align: "center",
+      width: "100px",
       render: (values: string, row: any, index: number) => index + 1,
     },
     {
@@ -34,6 +33,7 @@ export const TabeLeavManagement: React.FC<props> = ({
       key: "id",
       title: "Active",
       align: "center",
+      width: "100px",
       render: (row: any, event: number, index: number) => {
         return (
           <>
@@ -43,8 +43,7 @@ export const TabeLeavManagement: React.FC<props> = ({
                 danger
                 onClick={() => {
                   onFinishDel(row.id);
-                }}
-              >
+                }}>
                 {deleteIcon}
               </Button>
             </div>
@@ -61,6 +60,9 @@ export const TabeLeavManagement: React.FC<props> = ({
         columns={columns}
         scroll={{ x: "max-content" }}
         rowKey={(e: any) => e.id}
+        locale={{
+          emptyText: getLoading ? <Skeleton active={true} /> : <Empty />,
+        }}
       />
     </div>
   );

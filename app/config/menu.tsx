@@ -1,26 +1,10 @@
-import {
-  LogoutOutlined,
-  UserOutlined,
-  HomeOutlined,
-  BarChartOutlined,
-  BookOutlined,
-  MailOutlined,
-} from "@ant-design/icons";
+import { LogoutOutlined, UserOutlined, HomeOutlined, BarChartOutlined, BookOutlined, MailOutlined } from "@ant-design/icons";
 import { Icon } from "@iconify/react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
 import React from "react";
 import { signOut } from "next-auth/react";
-import {
-  gridIcon,
-  IconDataLeave,
-  bookingIcon,
-  maintenanceIcon,
-  organizeChart,
-  stockIcon,
-  contactListIcon,
-  macarIcon,
-} from "@/components/icon";
+import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, organizeChart, stockIcon, contactListIcon, macarIcon } from "@/components/icon";
 
 type MenuItem = Required<MenuProps>["items"][number];
 const MenuNav: MenuProps["items"] = [
@@ -36,8 +20,7 @@ const MenuNav: MenuProps["items"] = [
         href={"#"}
         onClick={async () => {
           signOut({ callbackUrl: "/signin" });
-        }}
-      >
+        }}>
         Sign Out
       </Link>
     ),
@@ -70,50 +53,50 @@ export const MenuSider: MenuItem[] = [
       },
     ],
   },
-  {
-    key: "stock",
-    icon: stockIcon,
-    label: "Stock",
-    rule: "s-s",
-    children: [
-      {
-        key: `order-management`,
-        label: `Order Management`,
-        rule: "sm-order-s",
-      },
-      {
-        key: `inventory`,
-        label: `Inventory`,
-        rule: "sm-inventory-s",
-      },
+  // {
+  //   key: "stock",
+  //   icon: stockIcon,
+  //   label: "Stock",
+  //   rule: "s-s",
+  //   children: [
+  //     {
+  //       key: `order-management`,
+  //       label: `Order Management`,
+  //       rule: "sm-order-s",
+  //     },
+  //     {
+  //       key: `inventory`,
+  //       label: `Inventory`,
+  //       rule: "sm-inventory-s",
+  //     },
 
-      {
-        key: `product-list`,
-        label: `Product List`,
-        rule: "sm-productlist-s",
-      },
-      {
-        key: `report-withdraw-ranking`,
-        label: `10 อันดับการเบิกจ่ายที่มากที่สุด`,
-        rule: "sm-re-wr-h",
-      },
-      {
-        key: `report-transaction`,
-        label: `การรับเข้าเบิกจ่าย`,
-        rule: "sm-re-tr-h",
-      },
-      {
-        key: `report-expired`,
-        label: `รายงานการหมดอายุ`,
-        rule: "sm-re-ex-h",
-      },
-      {
-        key: `stock-management`,
-        label: `Stock Management`,
-        rule: "sm-s",
-      },
-    ],
-  },
+  //     {
+  //       key: `product-list`,
+  //       label: `Product List`,
+  //       rule: "sm-productlist-s",
+  //     },
+  //     {
+  //       key: `report-withdraw-ranking`,
+  //       label: `10 อันดับการเบิกจ่ายที่มากที่สุด`,
+  //       rule: "sm-re-wr-h",
+  //     },
+  //     {
+  //       key: `report-transaction`,
+  //       label: `การรับเข้าเบิกจ่าย`,
+  //       rule: "sm-re-tr-h",
+  //     },
+  //     {
+  //       key: `report-expired`,
+  //       label: `รายงานการหมดอายุ`,
+  //       rule: "sm-re-ex-h",
+  //     },
+  //     {
+  //       key: `stock-management`,
+  //       label: `Stock Management`,
+  //       rule: "sm-s",
+  //     },
+  //   ],
+  // },
   {
     key: "housekeeper",
     icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
@@ -133,29 +116,29 @@ export const MenuSider: MenuItem[] = [
     ],
   },
   {
-    key: "data-leave",
+    key: "leave-control-management",
     icon: IconDataLeave,
-    label: `Data Leave`,
+    label: `Leave Control Management`,
     rule: "dl-s",
     children: [
       {
-        key: `data-leave/online-leave`,
-        label: `Create Data Leave`,
+        key: `leave-control-management/leave-letter`,
+        label: `Leave Letter`,
         rule: "dl-a",
       },
       {
-        key: `data-leave/detail-online-leave`,
-        label: `Detail Data Leave User`,
+        key: `leave-control-management/leave-history`,
+        label: `Leave history`,
         rule: "dl-dt-u",
       },
       {
-        key: `data-leave/detail-online-leave-admin`,
-        label: `Detail Data Leave Admin`,
+        key: `leave-control-management/leave-history-admin`,
+        label: `Leave history (admin)`,
         rule: "dl-dt-a",
       },
       {
-        key: `data-leave/leave-management`,
-        label: `Leave Management`,
+        key: `leave-control-management/leave-disabled-management`,
+        label: `Leave Disabled Management`,
         rule: "dl-dis",
       },
     ],

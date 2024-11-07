@@ -1,7 +1,7 @@
 import React from "react";
 import * as XLSX from "xlsx";
 import { Button } from "antd";
-import { ITypeDataLeave } from "./../common/index";
+import { ITypeDataLeave } from "../common/index";
 import { ExcelIcon } from "@/components/icon";
 
 interface ExportDataLeaveProps {
@@ -62,19 +62,14 @@ const ExportDataLeaveAll: React.FC<ExportDataLeaveProps> = ({ data }) => {
 
   return (
     <Button
-      type="text"
+      type="default"
       onClick={handleOnExport}
       style={{
         marginRight: "8px",
         marginTop: "10px",
         marginBottom: "10px",
-        border: "none",
-        backgroundColor: "transparent",
-        color: "inherit",
-        padding: 0,
       }}
-      icon={<ExcelIcon width="1.5rem" height="1.5rem" />}
-    >
+      icon={<ExcelIcon width="1.5rem" height="1.5rem" />}>
       Export Excel
     </Button>
   );

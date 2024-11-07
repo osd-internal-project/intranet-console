@@ -14,7 +14,7 @@ import {
 import dayjs, { Dayjs } from "dayjs";
 import { UploadOutlined } from "@ant-design/icons";
 import { IDataUser, ISelect, ITypeDataLeaveCreate } from "../../common";
-import { timeOptions } from "../../common/function-data-leave";
+import { timeOptions } from "../../until/function-data-leave";
 
 interface props {
   createdataleaveForm: FormInstance<ITypeDataLeaveCreate>;

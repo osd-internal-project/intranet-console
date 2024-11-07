@@ -1,11 +1,7 @@
 import { AxiosInstance } from "axios";
-import {
-  Filtertypeleave,
-  ITpyeUser,
-  ITypeDataLeave,
-  ITypeDataLeaveCreate,
-} from "../common";
-const DataLeaveService = (axiosInstance: AxiosInstance) => {
+import { Filtertypeleave, ITpyeUser, ITypeDataLeave, ITypeDataLeaveCreate } from "../page/leave-control-management/common";
+
+const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
   const baseUrl = "/master-type-leave";
   const baseUrlTypeleave = "/master-type-leave";
   const baseUrlTypeleaveMap = "/tpye-data-leave-map";
@@ -13,7 +9,6 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
   const baseUrlDataLeave = "/data-leave";
   const baseUrlDataLeaveFile = "/data-leave-file";
   const basrUrIDepartment = "/department";
-  const basrUrIUserGroup = "/user-group";
 
   return {
     getdataAll: async () => {
@@ -81,13 +76,8 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
         });
     },
     getdataLeaveById: async (id: number) => {
-      const condition = {
-        where: { id: id },
-      };
       return await axiosInstance
-        .post(`${baseUrlDataLeave}/condition`, {
-          condition: condition,
-        })
+        .get(`${baseUrlDataLeave}/${id}`)
         .then((res) => {
           return res.data;
         })
@@ -414,14 +404,6 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           id: true,
           groupId: true,
           groupName: true,
-          // createdAt: true,
-          // parentGroupId: true,
-          // organizedGroupId: true,
-          // description: true,
-          // userGroupUserRoleMap: true,
-          // engineerUserGroupId: true,
-          // engineerUsersId: true,
-          // user: true,
           headId: true,
         },
       };
@@ -450,11 +432,6 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
           lastNameEn: true,
           email: true,
           phoneNumber: true,
-          // activeStatus: true,
-          // clientId: true,
-          // createdAt: true,
-          // updatedAt: true,
-          // positionId: true,
           ownerGroupId: true,
         },
       };
@@ -482,4 +459,4 @@ const DataLeaveService = (axiosInstance: AxiosInstance) => {
     },
   };
 };
-export default DataLeaveService;
+export default LeaveManagementServices;

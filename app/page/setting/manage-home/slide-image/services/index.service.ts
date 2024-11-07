@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { SlideImageType } from "../slide-image/common";
+// import { SlideImageType } from "../slide-image/common";
 
 const ManageHomeService = (axiosInstance: AxiosInstance) => {
   const baseUrlSlideImage = "/slide-image";

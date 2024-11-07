@@ -26,12 +26,9 @@ export const calculateTime = (valueStartTime: any, valueEndTime: any) => {
   const endTime = dayjs(valueEndTime, "HH:mm");
   const breakStart = dayjs("12:00", "HH:mm");
   const breakEnd = dayjs("13:00", "HH:mm");
-  let totalHours =
-    startTime && endTime ? endTime.diff(startTime, "hour", true) : 0;
+  let totalHours = startTime && endTime ? endTime.diff(startTime, "hour", true) : 0;
   if (startTime.isBefore(breakEnd) && endTime.isAfter(breakStart)) {
-    const overlapStart = startTime.isBefore(breakStart)
-      ? breakStart
-      : startTime;
+    const overlapStart = startTime.isBefore(breakStart) ? breakStart : startTime;
     const overlapEnd = endTime.isAfter(breakEnd) ? breakEnd : endTime;
     const breakDuration = overlapEnd.diff(overlapStart, "hour", true);
     totalHours -= breakDuration;

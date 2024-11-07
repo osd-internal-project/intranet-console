@@ -56,7 +56,8 @@ export interface TMaServices {
   findProjectsByProductIdAndParentId: (
     productId: string,
     parentId: string,
-    type: string
+    type: string,
+    search: any
   ) => Promise<ITProject[]>;
   createProject: (form: ITProjectCreateForm) => Promise<ITProject>;
   createProjectTask: (
@@ -265,10 +266,16 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
           return;
         });
     },
-    findProjectsByProductIdAndParentId: async (productId, parentId, type) => {
+    findProjectsByProductIdAndParentId: async (
+      productId,
+      parentId,
+      type,
+      search
+    ) => {
       return await axiosInstance
         .get(
-          `${customerProjectUrl}/find-by-productid-and-parent?productid=${productId}&parentid=${parentId}&type=${type}`
+          `${customerProjectUrl}/find-by-productid-and-parent?productid=${productId}&parentid=${parentId}&type=${type}`,
+          { params: { search: search } }
         )
         .then((res) => {
           return res.data;

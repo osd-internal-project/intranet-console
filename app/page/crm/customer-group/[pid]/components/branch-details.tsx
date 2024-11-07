@@ -22,30 +22,66 @@ import {
   Tag,
 } from "antd";
 import type { Dayjs } from "dayjs";
-import { ITBranch, ITCustomer } from "@/app/common/customer";
-import CustomerBranchList from "./customer-branch-list";
+import {
+  ITBranch,
+  ITBranchAddressForm,
+  ITBranchContactForm,
+  ITBranchDetail,
+  ITCustomer,
+} from "@/app/common/customer";
 import BranchProductList from "./branch-product-list";
 import { ITCustomerProduct } from "@/app/common/product";
 import { ITProject } from "@/app/common/project";
+import BranchContact from "./branch-contact";
+import BranchAddress from "./branch-address";
 const { RangePicker } = DatePicker;
 export interface props {
-  details: ITBranch;
+  rules: any;
+  details: ITBranchDetail;
   customerProductsByBranch: ITCustomerProduct[];
   projectDatas: ITProject[];
-  getCustomerProductsByBranch: (branchId: number) => void;
+  getCustomerProductsByBranch: (branchId: number, search: any) => void;
   getProjectDataTable: (
     productId: string,
     parentId: string,
-    type: string
+    type: string,
+    search: any
+  ) => void;
+  customerId: number;
+  onSaveBranchAddress: (
+    branchId: number,
+    form: ITBranchAddressForm,
+    customerId: number
+  ) => void;
+  onDeleteCustomerBranchAddress: (
+    branchId: number,
+    addressId: number,
+    customerId: number
+  ) => void;
+  onSaveBranchContact: (
+    branchId: number,
+    form: ITBranchContactForm,
+    customerId: number
+  ) => void;
+  onDeleteCustomerBranchContact: (
+    branchId: number,
+    contactId: number,
+    customerId: number
   ) => void;
 }
 
 const BranchDetails: React.FC<props> = ({
+  rules,
   details,
   customerProductsByBranch,
   projectDatas,
+  customerId,
   getCustomerProductsByBranch,
   getProjectDataTable,
+  onSaveBranchAddress,
+  onDeleteCustomerBranchAddress,
+  onSaveBranchContact,
+  onDeleteCustomerBranchContact,
 }): React.ReactElement => {
   const [branchTabsKey, setBranchTabsKey] = useState<string>("products");
   useEffect(() => {
@@ -55,11 +91,8 @@ const BranchDetails: React.FC<props> = ({
   }, [details.id, branchTabsKey]);
   const fetchData = async (branchId: number, tabKey: string) => {
     if (branchTabsKey === "products") {
-      getCustomerProductsByBranch(branchId);
+      getCustomerProductsByBranch(branchId, {});
     }
-    // else if (branchTabsKey === "branch") {
-    //   await getCustomerBrachList(customerId);
-    // }
   };
   const onChangeTabs = (key: React.SetStateAction<string>) => {
     setBranchTabsKey(key);
@@ -131,6 +164,7 @@ const BranchDetails: React.FC<props> = ({
       ),
     },
   ];
+
   return (
     <div>
       <Tabs
@@ -146,19 +180,36 @@ const BranchDetails: React.FC<props> = ({
                 parentId={String(details.id)}
                 projectDatas={projectDatas}
                 getProjectDataTable={getProjectDataTable}
+                getCustomerProductsByBranch={getCustomerProductsByBranch}
               />
             ),
           },
           {
             key: "address",
             label: `Address`,
-            children: <></>,
+            children: (
+              <BranchAddress
+                rules={rules}
+                customerId={customerId}
+                branchDetail={details}
+                onSaveBranchAddress={onSaveBranchAddress}
+                onDeleteCustomerBranchAddress={onDeleteCustomerBranchAddress}
+              />
+            ),
             // icon: <Icon />,
           },
           {
             key: "contact",
             label: `Contact`,
-            children: <></>,
+            children: (
+              <BranchContact
+                rules={rules}
+                customerId={customerId}
+                branchDetail={details}
+                onSaveBranchContact={onSaveBranchContact}
+                onDeleteCustomerBranchContact={onDeleteCustomerBranchContact}
+              />
+            ),
             // icon: <Icon />,
           },
         ]}

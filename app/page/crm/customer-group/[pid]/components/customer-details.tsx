@@ -22,29 +22,60 @@ import {
   Tag,
 } from "antd";
 import type { Dayjs } from "dayjs";
-import { ITBranch, ITCustomer } from "@/app/common/customer";
+import {
+  ITBranch,
+  ITBranchAddressForm,
+  ITBranchContactForm,
+  ITBranchDetail,
+  ITCustomer,
+} from "@/app/common/customer";
 import CustomerBranchList from "./customer-branch-list";
 import { ITCustomerProduct } from "@/app/common/product";
 import CustomerProductList from "./customer-product-list";
 import { ITProject } from "@/app/common/project";
 const { RangePicker } = DatePicker;
 export interface props {
+  rules: any;
   details: ITCustomer;
-  branchList: ITBranch[];
+  branchList: ITBranchDetail[];
   customerProductsByCustomer: ITCustomerProduct[];
   customerProductsByBranch: ITCustomerProduct[];
   projectDatas: ITProject[];
-  getCustomerProductsByCustomer: (id: number) => void;
+  getCustomerProductsByCustomer: (id: number, search: any) => void;
   getCustomerBrachList: (id: number) => void;
-  getCustomerProductsByBranch: (branchId: number) => void;
+  getCustomerProductsByBranch: (branchId: number, search: any) => void;
   getProjectDataTable: (
     productId: string,
     parentId: string,
-    type: string
+    type: string,
+    search: any
+  ) => void;
+  onOpenEditBranch: (branchId: number, customerId: number) => void;
+  onDeleteBranch: (branchId: number, customerId: number) => void;
+  onSaveBranchAddress: (
+    branchId: number,
+    form: ITBranchAddressForm,
+    customerId: number
+  ) => void;
+  onDeleteCustomerBranchAddress: (
+    branchId: number,
+    addressId: number,
+    customerId: number
+  ) => void;
+  onSaveBranchContact: (
+    branchId: number,
+    form: ITBranchContactForm,
+    customerId: number
+  ) => void;
+  onDeleteCustomerBranchContact: (
+    branchId: number,
+    contactId: number,
+    customerId: number
   ) => void;
 }
 
 const CustomerDetails: React.FC<props> = ({
+  rules,
   details,
   branchList,
   customerProductsByCustomer,
@@ -54,6 +85,12 @@ const CustomerDetails: React.FC<props> = ({
   getCustomerBrachList,
   getCustomerProductsByBranch,
   getProjectDataTable,
+  onOpenEditBranch,
+  onDeleteBranch,
+  onSaveBranchAddress,
+  onDeleteCustomerBranchAddress,
+  onSaveBranchContact,
+  onDeleteCustomerBranchContact,
 }): React.ReactElement => {
   const [customerTabsKey, setCustomerTabsKey] = useState<string>("products");
   useEffect(() => {
@@ -64,7 +101,7 @@ const CustomerDetails: React.FC<props> = ({
   const fetchData = async (customerId: number, tabKey: string) => {
     console.log(customerId);
     if (customerTabsKey === "products") {
-      await getCustomerProductsByCustomer(customerId);
+      await getCustomerProductsByCustomer(customerId, {});
     } else if (customerTabsKey === "branch") {
       await getCustomerBrachList(customerId);
     }
@@ -96,6 +133,8 @@ const CustomerDetails: React.FC<props> = ({
             label: `Sub Customers/Branch`,
             children: (
               <CustomerBranchList
+                rules={rules}
+                customerId={details.id}
                 branchList={branchList}
                 onOpenCustomerCreateForm={function (state: boolean): void {
                   throw new Error("Function not implemented.");
@@ -104,6 +143,12 @@ const CustomerDetails: React.FC<props> = ({
                 getCustomerProductsByBranch={getCustomerProductsByBranch}
                 projectDatas={projectDatas}
                 getProjectDataTable={getProjectDataTable}
+                onOpenEditBranch={onOpenEditBranch}
+                onDeleteBranch={onDeleteBranch}
+                onSaveBranchAddress={onSaveBranchAddress}
+                onDeleteCustomerBranchAddress={onDeleteCustomerBranchAddress}
+                onSaveBranchContact={onSaveBranchContact}
+                onDeleteCustomerBranchContact={onDeleteCustomerBranchContact}
               />
             ),
             // icon: <Icon />,

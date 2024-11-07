@@ -36,11 +36,16 @@ import { ITProject } from "@/app/common/project";
 export interface props {
   customerGroupId: string;
   customerProductsByCustomerGroup: ITCustomerProduct[];
+  fetchDataProductsByCustomerGroup: (
+    customerGriupId: string,
+    search: any
+  ) => void;
   projectDatas: ITProject[];
   getProjectDataTable: (
     productId: string,
     parentId: string,
-    type: string
+    type: string,
+    search: any
   ) => void;
 }
 

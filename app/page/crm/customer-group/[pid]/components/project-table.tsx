@@ -41,7 +41,8 @@ export interface props {
   getProjectDataTable: (
     productId: string,
     parentId: string,
-    type: string
+    type: string,
+    search: any
   ) => void;
 }
 
@@ -52,11 +53,12 @@ const ProjectTable: React.FC<props> = ({
   projectDatas,
   getProjectDataTable,
 }): React.ReactElement => {
+  const [searchForm] = useForm();
   useEffect(() => {
     fetchData();
   }, [parentId, productId]);
   const fetchData = async () => {
-    getProjectDataTable(productId, parentId, parentType);
+    getProjectDataTable(productId, parentId, parentType, {});
   };
   const columns: TableColumnsType<ITProject> = [
     {

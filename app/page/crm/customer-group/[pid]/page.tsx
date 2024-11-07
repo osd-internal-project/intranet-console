@@ -51,6 +51,10 @@ import {
   ITCustomerForm,
   ITSelectUsers,
   ITConfigData,
+  ITBranchForm,
+  ITBranchDetail,
+  ITBranchAddressForm,
+  ITBranchContactForm,
 } from "@/app/common/customer";
 import CustomerGroupDetails from "./components/customer-group-details";
 import CustomerGroupCustomerList from "./components/customer-group-customer-list";
@@ -59,6 +63,7 @@ import CustomerCreateForm from "./components/customer-create-form";
 import { ITCustomerProduct } from "@/app/common/product";
 import { ITProject } from "@/app/common/project";
 import CusomterEditForm from "./components/customer-edit-form";
+import BranchEdit from "./components/branch-edit";
 const { useForm } = Form;
 export default function ProductsAddPage() {
   const { data: session } = useSession();
@@ -68,6 +73,7 @@ export default function ProductsAddPage() {
   const userAuth = useAxiosUser();
   const rules = {
     ruleCustomerShow: checkRule("crm-c-s"),
+    ruleCustomerAdd: checkRule("crm-c-a"),
     ruleCustomerEdit: checkRule("crm-c-e"),
     ruleCustomerSubAdd: checkRule("crm-cs-a"),
     ruleCustomerSubEdit: checkRule("crm-cs-e"),
@@ -81,7 +87,7 @@ export default function ProductsAddPage() {
     ruleCustomerContactDelete: checkRule("crm-cc-d"),
     ruleProjectShow: checkRule("crm-p-s"),
   };
-  const [descriptionCustomerForm] = useForm();
+
   const customerGroupServices = CustomerGroupServices(crmAuth);
   const userServices = UserServices(userAuth);
   const customerServices = CustomerServices(crmAuth);
@@ -90,7 +96,8 @@ export default function ProductsAddPage() {
   const customerProjectServices = CustomerProjectServices(crmAuth);
   const customerGroupId = String(pid);
   const router = useRouter();
-
+  const [descriptionCustomerForm] = useForm();
+  const [customerBrahEditForm] = useForm();
   const [details, setDetails] = useState<ITCustomerGroup>();
 
   const [loading, setloading] = useState<boolean>(true);
@@ -99,8 +106,13 @@ export default function ProductsAddPage() {
   const [openCustomerUpdateId, setOpenCustomerUpdateId] = useState<
     number | undefined
   >(undefined);
+  const [openBranchUpdateId, setOpenBranchUpdateId] = useState<{
+    branchId: number | undefined;
+    customerId: number | undefined;
+  }>({ branchId: undefined, customerId: undefined });
+
   const [customerList, setCustomerList] = useState<ITCustomer[]>([]);
-  const [branchList, setBranchList] = useState<ITBranch[]>([]);
+  const [branchList, setBranchList] = useState<ITBranchDetail[]>([]);
   const [customerProductsByCustomerGroup, setCustomerProductsByCustomerGroup] =
     useState<ITCustomerProduct[]>([]);
   const [customerProductsByCustomer, setCustomerProductsByCustomer] = useState<
@@ -169,7 +181,8 @@ export default function ProductsAddPage() {
   };
   const fetchDataProductsByCustomerGroup = async () => {
     const data = await customerProductServices.findManyByCustomerGroup(
-      Number(customerGroupId)
+      Number(customerGroupId),
+      {}
     );
     if (data) {
       setCustomerProductsByCustomerGroup(data);
@@ -183,9 +196,13 @@ export default function ProductsAddPage() {
   const onChangeTabs = async (key: string) => {
     setActiveTabKey(key);
   };
-  const getCustomerProductsByCustomer = async (customerId: number) => {
+  const getCustomerProductsByCustomer = async (
+    customerId: number,
+    search: any
+  ) => {
     const products = await customerProductServices.findManyByCustomer(
-      customerId
+      customerId,
+      search
     );
     if (products) {
       setCustomerProductsByCustomer(products);
@@ -193,8 +210,14 @@ export default function ProductsAddPage() {
       setCustomerProductsByCustomer([]);
     }
   };
-  const getCustomerProductsByBranch = async (bracnchId: number) => {
-    const products = await customerProductServices.findManyByBranch(bracnchId);
+  const getCustomerProductsByBranch = async (
+    bracnchId: number,
+    search: any
+  ) => {
+    const products = await customerProductServices.findManyByBranch(
+      bracnchId,
+      search
+    );
 
     if (products) {
       console.log(products);
@@ -216,13 +239,15 @@ export default function ProductsAddPage() {
   async function getProjectDataTable(
     productId: string,
     parentId: string,
-    type: string
+    type: string,
+    search: any
   ) {
     const projects =
       await customerProjectServices.findProjectsByProductIdAndParentId(
         productId,
         parentId,
-        type
+        type,
+        search
       );
     setProjectDatas(projects);
   }
@@ -288,7 +313,6 @@ export default function ProductsAddPage() {
   }
 
   function onDeleteCustomer(customerId: number): void {
-    console.log(1);
     Modal.confirm({
       title: "Delete this Customer",
       icon: <ExclamationCircleFilled />,
@@ -302,9 +326,6 @@ export default function ProductsAddPage() {
         });
         fetchDataCustomers();
       },
-      // onCancel() {
-      //   setDeleteId(undefined);
-      // },
     });
   }
 
@@ -395,6 +416,125 @@ export default function ProductsAddPage() {
       });
   }
 
+  function onDeleteBranch(branchId: number, customerId: number): void {
+    Modal.confirm({
+      title: "Delete this Branch",
+      icon: <ExclamationCircleFilled />,
+      content: "Are you sure you want to delete this ?",
+      okText: "Confirm",
+      okButtonProps: { type: "primary", danger: true },
+      cancelText: "Cancel",
+      onOk: async () => {
+        await customerBranchServices.delete(branchId).then((data) => {
+          message.success("ลบสำเร็จ");
+        });
+
+        getCustomerBrachList(customerId);
+      },
+    });
+  }
+
+  function onOpenEditBranch(branchId: number, customerId: number): void {
+    const branchSelected = branchList.find((branch) => branch.id === branchId);
+    customerBrahEditForm.setFieldsValue({
+      ...branchSelected,
+      customerId: customerId,
+    });
+    setOpenBranchUpdateId({ branchId: branchId, customerId: customerId });
+  }
+  function onCloseUpdateBranch(): void {
+    setOpenBranchUpdateId({ branchId: undefined, customerId: undefined });
+    customerBrahEditForm.resetFields();
+  }
+  async function onSaveBranchEdit(form: ITBranchForm): Promise<void> {
+    const base = {
+      ...form,
+      updatedBy: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+      updatedByID: session?.user.userId,
+      updatedAt: dayjs(),
+    };
+
+    await customerBranchServices
+      .update(+form.id, base)
+      .then(async (res) => {
+        await onCloseUpdateBranch();
+        if (openBranchUpdateId?.customerId) {
+          getCustomerBrachList(openBranchUpdateId.customerId);
+        }
+        setOpenBranchUpdateId({ branchId: undefined, customerId: undefined });
+        customerBrahEditForm.resetFields();
+      })
+      .catch(() => {
+        message.error("ผิดพลาด กรุณาลองใหม่");
+        setloading(false);
+      });
+    setloading(true);
+  }
+
+  async function onSaveBranchAddress(
+    branchId: number,
+    form: ITBranchAddressForm,
+    customerId: number
+  ): Promise<void> {
+    await customerBranchServices
+      .createBranchAddress(branchId, form)
+      .then((res) => {
+        message.success("สร้างผู้ติดต่อสำเร็จ");
+        getCustomerBrachList(customerId);
+      })
+      .catch(() => {
+        message.error("ผิดพลาด กรุณาลองใหม่");
+      });
+  }
+
+  async function onDeleteCustomerBranchAddress(
+    branchId: number,
+    addressId: number,
+    customerId: number
+  ): Promise<void> {
+    await customerBranchServices
+      .deleteBranchAddress(addressId)
+      .then((res) => {
+        message.success("สร้างผู้ติดต่อสำเร็จ");
+        getCustomerBrachList(customerId);
+      })
+      .catch(() => {
+        message.error("ผิดพลาด กรุณาลองใหม่");
+      });
+  }
+
+  async function onSaveBranchContact(
+    branchId: number,
+    form: ITBranchContactForm,
+    customerId: number
+  ): Promise<void> {
+    await customerBranchServices
+      .createBranchContact(branchId, form)
+      .then((res) => {
+        message.success("สร้างผู้ติดต่อสำเร็จ");
+        getCustomerBrachList(customerId);
+      })
+      .catch(() => {
+        message.error("ผิดพลาด กรุณาลองใหม่");
+      });
+  }
+
+  async function onDeleteCustomerBranchContact(
+    branchId: number,
+    contactId: number,
+    customerId: number
+  ): Promise<void> {
+    await customerBranchServices
+      .deleteBranchContact(contactId)
+      .then((res) => {
+        message.success("สร้างผู้ติดต่อสำเร็จ");
+        getCustomerBrachList(customerId);
+      })
+      .catch(() => {
+        message.error("ผิดพลาด กรุณาลองใหม่");
+      });
+  }
+
   return (
     <Spin spinning={loading}>
       <Row gutter={[8, 8]}>
@@ -444,6 +584,9 @@ export default function ProductsAddPage() {
                       customerProductsByCustomerGroup={
                         customerProductsByCustomerGroup
                       }
+                      fetchDataProductsByCustomerGroup={
+                        fetchDataProductsByCustomerGroup
+                      }
                       projectDatas={projectDatas}
                       getProjectDataTable={getProjectDataTable}
                     />
@@ -456,20 +599,31 @@ export default function ProductsAddPage() {
                   label: `Customers`,
                   children: details ? (
                     <CustomerGroupCustomerList
+                      rules={rules}
                       customerList={customerList}
                       customerProductsByCustomer={customerProductsByCustomer}
-                      branchList={branchList}
-                      customerProductsByBranch={customerProductsByBranch}
-                      onOpenCustomerCreateForm={onOpenCustomerCreateForm}
                       getCustomerProductsByCustomer={
                         getCustomerProductsByCustomer
                       }
+                      branchList={branchList}
+                      customerProductsByBranch={customerProductsByBranch}
+                      onOpenCustomerCreateForm={onOpenCustomerCreateForm}
                       getCustomerBrachList={getCustomerBrachList}
                       getCustomerProductsByBranch={getCustomerProductsByBranch}
                       projectDatas={projectDatas}
                       getProjectDataTable={getProjectDataTable}
                       onDeleteCustomer={onDeleteCustomer}
                       onOpenCustomerDescription={onOpenCustomerDescription}
+                      onOpenEditBranch={onOpenEditBranch}
+                      onDeleteBranch={onDeleteBranch}
+                      onSaveBranchAddress={onSaveBranchAddress}
+                      onDeleteCustomerBranchAddress={
+                        onDeleteCustomerBranchAddress
+                      }
+                      onSaveBranchContact={onSaveBranchContact}
+                      onDeleteCustomerBranchContact={
+                        onDeleteCustomerBranchContact
+                      }
                     />
                   ) : (
                     <Card>ไม่พบข้อมูล</Card>
@@ -501,6 +655,14 @@ export default function ProductsAddPage() {
           openCustomerUpdateId={openCustomerUpdateId}
           onCloseUpdate={onCloseUpdateCustomer}
           onFinishEdit={updateCustomer}
+        />
+      )}
+      {openBranchUpdateId.branchId && (
+        <BranchEdit
+          openBranchUpdateId={openBranchUpdateId.branchId}
+          customerBrahEditForm={customerBrahEditForm}
+          onCloseUpdate={onCloseUpdateBranch}
+          onSaveBranchEdit={onSaveBranchEdit}
         />
       )}
     </Spin>

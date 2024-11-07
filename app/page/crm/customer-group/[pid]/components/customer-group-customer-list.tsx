@@ -22,7 +22,13 @@ import {
   Tag,
 } from "antd";
 import type { Dayjs } from "dayjs";
-import { ITBranch, ITCustomerGroup } from "@/app/common/customer";
+import {
+  ITBranch,
+  ITBranchAddressForm,
+  ITBranchContactForm,
+  ITBranchDetail,
+  ITCustomerGroup,
+} from "@/app/common/customer";
 import { ColumnType } from "antd/es/table";
 import { useForm } from "antd/es/form/Form";
 import { CaretRightOutlined, ExclamationCircleFilled } from "@ant-design/icons";
@@ -35,26 +41,51 @@ import data from "@iconify/icons-icon-park-outline/setting-two";
 
 export interface props {
   customerList: ITCustomer[];
-  branchList: ITBranch[];
+  branchList: ITBranchDetail[];
+  rules: any;
   customerProductsByCustomer: ITCustomerProduct[];
   customerProductsByBranch: ITCustomerProduct[];
   projectDatas: ITProject[];
   onOpenCustomerCreateForm: (state: boolean) => void;
-  getCustomerProductsByCustomer: (customerId: number) => void;
+  getCustomerProductsByCustomer: (customerId: number, search: any) => void;
   getCustomerBrachList: (customerId: number) => void;
-  getCustomerProductsByBranch: (branch: number) => void;
+  getCustomerProductsByBranch: (branch: number, search: any) => void;
   getProjectDataTable: (
     productId: string,
     parentId: string,
-    type: string
+    type: string,
+    search: any
   ) => void;
   onDeleteCustomer: (customerId: number) => void;
   onOpenCustomerDescription: (customerId: number) => void;
+  onOpenEditBranch: (branchId: number, customerId: number) => void;
+  onDeleteBranch: (branchId: number, customerId: number) => void;
+  onSaveBranchAddress: (
+    branchId: number,
+    form: ITBranchAddressForm,
+    customerId: number
+  ) => void;
+  onDeleteCustomerBranchAddress: (
+    branchId: number,
+    addressId: number,
+    customerId: number
+  ) => void;
+  onSaveBranchContact: (
+    branchId: number,
+    form: ITBranchContactForm,
+    customerId: number
+  ) => void;
+  onDeleteCustomerBranchContact: (
+    branchId: number,
+    contactId: number,
+    customerId: number
+  ) => void;
 }
 
 const CustomerGroupCustomerList: React.FC<props> = ({
   customerList,
   branchList,
+  rules,
   customerProductsByCustomer,
   customerProductsByBranch,
   projectDatas,
@@ -65,6 +96,12 @@ const CustomerGroupCustomerList: React.FC<props> = ({
   getProjectDataTable,
   onDeleteCustomer,
   onOpenCustomerDescription,
+  onOpenEditBranch,
+  onDeleteBranch,
+  onSaveBranchAddress,
+  onDeleteCustomerBranchAddress,
+  onSaveBranchContact,
+  onDeleteCustomerBranchContact,
 }): React.ReactElement => {
   const panelStyle: React.CSSProperties = {
     marginBottom: 10,
@@ -141,6 +178,7 @@ const CustomerGroupCustomerList: React.FC<props> = ({
       );
       const children = (
         <CustomerDetails
+          rules={rules}
           details={customer}
           branchList={branchList}
           getCustomerProductsByCustomer={getCustomerProductsByCustomer}
@@ -150,6 +188,12 @@ const CustomerGroupCustomerList: React.FC<props> = ({
           getCustomerProductsByBranch={getCustomerProductsByBranch}
           projectDatas={projectDatas}
           getProjectDataTable={getProjectDataTable}
+          onOpenEditBranch={onOpenEditBranch}
+          onDeleteBranch={onDeleteBranch}
+          onSaveBranchAddress={onSaveBranchAddress}
+          onDeleteCustomerBranchAddress={onDeleteCustomerBranchAddress}
+          onSaveBranchContact={onSaveBranchContact}
+          onDeleteCustomerBranchContact={onDeleteCustomerBranchContact}
         />
       );
       return {
@@ -164,13 +208,17 @@ const CustomerGroupCustomerList: React.FC<props> = ({
     <div>
       <div className=" flex justify-between mb-2">
         <div className=" font-bold text-base">Customers</div>
-        <Button
-          type="primary"
-          size="small"
-          onClick={() => onOpenCustomerCreateForm(true)}
-        >
-          Add Customer
-        </Button>
+        {rules.ruleCustomerAdd ? (
+          <Button
+            type="primary"
+            size="small"
+            onClick={() => onOpenCustomerCreateForm(true)}
+          >
+            Add Customer
+          </Button>
+        ) : (
+          <div></div>
+        )}
       </div>
       <div>
         <Form layout="vertical" size="small">

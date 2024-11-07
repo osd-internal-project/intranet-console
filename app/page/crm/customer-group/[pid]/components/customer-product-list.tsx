@@ -40,7 +40,8 @@ export interface props {
   getProjectDataTable: (
     productId: string,
     parentId: string,
-    type: string
+    type: string,
+    search: any
   ) => void;
 }
 
@@ -125,17 +126,21 @@ const CustomerProductList: React.FC<props> = ({
             style={{ maxHeight: "500px" }}
             className=" bg-slate-100 mt-2  overflow-x-auto"
           >
-            <Collapse
-              collapsible="icon"
-              destroyInactivePanel={true}
-              accordion
-              bordered={false}
-              expandIcon={({ isActive }) => (
-                <CaretRightOutlined rotate={isActive ? 90 : 0} />
-              )}
-              style={{ background: " #f1f5f9" }}
-              items={dataList(panelStyle)}
-            />
+            {customerProductsByCustomer.length > 0 ? (
+              <Collapse
+                collapsible="icon"
+                destroyInactivePanel={true}
+                accordion
+                bordered={false}
+                expandIcon={({ isActive }) => (
+                  <CaretRightOutlined rotate={isActive ? 90 : 0} />
+                )}
+                style={{ background: " #f1f5f9" }}
+                items={dataList(panelStyle)}
+              />
+            ) : (
+              <div className=" flex justify-center">Products Not Found</div>
+            )}
           </div>
         </div>
       </div>

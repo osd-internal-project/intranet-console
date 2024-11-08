@@ -1,9 +1,9 @@
+
 import React, { useContext, useMemo, useEffect } from "react";
 import { Table, Button, message, Space, Popconfirm, Tooltip, Form, Input, Col } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import ManageHomeService from "../services/index.service";
 import dayjs from "dayjs";
-import { DeleteIcon } from "@/components/icon";
 import { DeleteOutlined, HolderOutlined } from "@ant-design/icons";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { DndContext } from "@dnd-kit/core";

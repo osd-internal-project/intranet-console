@@ -60,13 +60,14 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getdataLeaveUserById: async (userId: number) => {
+    getdataLeaveUserById: async (userId: number, type_id: number) => {
       const condition = {
-        where: { userId: userId },
+        userId: userId,
+        typeId: type_id,
       };
       return await axiosInstance
-        .post(`${baseUrlDataLeave}/condition`, {
-          condition: condition,
+        .get(`${baseUrlDataLeave}/condition`, {
+          params: condition,
         })
         .then((res) => {
           return res.data;
@@ -192,6 +193,16 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
     getdataMasterTypeLeaveAll: async () => {
       return await axiosInstance
         .get(`${baseUrlTypeleave}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
+    getdataMasterTypeLeaveByTypeId: async (typeId: number) => {
+      return await axiosInstance
+        .get(`${baseUrlTypeleave}/${typeId}`)
         .then((res) => {
           return res.data;
         })

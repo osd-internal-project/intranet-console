@@ -1,4 +1,7 @@
+"use client";
 import dayjs from "dayjs";
+import { ITypeDataLeave } from "../common";
+import { message } from "antd";
 
 export const timeOptions = [
   "08:30",
@@ -35,4 +38,227 @@ export const calculateTime = (valueStartTime: any, valueEndTime: any) => {
   }
   totalHours = totalHours > 0 ? parseFloat(totalHours.toFixed(1)) : 0;
   return totalHours;
+};
+
+export const calculateCreateLeaveCaseOne = async (
+  id: any,
+  record: any,
+  selectedOption: any,
+  session: any,
+  attendFiles: any,
+  totalHours: any,
+  totalDays: any,
+) => {
+  const base: ITypeDataLeave = {
+    id: id,
+    userId: record.userId,
+    firstName: record.firstNameTh,
+    lastName: record.lastNameTh,
+    positionId: record.posId,
+    position: record.position,
+    typeId: record.type_id,
+    typeName: selectedOption ? selectedOption.label : undefined,
+    startDate: record.startDate,
+    endDate: record.endDate,
+    detail: record.detail,
+    phoneNumber: record.phoneNumber,
+    status: "waitting",
+    ownerId: record.ownerId,
+    ownerName: record.ownerName,
+    groupId: session?.user.ownerGroup,
+    attrachFile: attendFiles[0]?.name,
+  };
+  try {
+    const condition: ITypeDataLeave = {
+      ...base,
+      ...(record.time_start_check
+        ? { leaveHour: 8 }
+        : {
+            leaveHour: record.startTime && record.endTime ? Number(totalHours) : Number(totalDays) * 8,
+          }),
+    };
+    return await condition;
+  } catch (err) {
+    return message.error(`${err}`);
+  }
+};
+export const calculateCreateLeaveCaseTwo = async (
+  id: any,
+  record: any,
+  selectedOption: any,
+  session: any,
+  attendFiles: any,
+  totalHours: any,
+  totalDays: any,
+  leaveStartDate: any,
+  twoDayAdvance: any,
+) => {
+  if (new Date(leaveStartDate) < twoDayAdvance) {
+    message.warning("ต้องลาล่วงหน้า 2 วัน");
+    return false;
+  }
+  const base: ITypeDataLeave = {
+    id: id,
+    userId: record.userId,
+    firstName: record.firstNameTh,
+    lastName: record.lastNameTh,
+    positionId: record.posId,
+    position: record.position,
+    typeId: record.type_id,
+    typeName: selectedOption ? selectedOption.label : undefined,
+    startDate: record.startDate,
+    endDate: record.endDate,
+    detail: record.detail,
+    phoneNumber: record.phoneNumber,
+    status: "waitting",
+    ownerId: record.ownerId,
+    ownerName: record.ownerName,
+    groupId: session?.user.ownerGroup,
+    attrachFile: attendFiles[0]?.name,
+  };
+
+  const condition: ITypeDataLeave = {
+    ...base,
+    ...(record.time_start_check
+      ? { leaveHour: 8 }
+      : {
+          leaveHour: record.startTime && record.endTime ? Number(totalHours) : Number(totalDays) * 8,
+        }),
+  };
+  return await condition;
+};
+export const calculateCreateLeaveCaseThree = async (
+  id: any,
+  record: any,
+  selectedOption: any,
+  session: any,
+  attendFiles: any,
+  totalHours: any,
+  totalDays: any,
+  leaveStartDate: any,
+  fiveDayAdvance: any,
+) => {
+  if (new Date(leaveStartDate) < fiveDayAdvance) {
+    message.warning("ต้องลาล่วงหน้า 5 วัน");
+    return false;
+  }
+  const base: ITypeDataLeave = {
+    id: id,
+    userId: record.userId,
+    firstName: record.firstNameTh,
+    lastName: record.lastNameTh,
+    positionId: record.posId,
+    position: record.position,
+    typeId: record.type_id,
+    typeName: selectedOption ? selectedOption.label : undefined,
+    startDate: record.startDate,
+    endDate: record.endDate,
+    detail: record.detail,
+    phoneNumber: record.phoneNumber,
+    status: "waitting",
+    ownerId: record.ownerId,
+    ownerName: record.ownerName,
+    groupId: session?.user.ownerGroup,
+    attrachFile: attendFiles[0]?.name,
+  };
+
+  const condition: ITypeDataLeave = {
+    ...base,
+    ...(record.time_start_check
+      ? { leaveHour: 8 }
+      : {
+          leaveHour: record.startTime && record.endTime ? Number(totalHours) : Number(totalDays) * 8,
+        }),
+  };
+  return await condition;
+};
+export const calculateCreateLeaveCaseFour = async (
+  id: any,
+  record: any,
+  selectedOption: any,
+  session: any,
+  attendFiles: any,
+  totalHours: any,
+  totalDays: any,
+  leaveStartDate: any,
+  fifteenDayAdvance: any,
+) => {
+  if (new Date(leaveStartDate) < fifteenDayAdvance) {
+    message.warning("ต้องลาล่วงหน้า 15 วัน");
+    return false;
+  }
+  const base: ITypeDataLeave = {
+    id: id,
+    userId: record.userId,
+    firstName: record.firstNameTh,
+    lastName: record.lastNameTh,
+    positionId: record.posId,
+    position: record.position,
+    typeId: record.type_id,
+    typeName: selectedOption ? selectedOption.label : undefined,
+    startDate: record.startDate,
+    endDate: record.endDate,
+    detail: record.detail,
+    phoneNumber: record.phoneNumber,
+    status: "waitting",
+    ownerId: record.ownerId,
+    ownerName: record.ownerName,
+    groupId: session?.user.ownerGroup,
+    attrachFile: attendFiles[0]?.name,
+  };
+
+  const condition: ITypeDataLeave = {
+    ...base,
+    ...(record.time_start_check
+      ? { leaveHour: 8 }
+      : {
+          leaveHour: record.startTime && record.endTime ? Number(totalHours) : Number(totalDays) * 8,
+        }),
+  };
+  return await condition;
+};
+export const calculateCreateLeaveCaseFive = async (
+  id: any,
+  record: any,
+  selectedOption: any,
+  session: any,
+  attendFiles: any,
+  totalHours: any,
+  totalDays: any,
+  leaveStartDate: any,
+  thirtyDayAdvance: any,
+) => {
+  if (new Date(leaveStartDate) < thirtyDayAdvance) {
+    message.warning("ต้องลาล่วงหน้า 30 วัน");
+    return false;
+  }
+  const base: ITypeDataLeave = {
+    id: id,
+    userId: record.userId,
+    firstName: record.firstNameTh,
+    lastName: record.lastNameTh,
+    positionId: record.posId,
+    position: record.position,
+    typeId: record.type_id,
+    typeName: selectedOption ? selectedOption.label : undefined,
+    startDate: record.startDate,
+    endDate: record.endDate,
+    detail: record.detail,
+    phoneNumber: record.phoneNumber,
+    status: "waitting",
+    ownerId: record.ownerId,
+    ownerName: record.ownerName,
+    groupId: session?.user.ownerGroup,
+    attrachFile: attendFiles[0]?.name,
+  };
+
+  const condition: ITypeDataLeave = {
+    ...base,
+    ...(record.time_start_check
+      ? { leaveHour: 8 }
+      : {
+          leaveHour: record.startTime && record.endTime ? Number(totalHours) : Number(totalDays) * 8,
+        }),
+  };
+  return await condition;
 };

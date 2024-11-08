@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
-import { App, Card, UploadFile } from "antd";
+import { Card, UploadFile } from "antd";
 import { Dayjs } from "dayjs";
 import { IDataUser, ISelect, ITypeDataLeaveCreate } from "../../common";
 import { RcFile } from "antd/es/upload";
@@ -71,23 +71,21 @@ export const CreateOnlineLeave: React.FC<props> = ({
   return (
     <div>
       <Card className="w-full grid grid-cols-1 gap-y-2 mt-2">
-        <App>
-          <CreateLeaveForm
-            createdataleaveForm={createdataleaveForm}
-            onfinishCreate={onfinishCreate}
-            getTypeLeaveOption={getTypeLeaveOption}
-            onChangeParams={onChangeParams}
-            setStartDate={setStartDate}
-            setEndDate={setEndDate}
-            getStartDate={getStartDate}
-            getEndDate={getEndDate}
-            attendFiles={attendFiles}
-            setCheckSwitch={setCheckSwitch}
-            checkSwitch={checkSwitch}
-            handleChangeAttendFiles={handleChangeAttendFiles}
-            beforeUploadAttendFiles={beforeUploadAttendFiles}
-          />
-        </App>
+        <CreateLeaveForm
+          createdataleaveForm={createdataleaveForm}
+          onfinishCreate={onfinishCreate}
+          getTypeLeaveOption={getTypeLeaveOption}
+          onChangeParams={onChangeParams}
+          setStartDate={setStartDate}
+          setEndDate={setEndDate}
+          getStartDate={getStartDate}
+          getEndDate={getEndDate}
+          attendFiles={attendFiles}
+          setCheckSwitch={setCheckSwitch}
+          checkSwitch={checkSwitch}
+          handleChangeAttendFiles={handleChangeAttendFiles}
+          beforeUploadAttendFiles={beforeUploadAttendFiles}
+        />
       </Card>
     </div>
   );

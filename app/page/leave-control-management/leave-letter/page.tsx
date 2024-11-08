@@ -369,13 +369,13 @@ export default function Page() {
                 title: <span>หน้าหลัก</span>,
               },
               {
-                title: <span>Leave Letter</span>,
+                title: <span>ใบลาออนไลน์</span>,
               },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
-          <div className="title-page-font">{`Leave Letter`}</div>
+          <div className="title-page-font">{`ใบลาออนไลน์`}</div>
         </Divider>
       </Row>
       <Row gutter={{ xs: 3, sm: 3, md: 3, lg: 3 }}>

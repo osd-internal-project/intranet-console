@@ -57,20 +57,12 @@ const ExportDataLeaveAll: React.FC<ExportDataLeaveProps> = ({ data }) => {
     worksheet["!cols"] = colWidths;
 
     XLSX.utils.book_append_sheet(workbook, worksheet, "การลา");
-    XLSX.writeFile(workbook, "DataLeaveAll.xlsx");
+    XLSX.writeFile(workbook, "ข้อมูลการลา.xlsx");
   };
 
   return (
-    <Button
-      type="default"
-      onClick={handleOnExport}
-      style={{
-        marginRight: "8px",
-        marginTop: "10px",
-        marginBottom: "10px",
-      }}
-      icon={<ExcelIcon width="1.5rem" height="1.5rem" />}>
-      Export Excel
+    <Button type="default" onClick={handleOnExport} icon={<ExcelIcon width="1.5rem" height="1.5rem" />}>
+      {`ดาวน์โหลดไฟล์`}
     </Button>
   );
 };

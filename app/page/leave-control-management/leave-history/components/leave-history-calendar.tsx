@@ -7,6 +7,8 @@ import { ITypeDataLeave } from "../../common";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { LeaveHistoryCalendarDetail } from "./leave-history-calendar-detail";
 import moment from "moment";
+import "moment/locale/TH";
+moment.locale("TH");
 
 interface CustomEvent extends RbcEvent {
   id: number | undefined;
@@ -80,15 +82,42 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ departmentId, downlo
           description: dataLeaveCalendar?.description || "",
           userName: dataLeaveCalendar.typeName,
         }))}
+        messages={{
+          next: "เดือนถัดไป",
+          previous: "เดือนที่แล้ว",
+          today: "วันนี้",
+          month: "เดือน",
+          week: "สัปดาห์",
+          day: "วัน",
+          agenda: "กำหนดการ",
+        }}
         style={{ height: 500 }}
         onSelectEvent={onSelectEventCalendar}
         eventPropGetter={(event: CustomEvent) => {
           const backgroundColor = event.status === "approved" ? "DodgerBlue" : event.status === "cancel" ? "silver" : "DodgerBlue";
-
           return {
             style: { backgroundColor, color: "#fff", fontSize: 10 },
           };
         }}
+        // components={{
+        //   agenda: {
+        //     header: () => (
+        //       <tr>
+        //         <th>วันที่</th>
+        //         <th>เวลา</th>
+        //         <th>กิจกรรม</th>
+        //       </tr>
+        //     ),
+        //     event: ({ event }) => {
+        //       console.log(event);
+        //       return (
+        //         <span>
+        //           {event.title} - {event.description}
+        //         </span>
+        //       );
+        //     },
+        //   },
+        // }}
       />
     </div>
   );

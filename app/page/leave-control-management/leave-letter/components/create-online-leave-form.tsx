@@ -219,7 +219,7 @@ export const CreateLeaveForm: React.FC<props> = ({
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`แนบไฟล์ :`} name={"attrachFile"}>
               <Upload fileList={attendFiles} onChange={handleChangeAttendFiles} beforeUpload={beforeUploadAttendFiles} multiple={false} maxCount={1}>
-                <Button icon={<UploadOutlined />}>{`Click to Upload`}</Button>
+                <Button icon={<UploadOutlined />}>{`อัพโหลดไฟล์`}</Button>
               </Upload>
             </Form.Item>
           </div>

@@ -16,14 +16,14 @@ export const TabeLeavManagement: React.FC<props> = ({ getdataUserByTypeId, onFin
     {
       key: "id",
       dataIndex: "id",
-      title: "No",
+      title: "ลำดับ",
       align: "center",
       width: "100px",
       render: (values: string, row: any, index: number) => index + 1,
     },
     {
       key: "id",
-      title: "Full Name",
+      title: "ชื่อ - นามสกุล",
       dataIndex: "id",
       render: (event: number, row: ITpyeUser, index: number) => {
         return `${row.user.firstNameTh} ${row.user.lastNameTh}`;
@@ -31,7 +31,7 @@ export const TabeLeavManagement: React.FC<props> = ({ getdataUserByTypeId, onFin
     },
     {
       key: "id",
-      title: "Active",
+      title: "...",
       align: "center",
       width: "100px",
       render: (row: any, event: number, index: number) => {

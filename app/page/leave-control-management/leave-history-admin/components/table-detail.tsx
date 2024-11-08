@@ -7,7 +7,7 @@ import { deleteIcon, CancelIcon, CheckIcon } from "@/components/icon";
 import ExportDataLeaveAll from "../../until/export-excel";
 import { ITypeDataLeave } from "../../common";
 import DataLeaveService from "../../../../services/leave-management.service";
-import { CheckStatusLeaveType } from "@/app/utils/validatefield";
+import { CheckStatusLeaveType, showStatus, showStatusLeave } from "@/app/utils/validatefield";
 import { dateFormatTime } from "@/app/utils";
 import { LeaveDetailForm } from "./leave-detail-form";
 
@@ -84,16 +84,16 @@ export const TableDetail: React.FC<props> = ({
     {
       key: "id",
       dataIndex: "id",
-      title: "Fullname",
+      title: "ชื่อ - นามสกุล",
       render: (e: string, row: ITypeDataLeave) => {
-        return <p>{`${row.firstName} ${row.lastName}`}</p>;
+        return <>{`${row.firstName} ${row.lastName}`}</>;
       },
     },
-    { key: "typeName", dataIndex: "typeName", title: "Leave Type" },
+    { key: "typeName", dataIndex: "typeName", title: "ประเภทการลา" },
     {
       key: "id",
       dataIndex: "id",
-      title: "Leave Date",
+      title: "วันที่ลา",
       render: (e: string, row: ITypeDataLeave) => {
         return row?.startDate && row?.endDate ? `${dateToStringThNoTime(row?.startDate)} ถึง ${dateToStringThNoTime(row?.endDate)}` : "-";
       },
@@ -101,33 +101,31 @@ export const TableDetail: React.FC<props> = ({
     {
       key: "status",
       dataIndex: "status",
-      title: "Status",
+      title: "สถานะ",
       align: "center",
-      render: (status: string) => {
-        CheckStatusLeaveType(status);
-      },
+      render: (status: string) => CheckStatusLeaveType(status),
     },
     {
       key: "userApproved",
       dataIndex: "userApproved",
-      title: "Approved By",
-      render: (userApproved: string) => userApproved ?? userApproved,
+      title: "ผู้อนุมัติ",
+      render: (userApproved: string) => (userApproved ? userApproved : "-"),
     },
     {
       key: "approvedDate",
       dataIndex: "approvedDate",
-      title: "Approved Date",
+      title: "วันที่อนุมัติ",
       render: (value: any) => dateFormatTime(value),
     },
     {
       key: "id",
       dataIndex: "id",
-      title: "Active",
+      title: "...",
       align: "center",
       render: (e: string, row: ITypeDataLeave, index: number) => {
         return (
           <>
-            <Button type="primary" size="small" ghost onClick={() => fecthDataDetail(row)}>
+            <Button type="primary" ghost onClick={() => fecthDataDetail(row)}>
               {`รายละเอียด`}
             </Button>
           </>
@@ -191,16 +189,20 @@ export const TableDetail: React.FC<props> = ({
           </Row>
         </Modal>
       </>
-      <div style={{ display: "flex", justifyContent: "end", alignItems: "center" }}>
-        <div>
-          <Form layout="inline">
-            <Form.Item>
-              <Search placeholder="Input search text" onSearch={dataLeaveSearch} enterButton />
-            </Form.Item>
-          </Form>
-        </div>
-        <div>
-          <ExportDataLeaveAll data={dataLeaveUser} />
+
+      <div style={{ justifyContent: "space-between", display: "flex" }}>
+        <div style={{ justifyContent: "start", display: "flex", alignItems: "center" }}>{showStatusLeave()}</div>
+        <div style={{ display: "flex", justifyContent: "end", alignItems: "center" }}>
+          <div>
+            <Form layout="inline">
+              <Form.Item>
+                <Search placeholder="ค้นหา" onSearch={dataLeaveSearch} enterButton />
+              </Form.Item>
+            </Form>
+          </div>
+          <div>
+            <ExportDataLeaveAll data={dataLeaveUser} />
+          </div>
         </div>
       </div>
       <Table dataSource={dataSource} columns={columns} size="small" rowKey="id" scroll={{ x: "max-content" }} />

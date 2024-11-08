@@ -4,7 +4,7 @@ import { dateToStringThNoTime } from "@/app/utils/format";
 import { ITypeDataLeave } from "../../common";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../../../../services/leave-management.service";
-import { CheckStatusLeaveType } from "@/app/utils/validatefield";
+import { CheckStatusLeaveType, showStatus, showStatusLeave } from "@/app/utils/validatefield";
 import { dateFormatTime } from "@/app/utils";
 import { LeaveHistoryDetail } from "./leave-history-detail";
 
@@ -62,16 +62,16 @@ export const TableDetail: React.FC<props> = ({
     {
       key: "id",
       dataIndex: "id",
-      title: "Full Name",
+      title: "ชื่อ - นามสกุล",
       render: (e: string, row: ITypeDataLeave) => {
-        return <p>{`${row.firstName} ${row.lastName}`}</p>;
+        return <>{`${row.firstName} ${row.lastName}`}</>;
       },
     },
-    { key: "typeName", dataIndex: "typeName", title: "Type Leave" },
+    { key: "typeName", dataIndex: "typeName", title: "ประเภทการลา" },
     {
       key: "id",
       dataIndex: "id",
-      title: "Date Leave",
+      title: "วันลา",
       render: (e: string, row: ITypeDataLeave) => {
         return row?.startDate && row?.endDate ? `${dateToStringThNoTime(row?.startDate)} ถึง ${dateToStringThNoTime(row?.endDate)}` : "-";
       },
@@ -79,26 +79,26 @@ export const TableDetail: React.FC<props> = ({
     {
       key: "status",
       dataIndex: "status",
-      title: "Status",
+      title: "สถานะ",
       align: "center",
       render: (status: string) => CheckStatusLeaveType(status),
     },
     {
       key: "userApproved",
       dataIndex: "userApproved",
-      title: "Approved By",
+      title: "ผู้อนุมัติ",
       render: (text: string) => (text ? text : "-"),
     },
     {
       key: "approvedDate",
       dataIndex: "approvedDate",
-      title: "Approved Date",
+      title: "วันที่อนุมัติ",
       render: (value: any) => dateFormatTime(value),
     },
     {
       key: "id",
       dataIndex: "id",
-      title: "Active",
+      title: "...",
       align: "center",
       render: (e: string, row: ITypeDataLeave, index: number) => {
         return (
@@ -114,6 +114,7 @@ export const TableDetail: React.FC<props> = ({
 
   return (
     <div>
+      {showStatusLeave()}
       <Table dataSource={dataLeaveUser} columns={columns} size="small" scroll={{ x: "max-content" }} rowKey={(e: any) => e.id} />
       {openModalDetail ? (
         <LeaveHistoryDetail

@@ -1,19 +1,9 @@
-import {
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-  ExclamationCircleOutlined,
-  MinusCircleOutlined,
-  SyncOutlined,
-} from "@ant-design/icons";
+import { CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, MinusCircleOutlined, SyncOutlined } from "@ant-design/icons";
 import { Flex, message, Tag } from "antd";
 import { MaCarBookType } from "../page/macar/common";
 import dayjs from "dayjs";
 
-export const validatesUploadfileImage = (
-  rule: any,
-  value: string,
-  callback: any
-) => {
+export const validatesUploadfileImage = (rule: any, value: string, callback: any) => {
   if (rule.length === 0) {
     callback("Please upload image");
   } else {
@@ -75,13 +65,7 @@ export const CheckStatusMaCarBookType = (status: string) => {
 };
 
 export const isSelectDisabled = (status: string) => {
-  return (
-    status === "Approve" ||
-    status === "Return" ||
-    status === "Completed" ||
-    status === "DisapProved" ||
-    status === "Cancel"
-  );
+  return status === "Approve" || status === "Return" || status === "Completed" || status === "DisapProved" || status === "Cancel";
 };
 
 export const checkStatus = (record: MaCarBookType) => {
@@ -105,6 +89,27 @@ export const checkStatus = (record: MaCarBookType) => {
     message.warning("ยกเลิกการจองนี้ไปแล้ว");
     return true;
   }
+};
+
+export const showStatusLeave = () => {
+  return (
+    <div>
+      <Flex gap="4px 4px" wrap>
+        <Tag icon={<SyncOutlined spin />} color="DodgerBlue">
+          กำลังรออนุมัติ
+        </Tag>
+        <Tag icon={<CheckCircleOutlined />} color="LimeGreen">
+          อนุมัติแล้ว
+        </Tag>
+        <Tag icon={<CloseCircleOutlined />} color="OrangeRed">
+          ไม่อนุมัติ
+        </Tag>
+        <Tag icon={<MinusCircleOutlined />} color="silver">
+          ยกเลิก
+        </Tag>
+      </Flex>
+    </div>
+  );
 };
 
 export const showStatus = () => {
@@ -242,17 +247,17 @@ export const CheckStatusLeaveType = (status: string) => {
   switch (status) {
     case "waitting":
       color = "DodgerBlue";
-      text = "WAITING";
+      text = "รอการอนุมัติ";
       icon = <SyncOutlined spin />;
       break;
     case "cancel":
       color = "silver";
-      text = "CANCEL";
+      text = "ยกเลิก";
       icon = <CloseCircleOutlined />;
       break;
     case "approved":
       color = "LimeGreen";
-      text = "APPROVED";
+      text = "อนุมัติ";
       icon = <CheckCircleOutlined />;
       break;
     default:
@@ -268,5 +273,3 @@ export const CheckStatusLeaveType = (status: string) => {
     </Tag>
   );
 };
-
-

@@ -177,13 +177,13 @@ const page = () => {
                 title: <span>หน้าหลัก</span>,
               },
               {
-                title: <span>Leave Disabled Management</span>,
+                title: <span>จัดการสิทธ์การลา</span>,
               },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
-          <div className="title-page-font">{`Leave Disabled Management`}</div>
+          <div className="title-page-font">{`จัดการสิทธ์การลา`}</div>
         </Divider>
         <div className="w-full">
           <Card>

@@ -47,7 +47,7 @@ export const CreateLeaveManagement: React.FC<props> = ({
             <div className=" flex justify-end space-x-4">
               <Button onClick={() => setOpenModal(false)}>{`Cancel`}</Button>
               <Button type="primary" htmlType="submit">
-                {`Add`}
+                {`เพิ่ม`}
               </Button>
             </div>
           </Form.Item>
@@ -60,7 +60,7 @@ export const CreateLeaveManagement: React.FC<props> = ({
             formcreate.resetFields();
             setOpenModal(true);
             formcreate.setFieldsValue({ masterTypeleaveId: TypeId });
-          }}>{`Add User`}</Button>
+          }}>{`เพิ่มผู้ใช้งาน`}</Button>
       </div>
     </div>
   );

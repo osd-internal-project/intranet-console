@@ -1,26 +1,10 @@
-import {
-  LogoutOutlined,
-  UserOutlined,
-  HomeOutlined,
-  BarChartOutlined,
-  BookOutlined,
-  MailOutlined,
-} from "@ant-design/icons";
+import { LogoutOutlined, UserOutlined, HomeOutlined, BarChartOutlined, BookOutlined, MailOutlined } from "@ant-design/icons";
 import { Icon } from "@iconify/react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
 import React from "react";
 import { signOut } from "next-auth/react";
-import {
-  gridIcon,
-  IconDataLeave,
-  bookingIcon,
-  maintenanceIcon,
-  organizeChart,
-  stockIcon,
-  contactListIcon,
-  macarIcon,
-} from "@/components/icon";
+import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, organizeChart, stockIcon, contactListIcon, macarIcon } from "@/components/icon";
 
 type MenuItem = Required<MenuProps>["items"][number];
 const MenuNav: MenuProps["items"] = [
@@ -36,8 +20,7 @@ const MenuNav: MenuProps["items"] = [
         href={"#"}
         onClick={async () => {
           signOut({ callbackUrl: "/signin" });
-        }}
-      >
+        }}>
         Sign Out
       </Link>
     ),
@@ -281,12 +264,12 @@ export const MenuSider: MenuItem[] = [
   {
     key: `setting`,
     icon: <Icon icon="uil:setting" width="15" height="15" />,
-    label: `Setting`,
+    label: `ตั้งค่า`,
     rule: "st-s",
     children: [
       {
         key: `setting/maintenance-type`,
-        label: `MA Type`,
+        label: `การบำรุงรักษา`,
         rule: "ma-t-s",
       },
       {

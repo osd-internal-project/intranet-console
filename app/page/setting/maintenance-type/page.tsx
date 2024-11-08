@@ -4,15 +4,12 @@ import { Breadcrumb, Card, Col, Divider, Row, Spin } from "antd";
 import MaTypeCreateComponent from "./components/MaTypeCreate";
 import MaTypeTableComponent from "./components/MaTypeTable";
 import { ITMaType, ITMaTypeForm, ITPagination } from "./common";
-import MaTypeServices from "./services/index.service";
+import MaintenanceTypeServices from "../../../services/maintenance-type.service";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { checkRule } from "@/app/utils/rules";
 
-export default function MaTaskPage() {
+export default function Page() {
   const intranetAuth = useAxiosIntranet();
-  const maTypeServices = MaTypeServices(intranetAuth);
-  const addRule = checkRule("ma-type-add");
-  const showRule = checkRule("ma-type-show");
+  const maintenancetypeservices = MaintenanceTypeServices(intranetAuth);
 
   const [loading, setloading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<ITPagination>({
@@ -26,7 +23,7 @@ export default function MaTaskPage() {
   }, [loading]);
 
   const fetchData = async () => {
-    const data = await maTypeServices.findMaTypeAll();
+    const data = await maintenancetypeservices.findMaTypeAll();
     setDataTable(data);
     setloading(false);
   };
@@ -36,17 +33,17 @@ export default function MaTaskPage() {
   };
 
   async function createMaType(form: ITMaTypeForm): Promise<void> {
-    await maTypeServices.create(form);
+    await maintenancetypeservices.create(form);
     setloading(true);
   }
 
   async function editMaType(id: number, data: ITMaTypeForm): Promise<void> {
-    await maTypeServices.update(id, data);
+    await maintenancetypeservices.update(id, data);
     setloading(true);
   }
 
   async function deleteMaType(id: number): Promise<void> {
-    await maTypeServices.delete(id);
+    await maintenancetypeservices.delete(id);
     setloading(true);
   }
 
@@ -61,16 +58,16 @@ export default function MaTaskPage() {
                 title: <span>หน้าหลัก</span>,
               },
               {
-                title: <span>Setting</span>,
+                title: <span>ตั้งค่า</span>,
               },
               {
-                title: <span>Set Maintenance Type</span>,
+                title: <span>จัดการการบำรุงรักษา</span>,
               },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
-          <div className="title-page-font">{`Set Maintenance Type`}</div>
+          <div className="title-page-font">{`จัดการการบำรุงรักษา`}</div>
         </Divider>
         <Col span={24}>
           <div className="grid grid-cols-1 ">

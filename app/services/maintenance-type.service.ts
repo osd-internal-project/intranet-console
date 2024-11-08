@@ -1,17 +1,17 @@
 import { AxiosInstance } from "axios";
-import { ITMaType, ITMaTypeForm } from "../common";
+import { ITMaType, ITMaTypeForm } from "../page/setting/maintenance-type/common";
 export interface TMaServices {
   findMaTypeAll: () => Promise<ITMaType[]>;
   create: (form: ITMaTypeForm) => Promise<ITMaType>;
   update: (id: number, form: ITMaTypeForm) => Promise<ITMaType>;
   delete: (id: number) => Promise<ITMaType>;
 }
-const MaTypesServices = (axiosInstance: AxiosInstance): TMaServices => {
+const MaintenanceTypeServices = (axiosInstance: AxiosInstance): TMaServices => {
   const userUrl = "/ma-type";
   return {
     findMaTypeAll: async () => {
       return await axiosInstance
-        .get(`${userUrl}/many`)
+        .get(`${userUrl}/condition`)
         .then((res) => {
           return res.data;
         })
@@ -56,4 +56,4 @@ const MaTypesServices = (axiosInstance: AxiosInstance): TMaServices => {
   };
 };
 
-export default MaTypesServices;
+export default MaintenanceTypeServices;

@@ -19,16 +19,16 @@ export interface props {
   deleteMaType: (id: number) => void;
 }
 
-const MaTypeTableComponent: React.FC<props> = ({ dataTable, loading, setLoading, pagination, changePagination, editMaType, deleteMaType }): React.ReactElement => {
+const MaTypeTableComponent: React.FC<props> = ({ dataTable, loading, editMaType, deleteMaType }): React.ReactElement => {
+  const [editForm] = useForm();
+  const [editId, setEditId] = useState<number | undefined>(undefined);
+
   useEffect(() => {
     if (loading === true) {
       setEditId(undefined);
-      // setDeleteId(undefined);
     }
   }, [loading]);
 
-  const [editForm] = useForm();
-  const [editId, setEditId] = useState<number | undefined>(undefined);
   function showModalEdit(record: ITMaType): void {
     setEditId(record.id);
     editForm.setFieldsValue(record);
@@ -45,11 +45,9 @@ const MaTypeTableComponent: React.FC<props> = ({ dataTable, loading, setLoading,
       onOk: async () => {
         deleteMaType(id);
       },
-      // onCancel() {
-      //   setDeleteId(undefined);
-      // },
     });
   }
+
   function onMaTypeEdit(e: ITMaTypeForm) {
     if (editId) editMaType(editId, { ...e });
   }
@@ -57,27 +55,25 @@ const MaTypeTableComponent: React.FC<props> = ({ dataTable, loading, setLoading,
   const maColumns: TableColumnsType<ITMaType> = [
     {
       key: "id",
-      title: "NO",
+      title: "ลำดับ",
       dataIndex: "id",
-      width: "100px",
       align: "center",
       render: (id: number, record: ITMaType, index: number) => index + 1,
     },
-    { key: "name", dataIndex: "name", title: "ประเภท MA", width: "200px" },
+    { key: "name", dataIndex: "name", title: "ประเภทการบำรุงรักษา" },
     {
       key: "activeStatus",
       dataIndex: "activeStatus",
-      title: "ACTIVE STATUS",
-      width: "200px",
-      render: (data: Boolean) => (data ? <Tag color="green">Active</Tag> : <Tag color="red">In Active</Tag>),
+      title: "สถานะ",
+      align: "center",
+      render: (data: Boolean) => (data ? <Tag color="green">ใช้งาน</Tag> : <Tag color="red">ปิดการใช้งาน</Tag>),
     },
-    { key: "createdAt", dataIndex: "createdAt", title: "CREATED AT", width: "200px", render: (data: Date) => (data ? dateToStringTh(data) : "-") },
-    { key: "updatedAt", dataIndex: "updatedAt", title: "UPDATED AT", width: "200px", render: (data: Date) => (data ? dateToStringTh(data) : "-") },
+    { key: "createdAt", dataIndex: "createdAt", title: "วันที่สร้าง", render: (data: Date) => (data ? dateToStringTh(data) : "-") },
+    { key: "updatedAt", dataIndex: "updatedAt", title: "วันที่แก้ไข", render: (data: Date) => (data ? dateToStringTh(data) : "-") },
     {
       key: "id",
       dataIndex: "id",
-      title: "ดำเนินการ",
-      width: "200px",
+      title: "...",
       align: "center",
       render: (id: number, record: ITMaType, index: number) => (
         <div className="space-x-1">
@@ -94,33 +90,37 @@ const MaTypeTableComponent: React.FC<props> = ({ dataTable, loading, setLoading,
 
   return (
     <>
-      <Table columns={maColumns} dataSource={dataTable} size="small" rowKey={(data: ITMaType) => data.id} />
+      <Table columns={maColumns} dataSource={dataTable} size="small" rowKey={(data: ITMaType) => data.id} scroll={{ x: "max-content" }} />
       <Modal
-        title="Edit Maintenance Type"
+        title="แก้ไขข้อมูล"
         open={editId ? true : false}
-        footer={[]}
+        footer={false}
         onCancel={() => {
           setEditId(undefined);
-        }}
-      >
-        <Form form={editForm} onFinish={onMaTypeEdit}>
-          <Form.Item name={"name"} rules={[{ required: true, message: "Plase enter MA Type Name" }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item name={"activeStatus"}>
-            <Switch />
-          </Form.Item>
+        }}>
+        <Form form={editForm} onFinish={onMaTypeEdit} layout="vertical">
+          <div className=" col-span-2 grid grid-cols-2 space-x-2">
+            <div>
+              <Form.Item name={"name"} label={`ประเภทการบำรุงรักษา :`} rules={[{ required: true, message: "Plase enter MA Type Name" }]}>
+                <Input />
+              </Form.Item>
+            </div>
+            <div>
+              <Form.Item name={"activeStatus"} label={`สถานะ :`}>
+                <Switch />
+              </Form.Item>
+            </div>
+          </div>
           <Form.Item>
             <div className=" space-x-2 text-right">
               <Button
                 onClick={() => {
                   setEditId(undefined);
-                }}
-              >
-                Close
+                }}>
+                ยกเลิก
               </Button>
               <Button type="primary" htmlType="submit">
-                Confirm
+                แก้ไข
               </Button>
             </div>
           </Form.Item>

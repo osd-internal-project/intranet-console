@@ -18,7 +18,7 @@ import { ITProject } from "../common/project";
 export interface TCrmServices {
   findManyByCustomerId: (
     customerId: number,
-    condition: object
+    search: object
   ) => Promise<ITBranchDetail[]>;
   findManyByCustomerSubId: (
     customerSubId: number,
@@ -48,13 +48,10 @@ const CrmServices = (axiosInstance: AxiosInstance): TCrmServices => {
   const customerAddressUrl = "/customer-address";
   const customerContactUrl = "/customer-contact";
   return {
-    findManyByCustomerId: async (customerId, condition) => {
-      const query = {
-        ...condition,
-      };
+    findManyByCustomerId: async (customerId, search) => {
       return await axiosInstance
         .get(`${customerBranchUrl}/detail-list-by-customer/${customerId}`, {
-          params: query,
+          params: { search: search },
         })
         .then((res) => {
           return res.data;

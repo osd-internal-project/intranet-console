@@ -217,7 +217,7 @@ export default function ProductsAddPage() {
   ) => {
     const products = await customerProductServices.findManyByCustomer(
       customerId,
-      search
+      allSearch
     );
     if (products) {
       setCustomerProductsByCustomer(products);
@@ -231,7 +231,7 @@ export default function ProductsAddPage() {
   ) => {
     const products = await customerProductServices.findManyByBranch(
       bracnchId,
-      search
+      allSearch
     );
 
     if (products) {
@@ -245,7 +245,7 @@ export default function ProductsAddPage() {
     setloading(true);
     const branchs = await customerBranchServices.findManyByCustomerId(
       customerId,
-      {}
+      allSearch
     );
     setBranchList(branchs);
     setloading(false);

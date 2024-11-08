@@ -103,7 +103,6 @@ const BranchProductList: React.FC<props> = ({
     if (values?.productName) {
       search = { ...search, productName: values.productName };
     }
-    console.log(search);
     getCustomerProductsByBranch(Number(parentId), search);
   }
 
@@ -113,18 +112,6 @@ const BranchProductList: React.FC<props> = ({
         <div className=" font-bold text-base">Products</div>
       </div>
       <div>
-        <Form layout="vertical" size="small" onFinish={onSearchProduct}>
-          <div className=" grid grid-cols-4 gap-2">
-            <Form.Item name={"productName"} label={"Product Name"}>
-              <Input />
-            </Form.Item>
-          </div>
-          <div className=" flex justify-end">
-            <Button type="primary" size="small" htmlType="submit">
-              Search
-            </Button>
-          </div>
-        </Form>
         <div className=" mt-2 p-2 bg-slate-100" style={{ borderRadius: 5 }}>
           <div
             style={{ maxHeight: "500px" }}

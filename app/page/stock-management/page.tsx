@@ -1,5 +1,14 @@
 "use client";
-import { Breadcrumb, Button, Card, Col, Divider, Row, Space, Typography } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Card,
+  Col,
+  Divider,
+  Row,
+  Space,
+  Typography,
+} from "antd";
 import Link from "next/link";
 import {
   buldingIcon,
@@ -31,7 +40,11 @@ type TypeButtonData = TypeButton[];
 
 export default function StockMangementPage() {
   const [submenu, setSubmenu] = useState<TypeButtonData[]>([]);
-  const categories: string[] = ["VALUES", "INVENTORY MANAGEMENT", "PRODUCT MANAGEMENT"];
+  const categories: string[] = [
+    "VALUES",
+    "INVENTORY MANAGEMENT",
+    "PRODUCT MANAGEMENT",
+  ];
   const buttonsData: TypeButtonData[] = [
     [
       {
@@ -115,7 +128,7 @@ export default function StockMangementPage() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 title: <span>Stock Management</span>,
@@ -134,38 +147,54 @@ export default function StockMangementPage() {
         <div className=" grid grid-cols-3 gap-4">
           {categories?.map((category: string, index: number) => {
             return (
-              <div key={index} className=" col-span-3 md:col-span-1" style={{ width: "100%" }}>
+              <div
+                key={index}
+                className=" col-span-3 md:col-span-1"
+                style={{ width: "100%" }}
+              >
                 <Col span={24}>
-                  <Typography className="text-name-header">{category}</Typography>
+                  <Typography className="text-name-header">
+                    {category}
+                  </Typography>
                 </Col>
                 <br />
-                {buttonsData[index].map((buttonText: TypeButton, buttonIndex: number) => {
-                  return checkRule(buttonText.rule) ? (
-                    <Col key={buttonIndex} span={24} style={{ marginBottom: "10px" }}>
-                      <Link href={`/page/${buttonText.name_path}`}>
-                        <Button className="button_stock-management w-5/6">
-                          <div
-                            style={{
-                              height: "100%",
-                              // justifyContent: "start",
-                              display: "flex",
-                              alignItems: "center",
-                            }}
-                            className=" w-full justify-between"
-                          >
-                            <Space className=" w-full">
-                              <Typography className="text-name-menu">{buttonText.icon}</Typography>
-                              <Typography className="text-name-menu">{buttonText.name_header}</Typography>
-                            </Space>
-                            <Typography>{moveRightIcon}</Typography>
-                          </div>
-                        </Button>
-                      </Link>
-                    </Col>
-                  ) : (
-                    <></>
-                  );
-                })}
+                {buttonsData[index].map(
+                  (buttonText: TypeButton, buttonIndex: number) => {
+                    return checkRule(buttonText.rule) ? (
+                      <Col
+                        key={buttonIndex}
+                        span={24}
+                        style={{ marginBottom: "10px" }}
+                      >
+                        <Link href={`/page/${buttonText.name_path}`}>
+                          <Button className="button_stock-management w-5/6">
+                            <div
+                              style={{
+                                height: "100%",
+                                // justifyContent: "start",
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                              className=" w-full justify-between"
+                            >
+                              <Space className=" w-full">
+                                <Typography className="text-name-menu">
+                                  {buttonText.icon}
+                                </Typography>
+                                <Typography className="text-name-menu">
+                                  {buttonText.name_header}
+                                </Typography>
+                              </Space>
+                              <Typography>{moveRightIcon}</Typography>
+                            </div>
+                          </Button>
+                        </Link>
+                      </Col>
+                    ) : (
+                      <></>
+                    );
+                  }
+                )}
               </div>
             );
           })}

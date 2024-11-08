@@ -1,6 +1,15 @@
 "use client";
 import React, { useState } from "react";
-import { Breadcrumb, Card, Col, Divider, Row, Tabs, TabsProps, message } from "antd";
+import {
+  Breadcrumb,
+  Card,
+  Col,
+  Divider,
+  Row,
+  Tabs,
+  TabsProps,
+  message,
+} from "antd";
 import SlideImageSetting from "./slide-image/slide-image";
 import InfomationManagement from "./information-management/page";
 import InfomationResult from "./infomation-data/page";
@@ -61,7 +70,7 @@ export default function TypeLeave() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 title: <span>Setting</span>,
@@ -73,10 +82,19 @@ export default function TypeLeave() {
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
-          <div className="title-page-font">{items.filter((item) => item.key === keyItemTab).map((item) => item.label)}</div>
+          <div className="title-page-font">
+            {items
+              .filter((item) => item.key === keyItemTab)
+              .map((item) => item.label)}
+          </div>
         </Divider>
         <Card className="w-full">
-          <Tabs defaultActiveKey="1" items={items} type="card" onChange={onChange} />
+          <Tabs
+            defaultActiveKey="1"
+            items={items}
+            type="card"
+            onChange={onChange}
+          />
         </Card>
       </Row>
     </>

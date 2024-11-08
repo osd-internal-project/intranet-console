@@ -1,6 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, message } from "antd";
+import {
+  Breadcrumb,
+  Card,
+  Col,
+  Divider,
+  Form,
+  Modal,
+  Row,
+  message,
+} from "antd";
 import { CreateTypeLeave } from "./components/create-type-leave";
 import { TableTypeLeave } from "./components/table-type-leave";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -157,7 +166,7 @@ export default function TypeLeave() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 title: <span>Setting</span>,

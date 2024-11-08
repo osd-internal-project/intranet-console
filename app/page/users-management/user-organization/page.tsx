@@ -1,5 +1,16 @@
 "use client";
-import { Breadcrumb, Button, Card, Col, DatePicker, Divider, Form, Input, Row, Table } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Card,
+  Col,
+  DatePicker,
+  Divider,
+  Form,
+  Input,
+  Row,
+  Table,
+} from "antd";
 import { useEffect, useState } from "react";
 import OrganizationManage from "./components/OrgenizationManage";
 import OrganizedServices from "./services/organized.service";
@@ -71,7 +82,9 @@ export default function Organization() {
       dataIndex: "organizedName",
       key: "organizedName",
       width: "20%",
-      render: (text: string, record: any, index: number) => <div className="text-blue">{text}</div>,
+      render: (text: string, record: any, index: number) => (
+        <div className="text-blue">{text}</div>
+      ),
     },
     {
       title: "Description",
@@ -170,7 +183,7 @@ export default function Organization() {
           items={[
             {
               href: "/page",
-              title: <span>Home</span>,
+              title: <span>หน้าหลัก</span>,
             },
             {
               title: <span>Users Management</span>,
@@ -225,7 +238,13 @@ export default function Organization() {
           <Card className="grid grid-cols-1 ">
             <div className="grid grid-cols-1 md:grid-cols-1">
               <div>
-                <Table size="small" loading={loading} dataSource={dataSource} rowKey={"organizedId"} columns={columns} />
+                <Table
+                  size="small"
+                  loading={loading}
+                  dataSource={dataSource}
+                  rowKey={"organizedId"}
+                  columns={columns}
+                />
               </div>
             </div>
           </Card>
@@ -233,7 +252,10 @@ export default function Organization() {
       </Col>
 
       <div>
-        <OrganizationManage propDataManage={propDataManage} manageStatus={manageStatus} />
+        <OrganizationManage
+          propDataManage={propDataManage}
+          manageStatus={manageStatus}
+        />
       </div>
     </Row>
   );

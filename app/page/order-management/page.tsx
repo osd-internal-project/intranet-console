@@ -1,5 +1,15 @@
 "use client";
-import { Breadcrumb, Button, Card, Col, Divider, Form, Row, Select, Table } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Card,
+  Col,
+  Divider,
+  Form,
+  Row,
+  Select,
+  Table,
+} from "antd";
 import TableOrders from "./components/TableOrders";
 import { useEffect, useState } from "react";
 import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -24,7 +34,8 @@ export default function ProductListPage() {
 
   const fetchData = async () => {
     if (session?.grouplist) {
-      const locations: ITypeMasterLocation[] = await orderManagementService.getLocationByGroup(session?.grouplist);
+      const locations: ITypeMasterLocation[] =
+        await orderManagementService.getLocationByGroup(session?.grouplist);
       const options = locations.map((d: ITypeMasterLocation) => ({
         value: d.id,
         label: d.locationName,
@@ -41,7 +52,7 @@ export default function ProductListPage() {
           items={[
             {
               href: "/page",
-              title: <span>Home</span>,
+              title: <span>หน้าหลัก</span>,
             },
             {
               title: <span>Order Management</span>,

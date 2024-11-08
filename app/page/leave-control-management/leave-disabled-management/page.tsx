@@ -1,8 +1,26 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, Tabs, message } from "antd";
-import { ISelect, ITpyeUser, ITypetypeleave, ITypeDataleaveMap } from "../common";
-import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
+import {
+  Breadcrumb,
+  Card,
+  Col,
+  Divider,
+  Form,
+  Modal,
+  Row,
+  Tabs,
+  message,
+} from "antd";
+import {
+  ISelect,
+  ITpyeUser,
+  ITypetypeleave,
+  ITypeDataleaveMap,
+} from "../common";
+import {
+  useAxiosIntranet,
+  useAxiosUser,
+} from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../../../services/leave-management.service";
 import { TabeLeavManagement } from "./components/tab-leave-management";
 import { CreateLeaveManagement } from "./components/create-leave-management";
@@ -50,11 +68,15 @@ const page = () => {
   const fecthDataDisabledUser = async () => {
     setLoadingTableUsers(true);
     try {
-      const result = await dataleaveserviceIntra.getdataUserByTypeLeaveId({ typeid: getdataType });
-      const typeLeaveDisabledUser = result.typeLeaveDisabledMap.map((event: { id: ITypeDataleaveMap; user: ITpyeUser }) => ({
-        user: event.user,
-        id: event.id,
-      }));
+      const result = await dataleaveserviceIntra.getdataUserByTypeLeaveId({
+        typeid: getdataType,
+      });
+      const typeLeaveDisabledUser = result.typeLeaveDisabledMap.map(
+        (event: { id: ITypeDataleaveMap; user: ITpyeUser }) => ({
+          user: event.user,
+          id: event.id,
+        })
+      );
       setdataUserByTypeId(typeLeaveDisabledUser);
       setLoadingTableUsers(false);
     } catch (error) {
@@ -72,7 +94,9 @@ const page = () => {
   }
 
   const onFinishCreate = async (event: ITpyeUser) => {
-    const resTypeLeaveMap = await dataleaveserviceIntra.getdataTypeLeaveMap(event.userId);
+    const resTypeLeaveMap = await dataleaveserviceIntra.getdataTypeLeaveMap(
+      event.userId
+    );
     if (event.userId && resTypeLeaveMap.length > 0) {
       if (resTypeLeaveMap[0].userId === event.userId) {
         message.warning(`ประเภทการลานี้มีการเพิ่มชื่อผู้ใช้นี้แล้ว!`);
@@ -94,7 +118,9 @@ const page = () => {
       },
       onOk: async () => {
         try {
-          const result = await dataleaveserviceIntra.createTypeLeaveDisabled(event);
+          const result = await dataleaveserviceIntra.createTypeLeaveDisabled(
+            event
+          );
           if (result) {
             message.success("Add success");
             formcreate.resetFields();
@@ -122,7 +148,8 @@ const page = () => {
       cancelText: "Cancel",
       onOk: async () => {
         try {
-          const dataResult = await dataleaveserviceIntra.deleteTypeLeaveDisabled(id);
+          const dataResult =
+            await dataleaveserviceIntra.deleteTypeLeaveDisabled(id);
           if (dataResult) {
             message.success("Delete success");
             setLoading(true);
@@ -147,7 +174,7 @@ const page = () => {
             items={[
               {
                 href: "/page/home",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 title: <span>Leave Disabled Management</span>,

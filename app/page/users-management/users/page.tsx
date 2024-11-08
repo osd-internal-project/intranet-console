@@ -30,7 +30,10 @@ export default function UsermanagementPage() {
     if (searchdata.lastNameTh) {
       search = { ...search, lastNameTh: { contains: searchdata.lastNameTh } };
     }
-    if (searchdata.activeStatus !== null || searchdata.activeStatus !== undefined) {
+    if (
+      searchdata.activeStatus !== null ||
+      searchdata.activeStatus !== undefined
+    ) {
       search = { ...search, activeStatus: searchdata.activeStatus };
     }
     if (searchdata.positionId) {
@@ -55,7 +58,7 @@ export default function UsermanagementPage() {
           items={[
             {
               href: "/page",
-              title: <span>Home</span>,
+              title: <span>หน้าหลัก</span>,
             },
             {
               title: <span>User Management</span>,
@@ -71,7 +74,11 @@ export default function UsermanagementPage() {
         <div className="title-page-font">{`Users`}</div>
       </Divider>
       <Col span={24}>
-        <UserTable loading={loading} propLoading={propLoading} search={search} />
+        <UserTable
+          loading={loading}
+          propLoading={propLoading}
+          search={search}
+        />
       </Col>
     </Row>
   );

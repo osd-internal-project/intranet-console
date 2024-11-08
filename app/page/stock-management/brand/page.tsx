@@ -15,7 +15,7 @@ export default function Brand() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 href: "/page/stock-management",
@@ -38,7 +38,10 @@ export default function Brand() {
               <FilterBrand onCloseDialog={(e: boolean) => setloading(e)} />
             </div>
             <div>
-              <TableBrand onCloseDialog={(e: boolean) => setloading(e)} loading={loading} />
+              <TableBrand
+                onCloseDialog={(e: boolean) => setloading(e)}
+                loading={loading}
+              />
             </div>
           </div>
         </Col>

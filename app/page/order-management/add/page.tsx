@@ -4,7 +4,12 @@ import AddComponent from "./components/AddOrder";
 import { Row, Col, Breadcrumb, Select, Form, Divider } from "antd";
 import OrderManagementServices from "../services/order-management.service";
 import { useEffect, useState } from "react";
-import { ITypeMasterLocation, ITypeOption, ITypeMasterLocationByGroup, ITypeOrderLotForm } from "../common";
+import {
+  ITypeMasterLocation,
+  ITypeOption,
+  ITypeMasterLocationByGroup,
+  ITypeOrderLotForm,
+} from "../common";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 export default function AddOrder() {
@@ -27,7 +32,9 @@ export default function AddOrder() {
     const ioption: ITypeOption[] = [];
     if (locationSelected) {
       location
-        ?.filter((d: ITypeMasterLocationByGroup) => d.id === locationSelected.value)
+        ?.filter(
+          (d: ITypeMasterLocationByGroup) => d.id === locationSelected.value
+        )
         .map((d: ITypeMasterLocationByGroup) => {
           d.inventory
             ?.filter((d: any) => d.status == true)
@@ -41,7 +48,8 @@ export default function AddOrder() {
 
   const fetchData = async () => {
     if (session?.grouplist) {
-      const locations: ITypeMasterLocationByGroup[] = await orderManagementService.getLocationByGroup(session?.grouplist);
+      const locations: ITypeMasterLocationByGroup[] =
+        await orderManagementService.getLocationByGroup(session?.grouplist);
       const doptions = locations.map((d: ITypeMasterLocation) => ({
         value: d.id,
         label: d.locationName,
@@ -49,7 +57,9 @@ export default function AddOrder() {
       setLocation(locations);
       setLocationOption(doptions);
       if (locationId) {
-        const selectedInventory = doptions.find((option) => option.value === Number(locationId));
+        const selectedInventory = doptions.find(
+          (option) => option.value === Number(locationId)
+        );
         setLocationSelected(selectedInventory);
       }
     }
@@ -62,7 +72,7 @@ export default function AddOrder() {
           items={[
             {
               href: "/page",
-              title: <span>Home</span>,
+              title: <span>หน้าหลัก</span>,
             },
             {
               href: "/page/order-management",
@@ -85,7 +95,9 @@ export default function AddOrder() {
             placeholder={"Please Select Location"}
             value={locationSelected?.value}
             onChange={(e) => {
-              const selectedInventory = locationOption.find((option) => option.value === e);
+              const selectedInventory = locationOption.find(
+                (option) => option.value === e
+              );
               setLocationSelected(selectedInventory);
             }}
             // style={{ width: "200px" }}

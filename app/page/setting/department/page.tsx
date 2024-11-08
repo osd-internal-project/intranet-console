@@ -61,7 +61,7 @@ export default function Page() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 href: "/page/setting",

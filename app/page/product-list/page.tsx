@@ -6,7 +6,15 @@ import ProductList from "./components/TableProductList";
 
 import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
 import ProductListServices from "./services/product-list.service";
-import { ITypeMasterLocation, ITypeMasterProduct, ITypeMasterProductForm, ITypeOption, filterproductlist, typeImages, typeImagesGHS } from "./common";
+import {
+  ITypeMasterLocation,
+  ITypeMasterProduct,
+  ITypeMasterProductForm,
+  ITypeOption,
+  filterproductlist,
+  typeImages,
+  typeImagesGHS,
+} from "./common";
 import GhsServices from "../stock-management/ghs/services/ghs.service";
 import { InventoryStockServices } from "../inventory/services/inventory-stock.service";
 
@@ -56,7 +64,8 @@ export default function ProductListPage() {
   };
 
   const fetchData = async () => {
-    const locations: ITypeMasterLocation[] = await productListService.getLocation();
+    const locations: ITypeMasterLocation[] =
+      await productListService.getLocation();
     const options = locations.map((d: ITypeMasterLocation) => ({
       value: d.id,
       label: d.locationName,
@@ -65,20 +74,28 @@ export default function ProductListPage() {
   };
 
   const loadData = async () => {
-    const data = await productListService.getMasterProductsByLocationId(location, search, getswitch);
+    const data = await productListService.getMasterProductsByLocationId(
+      location,
+      search,
+      getswitch
+    );
     const tranfers: ITypeMasterProduct[] = await Promise.all(
       data.map(async (event: ITypeMasterProduct) => {
         let expiredRemain = 0;
         if (event?.inventoryStock.length > 0) {
           await Promise.all(
             event?.inventoryStock.map(async (e: any) => {
-              const expired = await inventorystockservices.getExpiredRemain(e.id);
+              const expired = await inventorystockservices.getExpiredRemain(
+                e.id
+              );
               expiredRemain += expired ? expired : 0;
             })
           );
         }
         const images = await dataImages(event?.masterProductImages as any);
-        const imagesGHS = await await dataImagesGHS(event?.masterProductGhsMap as any);
+        const imagesGHS = await await dataImagesGHS(
+          event?.masterProductGhsMap as any
+        );
         const mapData = {
           ...event,
           images: images,
@@ -97,7 +114,9 @@ export default function ProductListPage() {
       const data = await Promise.all(
         event.map(async (r: typeImagesGHS, i: number) => {
           if (r?.masterGhsType?.imagesGhs.length !== 0) {
-            const getImages = await ghsServices.getImages(r.masterGhsType.imagesGhs[0]?.idfile);
+            const getImages = await ghsServices.getImages(
+              r.masterGhsType.imagesGhs[0]?.idfile
+            );
             const mapData = {
               imagefile: getImages,
             };
@@ -138,7 +157,7 @@ export default function ProductListPage() {
           items={[
             {
               href: "/page",
-              title: <span>Home</span>,
+              title: <span>หน้าหลัก</span>,
             },
             {
               title: <span>Product List</span>,
@@ -150,7 +169,7 @@ export default function ProductListPage() {
       <Divider orientation="left" orientationMargin="0">
         <div className="title-page-font">{`Product List`}</div>
       </Divider>
-      
+
       <Col span={24} className=" flex space-x-4">
         <div className="flex space-x-3  items-center">
           <div className="text-lg">Location :</div>

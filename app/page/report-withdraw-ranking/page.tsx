@@ -1,9 +1,26 @@
 "use client";
 import { exportIcon } from "@/components/icon";
 import { FilterOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Card, Col, DatePicker, Divider, Form, Input, Popover, Row, Select, Space, Table } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Card,
+  Col,
+  DatePicker,
+  Divider,
+  Form,
+  Input,
+  Popover,
+  Row,
+  Select,
+  Space,
+  Table,
+} from "antd";
 import ReportService from "./services/report.service";
-import { useAxiosReport, useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
+import {
+  useAxiosReport,
+  useAxiosStock,
+} from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ReportTable } from "./components/ReportTable";
 import { ITypeSearchShow, typedata } from "./common";
 import { useEffect, useState } from "react";
@@ -18,7 +35,9 @@ export default function TransactionPage() {
   const stockServices = StockServices(stockAuth);
   const [loading, setLoading] = useState<boolean>(true);
   const [getdataresult, setdataResult] = useState<typedata[]>([]);
-  const [location, setLocation] = useState<{ key: number; value: string; label: string }[]>([]);
+  const [location, setLocation] = useState<
+    { key: number; value: string; label: string }[]
+  >([]);
   const [search, setSearch] = useState<object>({});
   const [openFilter, setOpenFilter] = useState(false);
   const [disableExport, setDisableExport] = useState(true);
@@ -63,7 +82,9 @@ export default function TransactionPage() {
       });
       const link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);
-      link.download = `report-withdraw-ranking- ${dayjs(new Date()).format("YYYYMMDDHHmmss")} .xlsx`;
+      link.download = `report-withdraw-ranking- ${dayjs(new Date()).format(
+        "YYYYMMDDHHmmss"
+      )} .xlsx`;
       link.click();
     } catch (error) {
       console.error("Error downloading Excel file:", error);
@@ -109,7 +130,13 @@ export default function TransactionPage() {
     setSearch({});
   };
   const searchContent = (
-    <Form form={filterForm} name="filter" layout="vertical" onFinish={onFilter} autoComplete="off">
+    <Form
+      form={filterForm}
+      name="filter"
+      layout="vertical"
+      onFinish={onFilter}
+      autoComplete="off"
+    >
       <div className="grid grid-cols-1 md:gap-4 md:grid-cols-4">
         <Form.Item label="Cas No :" name="casNo">
           <Input placeholder="Search Text" />
@@ -121,11 +148,18 @@ export default function TransactionPage() {
           {/* <Input placeholder="Search Text" /> */}
           <Select allowClear options={location} placeholder="Select" />
         </Form.Item>
-        <Form.Item label="Last Order Date :" name="updatedAt" rules={[{ required: true, message: "Please enter date" }]}>
+        <Form.Item
+          label="Last Order Date :"
+          name="updatedAt"
+          rules={[{ required: true, message: "Please enter date" }]}
+        >
           <RangePicker className=" w-full" />
         </Form.Item>
       </div>
-      <Row gutter={[8, 8]} style={{ justifyContent: "end", display: "flex", width: "100%" }}>
+      <Row
+        gutter={[8, 8]}
+        style={{ justifyContent: "end", display: "flex", width: "100%" }}
+      >
         <Col>
           <Form.Item
             style={{
@@ -134,7 +168,10 @@ export default function TransactionPage() {
               alignItems: "center",
             }}
           >
-            <Button type="default" onClick={handleResetFilter}>{`Reset`}</Button>
+            <Button
+              type="default"
+              onClick={handleResetFilter}
+            >{`Reset`}</Button>
           </Form.Item>
         </Col>
         <Col>
@@ -161,7 +198,7 @@ export default function TransactionPage() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 title: <span>10 อันดับการเบิกจ่ายที่มากที่สุด</span>,
@@ -188,11 +225,21 @@ export default function TransactionPage() {
                     trigger="click"
                     overlayStyle={{ width: "calc(100% - 240px)" }}
                   >
-                    <Button type="primary" className="button-blue" icon={<FilterOutlined />}>
+                    <Button
+                      type="primary"
+                      className="button-blue"
+                      icon={<FilterOutlined />}
+                    >
                       Filters
                     </Button>
                   </Popover>
-                  <Button type="primary" icon={exportIcon} className="button-blue" onClick={exportExcel} disabled={disableExport}>
+                  <Button
+                    type="primary"
+                    icon={exportIcon}
+                    className="button-blue"
+                    onClick={exportExcel}
+                    disabled={disableExport}
+                  >
                     Export
                   </Button>
                 </Space>

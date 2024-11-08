@@ -41,13 +41,32 @@ export default function MaTaskPage() {
   //   createdDate: new Date(),
   // };
 
-  async function updateMa(data: ITMaUpdateForm, attendFiles: UploadFile[], imageFiles: UploadFile[]): Promise<void> {
-    let form = { ...data, updatedById: session?.user.userId, updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}` };
+  async function updateMa(
+    data: ITMaUpdateForm,
+    attendFiles: UploadFile[],
+    imageFiles: UploadFile[]
+  ): Promise<void> {
+    let form = {
+      ...data,
+      updatedById: session?.user.userId,
+      updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+    };
 
     if (data.nextTask) {
-      const typeSelected = maTypes.findLast((type) => type.id === data.nextTask?.maTypeId);
+      const typeSelected = maTypes.findLast(
+        (type) => type.id === data.nextTask?.maTypeId
+      );
       const submaStatus = "process";
-      form = { ...form, nextTask: { create: { ...data.nextTask, maTypeName: typeSelected?.name, maStatus: submaStatus } } } as any;
+      form = {
+        ...form,
+        nextTask: {
+          create: {
+            ...data.nextTask,
+            maTypeName: typeSelected?.name,
+            maStatus: submaStatus,
+          },
+        },
+      } as any;
     }
     await maServices
       .update(Number(params.maId), form)
@@ -106,7 +125,7 @@ export default function MaTaskPage() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 href: "/page/maintenance-management",

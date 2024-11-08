@@ -25,7 +25,7 @@ export default function Page() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 title: <span>Setting</span>,
@@ -49,7 +49,10 @@ export default function Page() {
             </div>
             {organizeSelect ? (
               <div>
-                <OrganizeManage propDataManage={propDataManage} organizeSelect={organizeSelect} />
+                <OrganizeManage
+                  propDataManage={propDataManage}
+                  organizeSelect={organizeSelect}
+                />
               </div>
             ) : (
               <></>

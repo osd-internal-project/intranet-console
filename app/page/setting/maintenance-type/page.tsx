@@ -15,7 +15,10 @@ export default function MaTaskPage() {
   const showRule = checkRule("ma-type-show");
 
   const [loading, setloading] = useState<boolean>(true);
-  const [pagination, setPagination] = useState<ITPagination>({ current: 1, pageSize: 10 });
+  const [pagination, setPagination] = useState<ITPagination>({
+    current: 1,
+    pageSize: 10,
+  });
   const [dataTable, setDataTable] = useState<ITMaType[]>([]);
 
   useEffect(() => {
@@ -55,7 +58,7 @@ export default function MaTaskPage() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 title: <span>Setting</span>,

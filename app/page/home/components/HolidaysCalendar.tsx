@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { createStyles } from "antd-style";
-import { Alert, Badge, BadgeProps, Calendar, CalendarProps, Col, Radio, Row, Select } from "antd";
+import {
+  Alert,
+  Badge,
+  BadgeProps,
+  Calendar,
+  CalendarProps,
+  Col,
+  Radio,
+  Row,
+  Select,
+} from "antd";
 import axios from "axios";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
@@ -129,10 +139,17 @@ const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
     setPanelDate(value);
   };
 
-  const onDateChange: CalendarProps<Dayjs>["onSelect"] = (value, selectInfo) => {
+  const onDateChange: CalendarProps<Dayjs>["onSelect"] = (
+    value,
+    selectInfo
+  ) => {
     if (selectInfo.source === "date") {
       const holidaySelect = holiday
-        .filter((item: THoliday) => dayjs(new Date(item.holidaysDate)).format("YYYY-MM-DD") === dayjs(value).format("YYYY-MM-DD"))
+        .filter(
+          (item: THoliday) =>
+            dayjs(new Date(item.holidaysDate)).format("YYYY-MM-DD") ===
+            dayjs(value).format("YYYY-MM-DD")
+        )
         .map((item: THoliday) => item.holidaysName);
       setResultHoliday(holidaySelect && holidaySelect);
       setSelectDate(value);
@@ -154,7 +171,13 @@ const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
               className={classNames({
                 [styles.weekend]:
                   isWeekend ||
-                  holiday.some((item: THoliday) => dayjs(new Date(item.holidaysDate)).format("YYYY-MM-DD") === dayjs(date).format("YYYY-MM-DD")),
+                  (holiday &&
+                    holiday.some(
+                      (item: THoliday) =>
+                        dayjs(new Date(item.holidaysDate)).format(
+                          "YYYY-MM-DD"
+                        ) === dayjs(date).format("YYYY-MM-DD")
+                    )),
                 gray: !panelDateDate.isSame(date, "month"),
               })}
             >
@@ -179,9 +202,21 @@ const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
   };
   return (
     <>
-      <div className={styles.wrapper}>
-        <Calendar fullCellRender={cellRender} fullscreen={false} onPanelChange={onPanelChange} onSelect={onDateChange} />
-        {resultHoliday[0] ? <Alert type="warning" message={`${resultHoliday.map((item: string) => `${item}`)}`} /> : <></>}
+      <div className={` max-w-full ${styles.wrapper}`}>
+        <Calendar
+          fullCellRender={cellRender}
+          fullscreen={false}
+          onPanelChange={onPanelChange}
+          onSelect={onDateChange}
+        />
+        {resultHoliday[0] ? (
+          <Alert
+            type="warning"
+            message={`${resultHoliday.map((item: string) => `${item}`)}`}
+          />
+        ) : (
+          <></>
+        )}
       </div>
     </>
   );

@@ -1,12 +1,29 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Breadcrumb, Button, Card, Col, DatePicker, Form, Input, Popover, Row, Spin, Table, Tag } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Card,
+  Col,
+  DatePicker,
+  Form,
+  Input,
+  Popover,
+  Row,
+  Spin,
+  Table,
+  Tag,
+} from "antd";
 import { FilterOutlined } from "@ant-design/icons";
 import ObjectiveManage from "./components/ObjectiveManage";
 import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
 import MasterObjectiveServices from "./services/master-objective.service";
 import { deleteIcon, editIcon } from "@/components/icon";
-import { dateToStartofDay, dateToEndofDay, dateToStringTh } from "@/app/utils/format";
+import {
+  dateToStartofDay,
+  dateToEndofDay,
+  dateToStringTh,
+} from "@/app/utils/format";
 import { checkRule } from "@/app/utils/rules";
 type ObjectiveType = {
   id: number;
@@ -25,7 +42,10 @@ export default function ObjectivePage() {
   const { RangePicker } = DatePicker;
   const [loading, setLoading] = useState<boolean>(true);
   const [openFilter, setOpenFilter] = useState<boolean>(false);
-  const [manageStatus, setManageStatus] = useState<any>({ status: undefined, id: undefined });
+  const [manageStatus, setManageStatus] = useState<any>({
+    status: undefined,
+    id: undefined,
+  });
   const [dataTable, setDataTable] = useState<ObjectiveType[]>([]);
   const [search, setSearch] = useState<object>({});
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -41,7 +61,9 @@ export default function ObjectivePage() {
   }, [loading]);
 
   const loaddata = async () => {
-    const dataTable = await masterObjectiveServices.getMasterObjectiveByFilter(search);
+    const dataTable = await masterObjectiveServices.getMasterObjectiveByFilter(
+      search
+    );
     setCurrentPage(1);
     setDataTable(dataTable);
     setLoading(false);
@@ -93,28 +115,36 @@ export default function ObjectivePage() {
       dataIndex: "id",
       key: "id",
       width: "100px",
-      render: (text: string, record: any, index: number) => (currentPage - 1) * 10 + index + 1,
+      render: (text: string, record: any, index: number) =>
+        (currentPage - 1) * 10 + index + 1,
     },
     {
       title: "OBJECTIVE",
       dataIndex: "name",
       key: "name",
       width: "50%",
-      render: (text: string, record: any, index: number) => <div className=" font-bold text-base">{text}</div>,
+      render: (text: string, record: any, index: number) => (
+        <div className=" font-bold text-base">{text}</div>
+      ),
     },
     {
       title: "STATUS",
       dataIndex: "status",
       key: "status",
       render: (event: boolean, row: any, index: number) =>
-        event === true ? <Tag color="green">{`Active`}</Tag> : <Tag color="volcano">{`Inactive`}</Tag>,
+        event === true ? (
+          <Tag color="green">{`Active`}</Tag>
+        ) : (
+          <Tag color="volcano">{`Inactive`}</Tag>
+        ),
     },
 
     {
       title: "CREATED",
       dataIndex: "createdAt",
       key: "createdAt",
-      render: (text: string, record: any, index: number) => dateToStringTh(text as any),
+      render: (text: string, record: any, index: number) =>
+        dateToStringTh(text as any),
     },
 
     {
@@ -127,14 +157,22 @@ export default function ObjectivePage() {
         <>
           <div className="space-x-2">
             {editRule ? (
-              <Button type="link" onClick={() => setManageStatus({ status: "edit", id: data })}>
+              <Button
+                type="link"
+                onClick={() => setManageStatus({ status: "edit", id: data })}
+              >
                 {editIcon}
               </Button>
             ) : (
               <></>
             )}
             {deleteRule ? (
-              <Button type="link" danger onClick={() => setManageStatus({ status: "delete", id: data })} disabled={buttonLoading}>
+              <Button
+                type="link"
+                danger
+                onClick={() => setManageStatus({ status: "delete", id: data })}
+                disabled={buttonLoading}
+              >
                 {deleteIcon}
               </Button>
             ) : (
@@ -153,7 +191,7 @@ export default function ObjectivePage() {
           items={[
             {
               href: "/page",
-              title: <span>Home</span>,
+              title: <span>หน้าหลัก</span>,
             },
             {
               href: "/page/setting",
@@ -211,7 +249,11 @@ export default function ObjectivePage() {
                     loading={loading}
                     columns={columns}
                     dataSource={dataTable}
-                    pagination={{ current: currentPage, onChange: handlePageChange, showSizeChanger: false }}
+                    pagination={{
+                      current: currentPage,
+                      onChange: handlePageChange,
+                      showSizeChanger: false,
+                    }}
                     rowKey="id"
                   />
                 </div>

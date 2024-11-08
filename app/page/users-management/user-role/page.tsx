@@ -10,7 +10,7 @@ export default function RolePage() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 title: <span>Users Management</span>,

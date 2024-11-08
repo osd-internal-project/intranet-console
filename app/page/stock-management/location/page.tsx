@@ -61,7 +61,9 @@ export default function UsergroupPage() {
       const data = await Promise.all(
         result.map(async (event: typeLocation) => {
           const imageData = await dataImages(event);
-          const numberOfInventory = await locationServices.countInventorybyID(event.id);
+          const numberOfInventory = await locationServices.countInventorybyID(
+            event.id
+          );
           const mapData = {
             ...event,
             numberOfInventory: numberOfInventory,
@@ -76,7 +78,9 @@ export default function UsergroupPage() {
   };
   const dataImages = async (e: typeLocation) => {
     if (e.imagesLocation.length >= 1) {
-      const getImages = await locationServices.getImages(e.imagesLocation[0]?.idfile);
+      const getImages = await locationServices.getImages(
+        e.imagesLocation[0]?.idfile
+      );
 
       return getImages;
     } else {
@@ -91,7 +95,7 @@ export default function UsergroupPage() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 href: "/page/stock-management",
@@ -120,7 +124,11 @@ export default function UsergroupPage() {
                 />
               </div>
               <div>
-                <LocationTable loading={loading} getdataAll={getdataAll} setLoading={(e: boolean) => setLoading(e)} />
+                <LocationTable
+                  loading={loading}
+                  getdataAll={getdataAll}
+                  setLoading={(e: boolean) => setLoading(e)}
+                />
               </div>
             </Card>
           </div>

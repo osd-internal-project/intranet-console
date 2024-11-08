@@ -1,11 +1,24 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, message } from "antd";
+import {
+  Breadcrumb,
+  Card,
+  Col,
+  Divider,
+  Form,
+  Modal,
+  Row,
+  message,
+} from "antd";
 import { CreateMasterHolidays } from "./components/master-holidays-create";
 import { TableMasterHolidays } from "./components/master-holidays-table";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import MasterHolidaysService from "./services/index.service";
-import { ICreateMasterHolidayYearDto, IFindAllYearDto, IManagePageYear } from "./common";
+import {
+  ICreateMasterHolidayYearDto,
+  IFindAllYearDto,
+  IManagePageYear,
+} from "./common";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import dayjs from "dayjs";
 
@@ -13,7 +26,10 @@ export default function MasterdataHolidays() {
   const Auth = useAxiosIntranet();
   const masterholidaysService = MasterHolidaysService(Auth);
   const [loading, setLoading] = useState<boolean>(true);
-  const [manageStatusYear, setManageStatusYear] = useState<IManagePageYear>({ statusModal: false, statusAction: "create" });
+  const [manageStatusYear, setManageStatusYear] = useState<IManagePageYear>({
+    statusModal: false,
+    statusAction: "create",
+  });
   const [dataHolidayYear, setDataHolidayYear] = useState<IFindAllYearDto[]>([]);
   const [formCreate] = Form.useForm();
 
@@ -45,7 +61,9 @@ export default function MasterdataHolidays() {
         },
       },
       onOk: async () => {
-        const result = await masterholidaysService.createMasterHolidaysYear(dataCreate);
+        const result = await masterholidaysService.createMasterHolidaysYear(
+          dataCreate
+        );
         if (result) {
           message.success(`Add success`);
           formCreate.resetFields();
@@ -67,7 +85,7 @@ export default function MasterdataHolidays() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 title: <span>Setting</span>,
@@ -91,7 +109,10 @@ export default function MasterdataHolidays() {
               manageStatusYear={manageStatusYear}
               formCreate={formCreate}
             />
-            <TableMasterHolidays loading={loading} dataHolidayYear={dataHolidayYear} />
+            <TableMasterHolidays
+              loading={loading}
+              dataHolidayYear={dataHolidayYear}
+            />
           </Card>
         </Col>
       </Row>

@@ -50,23 +50,23 @@ export default MenuNav;
 export const MenuSider: MenuItem[] = [
   {
     key: "home",
-    label: "Home",
+    label: "หน้าหลัก",
     rule: "h-s",
     icon: <HomeOutlined />,
   },
   {
     key: "internal-info",
     icon: organizeChart,
-    label: `Internal Info`,
+    label: `ข้อมูลภายใน`,
     rule: "ii-s",
     children: [
       {
         key: `internal-info/organization-chart`,
-        label: "Organization Chart",
+        label: "แผนผังองค์กร",
       },
       {
         key: `internal-info/organization-chart-team`,
-        label: `Team Chart `,
+        label: `แผนผังทีม`,
       },
     ],
   },
@@ -117,17 +117,17 @@ export const MenuSider: MenuItem[] = [
   {
     key: "housekeeper",
     icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
-    label: "Housekeeper",
-    rule: "hk-s",
+    label: "งานแม่บ้าน",
+    // rule: "hk-s",
     children: [
       {
         key: `housekeeper/housekeepers`,
-        label: `Housekeeper`,
+        label: `ข้อมูลการการทำงานของแม่บ้าน`,
         rule: "hk-h",
       },
       {
         key: `housekeeper/housekeeper-management`,
-        label: `Housekeeper Management`,
+        label: `จัดการข้อมูลแม่บ้าน`,
         rule: "hk-m",
       },
     ],
@@ -135,27 +135,27 @@ export const MenuSider: MenuItem[] = [
   {
     key: "leave-control-management",
     icon: IconDataLeave,
-    label: `Leave Control Management`,
+    label: `ข้อมูลการลา`,
     rule: "dl-s",
     children: [
       {
         key: `leave-control-management/leave-letter`,
-        label: `Leave Letter`,
+        label: `ใบลาออนไลน์`,
         rule: "dl-a",
       },
       {
         key: `leave-control-management/leave-history`,
-        label: `Leave history`,
+        label: `ประวัติการลา`,
         rule: "dl-dt-u",
       },
       {
         key: `leave-control-management/leave-history-admin`,
-        label: `Leave history (admin)`,
+        label: `ประวัติการลา (สำหรับ Admin)`,
         rule: "dl-dt-a",
       },
       {
         key: `leave-control-management/leave-disabled-management`,
-        label: `Leave Disabled Management`,
+        label: `จัดการสิทธิ์การลา`,
         rule: "dl-dis",
       },
     ],
@@ -168,11 +168,11 @@ export const MenuSider: MenuItem[] = [
     children: [
       {
         key: `bookingroom/booking-room`,
-        label: `Booking room`,
+        label: `จองห้องประชุม`,
       },
       {
         key: `bookingroom/booking-room-management`,
-        label: `Booking room Management`,
+        label: `จัดการข้อมูลห้องประชุม`,
       },
     ],
   },
@@ -230,7 +230,7 @@ export const MenuSider: MenuItem[] = [
     children: [
       {
         key: `crm/customer-group`,
-        label: `Customer Group`,
+        label: `ข้อมูลลูกค้า`,
         rule: "crm-c-s",
       },
       {
@@ -250,7 +250,7 @@ export const MenuSider: MenuItem[] = [
       },
       {
         key: `crm/expense`,
-        label: `Expense`,
+        label: `ข้อมูลการเบิก`,
         rule: "crm-ex",
       },
     ],

@@ -6,7 +6,10 @@ import { ChartCountPerMonth } from "./components/ChartCountPerMonth";
 import { ChartAmountperMonth } from "./components/ChartAmountperMonth";
 import { MostOrderOfDepartment } from "./components/MostOrderOfDepartment";
 import { MostOrderOfProducts } from "./components/MostOrderOfProducts";
-import { useAxiosReport, useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
+import {
+  useAxiosReport,
+  useAxiosStock,
+} from "@/app/lib/axios/hooks/userAxiosAuth";
 import DashboardServices from "./services/dashboard.service";
 import { useEffect, useState } from "react";
 import { ITypeDepartment } from "./common";
@@ -23,7 +26,9 @@ export default function Dashboard() {
   const [countstatusPay, setCountstatusPay] = useState<number>(0);
   const [countstatusRecieve, setCountstatusRecieve] = useState<number>(0);
   const [countCost, setCountcost] = useState<number>(0);
-  const [mostOrderOfDepartment, setMostOrderOfDepartment] = useState<ITypeDepartment[]>([]);
+  const [mostOrderOfDepartment, setMostOrderOfDepartment] = useState<
+    ITypeDepartment[]
+  >([]);
   const [countPerMonthData, setCountPerMonthData] = useState<any[]>([]);
   const [amountPerMonthData, setAmountPerMonthData] = useState<any[]>([]);
   const [mostOrder, setMostOrder] = useState<any[]>([]);
@@ -44,7 +49,8 @@ export default function Dashboard() {
   const fecthdatacountproductsummary = async () => {
     const getcountvender = await dashboardservices.countVenders();
     const getcountmasterproduct = await dashboardservices.countMasterProduct();
-    const getcountmasterInventory = await dashboardservices.countMasterInventory();
+    const getcountmasterInventory =
+      await dashboardservices.countMasterInventory();
     setCountVender(getcountvender);
     setCountMasterproduct(getcountmasterproduct);
     setCountMasterInventory(getcountmasterInventory);
@@ -52,12 +58,15 @@ export default function Dashboard() {
   };
 
   const fethdatadepartmentoverview = async () => {
-    const getcountstatusPay = await dashboardservices.countStatusDepartmentOverview("pay");
-    const getcountstatusRecieve = await dashboardservices.countStatusDepartmentOverview("recieve");
+    const getcountstatusPay =
+      await dashboardservices.countStatusDepartmentOverview("pay");
+    const getcountstatusRecieve =
+      await dashboardservices.countStatusDepartmentOverview("recieve");
     const getcountCost = await dashboardservices.countCostDepartmentOverview();
     console.log(getcountCost);
 
-    const getcountOutofstock = await dashboardservices.countOutofstockDepartmentOverview();
+    const getcountOutofstock =
+      await dashboardservices.countOutofstockDepartmentOverview();
     setCountstatusPay(getcountstatusPay);
     setCountstatusRecieve(getcountstatusRecieve);
     setCountcost(getcountCost);
@@ -94,7 +103,7 @@ export default function Dashboard() {
             items={[
               {
                 href: "/page/dashboard",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 title: <span>Dashboard</span>,
@@ -113,7 +122,11 @@ export default function Dashboard() {
               />
             </div>
             <div className=" md:col-span-2">
-              <ProductSummary countVender={countVender} countMasterproduct={countMasterproduct} countMasterInventory={countMasterInventory} />
+              <ProductSummary
+                countVender={countVender}
+                countMasterproduct={countMasterproduct}
+                countMasterInventory={countMasterInventory}
+              />
             </div>
             <div className=" md:col-span-3">
               <ChartCountPerMonth countPerMonthData={countPerMonthData} />

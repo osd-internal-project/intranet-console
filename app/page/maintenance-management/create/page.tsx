@@ -29,7 +29,9 @@ export default function MaTaskCreatePage() {
   };
 
   async function createMa(data: ITMaCreateForm): Promise<void> {
-    const maTypeSelected = maTypes.findLast((type) => type.id === data.maTypeId);
+    const maTypeSelected = maTypes.findLast(
+      (type) => type.id === data.maTypeId
+    );
     const form = {
       ...data,
       maTypeName: maTypeSelected?.name,
@@ -57,7 +59,7 @@ export default function MaTaskCreatePage() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 href: "/page/maintenance-management",
@@ -74,7 +76,12 @@ export default function MaTaskCreatePage() {
         </Col>
         <Col span={24}>
           <div className="grid grid-cols-1 ">
-            <MaTaskCreate maTypes={maTypes} loading={loading} setLoading={(e: boolean) => setloading(e)} createMa={createMa} />
+            <MaTaskCreate
+              maTypes={maTypes}
+              loading={loading}
+              setLoading={(e: boolean) => setloading(e)}
+              createMa={createMa}
+            />
           </div>
         </Col>
       </Row>

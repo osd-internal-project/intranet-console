@@ -1,22 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {
-  Breadcrumb,
-  Col,
-  Divider,
-  Row,
-  UploadFile,
-  message,
-  Form,
-  Modal,
-} from "antd";
+import { Breadcrumb, Col, Divider, Row, UploadFile, message, Form, Modal } from "antd";
 import { useSession } from "next-auth/react";
 import { ExclamationCircleFilled } from "@ant-design/icons";
-import {
-  useAxiosIntranet,
-  useAxiosUser,
-} from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import LeaveManagementServices from "../../../services/leave-management.service";
 import { RcFile, UploadProps } from "antd/es/upload";
 import { useRouter } from "next/navigation";
@@ -28,14 +16,7 @@ import {
   calculateCreateLeaveCaseTwo,
   calculateTime,
 } from "../until/function-data-leave";
-import {
-  IDataUser,
-  ISelect,
-  ITypetypeleave,
-  ITypeDataLeaveCreate,
-  UserGroupType,
-  MasterTypeleaveType,
-} from "../common";
+import { IDataUser, ISelect, ITypetypeleave, ITypeDataLeaveCreate, UserGroupType, MasterTypeleaveType } from "../common";
 import dayjs from "dayjs";
 
 import { CreateOnlineLeave } from "./components/create-online-leave";
@@ -62,9 +43,7 @@ export default function Page() {
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [createdataleaveForm] = Form.useForm();
-  const [typeLeaveTableAll, setTypeLeaveTableAll] = useState<ITypetypeleave[]>(
-    []
-  );
+  const [typeLeaveTableAll, setTypeLeaveTableAll] = useState<ITypetypeleave[]>([]);
   const [params, setParams] = useState<any>({
     typeId: null,
     startDate: null,
@@ -81,29 +60,19 @@ export default function Page() {
 
   const loadDataTypeLeave = async () => {
     const res = await leavemanagementservices.getdataAll();
-    const resTableDeatilTypeLeave =
-      await leavemanagementservices.findDetailTypeLeaveByUserId(
-        getUser?.userId
-      );
-    const resTableUserTypeLeave =
-      await leavemanagementservices.findUserByUserId(getUser?.userId);
+    const resTableDeatilTypeLeave = await leavemanagementservices.findDetailTypeLeaveByUserId(getUser?.userId);
+    const resTableUserTypeLeave = await leavemanagementservices.findUserByUserId(getUser?.userId);
     const options = res.map((event: ITypetypeleave) => {
       return { value: event.typeId, label: event.typeName };
     });
     const groupId = session?.user.ownerGroup;
     if (groupId) {
-      const dataGroupDetail = await dataleaveserviceUser.getUserGroupByGroupId(
-        groupId
-      );
-      const dataUserById = await dataleaveserviceUser.getUsersByUserId(
-        dataGroupDetail.headId
-      );
+      const dataGroupDetail = await dataleaveserviceUser.getUserGroupByGroupId(groupId);
+      const dataUserById = await dataleaveserviceUser.getUsersByUserId(dataGroupDetail.headId);
       setUserOwner(dataUserById);
       setGroupDetail(dataGroupDetail);
     }
-    const dataGroupUserId = await leavemanagementservices.getdataLeaveByUserId(
-      session?.user.userId
-    );
+    const dataGroupUserId = await leavemanagementservices.getdataLeaveByUserId(session?.user.userId);
     setDataGroupUserId(dataGroupUserId);
     setTypeLeaveTable(resTableDeatilTypeLeave);
     setTypeLeaveTableAll(resTableUserTypeLeave.typeLeaveDisabledMap);
@@ -120,9 +89,7 @@ export default function Page() {
   };
 
   const rowClassName = (record: any) => {
-    return typeLeaveTableAll.some((e: any) => record.id === e.masterTypeleaveId)
-      ? "disabled-row"
-      : "";
+    return typeLeaveTableAll.some((e: any) => record.id === e.masterTypeleaveId) ? "disabled-row" : "";
   };
 
   const onChangeParams = (value: any, type: string) => {
@@ -160,16 +127,10 @@ export default function Page() {
   const checklenghtDay = async (value1: any, value2: any) => {
     const startDate = value1 ? dayjs(value1).startOf("day") : null;
     const endDate = value2 ? dayjs(value2).endOf("day") : null;
-    const totalDays =
-      startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : "0";
+    const totalDays = startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : "0";
     setParams((e: any) => ({
       ...e,
-      lengthDate:
-        totalDays !== "0"
-          ? Number(totalDays)
-          : createdataleaveForm.getFieldValue("time_start_check")
-          ? 1
-          : 0,
+      lengthDate: totalDays !== "0" ? Number(totalDays) : createdataleaveForm.getFieldValue("time_start_check") ? 1 : 0,
     }));
   };
 
@@ -178,12 +139,9 @@ export default function Page() {
     const endTime = dayjs(value2, "HH:mm");
     const breakStart = dayjs("12:00", "HH:mm");
     const breakEnd = dayjs("13:00", "HH:mm");
-    let totalHours =
-      startTime && endTime ? endTime.diff(startTime, "hour", true) : 0;
+    let totalHours = startTime && endTime ? endTime.diff(startTime, "hour", true) : 0;
     if (startTime.isBefore(breakEnd) && endTime.isAfter(breakStart)) {
-      const overlapStart = startTime.isBefore(breakStart)
-        ? breakStart
-        : startTime;
+      const overlapStart = startTime.isBefore(breakStart) ? breakStart : startTime;
       const overlapEnd = endTime.isAfter(breakEnd) ? breakEnd : endTime;
       const breakDuration = overlapEnd.diff(overlapStart, "hour", true);
       totalHours -= breakDuration;
@@ -195,9 +153,7 @@ export default function Page() {
     }));
   };
 
-  const handleChangeAttendFiles: UploadProps["onChange"] = async ({
-    fileList: newFileList,
-  }) => {
+  const handleChangeAttendFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
     return setAttendFiles(newFileList);
   };
 
@@ -220,20 +176,13 @@ export default function Page() {
     const thirtyDayAdvance = new Date(today);
     thirtyDayAdvance.setDate(today.getDate() + 30);
 
-    const startDate = values.startDate
-      ? dayjs(values.startDate).startOf("day")
-      : null;
+    const startDate = values.startDate ? dayjs(values.startDate).startOf("day") : null;
     const endDate = values.endDate ? dayjs(values.endDate).endOf("day") : null;
-    const totalDays =
-      startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
-    const selectedOption = getTypeLeaveOption.find(
-      (option) => option.value === values.type_id
-    );
+    const totalDays = startDate && endDate ? endDate.diff(startDate, "days").toFixed(0) : 0;
+    const selectedOption = getTypeLeaveOption.find((option) => option.value === values.type_id);
     const breakStart = dayjs("12:00", "HH:mm");
     const breakEnd = dayjs("13:00", "HH:mm");
-    const startTime = values.startTime
-      ? dayjs(values.startTime, "HH:mm")
-      : null;
+    const startTime = values.startTime ? dayjs(values.startTime, "HH:mm") : null;
     const endTime = values.endTime ? dayjs(values.endTime, "HH:mm") : null;
 
     let adjustedEndTime = endTime;
@@ -242,17 +191,11 @@ export default function Page() {
         if (startTime.isBefore(breakStart) && endTime.isAfter(breakEnd)) {
           adjustedEndTime = endTime.subtract(1, "hour");
         } else if (startTime.isAfter(breakStart)) {
-          adjustedEndTime = endTime.subtract(
-            endTime.diff(breakEnd, "hour", true),
-            "hour"
-          );
+          adjustedEndTime = endTime.subtract(endTime.diff(breakEnd, "hour", true), "hour");
         }
       }
     }
-    const totalHours =
-      startTime && adjustedEndTime
-        ? adjustedEndTime.diff(startTime, "hour", true).toFixed(1)
-        : 0;
+    const totalHours = startTime && adjustedEndTime ? adjustedEndTime.diff(startTime, "hour", true).toFixed(1) : 0;
     if (new Date(leaveEndDate) < new Date(leaveStartDate)) {
       message.error("วันที่สิ้นสุดการลาต้องหลังวันที่เริ่มการลา");
       return;
@@ -274,79 +217,27 @@ export default function Page() {
       return true;
     }
 
-    const configCheckLeaveConfig = await checkDataLeaveConfig(
-      userId,
-      startDate as any,
-      endDate as any
-    );
+    const configCheckLeaveConfig = await checkDataLeaveConfig(userId, startDate as any, endDate as any);
     if (configCheckLeaveConfig) {
       message.warning("คุณลาในช่วงเวลานี้แล้ว กรุณาเลือกช่วงเวลาใหม่.");
       return true;
     }
 
     if (type_id === 1 || type_id === 4 || type_id === 8 || type_id === 13) {
-      conditions = await calculateCreateLeaveCaseOne(
-        id,
-        values,
-        selectedOption,
-        session,
-        attendFiles,
-        totalHours,
-        totalDays
-      );
+      conditions = await calculateCreateLeaveCaseOne(id, values, selectedOption, session, attendFiles, totalHours, totalDays);
     }
     if (type_id === 2) {
-      conditions = await calculateCreateLeaveCaseTwo(
-        id,
-        values,
-        selectedOption,
-        session,
-        attendFiles,
-        totalHours,
-        totalDays,
-        type_id,
-        userId
-      );
+      conditions = await calculateCreateLeaveCaseTwo(id, values, selectedOption, session, attendFiles, totalHours, totalDays, type_id, userId);
     }
     if (type_id === 3 || type_id === 6 || type_id === 10) {
-      conditions = await calculateCreateLeaveCaseThree(
-        id,
-        values,
-        selectedOption,
-        session,
-        attendFiles,
-        totalHours,
-        totalDays,
-        type_id,
-        userId
-      );
+      conditions = await calculateCreateLeaveCaseThree(id, values, selectedOption, session, attendFiles, totalHours, totalDays, type_id, userId);
     }
     if (type_id === 7) {
-      conditions = await calculateCreateLeaveCaseFour(
-        id,
-        values,
-        selectedOption,
-        session,
-        attendFiles,
-        totalHours,
-        totalDays,
-        type_id,
-        userId
-      );
+      conditions = await calculateCreateLeaveCaseFour(id, values, selectedOption, session, attendFiles, totalHours, totalDays, type_id, userId);
     }
 
     if (type_id === 5 || type_id === 9 || type_id === 11 || type_id === 12) {
-      conditions = await calculateCreateLeaveCaseFive(
-        id,
-        values,
-        selectedOption,
-        session,
-        attendFiles,
-        totalHours,
-        totalDays,
-        type_id,
-        userId
-      );
+      conditions = await calculateCreateLeaveCaseFive(id, values, selectedOption, session, attendFiles, totalHours, totalDays, type_id, userId);
     }
 
     Modal.confirm({
@@ -362,9 +253,7 @@ export default function Page() {
         },
       },
       onOk: async () => {
-        const result = await leavemanagementservices.createDataLeave(
-          conditions
-        );
+        const result = await leavemanagementservices.createDataLeave(conditions);
         if (result) {
           if (attendFiles.length > 0) {
             attendFiles.forEach(async (file) => {
@@ -396,14 +285,9 @@ export default function Page() {
         return false;
       }
       const user_id = session?.user.typeLeaveDisabledMap[0].userId;
-      const existingLeave = await leavemanagementservices.getdataTypeLeaveMap(
-        user_id
-      );
+      const existingLeave = await leavemanagementservices.getdataTypeLeaveMap(user_id);
       return existingLeave.some((record: any) => {
-        if (
-          record.masterTypeleaveId === undefined ||
-          record.masterTypeleaveId === null
-        ) {
+        if (record.masterTypeleaveId === undefined || record.masterTypeleaveId === null) {
           return false;
         }
         return record.masterTypeleaveId === type_id;
@@ -413,28 +297,15 @@ export default function Page() {
     }
   };
 
-  const checkLeaveHour = async (
-    type_id: number,
-    value: any
-  ): Promise<boolean> => {
+  const checkLeaveHour = async (type_id: number, value: any): Promise<boolean> => {
     try {
-      const MasterTypeLeave =
-        await leavemanagementservices.getdataMasterTypeLeaveByTypeId(type_id);
-      console.log(MasterTypeLeave);
-
+      const MasterTypeLeave = await leavemanagementservices.getdataMasterTypeLeaveByTypeId(type_id);
       if (MasterTypeLeave) {
         const LimitLeave = MasterTypeLeave.limitLeave;
         let limitDataLeave = LimitLeave * 8;
-        const dataLeaveUserById =
-          await leavemanagementservices.getdataLeaveUserById(
-            value.userId,
-            type_id
-          );
+        const dataLeaveUserById = await leavemanagementservices.getdataLeaveUserById(value.userId, type_id);
         const hasLeaveHour = dataLeaveUserById.leaveHour;
-        const totalLeaveHours = hasLeaveHour.reduce(
-          (total: number, hour: number) => total + (Number(hour) || 0),
-          0
-        );
+        const totalLeaveHours = hasLeaveHour.reduce((total: number, hour: number) => total + (Number(hour) || 0), 0);
         if (totalLeaveHours < limitDataLeave) {
           if (typeof value === "object" && value !== null) {
             let totalHourvalue = 0;
@@ -444,14 +315,9 @@ export default function Page() {
                 if (hour.startDate && hour.endDate) {
                   const startDate = new Date(hour.startDate);
                   const endDate = new Date(hour.endDate);
-                  if (
-                    !isNaN(startDate.getTime()) &&
-                    !isNaN(endDate.getTime())
-                  ) {
-                    const differenceInMilliseconds =
-                      endDate.getTime() - startDate.getTime();
-                    const differenceInHours =
-                      differenceInMilliseconds / (1000 * 60 * 60);
+                  if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+                    const differenceInMilliseconds = endDate.getTime() - startDate.getTime();
+                    const differenceInHours = differenceInMilliseconds / (1000 * 60 * 60);
                     totalHourvalue = differenceInHours;
                   } else {
                     message.error("ตรวจสอบจำนวนเวลาลาไม่สำเร็จ");
@@ -464,12 +330,7 @@ export default function Page() {
               return true;
             }
             const totalMinute = calculateTime(value.startTime, value.endTime);
-            // const dataleaveHour = dataLeaveTypeId.map((e: any) => e.leaveHour);
-            const totalLeaveHour = hasLeaveHour.reduce(
-              (accumulator: number, currentValue: number) =>
-                accumulator + currentValue,
-              0
-            );
+            const totalLeaveHour = hasLeaveHour.reduce((accumulator: number, currentValue: number) => accumulator + currentValue, 0);
             const totalSeconds = totalLeaveHour + totalMinute;
             const totalAll = totalSeconds + hourvalue;
             if (totalAll <= limitDataLeave) {
@@ -485,21 +346,14 @@ export default function Page() {
     }
   };
 
-  const checkDataLeaveConfig = async (
-    userId: string,
-    startDate: Date,
-    endDate: Date
-  ) => {
+  const checkDataLeaveConfig = async (userId: string, startDate: Date, endDate: Date) => {
     const existingDataLeave = await leavemanagementservices.getdataLeaveAll();
     return existingDataLeave.some((record: any) => {
       return (
         record.userId === userId &&
-        ((new Date(startDate) >= new Date(record.startDate) &&
-          new Date(startDate) < new Date(record.endDate)) ||
-          (new Date(endDate) > new Date(record.startDate) &&
-            new Date(endDate) <= new Date(record.endDate)) ||
-          (new Date(startDate) <= new Date(record.startDate) &&
-            new Date(endDate) >= new Date(record.endDate)))
+        ((new Date(startDate) >= new Date(record.startDate) && new Date(startDate) < new Date(record.endDate)) ||
+          (new Date(endDate) > new Date(record.startDate) && new Date(endDate) <= new Date(record.endDate)) ||
+          (new Date(startDate) <= new Date(record.startDate) && new Date(endDate) >= new Date(record.endDate)))
       );
     });
   };
@@ -547,12 +401,7 @@ export default function Page() {
           />
         </Col>
         <Col span={12}>
-          <TableOnlineDetailLeave
-            typeLeaveTable={typeLeaveTable}
-            params={params}
-            typeLeaveTableAll={typeLeaveTableAll}
-            rowClassName={rowClassName}
-          />
+          <TableOnlineDetailLeave typeLeaveTable={typeLeaveTable} params={params} typeLeaveTableAll={typeLeaveTableAll} rowClassName={rowClassName} />
         </Col>
       </Row>
     </div>

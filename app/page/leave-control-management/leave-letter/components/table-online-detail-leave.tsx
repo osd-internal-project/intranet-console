@@ -1,16 +1,9 @@
-import {
-  Button,
-  Card,
-  Modal,
-  Table,
-  TableColumnsType,
-  Tag,
-  Typography,
-} from "antd";
+import { Button, Card, Modal, Space, Table, TableColumnsType, Tag, Tooltip, Typography } from "antd";
 import React, { useState } from "react";
 import dayjs from "dayjs";
 import { ITypetypeleave } from "../../common";
 import "../../styles/style.css";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 export interface props {
   typeLeaveTable: ITypetypeleave[];
   params: any;
@@ -18,11 +11,7 @@ export interface props {
   rowClassName: any;
 }
 
-export const TableOnlineDetailLeave: React.FC<props> = ({
-  typeLeaveTable,
-  params,
-  rowClassName,
-}): React.ReactElement => {
+export const TableOnlineDetailLeave: React.FC<props> = ({ typeLeaveTable, params, rowClassName }): React.ReactElement => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: TableColumnsType<ITypetypeleave> = [
@@ -99,11 +88,7 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         const isSelected = row.typeId === params.typeId;
         const rowClass = rowClassName(row);
         let days = isSelected ? (params.lengthDate ? params.lengthDate : 0) : 0;
-        let hours = isSelected
-          ? params.lengthTime
-            ? params.lengthTime
-            : 0
-          : 0;
+        let hours = isSelected ? (params.lengthTime ? params.lengthTime : 0) : 0;
         let color: string | undefined;
         days = days < 0 ? 1 : days;
         hours = hours < 0 ? 1 : hours;
@@ -126,9 +111,7 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       render: (value: number, row: ITypetypeleave) => {
         const isSelected = row.typeId === params.typeId;
         const totalHoursDecimal = parseFloat((value % 1).toFixed(2));
-        let totalDays = Math.floor(
-          value + (isSelected ? params.lengthDate : 0)
-        );
+        let totalDays = Math.floor(value + (isSelected ? params.lengthDate : 0));
         let totalHours = Math.floor(totalHoursDecimal * 10);
         let lengthTime = params.lengthTime;
         let totalMinutesRaw = (totalHoursDecimal * 10) % 1;
@@ -188,11 +171,7 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       dataIndex: "limitLeave",
       title: "ระยะเวลาในการลา",
       render: (values: string, row: ITypetypeleave, index: number) => {
-        return (
-          <Typography style={{ textAlign: "center" }}>
-            {row.typeId === 3 ? "3,6,10,12 วัน (ตามอายุงาน)" : `${values} วัน`}
-          </Typography>
-        );
+        return <Typography style={{ textAlign: "center" }}>{row.typeId === 3 ? "3,6,10,12 วัน (ตามอายุงาน)" : `${values} วัน`}</Typography>;
       },
     },
     {
@@ -216,35 +195,37 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       <Card
         className="w-full grid grid-cols-1 gap-y-2 mt-2"
         title={
-          <div className="flex justify-center w-full">{`ประวัติการลาปี ${dayjs(
-            new Date()
-          ).format("YYYY")}`}</div>
+          <div className="flex justify-center w-full">
+            <Space>
+              {`ประวัติการลาปี ${dayjs(new Date()).format("YYYY")}`}
+              <Tooltip title={`เงื่อนไขในการลาตามแต่ละประเภท`}>
+                <a onClick={() => setIsModalOpen(true)} style={{ color: "red" }}>
+                  <ExclamationCircleOutlined />
+                </a>
+              </Tooltip>
+            </Space>
+          </div>
         }
-      >
+        styles={{ body: { padding: 10 } }}>
         <Table
-          // size="small"
+          size="small"
           columns={columns}
           dataSource={typeLeaveTable}
           rowKey={(e: ITypetypeleave) => e.id}
           pagination={{ pageSize: 13, position: ["none"] }}
+          scroll={{ x: "max-content" }}
           rowClassName={rowClassName}
-          footer={() => (
-            <>
-              <div className="flex justify-center w-full">
-                <Button
-                  type="primary"
-                  ghost
-                  onClick={() => setIsModalOpen(true)}
-                >
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <span style={{ fontSize: "16px" }}>
-                      {`เงื่อนไขในการลาตามแต่ละประเภท`}
-                    </span>
-                  </div>
-                </Button>
-              </div>
-            </>
-          )}
+          // footer={() => (
+          //   <>
+          //     <div className="flex justify-center w-full">
+          //       <Button type="primary" ghost onClick={() => setIsModalOpen(true)}>
+          //         <div style={{ display: "flex", alignItems: "center" }}>
+          //           <span style={{ fontSize: "16px" }}>{`เงื่อนไขในการลาตามแต่ละประเภท`}</span>
+          //         </div>
+          //       </Button>
+          //     </div>
+          //   </>
+          // )}
         />
       </Card>
       <Modal
@@ -253,8 +234,7 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
         onOk={() => setIsModalOpen(true)}
         onCancel={() => setIsModalOpen(false)}
         footer={false}
-        width={700}
-      >
+        width={700}>
         <Table
           size="small"
           columns={columnsDetail}
@@ -264,9 +244,8 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
           summary={() => (
             <Table.Summary.Row>
               <Table.Summary.Cell index={0} colSpan={columnsDetail.length}>
-                <div style={{ textAlign: "left" }}>
-                  หมายเหตุ : <span style={{ color: "red" }}>*</span>{" "}
-                  ประเภทการลาที่รวมวันหยุด !
+                <div style={{ textAlign: "left", fontWeight: "bold" }}>
+                  หมายเหตุ : <span style={{ color: "red" }}>*</span> ประเภทการลาที่รวมวันหยุด !
                 </div>
               </Table.Summary.Cell>
             </Table.Summary.Row>

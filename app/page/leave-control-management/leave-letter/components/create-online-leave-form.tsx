@@ -1,5 +1,17 @@
 import React from "react";
-import { Button, DatePicker, Form, FormInstance, Input, Select, Switch, Typography, Upload, UploadFile } from "antd";
+import {
+  Button,
+  DatePicker,
+  Form,
+  FormInstance,
+  Input,
+  message,
+  Select,
+  Switch,
+  Typography,
+  Upload,
+  UploadFile,
+} from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { UploadOutlined } from "@ant-design/icons";
 import { IDataUser, ISelect, ITypeDataLeaveCreate } from "../../common";
@@ -38,12 +50,41 @@ export const CreateLeaveForm: React.FC<props> = ({
 }) => {
   const { Option } = Select;
 
+  function onChangeStartDate(e: any) {
+    const endDate = createdataleaveForm.getFieldValue("endDate");
+    if (endDate < e) {
+      message.error("กรุณากรอกวันที่เริ่มต้มให้ถูกต้อง");
+      createdataleaveForm.setFieldValue("startDate", endDate);
+      setStartDate(endDate), onChangeParams(endDate, "startDate");
+    } else {
+      setStartDate(e), onChangeParams(e, "startDate");
+    }
+  }
+  function onChangeEndDate(e: any) {
+    const startDate = createdataleaveForm.getFieldValue("startDate");
+    if (startDate > e) {
+      message.error("กรุณากรอกวันที่สิ้นสุดให้ถูกต้อง");
+      createdataleaveForm.setFieldValue("startDate", startDate);
+      setEndDate(startDate), onChangeParams(startDate, "endDate");
+    } else {
+      setEndDate(e), onChangeParams(e, "endDate");
+    }
+  }
   return (
     <div>
-      <Form size="small" form={createdataleaveForm} className=" grid grid-cols-1" layout="vertical" autoComplete="off" onFinish={onfinishCreate}>
+      <Form
+        size="small"
+        form={createdataleaveForm}
+        className=" grid grid-cols-1"
+        layout="vertical"
+        autoComplete="off"
+        onFinish={onfinishCreate}
+      >
         <div className="col-span-1 md:col-span-1 ml-5 justify-end flex">
           <Form.Item label={`วันที่ `} name={`createdAt`} layout="horizontal">
-            <Typography.Text>{dayjs(new Date()).format("DD-MM-YYYY")}</Typography.Text>
+            <Typography.Text>
+              {dayjs(new Date()).format("DD-MM-YYYY")}
+            </Typography.Text>
           </Form.Item>
         </div>
         <div className=" col-span-3 md:col-span-1 ml-5" hidden>
@@ -89,7 +130,12 @@ export const CreateLeaveForm: React.FC<props> = ({
           </Form.Item>
         </div>
         <div className=" col-span-3 md:col-span-1 ml-5">
-          <Form.Item label={`ประเภทการลา :`} name={`type_id`} required rules={[{ required: true, message: "กรุณาเลือกประเภทการลา" }]}>
+          <Form.Item
+            label={`ประเภทการลา :`}
+            name={`type_id`}
+            required
+            rules={[{ required: true, message: "กรุณาเลือกประเภทการลา" }]}
+          >
             <Select
               placeholder={`ประเภทการลา`}
               options={getTypeLeaveOption}
@@ -102,28 +148,41 @@ export const CreateLeaveForm: React.FC<props> = ({
         </div>
         <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
           <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`ตั้งแต่วันที่ :`} name={`startDate`} required rules={[{ required: true, message: "กรุณาเลือกวันที่เริ่มลา" }]}>
+            <Form.Item
+              label={`ตั้งแต่วันที่ :`}
+              name={`startDate`}
+              required
+              rules={[{ required: true, message: "กรุณาเลือกวันที่เริ่มลา" }]}
+            >
               <DatePicker
                 className="w-full"
                 onChange={(e: any) => {
-                  setStartDate(e), onChangeParams(e, "startDate");
+                  onChangeStartDate(e);
                 }}
               />
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`ถึงวันที่ :`} name={`endDate`} required rules={[{ required: true, message: "กรุณาเลือกวันที่สิ้นสุดการลา" }]}>
+            <Form.Item
+              label={`ถึงวันที่ :`}
+              name={`endDate`}
+              required
+              rules={[
+                { required: true, message: "กรุณาเลือกวันที่สิ้นสุดการลา" },
+              ]}
+            >
               <DatePicker
                 className="w-full"
                 onChange={(e: any) => {
-                  setEndDate(e), onChangeParams(e, "endDate");
+                  onChangeEndDate(e);
                 }}
               />
             </Form.Item>
           </div>
         </div>
         <>
-          {dayjs(getStartDate).format("YYYY-MM-DD") === dayjs(getEndDate).format("YYYY-MM-DD") && getEndDate ? (
+          {dayjs(getStartDate).format("YYYY-MM-DD") ===
+            dayjs(getEndDate).format("YYYY-MM-DD") && getEndDate ? (
             <div className="w-full grid grid-cols-4 gap-y-0.5 mt-0.5">
               <div className="col-span-3 md:col-span-1 ml-5 mt-4">
                 <Form.Item label="ลา 1 วัน" name="time_start_check">
@@ -150,8 +209,13 @@ export const CreateLeaveForm: React.FC<props> = ({
                           required: true,
                           message: "กรุณาเลือกเวลาที่เริ่มลา",
                         },
-                      ]}>
-                      <Select className="w-full" placeholder="เลือกช่วงเวลา" onChange={(e) => onChangeParams(e, "selectStartTime")}>
+                      ]}
+                    >
+                      <Select
+                        className="w-full"
+                        placeholder="เลือกช่วงเวลา"
+                        onChange={(e) => onChangeParams(e, "selectStartTime")}
+                      >
                         {timeOptions.map((time) => (
                           <Option key={time} value={time}>
                             {time}
@@ -170,8 +234,13 @@ export const CreateLeaveForm: React.FC<props> = ({
                           required: true,
                           message: "กรุณาเลือกเวลาที่สิ้นสุดการลา",
                         },
-                      ]}>
-                      <Select className="w-full" placeholder="เลือกช่วงเวลา" onChange={(e) => onChangeParams(e, "selectEndTime")}>
+                      ]}
+                    >
+                      <Select
+                        className="w-full"
+                        placeholder="เลือกช่วงเวลา"
+                        onChange={(e) => onChangeParams(e, "selectEndTime")}
+                      >
                         {timeOptions.map((time) => (
                           <Option key={time} value={time}>
                             {time}
@@ -186,7 +255,11 @@ export const CreateLeaveForm: React.FC<props> = ({
           ) : null}
         </>
         <div className=" col-span-3 md:col-span-1 ml-5">
-          <Form.Item label={`วัตถุประสงค์การลา :`} name={`detail`} rules={[{ required: true, message: "กรุณากรอกวัตถุประสงค์การลา" }]}>
+          <Form.Item
+            label={`วัตถุประสงค์การลา :`}
+            name={`detail`}
+            rules={[{ required: true, message: "กรุณากรอกวัตถุประสงค์การลา" }]}
+          >
             <Input.TextArea placeholder="วัตถุประสงค์การลา" />
           </Form.Item>
         </div>
@@ -204,7 +277,8 @@ export const CreateLeaveForm: React.FC<props> = ({
                   pattern: /^[0-9]{10}$/,
                   message: "กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง",
                 },
-              ]}>
+              ]}
+            >
               <Input
                 maxLength={10}
                 placeholder="เบอร์โทรศัพท์"
@@ -218,14 +292,25 @@ export const CreateLeaveForm: React.FC<props> = ({
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`แนบไฟล์ :`} name={"attrachFile"}>
-              <Upload fileList={attendFiles} onChange={handleChangeAttendFiles} beforeUpload={beforeUploadAttendFiles} multiple={false} maxCount={1}>
+              <Upload
+                fileList={attendFiles}
+                onChange={handleChangeAttendFiles}
+                beforeUpload={beforeUploadAttendFiles}
+                multiple={false}
+                maxCount={1}
+              >
                 <Button icon={<UploadOutlined />}>{`อัพโหลดไฟล์`}</Button>
               </Upload>
             </Form.Item>
           </div>
         </div>
         <div className=" col-span-12 md:col-span-1 ml-5 justify-center flex w-full">
-          <Button htmlType="submit" size="small" type="primary" style={{ padding: "10px 10px 10px" }}>{`ยื่นใบลา`}</Button>
+          <Button
+            htmlType="submit"
+            size="small"
+            type="primary"
+            style={{ padding: "10px 10px 10px" }}
+          >{`ยื่นใบลา`}</Button>
         </div>
       </Form>
     </div>

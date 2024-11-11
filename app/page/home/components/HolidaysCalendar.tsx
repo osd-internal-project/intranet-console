@@ -26,10 +26,19 @@ const useStyle = createStyles(({ token, css, cx }) => {
     font-size: ${token.fontSizeSM}px;
   `;
   const weekend = css`
-    color: ${token.colorError};
+    color: #ddd;
     &.gray {
       opacity: 0.4;
     }
+  `;
+  const holiday = css`
+    border-radius: 5px;
+    max-width: 40px;
+    max-height: 40px;
+    background: red;
+    margin: auto;
+    color: #fff;
+    opacity: 0.7;
   `;
   return {
     wrapper: css`
@@ -86,6 +95,9 @@ const useStyle = createStyles(({ token, css, cx }) => {
       .${cx(weekend)} {
         color: ${token.colorTextLightSolid};
       }
+      .${cx(holiday)} {
+        color: ${token.colorTextLightSolid};
+      }
     `,
     monthCell: css`
       width: 120px;
@@ -105,6 +117,7 @@ const useStyle = createStyles(({ token, css, cx }) => {
       }
     `,
     weekend,
+    holiday,
   };
 });
 
@@ -127,11 +140,11 @@ const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
   const [resultHoliday, setResultHoliday] = useState<string[]>([]);
 
   useEffect(() => {
-    featchDataHoliday();
+    featchDataHoliday("2024");
   }, []);
 
-  const featchDataHoliday = async () => {
-    const holiday = await intraAuthService.getHoliday("2024");
+  const featchDataHoliday = async (year: string) => {
+    const holiday = await intraAuthService.getHoliday(year);
     setHoliday(holiday);
   };
 
@@ -143,6 +156,7 @@ const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
     value,
     selectInfo
   ) => {
+    // console.log(value, selectInfo);
     if (selectInfo.source === "date") {
       const holidaySelect = holiday
         .filter(
@@ -153,11 +167,25 @@ const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
         .map((item: THoliday) => item.holidaysName);
       setResultHoliday(holidaySelect && holidaySelect);
       setSelectDate(value);
+    } else {
+      const year = dayjs(value).format("YYYY");
+      featchDataHoliday(year);
     }
   };
 
   const cellRender: CalendarProps<Dayjs>["fullCellRender"] = (date, info) => {
     const isWeekend = date.day() === 6 || date.day() === 0;
+    const isHoliday = holiday.find(
+      (event) =>
+        dayjs(new Date(event.holidaysDate)).format("YYYY-MM-DD") ===
+        dayjs(date).format("YYYY-MM-DD")
+    )
+      ? true
+      : false;
+    if (isHoliday) {
+      console.log(date.date(), isHoliday);
+    }
+
     if (info.type === "date") {
       return React.cloneElement(info.originNode, {
         ...info.originNode.props,
@@ -166,18 +194,16 @@ const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
           [styles.today]: date.isSame(dayjs(), "date"),
         }),
         children: (
-          <div className={styles.text}>
+          <div
+            className={classNames({
+              [styles.text]: true,
+              [styles.holiday]: isHoliday,
+            })}
+          >
             <span
               className={classNames({
-                [styles.weekend]:
-                  isWeekend ||
-                  (holiday &&
-                    holiday.some(
-                      (item: THoliday) =>
-                        dayjs(new Date(item.holidaysDate)).format(
-                          "YYYY-MM-DD"
-                        ) === dayjs(date).format("YYYY-MM-DD")
-                    )),
+                [styles.weekend]: isWeekend,
+                // [styles.holiday]: isHoliday,
                 gray: !panelDateDate.isSame(date, "month"),
               })}
             >

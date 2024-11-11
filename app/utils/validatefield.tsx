@@ -273,3 +273,11 @@ export const CheckStatusLeaveType = (status: string) => {
     </Tag>
   );
 };
+
+export const checkMaCarBookConfig = async (record: any, carBookStartDate: Date, carBookEndDate: Date) => {
+  return (
+    (new Date(carBookStartDate) >= new Date(record.carBookStartDate) && new Date(carBookStartDate) < new Date(record.carBookEndDate)) ||
+    (new Date(carBookEndDate) > new Date(record.carBookStartDate) && new Date(carBookEndDate) <= new Date(record.carBookEndDate)) ||
+    (new Date(carBookStartDate) <= new Date(record.carBookStartDate) && new Date(carBookEndDate) >= new Date(record.carBookEndDate))
+  );
+};

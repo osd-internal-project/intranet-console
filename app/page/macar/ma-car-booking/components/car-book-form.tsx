@@ -1,19 +1,11 @@
 import React from "react";
-import {
-  Button,
-  Row,
-  Col,
-  Form,
-  Input,
-  Divider,
-  Select,
-  DatePicker,
-  FormInstance,
-} from "antd";
+import { Button, Row, Col, Form, Input, Divider, Select, DatePicker, FormInstance } from "antd";
 import { MaCarBookType, MaCarType, ProvincesType } from "../../common/index";
 import TextArea from "antd/es/input/TextArea";
 import { RangePickerProps } from "antd/es/date-picker";
 import dayjs, { Dayjs } from "dayjs";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { MaCarServices } from "../../../../services/ma-car.service";
 
 interface props {
   formUser: FormInstance<MaCarBookType>;
@@ -36,6 +28,8 @@ export const CarBookForm: React.FC<props> = ({
   setStartDate,
   setEndDate,
 }) => {
+  const intraAuth = useAxiosIntranet();
+  const macarervices = MaCarServices(intraAuth);
   const handleStartDateChange = (date: dayjs.Dayjs | null) => {
     if (date) {
       const startDate = date.startOf("day");
@@ -49,15 +43,17 @@ export const CarBookForm: React.FC<props> = ({
       setEndDate(endDate);
     }
   };
-  
+
+  const validateCarSelect = async (rule: any, value: string) => {
+    const dataCar = await macarervices.getMaCarById(value);
+    if (dataCar.status === false) {
+      throw new Error("ขณะนี้รถมีการใช้งานอยู่");
+    }
+  };
+
   return (
     <>
-      <Form
-        form={formUser}
-        layout="vertical"
-        onFinish={createMaCarBook}
-        size="small"
-      >
+      <Form form={formUser} layout="vertical" onFinish={createMaCarBook} size="small">
         <Divider orientation="left">ข้อมูลผู้จอง</Divider>
         <Row gutter={24}>
           <Col span={6}>
@@ -77,65 +73,41 @@ export const CarBookForm: React.FC<props> = ({
             <Form.Item<MaCarBookType>
               name="carId"
               label="ชื่อรถ"
-              rules={[{ required: true, message: "กรุณาเลือกรถ" }]}
-            >
-              <Select placeholder="โปรดเลือกรถ" style={{ width: "100%" }}>
-                {carName.map((car, index) => (
-                  <Select.Option
-                    key={index}
-                    value={car.carId}
-                    showSearch
-                    optionFilterProp="label"
-                  >
-                    {car.carName}
-                  </Select.Option>
-                ))}
-              </Select>
+              rules={[{ required: true, message: "กรุณาเลือกรถ" }, { validator: validateCarSelect }]}>
+              <Select
+                allowClear
+                showSearch
+                optionFilterProp="label"
+                placeholder="โปรดเลือกรถ"
+                style={{ width: "100%" }}
+                options={carName.map((car, index) => {
+                  return { value: car.carId, label: car.carName, key: index };
+                })}
+              />
             </Form.Item>
           </Col>
           <Col span={6}>
             <Form.Item<MaCarBookType>
               name="carBookTitle"
               label="วัตถุประสงค์การใช้งาน"
-              rules={[
-                { required: true, message: "กรุณากรอกวัตถุประสงค์การใช้งาน" },
-              ]}
-            >
+              rules={[{ required: true, message: "กรุณากรอกวัตถุประสงค์การใช้งาน" }]}>
               <Input placeholder="กรอกวัตถุประสงค์การใช้งาน" />
             </Form.Item>
           </Col>
           <Col span={6}>
-            <Form.Item<MaCarBookType>
-              name="carBookPlace"
-              label="สถานที่ไป"
-              rules={[{ required: true, message: "กรุณากรอกสถานที่ไป" }]}
-            >
+            <Form.Item<MaCarBookType> name="carBookPlace" label="สถานที่ไป" rules={[{ required: true, message: "กรุณากรอกสถานที่ไป" }]}>
               <Input placeholder="กรอกสถานที่ไป" />
             </Form.Item>
           </Col>
           <Col span={6}>
-            <Form.Item<MaCarBookType>
-              name="idProvinces"
-              label="จังหวัด"
-              rules={[{ required: true, message: "กรุณากรอกจังหวัด" }]}
-            >
-              <Select
-                placeholder={`กรอกจังหวัด`}
-                options={dataoptionsProvinces}
-                allowClear
-                showSearch
-                optionFilterProp="label"
-              />
+            <Form.Item<MaCarBookType> name="idProvinces" label="จังหวัด" rules={[{ required: true, message: "กรุณากรอกจังหวัด" }]}>
+              <Select allowClear placeholder={`กรอกจังหวัด`} options={dataoptionsProvinces} showSearch optionFilterProp="label" />
             </Form.Item>
           </Col>
         </Row>
         <Row gutter={24}>
           <Col span={6}>
-            <Form.Item<MaCarBookType>
-              name="carBookUsers"
-              label="จำนวนผู้ใช้"
-              rules={[{ required: true, message: "กรุณากรอกจำนวนผู้ใช้" }]}
-            >
+            <Form.Item<MaCarBookType> name="carBookUsers" label="จำนวนผู้ใช้" rules={[{ required: true, message: "กรุณากรอกจำนวนผู้ใช้" }]}>
               <Input
                 placeholder="กรอกจำนวนผู้ใช้"
                 maxLength={2}
@@ -152,8 +124,7 @@ export const CarBookForm: React.FC<props> = ({
             <Form.Item<MaCarBookType>
               name="carBookStartDate"
               label="วันที่เริ่มการจอง"
-              rules={[{ required: true, message: "กรุณาเลือกวันที่เริ่มจอง!" }]}
-            >
+              rules={[{ required: true, message: "กรุณาเลือกวันที่เริ่มจอง!" }]}>
               <DatePicker
                 onChange={handleStartDateChange}
                 disabledDate={disabledDate}
@@ -163,11 +134,7 @@ export const CarBookForm: React.FC<props> = ({
             </Form.Item>
           </Col>
           <Col span={6}>
-            <Form.Item
-              name="carBookEndDate"
-              label="วันที่สิ้นสุดการจอง"
-              rules={[{ required: true, message: "กรุณาเลือกวันที่สิ้นสุด" }]}
-            >
+            <Form.Item name="carBookEndDate" label="วันที่สิ้นสุดการจอง" rules={[{ required: true, message: "กรุณาเลือกวันที่สิ้นสุด" }]}>
               <DatePicker
                 onChange={handleEndDateChange}
                 placeholder="กรอกวันที่สิ้นสุดการจอง"
@@ -191,13 +158,8 @@ export const CarBookForm: React.FC<props> = ({
         </Row>
         <Col span={24} style={{ textAlign: "center" }}>
           <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={submitLoading}
-              size="middle"
-            >
-              ทำการจองรถ
+            <Button type="primary" htmlType="submit" loading={submitLoading} size="middle">
+              {`ทำการจองรถ`}
             </Button>
           </Form.Item>
         </Col>

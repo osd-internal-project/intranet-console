@@ -1,43 +1,21 @@
 import React, { useState } from "react";
-import {
-  Table,
-  Button,
-  Row,
-  Col,
-  Space,
-  Select,
-  Modal,
-  Form,
-  Input,
-  Divider,
-  message,
-  InputNumber,
-} from "antd";
+import { Table, Button, Row, Col, Space, Select, Modal, Form, Input, Divider, message, InputNumber } from "antd";
 import type { TableProps, FormProps } from "antd";
 import dayjs from "dayjs";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { MaCarBookServices } from "../services/ma-car-book.service";
+import { MaCarBookServices } from "../../../../services/ma-car-book.service";
 import { useSession } from "next-auth/react";
 import { MaCarType, MaCarBookType } from "../../common/index";
-import {
-  checkApprovedStatus,
-  checkStatusReturn,
-  CheckStatusMaCarBookType,
-  showStatus,
-} from "@/app/utils/validatefield";
+import { checkApprovedStatus, checkStatusReturn, CheckStatusMaCarBookType, showStatus } from "@/app/utils/validatefield";
 import { dateFormatTime } from "@/app/utils";
-import { CarReturnForm } from "./carReturnForm";
+import { CarReturnForm } from "./car-return-form";
 export interface props {
   maCarBookData: MaCarBookType[];
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const MaCarReturn: React.FC<props> = ({
-  maCarBookData,
-  setLoading,
-  loading,
-}: any): React.ReactElement => {
+const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: any): React.ReactElement => {
   const intraAuth = useAxiosIntranet();
   const [formBookData] = Form.useForm();
   const [formReturn] = Form.useForm();
@@ -63,9 +41,7 @@ const MaCarReturn: React.FC<props> = ({
       carPetrol: record.maCar.carPetrol,
       status: record.maCar.status,
     });
-    record.carBookApprovedStatus === "Approve"
-      ? setModalEditReturn(true)
-      : null;
+    record.carBookApprovedStatus === "Approve" ? setModalEditReturn(true) : null;
   };
 
   const handleModalReturn = () => {
@@ -101,9 +77,7 @@ const MaCarReturn: React.FC<props> = ({
     setModalEditDetail(false);
   };
 
-  const updatedMaCarReturn: FormProps<MaCarType>["onFinish"] = async (
-    values
-  ) => {
+  const updatedMaCarReturn: FormProps<MaCarType>["onFinish"] = async (values) => {
     if (currentMaId && currentMaBookId) {
       try {
         const { ...restValues } = values;
@@ -111,7 +85,6 @@ const MaCarReturn: React.FC<props> = ({
           ...restValues,
           carMile: values.carMile,
           carPetrol: values.carPetrol,
-          status: values.status === true,
           updatedAt: dayjs().toISOString(),
           updatedById: session?.user.userId,
           updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
@@ -192,8 +165,7 @@ const MaCarReturn: React.FC<props> = ({
               type="link"
               onClick={() => {
                 showModalDetail(record);
-              }}
-            >
+              }}>
               รายละเอียด
             </Button>
           </Space>
@@ -220,27 +192,11 @@ const MaCarReturn: React.FC<props> = ({
   return (
     <>
       {messageHeader}
-      <Modal
-        title="การคืนรถ"
-        open={modalEditReturn}
-        onCancel={handleModalReturn}
-        footer={null}
-        width={500}
-      >
-        <Form
-          form={formReturn}
-          layout="vertical"
-          onFinish={updatedMaCarReturn}
-          autoComplete="off"
-          size="small"
-        >
+      <Modal title="การคืนรถ" open={modalEditReturn} onCancel={handleModalReturn} footer={null} width={500}>
+        <Form form={formReturn} layout="vertical" onFinish={updatedMaCarReturn} autoComplete="off" size="small">
           <Divider orientation="left">ข้อมูลการคืนรถ</Divider>
           <Col span={24}>
-            <Form.Item
-              name="carName"
-              label="ชื่อรถ"
-              rules={[{ required: true, message: "กรุณากรอกชื่อรถ" }]}
-            >
+            <Form.Item name="carName" label="ชื่อรถ" rules={[{ required: true, message: "กรุณากรอกชื่อรถ" }]}>
               <Input disabled placeholder="กรอกชื่อรถ" />
             </Form.Item>
           </Col>
@@ -257,8 +213,7 @@ const MaCarReturn: React.FC<props> = ({
                     return Promise.reject(new Error("กรุณากรอกเลขไมล์รถ"));
                   },
                 },
-              ]}
-            >
+              ]}>
               <InputNumber
                 placeholder="กรอกเลขไมล์รถ"
                 onKeyDown={(event) => {
@@ -270,11 +225,7 @@ const MaCarReturn: React.FC<props> = ({
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item
-              label="ระดับน้ำมันรถ"
-              name="carPetrol"
-              rules={[{ required: true, message: "กรุณาเลือกระดับน้ำมัน!" }]}
-            >
+            <Form.Item label="ระดับน้ำมันรถ" name="carPetrol" rules={[{ required: true, message: "กรุณาเลือกระดับน้ำมัน!" }]}>
               <Select>
                 <Select.Option value="high">มาก</Select.Option>
                 <Select.Option value="medium">ปานกลาง</Select.Option>
@@ -282,46 +233,27 @@ const MaCarReturn: React.FC<props> = ({
               </Select>
             </Form.Item>
           </Col>
-          <Col span={24}>
-            <Form.Item
-              label="สถานะของรถ"
-              name="status"
-              rules={[{ required: true, message: "กรุณาเลือกสถานะรถ!" }]}
-            >
+          {/* <Col span={24}>
+            <Form.Item label="สถานะของรถ" name="status" rules={[{ required: true, message: "กรุณาเลือกสถานะรถ!" }]}>
               <Select>
                 <Select.Option value={true}>ใช้งานได้ปกติ</Select.Option>
                 <Select.Option value={false}>ไม่สามารถใช้งานได้</Select.Option>
               </Select>
             </Form.Item>
-          </Col>
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Row justify="end" gutter={16}>
-              <Button
-                type="default"
-                onClick={handleModalReturn}
-                style={{ marginRight: "16px" }}
-              >
-                ยกเลิก
-              </Button>
-              <Button type="primary" htmlType="submit" loading={submitLoading}>
-                คืนรถ
-              </Button>
-            </Row>
-          </Form.Item>
+          </Col> */}
+          <Row justify="end" gutter={16}>
+            <Button type="default" onClick={handleModalReturn} style={{ marginRight: "16px" }}>
+              ยกเลิก
+            </Button>
+            <Button type="primary" htmlType="submit" loading={submitLoading}>
+              คืนรถ
+            </Button>
+          </Row>
         </Form>
       </Modal>
 
-      <Modal
-        title="รายละเอียด"
-        open={modalEditDetail}
-        onCancel={handleModalDetail}
-        footer={null}
-        width={800}
-      >
-        <CarReturnForm
-          formBookData={formBookData}
-          statusApprove={statusApprove}
-        />
+      <Modal title="รายละเอียด" open={modalEditDetail} onCancel={handleModalDetail} footer={null} width={800}>
+        <CarReturnForm formBookData={formBookData} statusApprove={statusApprove} />
       </Modal>
 
       <div>{showStatus()}</div>

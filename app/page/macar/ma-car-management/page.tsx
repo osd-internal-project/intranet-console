@@ -1,14 +1,5 @@
 "use client";
-import {
-  Breadcrumb,
-  Card,
-  Col,
-  Divider,
-  Row,
-  Tabs,
-  TabsProps,
-  TablePaginationConfig,
-} from "antd";
+import { Breadcrumb, Card, Col, Divider, Row, Tabs, TabsProps, TablePaginationConfig } from "antd";
 import React, { useEffect, useState } from "react";
 import ManageCar from "./components/manageCar";
 import ManageCarStatus from "./components/manageCarStatus";
@@ -41,8 +32,7 @@ const ManageMaCar = () => {
   }, [loading, maCarBookAll]);
 
   const fetchData = async () => {
-    const skip: number =
-      (Number(pagination.current) - 1) * Number(pagination.pageSize);
+    const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
     const take: number = Number(pagination.pageSize);
     try {
       const MaCarBook = await intraAuthService.findMaCarBook(skip, take);
@@ -90,12 +80,12 @@ const ManageMaCar = () => {
     {
       key: "3",
       label: "ประเภทการตรวจสภาพ",
-      children: activeKey === "3" ? <MasterType /> : null,
+      children: <MasterType />,
     },
     {
       key: "4",
       label: "เช็คสภาพรถ",
-      children: activeKey === "4" ? <WarpupmaCar /> : null,
+      children: <WarpupmaCar />,
     },
   ];
 
@@ -116,21 +106,14 @@ const ManageMaCar = () => {
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
-          <div
-            className="title-page-font"
-            style={{ display: "flex", alignItems: "left" }}
-          >
+          <div className="title-page-font" style={{ display: "flex", alignItems: "left" }}>
             <span style={{ marginRight: "8px" }}>Ma Car Management</span>
           </div>
         </Divider>
         <Col span={24}>
           <div className="grid-span-1 space-y-2">
             <Card>
-              <Tabs
-                defaultActiveKey="1"
-                items={items}
-                onChange={handleTabChange}
-              />
+              <Tabs defaultActiveKey="1" items={items} onChange={handleTabChange} />
             </Card>
           </div>
         </Col>

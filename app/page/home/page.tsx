@@ -98,11 +98,17 @@ export default function HomePage() {
             title="กิจกรรมและข่าวสาร"
             bordered={false}
             className="text-center"
+            style={{ height: "500px" }}
           >
             <NewsCarouselComponent informationNews={informationNews} />
           </Card>
           <div className="my-4"></div>
-          <Card title="เอกสาร" bordered={false} className="text-center">
+          <Card
+            title="เอกสาร"
+            bordered={false}
+            className="text-center"
+            style={{ height: "520px" }}
+          >
             <DocumentComponent
               handbookFile={handbookFile}
               downloadFile={(id: number, filename: string) =>
@@ -113,14 +119,22 @@ export default function HomePage() {
         </div>
 
         <div className="lg:col-span-1">
-          <Card title="หอประชุม" className="text-center">
+          <Card
+            title="ห้องประชุม"
+            className="text-center"
+            style={{ height: "500px" }}
+          >
             <MeetingRoomTableComponent
               pagination={false}
               masterBookingRoom={masterBookingRoom}
             />
           </Card>
           <div className="my-4"></div>
-          <Card title="วันหยุดประจำปี" className="text-center">
+          <Card
+            title="วันหยุดประจำปี"
+            className="text-center"
+            style={{ height: "520px" }}
+          >
             <HolidaysCalendarComponent />
           </Card>
         </div>

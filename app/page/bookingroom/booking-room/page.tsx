@@ -150,7 +150,7 @@ const BookingRoomPage: React.FC = () => {
 
     const today = new Date();
     if (new Date(startDate) < today) {
-      message.error("ไม่สามารถจองในวันที่ผ่านมาได้");
+      message.error("ไม่สามารถจองในเวลาที่ผ่านมาแล้วได้");
       setSubmitLoading(false);
       return;
     }
@@ -160,7 +160,16 @@ const BookingRoomPage: React.FC = () => {
       setSubmitLoading(false);
       return;
     }
-
+    const count = await bookingRoomServices.countBookingRoomCountByRoomAndRange(
+      values.roomId,
+      startDate,
+      endDate
+    );
+    if (count > 0) {
+      message.error("ห้องที่เลือกมีการจองในช่วงเวลานั้นแล้ว");
+      setSubmitLoading(false);
+      return;
+    }
     const data = {
       userId: session?.user.userId,
       roomId: values.roomId,
@@ -253,6 +262,8 @@ const BookingRoomPage: React.FC = () => {
   return (
     <>
       <Modal
+        // mask={false}
+        maskClosable={false}
         title="จองห้องประชุม"
         open={isModalBooking}
         onCancel={handleCancel}

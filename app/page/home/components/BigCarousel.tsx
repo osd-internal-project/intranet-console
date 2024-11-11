@@ -24,7 +24,7 @@ export const BigCarouselComponent: React.FC<Props> = ({ slideImage }) => {
               <div key={image.id}>
                 <Image
                   src={`${baseImageUrl}/slide-image/get-file/${image.fileId}`}
-                  alt={`${image.filePath}`}
+                  // alt={`${image.filePath}`}
                   crossOrigin="anonymous"
                   style={{
                     objectFit: "cover",

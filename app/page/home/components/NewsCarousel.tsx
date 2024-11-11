@@ -51,7 +51,7 @@ const NewsCarouselComponent: React.FC<Props> = ({
                     style={{
                       backgroundColor: "#F0F8FF",
                       // width: "300px",
-                      height: "450px",
+                      height: "350px",
                       borderRadius: "8px",
                       overflow: "hidden",
                       display: "flex",
@@ -86,13 +86,13 @@ const NewsCarouselComponent: React.FC<Props> = ({
                             marginTop: "20px",
                           }}
                         >
-                          <h4 style={{ margin: 0 }}>
+                          <p style={{ margin: 0 }} className=" text-sm">
                             ผู้เขียน : {file.author}
-                          </h4>
-                          <h4 style={{ margin: 0 }}>
+                          </p>
+                          <p style={{ margin: 0 }} className=" text-sm">
                             วันที่ :{" "}
                             {dayjs(file.updatedAt).format("DD-MM-YYYY , HH:mm")}
-                          </h4>
+                          </p>
                         </div>
                       }
                     />

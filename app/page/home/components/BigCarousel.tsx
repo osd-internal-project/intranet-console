@@ -1,7 +1,6 @@
 import { Card, Carousel, ConfigProvider, Image } from "antd";
 import React from "react";
 import { SlideImageType } from "../common";
-import { errImage } from "@/app/config/data";
 export interface Props {
   slideImage: SlideImageType[];
 }
@@ -24,16 +23,12 @@ export const BigCarouselComponent: React.FC<Props> = ({ slideImage }) => {
             {slideImage.map((image) => (
               <div key={image.id}>
                 <Image
-                  src={
-                    `${baseImageUrl}/slide-image/${image.filePath}`
-                      ? `${baseImageUrl}/slide-image/${image.filePath}`
-                      : errImage
-                  }
-                  // fallback={errImage}
+                  src={`${baseImageUrl}/slide-image/get-file/${image.fileId}`}
+                  alt={`${image.filePath}`}
                   crossOrigin="anonymous"
                   style={{
                     objectFit: "cover",
-                    aspectRatio: "16/3",
+                    aspectRatio: "21/9",
                   }}
                   preview={false}
                   width={"100%"}

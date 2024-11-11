@@ -35,22 +35,22 @@ const NewsCarouselComponent: React.FC<Props> = ({
       <div style={{ position: "relative" }}>
         <Carousel
           ref={carouselRef}
-          autoplay
+          // autoplay
           dots={false}
-          infinite
+          // infinite
           arrows={false}
         >
           {chunkedNews?.map((chunk, index) => (
             <div key={index} style={{ display: "flex" }}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 ">
                 {chunk?.map((file, fileIndex) => (
                   <Card
                     key={fileIndex}
                     onClick={() => showModal(file)}
+                    // className=" mr-1"
                     style={{
-                      margin: "0 0",
                       backgroundColor: "#F0F8FF",
-                      width: "300px",
+                      // width: "300px",
                       height: "450px",
                       borderRadius: "8px",
                       overflow: "hidden",
@@ -59,23 +59,23 @@ const NewsCarouselComponent: React.FC<Props> = ({
                     }}
                     hoverable
                   >
-                    {file.newsImage.length > 0 &&
-                    file.newsImage[0]?.fileName ? (
-                      <Image
-                        alt="news"
-                        preview={false}
-                        crossOrigin="anonymous"
-                        src={`${baseImageUrl}/news-image/${file.newsImage[0].fileimagePath}`}
-                        style={{
-                          width: "100%",
-                          height: "300px",
-                          objectFit: "cover",
-                        }}
-                      />
-                    ) : null}
-                    <>
-                      <p />
-                    </>
+                    <div className=" h-40">
+                      {file.newsImage.length > 0 &&
+                      file.newsImage[0]?.fileName ? (
+                        <Image
+                          alt="news"
+                          preview={false}
+                          crossOrigin="anonymous"
+                          src={`${baseImageUrl}/news-image/${file.newsImage[0].fileimagePath}`}
+                          style={{
+                            width: "100%",
+                            height: "150px",
+                            objectFit: "cover",
+                          }}
+                        />
+                      ) : null}{" "}
+                    </div>
+                    <div className=" mt-14"></div>
                     <Card.Meta
                       title={file.newsName || "Untitled"}
                       description={
@@ -83,7 +83,7 @@ const NewsCarouselComponent: React.FC<Props> = ({
                           style={{
                             display: "flex",
                             flexDirection: "column",
-                            marginTop: "10px",
+                            marginTop: "20px",
                           }}
                         >
                           <h4 style={{ margin: 0 }}>

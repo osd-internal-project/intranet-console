@@ -6,9 +6,9 @@ export const MaCarServices = (axiosInstance: AxiosInstance) => {
   const baseUrlApiOrganizeChart = "/organize-chart";
 
   return {
-    getMaCarBookQuery: async (body: any) => {
+    getMaCarBookQuery: async (userId: any) => {
       return await axiosInstance
-        .get(`${baseUrlApiMaCarBook}/${body}`)
+        .get(`${baseUrlApiMaCarBook}/${userId}`)
         .then((res) => {
           return res.data;
         })
@@ -39,9 +39,9 @@ export const MaCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    findMaCarBookById: async (createdById: any) => {
+    findMaCarBookById: async (userId: any) => {
       return await axiosInstance
-        .get(`${baseUrlApiMaCarBook}/${createdById}`)
+        .get(`${baseUrlApiMaCarBook}/${userId}`)
         .then((res) => {
           return res.data;
         })
@@ -87,9 +87,32 @@ export const MaCarServices = (axiosInstance: AxiosInstance) => {
         });
     },
 
+    updateMaCar: async (carId: string, body: any) => {
+      return await axiosInstance
+        .patch(`${baseUrlApiMaCar}/${carId}`, body)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+
     getMaCarQuery: async () => {
       return await axiosInstance
         .get(`${baseUrlApiMaCar}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    getMaCarById: async (carId: string) => {
+      return await axiosInstance
+        .get(`${baseUrlApiMaCar}/${carId}`)
         .then((res) => {
           return res.data;
         })

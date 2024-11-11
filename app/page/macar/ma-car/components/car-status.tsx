@@ -6,10 +6,7 @@ export interface props {
   maCarData: MaCarType[];
 }
 
-const CarStatus: React.FC<props> = ({
-  maCarData,
-}: any): React.ReactElement => {
-
+const CarStatus: React.FC<props> = ({ maCarData }: any): React.ReactElement => {
   const columns: TableProps<MaCarType>["columns"] = [
     {
       title: "ลำดับ",
@@ -29,7 +26,7 @@ const CarStatus: React.FC<props> = ({
       dataIndex: "carPetrol",
       key: "carPetrol",
       align: "center",
-      render: (carPetrol: string) => showStatusCarPetrol(carPetrol)
+      render: (carPetrol: string) => showStatusCarPetrol(carPetrol),
     },
     {
       title: "เลขไมล์รถล่าสุด",
@@ -42,12 +39,7 @@ const CarStatus: React.FC<props> = ({
       dataIndex: "status",
       key: "status",
       align: "center",
-      render: (status: boolean) =>
-        status ? (
-          <Tag color="green">ใช้งานได้ปกติ</Tag>
-        ) : (
-          <Tag color="red">ไม่สามารถใช้งานได้</Tag>
-        ),
+      render: (status: boolean) => (status ? <Tag color="green">ใช้งานได้ปกติ</Tag> : <Tag color="red">ไม่สามารถใช้งานได้</Tag>),
     },
     {
       title: <div style={{ textAlign: "center" }}>รายละเอียด</div>,
@@ -56,13 +48,6 @@ const CarStatus: React.FC<props> = ({
     },
   ];
 
-  return (
-    <Table
-      columns={columns}
-      dataSource={maCarData}
-      rowKey={(e: any) => e.id}
-      scroll={{ x: "max-content" }}
-    />
-  );
+  return <Table size="small" columns={columns} dataSource={maCarData} rowKey={(e: any) => e.id} scroll={{ x: "max-content" }} />;
 };
 export default CarStatus;

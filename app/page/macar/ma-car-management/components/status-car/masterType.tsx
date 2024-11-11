@@ -1,21 +1,6 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import {
-  Table,
-  Input,
-  Tag,
-  Button,
-  Modal,
-  Select,
-  Space,
-  Popconfirm,
-  message,
-  Form,
-  FormProps,
-  Tooltip,
-  Switch,
-  TableProps,
-} from "antd";
+import { Table, Input, Tag, Button, Modal, Select, Space, Popconfirm, message, Form, FormProps, Tooltip, Switch, TableProps } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../../services/manage-car.service";
 import { useForm } from "antd/es/form/Form";
@@ -50,12 +35,10 @@ const masterType: React.FC = () => {
 
   const fetchData = async () => {
     const maCarresponse = await maCarServices.getMaCarQueryType();
-    const maCar: MaCarType[] = maCarresponse.map(
-      (item: any, index: Number) => ({
-        ...item,
-        key: index.toString(),
-      })
-    );
+    const maCar: MaCarType[] = maCarresponse.map((item: any, index: Number) => ({
+      ...item,
+      key: index.toString(),
+    }));
     setmaCarData(maCar);
     setSubmitLoading(false);
   };
@@ -187,20 +170,14 @@ const masterType: React.FC = () => {
       dataIndex: "createdAt",
       key: "createdAt",
       width: "180px",
-      render: (createdAt: Date) =>
-        moment(createdAt).format("DD/MM/YYYY HH:mm" + " น."),
+      render: (createdAt: Date) => moment(createdAt).format("DD/MM/YYYY HH:mm" + " น."),
     },
     {
       title: "สถานะ",
       dataIndex: "status",
       key: "status",
       align: "center",
-      render: (status: boolean) =>
-        status ? (
-          <Tag color="green">เปิดการมอง</Tag>
-        ) : (
-          <Tag color="red">ปิดการมอง</Tag>
-        ),
+      render: (status: boolean) => (status ? <Tag color="green">เปิดการมอง</Tag> : <Tag color="red">ปิดการมอง</Tag>),
     },
     {
       title: "การจัดการ",
@@ -217,8 +194,7 @@ const masterType: React.FC = () => {
             title="คุณแน่ใจหรือไม่ว่าต้องการลบประเภทการตรวจสภาพนี้?"
             onConfirm={() => handleDeletemaCar(row.id)}
             okText="ใช่"
-            cancelText="ไม่"
-          >
+            cancelText="ไม่">
             <Tooltip title="ลบ">
               <a>
                 {" "}
@@ -242,8 +218,7 @@ const masterType: React.FC = () => {
               padding: " 20px 30px 20px 30px ",
               fontSize: "16px",
             }}
-            onClick={showModal}
-          >
+            onClick={showModal}>
             สร้างประเภทตรวจสภาพ
           </Button>
           <div
@@ -252,20 +227,12 @@ const masterType: React.FC = () => {
               margin: "10px",
               padding: " 20px 30px 20px 30px",
               fontSize: "16px",
-            }}
-          >
+            }}>
             <ExportExcel datamacartype={dataWithKey} />
           </div>
         </div>
 
-        <Modal
-          width={450}
-          title="สร้างประเภทการตรวจสภาพ"
-          open={isModalOpen1}
-          onOk={handleOk}
-          onCancel={handleCancel}
-          footer={null}
-        >
+        <Modal width={450} title="สร้างประเภทการตรวจสภาพ" open={isModalOpen1} onOk={handleOk} onCancel={handleCancel} footer={null}>
           <Form
             name="basic"
             labelCol={{ span: 8 }}
@@ -274,8 +241,7 @@ const masterType: React.FC = () => {
             onFinish={createMaCarType}
             autoComplete="off"
             layout="vertical"
-            form={form}
-          >
+            form={form}>
             <Form.Item
               style={{
                 textAlign: "left",
@@ -284,16 +250,8 @@ const masterType: React.FC = () => {
               }}
               name="typeName"
               label={"ประเภทการตรวจสภาพ :"}
-              rules={[
-                { required: true, message: "กรุณากรอกประเภทการตรวจสภาพ" },
-              ]}
-            >
-              <Input
-                size="large"
-                placeholder="ประเภทการตรวจสภาพ"
-                showCount
-                maxLength={50}
-              />
+              rules={[{ required: true, message: "กรุณากรอกประเภทการตรวจสภาพ" }]}>
+              <Input size="large" placeholder="ประเภทการตรวจสภาพ" showCount maxLength={50} />
             </Form.Item>
             <Form.Item
               style={{
@@ -303,17 +261,8 @@ const masterType: React.FC = () => {
               }}
               name="detail"
               label={"รายละเอียดการตรวจสภาพ :"}
-              rules={[
-                { required: true, message: "กรุณากรอกรายละเอียดการตรวจสภาพ" },
-              ]}
-            >
-              <Input.TextArea
-                rows={8}
-                size="large"
-                placeholder="รายละเอียดการตรวจสภาพ"
-                showCount
-                maxLength={150}
-              />
+              rules={[{ required: true, message: "กรุณากรอกรายละเอียดการตรวจสภาพ" }]}>
+              <Input.TextArea rows={8} size="large" placeholder="รายละเอียดการตรวจสภาพ" showCount maxLength={150} />
             </Form.Item>
             <Form.Item
               style={{
@@ -322,30 +271,17 @@ const masterType: React.FC = () => {
                 width: "450px",
               }}
               name="status"
-              label={"สถานะ :"}
-            >
-              <Switch
-                checkedChildren="เปิดการมอง"
-                unCheckedChildren="ปิดการมอง"
-                defaultChecked={true}
-              />
+              label={"สถานะ :"}>
+              <Switch checkedChildren="เปิดการมอง" unCheckedChildren="ปิดการมอง" defaultChecked={true} />
             </Form.Item>
             <div className="flex justify-end w-full">
               <Form.Item>
-                <Button
-                  type="default"
-                  onClick={handleCancel}
-                  style={{ marginRight: 8 }}
-                >
+                <Button type="default" onClick={handleCancel} style={{ marginRight: 8 }}>
                   ยกเลิก
                 </Button>
               </Form.Item>
               <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={submitLoading}
-                >
+                <Button type="primary" htmlType="submit" loading={submitLoading}>
                   ตกลง
                 </Button>
               </Form.Item>
@@ -353,14 +289,7 @@ const masterType: React.FC = () => {
           </Form>
         </Modal>
 
-        <Modal
-          width={450}
-          title="การแก้ไขบำรุงการรักษา"
-          open={modalEditMaCarType}
-          onOk={handleOk1edit}
-          onCancel={handleCancel1edit}
-          footer={null}
-        >
+        <Modal width={450} title="การแก้ไขบำรุงการรักษา" open={modalEditMaCarType} onOk={handleOk1edit} onCancel={handleCancel1edit} footer={null}>
           <Form
             name="basic"
             labelCol={{ span: 8 }}
@@ -369,8 +298,7 @@ const masterType: React.FC = () => {
             onFinish={updatedCarType}
             autoComplete="off"
             layout="vertical"
-            form={formEdit}
-          >
+            form={formEdit}>
             <Form.Item
               style={{
                 textAlign: "left",
@@ -379,8 +307,7 @@ const masterType: React.FC = () => {
                 visibility: "hidden",
               }}
               name="id"
-              label={"ID :"}
-            >
+              label={"ID :"}>
               <Input size="large" disabled />
             </Form.Item>
             <Form.Item
@@ -391,16 +318,8 @@ const masterType: React.FC = () => {
               }}
               name="typeName"
               label={"ประเภทการตรวจสภาพ :"}
-              rules={[
-                { required: true, message: "กรุณากรอกประเภทการตรวจสภาพ" },
-              ]}
-            >
-              <Input
-                size="large"
-                placeholder="ประเภทการตรวจสภาพ"
-                showCount
-                maxLength={50}
-              />
+              rules={[{ required: true, message: "กรุณากรอกประเภทการตรวจสภาพ" }]}>
+              <Input size="large" placeholder="ประเภทการตรวจสภาพ" showCount maxLength={50} />
             </Form.Item>
             <Form.Item
               style={{
@@ -410,17 +329,8 @@ const masterType: React.FC = () => {
               }}
               name="detail"
               label={"รายละเอียดการตรวจสภาพ :"}
-              rules={[
-                { required: true, message: "กรุณากรอกรายละเอียดการตรวจสภาพ" },
-              ]}
-            >
-              <Input.TextArea
-                rows={8}
-                size="large"
-                placeholder="รายละเอียดการตรวจสภาพ"
-                showCount
-                maxLength={150}
-              />
+              rules={[{ required: true, message: "กรุณากรอกรายละเอียดการตรวจสภาพ" }]}>
+              <Input.TextArea rows={8} size="large" placeholder="รายละเอียดการตรวจสภาพ" showCount maxLength={150} />
             </Form.Item>
             <Form.Item
               style={{
@@ -429,30 +339,17 @@ const masterType: React.FC = () => {
                 width: "450px",
               }}
               name="status"
-              label={"สถานะ :"}
-            >
-              <Switch
-                checkedChildren="เปิดการมอง"
-                unCheckedChildren="ปิดการมอง"
-                defaultChecked={true}
-              />
+              label={"สถานะ :"}>
+              <Switch checkedChildren="เปิดการมอง" unCheckedChildren="ปิดการมอง" defaultChecked={true} />
             </Form.Item>
             <div className="flex justify-end w-full">
               <Form.Item>
-                <Button
-                  type="default"
-                  onClick={handleCancel1edit}
-                  style={{ marginRight: 8 }}
-                >
+                <Button type="default" onClick={handleCancel1edit} style={{ marginRight: 8 }}>
                   ยกเลิก
                 </Button>
               </Form.Item>
               <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={submitLoading}
-                >
+                <Button type="primary" htmlType="submit" loading={submitLoading}>
                   ตกลง
                 </Button>
               </Form.Item>
@@ -460,11 +357,7 @@ const masterType: React.FC = () => {
           </Form>
         </Modal>
       </div>
-      <Table
-        dataSource={dataWithKey}
-        columns={columns}
-        scroll={{ x: "max-content" }}
-      />
+      <Table dataSource={dataWithKey} columns={columns} scroll={{ x: "max-content" }} />
     </div>
   );
 };

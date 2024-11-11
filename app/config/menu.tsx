@@ -241,12 +241,12 @@ export const MenuSider: MenuItem[] = [
   {
     key: "macar",
     icon: macarIcon,
-    label: `Ma Car`,
+    label: `ข้อมูลการจองรถยนต์`,
     rule: "mac-s",
     children: [
       {
         key: `macar/ma-car`,
-        label: `Ma car`,
+        label: `ข้อมูลการจองรถยนต์`,
         rule: "mac-c-s",
       },
       {

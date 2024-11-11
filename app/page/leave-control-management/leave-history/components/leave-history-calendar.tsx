@@ -99,25 +99,6 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ departmentId, downlo
             style: { backgroundColor, color: "#fff", fontSize: 10 },
           };
         }}
-        // components={{
-        //   agenda: {
-        //     header: () => (
-        //       <tr>
-        //         <th>วันที่</th>
-        //         <th>เวลา</th>
-        //         <th>กิจกรรม</th>
-        //       </tr>
-        //     ),
-        //     event: ({ event }) => {
-        //       console.log(event);
-        //       return (
-        //         <span>
-        //           {event.title} - {event.description}
-        //         </span>
-        //       );
-        //     },
-        //   },
-        // }}
       />
     </div>
   );

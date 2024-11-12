@@ -123,3 +123,9 @@ export interface ProvincesType {
   value: string;
   label: string;
 }
+
+export type ITPagination = {
+  current: number;
+  pageSize: number;
+  total?: number;
+};

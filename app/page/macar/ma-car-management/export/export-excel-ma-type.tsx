@@ -15,9 +15,7 @@ const ExportExcel: React.FC<ExportExcelProps> = ({ datamacartype }) => {
         ประเภทการตรวตสภาพ: datadic.typeName,
         รายละเอียดการตรวตสภาพ: datadic.detail,
         ประเภทตรวจสภาพ: datadic.createdByName,
-        "วันที่ระบุ": new Date(
-          datadic.createdAt
-        )
+        วันที่ระบุ: new Date(datadic.createdAt)
           .toLocaleDateString("en-GB", {
             year: "numeric",
             month: "2-digit",
@@ -50,15 +48,7 @@ const ExportExcel: React.FC<ExportExcelProps> = ({ datamacartype }) => {
     };
     worksheet["!ref"] = XLSX.utils.encode_range(range);
 
-    const columnWidths = [
-      { wpx: 50 },
-      { wpx: 365 },
-      { wpx: 235 },
-      { wpx: 60 },
-      { wpx: 150 },
-      { wpx: 200 },
-      { wpx: 320 },
-    ];
+    const columnWidths = [{ wpx: 50 }, { wpx: 365 }, { wpx: 235 }, { wpx: 60 }, { wpx: 150 }, { wpx: 200 }, { wpx: 320 }];
 
     worksheet["!cols"] = columnWidths;
 
@@ -68,7 +58,7 @@ const ExportExcel: React.FC<ExportExcelProps> = ({ datamacartype }) => {
 
   return (
     <a>
-      <Button onClick={handleExport} style={{ color: "black" }}>
+      <Button onClick={handleExport} size="small">
         <FileExcelFilled /> Download data
       </Button>
     </a>

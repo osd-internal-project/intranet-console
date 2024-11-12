@@ -1,20 +1,5 @@
 import React, { useState } from "react";
-import {
-  Select,
-  Table,
-  Space,
-  Button,
-  Row,
-  Col,
-  Modal,
-  Form,
-  Input,
-  Tag,
-  message,
-  Popconfirm,
-  InputNumber,
-  Tooltip,
-} from "antd";
+import { Select, Table, Space, Button, Row, Col, Modal, Form, Input, Tag, message, Popconfirm, InputNumber, Tooltip } from "antd";
 import { DeleteIcon, EditIcon } from "@/components/icon";
 import type { TableProps, FormProps } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -34,15 +19,9 @@ export interface props {
   changePagination: (pagination: TablePaginationConfig) => void;
 }
 
-const ManageCarStatus: React.FC<props> = ({
-  setLoading,
-  loading,
-  maCarData,
-  pagination,
-  changePagination,
-}: any): React.ReactElement => {
-  const intraAuth = useAxiosIntranet();
+const ManageCarStatus: React.FC<props> = ({ setLoading, loading, maCarData, pagination, changePagination }: any): React.ReactElement => {
   const [form] = useForm();
+  const intraAuth = useAxiosIntranet();
   const intraAuthService = ManageCarServices(intraAuth);
   const [maData, setMaData] = useState<MaCarType[]>([]);
   const [currentMaId, setCurrentMaId] = useState<string | null>(null);
@@ -50,7 +29,6 @@ const ManageCarStatus: React.FC<props> = ({
   const [modalCreateMaCar, setModalCreateMaCar] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(true);
   const { data: session } = useSession();
-  const [messages, messageHeader] = message.useMessage();
 
   const handleEditMaCarCancel = () => {
     setModalEditMaCar(false);
@@ -92,29 +70,25 @@ const ManageCarStatus: React.FC<props> = ({
 
     try {
       const response = await intraAuthService.createMaCar(maCarCreateData);
-      response
-        ? (messages.success("เพิ่มรถสำเร็จ"), form.resetFields())
-        : messages.error("เพิ่มรถไม่สำเร็จ");
+      response ? (message.success("เพิ่มรถสำเร็จ"), form.resetFields()) : message.error("เพิ่มรถไม่สำเร็จ");
     } catch (error) {
-      messages.error("เพิ่มรถไม่สำเร็จ");
+      message.error("เพิ่มรถไม่สำเร็จ");
       setSubmitLoading(false);
     }
     setModalCreateMaCar(false);
     setLoading(true);
   };
 
-  const onFinishFailed: FormProps<MaCarType>["onFinishFailed"] = (
-    errorInfo
-  ) => {};
+  const onFinishFailed: FormProps<MaCarType>["onFinishFailed"] = (errorInfo) => {};
 
   const handleDeleteCarStatus = async (carId: string) => {
     setSubmitLoading(true);
     try {
       await intraAuthService.deleteMaCar(carId);
       setMaData(maData.filter((item) => item.carId !== carId));
-      messages.success("ลบรถสำเร็จ");
+      message.success("ลบรถสำเร็จ");
     } catch (error) {
-      messages.error("ลบรถไม่สำเร็จ");
+      message.error("ลบรถไม่สำเร็จ");
       setSubmitLoading(false);
     }
     setLoading(true);
@@ -132,11 +106,11 @@ const ManageCarStatus: React.FC<props> = ({
         updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
       };
       await intraAuthService.updateMaCar(updatedMaCar);
-      messages.success("แก้ไขข้อมูลรถสำเร็จ");
+      message.success("แก้ไขข้อมูลรถสำเร็จ");
       handleEditMaCarCancel();
       setSubmitLoading(false);
     } catch (error) {
-      messages.error("แก้ไขข้อมูลรถไม่สำเร็จ");
+      message.error("แก้ไขข้อมูลรถไม่สำเร็จ");
     }
     setLoading(true);
   };
@@ -148,9 +122,7 @@ const ManageCarStatus: React.FC<props> = ({
       key: "id",
       align: "center",
       render: (_: any, __: any, index: number) =>
-        pagination.current && pagination.pageSize
-          ? (pagination.current - 1) * pagination.pageSize + (index + 1)
-          : "",
+        pagination.current && pagination.pageSize ? (pagination.current - 1) * pagination.pageSize + (index + 1) : "",
     },
     {
       title: "ชื่อรถ",
@@ -177,12 +149,7 @@ const ManageCarStatus: React.FC<props> = ({
       dataIndex: "status",
       key: "status",
       align: "center",
-      render: (status: boolean) =>
-        status ? (
-          <Tag color="green">ใช้งานได้ปกติ</Tag>
-        ) : (
-          <Tag color="red">ไม่สามารถใช้งานได้</Tag>
-        ),
+      render: (status: boolean) => (status ? <Tag color="green">ใช้งานได้ปกติ</Tag> : <Tag color="red">ไม่สามารถใช้งานได้</Tag>),
     },
     {
       title: "เลขไมล์รถ",
@@ -201,13 +168,7 @@ const ManageCarStatus: React.FC<props> = ({
       render: (_, record) => (
         <Space>
           <Tooltip title="แก้ไข">
-            <a
-              type="link"
-              onClick={() => showModalEditMaCar(record)}
-              role="button"
-              aria-label="Edit"
-              style={{ cursor: "pointer" }}
-            >
+            <a type="link" onClick={() => showModalEditMaCar(record)} role="button" aria-label="Edit" style={{ cursor: "pointer" }}>
               {EditIcon}
             </a>
           </Tooltip>
@@ -215,8 +176,7 @@ const ManageCarStatus: React.FC<props> = ({
             title="คุณแน่ใจหรือไม่ว่าต้องการลบรถคันนี้?"
             onConfirm={() => handleDeleteCarStatus(record.carId)}
             okText="ใช่"
-            cancelText="ไม่"
-          >
+            cancelText="ไม่">
             <Tooltip title="ลบ">
               <a type="link">
                 <DeleteIcon />
@@ -230,55 +190,25 @@ const ManageCarStatus: React.FC<props> = ({
 
   return (
     <>
-      {messageHeader}
-      <Modal
-        title="แก้ไขรถ"
-        open={modalEditMaCar}
-        onCancel={handleEditMaCarCancel}
-        footer={null}
-        width={500}
-      >
-        <Form
-          form={form}
-          name="edit_macar"
-          onFinish={updatedCar}
-          autoComplete="off"
-          layout="vertical"
-          size="small"
-        >
-          <Form.Item
-            label="ชื่อรถ"
-            name="carName"
-            rules={[{ required: true, message: "กรุณากรอกชื่อรถ!" }]}
-          >
+      <Modal title="แก้ไขรถ" open={modalEditMaCar} onCancel={handleEditMaCarCancel} footer={null} width={500}>
+        <Form form={form} name="edit_macar" onFinish={updatedCar} autoComplete="off" layout="vertical" size="small">
+          <Form.Item label="ชื่อรถ" name="carName" rules={[{ required: true, message: "กรุณากรอกชื่อรถ!" }]}>
             <Input placeholder="กรอกชื่อรถ" />
           </Form.Item>
-          <Form.Item
-            label="ระดับน้ำมันรถ"
-            name="carPetrol"
-            rules={[{ required: true, message: "กรุณาเลือกระดับน้ำมัน!" }]}
-          >
+          <Form.Item label="ระดับน้ำมันรถ" name="carPetrol" rules={[{ required: true, message: "กรุณาเลือกระดับน้ำมัน!" }]}>
             <Select placeholder="เลือกระดับน้ำมัน">
               <Select.Option value="high">มาก</Select.Option>
               <Select.Option value="medium">ปานกลาง</Select.Option>
               <Select.Option value="low">น้อย</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item
-            label="สถานะของรถ"
-            name="status"
-            rules={[{ required: true, message: "กรุณาเลือกสถานะรถ!" }]}
-          >
+          <Form.Item label="สถานะของรถ" name="status" rules={[{ required: true, message: "กรุณาเลือกสถานะรถ!" }]}>
             <Select placeholder="เลือกสถานะรถ">
               <Select.Option value={true}>ใช้งานได้ปกติ</Select.Option>
               <Select.Option value={false}>ไม่สามารถใช้งานได้</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item
-            label="เลขไมค์รถ"
-            name="carMile"
-            rules={[{ required: true, message: "กรุณากรอกเลขไมค์รถ!" }]}
-          >
+          <Form.Item label="เลขไมค์รถ" name="carMile" rules={[{ required: true, message: "กรุณากรอกเลขไมค์รถ!" }]}>
             <InputNumber
               placeholder="กรอกเลขไมล์รถ"
               onKeyDown={(event) => {
@@ -288,20 +218,12 @@ const ManageCarStatus: React.FC<props> = ({
               }}
             />
           </Form.Item>
-          <Form.Item
-            label="รายละเอียดรถ"
-            name="detail"
-            rules={[{ required: true, message: "กรุณากรอกรายละเอียดรถ!" }]}
-          >
+          <Form.Item label="รายละเอียดรถ" name="detail" rules={[{ required: true, message: "กรุณากรอกรายละเอียดรถ!" }]}>
             <Input.TextArea rows={2} placeholder="กรอกรายละเอียดรถ" />
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Row justify="end">
-              <Button
-                type="default"
-                onClick={handleEditMaCarCancel}
-                style={{ marginRight: 8 }}
-              >
+              <Button type="default" onClick={handleEditMaCarCancel} style={{ marginRight: 8 }}>
                 ยกเลิก
               </Button>
               <Button type="primary" htmlType="submit" loading={submitLoading}>
@@ -312,37 +234,15 @@ const ManageCarStatus: React.FC<props> = ({
         </Form>
       </Modal>
 
-      <Modal
-        title="เพิ่มรถ"
-        open={modalCreateMaCar}
-        onCancel={handleCancelCreateMaCar}
-        footer={null}
-        width={500}
-      >
-        <Form
-          form={form}
-          layout="vertical"
-          name="create"
-          onFinish={createMaCar}
-          onFinishFailed={onFinishFailed}
-          autoComplete="off"
-          size="small"
-        >
+      <Modal title="เพิ่มรถ" open={modalCreateMaCar} onCancel={handleCancelCreateMaCar} footer={null} width={500}>
+        <Form form={form} layout="vertical" name="create" onFinish={createMaCar} onFinishFailed={onFinishFailed} autoComplete="off" size="small">
           <Col span={24}>
-            <Form.Item
-              label="ชื่อรถ"
-              name="carName"
-              rules={[{ required: true, message: "กรุณากรอกชื่อรถ!" }]}
-            >
+            <Form.Item label="ชื่อรถ" name="carName" rules={[{ required: true, message: "กรุณากรอกชื่อรถ!" }]}>
               <Input placeholder="กรอกชื่อรถ" />
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item<MaCarType>
-              label="ระดับของน้ำมัน"
-              name="carPetrol"
-              rules={[{ required: true, message: "กรุณาเลือกระดับน้ำมัน!" }]}
-            >
+            <Form.Item<MaCarType> label="ระดับของน้ำมัน" name="carPetrol" rules={[{ required: true, message: "กรุณาเลือกระดับน้ำมัน!" }]}>
               <Select placeholder="เลือกระดับน้ำมัน">
                 <Select.Option value="high">มาก</Select.Option>
                 <Select.Option value="medium">ปานกลาง</Select.Option>
@@ -351,11 +251,7 @@ const ManageCarStatus: React.FC<props> = ({
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item
-              label="สถานะ"
-              name="status"
-              rules={[{ required: true, message: "กรุณาเลือกระสถานะรถ!" }]}
-            >
+            <Form.Item label="สถานะ" name="status" rules={[{ required: true, message: "กรุณาเลือกระสถานะรถ!" }]}>
               <Select placeholder="เลือกสถานะรถ">
                 <Select.Option value={true}>ใช้งานได้ปกติ</Select.Option>
                 <Select.Option value={false}>ไม่สามารถใช้งานได้</Select.Option>
@@ -363,11 +259,7 @@ const ManageCarStatus: React.FC<props> = ({
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item
-              label="เลขไมล์รถ"
-              name="carMile"
-              rules={[{ required: true, message: "กรุณากรอกเลขไมล์รถ!" }]}
-            >
+            <Form.Item label="เลขไมล์รถ" name="carMile" rules={[{ required: true, message: "กรุณากรอกเลขไมล์รถ!" }]}>
               <InputNumber
                 placeholder="กรอกเลขไมล์รถ"
                 onKeyDown={(event) => {
@@ -379,21 +271,13 @@ const ManageCarStatus: React.FC<props> = ({
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item
-              label="รายละเอียด"
-              name="detail"
-              rules={[{ required: true, message: "กรุณากรอกรายละเอียดรถ!" }]}
-            >
+            <Form.Item label="รายละเอียด" name="detail" rules={[{ required: true, message: "กรุณากรอกรายละเอียดรถ!" }]}>
               <Input.TextArea rows={4} placeholder="รายละเอียด" />
             </Form.Item>
           </Col>
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Row justify="end">
-              <Button
-                type="default"
-                onClick={handleCancelCreateMaCar}
-                style={{ marginRight: 8 }}
-              >
+              <Button type="default" onClick={handleCancelCreateMaCar} style={{ marginRight: 8 }}>
                 ยกเลิก
               </Button>
               <Button type="primary" htmlType="submit" loading={submitLoading}>
@@ -409,8 +293,7 @@ const ManageCarStatus: React.FC<props> = ({
           justifyContent: "flex-end",
           marginRight: "50px",
           marginBottom: "10px",
-        }}
-      >
+        }}>
         <Button type="primary" size="small" onClick={showModalCreateMaCar}>
           เพิ่มรถ
         </Button>

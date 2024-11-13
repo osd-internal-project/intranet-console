@@ -1,22 +1,22 @@
 "use client";
 import { Breadcrumb, Card, Col, Divider, Row, Tabs, TabsProps, TablePaginationConfig } from "antd";
 import React, { useEffect, useState } from "react";
-import ManageCar from "./components/manageCar";
-import ManageCarStatus from "./components/manageCarStatus";
-import MasterType from "./components/status-car/masterType";
-import WarpupmaCar from "./components/status-car/WarpupmaCar";
+import ManageCar from "./components/management-car-booking/management-car-booking";
 import { ManageCarServices } from "./services/manage-car.service";
 import { MaCarBookType, MaCarType, dataMaCarbook } from "../common/index";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import ManagementCarAvailable from "./components/management-car-available/management-car-available.tsx";
+import ManagementCarMasterdataType from "./components/management-car-masterdata-type/management-car-masterdata-type";
+import ManagementCarWrapup from "./components/management-car-wrapup/management-car-wrapup";
+import WrapupCar from "./components/wrapup-car";
 
 const ManageMaCar = () => {
   const intraAuth = useAxiosIntranet();
   const intraAuthService = ManageCarServices(intraAuth);
-  const [maCarBookData, setMaCarBookData] = useState<dataMaCarbook[]>([]);
+  const [maCarBookData, setMaCarBookData] = useState<dataMaCarbook>({ total: 0, docs: [] });
   const [maCarBookAll, setMaCarBookAll] = useState<MaCarBookType[]>([]);
   const [maCarData, setmaCarData] = useState<MaCarType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [activeKey, setActiveKey] = useState<string>("1");
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -46,10 +46,6 @@ const ManageMaCar = () => {
     }
   };
 
-  const handleTabChange = (key: string) => {
-    setActiveKey(key);
-  };
-
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -68,7 +64,7 @@ const ManageMaCar = () => {
       key: "2",
       label: "จัดการรถ",
       children: (
-        <ManageCarStatus
+        <ManagementCarAvailable
           maCarData={maCarData}
           loading={loading}
           setLoading={setLoading}
@@ -80,12 +76,12 @@ const ManageMaCar = () => {
     {
       key: "3",
       label: "ประเภทการตรวจสภาพ",
-      children: <MasterType />,
+      children: <ManagementCarMasterdataType />,
     },
     {
       key: "4",
       label: "เช็คสภาพรถ",
-      children: <WarpupmaCar />,
+      children: <WrapupCar />,
     },
   ];
 
@@ -100,20 +96,20 @@ const ManageMaCar = () => {
                 title: <span>หน้าหลัก</span>,
               },
               {
-                title: <span>Ma Car Management</span>,
+                title: <span>ข้อมูลการจองรถยนต์ (สำหรับ แอดมิน)</span>,
               },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
           <div className="title-page-font" style={{ display: "flex", alignItems: "left" }}>
-            <span style={{ marginRight: "8px" }}>Ma Car Management</span>
+            <span style={{ marginRight: "8px" }}>ข้อมูลการจองรถยนต์ (สำหรับ แอดมิน)</span>
           </div>
         </Divider>
         <Col span={24}>
           <div className="grid-span-1 space-y-2">
             <Card>
-              <Tabs defaultActiveKey="1" items={items} onChange={handleTabChange} />
+              <Tabs defaultActiveKey="1" items={items} />
             </Card>
           </div>
         </Col>

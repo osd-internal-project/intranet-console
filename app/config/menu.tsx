@@ -273,7 +273,7 @@ export const MenuSider: MenuItem[] = [
       },
       {
         key: `macar/ma-car-management`,
-        label: `Ma car Management`,
+        label: `ข้อมูลการจองรถยนต์ (สำหรับ แอดมิน)`,
         rule: "mac-m-s",
       },
     ],

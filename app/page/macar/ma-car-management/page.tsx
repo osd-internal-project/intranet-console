@@ -2,12 +2,13 @@
 import { Breadcrumb, Card, Col, Divider, Row, Tabs, TabsProps, TablePaginationConfig } from "antd";
 import React, { useEffect, useState } from "react";
 import ManageCar from "./components/management-car-booking/management-car-booking";
-import WarpupmaCar from "./components/wrapup-car";
 import { ManageCarServices } from "./services/manage-car.service";
 import { MaCarBookType, MaCarType, dataMaCarbook } from "../common/index";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import ManagementCarAvailable from "./components/management-car-available/management-car-available.tsx";
 import ManagementCarMasterdataType from "./components/management-car-masterdata-type/management-car-masterdata-type";
+import ManagementCarWrapup from "./components/management-car-wrapup/management-car-wrapup";
+import WrapupCar from "./components/wrapup-car";
 
 const ManageMaCar = () => {
   const intraAuth = useAxiosIntranet();
@@ -80,7 +81,7 @@ const ManageMaCar = () => {
     {
       key: "4",
       label: "เช็คสภาพรถ",
-      children: <WarpupmaCar />,
+      children: <WrapupCar />,
     },
   ];
 
@@ -95,14 +96,14 @@ const ManageMaCar = () => {
                 title: <span>หน้าหลัก</span>,
               },
               {
-                title: <span>Ma Car Management</span>,
+                title: <span>ข้อมูลการจองรถยนต์ (สำหรับ แอดมิน)</span>,
               },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
           <div className="title-page-font" style={{ display: "flex", alignItems: "left" }}>
-            <span style={{ marginRight: "8px" }}>Ma Car Management</span>
+            <span style={{ marginRight: "8px" }}>ข้อมูลการจองรถยนต์ (สำหรับ แอดมิน)</span>
           </div>
         </Divider>
         <Col span={24}>

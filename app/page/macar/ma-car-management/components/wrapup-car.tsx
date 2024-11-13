@@ -217,7 +217,6 @@ const WrapupCar: React.FC = () => {
     };
     try {
       const response = await manageCarServices.createMaCarWarpup(maCarCreateDataWarpup);
-
       if (response && attendFiles.length > 0) {
         await Promise.all(
           attendFiles.map(async (file) => {
@@ -229,7 +228,6 @@ const WrapupCar: React.FC = () => {
       }
       if (response) {
         message.success("เพิ่มการตรวจสภาพรถสำเร็จ");
-        fetchDataWarpup();
       } else {
         message.error("เพิ่มการตรวจสภาพรถไม่สำเร็จ");
       }

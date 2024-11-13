@@ -129,3 +129,14 @@ export type ITPagination = {
   pageSize: number;
   total?: number;
 };
+
+export interface MaCarType {
+  id: number;
+  typeName: string;
+  detail: string;
+  status: boolean;
+  createdAt: Date;
+  createdById: string;
+  createdByName: string;
+}
+

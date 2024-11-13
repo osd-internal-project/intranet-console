@@ -9,6 +9,7 @@ import { ManageCarServices } from "./services/manage-car.service";
 import { ITPagination, MaCarBookType, MaCarType, dataMaCarbook } from "../common/index";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import ManagementCarAvailable from "./components/management-car-available/management-car-available.tsx";
+import ManagementCarMasterdataType from "./components/management-car-masterdata-type/management-car-masterdata-type";
 
 const ManageMaCar = () => {
   const intraAuth = useAxiosIntranet();
@@ -76,7 +77,7 @@ const ManageMaCar = () => {
     {
       key: "3",
       label: "ประเภทการตรวจสภาพ",
-      children: <MasterType />,
+      children: <ManagementCarMasterdataType />,
     },
     {
       key: "4",

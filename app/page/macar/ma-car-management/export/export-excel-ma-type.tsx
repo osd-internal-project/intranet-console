@@ -58,8 +58,8 @@ const ExportExcel: React.FC<ExportExcelProps> = ({ datamacartype }) => {
 
   return (
     <a>
-      <Button onClick={handleExport} size="small">
-        <FileExcelFilled /> Download data
+      <Button onClick={handleExport}>
+        <FileExcelFilled /> Export Excel
       </Button>
     </a>
   );

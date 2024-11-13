@@ -134,9 +134,9 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    updateMaCarType: async (body: any) => {
+    updateMaCarType: async (id: string, body: any) => {
       return await axiosInstance
-        .patch(`${baseUrlApiMaCarTpye}/${body.id}`, body)
+        .patch(`${baseUrlApiMaCarTpye}/${id}`, body)
         .then((res) => {
           return res.data;
         })

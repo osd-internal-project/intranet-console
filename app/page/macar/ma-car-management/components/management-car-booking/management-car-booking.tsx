@@ -86,6 +86,7 @@ const managementCarBooking: React.FC<props> = ({ setLoading, loading, maCarBookD
         await macarservice.updateMaCar(form.getFieldValue("carId"), updataStatusCar);
       }
       setCheckType("");
+      setCheckStatusApproved("");
       setLoading(true);
       setOpenModal(false);
     } catch (e) {

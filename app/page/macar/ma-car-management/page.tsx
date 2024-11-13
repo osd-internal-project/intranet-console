@@ -2,12 +2,13 @@
 import { Breadcrumb, Card, Col, Divider, Row, Tabs, TabsProps, TablePaginationConfig } from "antd";
 import React, { useEffect, useState } from "react";
 import ManageCar from "./components/management-car-booking/management-car-booking";
-import ManageCarStatus from "./components/manage-car-status";
+// import ManageCarStatus from "./components/manage-car-status";
 import MasterType from "./components/master-data-type";
 import WarpupmaCar from "./components/wrapup-car";
 import { ManageCarServices } from "./services/manage-car.service";
 import { ITPagination, MaCarBookType, MaCarType, dataMaCarbook } from "../common/index";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import ManagementCarAvailable from "./components/management-car-available/management-car-available.tsx";
 
 const ManageMaCar = () => {
   const intraAuth = useAxiosIntranet();
@@ -63,7 +64,7 @@ const ManageMaCar = () => {
       key: "2",
       label: "จัดการรถ",
       children: (
-        <ManageCarStatus
+        <ManagementCarAvailable
           maCarData={maCarData}
           loading={loading}
           setLoading={setLoading}

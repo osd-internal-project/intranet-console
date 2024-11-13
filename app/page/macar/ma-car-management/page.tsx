@@ -2,11 +2,9 @@
 import { Breadcrumb, Card, Col, Divider, Row, Tabs, TabsProps, TablePaginationConfig } from "antd";
 import React, { useEffect, useState } from "react";
 import ManageCar from "./components/management-car-booking/management-car-booking";
-// import ManageCarStatus from "./components/manage-car-status";
-import MasterType from "./components/master-data-type";
 import WarpupmaCar from "./components/wrapup-car";
 import { ManageCarServices } from "./services/manage-car.service";
-import { ITPagination, MaCarBookType, MaCarType, dataMaCarbook } from "../common/index";
+import { MaCarBookType, MaCarType, dataMaCarbook } from "../common/index";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import ManagementCarAvailable from "./components/management-car-available/management-car-available.tsx";
 import ManagementCarMasterdataType from "./components/management-car-masterdata-type/management-car-masterdata-type";

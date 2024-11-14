@@ -81,7 +81,7 @@ const ManageMaCar = () => {
     {
       key: "4",
       label: "เช็คสภาพรถ",
-      children: <WrapupCar />,
+      children: <ManagementCarWrapup />,
     },
   ];
 

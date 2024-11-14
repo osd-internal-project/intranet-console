@@ -1,4 +1,4 @@
-import { Space, Table, TableProps, Tag, Tooltip } from "antd";
+import { Button, Space, Table, TableProps, Tag, Tooltip } from "antd";
 import React from "react";
 import { MaCarwarpup } from "../../wrapup-car";
 import { EyeOutlined } from "@ant-design/icons";
@@ -20,6 +20,7 @@ const ManagementCarWrapupTable: React.FC<props> = ({ handleOpen, dataSource, loa
       key: "id",
       align: "center",
       fixed: "left",
+      render: (value: number, record: any, index: number) => index + 1,
     },
     {
       title: "ชื่อรถ",
@@ -70,21 +71,7 @@ const ManagementCarWrapupTable: React.FC<props> = ({ handleOpen, dataSource, loa
       align: "center",
       render: (values: string) => dateFormatTime(values),
     },
-    {
-      title: "หมายเหตุ",
-      dataIndex: "remark",
-      key: "remark",
-      align: "center",
-      render: (_: any, record: MaCarwarpup) => (
-        <a
-        // onClick={() => detailswarpup(record)}
-        >
-          <Tooltip title="ดูรายละเอียด">
-            <EyeOutlined style={{ fontSize: "24px", color: "#08c", cursor: "pointer" }} />
-          </Tooltip>
-        </a>
-      ),
-    },
+
     {
       title: "ชื่อ - นามสกุล",
       dataIndex: "createbyName",
@@ -111,40 +98,10 @@ const ManagementCarWrapupTable: React.FC<props> = ({ handleOpen, dataSource, loa
       align: "center",
       render: (_: any, record: MaCarwarpup) => {
         return (
-          <Space size="middle">
-            {/* <Tooltip title="แก้ไข">
-              <a
-                onClick={() => isEditable && showModalEditMaCarWarpup(record)}
-                style={{
-                  pointerEvents: isEditable ? "auto" : "none",
-                  visibility: isEditable ? "visible" : "hidden",
-                  color: isEditable ? "inherit" : "gray",
-                }}>
-                {EditIcon}
-              </a>
-            </Tooltip>
-            <Popconfirm
-              title="คุณแน่ใจหรือไม่ว่าต้องการลบการตรวจสภาพนี้ ?"
-              onConfirm={() => handleDeletemaCarWarpup(record.carWrapupId)}
-              okText="ยืนยัน"
-              cancelText="ยกเลิก">
-              <Tooltip title="ลบ">
-                <a>
-                  <DeleteIcon width="20" height="20" />
-                </a>
-              </Tooltip>
-            </Popconfirm>
-            <Tooltip title="การเช็ค">
-              <a
-                onClick={() => isEditable && modalopensubmit(record)}
-                style={{
-                  pointerEvents: isEditable ? "auto" : "none",
-                  visibility: isEditable ? "visible" : "hidden",
-                  color: isEditable ? "inherit" : "gray",
-                }}>
-                {ApproveIcon}
-              </a>
-            </Tooltip> */}
+          <Space>
+            <Button size="small" type="default" onClick={() => handleOpen("edit", record)}>{`Edit`}</Button>
+            <Button size="small" type="primary" onClick={() => handleOpen("delete", record)} danger>{`Delete`}</Button>
+            <Button size="small" type="primary" onClick={() => handleOpen("approved", record)}>{`Approved`}</Button>
           </Space>
         );
       },

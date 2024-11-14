@@ -1,34 +1,85 @@
 import { UploadOutlined } from "@ant-design/icons";
-import { Button, DatePicker, Form, Input, InputNumber, Modal, Select, Space, Upload } from "antd";
+import { Button, DatePicker, Form, Input, InputNumber, message, Modal, Select, Space, Upload, UploadFile, UploadProps, Image } from "antd";
+import { FormInstance } from "antd/lib";
+import TextArea from "antd/lib/input/TextArea";
+import { RcFile } from "antd/lib/upload";
+import moment from "moment";
 import React from "react";
 
-const ManagementCarWrapupManage = () => {
+export interface props {
+  form: FormInstance;
+  carDetail: any[];
+  checkType: string;
+  openModal: boolean;
+  handleClose: () => void;
+  handleChangeSelect: (values: string) => void;
+  carMileage: number;
+  optionsType: { value: string; label: string; key: number }[];
+  setAttendFiles: (newFileList: UploadFile[]) => void;
+  attendFiles: UploadFile[];
+  onFinish: (status: string, values: any) => void;
+  setCheckApprovedStatus: (status: string) => void;
+  Files: any;
+}
+
+const ManagementCarWrapupManage: React.FC<props> = ({
+  form,
+  carDetail,
+  checkType,
+  openModal,
+  handleClose,
+  handleChangeSelect,
+  carMileage,
+  optionsType,
+  setAttendFiles,
+  attendFiles,
+  onFinish,
+  setCheckApprovedStatus,
+  Files,
+}): React.ReactElement => {
+  const handleChangeAttendFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
+    if (newFileList.length > 3) {
+      message.warning("คุณไม่สามารถอัปโหลดภาพเกิน 3 ภาพ");
+      return Upload.LIST_IGNORE;
+    }
+    return setAttendFiles(newFileList);
+  };
+  const beforeUploadAttendFiles = (file: RcFile) => {
+    if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
+      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
+      return Upload.LIST_IGNORE;
+    }
+    return true;
+  };
   return (
     <div>
-      {/* <Modal title="เพิ่มข้อมูลตรวจสภาพรถ" open={IsmodlaOpencreate} onCancel={handleclosecreate} footer={null} destroyOnClose>
-        <Form form={form} onFinish={createMaCarWarpup} layout="vertical" initialValues={{ wrapupMiles: mileage }}>
+      <Modal
+        title={checkType === "create" ? "เพิ่มข้อมูลตรวจสภาพรถ" : "แก้ไขข้อมูลตรวจสภาพรถ"}
+        open={openModal}
+        onCancel={handleClose}
+        footer={null}
+        width={800}>
+        <Form
+          name="formmanage"
+          form={form}
+          autoComplete="off"
+          labelCol={{ span: 6 }}
+          wrapperCol={{ span: 18 }}
+          onFinish={(e) => onFinish(checkType, e)}>
           <Form.Item name="carId" label="ชื่อรถ" rules={[{ required: true, message: "กรุณาเลือกชื่อรถ" }]}>
-            <Select placeholder="โปรดเลือกรถ" style={{ width: "100%" }} onChange={handleSelectChange}>
-              {maCar.map((car, index) => (
-                <Select.Option key={index} value={car.carId}>
-                  {car.carName}
-                </Select.Option>
-              ))}
-            </Select>
+            <Select
+              allowClear
+              placeholder="โปรดเลือกรถ"
+              style={{ width: "100%" }}
+              onChange={handleChangeSelect}
+              options={carDetail.map((car: any, index: number) => {
+                return { key: index, value: car.carId, label: car.carName };
+              })}
+              disabled={checkType !== "create" ? true : false}
+            />
           </Form.Item>
           <Form.Item name="typeName" label="ประเภทการตรวจสภาพ" rules={[{ required: true, message: "กรุณาเลือกประเภทการตรวจสภาพ" }]}>
-            <Select placeholder="โปรดเลือกประเภทการตรวจสภาพ">
-              {maDataTypeOptions
-                .filter((option) => {
-                  const type = maDataType.find((type) => type.typeName === option.label);
-                  return type && type.status;
-                })
-                .map((option) => (
-                  <Select.Option key={option.value} value={option.value}>
-                    {option.label}
-                  </Select.Option>
-                ))}
-            </Select>
+            <Select allowClear placeholder="โปรดเลือกประเภทการตรวจสภาพ" options={optionsType} disabled={checkType !== "create" ? true : false} />
           </Form.Item>
           <Form.Item
             name="wrapupMiles"
@@ -36,33 +87,17 @@ const ManagementCarWrapupManage = () => {
             rules={[
               {
                 required: true,
-                validator: async (_, value) => {
-                  if (value === undefined || value === "") {
-                    return Promise.resolve();
-                  }
-
-                  const selectedCar = maData.find((car) => car.carName === formchange.getFieldValue("carName"));
-
-                  if (selectedCar) {
-                    if (value === undefined || value === "" || value === null) {
-                      throw new Error(`กรุณากรอกเลขไมล์`);
-                    }
-                    if (value < 0) {
-                      throw new Error(`กรุณากรอกเลขไมล์`);
-                    }
-                    if (value < selectedCar.carMile) {
-                      throw new Error(`เลขไมล์ต้องไม่น้อยกว่าเลขไมล์ของรถ ${selectedCar.carMile}`);
-                    }
-                  }
-
-                  return Promise.resolve();
-                },
               },
             ]}>
-            <InputNumber value={mileage} min={mileage || 0} />
+            <InputNumber
+              placeholder="กรอกจำนวนเลขไมล์"
+              min={carMileage || 0}
+              className="w-full"
+              disabled={checkType !== "create" && checkType !== "edit" ? true : false}
+            />
           </Form.Item>
           <Form.Item name="vender" label="สถานที่การตรวจสภาพ" rules={[{ required: true, message: "กรุณากรอกสถานที่การตรวจสภาพ" }]}>
-            <Input placeholder="โปรดเลือกสถานที่การตรวจสภาพ" />
+            <Input placeholder="โปรดเลือกสถานที่การตรวจสภาพ" disabled={checkType === "approved"} />
           </Form.Item>
           <Form.Item name="cost" label="ราคา" rules={[{ required: true, message: "กรุณากรอกราคา" }]}>
             <InputNumber
@@ -70,55 +105,90 @@ const ManagementCarWrapupManage = () => {
               formatter={(value) => `฿ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
               parser={(value) => value!.replace(/\฿\s?|(,*)/g, "") as any}
               min={0}
+              disabled={checkType !== "create" && checkType !== "edit" ? true : false}
             />
           </Form.Item>
-
           <Form.Item name="detail" label="รายละเอียดการตรวจสภาพ">
-            <Input.TextArea placeholder="รายละเอียดการตรวจสภาพ" rows={4} showCount maxLength={150} />
+            <TextArea
+              placeholder="รายละเอียดการตรวจสภาพ"
+              rows={4}
+              showCount
+              maxLength={150}
+              disabled={checkType !== "create" && checkType !== "edit" ? true : false}
+            />
           </Form.Item>
           <Form.Item name="dateStart" label="วันที่ตรวจสภาพ" rules={[{ required: true, message: "กรุณาเลือกเวลาเริ่มต้น" }]}>
-            <DatePicker style={{ width: "100%" }} disabledDate={(current) => current && current < moment().startOf("day")} />
+            <DatePicker
+              style={{ width: "100%" }}
+              disabledDate={(current) => current && current < moment().startOf("day")}
+              disabled={checkType !== "create" && checkType !== "edit" ? true : false}
+            />
           </Form.Item>
-          <Form.Item name="dateEnd" label="วันที่่ตรวจสภาพครั้งถัดไป ( ** สามารถแก้ไขย้อนหลังได้ )">
-            <DatePicker style={{ width: "100%" }} disabledDate={(current) => current && current < moment().startOf("day")} />
+          <Form.Item name="dateEnd" label="วันที่่ตรวจสภาพครั้งถัดไป">
+            <DatePicker
+              style={{ width: "100%" }}
+              disabledDate={(current) => current && current < moment().startOf("day")}
+              disabled={checkType !== "create" && checkType !== "edit" ? true : false}
+            />
           </Form.Item>
           <Form.Item name="remark" label="หมายเหตุ">
-            <Input.TextArea rows={2} showCount maxLength={150} />
+            <Input.TextArea rows={2} showCount maxLength={150} disabled={checkType !== "create" && checkType !== "edit" ? true : false} />
           </Form.Item>
-          <Form.Item valuePropName="filelist">
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginTop: "10px",
-                width: "150px",
-              }}>
+          <Form.Item valuePropName="filelist" label="แนบไฟล์">
+            <div>
               <Upload
                 listType="picture"
                 fileList={attendFiles}
                 onChange={handleChangeAttendFiles}
                 beforeUpload={beforeUploadAttendFiles}
-                multiple={true}
                 accept=".png,.jpg,.jpeg,.pdf"
                 showUploadList={{
                   showPreviewIcon: false,
                   showRemoveIcon: true,
                   showDownloadIcon: false,
-                }}>
-                <Button icon={<UploadOutlined />}>อัปโหลดรูปภาพและเอกสาร</Button>
+                }}
+                maxCount={1}>
+                <Button icon={<UploadOutlined />} disabled={checkType !== "create" && checkType !== "edit" ? true : false}>
+                  อัปโหลดรูปภาพและเอกสาร
+                </Button>
               </Upload>
             </div>
           </Form.Item>
-          <Form.Item>
-            <Space style={{ display: "flex", justifyContent: "flex-end" }}>
-              <Button onClick={handleclosecreate}>ยกเลิก</Button>
-              <Button type="primary" htmlType="submit" loading={submitLoading}>
-                บันทึก
-              </Button>
-            </Space>
-          </Form.Item>
+          {Files !== null ? (
+            <div>
+              <Image preview={true} src={""} style={{ width: "470px", height: "460px" }} alt="file" />
+            </div>
+          ) : null}
+          <Space style={{ display: "flex", justifyContent: "flex-end" }}>
+            {checkType === "create" || checkType === "edit" ? (
+              <>
+                <Button onClick={handleClose}>ยกเลิก</Button>
+                <Button type="primary" htmlType="submit">
+                  บันทึก
+                </Button>
+              </>
+            ) : null}
+            {checkType === "approved" ? (
+              <>
+                <Button danger type="primary" htmlType="submit" onClick={() => setCheckApprovedStatus("disabled")}>
+                  ยกเลิกการตรวจ
+                </Button>
+                <Button type="primary" htmlType="submit" style={{ background: "green" }} onClick={() => setCheckApprovedStatus("approved")}>
+                  เช็คสภาพแล้ว
+                </Button>
+              </>
+            ) : null}
+            {checkType === "delete" ? (
+              <>
+                <Button onClick={handleClose}>ยกเลิก</Button>
+                <Button type="primary" htmlType="submit" danger>
+                  ลบ
+                </Button>
+              </>
+            ) : null}
+          </Space>
         </Form>
-      </Modal> */}
+      </Modal>
     </div>
   );
 };

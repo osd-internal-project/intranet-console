@@ -88,6 +88,17 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    getMaCarQueryByCarId: async (carId: string) => {
+      return await axiosInstance
+        .get(`${baseUrlApiMaCar}/${carId}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
     updateMaCar: async (carId: string, body: any) => {
       return await axiosInstance
         .patch(`${baseUrlApiMaCar}/${carId}`, body)
@@ -111,7 +122,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         });
     },
     deleteMaCar: async (carId: string) => {
-      console.log(`${baseUrlApiMaCar}/${carId}`);
       return await axiosInstance
         .delete(`${baseUrlApiMaCar}/${carId}`)
         .then((res) => {
@@ -133,6 +143,14 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           console.log(err);
           return [];
         });
+    },
+    getImages: async (carWrapupID: string) => {
+      return await axiosInstance
+        .get(`${baseUrlApiMaCarwarpupimage}/get_image/${carWrapupID}`, {
+          responseType: "blob",
+        })
+        .then((result) => result.data)
+        .catch((err) => console.log(err));
     },
     updateMaCarType: async (id: string, body: any) => {
       return await axiosInstance

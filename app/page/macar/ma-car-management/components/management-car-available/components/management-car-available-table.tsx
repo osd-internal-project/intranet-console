@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Space, Table, TablePaginationConfig, TableProps, Tag } from "antd";
-import { MaCarType } from "../../master-data-type";
+import { MaCarType } from "../../wrapup-car";
 
 export interface props {
   dataSource: any;

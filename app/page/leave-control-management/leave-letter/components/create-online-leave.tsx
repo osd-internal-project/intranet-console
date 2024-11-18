@@ -22,7 +22,7 @@ export interface props {
   handleChangeAttendFiles: (e: any) => void;
   attendFiles: UploadFile[];
   getUserOwner: IDataUser | null;
-  onChangeParams: (value: Dayjs, type: string) => void;
+  // onChangeParams: (value: Dayjs, type: string) => void;
   groupDetail: any;
   groupUserId: any;
 }
@@ -41,7 +41,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
   handleChangeAttendFiles,
   attendFiles,
   getUserOwner,
-  onChangeParams,
+  // onChangeParams,
   groupDetail,
   groupUserId,
 }: any): React.ReactElement => {
@@ -75,7 +75,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
           createdataleaveForm={createdataleaveForm}
           onfinishCreate={onfinishCreate}
           getTypeLeaveOption={getTypeLeaveOption}
-          onChangeParams={onChangeParams}
+          // onChangeParams={onChangeParams}
           setStartDate={setStartDate}
           setEndDate={setEndDate}
           getStartDate={getStartDate}

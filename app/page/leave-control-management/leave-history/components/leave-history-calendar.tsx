@@ -7,8 +7,8 @@ import { ITypeDataLeave } from "../../common";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { LeaveHistoryCalendarDetail } from "./leave-history-calendar-detail";
 import moment from "moment";
-import "moment/locale/TH";
-moment.locale("TH");
+// import "moment/locale/TH";
+// moment.locale("TH");
 
 interface CustomEvent extends RbcEvent {
   id: number | undefined;

@@ -1,8 +1,7 @@
 import { AxiosInstance } from "axios";
-import { Filtertypeleave, ITpyeUser, ITypeDataLeave, ITypeDataLeaveCreate } from "../page/leave-control-management/common";
+import { Filtertypeleave, ITpyeUser, ITypeDataLeave } from "../page/leave-control-management/common";
 
 const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
-  const baseUrl = "/master-type-leave";
   const baseUrlTypeleave = "/master-type-leave";
   const baseUrlTypeleaveMap = "/tpye-data-leave-map";
   const baseUrlUser = "/user";
@@ -16,7 +15,7 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
         orderBy: { id: "asc" },
       };
       return await axiosInstance
-        .post(`${baseUrl}/condition`, {
+        .post(`${baseUrlTypeleave}/condition`, {
           condition: condition,
         })
         .then((res) => {
@@ -60,7 +59,7 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getdataLeaveUserById: async (userId: number, type_id: number) => {
+    getdataLeaveUserById: async (userId: string, type_id: number) => {
       const condition = {
         userId: userId,
         typeId: type_id,
@@ -151,29 +150,6 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
         });
     },
 
-    getdataUserByIdTypeLeave: async () => {
-      const condition = {
-        select: {
-          typeLeaveDisabledMap: {
-            select: {
-              id: true,
-              user: true,
-            },
-          },
-        },
-        orderBy: { id: "asc" },
-      };
-      return await axiosInstance
-        .post(`${baseUrlTypeleave}/conditionId`, {
-          condition: condition,
-        })
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          return [];
-        });
-    },
     getdataTypeLeaveAll: async (search: Filtertypeleave) => {
       const condition = {
         where: search,
@@ -183,16 +159,6 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrlTypeleave}/condition`, {
           condition: condition,
         })
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          return [];
-        });
-    },
-    getdataMasterTypeLeaveAll: async () => {
-      return await axiosInstance
-        .get(`${baseUrlTypeleave}`)
         .then((res) => {
           return res.data;
         })

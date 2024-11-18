@@ -146,7 +146,7 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
     },
     getImages: async (carWrapupID: string) => {
       return await axiosInstance
-        .get(`${baseUrlApiMaCarwarpupimage}/get_image/${carWrapupID}`, {
+        .get(`${baseUrlApiMaCarwarpupimage}/get-file/${carWrapupID}`, {
           responseType: "blob",
         })
         .then((result) => result.data)

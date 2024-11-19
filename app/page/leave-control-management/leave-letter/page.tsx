@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import { Breadcrumb, Col, Divider, Row, UploadFile, message, Form, Modal } from "antd";
 import { useSession } from "next-auth/react";
@@ -12,10 +11,10 @@ import { CreateOnlineLeave } from "./components/create-online-leave";
 import { TableOnlineDetailLeave } from "./components/table-online-detail-leave";
 import { checkStatusTypeLeave, validateCheckLeaveDay, validateSumTotalLeave } from "@/app/utils/validatefield";
 import MasterHolidaysService from "../../setting/master-holidays/services/index.service";
-import dayjs from "dayjs";
 import { IFindAllDayDto } from "../../setting/master-holidays/common";
 import MasterTypeLeaveService from "../../setting/typeleave/services/index.service";
 import { ExclamationCircleFilled } from "@ant-design/icons";
+import dayjs from "dayjs";
 
 export default function Page() {
   const { data: session } = useSession();
@@ -108,18 +107,22 @@ export default function Page() {
     let total: number = 0;
     let sumDataLeave = await validateSumTotalLeave(values, dataHolidayDay);
     await checkStatusTypeLeave(values, masterdataTypeLeave);
-    let RemainingLeave: number = 0;
+    let remainingLeave: number = 0;
     if (session?.user.userId) {
       const dataLeaveUserById = await leavemanagementservices.getdataLeaveUserById(session?.user.userId, values.type_id);
       const dataMasterType = await leavemanagementservices.getdataMasterTypeLeaveByTypeId(values.type_id);
-      RemainingLeave = await validateCheckLeaveDay(dataLeaveUserById, dataMasterType, session?.user.startWork);
+      remainingLeave = await validateCheckLeaveDay(dataLeaveUserById, dataMasterType, session?.user.startWork);
+      const datadisabledLeave = await leavemanagementservices.getdataTypeLeaveMap(session?.user.id, dataMasterType.typeId);
+      total = remainingLeave - sumDataLeave;
 
-      total = RemainingLeave - sumDataLeave;
+      if (datadisabledLeave.length > 0) {
+        message.error(`ท่านไม่มีสิทธ์${dataMasterType.typeName}`);
+        return false;
+      }
       if (total <= 0) {
         message.error(`ไม่สามารถทำการลาได้เนื่องจากวันลาที่เหลืออยู่ หมด หรือไม่เพียงพอ`);
         return false;
       }
-
       base = {
         id: values.id,
         userId: values.userId,

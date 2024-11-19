@@ -11,7 +11,7 @@ export interface props {
   getLoading: boolean;
 }
 
-export const TabeLeavManagement: React.FC<props> = ({ getdataUserByTypeId, onFinishDel, getLoading }): React.ReactElement => {
+export const TableLeavManagement: React.FC<props> = ({ getdataUserByTypeId, onFinishDel, getLoading }): React.ReactElement => {
   const columns: any = [
     {
       key: "id",
@@ -56,6 +56,7 @@ export const TabeLeavManagement: React.FC<props> = ({ getdataUserByTypeId, onFin
     <div>
       <Table
         size="small"
+        loading={getLoading}
         dataSource={getdataUserByTypeId}
         columns={columns}
         scroll={{ x: "max-content" }}

@@ -223,10 +223,11 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
         });
     },
 
-    getdataTypeLeaveMap: async (user_id: any) => {
+    getdataTypeLeaveMap: async (user_id: number, masterTypeleaveId: string) => {
       const condition = {
         where: {
           userId: user_id,
+          masterTypeleaveId: masterTypeleaveId,
         },
       };
       return await axiosInstance

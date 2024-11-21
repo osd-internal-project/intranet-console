@@ -385,7 +385,7 @@ export default function Page() {
             beforeUploadAttendFiles={(e: RcFile) => beforeUploadAttendFiles(e)}
             handleChangeAttendFiles={(e: any) => handleChangeAttendFiles(e)}
             attendFiles={attendFiles}
-            getUserOwner={getUserOwner}
+            // getUserOwner={getUserOwner}
             // onChangeParams={onChangeParams}
             groupDetail={groupDetail}
             groupUserId={groupUserId}

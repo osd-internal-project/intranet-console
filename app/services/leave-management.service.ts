@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { Filtertypeleave, ITpyeUser, ITypeDataLeave } from "../page/leave-control-management/common";
+import { ITpyeUser, ITypeDataLeave } from "../page/leave-control-management/common";
 
 const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
   const baseUrlTypeleave = "/master-type-leave";
@@ -11,13 +11,8 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
 
   return {
     getdataAll: async () => {
-      const condition = {
-        orderBy: { id: "asc" },
-      };
       return await axiosInstance
-        .post(`${baseUrlTypeleave}/condition`, {
-          condition: condition,
-        })
+        .get(`${baseUrlTypeleave}/condition`)
         .then((res) => {
           return res.data;
         })
@@ -40,29 +35,9 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getdataLeaveByuserId: async (userId: string) => {
+    getdataLeaveUserById: async (values: any) => {
       const condition = {
-        where: { userId: userId },
-        include: {
-          dataLeaveFiles: true,
-        },
-        orderBy: { id: "asc" },
-      };
-      return await axiosInstance
-        .post(`${baseUrlDataLeave}/condition`, {
-          condition: condition,
-        })
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          return [];
-        });
-    },
-    getdataLeaveUserById: async (userId: string, type_id: number) => {
-      const condition = {
-        userId: userId,
-        typeId: type_id,
+        ...values,
       };
       return await axiosInstance
         .get(`${baseUrlDataLeave}/condition`, {
@@ -75,27 +50,9 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getdataLeaveById: async (id: number) => {
+    getdataLeaveAll: async (userId: string) => {
       return await axiosInstance
-        .get(`${baseUrlDataLeave}/${id}`)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          return;
-        });
-    },
-    getdataLeaveAll: async () => {
-      const condition = {
-        include: {
-          dataLeaveFiles: true,
-        },
-        orderBy: { id: "asc" },
-      };
-      return await axiosInstance
-        .post(`${baseUrlDataLeave}/condition`, {
-          condition: condition,
-        })
+        .get(`${baseUrlDataLeave}/${userId}`)
         .then((res) => {
           return res.data;
         })
@@ -103,18 +60,9 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getdataLeaveGroupById: async (groupId: string) => {
-      const condition = {
-        where: { groupId: groupId },
-        include: {
-          dataLeaveFiles: true,
-        },
-        orderBy: { id: "asc" },
-      };
+    getdataLeavefindBygroup: async (userId: string) => {
       return await axiosInstance
-        .post(`${baseUrlDataLeave}/condition`, {
-          condition: condition,
-        })
+        .get(`${baseUrlDataLeave}/findGroup/${userId}`)
         .then((res) => {
           return res.data;
         })
@@ -122,7 +70,6 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-
     getdataUserByTypeLeaveId: async (search: { typeid: string }) => {
       const condition = {
         where: {
@@ -150,22 +97,6 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
         });
     },
 
-    getdataTypeLeaveAll: async (search: Filtertypeleave) => {
-      const condition = {
-        where: search,
-        orderBy: { id: "asc" },
-      };
-      return await axiosInstance
-        .post(`${baseUrlTypeleave}/condition`, {
-          condition: condition,
-        })
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          return [];
-        });
-    },
     getdataMasterTypeLeaveByTypeId: async (typeId: number) => {
       return await axiosInstance
         .get(`${baseUrlTypeleave}/${typeId}`)
@@ -225,14 +156,12 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
 
     getdataTypeLeaveMap: async (user_id: number, masterTypeleaveId: string) => {
       const condition = {
-        where: {
-          userId: user_id,
-          masterTypeleaveId: masterTypeleaveId,
-        },
+        userId: user_id,
+        masterTypeleaveId: masterTypeleaveId,
       };
       return await axiosInstance
-        .post(`${baseUrlTypeleaveMap}/condition`, {
-          condition: condition,
+        .get(`${baseUrlTypeleaveMap}/condition`, {
+          params: condition,
         })
         .then((res) => {
           return res.data;

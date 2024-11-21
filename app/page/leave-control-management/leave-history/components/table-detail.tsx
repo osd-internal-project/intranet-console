@@ -9,7 +9,7 @@ import { dateFormatTime } from "@/app/utils";
 import { LeaveHistoryDetail } from "./leave-history-detail";
 
 export interface props {
-  dataLeaveUser: ITypeDataLeave[];
+  dataSource: ITypeDataLeave[];
   setOpenModalDetail: (e: boolean) => void;
   openModalDetail: boolean;
   formdetail: any;
@@ -18,13 +18,14 @@ export interface props {
 }
 
 export const TableDetail: React.FC<props> = ({
-  dataLeaveUser,
+  dataSource,
   setOpenModalDetail,
   openModalDetail,
   formdetail,
   onFinishUpdate,
   downloadFile,
 }): React.ReactElement => {
+  const ShowStatusLeaves = showStatusLeave();
   const Auth = useAxiosIntranet();
   const dataleaveservice = DataLeaveService(Auth);
   const [statusById, setStatusById] = useState<any | null>(null);
@@ -48,8 +49,7 @@ export const TableDetail: React.FC<props> = ({
         ownerId: record.ownerId,
         ownerName: record.ownerName,
       };
-      const dataLeaveById = await dataleaveservice.getdataLeaveById(record.id as number);
-      setStatusById(dataLeaveById.status);
+      setStatusById(record.status);
       setDataById(record.id);
       setOpenModalDetail(true);
       formdetail.setFieldsValue(base);
@@ -114,8 +114,8 @@ export const TableDetail: React.FC<props> = ({
 
   return (
     <div>
-      {showStatusLeave()}
-      <Table dataSource={dataLeaveUser} columns={columns} size="small" scroll={{ x: "max-content" }} rowKey={(e: any) => e.id} />
+      {ShowStatusLeaves}
+      <Table dataSource={dataSource} columns={columns} size="small" scroll={{ x: "max-content" }} rowKey={(e: any) => e.id} />
       {openModalDetail ? (
         <LeaveHistoryDetail
           openModalDetail={openModalDetail}

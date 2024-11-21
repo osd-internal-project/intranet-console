@@ -4,13 +4,9 @@ const MasterTypeLeaveService = (axiosInstance: AxiosInstance) => {
   const baseUrl = "/master-type-leave";
   return {
     getdataAll: async (search: Filtertypeleave) => {
-      const condition = {
-        where: search,
-        orderBy: { id: "asc" },
-      };
       return await axiosInstance
-        .post(`${baseUrl}/condition`, {
-          condition: condition,
+        .get(`${baseUrl}/condition`, {
+          params: search,
         })
         .then((res) => {
           return res.data;

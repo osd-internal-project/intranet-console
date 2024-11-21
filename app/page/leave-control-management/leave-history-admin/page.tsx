@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { TableDetail } from "./components/table-detail";
 import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, message } from "antd";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../../../services/leave-management.service";
 import { useSession } from "next-auth/react";
 import { ITypeDataLeave } from "../common";
@@ -10,27 +10,29 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 
 export default function Page() {
   const Auth = useAxiosIntranet();
+  const AuthUser = useAxiosUser();
   const dataleaveservice = DataLeaveService(Auth);
+  const userServices = DataLeaveService(AuthUser);
   const { data: session } = useSession();
   const [loading, setLoading] = useState<boolean>(true);
   const [dataLeaveUser, setDataLeaveUser] = useState<ITypeDataLeave[]>([]);
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
   const [formdetail] = Form.useForm();
-  const [messages, messageHeader] = message.useMessage();
-  const [Modals, modelsHeader] = Modal.useModal();
 
   useEffect(() => {
     if (loading) loadData();
   }, [loading]);
 
   const loadData = async () => {
-    const res = await dataleaveservice.getdataLeaveAll();
-    setDataLeaveUser(res);
+    if (session) {
+      const res = await dataleaveservice.getdataLeaveAll(session?.user.userId);
+      setDataLeaveUser(res);
+    }
     setLoading(false);
   };
 
   const onFinishUpdate = (type: string, id: number) => {
-    Modals.confirm({
+    Modal.confirm({
       title: <>{type === "cancel" ? "Cancel " : "Approved"}</>,
       icon: <ExclamationCircleFilled />,
       content: <>{type === "cancel" ? "Are you sure you want to cancel this ?" : "Are you sure you want to Approved this ?"}</>,
@@ -54,7 +56,7 @@ export default function Page() {
       onOk: async () => {
         const res = await dataleaveservice.approvedDataLeave(type, id, session?.user);
         if (res) {
-          type === "cancel" ? messages.error("cancel success") : messages.success("approved success");
+          type === "cancel" ? message.error("cancel success") : message.success("approved success");
           setLoading(true);
           setOpenModalDetail(false);
         }
@@ -64,7 +66,7 @@ export default function Page() {
   };
 
   const onFinishDelete = (type: string, id: number) => {
-    Modals.confirm({
+    Modal.confirm({
       title: <>{"Delete"}</>,
       icon: <ExclamationCircleFilled />,
       content: "Are you sure you want to delete this ?",
@@ -85,14 +87,14 @@ export default function Page() {
         try {
           const res = await dataleaveservice.deleteDataLeave(id);
           if (res) {
-            messages.success("Delete success");
+            message.success("Delete success");
           } else {
-            messages.error("Delete failed");
+            message.error("Delete failed");
           }
           setLoading(true);
           setOpenModalDetail(false);
         } catch (error) {
-          messages.error("Delete failed");
+          message.error("Delete failed");
         }
       },
       onCancel() {},
@@ -114,8 +116,6 @@ export default function Page() {
 
   return (
     <>
-      {modelsHeader}
-      {messageHeader}
       <Row>
         <Col span={24}>
           <Breadcrumb
@@ -125,13 +125,13 @@ export default function Page() {
                 title: <span>หน้าหลัก</span>,
               },
               {
-                title: <span>ประวัติการลา (แอดมิน)</span>,
+                title: <span>จัดการการลา</span>,
               },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
-          <div className="title-page-font">{`ประวัติการลา (แอดมิน)`}</div>
+          <div className="title-page-font">{`จัดการการลา`}</div>
         </Divider>
         <div className="w-full">
           <Card>

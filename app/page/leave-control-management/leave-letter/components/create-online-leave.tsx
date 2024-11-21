@@ -21,7 +21,6 @@ export interface props {
   beforeUploadAttendFiles: (e: RcFile) => void;
   handleChangeAttendFiles: (e: any) => void;
   attendFiles: UploadFile[];
-  getUserOwner: IDataUser | null;
   // onChangeParams: (value: Dayjs, type: string) => void;
   groupDetail: any;
   groupUserId: any;
@@ -40,7 +39,6 @@ export const CreateOnlineLeave: React.FC<props> = ({
   beforeUploadAttendFiles,
   handleChangeAttendFiles,
   attendFiles,
-  getUserOwner,
   // onChangeParams,
   groupDetail,
   groupUserId,
@@ -52,21 +50,20 @@ export const CreateOnlineLeave: React.FC<props> = ({
           .filter((u: ITypeDataLeaveCreate) => u.firstNameTh && u.lastNameTh)
           .map((u: ITypeDataLeaveCreate) => `${u.firstNameTh} ${u.lastNameTh}`)
           .join(", ");
-
-        ownerName && createdataleaveForm.setFieldsValue({ ownerName });
+        ownerName && createdataleaveForm.setFieldsValue({ ownerName: ownerName, ownerId: groupUserId[0].userId });
       }
+
       createdataleaveForm.setFieldsValue({
         userId: getUser?.userId,
         posId: getUser?.position?.posId,
         position: getUser?.position?.nameEn,
         firstNameTh: getUser?.firstNameTh,
         lastNameTh: getUser?.lastNameTh,
-        ownerId: getUserOwner?.userId,
         groupName: groupDetail.groupName,
       });
     };
     getdatauser();
-  }, [getUserOwner, checkSwitch, groupUserId]);
+  }, [checkSwitch, groupUserId]);
 
   return (
     <div>

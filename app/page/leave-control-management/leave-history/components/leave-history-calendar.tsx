@@ -1,14 +1,14 @@
 import "../../styles/style.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import moment from "moment";
+import "moment/locale/TH";
 import React, { useState } from "react";
 import { Form } from "antd";
 import { Calendar, momentLocalizer, Event as RbcEvent } from "react-big-calendar";
 import { ITypeDataLeave } from "../../common";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { LeaveHistoryCalendarDetail } from "./leave-history-calendar-detail";
-import moment from "moment";
-// import "moment/locale/TH";
-// moment.locale("TH");
+moment.locale("TH");
 
 interface CustomEvent extends RbcEvent {
   id: number | undefined;
@@ -21,21 +21,21 @@ interface CustomEvent extends RbcEvent {
 }
 
 export interface Props {
-  departmentId: ITypeDataLeave[];
+  dataSource: ITypeDataLeave[];
   downloadFile: (id: number, filename: string) => void;
 }
 
-export const DepartmentCalendarDetail: React.FC<Props> = ({ departmentId, downloadFile }: any) => {
+export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, downloadFile }: any) => {
+  const [formDetail] = Form.useForm();
   const localizer = momentLocalizer(moment);
   const [modalDataLeaveDetail, setModalDataLeaveDetail] = useState(false);
-  const [formDetail] = Form.useForm();
 
   const onCancelModalDetail = () => {
     setModalDataLeaveDetail(false);
   };
 
   const onSelectEventCalendar = (event: CustomEvent) => {
-    const dataLeaveCalendar = departmentId.find((b: any) => b.id === event.id);
+    const dataLeaveCalendar = dataSource.find((b: any) => b.id === event.id);
     if (dataLeaveCalendar) {
       formDetail.setFieldsValue({
         ...dataLeaveCalendar,
@@ -73,7 +73,7 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ departmentId, downlo
       ) : null}
       <Calendar<CustomEvent>
         localizer={localizer}
-        events={departmentId.map((dataLeaveCalendar: ITypeDataLeave) => ({
+        events={dataSource.map((dataLeaveCalendar: ITypeDataLeave) => ({
           id: dataLeaveCalendar.id,
           title: dataLeaveCalendar.firstName,
           start: new Date(dataLeaveCalendar.startDate),

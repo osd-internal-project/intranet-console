@@ -73,7 +73,7 @@ const NewsCarouselComponent: React.FC<Props> = ({
                             objectFit: "cover",
                           }}
                         />
-                      ) : null}{" "}
+                      ) : null}
                     </div>
                     <div className=" mt-14"></div>
                     <Card.Meta

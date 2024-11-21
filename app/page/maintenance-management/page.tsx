@@ -145,6 +145,7 @@ export default function MaTaskPage() {
                 </Link>
               }
               defaultActiveKey="1"
+              destroyInactiveTabPane
               // type="card"
               size={"small"}
               items={[

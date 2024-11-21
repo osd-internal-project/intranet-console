@@ -16,6 +16,7 @@ import {
   ArrowLeftOutlined,
   ArrowRightOutlined,
   BellOutlined,
+  BellTwoTone,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   UserOutlined,
@@ -25,6 +26,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useRefreshToken } from "@/app/lib/axios/hooks/useRefreshToken";
 import { useAxiosRefreshToken } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { ItemType } from "antd/es/menu/interface";
 
 type Profile = {
   userId: string;
@@ -58,8 +60,32 @@ const Navigation: React.FC<Prop> = ({
   avatar,
 }) => {
   const [open, setOpen] = useState(false);
+  const [notiDetails, setNotiDetils] = useState<ItemType[]>([]);
   const navigate = useRouter();
   useAxiosRefreshToken(session);
+  useEffect(() => {
+    const noti: ItemType[] = [
+      {
+        key: 1,
+        label: (
+          <div className=" w-44 flex justify-between">
+            <div>รายการวันลารออนุมัติ</div> <Badge count={2} />
+          </div>
+        ),
+      },
+      {
+        key: 2,
+        label: (
+          <div className="w-44 flex justify-between">
+            <div>รายการจองรถรออนุมัติ </div>
+            <Badge count={2} />
+          </div>
+        ),
+      },
+    ];
+    setNotiDetils(noti);
+  }, []);
+
   return (
     <>
       <Header className="flex justify-between w-full bg-white text-black shadow p-0">
@@ -103,6 +129,18 @@ const Navigation: React.FC<Prop> = ({
               <BellOutlined />
             </Badge>
           </Link> */}
+          <Dropdown
+            menu={{ items: notiDetails }}
+            className="text-black hover:text-zinc-300"
+          >
+            <a onClick={(e) => e.preventDefault()}>
+              {/* <Space className=" text-base">
+                <Badge count={notiDetails.length} size="small">
+                  <BellTwoTone className=" text-lg" />
+                </Badge>
+              </Space> */}
+            </a>
+          </Dropdown>
           <Dropdown
             menu={{ items: MenuNav }}
             className="text-black hover:text-zinc-300"

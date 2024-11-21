@@ -100,10 +100,16 @@ const GroupManage: React.FC<props> = ({
   const [leaveUsersFormGroup, setLeaveUsersFormGroup] = useState<
     ITSelectUsers[]
   >([]);
+
   const [expenseUsersFormGroup, setExpenseUsersFormGroup] = useState<
     ITSelectUsers[]
   >([]);
-
+  const [headerUsersFormGroup, setHeaderUsersFormGroup] = useState<
+    {
+      type: string;
+      users: ITSelectUsers[];
+    }[]
+  >([]);
   const [showModalUserPermission, setShowModalUserPermission] =
     useState<boolean>(false);
   const [userGroupIds, setUserGroupIds] = useState<string[]>([]);
@@ -151,12 +157,12 @@ const GroupManage: React.FC<props> = ({
       setSeleceRole(resRole);
       await onChangeSaleGroupSelect(groupDetail.saleUserGroupId);
       await onChangeEngineerGroupSelect(groupDetail.engineerUserGroupId);
-      await onChangeLeaveGroupSelect(
-        groupDetail.userGroupMapHeader?.[0]?.leaveGroupId
-      );
-      await onChangeExpenseGroupSelect(
-        groupDetail.userGroupMapHeader?.[0]?.expenseGroupId
-      );
+      // await onChangeLeaveGroupSelect(
+      //   groupDetail.userGroupMapHeader?.[0]?.leaveGroupId
+      // );
+      // await onChangeExpenseGroupSelect(
+      //   groupDetail.userGroupMapHeader?.[0]?.expenseGroupId
+      // );
 
       permissionform.setFieldsValue({
         exceptionalSatatus: groupDetail.exceptionalSatatus,
@@ -165,12 +171,32 @@ const GroupManage: React.FC<props> = ({
         engineerUserGroupId: groupDetail.engineerUserGroupId,
         engineerUsersId: groupDetail.engineerUsersId,
       });
-      userpermissionform.setFieldsValue({
-        leaveGroupId: groupDetail.userGroupMapHeader?.[0]?.leaveGroupId,
-        leaveUserId: groupDetail.userGroupMapHeader?.[0]?.leaveUserId,
-        expenseGroupId: groupDetail.userGroupMapHeader?.[0]?.expenseGroupId,
-        expenseUserId: groupDetail.userGroupMapHeader?.[0]?.expenseUserId,
-      });
+      groupDetail.userGroupMapHeader.map(
+        (header: {
+          headerGroupId: string;
+          headerUserId: string;
+          type: string;
+        }) => {
+          console.log(header);
+          if (header.type === "leave") {
+            const form = {
+              headerGroupId: header.headerGroupId,
+            };
+            userpermissionform.setFieldValue("leave", form);
+          } else if (header.type === "expense") {
+            const form = {
+              headerGroupId: header.headerGroupId,
+            };
+            userpermissionform.setFieldValue("expense", form);
+          }
+        }
+      );
+      // userpermissionform.setFieldsValue({
+      //   leaveGroupId: groupDetail.userGroupMapHeader?.[0]?.leaveGroupId,
+      //   leaveUserId: groupDetail.userGroupMapHeader?.[0]?.leaveUserId,
+      //   expenseGroupId: groupDetail.userGroupMapHeader?.[0]?.expenseGroupId,
+      //   expenseUserId: groupDetail.userGroupMapHeader?.[0]?.expenseUserId,
+      // });
     }
   };
   const createTree = (obj: any[], parentId: string | null) => {
@@ -202,14 +228,28 @@ const GroupManage: React.FC<props> = ({
     setEngineerUsersFormGroup(data);
   }
 
-  async function onChangeLeaveGroupSelect(group: string[]): Promise<void> {
-    const data = await userGroupServices.findUsersByOwnerGroup(group);
-    setLeaveUsersFormGroup(data);
-  }
+  // async function onChangeLeaveGroupSelect(group: string[]): Promise<void> {
+  //   const data = await userGroupServices.findUsersByOwnerGroup(group);
+  //   setLeaveUsersFormGroup(data);
+  // }
 
-  async function onChangeExpenseGroupSelect(group: string[]): Promise<void> {
+  // async function onChangeExpenseGroupSelect(group: string[]): Promise<void> {
+  //   const data = await userGroupServices.findUsersByOwnerGroup(group);
+  //   setExpenseUsersFormGroup(data);
+  // }
+  async function onChangeHeaderGroupSelect(
+    group: string[],
+    type: string
+  ): Promise<void> {
     const data = await userGroupServices.findUsersByOwnerGroup(group);
-    setExpenseUsersFormGroup(data);
+    let lists = headerUsersFormGroup;
+    const oldIndex = lists.findIndex((list) => list.type === type);
+    if (oldIndex) {
+      lists[oldIndex] = { type: type, users: data };
+    } else {
+      lists.push({ type: type, users: data });
+    }
+    setHeaderUsersFormGroup(lists);
   }
 
   const onCloseDetail = () => {
@@ -328,42 +368,61 @@ const GroupManage: React.FC<props> = ({
   };
 
   const setUserPermission = async (value: {
-    leaveGroupId: string[];
-    leaveUserId: string[];
-    expenseGroupId: string[];
-    expenseUserId: string[];
+    leave: { headerGroupId: string[] };
+    expense: { headerGroupId: string[] };
   }): Promise<void> => {
-    const data = {
-      userGroupId: groupSelect,
-      leaveGroupId: value.leaveGroupId,
-      leaveUserId: value.leaveUserId,
-      expenseGroupId: value.expenseGroupId,
-      expenseUserId: value.expenseUserId,
-    };
-    const dataUp = {
-      leaveGroupId: value.leaveGroupId,
-      leaveUserId: value.leaveUserId,
-      expenseGroupId: value.expenseGroupId,
-      expenseUserId: value.expenseUserId,
-    };
-    if (groupSelect && userGroupIds.includes(groupSelect)) {
-      try {
-        await userGroupServices.updateUserGroupHeaderPermission(
-          groupSelect,
-          dataUp
-        );
-        message.success(`Updated success`);
-      } catch (err) {
-        message.error("Update failed");
+    if (groupSelect) {
+      if (value.leave) {
+        try {
+          await userGroupServices.updateUserGroupHeaderPermission(
+            groupSelect,
+            value.leave,
+            "leave"
+          );
+          message.success(`Updated success`);
+        } catch (err) {
+          message.error("Update failed");
+        }
       }
-    } else {
-      try {
-        await userGroupServices.createdUserGroupHeaderPermission(data);
-        message.success(`Created success`);
-      } catch (err) {
-        message.error("Creation failed");
+      if (
+        value.expense.headerGroupId.length &&
+        value.expense.headerGroupId.length > 0
+      ) {
+        try {
+          await userGroupServices.updateUserGroupHeaderPermission(
+            groupSelect,
+            value.expense,
+            "expense"
+          );
+          message.success(`Updated success`);
+        } catch (err) {
+          message.error("Update failed");
+        }
       }
     }
+    // if (groupSelect && userGroupIds.includes(groupSelect)) {
+    //   try {
+    //     await userGroupServices.updateUserGroupHeaderPermission(
+    //       groupSelect,
+    //       groupUpdateForm
+    //     );
+    //     message.success(`Updated success`);
+    //   } catch (err) {
+    //     message.error("Update failed");
+    //   }
+    // } else {
+    //   const createForm = {
+    //     userGroupId: groupSelect,
+    //     ...groupUpdateForm,
+    //   };
+
+    //   try {
+    //     await userGroupServices.createdUserGroupHeaderPermission(createForm);
+    //     message.success(`Updated success`);
+    //   } catch (err) {
+    //     message.error("Updated failed");
+    //   }
+    // }
 
     setShowModalUserPermission(false);
   };
@@ -652,10 +711,10 @@ const GroupManage: React.FC<props> = ({
       />
       <GroupUserPermission
         groupOption={groupOption}
-        onChangeLeaveGroupSelect={onChangeLeaveGroupSelect}
-        onChangeExpenseGroupSelect={onChangeExpenseGroupSelect}
-        expenseUsersFormGroup={expenseUsersFormGroup}
-        leaveUsersFormGroup={leaveUsersFormGroup}
+        // onChangeLeaveGroupSelect={onChangeLeaveGroupSelect}
+        // onChangeExpenseGroupSelect={onChangeExpenseGroupSelect}
+        // expenseUsersFormGroup={expenseUsersFormGroup}
+        // leaveUsersFormGroup={leaveUsersFormGroup}
         showModalUserPermission={showModalUserPermission}
         setShowModalUserPermission={(e: boolean) =>
           setShowModalUserPermission(e)

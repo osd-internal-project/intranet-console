@@ -85,6 +85,7 @@ const GroupPermissionComponent: React.FC<props> = ({
       title={"CRM Permission"}
       onCancel={() => onShowModalPermission(false)}
       footer={[]}
+      maskClosable={false}
       // width={1000}
     >
       <Form form={permissionform} layout="vertical" onFinish={onSetPermission}>

@@ -20,22 +20,23 @@ export const BigCarouselComponent: React.FC<Props> = ({ slideImage }) => {
             effect="fade"
             lazyLoad="progressive"
           >
-            {slideImage.map((image) => (
-              <div key={image.id}>
-                <Image
-                  src={`${baseImageUrl}/slide-image/get-file/${image.fileId}`}
-                  // alt={`${image.filePath}`}
-                  crossOrigin="anonymous"
-                  style={{
-                    objectFit: "cover",
-                    aspectRatio: "21/9",
-                  }}
-                  preview={false}
-                  width={"100%"}
-                  // height={300}
-                />
-              </div>
-            ))}
+            {slideImage.map((image) => {
+              return (
+                <div key={image.id}>
+                  <Image
+                    src={`${baseImageUrl}/slide-image/get-file/${image.fileId}`}
+                    crossOrigin="anonymous"
+                    style={{
+                      objectFit: "cover",
+                      aspectRatio: "21/9",
+                    }}
+                    preview={false}
+                    width={"100%"}
+                    // height={300}
+                  />
+                </div>
+              );
+            })}
           </Carousel>
         </ConfigProvider>
       ) : (

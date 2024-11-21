@@ -114,10 +114,14 @@ const UserGroupServices = (axiosInstance: AxiosInstance) => {
       return await axiosInstance.post(`/user-group-map-header/`, data);
     },
 
-    updateUserGroupHeaderPermission: async (groupId: string, data: Object) => {
+    updateUserGroupHeaderPermission: async (
+      groupId: string,
+      data: Object,
+      type: string
+    ) => {
       return await axiosInstance.patch(
         `/user-group-map-header/permission/${groupId}`,
-        data
+        { ...data, type: type }
       );
     },
 

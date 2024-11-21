@@ -14,6 +14,7 @@ declare module "next-auth" {
       departmentId: number;
       typeLeaveDisabledMap: [ItypeLeaveDisabledMap];
       startWork: string;
+      userMapOwnerGroupId: any[];
     };
     rulelist: string[];
     grouplist: string[];

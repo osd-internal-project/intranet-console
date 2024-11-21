@@ -33,7 +33,7 @@ const page = () => {
 
   const fecthData = async () => {
     try {
-      const resTypeLeave = await dataleaveserviceIntra.getdataTypeLeaveAll({});
+      const resTypeLeave = await dataleaveserviceIntra.getdataAll();
       const resUser = await dataleaveserviceUser.getdataUserAll();
       const options = resUser.map((event: ITpyeUser) => ({
         value: event.id,

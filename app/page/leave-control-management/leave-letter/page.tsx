@@ -27,7 +27,6 @@ export default function Page() {
   const mastertypeleaveservices = MasterTypeLeaveService(Intra);
 
   const [getUser] = useState<IDataUser | null>(session ? session?.user : null);
-  const [getUserOwner, setUserOwner] = useState<IDataUser | null>({});
   const [getTypeLeaveOption, setTypeLeaveOption] = useState<ISelect[]>([]);
   const [typeLeaveTable, setTypeLeaveTable] = useState<ITypetypeleave[]>([]);
   const [groupDetail, setGroupDetail] = useState<UserGroupType[]>([]);
@@ -63,14 +62,14 @@ export default function Page() {
     const options = res.map((event: ITypetypeleave) => {
       return { value: event.typeId, label: event.typeName };
     });
-    const groupId = session?.user.ownerGroup;
+    const groupId = session?.user?.userMapOwnerGroupId[0].ownerGroupId;
     if (groupId) {
       const dataGroupDetail = await dataleaveserviceUser.getUserGroupByGroupId(groupId);
-      const dataUserById = await dataleaveserviceUser.getUsersByUserId(dataGroupDetail.headId);
-      setUserOwner(dataUserById);
       setGroupDetail(dataGroupDetail);
     }
     const dataGroupUserId = await leavemanagementservices.getdataLeaveByUserId(session?.user.userId);
+    console.log(dataGroupUserId);
+
     setDataGroupUserId(dataGroupUserId);
     setTypeLeaveTable(resTableDeatilTypeLeave);
     setTypeLeaveTableAll(resTableUserTypeLeave.typeLeaveDisabledMap);
@@ -109,7 +108,10 @@ export default function Page() {
     await checkStatusTypeLeave(values, masterdataTypeLeave);
     let remainingLeave: number = 0;
     if (session?.user.userId) {
-      const dataLeaveUserById = await leavemanagementservices.getdataLeaveUserById(session?.user.userId, values.type_id);
+      let bases = {};
+      if (session?.user.userId) bases = { ...bases, userId: session?.user.userId };
+      if (values.type_id) bases = { ...bases, typeId: values.type_id };
+      const dataLeaveUserById = await leavemanagementservices.getdataLeaveUserById(bases);
       const dataMasterType = await leavemanagementservices.getdataMasterTypeLeaveByTypeId(values.type_id);
       remainingLeave = await validateCheckLeaveDay(dataLeaveUserById, dataMasterType, session?.user.startWork);
       const datadisabledLeave = await leavemanagementservices.getdataTypeLeaveMap(session?.user.id, dataMasterType.typeId);
@@ -124,7 +126,6 @@ export default function Page() {
         return false;
       }
       base = {
-        id: values.id,
         userId: values.userId,
         firstName: values.firstNameTh,
         lastName: values.lastNameTh,
@@ -144,6 +145,7 @@ export default function Page() {
         leaveHour: sumDataLeave,
       };
     }
+
     Modal.confirm({
       title: "Add ",
       icon: <ExclamationCircleFilled />,
@@ -182,7 +184,7 @@ export default function Page() {
     });
   };
 
-  return getUserOwner ? (
+  return (
     <div>
       <Row>
         <Col span={24}>
@@ -218,8 +220,6 @@ export default function Page() {
             beforeUploadAttendFiles={(e: RcFile) => beforeUploadAttendFiles(e)}
             handleChangeAttendFiles={(e: any) => handleChangeAttendFiles(e)}
             attendFiles={attendFiles}
-            getUserOwner={getUserOwner}
-            // onChangeParams={onChangeParams}
             groupDetail={groupDetail}
             groupUserId={groupUserId}
           />
@@ -229,5 +229,5 @@ export default function Page() {
         </Col>
       </Row>
     </div>
-  ) : null;
+  );
 }

@@ -21,7 +21,7 @@ export const CreateLeaveManagement: React.FC<props> = ({
 }): React.ReactElement => {
   return (
     <div>
-      <Modal title="Add" open={openModal} onOk={() => setOpenModal(false)} onCancel={() => setOpenModal(false)} footer={false}>
+      <Modal title="เพิ่มผู้ใช้งาน" open={openModal} onOk={() => setOpenModal(false)} onCancel={() => setOpenModal(false)} footer={false}>
         <Form layout="vertical" form={formcreate} autoComplete="off" onFinish={onFinishCreate}>
           <Row gutter={[8, 8]}>
             <Col span={24}>

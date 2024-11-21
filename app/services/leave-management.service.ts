@@ -50,16 +50,6 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getdataLeaveById: async (id: number) => {
-      return await axiosInstance
-        .get(`${baseUrlDataLeave}/${id}`)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          return;
-        });
-    },
     getdataLeaveAll: async (userId: string) => {
       return await axiosInstance
         .get(`${baseUrlDataLeave}/${userId}`)

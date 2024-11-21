@@ -10,31 +10,22 @@ import "antd/dist/reset.css";
 import { CarFilled, FileFilled, TeamOutlined } from "@ant-design/icons";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import SlideImageService from "./services/index.service";
-import {
-  MasterRoomType,
-  HandbookFileType,
-  InformationNewsType,
-} from "./common";
+import { MasterRoomType, HandbookFileType, InformationNewsType } from "./common";
 
 export default function HomePage() {
   const intraAuth = useAxiosIntranet();
   const intraAuthService = SlideImageService(intraAuth);
   const [loading, setLoading] = useState<boolean>(true);
   const [slideImage, setSlideImage] = useState<any[]>([]);
-  const [masterBookingRoom, setMasterBookingRoom] = useState<MasterRoomType[]>(
-    []
-  );
+  const [masterBookingRoom, setMasterBookingRoom] = useState<MasterRoomType[]>([]);
   const [handbookFile, setHandbookFile] = useState<HandbookFileType[]>([]);
-  const [informationNews, setInformationNews] = useState<InformationNewsType[]>(
-    []
-  );
+  const [informationNews, setInformationNews] = useState<InformationNewsType[]>([]);
 
   const fetchData = async () => {
     const dataSlideImage = await intraAuthService.getSlideImageByOrder();
     const MasterBookingresponse = await intraAuthService.getMasterRoomQuery();
     const dataHandbookFileQuery = await intraAuthService.getHandbookFileQuery();
-    const dataInformationNews =
-      await intraAuthService.getinformationNewsQuery();
+    const dataInformationNews = await intraAuthService.getinformationNewsQuery();
     setInformationNews(dataInformationNews);
     setHandbookFile(dataHandbookFileQuery);
     setMasterBookingRoom(MasterBookingresponse);
@@ -66,7 +57,7 @@ export default function HomePage() {
       <div className="grid md:grid-cols-3">
         <div className="px-2 mb-4">
           <Card className="text-center">
-            <a href="/page/data-leave/online-leave">
+            <a href="/page/leave-control-management/leave-history">
               <FileFilled className="text-5xl text-blue-500" />
               <br />
               ใบลาออนไลน์
@@ -94,47 +85,21 @@ export default function HomePage() {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h">
         <div className="lg:col-span-2">
-          <Card
-            title="กิจกรรมและข่าวสาร"
-            bordered={false}
-            className="text-center"
-            style={{ height: "500px" }}
-          >
+          <Card title="กิจกรรมและข่าวสาร" bordered={false} className="text-center" style={{ height: "500px" }}>
             <NewsCarouselComponent informationNews={informationNews} />
           </Card>
           <div className="my-4"></div>
-          <Card
-            title="เอกสาร"
-            bordered={false}
-            className="text-center"
-            style={{ height: "520px" }}
-          >
-            <DocumentComponent
-              handbookFile={handbookFile}
-              downloadFile={(id: number, filename: string) =>
-                downloadFile(id, filename)
-              }
-            />
+          <Card title="เอกสาร" bordered={false} className="text-center" style={{ height: "520px" }}>
+            <DocumentComponent handbookFile={handbookFile} downloadFile={(id: number, filename: string) => downloadFile(id, filename)} />
           </Card>
         </div>
 
         <div className="lg:col-span-1">
-          <Card
-            title="ห้องประชุม"
-            className="text-center"
-            style={{ height: "500px" }}
-          >
-            <MeetingRoomTableComponent
-              pagination={false}
-              masterBookingRoom={masterBookingRoom}
-            />
+          <Card title="ห้องประชุม" className="text-center" style={{ height: "500px" }}>
+            <MeetingRoomTableComponent pagination={false} masterBookingRoom={masterBookingRoom} />
           </Card>
           <div className="my-4"></div>
-          <Card
-            title="วันหยุดประจำปี"
-            className="text-center"
-            style={{ height: "520px" }}
-          >
+          <Card title="วันหยุดประจำปี" className="text-center" style={{ height: "520px" }}>
             <HolidaysCalendarComponent />
           </Card>
         </div>

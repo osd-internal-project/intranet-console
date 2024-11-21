@@ -49,8 +49,7 @@ export const TableDetail: React.FC<props> = ({
         ownerId: record.ownerId,
         ownerName: record.ownerName,
       };
-      const dataLeaveById = await dataleaveservice.getdataLeaveById(record.id as number);
-      setStatusById(dataLeaveById.status);
+      setStatusById(record.status);
       setDataById(record.id);
       setOpenModalDetail(true);
       formdetail.setFieldsValue(base);

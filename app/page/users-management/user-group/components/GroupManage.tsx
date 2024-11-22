@@ -10,6 +10,7 @@ import {
   Row,
   Select,
   SelectProps,
+  Table,
   message,
 } from "antd";
 import UserGroupServices from "../services/usergroup.service";
@@ -19,6 +20,7 @@ import Link from "next/link";
 import {
   CarryOutOutlined,
   ExclamationCircleFilled,
+  EyeOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
 import { checkRule } from "@/app/utils/rules";
@@ -91,21 +93,19 @@ const GroupManage: React.FC<props> = ({
   const [selectRole, setSeleceRole] = useState<TSelectRoleDto[]>([]);
   const [showModalPermission, setShowModalPermission] =
     useState<boolean>(false);
+  const [showModalUserList, setShowModalUserList] = useState<boolean>(false);
   const [groupOption, setGroupOption] = useState<SelectProps["options"]>([]);
   const [userSelect, setUserSelect] = useState<SelectProps["options"]>([]);
+  const [userInGroupSelect, setUserInGroupSelect] = useState<
+    SelectProps["options"]
+  >([]);
   const [saleUsersFormGroup, setSaleUsersFormGroup] = useState<ITSelectUsers[]>(
     []
   );
   const [engineerUsersFormGroup, setEngineerUsersFormGroup] = useState<
     ITSelectUsers[]
   >([]);
-  const [leaveUsersFormGroup, setLeaveUsersFormGroup] = useState<
-    ITSelectUsers[]
-  >([]);
 
-  const [expenseUsersFormGroup, setExpenseUsersFormGroup] = useState<
-    ITSelectUsers[]
-  >([]);
   const [headerUsersFormGroup, setHeaderUsersFormGroup] = useState<
     {
       type: string;
@@ -137,14 +137,21 @@ const GroupManage: React.FC<props> = ({
       );
       const usersInGroup: any =
         await userServices.findUserInOnwerGroupByUserGroupId(groupSelect);
-      const users = usersInGroup.map((user: any) => ({
+      const userInGroupSelect = usersInGroup.map((user: any) => ({
         value: user.userId,
         label: `${user.firstNameTh} ${user.lastNameTh}`,
       }));
+      setUserInGroupSelect(userInGroupSelect);
       const userGroupMapHeader =
         await userGroupServices.getUserGroupMapHeader();
       setUserGroupIds(userGroupMapHeader.map((item: any) => item.userGroupId));
-      setUserSelect(users);
+      const usersAll: any = await userGroupServices.getdataUserAll();
+      const userSelect = usersAll.map((user: any) => ({
+        value: user.userId,
+        label: `${user.firstNameTh} ${user.lastNameTh}`,
+      }));
+      setUserSelect(userSelect);
+
       const resRole = await userRolesServices.getUserRoleAll();
       editform.setFieldsValue(groupDetail);
       editform.setFieldValue(
@@ -428,8 +435,19 @@ const GroupManage: React.FC<props> = ({
           <Row>
             <Col span={10}>
               <div>
-                <div className=" text-2xl  font-semibold inline-block mb-3">
-                  Group Detail
+                <div className="flex text-2xl space-x-2  font-semibold  mb-3">
+                  <div>Group Detail</div>
+                  <div>
+                    <Button
+                      size="small"
+                      type="link"
+                      onClick={() => {
+                        setShowModalUserList(true);
+                      }}
+                    >
+                      <EyeOutlined />
+                    </Button>
+                  </div>
                 </div>
                 <div className=" text-slate-400">
                   {!groupDetail.parentGroupId
@@ -533,7 +551,7 @@ const GroupManage: React.FC<props> = ({
                     allowClear
                     showSearch
                     optionFilterProp="label"
-                    options={userSelect}
+                    options={userInGroupSelect}
                   />
                 </Form.Item>
               </ConfigProvider>
@@ -574,7 +592,7 @@ const GroupManage: React.FC<props> = ({
             {!editState && (
               <div style={{ display: "flex", justifyContent: "end" }}>
                 <div>
-                  <Button onClick={onShowSetPermission} type="primary">
+                  <Button onClick={onShowSetPermission} type="link">
                     Set CRM Permission
                   </Button>
                 </div>
@@ -583,7 +601,7 @@ const GroupManage: React.FC<props> = ({
                     onClick={() => {
                       setShowModalUserPermission(true);
                     }}
-                    type="primary"
+                    type="link"
                   >
                     {`Set User Permission`}
                   </Button>
@@ -686,7 +704,19 @@ const GroupManage: React.FC<props> = ({
           </Row>
         </Form>
       </Modal>
-
+      <Modal
+        open={showModalUserList}
+        onCancel={() => {
+          setShowModalUserList(false);
+        }}
+        title="รายชื่อ"
+      >
+        <Table
+          pagination={false}
+          dataSource={userInGroupSelect}
+          columns={[{ title: "Name", dataIndex: "label", key: "value" }]}
+        />
+      </Modal>
       <GroupPermissionComponent
         groupOption={groupOption}
         onChangeSaleGroupSelect={onChangeSaleGroupSelect}

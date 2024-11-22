@@ -105,22 +105,26 @@ export default function Page() {
     let base: ITypeDataLeave;
     let total: number = 0;
     let sumDataLeave = await validateSumTotalLeave(values, dataHolidayDay);
-    await checkStatusTypeLeave(values, masterdataTypeLeave);
-    let remainingLeave: number = 0;
-    if (session?.user.userId) {
-      let bases = {};
-      if (session?.user.userId) bases = { ...bases, userId: session?.user.userId };
-      if (values.type_id) bases = { ...bases, typeId: values.type_id };
-      const dataLeaveUserById = await leavemanagementservices.getdataLeaveUserById(bases);
-      const dataMasterType = await leavemanagementservices.getdataMasterTypeLeaveByTypeId(values.type_id);
-      remainingLeave = await validateCheckLeaveDay(dataLeaveUserById, dataMasterType, session?.user.startWork);
-      const datadisabledLeave = await leavemanagementservices.getdataTypeLeaveMap(session?.user.id, dataMasterType.typeId);
-      total = remainingLeave - sumDataLeave;
 
+    if (session?.user.userId) {
+      const dataMasterType = await leavemanagementservices.getdataMasterTypeLeaveByTypeId(values.type_id);
+      const datadisabledLeave = await leavemanagementservices.getdataTypeLeaveMap(session?.user.id, dataMasterType.typeId);
       if (datadisabledLeave.length > 0) {
         message.error(`ท่านไม่มีสิทธ์${dataMasterType.typeName}`);
         return false;
       }
+      await checkStatusTypeLeave(values, masterdataTypeLeave);
+      let remainingLeave: number = 0;
+
+      let bases = {};
+      if (session?.user.userId) bases = { ...bases, userId: session?.user.userId };
+      if (values.type_id) bases = { ...bases, typeId: values.type_id };
+      const dataLeaveUserById = await leavemanagementservices.getdataLeaveUserById(bases);
+
+      remainingLeave = await validateCheckLeaveDay(dataLeaveUserById, dataMasterType, session?.user.startWork);
+
+      total = remainingLeave - sumDataLeave;
+
       if (total <= 0) {
         message.error(`ไม่สามารถทำการลาได้เนื่องจากวันลาที่เหลืออยู่ หมด หรือไม่เพียงพอ`);
         return false;

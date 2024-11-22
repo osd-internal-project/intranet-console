@@ -28,6 +28,7 @@ type dataType = {
   userId: string;
   username: string;
   position: string;
+  onwerGroup: string;
   phoneNumber: string;
   status: string;
   created: string;
@@ -80,6 +81,7 @@ const UserTable: React.FC<props> = ({
         userId: d.userId,
         username: d.username,
         position: d.masterPosition?.nameTh,
+        onwerGroup: d.userMapOrganizeGroupOwner[0]?.group?.groupName,
         phoneNumber: d.phoneNumber,
         email: d.email,
         status: d.activeStatus ? "Active" : "Inactive",
@@ -120,10 +122,16 @@ const UserTable: React.FC<props> = ({
       key: "fullname",
       width: 200,
     },
+    // {
+    //   title: "POSITION",
+    //   dataIndex: "position",
+    //   key: "position",
+    //   width: 200,
+    // },
     {
-      title: "POSITION",
-      dataIndex: "position",
-      key: "position",
+      title: "OWNER GROUP",
+      dataIndex: "onwerGroup",
+      key: "onwerGroup",
       width: 200,
     },
     {

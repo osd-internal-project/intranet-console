@@ -58,6 +58,9 @@ const UserServices = (axiosInstance: AxiosInstance) => {
               nameEn: true,
             },
           },
+          userMapOrganizeGroupOwner: {
+            select: { group: { select: { groupName: true } } },
+          },
         },
       };
       return await axiosInstance

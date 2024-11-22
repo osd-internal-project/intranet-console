@@ -164,7 +164,7 @@ const UserGroupServices = (axiosInstance: AxiosInstance) => {
     },
     findUsersByOwnerGroup: async (ownerGroup: string[]) => {
       return await axiosInstance
-        .get(`user/find-users-by-ownergroup/`, {
+        .get(`user/find-same-and-lower-users-by-ownergroup/`, {
           params: ownerGroup,
         })
         .then((res) => {

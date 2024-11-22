@@ -262,6 +262,12 @@ const UserServices = (axiosInstance: AxiosInstance) => {
         .then((result) => result.data)
         .catch((err) => err);
     },
+    findUserInOnwerGroupByUserGroupId: async (userGroupId: string) => {
+      return await axiosInstance
+        .get(`${baseUrl}/user-in-owner-group/${userGroupId}`)
+        .then((result) => result.data)
+        .catch((err) => err);
+    },
   };
 };
 export default UserServices;

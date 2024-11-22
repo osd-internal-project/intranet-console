@@ -23,6 +23,7 @@ import {
 } from "@ant-design/icons";
 import { checkRule } from "@/app/utils/rules";
 import RolesServices from "../../user-role/services/role.service";
+import UserServices from "../../users/services/user.service";
 import GroupPermissionComponent from "./GroupPermission";
 import GroupUserPermission from "./GroupUserPermission";
 
@@ -82,6 +83,7 @@ const GroupManage: React.FC<props> = ({
   const [userpermissionform] = Form.useForm();
   const userGroupServices = UserGroupServices(userAuth);
   const userRolesServices = RolesServices(userAuth);
+  const userServices = UserServices(userAuth);
   const [groupDetail, setGroupDetail] = useState<groupDetail | null>(null);
   const [openAddModel, setOpenAddModel] = useState<boolean>(false);
   const [editState, setEditState] = useState<boolean>(false);
@@ -133,8 +135,9 @@ const GroupManage: React.FC<props> = ({
       const groupDetail: any = await userGroupServices.getUserGroupByGroupId(
         groupSelect
       );
-      const dataUser: any = await userGroupServices.getdataUserAll();
-      const users = dataUser.map((user: any) => ({
+      const usersInGroup: any =
+        await userServices.findUserInOnwerGroupByUserGroupId(groupSelect);
+      const users = usersInGroup.map((user: any) => ({
         value: user.userId,
         label: `${user.firstNameTh} ${user.lastNameTh}`,
       }));
@@ -157,12 +160,6 @@ const GroupManage: React.FC<props> = ({
       setSeleceRole(resRole);
       await onChangeSaleGroupSelect(groupDetail.saleUserGroupId);
       await onChangeEngineerGroupSelect(groupDetail.engineerUserGroupId);
-      // await onChangeLeaveGroupSelect(
-      //   groupDetail.userGroupMapHeader?.[0]?.leaveGroupId
-      // );
-      // await onChangeExpenseGroupSelect(
-      //   groupDetail.userGroupMapHeader?.[0]?.expenseGroupId
-      // );
 
       permissionform.setFieldsValue({
         exceptionalSatatus: groupDetail.exceptionalSatatus,
@@ -191,12 +188,6 @@ const GroupManage: React.FC<props> = ({
           }
         }
       );
-      // userpermissionform.setFieldsValue({
-      //   leaveGroupId: groupDetail.userGroupMapHeader?.[0]?.leaveGroupId,
-      //   leaveUserId: groupDetail.userGroupMapHeader?.[0]?.leaveUserId,
-      //   expenseGroupId: groupDetail.userGroupMapHeader?.[0]?.expenseGroupId,
-      //   expenseUserId: groupDetail.userGroupMapHeader?.[0]?.expenseUserId,
-      // });
     }
   };
   const createTree = (obj: any[], parentId: string | null) => {

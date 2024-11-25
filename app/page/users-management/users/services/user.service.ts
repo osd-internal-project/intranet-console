@@ -39,29 +39,6 @@ const UserServices = (axiosInstance: AxiosInstance) => {
     getUsersAll: async (where: object) => {
       const condition = {
         where: where,
-        select: {
-          userId: true,
-          username: true,
-          firstNameTh: true,
-          lastNameTh: true,
-          firstNameEn: true,
-          lastNameEn: true,
-          email: true,
-          phoneNumber: true,
-          activeStatus: true,
-          clientId: true,
-          createdAt: true,
-          updatedAt: true,
-          masterPosition: {
-            select: {
-              nameTh: true,
-              nameEn: true,
-            },
-          },
-          userMapOrganizeGroupOwner: {
-            select: { group: { select: { groupName: true } } },
-          },
-        },
       };
       return await axiosInstance
         .post(`${baseUrl}/condition`, { condition: condition })

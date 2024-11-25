@@ -175,13 +175,15 @@ const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
 
   const cellRender: CalendarProps<Dayjs>["fullCellRender"] = (date, info) => {
     const isWeekend = date.day() === 6 || date.day() === 0;
-    const isHoliday = holiday.find(
-      (event) =>
-        dayjs(new Date(event.holidaysDate)).format("YYYY-MM-DD") ===
-        dayjs(date).format("YYYY-MM-DD")
-    )
-      ? true
-      : false;
+    const isHoliday =
+      holiday &&
+      holiday.find(
+        (event) =>
+          dayjs(new Date(event.holidaysDate)).format("YYYY-MM-DD") ===
+          dayjs(date).format("YYYY-MM-DD")
+      )
+        ? true
+        : false;
     if (isHoliday) {
       console.log(date.date(), isHoliday);
     }

@@ -27,6 +27,7 @@ import Link from "next/link";
 import { useRefreshToken } from "@/app/lib/axios/hooks/useRefreshToken";
 import { useAxiosRefreshToken } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ItemType } from "antd/es/menu/interface";
+import { ITNotiLogsMessage } from "@/app/common/noti-logs";
 
 type Profile = {
   userId: string;
@@ -45,7 +46,7 @@ interface Prop {
   setCollapsed: (setCollapsed: boolean) => void;
   currentPath: string;
   menulist: MenuProps["items"];
-  countNoti: number;
+  notiLogMessages: ITNotiLogsMessage[];
   session: any;
   avatar: any;
 }
@@ -56,35 +57,39 @@ const Navigation: React.FC<Prop> = ({
   setCollapsed,
   currentPath,
   menulist,
-  countNoti,
+  notiLogMessages,
   avatar,
 }) => {
   const [open, setOpen] = useState(false);
-  const [notiDetails, setNotiDetils] = useState<ItemType[]>([]);
+  const [notiDetails, setNotiDetils] = useState<{
+    count: number;
+    list: ItemType[];
+  }>({ count: 0, list: [] });
   const navigate = useRouter();
   useAxiosRefreshToken(session);
   useEffect(() => {
-    const noti: ItemType[] = [
-      {
-        key: 1,
-        label: (
-          <div className=" w-44 flex justify-between">
-            <div>รายการวันลารออนุมัติ</div> <Badge count={2} />
-          </div>
-        ),
-      },
-      {
-        key: 2,
-        label: (
-          <div className="w-44 flex justify-between">
-            <div>รายการจองรถรออนุมัติ </div>
-            <Badge count={2} />
-          </div>
-        ),
-      },
-    ];
-    setNotiDetils(noti);
-  }, []);
+    const fetchData = async () => {
+      let noticount = 0;
+      const notiMsgs = await notiLogMessages.map(
+        (noti: ITNotiLogsMessage, index) => {
+          noticount += noti.count;
+          return {
+            key: index + 1,
+            label: (
+              <Link href={noti.path}>
+                <div className=" w-44 flex justify-between">
+                  <div>{noti.title}</div> <Badge count={noti.count} />
+                </div>{" "}
+              </Link>
+            ),
+          };
+        }
+      );
+
+      setNotiDetils({ count: noticount, list: notiMsgs });
+    };
+    fetchData();
+  }, [notiLogMessages]);
 
   return (
     <>
@@ -130,15 +135,15 @@ const Navigation: React.FC<Prop> = ({
             </Badge>
           </Link> */}
           <Dropdown
-            menu={{ items: notiDetails }}
+            menu={{ items: notiDetails.list }}
             className="text-black hover:text-zinc-300"
           >
             <a onClick={(e) => e.preventDefault()}>
-              {/* <Space className=" text-base">
-                <Badge count={notiDetails.length} size="small">
+              <Space className=" text-base">
+                <Badge count={notiDetails.count} size="small">
                   <BellTwoTone className=" text-lg" />
                 </Badge>
-              </Space> */}
+              </Space>
             </a>
           </Dropdown>
           <Dropdown

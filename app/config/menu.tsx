@@ -194,72 +194,40 @@ export const MenuSider: MenuItem[] = [
       },
     ],
   },
-  {
-    key: `users-management`,
-    icon: gridIcon,
-    label: `User Management`,
-    rule: "um-s",
-    children: [
-      {
-        key: `users-management/users`,
-        label: `Users`,
-        // rule: "um-s",
-      },
-      {
-        key: `users-management/user-organization`,
-        label: `Organizations`,
-        // rule: "user-organize-show",
-      },
-      {
-        key: `users-management/user-group`,
-        label: `Groups`,
-        // rule: "um-ug-s",
-      },
-      {
-        key: `users-management/user-role`,
-        label: `Roles`,
-        rule: "um-ro-s",
-      },
-      {
-        key: `users-management/user-rule`,
-        label: `Rules`,
-        rule: "um-ru-s",
-      },
-    ],
-  },
-  {
-    key: "crm",
-    icon: contactListIcon,
-    label: `CRM`,
-    rule: "crm-s",
-    children: [
-      {
-        key: `crm/customer-group`,
-        label: `ข้อมูลลูกค้า`,
-        rule: "crm-c-s",
-      },
-      {
-        key: `crm/project`,
-        label: `Project`,
-        rule: "crm-p-s",
-      },
-      {
-        key: `crm/ticket`,
-        label: `Ticket`,
-        rule: "crm-t-s",
-      },
-      {
-        key: `crm/products`,
-        label: `Products`,
-        rule: "crm-ex",
-      },
-      {
-        key: `crm/expense`,
-        label: `ข้อมูลการเบิก`,
-        rule: "crm-ex",
-      },
-    ],
-  },
+
+  // {
+  //   key: "crm",
+  //   icon: contactListIcon,
+  //   label: `CRM`,
+  //   rule: "crm-s",
+  //   children: [
+  //     {
+  //       key: `crm/customer-group`,
+  //       label: `ข้อมูลลูกค้า`,
+  //       rule: "crm-c-s",
+  //     },
+  //     {
+  //       key: `crm/project`,
+  //       label: `Project`,
+  //       rule: "crm-p-s",
+  //     },
+  //     {
+  //       key: `crm/ticket`,
+  //       label: `Ticket`,
+  //       rule: "crm-t-s",
+  //     },
+  //     {
+  //       key: `crm/products`,
+  //       label: `Products`,
+  //       rule: "crm-ex",
+  //     },
+  //     {
+  //       key: `crm/expense`,
+  //       label: `ข้อมูลการเบิก`,
+  //       rule: "crm-ex",
+  //     },
+  //   ],
+  // },
   {
     key: "macar",
     icon: macarIcon,
@@ -322,6 +290,39 @@ export const MenuSider: MenuItem[] = [
       {
         key: `setting/email-template`,
         label: `Email Template`,
+      },
+    ],
+  },
+  {
+    key: `users-management`,
+    icon: gridIcon,
+    label: `User Management`,
+    rule: "um-s",
+    children: [
+      {
+        key: `users-management/users`,
+        label: `Users`,
+        // rule: "um-s",
+      },
+      {
+        key: `users-management/user-organization`,
+        label: `Organizations`,
+        // rule: "user-organize-show",
+      },
+      {
+        key: `users-management/user-group`,
+        label: `Groups`,
+        // rule: "um-ug-s",
+      },
+      {
+        key: `users-management/user-role`,
+        label: `Roles`,
+        rule: "um-ro-s",
+      },
+      {
+        key: `users-management/user-rule`,
+        label: `Rules`,
+        rule: "um-ru-s",
       },
     ],
   },

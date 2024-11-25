@@ -1,11 +1,4 @@
-import {
-  LogoutOutlined,
-  UserOutlined,
-  HomeOutlined,
-  BarChartOutlined,
-  BookOutlined,
-  MailOutlined,
-} from "@ant-design/icons";
+import { LogoutOutlined, UserOutlined, HomeOutlined, BarChartOutlined, BookOutlined, MailOutlined } from "@ant-design/icons";
 import { Icon } from "@iconify/react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
@@ -20,6 +13,7 @@ import {
   stockIcon,
   contactListIcon,
   macarIcon,
+  hrIcon,
 } from "@/components/icon";
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -36,8 +30,7 @@ const MenuNav: MenuProps["items"] = [
         href={"#"}
         onClick={async () => {
           signOut({ callbackUrl: "/signin" });
-        }}
-      >
+        }}>
         Sign Out
       </Link>
     ),
@@ -67,6 +60,18 @@ export const MenuSider: MenuItem[] = [
       {
         key: `internal-info/organization-chart-team`,
         label: `แผนผังทีม`,
+      },
+    ],
+  },
+  {
+    key: "hr-management",
+    label: "ระบบบริหารงานบุคคล",
+    // rule:''
+    icon: hrIcon,
+    children: [
+      {
+        key: `hr-management/employee-profile`,
+        label: "ข้อมูลพนักงาน",
       },
     ],
   },

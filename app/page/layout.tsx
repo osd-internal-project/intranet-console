@@ -7,21 +7,28 @@ import { FloatButton, Layout, Menu, message, Spin } from "antd";
 import { MenuSiderWithModule } from "@/app/config/menu";
 import { pageWithoutMenu } from "@/app/config/data";
 import { Footer } from "antd/es/layout/layout";
-import { useAxiosStock, useAxiosUser } from "../lib/axios/hooks/userAxiosAuth";
+import {
+  useAxiosIntranet,
+  useAxiosUser,
+} from "../lib/axios/hooks/userAxiosAuth";
 import IndexServices from "./services/index.service";
+import NotiLogsServices from "../services/noti-logs.service";
 import { PhoneOutlined } from "@ant-design/icons";
+import { ITNotiLogsMessage } from "../common/noti-logs";
 
 export default function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const stockAuth = useAxiosStock();
+  const intranetAuth = useAxiosIntranet();
   const userAuth = useAxiosUser();
-  const indexServices = IndexServices(stockAuth);
   const userServices = IndexServices(userAuth);
+  const notiLogsServices = NotiLogsServices(intranetAuth);
   const [collapsed, setCollapsed] = useState(false);
-  const [countNoti, setCountNoti] = useState(0);
+  const [notiLogMessages, setNotiLogMessages] = useState<ITNotiLogsMessage[]>(
+    []
+  );
   const [avatar, setAvatar] = useState<any>();
   const pathname = usePathname();
   const { data: session, status } = useSession({
@@ -43,11 +50,15 @@ export default function MainLayout({
       //   session.grouplist
       // );
 
-      // if (count === undefined || count === null || !count) {
+      // if (count === undefined || count === null || !count ) {
       //   setCountNoti(0);
       // } else {
       //   setCountNoti(count);
       // }
+      const notiLogMessage = await notiLogsServices.findByUsers(
+        session.user.userId
+      );
+      setNotiLogMessages(notiLogMessage);
       const image = await userServices.getImage(session.user.userId);
       setAvatar(image);
     }
@@ -127,12 +138,12 @@ export default function MainLayout({
           <div className="w-full">
             <Navigation
               session={session}
-              countNoti={countNoti}
               collapsed={collapsed}
               setCollapsed={setCollapsed}
               currentPath={currentPath}
               menulist={menulist}
               avatar={avatar}
+              notiLogMessages={notiLogMessages}
             />
           </div>
 

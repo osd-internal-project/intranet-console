@@ -1,15 +1,6 @@
 "use client";
 
-import {
-  Avatar,
-  Badge,
-  Button,
-  Drawer,
-  Dropdown,
-  Menu,
-  MenuProps,
-  Space,
-} from "antd";
+import { Avatar, Badge, Button, Drawer, Dropdown, Menu, MenuProps, Space } from "antd";
 import { Header } from "antd/es/layout/layout";
 import MenuNav from "@/app/config/menu";
 import {
@@ -57,7 +48,6 @@ const Navigation: React.FC<Prop> = ({
   setCollapsed,
   currentPath,
   menulist,
-  notiLogMessages,
   avatar,
 }) => {
   const [open, setOpen] = useState(false);
@@ -110,10 +100,7 @@ const Navigation: React.FC<Prop> = ({
               <BellOutlined />
             </Badge>
           </Link> */}
-          <Dropdown
-            menu={{ items: notiDetails.list }}
-            className="text-black hover:text-zinc-300"
-          >
+          <Dropdown menu={{ items: notiDetails.list }} className="text-black hover:text-zinc-300">
             <a onClick={(e) => e.preventDefault()}>
               <Space className=" text-base">
                 <Badge count={notiDetails.count} size="small">
@@ -122,10 +109,7 @@ const Navigation: React.FC<Prop> = ({
               </Space>
             </a>
           </Dropdown>
-          <Dropdown
-            menu={{ items: MenuNav }}
-            className="text-black hover:text-zinc-300"
-          >
+          <Dropdown menu={{ items: MenuNav }} className="text-black hover:text-zinc-300">
             <a onClick={(e) => e.preventDefault()}>
               <Space className=" text-base">
                 {/* {`คุณ ${session.user.firstNameTh} ${session.user.lastNameTh} `}
@@ -147,11 +131,7 @@ const Navigation: React.FC<Prop> = ({
       <Drawer
         title={
           <div className="flex justify-center bg-white ">
-            <img
-              src="/images/logo-osd-mini-v2.png"
-              alt="logo-page"
-              className={`w-20 h-auto`}
-            />
+            <img src="/images/logo-osd-mini-v2.png" alt="logo-page" className={`w-20 h-auto`} />
           </div>
         }
         placement="left"
@@ -159,13 +139,7 @@ const Navigation: React.FC<Prop> = ({
         open={open}
         width={250}
       >
-        <Menu
-          mode="inline"
-          selectedKeys={[currentPath]}
-          style={{ height: 100, borderRight: 0 }}
-          items={menulist}
-          onClick={() => setOpen(!open)}
-        />
+        <Menu mode="inline" selectedKeys={[currentPath]} style={{ height: 100, borderRight: 0 }} items={menulist} onClick={() => setOpen(!open)} />
       </Drawer>
     </>
   );

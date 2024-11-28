@@ -58,7 +58,7 @@ export const MenuSider: MenuItem[] = [
     key: "internal-info",
     icon: organizeChart,
     label: `Internal Info`,
-    rule: "ii-s",
+    // rule: "ii-s",
     children: [
       {
         key: `internal-info/organization-chart`,
@@ -74,43 +74,43 @@ export const MenuSider: MenuItem[] = [
     key: "stock",
     icon: stockIcon,
     label: "Stock",
-    rule: "s-s",
+    // rule: "s-s",
     children: [
       {
         key: `order-management`,
         label: `Order Management`,
-        rule: "sm-order-s",
+        // rule: "sm-order-s",
       },
       {
         key: `inventory`,
         label: `Inventory`,
-        rule: "sm-inventory-s",
+        // rule: "sm-inventory-s",
       },
 
       {
         key: `product-list`,
         label: `Product List`,
-        rule: "sm-productlist-s",
+        // rule: "sm-productlist-s",
       },
       {
         key: `report-withdraw-ranking`,
         label: `10 อันดับการเบิกจ่ายที่มากที่สุด`,
-        rule: "sm-re-wr-h",
+        // rule: "sm-re-wr-h",
       },
       {
         key: `report-transaction`,
         label: `การรับเข้าเบิกจ่าย`,
-        rule: "sm-re-tr-h",
+        // rule: "sm-re-tr-h",
       },
       {
         key: `report-expired`,
         label: `รายงานการหมดอายุ`,
-        rule: "sm-re-ex-h",
+        // rule: "sm-re-ex-h",
       },
       {
         key: `stock-management`,
         label: `Stock Management`,
-        rule: "sm-s",
+        // rule: "sm-s",
       },
     ],
   },
@@ -118,17 +118,17 @@ export const MenuSider: MenuItem[] = [
     key: "housekeeper",
     icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
     label: "Housekeeper",
-    rule: "hk-s",
+    // rule: "hk-s",
     children: [
       {
         key: `housekeeper/housekeepers`,
         label: `Housekeeper`,
-        rule: "hk-h",
+        // rule: "hk-h",
       },
       {
         key: `housekeeper/housekeeper-management`,
         label: `Housekeeper Management`,
-        rule: "hk-m",
+        // rule: "hk-m",
       },
     ],
   },
@@ -136,27 +136,27 @@ export const MenuSider: MenuItem[] = [
     key: "data-leave",
     icon: IconDataLeave,
     label: `Data Leave`,
-    rule: "dl-s",
+    // rule: "dl-s",
     children: [
       {
         key: `data-leave/online-leave`,
         label: `Create Data Leave`,
-        rule: "dl-a",
+        // rule: "dl-a",
       },
       {
         key: `data-leave/detail-online-leave`,
         label: `Detail Data Leave User`,
-        rule: "dl-dt-u",
+        // rule: "dl-dt-u",
       },
       {
         key: `data-leave/detail-online-leave-admin`,
         label: `Detail Data Leave Admin`,
-        rule: "dl-dt-a",
+        // rule: "dl-dt-a",
       },
       {
         key: `data-leave/leave-management`,
         label: `Leave Management`,
-        rule: "dl-dis",
+        // rule: "dl-dis",
       },
     ],
   },
@@ -164,7 +164,7 @@ export const MenuSider: MenuItem[] = [
     key: "3",
     icon: bookingIcon,
     label: "Booking Room",
-    rule: "br-s",
+    // rule: "br-s",
     children: [
       {
         key: `bookingroom/booking-room`,
@@ -180,12 +180,12 @@ export const MenuSider: MenuItem[] = [
     key: "maintenance",
     icon: maintenanceIcon,
     label: "Maintenance",
-    rule: "ma-s",
+    // rule: "ma-s",
     children: [
       {
         key: `maintenance-management`,
         label: `Maintenance Management`,
-        rule: "ma-m-s",
+        // rule: "ma-m-s",
       },
     ],
   },
@@ -193,7 +193,7 @@ export const MenuSider: MenuItem[] = [
     key: `users-management`,
     icon: gridIcon,
     label: `User Management`,
-    rule: "um-s",
+    // rule: "um-s",
     children: [
       {
         key: `users-management/users`,
@@ -213,12 +213,12 @@ export const MenuSider: MenuItem[] = [
       {
         key: `users-management/user-role`,
         label: `Roles`,
-        rule: "um-ro-s",
+        // rule: "um-ro-s",
       },
       {
         key: `users-management/user-rule`,
         label: `Rules`,
-        rule: "um-ru-s",
+        // rule: "um-ru-s",
       },
     ],
   },
@@ -226,32 +226,32 @@ export const MenuSider: MenuItem[] = [
     key: "crm",
     icon: contactListIcon,
     label: `CRM`,
-    rule: "crm-s",
+    // rule: "crm-s",
     children: [
       {
         key: `crm/customer-group`,
         label: `Customer Group`,
-        rule: "crm-c-s",
+        // rule: "crm-c-s",
       },
       {
         key: `crm/project`,
         label: `Project`,
-        rule: "crm-p-s",
+        // rule: "crm-p-s",
       },
       {
         key: `crm/ticket`,
         label: `Ticket`,
-        rule: "crm-t-s",
+        // rule: "crm-t-s",
       },
       {
         key: `crm/products`,
         label: `Products`,
-        rule: "crm-ex",
+        // rule: "crm-ex",
       },
       {
         key: `crm/expense`,
         label: `Expense`,
-        rule: "crm-ex",
+        // rule: "crm-ex",
       },
     ],
   },
@@ -259,22 +259,22 @@ export const MenuSider: MenuItem[] = [
     key: "macar",
     icon: macarIcon,
     label: `Ma Car`,
-    rule: "mac-s",
+    // rule: "mac-s",
     children: [
       {
         key: `macar/ma-car`,
         label: `Ma car`,
-        rule: "mac-c-s",
+        // rule: "mac-c-s",
       },
       {
         key: `macar/ma-car-booking`,
         label: `Ma car Booking`,
-        rule: "mac-b-s",
+        // rule: "mac-b-s",
       },
       {
         key: `macar/ma-car-management`,
         label: `Ma car Management`,
-        rule: "mac-m-s",
+        // rule: "mac-m-s",
       },
     ],
   },
@@ -282,12 +282,12 @@ export const MenuSider: MenuItem[] = [
     key: `setting`,
     icon: <Icon icon="uil:setting" width="15" height="15" />,
     label: `Setting`,
-    rule: "st-s",
+    // rule: "st-s",
     children: [
       {
         key: `setting/maintenance-type`,
         label: `MA Type`,
-        rule: "ma-t-s",
+        // rule: "ma-t-s",
       },
       {
         key: `setting/organize-chart`,
@@ -297,7 +297,7 @@ export const MenuSider: MenuItem[] = [
       {
         key: `setting/typeleave`,
         label: `Type Leave`,
-        rule: "st-tl-s",
+        // rule: "st-tl-s",
       },
       {
         key: `setting/master-holidays`,
@@ -307,12 +307,12 @@ export const MenuSider: MenuItem[] = [
       {
         key: `setting/masterdata-position`,
         label: `Master Position`,
-        rule: "st-p-s",
+        // rule: "st-p-s",
       },
       {
         key: `setting/manage-home`,
         label: `Manage Home`,
-        rule: "ma-h-s",
+        // rule: "ma-h-s",
       },
       {
         key: `setting/email-template`,

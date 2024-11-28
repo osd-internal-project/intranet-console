@@ -3,23 +3,20 @@ import type { Metadata } from "next";
 import { Sarabun } from "next/font/google";
 
 const sarabun = Sarabun({ weight: "400", subsets: ["thai"] });
-import AuthProvider from "@/app/provider/AuthProvider";
 import { ConfigProvider } from "antd";
-import { signIn, useSession } from "next-auth/react";
+// import { signIn, useSession } from "next-auth/react";
 import { StepBackwardOutlined } from "@ant-design/icons";
+import AuthProviderId24 from "./provider/AuthProvider";
 export const metadata: Metadata = {
   title: "Intranet",
   description: "Intranet",
 };
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={` m-0 `}>
-        <AuthProvider>
+        {/* <AuthProvider> */}
+        <AuthProviderId24>
           <ConfigProvider
             theme={{
               token: {
@@ -31,7 +28,8 @@ export default function RootLayout({
           >
             {children}
           </ConfigProvider>
-        </AuthProvider>
+        </AuthProviderId24>
+        {/* </AuthProvider> */}
       </body>
     </html>
   );

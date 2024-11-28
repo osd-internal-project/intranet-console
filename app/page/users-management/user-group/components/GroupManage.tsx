@@ -12,7 +12,7 @@ import {
   SelectProps,
   message,
 } from "antd";
-import UserGroupServices from "../services/usergroup.service";
+import UserGroupServices from "../../../../services/usergroup.service";
 import { GroupManageSkeleton } from "./Skeleton";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import Link from "next/link";

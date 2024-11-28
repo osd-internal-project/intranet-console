@@ -10,147 +10,147 @@ import { Footer } from "antd/es/layout/layout";
 import { useAxiosStock, useAxiosUser } from "../lib/axios/hooks/userAxiosAuth";
 import IndexServices from "./services/index.service";
 import { PhoneOutlined } from "@ant-design/icons";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
 
-export default function MainLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const stockAuth = useAxiosStock();
-  const userAuth = useAxiosUser();
-  const indexServices = IndexServices(stockAuth);
-  const userServices = IndexServices(userAuth);
+const { Content, Sider } = Layout;
+
+export default function MainLayout({ children }: { children: React.ReactNode }) {
+  const { tokenAccess, authenticated, login, logout, id24Axios } = useId24();
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    featchData();
+  }, [authenticated]);
+
+  if (!authenticated) {
+    login(window.location.href, false);
+  }
+
+  const featchData = async () => {
+    if (authenticated) {
+      setLoading(false);
+    }
+  };
+  // const stockAuth = useAxiosStock();
+  // const userAuth = useAxiosUser();
+  // const indexServices = IndexServices(stockAuth);
+  // const userServices = IndexServices(userAuth);
   const [collapsed, setCollapsed] = useState(false);
   const [countNoti, setCountNoti] = useState(0);
   const [avatar, setAvatar] = useState<any>();
   const pathname = usePathname();
-  const { data: session, status } = useSession({
-    required: true,
-  });
+  // const { data: session, status } = useSession({
+  //   required: true,
+  // });
 
-  useEffect(() => {
-    if (session?.error === "RefreshAccessTokenError") {
-      message.error("หมดอายุการใช้งาน กรุณาเข้าสู่ระบบ");
-      signOut();
-    } else {
-      fatchData();
-    }
-  }, [session]);
+  // useEffect(() => {
+  //   if (session?.error === "RefreshAccessTokenError") {
+  //     message.error("หมดอายุการใช้งาน กรุณาเข้าสู่ระบบ");
+  //     signOut();
+  //   } else {
+  //     fatchData();
+  //   }
+  // }, [session]);
 
-  async function fatchData() {
-    if (session) {
-      // const count = await indexServices.countLotBeforeExpiredByLocation(
-      //   session.grouplist
-      // );
+  // async function fatchData() {
+  //   if (session) {
+  //     const image = await userServices.getImage(session.user.userId);
+  //     setAvatar(image);
+  //   }
+  // }
 
-      // if (count === undefined || count === null || !count) {
-      //   setCountNoti(0);
-      // } else {
-      //   setCountNoti(count);
-      // }
-      const image = await userServices.getImage(session.user.userId);
-      setAvatar(image);
-    }
-  }
+  // if (status === "loading") {
+  //   return (
+  //     <div className="flex items-center justify-center h-screen">
+  //       <Spin />
+  //     </div>
+  //   );
+  // }
 
-  if (status === "loading") {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Spin />
-      </div>
-    );
-  }
+  // const LoseToken = () => {
+  //   message.error("ไม่มีสิทธิ์เข้าถึง");
+  //   signOut();
+  // };
 
-  const LoseToken = () => {
-    message.error("ไม่มีสิทธิ์เข้าถึง");
-    signOut();
-  };
+  // if (!session) {
+  //   LoseToken();
+  // } else {
+  //   const { Content, Sider } = Layout;
+  //   const menulist = MenuSiderWithModule(session?.rulelist);
+  //   const currentPath = pathname.split("/")[2];
+  //   const currentPathSub = pathname.split("/")[3];
 
-  if (!session) {
-    LoseToken();
-  } else {
-    const { Content, Sider } = Layout;
-    const menulist = MenuSiderWithModule(session?.rulelist);
-    const currentPath = pathname.split("/")[2];
-    const currentPathSub = pathname.split("/")[3];
+  //   if (currentPath) {
+  //     if (!pageWithoutMenu.includes(currentPath)) {
+  //       const checkAuth = MenuSiderWithModule(session?.rulelist).some((menu: any) => menu.key === currentPath);
+  //       if (!checkAuth) {
+  //       }
+  //     }
+  //   }
 
-    if (currentPath) {
-      // console.log(currentPath, `${currentPath}/${currentPathSub}`)
-      if (!pageWithoutMenu.includes(currentPath)) {
-        const checkAuth = MenuSiderWithModule(session?.rulelist).some(
-          (menu: any) => menu.key === currentPath
-        );
-        if (!checkAuth) {
-          // redirect("/404");
-        }
-      }
-    }
+  const menulist = MenuSiderWithModule([]);
+  const currentPath = pathname.split("/")[2];
+  const currentPathSub = pathname.split("/")[3];
 
-    return (
-      <Layout className=" min-h-screen  overflow-auto ">
-        <Sider
-          width={200}
-          trigger={null}
-          collapsible
-          collapsed={collapsed}
-          style={{ backgroundColor: "#ffff" }}
-          className=" min-h-screen  hidden  md:block bg "
-        >
-          <div className="flex justify-center py-4 ">
-            {!collapsed ? (
-              <>
-                <img
-                  src="/images/osd-logo.png"
-                  alt="logo-page"
-                  className={`${collapsed ? "w-14 " : " w-40"}`}
-                />
-              </>
-            ) : (
-              <img
-                src="/images/osd-logo.png"
-                alt="logo-page"
-                className={`${collapsed ? "w-14 " : "w-28 "}`}
-              />
-            )}
-          </div>
-          <Menu
-            mode="inline"
-            selectedKeys={[currentPath, `${currentPath}/${currentPathSub}`]}
-            defaultSelectedKeys={[
-              currentPath,
-              `${currentPath}/${currentPathSub}`,
-            ]}
-            items={menulist}
+  // if (currentPath) {
+  //   if (!pageWithoutMenu.includes(currentPath)) {
+  //     const checkAuth = MenuSiderWithModule([]).some((menu: any) => menu.key === currentPath);
+  //     if (!checkAuth) {
+  //     }
+  //   }
+
+  return (
+    <Layout className=" min-h-screen  overflow-auto ">
+      <Sider
+        width={200}
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+        style={{ backgroundColor: "#ffff" }}
+        className=" min-h-screen  hidden  md:block bg "
+      >
+        <div className="flex justify-center py-4 ">
+          {!collapsed ? (
+            <>
+              <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : " w-40"}`} />
+            </>
+          ) : (
+            <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
+          )}
+        </div>
+        <Menu
+          mode="inline"
+          selectedKeys={[currentPath, `${currentPath}/${currentPathSub}`]}
+          defaultSelectedKeys={[currentPath, `${currentPath}/${currentPathSub}`]}
+          items={menulist}
+        />
+      </Sider>
+      <Layout>
+        <div className="w-full">
+          <Navigation
+            // session={session}
+            countNoti={countNoti}
+            collapsed={collapsed}
+            setCollapsed={setCollapsed}
+            currentPath={currentPath}
+            menulist={menulist}
+            avatar={avatar}
           />
-        </Sider>
-        <Layout>
-          <div className="w-full">
-            <Navigation
-              session={session}
-              countNoti={countNoti}
-              collapsed={collapsed}
-              setCollapsed={setCollapsed}
-              currentPath={currentPath}
-              menulist={menulist}
-              avatar={avatar}
-            />
-          </div>
+        </div>
 
-          <Content
-            className=" mb-10"
-            style={{
-              padding: 20,
-              margin: 0,
-              marginBottom: 20,
-            }}
-          >
-            {children}
-          </Content>
-          <Footer style={{ textAlign: "center" }}>
-            Intranet ©{new Date().getFullYear()} Created by OSD
-          </Footer>
-        </Layout>
+        <Content
+          className=" mb-10"
+          style={{
+            padding: 20,
+            margin: 0,
+            marginBottom: 20,
+          }}
+        >
+          {children}
+        </Content>
+        <Footer style={{ textAlign: "center" }}>Intranet ©{new Date().getFullYear()} Created by OSD</Footer>
       </Layout>
-    );
-  }
+    </Layout>
+  );
+  // }
 }

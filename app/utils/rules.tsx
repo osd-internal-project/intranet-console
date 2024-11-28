@@ -10,12 +10,13 @@ export function createCookieLocal(name: string, value: string) {
 }
 
 export const checkRule = (keyword: string) => {
-  const { data: session } = useSession();
-  if (session?.rulelist) {
-    return session?.rulelist.includes(keyword);
-  } else {
-    return false;
-  }
+  // const { data: session } = useSession();
+  // if (session?.rulelist) {
+  //   return session?.rulelist.includes(keyword);
+  // } else {
+  //   return false;
+  // }
+  return false;
 };
 // export async function createCookie(name: string, value: string) {
 //   cookies().set({

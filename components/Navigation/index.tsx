@@ -44,12 +44,12 @@ interface Prop {
   currentPath: string;
   menulist: MenuProps["items"];
   countNoti: number;
-  session: any;
+  // session: any;
   avatar: any;
 }
 
 const Navigation: React.FC<Prop> = ({
-  session,
+  // session,
   collapsed,
   setCollapsed,
   currentPath,
@@ -59,7 +59,7 @@ const Navigation: React.FC<Prop> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const navigate = useRouter();
-  useAxiosRefreshToken(session);
+  // useAxiosRefreshToken(session);
   return (
     <>
       <Header className="flex justify-between w-full bg-white text-black shadow p-0">
@@ -109,7 +109,7 @@ const Navigation: React.FC<Prop> = ({
           >
             <a onClick={(e) => e.preventDefault()}>
               <Space className=" text-base">
-                {`คุณ ${session.user.firstNameTh} ${session.user.lastNameTh} `}
+                {/* {`คุณ ${session.user.firstNameTh} ${session.user.lastNameTh} `}
                 {avatar && avatar instanceof Blob ? (
                   <Avatar
                     size={40}
@@ -119,7 +119,7 @@ const Navigation: React.FC<Prop> = ({
                   />
                 ) : (
                   <UserOutlined />
-                )}
+                )} */}
               </Space>
             </a>
           </Dropdown>

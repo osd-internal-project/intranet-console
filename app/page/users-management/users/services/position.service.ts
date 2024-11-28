@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-const MasterPositionServices = (axiosInstance: AxiosInstance) => {
+const MasterPositionService = (axiosInstance: AxiosInstance) => {
   return {
     getMasterPositionAll: async () => {
       const baseUrl = "master-position";
@@ -37,4 +37,4 @@ const MasterPositionServices = (axiosInstance: AxiosInstance) => {
     },
   };
 };
-export default MasterPositionServices;
+export default MasterPositionService;

@@ -2,7 +2,6 @@ import config from "@/app/config";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "@/app/lib/axios/axios";
 import jwt from "jsonwebtoken";
-import { error } from "console";
 export const authOptions = {
   providers: [
     CredentialsProvider({

@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
-import UserGroupServices from "../../services/usergroup.service";
 import UserServices from "../../services/user.service";
 import { Button, Card, Form, Select, Spin, Tree, TreeSelect, message } from "antd";
 import type { DataNode, TreeProps } from "antd/es/tree";
@@ -9,6 +8,7 @@ import Title from "antd/es/skeleton/Title";
 
 import "../../style.css";
 import { useForm } from "antd/es/form/Form";
+import UserGroupServices from "../../../../../services/usergroup.service";
 export interface props {
   userid: string;
 }
@@ -47,8 +47,8 @@ const EditTreeComponent: React.FC<props> = ({ userid }): React.ReactElement => {
 
     setLoadTree(true);
     treeform.setFieldsValue({ grouplist: undefined });
-    const groups = await userGroupServices.getUserGroupAll();
-    const userGroup = await userGroupServices.getUserGroupIdByUserId(userid);
+    // const groups = await userGroupServices.getUserGroupAll();
+    // const userGroup = await userGroupServices.getUserGroupIdByUserId(userid);
     const ownerCondition = {
       where: { userId: userid },
       select: {
@@ -59,12 +59,12 @@ const EditTreeComponent: React.FC<props> = ({ userid }): React.ReactElement => {
     if (ownnerDetail.ownerGroup) {
       treeform.setFieldsValue({ ownerGroup: ownnerDetail.ownerGroup.groupid });
     }
-    if (userGroup.data.length > 0) {
-      const groupActiveIds = userGroup.data.map((item: any) => item.userGroupId);
-      treeform.setFieldsValue({ grouplist: groupActiveIds });
-    }
-    const tree = createTree(groups, null);
-    setTreeList(tree);
+    // if (userGroup.data.length > 0) {
+    //   const groupActiveIds = userGroup.data.map((item: any) => item.userGroupId);
+    //   treeform.setFieldsValue({ grouplist: groupActiveIds });
+    // }
+    // const tree = createTree(groups, null);
+    // setTreeList(tree);
     setLoadTree(false);
   };
 

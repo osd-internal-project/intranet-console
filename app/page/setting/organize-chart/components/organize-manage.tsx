@@ -4,7 +4,7 @@ import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosA
 import { ExclamationCircleFilled, PlusOutlined } from "@ant-design/icons";
 import { checkRule } from "@/app/utils/rules";
 import { TcreateOrganizeDto, TfindAllOrganizeDto, TupdateOrganizeDto } from "../common";
-import OrganizeServices from "../services/organize-chart.service";
+import OrganizeServices from "../../../../services/organize-chart.service";
 import { OrganizeManageSkeleton } from "./Skeleton";
 import Link from "next/link";
 import { editIcon } from "@/components/icon";

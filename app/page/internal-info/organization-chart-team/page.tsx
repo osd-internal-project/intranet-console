@@ -2,7 +2,7 @@
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { Breadcrumb, Card, Col, Divider, Row, Tabs, Typography } from "antd";
 import React, { useEffect, useState } from "react";
-import OrganizeServices from "../../setting/organize-chart/services/organize-chart.service";
+import OrganizeServices from "../../../services/organize-chart.service";
 import dynamic from "next/dynamic";
 
 const OrganizationalTeam = dynamic(() => import("./components/organizational-team"), {

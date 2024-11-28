@@ -6,7 +6,7 @@ import { Button, Card, Col, Form, Row, Select, SelectProps, Spin, Tabs, Tree, Tr
 import type { DataNode, TreeProps } from "antd/es/tree";
 import Title from "antd/es/skeleton/Title";
 import { useForm } from "antd/es/form/Form";
-import UserGroupServices from "../../../user-group/services/usergroup.service";
+import UserGroupServices from "../../../../../services/usergroup.service";
 import { CarryOutOutlined } from "@ant-design/icons";
 import Loading from "@/components/Loading";
 

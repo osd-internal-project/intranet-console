@@ -1,21 +1,11 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import {
-  Breadcrumb,
-  Card,
-  Col,
-  Divider,
-  Row,
-  Tabs,
-  TabsProps,
-  Form,
-  TablePaginationConfig,
-} from "antd";
-import MaCarBook from "./components/maCarBook";
-import MaCarReturn from "./components/maCarReturn";
+import { Breadcrumb, Card, Col, Divider, Row, Tabs, TabsProps, Form, TablePaginationConfig } from "antd";
+import MaCarBook from "./components/ma-car-book";
+import MaCarReturn from "./components/ma-car-return";
 import { useSession } from "next-auth/react";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { MaCarBookServices } from "./services/ma-car-book.service";
+import { MaCarBookServices } from "../../../services/ma-car-book.service";
 import { MaCarType, MaCarBookType, ProvincesType } from "../common/index";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
@@ -28,9 +18,7 @@ const MaCarBooking: React.FC = () => {
   const [maCarBookData, setMaCarBookData] = useState<MaCarBookType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [form] = Form.useForm();
-  const [dataoptionsProvinces, setDataoptionsProvinces] = useState<
-    ProvincesType[]
-  >([]);
+  const [dataoptionsProvinces, setDataoptionsProvinces] = useState<ProvincesType[]>([]);
   const searchParams = useSearchParams();
   const action = searchParams.get("action");
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -45,27 +33,21 @@ const MaCarBooking: React.FC = () => {
 
   const fetchData = async () => {
     form.setFieldsValue({
-      createdByName: `${session?.user.firstNameTh || ""} ${
-        session?.user.lastNameTh || ""
-      }`,
+      createdByName: `${session?.user.firstNameTh || ""} ${session?.user.lastNameTh || ""}`,
     });
 
     try {
       const maCar = await intraAuthService.getMaCarQuery();
       const userIdData = session?.user.userId;
       const maCarBook = await intraAuthService.getMaCarBookQuery(userIdData);
-      const MaCarBook: MaCarBookType[] = maCarBook.map(
-        (item: any, index: number) => ({
-          ...item,
-          key: index.toString(),
-        })
-      );
-      const response = await axios.get(
-        "https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json"
-      );
+      const MaCarBook: MaCarBookType[] = maCarBook.map((item: any, index: number) => ({
+        ...item,
+        key: index.toString(),
+      }));
+      const response = await axios.get("https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json");
       const provinces = response.data;
       const optionsProvinces = provinces.map((event: ProvincesType) => ({
-        value: event.id,
+        value: event.name_th,
         label: event.name_th,
       }));
       setDataoptionsProvinces(optionsProvinces);
@@ -84,24 +66,12 @@ const MaCarBooking: React.FC = () => {
     {
       key: "1",
       label: "การจองรถ",
-      children: (
-        <MaCarBook
-          maCarData={maCarData}
-          setLoading={setLoading}
-          dataoptionsProvinces={dataoptionsProvinces}
-        />
-      ),
+      children: <MaCarBook maCarData={maCarData} setLoading={setLoading} dataoptionsProvinces={dataoptionsProvinces} />,
     },
     {
       key: "2",
       label: "การคืนรถ",
-      children: (
-        <MaCarReturn
-          maCarBookData={maCarBookData}
-          loading={loading}
-          setLoading={setLoading}
-        />
-      ),
+      children: <MaCarReturn maCarBookData={maCarBookData} loading={loading} setLoading={setLoading} />,
     },
   ];
 
@@ -113,20 +83,17 @@ const MaCarBooking: React.FC = () => {
             items={[
               {
                 href: "/page/home",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
-                title: <span>Ma Car Management</span>,
+                title: <span>ข้อมูลการจองรถยนต์</span>,
               },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
-          <div
-            className="title-page-font"
-            style={{ display: "flex", alignItems: "left" }}
-          >
-            <span style={{ marginRight: "8px" }}>Ma Car Book</span>
+          <div className="title-page-font" style={{ display: "flex", alignItems: "left" }}>
+            <span style={{ marginRight: "8px" }}>ข้อมูลการจองรถยนต์</span>
           </div>
         </Divider>
         <Col span={24}>

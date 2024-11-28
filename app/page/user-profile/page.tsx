@@ -24,7 +24,7 @@ export default function UserDetailPage() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
 
               {

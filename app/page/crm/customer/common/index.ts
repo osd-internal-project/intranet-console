@@ -5,7 +5,8 @@ export type ITCustomerForm = {
   customerTypeGroupId?: number;
   customerTypeGroupName?: string;
   departmentCode?: string;
-
+  customerNameTh?: string;
+  customerNameEn?: string;
   grade?: string;
   details?: {
     prefixEn?: string;

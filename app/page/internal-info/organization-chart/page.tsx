@@ -14,7 +14,7 @@ export default function Pages() {
         items={[
           {
             href: "/page",
-            title: <span>Home</span>,
+            title: <span>หน้าหลัก</span>,
           },
 
           {

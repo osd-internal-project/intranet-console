@@ -55,8 +55,12 @@ export const TableTypeLeave: React.FC<props> = ({
         <>
           {
             <Row gutter={[8, 8]} className="flex justify-center">
-              <Col>{"จำนวนวันลา"}</Col>
-              <Col>{"(อายุงาน < 1 ปี)"}</Col>
+              <Col span={24} className="flex justify-center">
+                {"จำนวนวันลา"}
+              </Col>
+              <Col span={24} className="flex justify-center">
+                {"(อายุงาน < 1 ปี)"}
+              </Col>
             </Row>
           }
         </>
@@ -69,8 +73,12 @@ export const TableTypeLeave: React.FC<props> = ({
         <>
           {
             <Row gutter={[8, 8]} className="flex justify-center">
-              <Col>{"จำนวนวันลา"}</Col>
-              <Col>{"(อายุงาน > 1 ปี)"}</Col>
+              <Col span={24} className="flex justify-center">
+                {"จำนวนวันลา"}
+              </Col>
+              <Col span={24} className="flex justify-center">
+                {"(อายุงาน > 1 ปี)"}
+              </Col>
             </Row>
           }
         </>
@@ -83,8 +91,12 @@ export const TableTypeLeave: React.FC<props> = ({
         <>
           {
             <Row gutter={[8, 8]} className="flex justify-center">
-              <Col>{"จำนวนวันลา"}</Col>
-              <Col>{"(อายุงาน > 3 ปี)"}</Col>
+              <Col span={24} className="flex justify-center">
+                {"จำนวนวันลา"}
+              </Col>
+              <Col span={24} className="flex justify-center">
+                {"(อายุงาน > 3 ปี)"}
+              </Col>
             </Row>
           }
         </>
@@ -97,8 +109,12 @@ export const TableTypeLeave: React.FC<props> = ({
         <>
           {
             <Row gutter={[8, 8]} className="flex justify-center">
-              <Col>{"จำนวนวันลา"}</Col>
-              <Col>{"(อายุงาน > 5 ปี)"}</Col>
+              <Col span={24} className="flex justify-center">
+                {"จำนวนวันลา"}
+              </Col>
+              <Col span={24} className="flex justify-center">
+                {"(อายุงาน > 5 ปี)"}
+              </Col>
             </Row>
           }
         </>
@@ -135,8 +151,7 @@ export const TableTypeLeave: React.FC<props> = ({
                 type="link"
                 onClick={() => {
                   setOpenModalEdit(true), formedit.setFieldsValue(data);
-                }}
-              >
+                }}>
                 {editIcon}
               </Button>
               <Button
@@ -144,8 +159,7 @@ export const TableTypeLeave: React.FC<props> = ({
                 onClick={() => {
                   onFinishDel(row.id);
                 }}
-                danger
-              >
+                danger>
                 {deleteIcon}
               </Button>
             </div>
@@ -181,8 +195,7 @@ export const TableTypeLeave: React.FC<props> = ({
               <Form.Item
                 label="รายละเอียดข้อมูลวันลา:"
                 name="descriptionLeave"
-                rules={[{ required: true, message: "กรุณากรอกรายละเอียดข้อมูลวันลา" }]}
-              >
+                rules={[{ required: true, message: "กรุณากรอกรายละเอียดข้อมูลวันลา" }]}>
                 <TextArea showCount maxLength={1000} />
               </Form.Item>
             </Col>
@@ -190,8 +203,7 @@ export const TableTypeLeave: React.FC<props> = ({
               <Form.Item
                 label="ระยะเวลาในการลาล่วงหน้า:"
                 name="forwardLeave"
-                rules={[{ required: true, message: "กรุณากรอกระยะเวลาในการลาล่วงหน้า" }]}
-              >
+                rules={[{ required: true, message: "กรุณากรอกระยะเวลาในการลาล่วงหน้า" }]}>
                 <Input />
               </Form.Item>
             </Col>
@@ -199,8 +211,7 @@ export const TableTypeLeave: React.FC<props> = ({
               <Form.Item
                 label="จำนวนวันลา(อายุงานมากกว่า 1 ปี):"
                 name="limitLeaveOne"
-                rules={[{ required: true, message: "กรุณากรอกจำนวนวันลา (อายุงานมากกว่า 1 ปี)" }]}
-              >
+                rules={[{ required: true, message: "กรุณากรอกจำนวนวันลา (อายุงานมากกว่า 1 ปี)" }]}>
                 <Input />
               </Form.Item>
             </Col>
@@ -208,8 +219,7 @@ export const TableTypeLeave: React.FC<props> = ({
               <Form.Item
                 label="จำนวนวันลา(อายุงานมากกว่า 3 ปี):"
                 name="limitLeaveTwo"
-                rules={[{ required: true, message: "กรุณากรอกจำนวนวันลา (อายุงานมากกว่า 3 ปี)" }]}
-              >
+                rules={[{ required: true, message: "กรุณากรอกจำนวนวันลา (อายุงานมากกว่า 3 ปี)" }]}>
                 <Input />
               </Form.Item>
             </Col>
@@ -217,8 +227,7 @@ export const TableTypeLeave: React.FC<props> = ({
               <Form.Item
                 label="จำนวนวันลา(อายุงานมากกว่า 5 ปี):"
                 name="limitLeaveThree"
-                rules={[{ required: true, message: "กรุณากรอกจำนวนวันลา (อายุงานมากกว่า 5 ปี)" }]}
-              >
+                rules={[{ required: true, message: "กรุณากรอกจำนวนวันลา (อายุงานมากกว่า 5 ปี)" }]}>
                 <Input />
               </Form.Item>
             </Col>
@@ -226,8 +235,7 @@ export const TableTypeLeave: React.FC<props> = ({
               <Form.Item
                 label="จำนวนวันลา(อายุงานน้อยกว่า 1 ปี):"
                 name="limitLeaveFour"
-                rules={[{ required: true, message: "กรุณากรอกจำนวนวันลา (อายุงานน้อยกว่า 1 ปี)" }]}
-              >
+                rules={[{ required: true, message: "กรุณากรอกจำนวนวันลา (อายุงานน้อยกว่า 1 ปี)" }]}>
                 <Input />
               </Form.Item>
             </Col>
@@ -247,7 +255,7 @@ export const TableTypeLeave: React.FC<props> = ({
           </Form.Item>
         </Form>
       </Modal>
-      <Table size="small" loading={loading} dataSource={getdata} columns={columns} rowKey={(e) => e.id} scroll={{ x: "calc(500px + 100%)" }} />
+      <Table size="small" loading={loading} dataSource={getdata} columns={columns} rowKey={(e) => e.id} scroll={{ x: "max-content" }} />
     </div>
   );
 };

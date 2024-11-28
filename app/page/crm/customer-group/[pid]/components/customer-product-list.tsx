@@ -37,10 +37,11 @@ export interface props {
   customerId: number;
   projectDatas: ITProject[];
   customerProductsByCustomer: ITCustomerProduct[];
-  getProductDataTable: (
+  getProjectDataTable: (
     productId: string,
     parentId: string,
-    type: string
+    type: string,
+    search: any
   ) => void;
 }
 
@@ -48,7 +49,7 @@ const CustomerProductList: React.FC<props> = ({
   customerId,
   projectDatas,
   customerProductsByCustomer,
-  getProductDataTable,
+  getProjectDataTable,
 }): React.ReactElement => {
   const panelStyle: React.CSSProperties = {
     marginBottom: 10,
@@ -92,7 +93,7 @@ const CustomerProductList: React.FC<props> = ({
               parentId={String(customerId)}
               parentType={"customer"}
               projectDatas={projectDatas}
-              getProductDataTable={getProductDataTable}
+              getProjectDataTable={getProjectDataTable}
             />
           </>
         ),
@@ -105,39 +106,26 @@ const CustomerProductList: React.FC<props> = ({
         <div className=" font-bold text-base">Products</div>
       </div>
       <div>
-        <Form layout="vertical" size="small">
-          <div className=" grid grid-cols-4 gap-2">
-            <Form.Item name={"referenceCode"} label={"Reference Code"}>
-              <Input />
-            </Form.Item>
-            <Form.Item name={"name"} label={"Name"}>
-              <Input />
-            </Form.Item>
-            <Form.Item name={"status"} label={"Status"}>
-              <Select />
-            </Form.Item>
-          </div>
-          <div className=" flex justify-end">
-            <Button type="primary" size="small">
-              Search
-            </Button>
-          </div>
-        </Form>
         <div className=" mt-2 p-2 bg-slate-100" style={{ borderRadius: 5 }}>
           <div
             style={{ maxHeight: "500px" }}
             className=" bg-slate-100 mt-2  overflow-x-auto"
           >
-            <Collapse
-              destroyInactivePanel={true}
-              accordion
-              bordered={false}
-              expandIcon={({ isActive }) => (
-                <CaretRightOutlined rotate={isActive ? 90 : 0} />
-              )}
-              style={{ background: " #f1f5f9" }}
-              items={dataList(panelStyle)}
-            />
+            {customerProductsByCustomer.length > 0 ? (
+              <Collapse
+                collapsible="icon"
+                destroyInactivePanel={true}
+                accordion
+                bordered={false}
+                expandIcon={({ isActive }) => (
+                  <CaretRightOutlined rotate={isActive ? 90 : 0} />
+                )}
+                style={{ background: " #f1f5f9" }}
+                items={dataList(panelStyle)}
+              />
+            ) : (
+              <div className=" flex justify-center">Products Not Found</div>
+            )}
           </div>
         </div>
       </div>

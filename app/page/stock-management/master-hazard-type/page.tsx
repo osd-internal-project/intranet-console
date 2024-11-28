@@ -80,7 +80,7 @@ export default function MasterHazardType() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 href: "/page/stock-management",

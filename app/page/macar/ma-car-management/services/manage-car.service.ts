@@ -88,9 +88,20 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    updateMaCar: async (body: any) => {
+    getMaCarQueryByCarId: async (carId: string) => {
       return await axiosInstance
-        .patch(`${baseUrlApiMaCar}/${body.carId}`, body)
+        .get(`${baseUrlApiMaCar}/${carId}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    updateMaCar: async (carId: string, body: any) => {
+      return await axiosInstance
+        .patch(`${baseUrlApiMaCar}/${carId}`, body)
         .then((res) => {
           return res.data;
         })
@@ -110,8 +121,7 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    deleteMaCar: async (carId: any) => {
-      console.log(`${baseUrlApiMaCar}/${carId}`);
+    deleteMaCar: async (carId: string) => {
       return await axiosInstance
         .delete(`${baseUrlApiMaCar}/${carId}`)
         .then((res) => {
@@ -134,9 +144,17 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    updateMaCarType: async (body: any) => {
+    getImages: async (carWrapupID: string) => {
       return await axiosInstance
-        .patch(`${baseUrlApiMaCarTpye}/${body.id}`, body)
+        .get(`${baseUrlApiMaCarwarpupimage}/get-file/${carWrapupID}`, {
+          responseType: "blob",
+        })
+        .then((result) => result.data)
+        .catch((err) => console.log(err));
+    },
+    updateMaCarType: async (id: string, body: any) => {
+      return await axiosInstance
+        .patch(`${baseUrlApiMaCarTpye}/${id}`, body)
         .then((res) => {
           return res.data;
         })
@@ -237,15 +255,11 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         });
     },
     uploadFiles: async (carWrapupId: string, formData: FormData) => {
-      return axiosInstance.post(
-        `${baseUrlApiMaCarwarpupimage}/${carWrapupId}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      return axiosInstance.post(`${baseUrlApiMaCarwarpupimage}/${carWrapupId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
     },
 
     createMaCarWarpupimage: async (body: any) => {

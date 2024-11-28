@@ -36,7 +36,9 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
 
     getImage: async (id: number) => {
       return await axiosInstance
-        .get(`${baseUrlSlideImage}/upload-image/${id}`, { responseType: "blob" })
+        .get(`${baseUrlSlideImage}/upload-image/${id}`, {
+          responseType: "blob",
+        })
         .then((res) => {
           return res.data;
         })
@@ -136,7 +138,7 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
     // holiday
     getHoliday: async (year: string) => {
       return await axiosInstance
-        .get(`${baseUrlApiHoliday}`)
+        .get(`${baseUrlApiHoliday}/year/${year}`)
         .then((res) => {
           return res.data;
         })

@@ -16,6 +16,7 @@ import {
   ArrowLeftOutlined,
   ArrowRightOutlined,
   BellOutlined,
+  BellTwoTone,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   UserOutlined,
@@ -25,6 +26,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useRefreshToken } from "@/app/lib/axios/hooks/useRefreshToken";
 import { useAxiosRefreshToken } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { ItemType } from "antd/es/menu/interface";
+import { ITNotiLogsMessage } from "@/app/common/noti-logs";
 
 type Profile = {
   userId: string;
@@ -54,10 +57,14 @@ const Navigation: React.FC<Prop> = ({
   setCollapsed,
   currentPath,
   menulist,
-  countNoti,
+  notiLogMessages,
   avatar,
 }) => {
   const [open, setOpen] = useState(false);
+  const [notiDetails, setNotiDetils] = useState<{
+    count: number;
+    list: ItemType[];
+  }>({ count: 0, list: [] });
   const navigate = useRouter();
   // useAxiosRefreshToken(session);
   return (
@@ -103,6 +110,18 @@ const Navigation: React.FC<Prop> = ({
               <BellOutlined />
             </Badge>
           </Link> */}
+          <Dropdown
+            menu={{ items: notiDetails.list }}
+            className="text-black hover:text-zinc-300"
+          >
+            <a onClick={(e) => e.preventDefault()}>
+              <Space className=" text-base">
+                <Badge count={notiDetails.count} size="small">
+                  <BellTwoTone className=" text-lg" />
+                </Badge>
+              </Space>
+            </a>
+          </Dropdown>
           <Dropdown
             menu={{ items: MenuNav }}
             className="text-black hover:text-zinc-300"

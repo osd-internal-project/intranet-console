@@ -16,7 +16,7 @@ const page = () => {
             items={[
               {
                 href: "/page/dashboard",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 title: <span>Inventory</span>,

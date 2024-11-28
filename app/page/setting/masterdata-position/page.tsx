@@ -4,7 +4,10 @@ import { Breadcrumb, Col, Divider, Row } from "antd";
 import { useEffect, useState } from "react";
 import { AddMasterdataPosition } from "./components/AddMasterdataPosition";
 import { TableMasterdataPosition } from "./components/TableMasterdataPosition";
-import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
+import {
+  useAxiosIntranet,
+  useAxiosUser,
+} from "@/app/lib/axios/hooks/userAxiosAuth";
 import { PositionServices } from "./services/position.service";
 import { ITypeGetdataAll } from "./common";
 import DepartmentServices from "../department/services/department.service";
@@ -69,7 +72,7 @@ export default function MasterDataPositionPage() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 title: <span>Setting</span>,
@@ -86,7 +89,10 @@ export default function MasterDataPositionPage() {
       </Row>
       <Col span={24}>
         <div className="title-page-font">
-          <AddMasterdataPosition departMent={departMent} setLoading={(e: boolean) => setLoading(e)} />
+          <AddMasterdataPosition
+            departMent={departMent}
+            setLoading={(e: boolean) => setLoading(e)}
+          />
         </div>
       </Col>
       <Col span={24}>

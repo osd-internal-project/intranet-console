@@ -1,5 +1,17 @@
 "use client";
-import { Breadcrumb, Button, Card, Checkbox, Col, Divider, Form, Input, Row, Tabs, TabsProps } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Card,
+  Checkbox,
+  Col,
+  Divider,
+  Form,
+  Input,
+  Row,
+  Tabs,
+  TabsProps,
+} from "antd";
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
@@ -27,17 +39,17 @@ export default function Page() {
           items={[
             {
               href: "/page",
-              title: <span>Home</span>,
+              title: <span>หน้าหลัก</span>,
             },
 
             {
-              title: <span>Housekeeper</span>,
+              title: <span>ข้อมูลการการทำงานของแม่บ้าน</span>,
             },
           ]}
         />
       </Col>
       <Divider orientation="left" orientationMargin="0">
-        <div className="title-page-font">{`Housekeeper`}</div>
+        <div className="title-page-font">{`ข้อมูลการการทำงานของแม่บ้าน`}</div>
       </Divider>
       <Col span={24}>
         <div className=" grid-span-1 space-y-2">

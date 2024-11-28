@@ -16,7 +16,8 @@ export type ITCustomerForm = {
   customerTypeGroupId?: number;
   customerTypeGroupName?: string;
   departmentCode?: string;
-
+  customerNameTh?: string;
+  customerNameEn?: string;
   grade?: string;
   details?: {
     prefixEn?: string;
@@ -72,6 +73,7 @@ export type ITBranchForm = {
   branchName: string;
   activeStatus?: boolean;
   remark?: string;
+  customerId?: number;
 };
 
 export type ITBranch = { id: number } & ITBranchForm;

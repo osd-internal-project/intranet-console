@@ -42,7 +42,7 @@ export default function Notification() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 title: <span>Expiry Date Notification</span>,

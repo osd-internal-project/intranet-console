@@ -36,11 +36,16 @@ import { ITProject } from "@/app/common/project";
 export interface props {
   customerGroupId: string;
   customerProductsByCustomerGroup: ITCustomerProduct[];
+  fetchDataProductsByCustomerGroup: (
+    customerGriupId: string,
+    search: any
+  ) => void;
   projectDatas: ITProject[];
-  getProductDataTable: (
+  getProjectDataTable: (
     productId: string,
     parentId: string,
-    type: string
+    type: string,
+    search: any
   ) => void;
 }
 
@@ -48,7 +53,7 @@ const CustomerGroupProductList: React.FC<props> = ({
   customerGroupId,
   customerProductsByCustomerGroup,
   projectDatas,
-  getProductDataTable,
+  getProjectDataTable,
 }): React.ReactElement => {
   const panelStyle: React.CSSProperties = {
     marginBottom: 10,
@@ -87,7 +92,7 @@ const CustomerGroupProductList: React.FC<props> = ({
             productId={product.id}
             projectDatas={projectDatas}
             parentId={customerGroupId}
-            getProductDataTable={getProductDataTable}
+            getProjectDataTable={getProjectDataTable}
             parentType={"customer-group"}
           />
         ),
@@ -101,30 +106,13 @@ const CustomerGroupProductList: React.FC<props> = ({
         <div className=" font-bold text-base">Products</div>
       </div>
       <div>
-        <Form layout="vertical" size="small">
-          <div className=" grid grid-cols-4 gap-2">
-            <Form.Item name={"referenceCode"} label={"Reference Code"}>
-              <Input />
-            </Form.Item>
-            <Form.Item name={"name"} label={"Name"}>
-              <Input />
-            </Form.Item>
-            <Form.Item name={"status"} label={"Status"}>
-              <Select />
-            </Form.Item>
-          </div>
-          <div className=" flex justify-end">
-            <Button type="primary" size="small">
-              Search
-            </Button>
-          </div>
-        </Form>
         <div className=" mt-2 p-2 bg-slate-100" style={{ borderRadius: 5 }}>
           <div
             style={{ maxHeight: "500px" }}
             className=" bg-slate-100 mt-2  overflow-x-auto"
           >
             <Collapse
+              collapsible="icon"
               accordion
               destroyInactivePanel={true}
               bordered={false}

@@ -12,7 +12,11 @@ const InitialFilter = {
 
 export default function UsergroupPage() {
   const [loading, setLoading] = useState<boolean>(true);
-  const [filter, setFilter] = useState<{ take: number; skip: number; current: number }>(InitialFilter);
+  const [filter, setFilter] = useState<{
+    take: number;
+    skip: number;
+    current: number;
+  }>(InitialFilter);
   const [manageStatus, setManageStatus] = useState<{
     status: string | null;
     ruleCode: string | null;
@@ -55,7 +59,7 @@ export default function UsergroupPage() {
           items={[
             {
               href: "/page",
-              title: <span>Home</span>,
+              title: <span>หน้าหลัก</span>,
             },
             {
               href: "/page/setting",
@@ -82,7 +86,10 @@ export default function UsergroupPage() {
               setPaginationConfig={(e: number) => setPaginationConfig(e)}
               paginationConfig={paginationConfig}
             />
-            <RuleManage propDataManage={propDataManage} manageStatus={manageStatus} />
+            <RuleManage
+              propDataManage={propDataManage}
+              manageStatus={manageStatus}
+            />
           </Card>
         </div>
       </Col>

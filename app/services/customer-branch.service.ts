@@ -18,8 +18,8 @@ import { ITProject } from "../common/project";
 export interface TCrmServices {
   findManyByCustomerId: (
     customerId: number,
-    condition: object
-  ) => Promise<ITBranch[]>;
+    search: object
+  ) => Promise<ITBranchDetail[]>;
   findManyByCustomerSubId: (
     customerSubId: number,
     condition: object
@@ -32,17 +32,26 @@ export interface TCrmServices {
   ) => Promise<ITBranch>;
   update: (id: number, branchForm: ITBranchForm) => Promise<ITBranch>;
   delete: (id: number) => Promise<ITBranch>;
+  createBranchAddress: (
+    customerBranchId: number,
+    address: ITBranchAddressForm
+  ) => Promise<ITBranchAddress>;
+  deleteBranchAddress: (addressId: number) => Promise<ITBranchAddress>;
+  createBranchContact: (
+    customerBranchId: number,
+    contact: ITBranchContactForm
+  ) => Promise<ITBranchAddress>;
+  deleteBranchContact: (contactId: number) => Promise<ITBranchContact>;
 }
 const CrmServices = (axiosInstance: AxiosInstance): TCrmServices => {
   const customerBranchUrl = "/customer-branch";
+  const customerAddressUrl = "/customer-address";
+  const customerContactUrl = "/customer-contact";
   return {
-    findManyByCustomerId: async (customerId, condition) => {
-      const query = {
-        ...condition,
-      };
+    findManyByCustomerId: async (customerId, search) => {
       return await axiosInstance
         .get(`${customerBranchUrl}/detail-list-by-customer/${customerId}`, {
-          params: query,
+          params: { search: search },
         })
         .then((res) => {
           return res.data;
@@ -96,6 +105,26 @@ const CrmServices = (axiosInstance: AxiosInstance): TCrmServices => {
     },
     delete: async (id) => {
       return await axiosInstance.delete(`${customerBranchUrl}/${id}`);
+    },
+    createBranchAddress: async (customerBranchId, form) => {
+      const formData = {
+        ...form,
+        customerBranchId: customerBranchId,
+      };
+      return await axiosInstance.post(`${customerAddressUrl}/`, formData);
+    },
+    deleteBranchAddress: async (id) => {
+      return await axiosInstance.delete(`${customerAddressUrl}/${id}`);
+    },
+    createBranchContact: async (customerBranchId, form) => {
+      const formData = {
+        ...form,
+        customerBranchId: customerBranchId,
+      };
+      return await axiosInstance.post(`${customerContactUrl}/`, formData);
+    },
+    deleteBranchContact: async (id) => {
+      return await axiosInstance.delete(`${customerContactUrl}/${id}`);
     },
   };
 };

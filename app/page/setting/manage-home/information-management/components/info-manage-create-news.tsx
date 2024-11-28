@@ -26,7 +26,12 @@ export interface newsImage {
   updatedAt?: String;
   fileimageName?: String;
   fileimagePath?: String;
-  onSaveimgnews?: (imageId: number | undefined, newsIdimg: number, dataForm: newsImage, attendFiles: UploadFile[]) => void;
+  onSaveimgnews?: (
+    imageId: number | undefined,
+    newsIdimg: number,
+    dataForm: newsImage,
+    attendFiles: UploadFile[]
+  ) => void;
 }
 
 export interface newsType {
@@ -51,7 +56,8 @@ const InfoCreateNews: React.FC<newsImage> = ({}) => {
       label: string;
     }[]
   >([]);
-  const manageinformationNewsServices = ManageinformationNewsServices(intraAuth);
+  const manageinformationNewsServices =
+    ManageinformationNewsServices(intraAuth);
   const [form] = useForm();
 
   useEffect(() => {
@@ -63,11 +69,14 @@ const InfoCreateNews: React.FC<newsImage> = ({}) => {
 
   const fetchDatainformationNews = async () => {
     try {
-      const maresponse = await manageinformationNewsServices.getinformationNewsQuery();
-      const informationNews: informationNews[] = maresponse.map((item: any, index: number) => ({
-        ...item,
-        key: index.toString(),
-      }));
+      const maresponse =
+        await manageinformationNewsServices.getinformationNewsQuery();
+      const informationNews: informationNews[] = maresponse.map(
+        (item: any, index: number) => ({
+          ...item,
+          key: index.toString(),
+        })
+      );
       setinformationNews(informationNews);
     } catch (error) {
       message.error("ไม่สามารถโหลดข้อมูลข่าวสารได้");
@@ -91,18 +100,23 @@ const InfoCreateNews: React.FC<newsImage> = ({}) => {
   };
   const fetchDatanewimage = async () => {
     try {
-      const maresponse = await manageinformationNewsServices.getnewsImageQuery();
-      const newsImage: newsImage[] = maresponse.map((item: any, index: number) => ({
-        ...item,
-        key: index.toString(),
-      }));
+      const maresponse =
+        await manageinformationNewsServices.getnewsImageQuery();
+      const newsImage: newsImage[] = maresponse.map(
+        (item: any, index: number) => ({
+          ...item,
+          key: index.toString(),
+        })
+      );
       setnewsimage(newsImage);
       setSubmitLoading(false);
     } catch (error) {
       message.error("ไม่สามารถโหลดข้อมูลข่าวสารได้");
     }
   };
-  const informationNewsCreate: FormProps<informationNews & newsImage>["onFinish"] = async (values) => {
+  const informationNewsCreate: FormProps<
+    informationNews & newsImage
+  >["onFinish"] = async (values) => {
     setSubmitLoading(true);
     const informationNewsCreateData = {
       data: {
@@ -117,13 +131,19 @@ const InfoCreateNews: React.FC<newsImage> = ({}) => {
       },
     };
     try {
-      const response = await manageinformationNewsServices.createinformationNews(informationNewsCreateData);
+      const response =
+        await manageinformationNewsServices.createinformationNews(
+          informationNewsCreateData
+        );
       if (response && attendFiles.length > 0) {
         await Promise.all(
           attendFiles.map(async (file) => {
             const formData = new FormData();
             formData.append("file", file.originFileObj as RcFile);
-            await manageinformationNewsServices.uploadFiles(response.newsId, formData);
+            await manageinformationNewsServices.uploadFiles(
+              response.newsId,
+              formData
+            );
           })
         );
         fetchDatainformationNews();
@@ -157,7 +177,9 @@ const InfoCreateNews: React.FC<newsImage> = ({}) => {
     }
   };
 
-  const handleChangeAttendFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
+  const handleChangeAttendFiles: UploadProps["onChange"] = async ({
+    fileList: newFileList,
+  }) => {
     if (newFileList.length > 3) {
       message.warning("คุณไม่สามารถอัปโหลดภาพเกิน 3 ไฟล์ได้");
       return Upload.LIST_IGNORE;
@@ -177,11 +199,17 @@ const InfoCreateNews: React.FC<newsImage> = ({}) => {
     <div style={{ backgroundColor: "#FFFFFF" }}>
       <div style={{ margin: " 10px 40px 50px 10px " }}>
         <div style={{ margin: " 10px 40px 20px 0px ", fontSize: "20px" }}>
-          คำเตือน : รูปภาพของคุณในการสร้างข่าวสาร คุณจะไม่สามารถอัพรูปภาพได้เกิน 3 ภาพ / 1 ข่าวสาร
+          คำเตือน : รูปภาพของคุณในการสร้างข่าวสาร คุณจะไม่สามารถอัพรูปภาพได้เกิน
+          3 ภาพ / 1 ข่าวสาร
         </div>
         <Form form={form} onFinish={informationNewsCreate} layout="vertical">
-          <Form.Item name="newsName" label="หัวข้อข่าวสาร" rules={[{ required: true, message: "กรุณากรอกหัวข้อข่าวสาร" }]} style={{ width: "300px" }}>
-            <Input placeholder="หัวข้อข่าวสาร" showCount maxLength={50} />
+          <Form.Item
+            name="newsName"
+            label="หัวข้อข่าวสาร"
+            rules={[{ required: true, message: "กรุณากรอกหัวข้อข่าวสาร" }]}
+            style={{ width: "300px" }}
+          >
+            <Input placeholder="หัวข้อข่าวสาร" />
           </Form.Item>
           <Form.Item
             name="newsType"
@@ -192,7 +220,9 @@ const InfoCreateNews: React.FC<newsImage> = ({}) => {
             <Select placeholder="ประเภทข่าวสาร">
               {newsTypeOptions
                 .filter((option) => {
-                  const type = newsType.find((type) => type.nameType === option.label);
+                  const type = newsType.find(
+                    (type) => type.nameType === option.label
+                  );
                   return type && type.status;
                 })
                 .map((option) => (
@@ -231,7 +261,12 @@ const InfoCreateNews: React.FC<newsImage> = ({}) => {
             </div>
           </Form.Item>
           <Form.Item>
-            <Button type="primary" loading={submitLoading} style={{ marginTop: 16 }} htmlType="submit">
+            <Button
+              type="primary"
+              loading={submitLoading}
+              style={{ marginTop: 16 }}
+              htmlType="submit"
+            >
               สร้างข่าวสาร
             </Button>
           </Form.Item>

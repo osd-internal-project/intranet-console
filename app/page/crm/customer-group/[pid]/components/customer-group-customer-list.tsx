@@ -22,7 +22,13 @@ import {
   Tag,
 } from "antd";
 import type { Dayjs } from "dayjs";
-import { ITBranch, ITCustomerGroup } from "@/app/common/customer";
+import {
+  ITBranch,
+  ITBranchAddressForm,
+  ITBranchContactForm,
+  ITBranchDetail,
+  ITCustomerGroup,
+} from "@/app/common/customer";
 import { ColumnType } from "antd/es/table";
 import { useForm } from "antd/es/form/Form";
 import { CaretRightOutlined, ExclamationCircleFilled } from "@ant-design/icons";
@@ -31,27 +37,55 @@ import { ITCustomer } from "@/app/common/customer";
 import CustomerDetails from "./customer-details";
 import { ITCustomerProduct } from "@/app/common/product";
 import { ITProject } from "@/app/common/project";
+import data from "@iconify/icons-icon-park-outline/setting-two";
 
 export interface props {
   customerList: ITCustomer[];
-  branchList: ITBranch[];
+  branchList: ITBranchDetail[];
+  rules: any;
   customerProductsByCustomer: ITCustomerProduct[];
   customerProductsByBranch: ITCustomerProduct[];
   projectDatas: ITProject[];
   onOpenCustomerCreateForm: (state: boolean) => void;
-  getCustomerProductsByCustomer: (customerId: number) => void;
+  getCustomerProductsByCustomer: (customerId: number, search: any) => void;
   getCustomerBrachList: (customerId: number) => void;
-  getCustomerProductsByBranch: (branch: number) => void;
-  getProductDataTable: (
+  getCustomerProductsByBranch: (branch: number, search: any) => void;
+  getProjectDataTable: (
     productId: string,
     parentId: string,
-    type: string
+    type: string,
+    search: any
+  ) => void;
+  onDeleteCustomer: (customerId: number) => void;
+  onOpenCustomerDescription: (customerId: number) => void;
+  onOpenEditBranch: (branchId: number, customerId: number) => void;
+  onDeleteBranch: (branchId: number, customerId: number) => void;
+  onSaveBranchAddress: (
+    branchId: number,
+    form: ITBranchAddressForm,
+    customerId: number
+  ) => void;
+  onDeleteCustomerBranchAddress: (
+    branchId: number,
+    addressId: number,
+    customerId: number
+  ) => void;
+  onSaveBranchContact: (
+    branchId: number,
+    form: ITBranchContactForm,
+    customerId: number
+  ) => void;
+  onDeleteCustomerBranchContact: (
+    branchId: number,
+    contactId: number,
+    customerId: number
   ) => void;
 }
 
 const CustomerGroupCustomerList: React.FC<props> = ({
   customerList,
   branchList,
+  rules,
   customerProductsByCustomer,
   customerProductsByBranch,
   projectDatas,
@@ -59,7 +93,15 @@ const CustomerGroupCustomerList: React.FC<props> = ({
   getCustomerProductsByCustomer,
   getCustomerBrachList,
   getCustomerProductsByBranch,
-  getProductDataTable,
+  getProjectDataTable,
+  onDeleteCustomer,
+  onOpenCustomerDescription,
+  onOpenEditBranch,
+  onDeleteBranch,
+  onSaveBranchAddress,
+  onDeleteCustomerBranchAddress,
+  onSaveBranchContact,
+  onDeleteCustomerBranchContact,
 }): React.ReactElement => {
   const panelStyle: React.CSSProperties = {
     marginBottom: 10,
@@ -80,49 +122,13 @@ const CustomerGroupCustomerList: React.FC<props> = ({
           <div>
             <div>Name TH</div>
             <div className=" font-bold">
-              {customer?.customerTypeId
-                ? customer?.customerTypeId === "natural"
-                  ? `${
-                      customer.details?.prefixTh
-                        ? customer.details?.prefixTh
-                        : ""
-                    }${
-                      customer.details?.firstNameTh
-                        ? customer.details?.firstNameTh
-                        : ""
-                    }${
-                      customer.details?.lastNameTh
-                        ? ` ${customer.details?.lastNameTh}`
-                        : ""
-                    }`
-                  : customer.customerTypeId === "juristic"
-                  ? customer.details?.customerNameTh
-                  : ""
-                : ""}
+              {customer?.customerNameTh ? customer.customerNameTh : ""}
             </div>
           </div>
           <div>
             <div>Name EN</div>
             <div className=" font-bold">
-              {customer?.customerTypeId
-                ? customer?.customerTypeId === "natural"
-                  ? `${
-                      customer.details?.prefixEn
-                        ? customer.details?.prefixEn
-                        : ""
-                    }${
-                      customer.details?.firstNameEn
-                        ? customer.details?.firstNameEn
-                        : ""
-                    }${
-                      customer.details?.lastNameEn
-                        ? ` ${customer.details?.lastNameEn}`
-                        : ""
-                    }`
-                  : customer.customerTypeId === "juristic"
-                  ? customer.details?.customerNameEn
-                  : ""
-                : ""}
+              {customer?.customerNameEn ? customer.customerNameEn : ""}
             </div>
           </div>
           <div>
@@ -153,8 +159,17 @@ const CustomerGroupCustomerList: React.FC<props> = ({
           </div>
           <div>
             <div className=" space-x-2">
-              <Button type="link">Edit</Button>
-              <Button type="link" danger>
+              <Button
+                type="link"
+                onClick={() => onOpenCustomerDescription(customer.id)}
+              >
+                Edit
+              </Button>
+              <Button
+                type="link"
+                danger
+                onClick={() => onDeleteCustomer(customer.id)}
+              >
                 Delete
               </Button>
             </div>
@@ -163,6 +178,7 @@ const CustomerGroupCustomerList: React.FC<props> = ({
       );
       const children = (
         <CustomerDetails
+          rules={rules}
           details={customer}
           branchList={branchList}
           getCustomerProductsByCustomer={getCustomerProductsByCustomer}
@@ -171,7 +187,13 @@ const CustomerGroupCustomerList: React.FC<props> = ({
           customerProductsByBranch={customerProductsByBranch}
           getCustomerProductsByBranch={getCustomerProductsByBranch}
           projectDatas={projectDatas}
-          getProductDataTable={getProductDataTable}
+          getProjectDataTable={getProjectDataTable}
+          onOpenEditBranch={onOpenEditBranch}
+          onDeleteBranch={onDeleteBranch}
+          onSaveBranchAddress={onSaveBranchAddress}
+          onDeleteCustomerBranchAddress={onDeleteCustomerBranchAddress}
+          onSaveBranchContact={onSaveBranchContact}
+          onDeleteCustomerBranchContact={onDeleteCustomerBranchContact}
         />
       );
       return {
@@ -186,39 +208,27 @@ const CustomerGroupCustomerList: React.FC<props> = ({
     <div>
       <div className=" flex justify-between mb-2">
         <div className=" font-bold text-base">Customers</div>
-        <Button
-          type="primary"
-          size="small"
-          onClick={() => onOpenCustomerCreateForm(true)}
-        >
-          Add Customer
-        </Button>
+        {rules.ruleCustomerAdd ? (
+          <Button
+            type="primary"
+            size="small"
+            onClick={() => onOpenCustomerCreateForm(true)}
+          >
+            Add Customer
+          </Button>
+        ) : (
+          <div></div>
+        )}
       </div>
       <div>
-        <Form layout="vertical" size="small">
-          <div className=" grid grid-cols-4 gap-2">
-            <Form.Item name={"referenceCode"} label={"Reference Code"}>
-              <Input />
-            </Form.Item>
-            <Form.Item name={"name"} label={"Name"}>
-              <Input />
-            </Form.Item>
-            <Form.Item name={"status"} label={"Status"}>
-              <Select />
-            </Form.Item>
-          </div>
-          <div className=" flex justify-end">
-            <Button type="primary" size="small">
-              Search
-            </Button>
-          </div>
-        </Form>
         <div className=" mt-2 p-2 bg-blue-100" style={{ borderRadius: 5 }}>
           <div
             style={{ maxHeight: "500px" }}
             className=" bg-blue-100 mt-2  overflow-x-auto"
           >
             <Collapse
+              collapsible="icon"
+              destroyInactivePanel
               accordion
               bordered={false}
               expandIcon={({ isActive }) => (

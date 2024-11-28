@@ -219,7 +219,7 @@ export default function AddProjectPage() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 title: <span>CRM</span>,

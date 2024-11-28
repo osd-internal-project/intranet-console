@@ -22,38 +22,75 @@ import {
   Tag,
 } from "antd";
 import type { Dayjs } from "dayjs";
-import { ITCustomerGroup } from "@/app/common/customer";
+import {
+  ITBranchAddressForm,
+  ITBranchContactForm,
+  ITBranchDetail,
+  ITCustomerGroup,
+} from "@/app/common/customer";
 import { ColumnType } from "antd/es/table";
 import { useForm } from "antd/es/form/Form";
 import { CaretRightOutlined, ExclamationCircleFilled } from "@ant-design/icons";
 import Link from "next/link";
 import { ITBranch, ITCustomer } from "@/app/common/customer";
-import CustomerCustomerDetails from "./customer-customer-details";
 import BranchDetails from "./branch-details";
 import { ITCustomerProduct } from "@/app/common/product";
 import { ITProject } from "@/app/common/project";
 
 export interface props {
-  branchList: ITBranch[];
+  rules: any;
+  branchList: ITBranchDetail[];
+  customerId: number;
   customerProductsByBranch: ITCustomerProduct[];
   projectDatas: ITProject[];
   onOpenCustomerCreateForm: (state: boolean) => void;
-  getCustomerProductsByBranch: (branchId: number) => void;
+  getCustomerProductsByBranch: (branchId: number, search: any) => void;
 
-  getProductDataTable: (
+  getProjectDataTable: (
     productId: string,
     parentId: string,
-    type: string
+    type: string,
+    search: any
+  ) => void;
+  onOpenEditBranch: (branchId: number, customerId: number) => void;
+  onDeleteBranch: (branchId: number, customerId: number) => void;
+  onSaveBranchAddress: (
+    branchId: number,
+    form: ITBranchAddressForm,
+    customerId: number
+  ) => void;
+  onDeleteCustomerBranchAddress: (
+    branchId: number,
+    addressId: number,
+    customerId: number
+  ) => void;
+  onSaveBranchContact: (
+    branchId: number,
+    form: ITBranchContactForm,
+    customerId: number
+  ) => void;
+  onDeleteCustomerBranchContact: (
+    branchId: number,
+    contactId: number,
+    customerId: number
   ) => void;
 }
 
 const CustomerBranchList: React.FC<props> = ({
+  rules,
   branchList,
+  customerId,
   customerProductsByBranch,
   projectDatas,
   onOpenCustomerCreateForm,
   getCustomerProductsByBranch,
-  getProductDataTable,
+  getProjectDataTable,
+  onOpenEditBranch,
+  onDeleteBranch,
+  onSaveBranchAddress,
+  onDeleteCustomerBranchAddress,
+  onSaveBranchContact,
+  onDeleteCustomerBranchContact,
 }): React.ReactElement => {
   const panelStyle: React.CSSProperties = {
     marginBottom: 10,
@@ -75,7 +112,6 @@ const CustomerBranchList: React.FC<props> = ({
             <div>Name</div>
             <div className=" font-bold">{branch.branchName}</div>
           </div>
-
           <div>
             <div>Active Status</div>
             <div className=" font-bold">
@@ -86,23 +122,43 @@ const CustomerBranchList: React.FC<props> = ({
               )}
             </div>
           </div>
+          <div className=" col-span-3"> </div>
           <div>
             <div className=" space-x-2">
-              <Button type="link">Edit</Button>
-              <Button type="link" danger>
-                Delete
-              </Button>
+              {rules.ruleCustomerBranchEdit && (
+                <Button
+                  type="link"
+                  onClick={() => onOpenEditBranch(branch.id, customerId)}
+                >
+                  Edit
+                </Button>
+              )}
+              {rules.ruleCustomerBranchDelete && (
+                <Button
+                  type="link"
+                  danger
+                  onClick={() => onDeleteBranch(branch.id, customerId)}
+                >
+                  Delete
+                </Button>
+              )}
             </div>
           </div>
         </div>
       );
       const children = (
         <BranchDetails
+          rules={rules}
           details={branch}
+          customerId={customerId}
           customerProductsByBranch={customerProductsByBranch}
           getCustomerProductsByBranch={getCustomerProductsByBranch}
           projectDatas={projectDatas}
-          getProductDataTable={getProductDataTable}
+          getProjectDataTable={getProjectDataTable}
+          onSaveBranchAddress={onSaveBranchAddress}
+          onDeleteCustomerBranchAddress={onDeleteCustomerBranchAddress}
+          onSaveBranchContact={onSaveBranchContact}
+          onDeleteCustomerBranchContact={onDeleteCustomerBranchContact}
         />
       );
       return {
@@ -116,17 +172,17 @@ const CustomerBranchList: React.FC<props> = ({
   return (
     <div>
       <div className=" flex justify-between mb-2">
-        <div className=" font-bold text-base">Customers</div>
+        <div className=" font-bold text-base">Branch</div>
         <Button
           type="primary"
           size="small"
           onClick={() => onOpenCustomerCreateForm(true)}
         >
-          Add Customer
+          Add Branch
         </Button>
       </div>
       <div>
-        <Form layout="vertical" size="small">
+        {/* <Form layout="vertical" size="small">
           <div className=" grid grid-cols-4 gap-2">
             <Form.Item name={"referenceCode"} label={"Reference Code"}>
               <Input />
@@ -143,19 +199,21 @@ const CustomerBranchList: React.FC<props> = ({
               Search
             </Button>
           </div>
-        </Form>
+        </Form> */}
         <div className=" mt-2 p-2 bg-slate-100" style={{ borderRadius: 5 }}>
           <div
             style={{ maxHeight: "500px" }}
             className=" bg-slate-100 mt-2  overflow-x-auto"
           >
             <Collapse
+              collapsible="icon"
               accordion
               bordered={false}
               expandIcon={({ isActive }) => (
                 <CaretRightOutlined rotate={isActive ? 90 : 0} />
               )}
               style={{ background: " #f1f5f9" }}
+              destroyInactivePanel
               items={dataList(panelStyle)}
             />
           </div>

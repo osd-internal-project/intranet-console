@@ -1,11 +1,4 @@
-import {
-  LogoutOutlined,
-  UserOutlined,
-  HomeOutlined,
-  BarChartOutlined,
-  BookOutlined,
-  MailOutlined,
-} from "@ant-design/icons";
+import { LogoutOutlined, UserOutlined, HomeOutlined, BarChartOutlined, BookOutlined, MailOutlined } from "@ant-design/icons";
 import { Icon } from "@iconify/react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
@@ -20,6 +13,7 @@ import {
   stockIcon,
   contactListIcon,
   macarIcon,
+  hrIcon,
 } from "@/components/icon";
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -36,8 +30,7 @@ const MenuNav: MenuProps["items"] = [
         href={"#"}
         onClick={async () => {
           signOut({ callbackUrl: "/signin" });
-        }}
-      >
+        }}>
         Sign Out
       </Link>
     ),
@@ -50,129 +43,141 @@ export default MenuNav;
 export const MenuSider: MenuItem[] = [
   {
     key: "home",
-    label: "Home",
+    label: "หน้าหลัก",
     rule: "h-s",
     icon: <HomeOutlined />,
   },
   {
     key: "internal-info",
     icon: organizeChart,
-    label: `Internal Info`,
-    // rule: "ii-s",
+    label: `ข้อมูลภายใน`,
+    rule: "ii-s",
     children: [
       {
         key: `internal-info/organization-chart`,
-        label: "Organization Chart",
+        label: "แผนผังองค์กร",
       },
       {
         key: `internal-info/organization-chart-team`,
-        label: `Team Chart `,
+        label: `แผนผังทีม`,
       },
     ],
   },
   {
-    key: "stock",
-    icon: stockIcon,
-    label: "Stock",
-    // rule: "s-s",
+    key: "hr-management",
+    label: "ระบบบริหารงานบุคคล",
+    // rule:''
+    icon: hrIcon,
     children: [
       {
-        key: `order-management`,
-        label: `Order Management`,
-        // rule: "sm-order-s",
-      },
-      {
-        key: `inventory`,
-        label: `Inventory`,
-        // rule: "sm-inventory-s",
-      },
-
-      {
-        key: `product-list`,
-        label: `Product List`,
-        // rule: "sm-productlist-s",
-      },
-      {
-        key: `report-withdraw-ranking`,
-        label: `10 อันดับการเบิกจ่ายที่มากที่สุด`,
-        // rule: "sm-re-wr-h",
-      },
-      {
-        key: `report-transaction`,
-        label: `การรับเข้าเบิกจ่าย`,
-        // rule: "sm-re-tr-h",
-      },
-      {
-        key: `report-expired`,
-        label: `รายงานการหมดอายุ`,
-        // rule: "sm-re-ex-h",
-      },
-      {
-        key: `stock-management`,
-        label: `Stock Management`,
-        // rule: "sm-s",
+        key: `hr-management/employee-profile`,
+        label: "ข้อมูลพนักงาน",
       },
     ],
   },
+  // {
+  //   key: "stock",
+  //   icon: stockIcon,
+  //   label: "Stock",
+  //   rule: "s-s",
+  //   children: [
+  //     {
+  //       key: `order-management`,
+  //       label: `Order Management`,
+  //       rule: "sm-order-s",
+  //     },
+  //     {
+  //       key: `inventory`,
+  //       label: `Inventory`,
+  //       rule: "sm-inventory-s",
+  //     },
+
+  //     {
+  //       key: `product-list`,
+  //       label: `Product List`,
+  //       rule: "sm-productlist-s",
+  //     },
+  //     {
+  //       key: `report-withdraw-ranking`,
+  //       label: `10 อันดับการเบิกจ่ายที่มากที่สุด`,
+  //       rule: "sm-re-wr-h",
+  //     },
+  //     {
+  //       key: `report-transaction`,
+  //       label: `การรับเข้าเบิกจ่าย`,
+  //       rule: "sm-re-tr-h",
+  //     },
+  //     {
+  //       key: `report-expired`,
+  //       label: `รายงานการหมดอายุ`,
+  //       rule: "sm-re-ex-h",
+  //     },
+  //     {
+  //       key: `stock-management`,
+  //       label: `Stock Management`,
+  //       rule: "sm-s",
+  //     },
+  //   ],
+  // },
   {
     key: "housekeeper",
     icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
-    label: "Housekeeper",
-    // rule: "hk-s",
+    label: "งานแม่บ้าน",
+    rule: "hk-s",
     children: [
       {
         key: `housekeeper/housekeepers`,
-        label: `Housekeeper`,
-        // rule: "hk-h",
+        label: `ข้อมูลการการทำงานของแม่บ้าน`,
+        rule: "hk-h",
       },
       {
         key: `housekeeper/housekeeper-management`,
-        label: `Housekeeper Management`,
-        // rule: "hk-m",
+        label: `จัดการข้อมูลแม่บ้าน`,
+        rule: "hk-m",
       },
     ],
   },
   {
-    key: "data-leave",
+    key: "leave-control-management",
     icon: IconDataLeave,
-    label: `Data Leave`,
-    // rule: "dl-s",
+    label: `ข้อมูลการลา`,
+    rule: "dl-s",
     children: [
       {
-        key: `data-leave/online-leave`,
-        label: `Create Data Leave`,
-        // rule: "dl-a",
+        key: `leave-control-management/leave-letter`,
+        label: `ใบลาออนไลน์`,
+        rule: "dl-a",
       },
       {
-        key: `data-leave/detail-online-leave`,
-        label: `Detail Data Leave User`,
-        // rule: "dl-dt-u",
+        key: `leave-control-management/leave-history`,
+        label: `ประวัติการลา`,
+        rule: "dl-dt-u",
       },
       {
-        key: `data-leave/detail-online-leave-admin`,
-        label: `Detail Data Leave Admin`,
-        // rule: "dl-dt-a",
+        key: `leave-control-management/leave-history-admin`,
+        label: `ประวัติการลา (สำหรับ Admin)`,
+        rule: "dl-dt-a",
       },
       {
-        key: `data-leave/leave-management`,
-        label: `Leave Management`,
-        // rule: "dl-dis",
+        key: `leave-control-management/leave-disabled-management`,
+        label: `จัดการสิทธิ์การลา`,
+        rule: "dl-dis",
       },
     ],
   },
   {
     key: "3",
     icon: bookingIcon,
-    label: "Booking Room",
-    // rule: "br-s",
+    label: "ห้องประชุม",
+    rule: "br-s",
     children: [
       {
         key: `bookingroom/booking-room`,
-        label: `Booking room`,
+        label: `จองห้องประชุม`,
       },
       {
         key: `bookingroom/booking-room-management`,
-        label: `Booking room Management`,
+        label: `จัดการข้อมูลห้องประชุม`,
       },
     ],
   },
@@ -186,6 +191,105 @@ export const MenuSider: MenuItem[] = [
         key: `maintenance-management`,
         label: `Maintenance Management`,
         // rule: "ma-m-s",
+      },
+    ],
+  },
+
+  // {
+  //   key: "crm",
+  //   icon: contactListIcon,
+  //   label: `CRM`,
+  //   rule: "crm-s",
+  //   children: [
+  //     {
+  //       key: `crm/customer-group`,
+  //       label: `ข้อมูลลูกค้า`,
+  //       rule: "crm-c-s",
+  //     },
+  //     {
+  //       key: `crm/project`,
+  //       label: `Project`,
+  //       rule: "crm-p-s",
+  //     },
+  //     {
+  //       key: `crm/ticket`,
+  //       label: `Ticket`,
+  //       rule: "crm-t-s",
+  //     },
+  //     {
+  //       key: `crm/products`,
+  //       label: `Products`,
+  //       rule: "crm-ex",
+  //     },
+  //     {
+  //       key: `crm/expense`,
+  //       label: `ข้อมูลการเบิก`,
+  //       rule: "crm-ex",
+  //     },
+  //   ],
+  // },
+  {
+    key: "macar",
+    icon: macarIcon,
+    label: `ข้อมูลการจองรถยนต์`,
+    rule: "mac-s",
+    children: [
+      {
+        key: `macar/ma-car`,
+        label: `ข้อมูลการจองรถยนต์`,
+        rule: "mac-c-s",
+      },
+      {
+        key: `macar/ma-car-booking`,
+        label: `Ma car Booking`,
+        rule: "mac-b-s",
+      },
+      {
+        key: `macar/ma-car-management`,
+        label: `ข้อมูลการจองรถยนต์ (สำหรับ แอดมิน)`,
+        rule: "mac-m-s",
+      },
+    ],
+  },
+  {
+    key: `setting`,
+    icon: <Icon icon="uil:setting" width="15" height="15" />,
+    label: `ตั้งค่า`,
+    rule: "st-s",
+    children: [
+      {
+        key: `setting/maintenance-type`,
+        label: `การบำรุงรักษา`,
+        rule: "ma-t-s",
+      },
+      {
+        key: `setting/organize-chart`,
+        label: `Organize Chart`,
+        // rule: "st-p-s",
+      },
+      {
+        key: `setting/typeleave`,
+        label: `Type Leave`,
+        rule: "st-tl-s",
+      },
+      {
+        key: `setting/master-holidays`,
+        label: `Master Holidays`,
+        // rule: "st-mth-s",
+      },
+      {
+        key: `setting/masterdata-position`,
+        label: `Master Position`,
+        rule: "st-p-s",
+      },
+      {
+        key: `setting/manage-home`,
+        label: `Manage Home`,
+        rule: "ma-h-s",
+      },
+      {
+        key: `setting/email-template`,
+        label: `Email Template`,
       },
     ],
   },
@@ -219,104 +323,6 @@ export const MenuSider: MenuItem[] = [
         key: `users-management/user-rule`,
         label: `Rules`,
         // rule: "um-ru-s",
-      },
-    ],
-  },
-  {
-    key: "crm",
-    icon: contactListIcon,
-    label: `CRM`,
-    // rule: "crm-s",
-    children: [
-      {
-        key: `crm/customer-group`,
-        label: `Customer Group`,
-        // rule: "crm-c-s",
-      },
-      {
-        key: `crm/project`,
-        label: `Project`,
-        // rule: "crm-p-s",
-      },
-      {
-        key: `crm/ticket`,
-        label: `Ticket`,
-        // rule: "crm-t-s",
-      },
-      {
-        key: `crm/products`,
-        label: `Products`,
-        // rule: "crm-ex",
-      },
-      {
-        key: `crm/expense`,
-        label: `Expense`,
-        // rule: "crm-ex",
-      },
-    ],
-  },
-  {
-    key: "macar",
-    icon: macarIcon,
-    label: `Ma Car`,
-    // rule: "mac-s",
-    children: [
-      {
-        key: `macar/ma-car`,
-        label: `Ma car`,
-        // rule: "mac-c-s",
-      },
-      {
-        key: `macar/ma-car-booking`,
-        label: `Ma car Booking`,
-        // rule: "mac-b-s",
-      },
-      {
-        key: `macar/ma-car-management`,
-        label: `Ma car Management`,
-        // rule: "mac-m-s",
-      },
-    ],
-  },
-  {
-    key: `setting`,
-    icon: <Icon icon="uil:setting" width="15" height="15" />,
-    label: `Setting`,
-    // rule: "st-s",
-    children: [
-      {
-        key: `setting/maintenance-type`,
-        label: `MA Type`,
-        // rule: "ma-t-s",
-      },
-      {
-        key: `setting/organize-chart`,
-        label: `Organize Chart`,
-        // rule: "st-p-s",
-      },
-      {
-        key: `setting/typeleave`,
-        label: `Type Leave`,
-        // rule: "st-tl-s",
-      },
-      {
-        key: `setting/master-holidays`,
-        label: `Master Holidays`,
-        // rule: "st-mth-s",
-      },
-      {
-        key: `setting/masterdata-position`,
-        label: `Master Position`,
-        // rule: "st-p-s",
-      },
-      {
-        key: `setting/manage-home`,
-        label: `Manage Home`,
-        // rule: "ma-h-s",
-      },
-      {
-        key: `setting/email-template`,
-        label: `Email Template`,
       },
     ],
   },

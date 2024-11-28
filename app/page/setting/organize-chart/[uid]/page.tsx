@@ -38,7 +38,7 @@ export default function Page() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 href: "/page/setting",
@@ -61,12 +61,19 @@ export default function Page() {
           <div className="grid grid-cols-1 md:grid-cols-2">
             <div>
               <Spin spinning={loading}>
-                <OrganizeTeamTree propDataTree={propDataTree} loading={loading} positionId={positionId} />
+                <OrganizeTeamTree
+                  propDataTree={propDataTree}
+                  loading={loading}
+                  positionId={positionId}
+                />
               </Spin>
             </div>
             {organizeSelect ? (
               <div>
-                <OrganizeTeamManage propDataManage={propDataManage} organizeSelect={organizeSelect} />
+                <OrganizeTeamManage
+                  propDataManage={propDataManage}
+                  organizeSelect={organizeSelect}
+                />
               </div>
             ) : (
               <></>

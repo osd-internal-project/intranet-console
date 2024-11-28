@@ -71,30 +71,25 @@ const ProjectTableComponent: React.FC<props> = ({
     },
     {
       key: "customerName",
-      dataIndex: ["customerBranch", "customerDetail"],
-      title: "Customer Group",
+      dataIndex: ["customerBranch", "customerDetail", "customerNameTh"],
+      title: "Customer Name TH",
       width: "200px",
-      render: (record: ITCustomer) =>
-        record
-          ? record.customerTypeId === "natural"
-            ? `${record.details?.prefixTh ? record.details?.prefixTh : ""}${
-                record.details?.firstNameTh ? record.details?.firstNameTh : ""
-              }${
-                record.details?.lastNameTh
-                  ? ` ${record.details?.lastNameTh}`
-                  : ""
-              }`
-            : record.customerTypeId === "juristic"
-            ? record.details?.customerNameTh
-            : ""
-          : "",
+      render: (data: string) => (data ? data : ""),
     },
     {
       key: "customerName",
-      dataIndex: ["customerBranch", "customerDetailSub", "name"],
-      title: "Customer",
+      dataIndex: ["customerBranch", "customerDetail"],
+      title: "Customer Name EN",
       width: "200px",
+      render: (record: ITCustomer) =>
+        record?.customerNameEn ? record.customerNameEn : "",
     },
+    // {
+    //   key: "customerName",
+    //   dataIndex: ["customerBranch", "customerDetail"],
+    //   title: "Customer",
+    //   width: "200px",
+    // },
     {
       key: "branchName",
       dataIndex: ["customerBranch", "branchName"],

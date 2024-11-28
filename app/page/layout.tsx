@@ -7,16 +7,27 @@ import { FloatButton, Layout, Menu, message, Spin } from "antd";
 import { MenuSiderWithModule } from "@/app/config/menu";
 import { pageWithoutMenu } from "@/app/config/data";
 import { Footer } from "antd/es/layout/layout";
-import { useAxiosStock, useAxiosUser } from "../lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet, useAxiosUser } from "../lib/axios/hooks/userAxiosAuth";
 import IndexServices from "./services/index.service";
+import NotiLogsServices from "../services/noti-logs.service";
 import { PhoneOutlined } from "@ant-design/icons";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { ITNotiLogsMessage } from "../common/noti-logs";
+import { loadAppConfig } from "../config/app-config";
+import UserServices from "../services/user.service";
 
 const { Content, Sider } = Layout;
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const { tokenAccess, authenticated, login, logout, id24Axios } = useId24();
+  const baseUrlIntra = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const [loading, setLoading] = useState<boolean>(true);
+  const [collapsed, setCollapsed] = useState(false);
+  const [notiLogMessages, setNotiLogMessages] = useState<ITNotiLogsMessage[]>([]);
+  const [countNoti, setCountNoti] = useState<any>();
+  const [avatar, setAvatar] = useState<any>();
+  const pathname = usePathname();
 
   useEffect(() => {
     featchData();
@@ -28,6 +39,10 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
   const featchData = async () => {
     if (authenticated) {
+      // const notiLogMessage = await NotiLogsServices(baseUrlIntra).findByUsers(session.user.userId);
+      // setNotiLogMessages(notiLogMessage);
+      // const image = await UserServices(baseUrlUser).getImage(session.user.userId);
+      // setAvatar(image);
       setLoading(false);
     }
   };
@@ -35,10 +50,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   // const userAuth = useAxiosUser();
   // const indexServices = IndexServices(stockAuth);
   // const userServices = IndexServices(userAuth);
-  const [collapsed, setCollapsed] = useState(false);
-  const [countNoti, setCountNoti] = useState(0);
-  const [avatar, setAvatar] = useState<any>();
-  const pathname = usePathname();
   // const { data: session, status } = useSession({
   //   required: true,
   // });

@@ -58,7 +58,10 @@ const Inventory = () => {
       result = await inventoryServices.findinventorybyID(null, search);
       result ? setdataAll(result) : {};
     } else {
-      result = await inventoryServices.findinventorybyID(Number(locationId), search);
+      result = await inventoryServices.findinventorybyID(
+        Number(locationId),
+        search
+      );
       result ? setdataAll(result) : {};
     }
     setLoading(false);
@@ -71,7 +74,7 @@ const Inventory = () => {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 href: "/page/stock-management",
@@ -97,7 +100,11 @@ const Inventory = () => {
             openFilter={openFilter}
             onFilter={(e: typeInventoryFIlters) => onFilter(e)}
           />
-          <TableInventory loading={loading} getdataAll={getdataAll} setLoading={(e: boolean) => setLoading(e)} />
+          <TableInventory
+            loading={loading}
+            getdataAll={getdataAll}
+            setLoading={(e: boolean) => setLoading(e)}
+          />
         </Card>
       </div>
     </>

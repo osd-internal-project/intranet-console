@@ -42,6 +42,7 @@ const CustomerGroupFilterComponent: React.FC<props> = ({
 
   return (
     <Collapse
+      destroyInactivePanel
       bordered={false}
       items={[
         {

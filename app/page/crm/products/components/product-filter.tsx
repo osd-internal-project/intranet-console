@@ -40,6 +40,7 @@ const ProductFilterComponent: React.FC<props> = ({
   return (
     <Collapse
       bordered={false}
+      destroyInactivePanel
       items={[
         {
           key: "1",

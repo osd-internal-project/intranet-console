@@ -35,7 +35,7 @@ const UserServices = (axiosInstance: AxiosInstance): TCrmServices => {
     },
     findUsersByOwnerGroup: async (ownerGroup: string[]) => {
       return await axiosInstance
-        .get(`${userUrl}/find-users-by-ownergroup/`, {
+        .get(`${userUrl}/find-same-and-lower-users-by-ownergroup/`, {
           params: ownerGroup,
         })
         .then((res) => {

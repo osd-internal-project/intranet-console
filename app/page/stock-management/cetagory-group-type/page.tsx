@@ -9,7 +9,11 @@ export default function SetCatogoryGroupType() {
   const [categoryId, setCategoryId] = useState<number | null>(null);
   const [checkcreatetypeChem, setCheckcreatetypeChem] = useState<boolean>(true);
 
-  const propCategory = (categoryCode: string | null, categoryId: number | null, checkBoolean: boolean) => {
+  const propCategory = (
+    categoryCode: string | null,
+    categoryId: number | null,
+    checkBoolean: boolean
+  ) => {
     setCategoryCode(categoryCode);
     setCategoryId(categoryId);
     setCheckcreatetypeChem(checkBoolean);
@@ -25,7 +29,7 @@ export default function SetCatogoryGroupType() {
           items={[
             {
               href: "/page",
-              title: <span>Home</span>,
+              title: <span>หน้าหลัก</span>,
             },
             {
               href: "/page/stock-management",
@@ -49,7 +53,11 @@ export default function SetCatogoryGroupType() {
           </div>
           <div className="col-span-5 md:col-span-3 ">
             {categoryId && categoryCode && checkcreatetypeChem ? (
-              <GroupComponent categoryCode={categoryCode} categoryId={categoryId} checkcreatetypeChem={checkcreatetypeChem} />
+              <GroupComponent
+                categoryCode={categoryCode}
+                categoryId={categoryId}
+                checkcreatetypeChem={checkcreatetypeChem}
+              />
             ) : (
               <></>
             )}

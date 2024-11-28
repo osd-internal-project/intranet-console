@@ -3,7 +3,11 @@ import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import MasterHolidaysService from "../services/index.service";
-import { ICreateMasterHolidayDto, IFindAllDayDto, IManagePageDay } from "../common";
+import {
+  ICreateMasterHolidayDto,
+  IFindAllDayDto,
+  IManagePageDay,
+} from "../common";
 import { HolidayTable } from "./components/holidays-table";
 import { Breadcrumb, Card, Col, Divider, message, Modal, Row } from "antd";
 import { HolidayActions } from "./components/holidays-action";
@@ -25,7 +29,10 @@ export default function MasterdataHolidaysByYear() {
   const year = params.id as string;
   const [formAction] = useForm();
   const [loading, setLoading] = useState<boolean>(true);
-  const [manageStatusDay, setManageStatusDay] = useState<IManagePageDay>({ statusModal: false, statusAction: "create" });
+  const [manageStatusDay, setManageStatusDay] = useState<IManagePageDay>({
+    statusModal: false,
+    statusAction: "create",
+  });
   const [dataHolidayDay, setDataHolidayDay] = useState<IFindAllDayDto[]>([]);
   const [holidayDay, setHolidayDay] = useState<THoliday>({
     id: 0,
@@ -64,7 +71,9 @@ export default function MasterdataHolidaysByYear() {
         },
       },
       onOk: async () => {
-        const result = await masterholidaysService.createMasterHolidays(dataCreate);
+        const result = await masterholidaysService.createMasterHolidays(
+          dataCreate
+        );
         if (result) {
           message.success(`Add success`);
           formAction.resetFields();
@@ -87,7 +96,9 @@ export default function MasterdataHolidaysByYear() {
       okButtonProps: { type: "primary", danger: true },
       cancelText: "Cancel",
       onOk: async () => {
-        const dataResult = await masterholidaysService.deleteMasterHoliday(value);
+        const dataResult = await masterholidaysService.deleteMasterHoliday(
+          value
+        );
         if (dataResult) {
           message.success(`Delete success`);
           setLoading(true);
@@ -107,7 +118,7 @@ export default function MasterdataHolidaysByYear() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 title: <span>Setting</span>,
@@ -134,7 +145,11 @@ export default function MasterdataHolidaysByYear() {
               manageStatusDay={manageStatusDay}
               formAction={formAction}
             />
-            <HolidayTable loading={loading} dataHolidayDay={dataHolidayDay} onDelete={onDelete} />
+            <HolidayTable
+              loading={loading}
+              dataHolidayDay={dataHolidayDay}
+              onDelete={onDelete}
+            />
           </Card>
         </Col>
       </Row>

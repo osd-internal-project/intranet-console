@@ -6,31 +6,18 @@ import { ITSelectUsers } from "./GroupManage";
 import { FormInstance } from "antd/lib";
 export interface props {
   groupOption: SelectProps["options"];
-  expenseUsersFormGroup: ITSelectUsers[];
-  leaveUsersFormGroup: ITSelectUsers[];
   showModalUserPermission: boolean;
   setShowModalUserPermission: (e: boolean) => void;
-  setUserPermission: (form: {
-    leaveGroupId: string[];
-    leaveUserId: string[];
-    expenseGroupId: string[];
-    expenseUserId: string[];
-  }) => void;
+  setUserPermission: (form: any) => void;
   userpermissionform: FormInstance;
-  onChangeLeaveGroupSelect: (group: string[]) => void;
-  onChangeExpenseGroupSelect: (group: string[]) => void;
 }
 
 const GroupUserPermission: React.FC<props> = ({
   groupOption,
-  expenseUsersFormGroup,
   showModalUserPermission,
   setShowModalUserPermission,
   setUserPermission,
   userpermissionform,
-  onChangeLeaveGroupSelect,
-  leaveUsersFormGroup,
-  onChangeExpenseGroupSelect,
 }): React.ReactElement => {
   return (
     <Modal
@@ -39,13 +26,14 @@ const GroupUserPermission: React.FC<props> = ({
       onCancel={() => setShowModalUserPermission(false)}
       footer={[]}
       width={800}
+      maskClosable={false}
     >
       <Form
         form={userpermissionform}
         layout="vertical"
         onFinish={setUserPermission}
       >
-        <Form.Item name={"leaveGroupId"} label={<b>Leave Group</b>}>
+        <Form.Item name={["leave", "headerGroupId"]} label={<b>Leave Group</b>}>
           <TreeSelect
             multiple
             allowClear
@@ -54,11 +42,11 @@ const GroupUserPermission: React.FC<props> = ({
             treeDefaultExpandAll
             placeholder="Please select"
             treeData={groupOption}
-            onChange={onChangeLeaveGroupSelect}
+            // onChange={onChangeLeaveGroupSelect}
           />
         </Form.Item>
 
-        <Form.Item name={"leaveUserId"} label={<b>Leave User</b>}>
+        {/* <Form.Item name={["leave", "headerUserId"]} label={<b>Leave User</b>}>
           <Select
             allowClear
             mode="multiple"
@@ -69,9 +57,12 @@ const GroupUserPermission: React.FC<props> = ({
               value: user.userId,
             }))}
           />
-        </Form.Item>
+        </Form.Item> */}
 
-        <Form.Item name={"expenseGroupId"} label={<b>Expense Group</b>}>
+        <Form.Item
+          name={["expense", "headerGroupId"]}
+          label={<b>Expense Group</b>}
+        >
           <TreeSelect
             multiple
             allowClear
@@ -80,11 +71,14 @@ const GroupUserPermission: React.FC<props> = ({
             treeDefaultExpandAll
             placeholder="Please select"
             treeData={groupOption}
-            onChange={onChangeExpenseGroupSelect}
+            // onChange={onChangeExpenseGroupSelect}
           />
         </Form.Item>
 
-        <Form.Item name={"expenseUserId"} label={<b>Expense User</b>}>
+        {/* <Form.Item
+          name={["expense", "haederUserId"]}
+          label={<b>Expense User</b>}
+        >
           <Select
             allowClear
             mode="multiple"
@@ -95,7 +89,7 @@ const GroupUserPermission: React.FC<props> = ({
               value: user.userId,
             }))}
           />
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item>
           <div className=" text-right space-x-4 mt-5">

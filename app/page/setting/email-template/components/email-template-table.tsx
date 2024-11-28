@@ -1,7 +1,7 @@
 import "react-quill/dist/quill.snow.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { dateFormatTime } from "@/app/utils";
-import { Button, Modal, Table } from "antd";
+import { Button, Modal, Skeleton, Table, Tabs, Tag } from "antd";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { ManageemailTemplateServices } from "../service/email-template.service";
@@ -20,10 +20,22 @@ interface props {
 }
 
 const EmailTemplateTable: React.FC<props> = ({ dataSource, loading, setLoading }): React.ReactElement => {
-  const [openModal, setopenModal] = useState<boolean>(false);
-  const [dataDetailTemplate, setDataDetailTemplate] = useState<string>("");
   const intraAuth = useAxiosIntranet();
   const manageemailtemplateservices = ManageemailTemplateServices(intraAuth);
+  const [openModal, setopenModal] = useState<boolean>(false);
+  const [dataDetailTemplate, setDataDetailTemplate] = useState<string>("");
+  const [setavtiveKey, setActiveKey] = useState<number>(0);
+  const [dataTable, setDataTable] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (loading) fecthDataSource();
+  }, [loading, setavtiveKey]);
+
+  const fecthDataSource = async () => {
+    const dataResult = await manageemailtemplateservices.findByType(setavtiveKey);
+    setDataTable(dataResult);
+    setLoading(true);
+  };
 
   const fecthOpenModal = (value: string) => {
     setopenModal(true);
@@ -49,8 +61,21 @@ const EmailTemplateTable: React.FC<props> = ({ dataSource, loading, setLoading }
   const columns: any = [
     { key: "id", dataIndex: "id", title: "Template ID" },
     { key: "name", dataIndex: "name", title: "Name" },
-    { key: "type", dataIndex: "type", title: "Type" },
-
+    { key: ["emailTemplateType", "name"], dataIndex: ["emailTemplateType", "name"], title: "Type" },
+    {
+      key: "status",
+      dataIndex: "status",
+      title: "status",
+      align: "center",
+      render: (value: string) => <Tag color={value === "inactive" ? "gray" : "green"}>{value}</Tag>,
+    },
+    {
+      key: "used",
+      dataIndex: "used",
+      title: "Used Template",
+      align: "center",
+      render: (value: boolean) => <Tag color={value === true ? "green" : "gray"}>{value === true ? "Used" : "Unused"}</Tag>,
+    },
     { key: "createAt", dataIndex: "createAt", title: "createAt", render: (value: string) => dateFormatTime(value) },
     { key: "updateAt", dataIndex: "updateAt", title: "updateAt", render: (value: string) => dateFormatTime(value) },
     {
@@ -77,6 +102,47 @@ const EmailTemplateTable: React.FC<props> = ({ dataSource, loading, setLoading }
       },
     },
   ];
+
+  const getdata = (acc: any) => {
+    setActiveKey(acc);
+    setLoading(true);
+  };
+
+  const Items: any = [
+    {
+      label: "All",
+      key: "0",
+      children: (
+        <Table
+          size="small"
+          rowKey={(row: any) => row.id}
+          dataSource={dataTable}
+          columns={columns}
+          scroll={{ x: "max-content" }}
+          locale={{
+            emptyText: loading ? <Skeleton active={true} /> : undefined,
+          }}
+        />
+      ),
+    },
+    ...dataSource.map((item: any) => ({
+      label: item.name,
+      key: `${item.id}`,
+      children: (
+        <Table
+          size="small"
+          rowKey={(row: any) => row.id}
+          dataSource={dataTable}
+          columns={columns}
+          scroll={{ x: "max-content" }}
+          locale={{
+            emptyText: loading ? <Skeleton active={true} /> : undefined,
+          }}
+        />
+      ),
+    })),
+  ];
+
   return (
     <div>
       {openModal && dataDetailTemplate ? (
@@ -94,7 +160,7 @@ const EmailTemplateTable: React.FC<props> = ({ dataSource, loading, setLoading }
           </div>
         </Modal>
       ) : null}
-      <Table size="small" rowKey={(e: any) => e.id} loading={loading} dataSource={dataSource} columns={columns} scroll={{ x: "max-content" }} />
+      <Tabs tabPosition="left" size="small" type="card" defaultActiveKey="0" onChange={(key) => getdata(key)} items={Items} />
     </div>
   );
 };

@@ -38,6 +38,8 @@ const CustomerGroupDetails: React.FC<props> = ({
 }): React.ReactElement => {
   return (
     <Collapse
+      collapsible="icon"
+      destroyInactivePanel
       className="bg-white"
       bordered={false}
       items={[

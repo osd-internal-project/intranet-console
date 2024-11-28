@@ -57,7 +57,7 @@ export default function HomePage() {
       <div className="grid md:grid-cols-3">
         <div className="px-2 mb-4">
           <Card className="text-center">
-            <a href="/page/data-leave/online-leave">
+            <a href="/page/leave-control-management/leave-history">
               <FileFilled className="text-5xl text-blue-500" />
               <br />
               ใบลาออนไลน์
@@ -83,23 +83,23 @@ export default function HomePage() {
           </Card>
         </div>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h">
         <div className="lg:col-span-2">
-          <Card title="กิจกรรมและข่าวสาร" bordered={false} className="text-center">
+          <Card title="กิจกรรมและข่าวสาร" bordered={false} className="text-center" style={{ height: "500px" }}>
             <NewsCarouselComponent informationNews={informationNews} />
           </Card>
           <div className="my-4"></div>
-          <Card title="เอกสาร" bordered={false} className="text-center">
+          <Card title="เอกสาร" bordered={false} className="text-center" style={{ height: "520px" }}>
             <DocumentComponent handbookFile={handbookFile} downloadFile={(id: number, filename: string) => downloadFile(id, filename)} />
           </Card>
         </div>
 
         <div className="lg:col-span-1">
-          <Card title="หอประชุม" className="text-center">
+          <Card title="ห้องประชุม" className="text-center" style={{ height: "500px" }}>
             <MeetingRoomTableComponent pagination={false} masterBookingRoom={masterBookingRoom} />
           </Card>
           <div className="my-4"></div>
-          <Card title="วันหยุดประจำปี" className="text-center">
+          <Card title="วันหยุดประจำปี" className="text-center" style={{ height: "520px" }}>
             <HolidaysCalendarComponent />
           </Card>
         </div>

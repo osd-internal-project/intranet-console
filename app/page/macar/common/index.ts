@@ -123,3 +123,20 @@ export interface ProvincesType {
   value: string;
   label: string;
 }
+
+export type ITPagination = {
+  current: number;
+  pageSize: number;
+  total?: number;
+};
+
+export interface MaCarType {
+  id: number;
+  typeName: string;
+  detail: string;
+  status: boolean;
+  createdAt: Date;
+  createdById: string;
+  createdByName: string;
+}
+

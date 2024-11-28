@@ -41,6 +41,7 @@ const DescriptionCustomerForm: React.FC<props> = ({
 }): React.ReactElement => {
   return (
     <Collapse
+      destroyInactivePanel
       bordered={true}
       defaultActiveKey={1}
       style={{ backgroundColor: "#fff" }}
@@ -104,31 +105,9 @@ const DescriptionCustomerForm: React.FC<props> = ({
                     </div>
                     <div className=" col-span-2 md:col-span-1 text-slate-500">
                       {projectDescription.customerBranch.customerDetail
+                        .customerNameTh
                         ? projectDescription.customerBranch.customerDetail
-                            .customerTypeId === "natural"
-                          ? `${
-                              projectDescription.customerBranch.customerDetail
-                                .details?.prefixTh
-                                ? projectDescription.customerBranch
-                                    .customerDetail.details?.prefixTh
-                                : ""
-                            }${
-                              projectDescription.customerBranch.customerDetail
-                                .details?.firstNameTh
-                                ? projectDescription.customerBranch
-                                    .customerDetail.details?.firstNameTh
-                                : ""
-                            }${
-                              projectDescription.customerBranch.customerDetail
-                                .details?.lastNameTh
-                                ? ` ${projectDescription.customerBranch.customerDetail.details?.lastNameTh}`
-                                : ""
-                            }`
-                          : projectDescription.customerBranch.customerDetail
-                              .customerTypeId === "juristic"
-                          ? projectDescription.customerBranch.customerDetail
-                              .details?.customerNameTh
-                          : ""
+                            .customerNameTh
                         : ""}
                     </div>
                     <div className=" font-bold pl-3 pr-3 text-right">

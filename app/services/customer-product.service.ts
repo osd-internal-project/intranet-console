@@ -7,9 +7,15 @@ export interface TServices {
     skip: number
   ) => Promise<{ data: ITCustomerProduct[]; count: number }>;
   findDetailsById: (customerGroupId: number) => Promise<ITCustomerProduct>;
-  findManyByCustomerGroup: (customerId: number) => Promise<ITCustomerProduct[]>;
-  findManyByCustomer: (branchId: number) => Promise<ITCustomerProduct[]>;
-  findManyByBranch: (id: number) => Promise<ITCustomerProduct[]>;
+  findManyByCustomerGroup: (
+    customerId: number,
+    search: any
+  ) => Promise<ITCustomerProduct[]>;
+  findManyByCustomer: (
+    customerId: number,
+    search: any
+  ) => Promise<ITCustomerProduct[]>;
+  findManyByBranch: (id: number, search: any) => Promise<ITCustomerProduct[]>;
   findProductOptions: () => Promise<ITCustomerProduct[]>;
   create: (form: ITCustomerProductForm) => Promise<ITCustomerProduct>;
   update: (
@@ -45,9 +51,11 @@ const CrmServices = (axiosInstance: AxiosInstance): TServices => {
           return [];
         });
     },
-    findManyByCustomerGroup: async (customerGroupId) => {
+    findManyByCustomerGroup: async (customerGroupId, search) => {
       return await axiosInstance
-        .get(`${baseUrl}/find-by-customer-group/${customerGroupId}`)
+        .get(`${baseUrl}/find-by-customer-group/${customerGroupId}`, {
+          params: { search: search },
+        })
         .then((res) => {
           return res.data;
         })
@@ -56,9 +64,11 @@ const CrmServices = (axiosInstance: AxiosInstance): TServices => {
           return [];
         });
     },
-    findManyByCustomer: async (customerId) => {
+    findManyByCustomer: async (customerId, search) => {
       return await axiosInstance
-        .get(`${baseUrl}/find-by-customer/${customerId}`)
+        .get(`${baseUrl}/find-by-customer/${customerId}`, {
+          params: { search: search },
+        })
         .then((res) => {
           return res.data;
         })
@@ -67,9 +77,11 @@ const CrmServices = (axiosInstance: AxiosInstance): TServices => {
           return [];
         });
     },
-    findManyByBranch: async (branchId) => {
+    findManyByBranch: async (branchId, search) => {
       return await axiosInstance
-        .get(`${baseUrl}/find-by-customer/${branchId}`)
+        .get(`${baseUrl}/find-by-branch/${branchId}`, {
+          params: { search: search },
+        })
         .then((res) => {
           return res.data;
         })

@@ -16,7 +16,6 @@ export interface props {
 
 export const TableInventory: React.FC<props> = ({ groupID, search }): React.ReactElement => {
   const stockAuth = useAxiosStock();
-
   const inventorystockservices = InventoryStockServices(stockAuth);
   const [loading, setLoading] = useState<boolean>(true);
   const [getdataResult, setdataResult] = useState<[]>([]);
@@ -24,8 +23,8 @@ export const TableInventory: React.FC<props> = ({ groupID, search }): React.Reac
     if (loading === true) loaddata();
   }, [groupID?.grouplist, loading]);
   const loaddata = async () => {
-    const result = await inventorystockservices.getInventoryByGroup(groupID?.grouplist, search);
-    if (result) setdataResult(result);
+    // const result = await inventorystockservices.getInventoryByGroup(groupID?.grouplist, search);
+    // if (result) setdataResult(result);
     setLoading(false);
   };
   useEffect(() => {
@@ -100,8 +99,7 @@ export const TableInventory: React.FC<props> = ({ groupID, search }): React.Reac
                   inventoryName: row.inventoryName,
                   groupID: groupID.user.ownerGroup,
                 },
-              }}
-            >
+              }}>
               <Button size="small" type="link">
                 <Space>
                   <div
@@ -110,8 +108,7 @@ export const TableInventory: React.FC<props> = ({ groupID, search }): React.Reac
                       alignItems: "center",
                       display: "flex",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     {" "}
                     {IconEye}
                   </div>
@@ -121,8 +118,7 @@ export const TableInventory: React.FC<props> = ({ groupID, search }): React.Reac
                       alignItems: "center",
                       display: "flex",
                       fontWeight: "bold",
-                    }}
-                  >{`check stock`}</div>
+                    }}>{`check stock`}</div>
                 </Space>
               </Button>
             </Link>

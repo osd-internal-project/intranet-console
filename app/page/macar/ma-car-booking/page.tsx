@@ -1,17 +1,17 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Breadcrumb, Card, Col, Divider, Row, Tabs, TabsProps, Form, TablePaginationConfig } from "antd";
 import MaCarBook from "./components/ma-car-book";
 import MaCarReturn from "./components/ma-car-return";
-import { useSession } from "next-auth/react";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { MaCarBookServices } from "../../../services/ma-car-book.service";
 import { MaCarType, MaCarBookType, ProvincesType } from "../common/index";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 const MaCarBooking: React.FC = () => {
-  const { data: session } = useSession();
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const intraAuth = useAxiosIntranet();
   const intraAuthService = MaCarBookServices(intraAuth);
   const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
@@ -33,12 +33,12 @@ const MaCarBooking: React.FC = () => {
 
   const fetchData = async () => {
     form.setFieldsValue({
-      createdByName: `${session?.user.firstNameTh || ""} ${session?.user.lastNameTh || ""}`,
+      createdByName: `${user?.firstNameTh || ""} ${user?.lastNameTh || ""}`,
     });
 
     try {
       const maCar = await intraAuthService.getMaCarQuery();
-      const userIdData = session?.user.userId;
+      const userIdData = user?.userId;
       const maCarBook = await intraAuthService.getMaCarBookQuery(userIdData);
       const MaCarBook: MaCarBookType[] = maCarBook.map((item: any, index: number) => ({
         ...item,

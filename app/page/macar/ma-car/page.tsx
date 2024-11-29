@@ -1,18 +1,18 @@
 "use client";
 import axios from "axios";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Breadcrumb, Card, Col, Row, TabsProps, Tabs, Button, Divider, TablePaginationConfig } from "antd";
-import { useSession } from "next-auth/react";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { MaCarServices } from "../../../services/ma-car.service";
 import { MaCarType, MaCarBookType, dataMaCarbook, ProvincesType } from "../common/index";
 import CalendarComponent from "./components/car-calendar";
 import MaCarTable from "./components/car-table";
 import CarStatus from "./components/car-status";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 const MaCar: React.FC = () => {
-  const { data: session } = useSession();
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const intraAuth = useAxiosIntranet();
   const intraAuthService = MaCarServices(intraAuth);
   const [maCarBookData, setMaCarBookData] = useState<dataMaCarbook[]>([]);
@@ -36,7 +36,7 @@ const MaCar: React.FC = () => {
     const take: number = Number(pagination.pageSize);
     try {
       const maCar = await intraAuthService.getMaCarQuery();
-      const userId = session?.user.userId;
+      const userId = user?.userId;
       const maCarBook = await intraAuthService.findMaCarBook(userId, skip, take);
       const maCalender = await intraAuthService.getMaCarBookQuery(userId);
       const maCarBookById = await intraAuthService.findMaCarBookById(userId);

@@ -1,16 +1,16 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Breadcrumb, Card, Col, Tabs, Divider, Form, Modal, Row, TabsProps, message } from "antd";
 import { TableDetail } from "./components/table-detail";
 import { DepartmentCalendarDetail } from "./components/leave-history-calendar";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../../../services/leave-management.service";
-import { useSession } from "next-auth/react";
 import { ITypeDataLeave } from "../common";
 import { ExclamationCircleFilled } from "@ant-design/icons";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 export default function Page() {
-  const { data: session } = useSession();
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const Auth = useAxiosIntranet();
   const dataleaveservice = DataLeaveService(Auth);
   const [loading, setLoading] = useState<boolean>(true);
@@ -24,12 +24,12 @@ export default function Page() {
   }, [loading]);
 
   const loadData = async () => {
-    const result = await dataleaveservice.getdataLeaveUserById({ userId: session?.user.userId });
-    if (session?.user.userId) {
-      const resDataLeaveGrouptId = await dataleaveservice.getdataLeavefindBygroup(session?.user.userId);
+    if (user?.userId) {
+      const result = await dataleaveservice.getdataLeaveUserById({ userId: user?.userId });
+      const resDataLeaveGrouptId = await dataleaveservice.getdataLeavefindBygroup(user?.userId);
       setDataLeaveDepartment(resDataLeaveGrouptId);
+      setDataSource(result);
     }
-    setDataSource(result);
     setLoading(false);
   };
 
@@ -42,7 +42,7 @@ export default function Page() {
       okButtonProps: { type: "primary", danger: true },
       cancelText: "Cancel",
       onOk: async () => {
-        const res = await dataleaveservice.approvedDataLeave(type, id, session?.user);
+        const res = await dataleaveservice.approvedDataLeave(type, id, user);
         if (res) {
           type === "cancel" ? message.error("cancel success") : message.success("approved success");
           setLoading(true);

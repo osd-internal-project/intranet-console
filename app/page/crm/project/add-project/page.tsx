@@ -1,52 +1,29 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import {
-  Breadcrumb,
-  Button,
-  Card,
-  Col,
-  message,
-  Row,
-  SelectProps,
-  Spin,
-} from "antd";
-import {
-  ITBranchForSelect,
-  ITCustomerForSelect,
-  ITProject,
-  ITProjectCreateForm,
-  ITSelectUsers,
-  ITContractCompany,
-} from "../common";
+import React, { useContext, useEffect, useState } from "react";
+import { Breadcrumb, Card, Col, message, Row, SelectProps } from "antd";
+import { ITBranchForSelect, ITCustomerForSelect, ITProjectCreateForm, ITSelectUsers, ITContractCompany } from "../common";
 import { useAxiosCrm, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import ProjectServices from "../services/index.service";
 import ProductsServices from "@/app/services/customer-product.service";
 import CustomerGroupServices from "@/app/services/customer-group.service";
-import CrmCustomerServices from "../../customer/services/index.service";
 import UserServices from "../services/user.service";
-import { checkRule } from "@/app/utils/rules";
 import CreateCustomerForm from "./components/create-form";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { CarryOutOutlined } from "@ant-design/icons";
-import { ITBranch, ITBranchDetail } from "../../customer/common";
 import { ITCustomerSub } from "../../ticket/common";
 import { ITCustomerProduct } from "@/app/common/product";
 import { ITCustomerGroup } from "@/app/common/customer";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 export default function AddProjectPage() {
-  const { data: session } = useSession();
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const crmAuth = useAxiosCrm();
   const userAuth = useAxiosUser();
   const projectServices = ProjectServices(crmAuth);
   const productsServices = ProductsServices(crmAuth);
   const customerGroupServices = CustomerGroupServices(crmAuth);
   const userServices = UserServices(userAuth);
-  const rounter = useRouter();
   const [loading, setloading] = useState<boolean>(true);
-  const [customerGroupList, setCustomerGroupList] = useState<ITCustomerGroup[]>(
-    []
-  );
+  const [customerGroupList, setCustomerGroupList] = useState<ITCustomerGroup[]>([]);
   const [customerList, setCustomerList] = useState<ITCustomerForSelect[]>([]);
   const [branchList, setBranchList] = useState<ITBranchForSelect[]>([]);
   const [customerSubList, setCustomerSubList] = useState<ITCustomerSub[]>([]);
@@ -54,9 +31,7 @@ export default function AddProjectPage() {
   const [saleList, setSaleList] = useState<{ uid: string; name: string }[]>([]);
   const [groupOption, setGroupOption] = useState<SelectProps["options"]>([]);
   const [usersFormGroup, setUsersFormGroup] = useState<ITSelectUsers[]>([]);
-  const [cntractCompany, setContractCompany] = useState<ITContractCompany[]>(
-    []
-  );
+  const [cntractCompany, setContractCompany] = useState<ITContractCompany[]>([]);
   const [productOptions, setProductOptions] = useState<ITCustomerProduct[]>([]);
   useEffect(() => {
     if (loading === true) fetchData();
@@ -64,11 +39,9 @@ export default function AddProjectPage() {
   const fetchData = async () => {
     const resContractCompany = await projectServices.findContractCompany();
     setContractCompany(resContractCompany);
-    if (session?.user.userId) {
-      const users = await userServices.findOrganizeUserByUserId(
-        session?.user.userId
-      );
-      selectOrganize(session?.user.userId);
+    if (user?.userId) {
+      const users = await userServices.findOrganizeUserByUserId(user?.userId);
+      selectOrganize(user?.userId);
       setUserList(users);
     }
     const productOptions = await productsServices.findProductOptions();
@@ -88,8 +61,7 @@ export default function AddProjectPage() {
       if (item.group.parentGroupId === parentId) {
         const children = createTree(obj, item.group.groupId);
         if (children.length > 0) {
-          (item.group.icon = <CarryOutOutlined />),
-            (item.group.children = children);
+          (item.group.icon = <CarryOutOutlined />), (item.group.children = children);
         }
         tree.push({
           value: item.group.groupId,
@@ -117,9 +89,7 @@ export default function AddProjectPage() {
       }),
     };
     if (form.projectManagerId) {
-      const user = userList.findLast(
-        (user) => user.userId === form.projectManagerId
-      );
+      const user = userList.findLast((user) => user.userId === form.projectManagerId);
 
       if (user) {
         data = {
@@ -129,9 +99,7 @@ export default function AddProjectPage() {
       }
     }
     if (form.saleManagerId) {
-      const user = userList.findLast(
-        (user) => user.userId === form.saleManagerId
-      );
+      const user = userList.findLast((user) => user.userId === form.saleManagerId);
       if (user) {
         data = {
           ...data,
@@ -155,9 +123,8 @@ export default function AddProjectPage() {
 
     await projectServices
       .createProject(data)
-      .then((data) => {
+      .then(() => {
         message.success("สร้าง Project สำเร็จ");
-        // rounter.push("/page/crm/project");
       })
       .catch(() => {
         message.error("ผิดพลาด กรุณาลองใหม่");
@@ -166,9 +133,7 @@ export default function AddProjectPage() {
   }
   async function changeCustomerGroupSelect(id: number): Promise<void> {
     if (id) {
-      const data = await projectServices.findCustomerSelectByCustomerGroupId(
-        id
-      );
+      const data = await projectServices.findCustomerSelectByCustomerGroupId(id);
       setCustomerList(data);
       const customer = customerList.findLast((customer) => customer.id === id);
       if (customer?.responsible) {
@@ -194,10 +159,6 @@ export default function AddProjectPage() {
     if (id) {
       const data = await projectServices.findBranchSelectByCustomerSubId(id);
       setBranchList(data);
-      const customer = customerList.findLast((customer) => customer.id === id);
-      // if (customer?.responsible) {
-      //   setSaleList(customer.responsible);
-      // }
     } else {
       setBranchList([]);
     }
@@ -205,10 +166,6 @@ export default function AddProjectPage() {
   async function onChangeGroupSelect(value: string[]): Promise<void> {
     const data = await userServices.findUsersByOwnerGroup(value);
     setUsersFormGroup(data);
-  }
-
-  function selectRelateUsers(value: string[]): void {
-    throw new Error("Function not implemented.");
   }
 
   return (

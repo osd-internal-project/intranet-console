@@ -118,7 +118,18 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
         });
     },
 
-    getdataLeaveByUserId: async (userId: string | undefined) => {
+    // getdataLeaveByUserId: async (userId: string | undefined) => {
+    //   let url = `${baseUrlDataLeave}/leave-header/${userId}`;
+    //   return await axiosInstance
+    //     .get(url)
+    //     .then((res) => {
+    //       return res.data;
+    //     })
+    //     .catch((err) => {
+    //       return;
+    //     });
+    // },
+    getHeaderByUserId: async (userId: string | undefined) => {
       let url = `${baseUrlDataLeave}/leave-header/${userId}`;
       return await axiosInstance
         .get(url)

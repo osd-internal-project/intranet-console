@@ -1,21 +1,18 @@
 "use client";
-import React from "react";
-
+import React, { useContext } from "react";
 import { TableStock } from "./components/TableStock";
-import { FiltersAddStock } from "./components/FiltersAddStock";
 import { Breadcrumb, Col, Divider, Row, Space } from "antd";
 import { useSearchParams } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 const page = () => {
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const location = searchParams.get("location");
   const userId = searchParams.get("userId");
   const inventoryName = searchParams.get("inventoryName");
   const ownerGroup = searchParams.get("groupID");
-
-  const { data: session } = useSession();
 
   return (
     <div>
@@ -49,7 +46,7 @@ const page = () => {
             inventoryId={String(id)}
             location={String(location)}
             userId={String(userId)}
-            username={session?.user?.username}
+            username={user?.username}
             ownerGroup={ownerGroup}
             inventoryName={inventoryName}
           />

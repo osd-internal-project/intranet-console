@@ -1,19 +1,17 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { TableDetail } from "./components/table-detail";
 import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, message } from "antd";
-import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../../../services/leave-management.service";
-import { useSession } from "next-auth/react";
 import { ITypeDataLeave } from "../common";
 import { ExclamationCircleFilled } from "@ant-design/icons";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 export default function Page() {
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const Auth = useAxiosIntranet();
-  const AuthUser = useAxiosUser();
   const dataleaveservice = DataLeaveService(Auth);
-  const userServices = DataLeaveService(AuthUser);
-  const { data: session } = useSession();
   const [loading, setLoading] = useState<boolean>(true);
   const [dataLeaveUser, setDataLeaveUser] = useState<ITypeDataLeave[]>([]);
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
@@ -24,8 +22,8 @@ export default function Page() {
   }, [loading]);
 
   const loadData = async () => {
-    if (session) {
-      const res = await dataleaveservice.getdataLeaveAll(session?.user.userId);
+    if (user) {
+      const res = await dataleaveservice.getdataLeaveAll(user?.userId);
       setDataLeaveUser(res);
     }
     setLoading(false);
@@ -54,7 +52,7 @@ export default function Page() {
         },
       },
       onOk: async () => {
-        const res = await dataleaveservice.approvedDataLeave(type, id, session?.user);
+        const res = await dataleaveservice.approvedDataLeave(type, id, user);
         if (res) {
           type === "cancel" ? message.error("cancel success") : message.success("approved success");
           setLoading(true);

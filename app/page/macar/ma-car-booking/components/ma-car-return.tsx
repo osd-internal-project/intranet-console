@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Table, Button, Row, Col, Space, Select, Modal, Form, Input, Divider, message, InputNumber } from "antd";
 import type { TableProps, FormProps } from "antd";
 import dayjs from "dayjs";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { MaCarBookServices } from "../../../../services/ma-car-book.service";
-import { useSession } from "next-auth/react";
 import { MaCarType, MaCarBookType } from "../../common/index";
 import { checkApprovedStatus, checkStatusReturn, CheckStatusMaCarBookType, showStatus } from "@/app/utils/validatefield";
 import { dateFormatTime } from "@/app/utils";
 import { CarReturnForm } from "./car-return-form";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 export interface props {
   maCarBookData: MaCarBookType[];
   loading: boolean;
@@ -16,10 +16,10 @@ export interface props {
 }
 
 const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: any): React.ReactElement => {
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const intraAuth = useAxiosIntranet();
   const [formBookData] = Form.useForm();
   const [formReturn] = Form.useForm();
-  const { data: session } = useSession();
   const [currentMaId, setCurrentMaId] = useState<string | null>(null);
   const [currentMaBookId, setCurrentMaBookId] = useState<number | null>(null);
   const [modalEditReturn, setModalEditReturn] = useState(false);
@@ -69,7 +69,7 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
       returnAt: dayjs(record.returnAt),
       carName1: record.carName,
       statusApprove: approvedStatus,
-      phoneNumber: session?.user.phoneNumber,
+      phoneNumber: user?.phoneNumber,
     });
   };
 
@@ -86,8 +86,8 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
           carMile: values.carMile,
           carPetrol: values.carPetrol,
           updatedAt: dayjs().toISOString(),
-          updatedById: session?.user.userId,
-          updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+          updatedById: user?.userId,
+          updatedByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
         };
         const maCarBook = {
           carBookApprovedStatus: "Return",

@@ -1,15 +1,13 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import type { TableProps, FormProps } from "antd";
-import { DeleteIcon, EditIcon } from "@/components/icon";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManagehandbookFileServices } from "../service/handbook.service";
 import { useForm } from "antd/es/form/Form";
 import { Table, Space, Button, Modal, Form, Input, Tag, message, Popconfirm, Tooltip, Switch } from "antd";
 import moment from "moment";
-import dayjs from "dayjs";
-import { useSession } from "next-auth/react";
 import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 export interface handbooktype {
   idhandtype: Number;
   nameType: String;
@@ -42,6 +40,7 @@ export interface handbook {
 }
 
 const HandBookOption: React.FC = () => {
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const intraAuth = useAxiosIntranet();
   const [handbooktype, sethandbooktype] = useState<handbooktype[]>([]);
   const [handbook, sethandbook] = useState<handbook[]>([]);
@@ -53,7 +52,6 @@ const HandBookOption: React.FC = () => {
   const [form] = useForm();
   const [formEdit] = useForm();
   const [searchTerm, setSearchTerm] = useState("");
-  const { data: session } = useSession();
   useEffect(() => {
     fetchDatahandbooktype();
     fetchDataHandbookfile();
@@ -135,7 +133,7 @@ const HandBookOption: React.FC = () => {
         idhandtype: values?.idhandtype,
         nameType: values?.nameType,
         updatedAt: new Date().toISOString(),
-        author: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+        author: `${user?.firstNameTh} ${user?.lastNameTh}`,
         status: values?.status,
       };
       await managehandbookFileServices.updatehandbooktype(updatenewType);
@@ -267,8 +265,7 @@ const HandBookOption: React.FC = () => {
           justifyContent: "space-between",
           alignItems: "center",
           fontSize: "16px",
-        }}
-      >
+        }}>
         <div>
           <div>
             ค้นหาชื่อประเภทเอกสาร :
@@ -295,8 +292,7 @@ const HandBookOption: React.FC = () => {
             name="nameType"
             label="ชื่อประเภทเอกสาร :"
             rules={[{ required: true, message: "กรุณากรอกชื่อประเภทเอกสาร" }]}
-            style={{ width: "300px" }}
-          >
+            style={{ width: "300px" }}>
             <Input placeholder="ชื่อประเภทเอกสาร" showCount maxLength={50} />
           </Form.Item>
           <Form.Item name="status" label="สถานะการมอง :" style={{ width: "300px" }}>
@@ -326,16 +322,14 @@ const HandBookOption: React.FC = () => {
               width: "300px",
               visibility: "hidden",
               margin: "0 0 -60px 0",
-            }}
-          >
+            }}>
             <Input disabled />
           </Form.Item>
           <Form.Item
             name="nameType"
             label="ชื่อประเภทเอกสาร :"
             rules={[{ required: true, message: "กรุณากรอกชื่อประเภทเอกสาร" }]}
-            style={{ width: "300px" }}
-          >
+            style={{ width: "300px" }}>
             <Input placeholder="ชื่อประเภทเอกสาร" showCount maxLength={50} />
           </Form.Item>
           <Form.Item name="status" label="สถานะการมอง :" style={{ width: "300px" }}>

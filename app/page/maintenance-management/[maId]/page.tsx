@@ -1,14 +1,15 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Breadcrumb, Card, Col, message, Row, UploadFile } from "antd";
 import MaDescriptionComponent from "./components/MaDescription";
 import { ITMaTask, ITMaType, ITMaUpdateForm, ITPagination } from "../common";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import MaServices from "../services/ma.service";
 import { useParams } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { UserContectType, UserContext } from "@/app/config/userContext";
+
 export default function MaTaskPage() {
-  const { data: session } = useSession();
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const intranetAuth = useAxiosIntranet();
   const maServices = MaServices(intranetAuth);
   const params = useParams<{ maId: string }>();
@@ -27,35 +28,16 @@ export default function MaTaskPage() {
     console.log(res);
     setloading(false);
   };
-  // const data: ITMaDetail = {
-  //   id: 2,
-  //   maName: "task 2",
-  //   maStatus: "success",
-  //   maTypeId: 2,
-  //   maTypeName: "ตรวจสภาพ",
-  //   maDate: new Date(),
-  //   detail: "ทดสอบ",
-  //   contact: "บริษัท",
-  //   remake: "สำเร็จ",
-  //   updatedDate: new Date(),
-  //   createdDate: new Date(),
-  // };
 
-  async function updateMa(
-    data: ITMaUpdateForm,
-    attendFiles: UploadFile[],
-    imageFiles: UploadFile[]
-  ): Promise<void> {
+  async function updateMa(data: ITMaUpdateForm, attendFiles: UploadFile[], imageFiles: UploadFile[]): Promise<void> {
     let form = {
       ...data,
-      updatedById: session?.user.userId,
-      updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+      updatedById: user?.userId,
+      updatedByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
     };
 
     if (data.nextTask) {
-      const typeSelected = maTypes.findLast(
-        (type) => type.id === data.nextTask?.maTypeId
-      );
+      const typeSelected = maTypes.findLast((type) => type.id === data.nextTask?.maTypeId);
       const submaStatus = "process";
       form = {
         ...form,

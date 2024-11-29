@@ -1,16 +1,16 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ManagementCarMasterdataTable from "./components/management-car-masterdata-table";
 import ManagementCarMasterdataManage from "./components/management-car-masterdata-manage";
 import { Button, Col, Form, message, Row } from "antd";
-import { useSession } from "next-auth/react";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../../services/manage-car.service";
 import { MaCarType } from "../../../common";
 import ExportExcel from "../../export/export-excel-ma-type";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 const ManagementCarMasterdataType: React.FC = (): React.ReactElement => {
-  const { data: session } = useSession();
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const [form] = Form.useForm();
   const IntranetAuth = useAxiosIntranet();
   const maCarServices = ManageCarServices(IntranetAuth);
@@ -49,13 +49,13 @@ const ManagementCarMasterdataType: React.FC = (): React.ReactElement => {
     if (status === "create") {
       base = {
         ...values,
-        createdById: session?.user.userId,
-        createdByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+        createdById: user?.userId,
+        createdByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
       };
     } else if (status === "edit") {
       base = {
         ...values,
-        createdByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+        createdByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
       };
     }
 

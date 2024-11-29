@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ManagementCarWrapupManage from "./components/management-car-wrapup-manage";
 import ManagementCarWrapupTable from "./components/management-car-wrapup-table";
 import { Button, Col, Form, message, Row, UploadFile } from "antd";
@@ -6,14 +6,12 @@ import ExportExcel from "../../export/export-excel";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../../services/manage-car.service";
 import { MaCarType } from "../wrapup-car";
-import { useSession } from "next-auth/react";
 import { RcFile } from "antd/lib/upload";
 import dayjs from "dayjs";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 const ManagementCarWrapup: React.FC = (): React.ReactElement => {
-  const mountdirUrl = process.env.MOUNT_DIR;
-
-  const { data: session } = useSession();
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const [form] = Form.useForm();
   const intraAuth = useAxiosIntranet();
   const manageCarServices = ManageCarServices(intraAuth);
@@ -105,7 +103,7 @@ const ManagementCarWrapup: React.FC = (): React.ReactElement => {
         cost: values?.cost ?? 0,
         dateStart: values.dateStart,
         dateEnd: values.dateEnd,
-        createbyName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+        createbyName: `${user?.firstNameTh} ${user?.lastNameTh}`,
         remark: values?.remark,
         status: null,
       };

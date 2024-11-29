@@ -1,17 +1,16 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import type { FormProps } from "antd";
 import type { UploadFile, UploadProps } from "antd";
 import { RcFile } from "antd/es/upload";
-import { DeleteOutlined, DownloadOutlined, FilePdfOutlined, FormOutlined, UploadOutlined } from "@ant-design/icons";
+import { DeleteOutlined, DownloadOutlined, FormOutlined, UploadOutlined } from "@ant-design/icons";
 import moment from "moment";
-import { DeleteIcon, EditIcon } from "@/components/icon";
-import { useSession } from "next-auth/react";
 import dayjs from "dayjs";
 import { Button, Modal, Input, Table, TableProps, message, Form, Space, Upload, Switch, Tooltip, Popconfirm, Select, Tag } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManagehandbookFileServices } from "../service/handbook.service";
 import { useForm } from "antd/es/form/Form";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 export interface handbookFile {
   [x: string]: any;
   handbookid?: Number | null;
@@ -30,6 +29,7 @@ export interface handbooktype {
   status: boolean;
 }
 const HandBookManage: React.FC = () => {
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const intraAuth = useAxiosIntranet();
   const [handbooktype, sethandbooktype] = useState<handbooktype[]>([]);
   const [handbookFile, sethandbookFile] = useState<handbookFile[]>([]);
@@ -40,7 +40,6 @@ const HandBookManage: React.FC = () => {
   const [showmodalupload, setshowmodalupload] = useState(false);
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [existingFiles, setExistingFiles] = useState<UploadFile[]>([]);
-  const { data: session } = useSession();
   const [form] = useForm();
   const [searchFileName, setSearchFileName] = useState("");
   const [searchFileType, setSearchFileType] = useState("");
@@ -93,7 +92,7 @@ const HandBookManage: React.FC = () => {
         const formData: any = new FormData();
         formData.append("fileName", values.fileName);
         formData.append("filetype", values.filetype);
-        formData.append("author", `${session?.user.firstNameTh} ${session?.user.lastNameTh}`);
+        formData.append("author", `${user?.firstNameTh} ${user?.lastNameTh}`);
         formData.append("status", values?.status);
         formData.append("file", attendFiles[0].originFileObj as RcFile);
         const response = await managehandbookFileServices.uploadFiles(formData);
@@ -126,7 +125,7 @@ const HandBookManage: React.FC = () => {
       handbookid: values.handbookid,
       fileName: values.fileName,
       filetype: values.filetype,
-      author: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+      author: `${user?.firstNameTh} ${user?.lastNameTh}`,
       updatedAt: new Date().toISOString(),
       status: values?.status,
     };
@@ -228,7 +227,7 @@ const HandBookManage: React.FC = () => {
   const filteredData = handbookFile.filter(
     (handbookFile) =>
       handbookFile.fileName.toLowerCase().includes(searchFileName.toLowerCase()) &&
-      handbookFile.filetype.toLowerCase().includes(searchFileType.toLowerCase())
+      handbookFile.filetype.toLowerCase().includes(searchFileType.toLowerCase()),
   );
 
   const closecreate = () => {
@@ -347,8 +346,7 @@ const HandBookManage: React.FC = () => {
           justifyContent: "space-between",
           alignItems: "center",
           fontSize: "16px",
-        }}
-      >
+        }}>
         <div>
           <div>
             ค้นหาชื่อเอกสาร :
@@ -427,8 +425,7 @@ const HandBookManage: React.FC = () => {
               width: "300px",
               visibility: "hidden",
               margin: "0px -80px -60px 0px",
-            }}
-          >
+            }}>
             <Input />
           </Form.Item>
           <Form.Item name="fileName" label="ชื่อเอกสาร :" rules={[{ required: true, message: "กรุณากรอกชื่อเอกสาร" }]} style={{ width: "300px" }}>

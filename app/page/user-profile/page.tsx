@@ -1,22 +1,11 @@
 "use client";
-import {
-  Breadcrumb,
-  Button,
-  Card,
-  Checkbox,
-  Col,
-  Form,
-  Input,
-  Row,
-  Tabs,
-} from "antd";
-import { useParams } from "next/navigation";
-import React, { useState, useEffect } from "react";
+import { Breadcrumb, Col, Row } from "antd";
+import React, { useContext } from "react";
 import ShowDetailComponent from "./components/ShowDetailComponent";
-import { useSession } from "next-auth/react";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 export default function UserDetailPage() {
-  const { data: session } = useSession();
-  if (session?.user.userId) {
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
+  if (user?.userId) {
     return (
       <Row>
         <Col span={24}>
@@ -38,7 +27,7 @@ export default function UserDetailPage() {
         </Col>
         <Col span={24}>
           <div className=" grid-span-1 space-y-2">
-            <ShowDetailComponent userid={session?.user.userId} />
+            <ShowDetailComponent userid={user?.userId} />
           </div>
         </Col>
       </Row>

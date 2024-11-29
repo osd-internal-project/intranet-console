@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Form, message } from "antd";
 import type { TablePaginationConfig } from "antd";
 import { dataMaCarbook } from "../../../common";
-import { useSession } from "next-auth/react";
 import { showStatus } from "@/app/utils/validatefield";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../../services/manage-car.service";
@@ -10,6 +9,7 @@ import { MaCarServices } from "@/app/services/ma-car.service";
 import ManagementCarBookingModal from "./components/management-car-booking-modal";
 import ManagementCarBookingTable from "./components/management-car-booking-table";
 import dayjs from "dayjs";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 export interface props {
   loading: boolean;
@@ -20,7 +20,7 @@ export interface props {
 }
 
 const managementCarBooking: React.FC<props> = ({ setLoading, loading, maCarBookData, pagination, changePagination }): React.ReactElement => {
-  const { data: session } = useSession();
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const showStatusBox = showStatus();
   const [form] = Form.useForm();
   const intraAuth = useAxiosIntranet();
@@ -55,8 +55,8 @@ const managementCarBooking: React.FC<props> = ({ setLoading, loading, maCarBookD
       if (status === "approved") {
         updatedApproveMa = {
           id: form.getFieldValue("id"),
-          carBookApprovedById: session?.user.userId,
-          carBookApprovedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+          carBookApprovedById: user?.userId,
+          carBookApprovedByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
           carBookApprovedStatus: checkStatusApproved === "approved" ? "Approve" : "DisapProved",
           carBookApprovedDate: dayjs(),
           ...(checkStatusApproved !== "disable" && { remarkApproved: values.remarkApproved }),
@@ -65,8 +65,8 @@ const managementCarBooking: React.FC<props> = ({ setLoading, loading, maCarBookD
       if (status === "return") {
         updatedApproveMa = {
           id: form.getFieldValue("id"),
-          recipientId: session?.user.userId,
-          recipientName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+          recipientId: user?.userId,
+          recipientName: `${user?.firstNameTh} ${user?.lastNameTh}`,
           carBookApprovedStatus: "Completed",
           returnAt: dayjs(),
         };

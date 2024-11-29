@@ -1,17 +1,14 @@
 "use client";
 import { Breadcrumb, Col, Row, Select } from "antd";
-
 import { NotificationTable } from "./components/NotificationTable";
-import { useSession } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
 import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { useForm } from "antd/es/form/Form";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { ITypeOption, ITypeMasterLocation } from "./common";
 import OrderManagementServices from "./services/index.service";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 export default function Notification() {
-  const { data: session } = useSession();
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const stockAuth = useAxiosStock();
   const orderManagementService = OrderManagementServices(stockAuth);
   const [location, setLocation] = useState<number[]>([]);
@@ -21,18 +18,16 @@ export default function Notification() {
     fetchData();
   }, []);
   const fetchData = async () => {
-    if (session?.grouplist) {
-      const locations: ITypeMasterLocation[] =
-        await orderManagementService.getLocationByGroup(session?.grouplist);
-
-      const options = locations.map((d: ITypeMasterLocation) => ({
-        value: d.id,
-        label: d.locationName,
-      }));
-      setOption(options);
-      setLocation(options.map((d) => d.value));
-      // setLocation(options.map((d) => d.value));
-    }
+    // if (user?.userMapGroup) {
+    //   const locations: ITypeMasterLocation[] = await orderManagementService.getLocationByGroup(user?.userMapGroup);
+    //   const options = locations.map((d: ITypeMasterLocation) => ({
+    //     value: d.id,
+    //     label: d.locationName,
+    //   }));
+    //   setOption(options);
+    //   setLocation(options.map((d) => d.value));
+    //   // setLocation(options.map((d) => d.value));
+    // }
   };
   return (
     <>

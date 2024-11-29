@@ -27,6 +27,9 @@ interface Prop {
 }
 
 const Navigation: React.FC<Prop> = ({ profileDetail, collapsed, setCollapsed, currentPath, menulist, avatar, logOut }) => {
+
+  console.log(profileDetail);
+  
   const [open, setOpen] = useState(false);
   const [notiDetails, setNotiDetils] = useState<{
     count: number;

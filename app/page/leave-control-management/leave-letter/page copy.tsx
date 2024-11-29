@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { Breadcrumb, Col, Divider, Row, UploadFile, message, Form, Modal } from "antd";
-import { useSession } from "next-auth/react";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import LeaveManagementServices from "../../../services/leave-management.service";
@@ -19,10 +18,7 @@ export default function Page() {
   const AuthUser = useAxiosUser();
   const leavemanagementservices = LeaveManagementServices(Intra);
   const dataleaveserviceUser = LeaveManagementServices(AuthUser);
-
-  const { data: session } = useSession();
-
-  const [getUser] = useState<IDataUser | null>(session ? session?.user : null);
+  const [getUser] = useState<IDataUser | null>(null);
   const [getUserOwner, setUserOwner] = useState<IDataUser | null>({});
   const [getTypeLeaveOption, setTypeLeaveOption] = useState<ISelect[]>([]);
   const [typeLeaveTable, setTypeLeaveTable] = useState<ITypetypeleave[]>([]);
@@ -50,25 +46,25 @@ export default function Page() {
   }, [loading, params]);
 
   const loadDataTypeLeave = async () => {
-    const res = await leavemanagementservices.getdataAll();
-    const resTableDeatilTypeLeave = await leavemanagementservices.findDetailTypeLeaveByUserId(getUser?.userId);
-    const resTableUserTypeLeave = await leavemanagementservices.findUserByUserId(getUser?.userId);
-    const options = res.map((event: ITypetypeleave) => {
-      return { value: event.typeId, label: event.typeName };
-    });
-    const groupId = session?.user.ownerGroup;
-    if (groupId) {
-      const dataGroupDetail = await dataleaveserviceUser.getUserGroupByGroupId(groupId);
-      const dataUserById = await dataleaveserviceUser.getUsersByUserId(dataGroupDetail.headId);
-      setUserOwner(dataUserById);
-      setGroupDetail(dataGroupDetail);
-    }
-    const dataGroupUserId = await leavemanagementservices.getdataLeaveByUserId(session?.user.userId);
-    setDataGroupUserId(dataGroupUserId);
-    setTypeLeaveTable(resTableDeatilTypeLeave);
-    setTypeLeaveTableAll(resTableUserTypeLeave.typeLeaveDisabledMap);
-    setTypeLeaveOption(options);
-    setLoading(false);
+    // const res = await leavemanagementservices.getdataAll();
+    // const resTableDeatilTypeLeave = await leavemanagementservices.findDetailTypeLeaveByUserId(getUser?.userId);
+    // const resTableUserTypeLeave = await leavemanagementservices.findUserByUserId(getUser?.userId);
+    // const options = res.map((event: ITypetypeleave) => {
+    //   return { value: event.typeId, label: event.typeName };
+    // });
+    // const groupId = session?.user.ownerGroup;
+    // if (groupId) {
+    //   const dataGroupDetail = await dataleaveserviceUser.getUserGroupByGroupId(groupId);
+    //   const dataUserById = await dataleaveserviceUser.getUsersByUserId(dataGroupDetail.headId);
+    //   setUserOwner(dataUserById);
+    //   setGroupDetail(dataGroupDetail);
+    // }
+    // const dataGroupUserId = await leavemanagementservices.getdataLeaveByUserId(session?.user.userId);
+    // setDataGroupUserId(dataGroupUserId);
+    // setTypeLeaveTable(resTableDeatilTypeLeave);
+    // setTypeLeaveTableAll(resTableUserTypeLeave.typeLeaveDisabledMap);
+    // setTypeLeaveOption(options);
+    // setLoading(false);
   };
 
   const beforeUploadAttendFiles = (file: RcFile) => {

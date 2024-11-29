@@ -130,7 +130,7 @@ const UserTable: React.FC<Props> = ({ setManagePage, managePage, filterForm, cre
     console.log(record);
     createForm.setFieldsValue(record);
     createForm.setFieldValue("masterPositionId", record.masterPosition?.posId);
-    createForm.setFieldValue("departmentId", record.userMapOrganizeChart[0].positionId);
+    // createForm.setFieldValue("departmentId", record.userMapOrganizeChart[0].positionId);
     setManagePage({ ...managePage, modalStatus: true, modalTitle: "update" });
   };
 

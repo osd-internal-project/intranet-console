@@ -1,5 +1,5 @@
-import { decodeToken } from 'react-jwt';
-import { OrganizationUserAccess } from './models/organization-user-access';
+import { decodeToken } from "react-jwt";
+import { OrganizationUserAccess } from "./models/organization-user-access";
 
 export const parseToken = (token: string): OrganizationUserAccess => {
   const {

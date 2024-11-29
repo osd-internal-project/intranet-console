@@ -17,28 +17,6 @@ import {
 } from "@/components/icon";
 
 type MenuItem = Required<MenuProps>["items"][number];
-const MenuNav: MenuProps["items"] = [
-  {
-    key: "1",
-    label: <Link href={`/page/user-profile`}>Profile</Link>,
-    icon: <UserOutlined />,
-  },
-  {
-    key: "2",
-    label: (
-      <Link
-        href={"#"}
-        onClick={async () => {
-          signOut({ callbackUrl: "/signin" });
-        }}>
-        Sign Out
-      </Link>
-    ),
-    icon: <LogoutOutlined />,
-  },
-];
-
-export default MenuNav;
 
 export const MenuSider: MenuItem[] = [
   {
@@ -75,65 +53,21 @@ export const MenuSider: MenuItem[] = [
       },
     ],
   },
-  // {
-  //   key: "stock",
-  //   icon: stockIcon,
-  //   label: "Stock",
-  //   rule: "s-s",
-  //   children: [
-  //     {
-  //       key: `order-management`,
-  //       label: `Order Management`,
-  //       rule: "sm-order-s",
-  //     },
-  //     {
-  //       key: `inventory`,
-  //       label: `Inventory`,
-  //       rule: "sm-inventory-s",
-  //     },
-
-  //     {
-  //       key: `product-list`,
-  //       label: `Product List`,
-  //       rule: "sm-productlist-s",
-  //     },
-  //     {
-  //       key: `report-withdraw-ranking`,
-  //       label: `10 อันดับการเบิกจ่ายที่มากที่สุด`,
-  //       rule: "sm-re-wr-h",
-  //     },
-  //     {
-  //       key: `report-transaction`,
-  //       label: `การรับเข้าเบิกจ่าย`,
-  //       rule: "sm-re-tr-h",
-  //     },
-  //     {
-  //       key: `report-expired`,
-  //       label: `รายงานการหมดอายุ`,
-  //       rule: "sm-re-ex-h",
-  //     },
-  //     {
-  //       key: `stock-management`,
-  //       label: `Stock Management`,
-  //       rule: "sm-s",
-  //     },
-  //   ],
-  // },
   {
     key: "housekeeper",
     icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
     label: "งานแม่บ้าน",
-    rule: "hk-s",
+    // rule: "hk-s",
     children: [
       {
         key: `housekeeper/housekeepers`,
         label: `ข้อมูลการการทำงานของแม่บ้าน`,
-        rule: "hk-h",
+        // rule: "hk-h",
       },
       {
         key: `housekeeper/housekeeper-management`,
         label: `จัดการข้อมูลแม่บ้าน`,
-        rule: "hk-m",
+        // rule: "hk-m",
       },
     ],
   },
@@ -141,27 +75,27 @@ export const MenuSider: MenuItem[] = [
     key: "leave-control-management",
     icon: IconDataLeave,
     label: `ข้อมูลการลา`,
-    rule: "dl-s",
+    // rule: "dl-s",
     children: [
       {
         key: `leave-control-management/leave-letter`,
         label: `ใบลาออนไลน์`,
-        rule: "dl-a",
+        // rule: "dl-a",
       },
       {
         key: `leave-control-management/leave-history`,
         label: `ประวัติการลา`,
-        rule: "dl-dt-u",
+        // rule: "dl-dt-u",
       },
       {
         key: `leave-control-management/leave-history-admin`,
         label: `ประวัติการลา (สำหรับ Admin)`,
-        rule: "dl-dt-a",
+        // rule: "dl-dt-a",
       },
       {
         key: `leave-control-management/leave-disabled-management`,
         label: `จัดการสิทธิ์การลา`,
-        rule: "dl-dis",
+        // rule: "dl-dis",
       },
     ],
   },
@@ -169,7 +103,7 @@ export const MenuSider: MenuItem[] = [
     key: "3",
     icon: bookingIcon,
     label: "ห้องประชุม",
-    rule: "br-s",
+    // rule: "br-s",
     children: [
       {
         key: `bookingroom/booking-room`,
@@ -194,7 +128,6 @@ export const MenuSider: MenuItem[] = [
       },
     ],
   },
-
   // {
   //   key: "crm",
   //   icon: contactListIcon,

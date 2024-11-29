@@ -7,6 +7,7 @@ export interface TUsersService {
   validateEmail: (email: string, type: string) => Promise<any>;
   validatePassword: (password: string) => Promise<any>;
   findGroupsId24: () => Promise<any>;
+  findByToken: () => Promise<any>;
   addUser: (formData: TCreateUserDto) => Promise<any>;
   findAssignGroup: (userId: string, organizeId: string) => Promise<any>;
   findOwnerGroupByOrganizeId: (userId: string, organizeId: string) => Promise<any>;
@@ -44,6 +45,9 @@ export const UsersServices = (axiosInstance: AxiosInstance): TUsersService => {
           console.log(err);
           return [];
         });
+    },
+    findByToken: async () => {
+      return await axiosInstance.get(`${baseUrl}/findByToken`).then((result) => result.data);
     },
     findAssignGroup: async (userId, organizeId) => {
       return await axiosInstance

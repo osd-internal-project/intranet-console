@@ -1,9 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { signOut, useSession } from "next-auth/react";
+import React, { useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Navigation from "@/components/Navigation";
-import { FloatButton, Layout, Menu, message, Spin } from "antd";
+import { Button, FloatButton, Layout, Menu, message, Spin } from "antd";
 import { MenuSiderWithModule } from "@/app/config/menu";
 import { pageWithoutMenu } from "@/app/config/data";
 import { Footer } from "antd/es/layout/layout";
@@ -15,11 +14,14 @@ import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { ITNotiLogsMessage } from "../common/noti-logs";
 import { loadAppConfig } from "../config/app-config";
 import UserServices from "../services/user.service";
+import { UsersServices } from "../services/users.service";
+import { UserContectType, UserContext } from "../config/userContext";
 
 const { Content, Sider } = Layout;
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const { tokenAccess, authenticated, login, logout, id24Axios } = useId24();
+  const { saveUser } = useContext(UserContext) as UserContectType;
   const baseUrlIntra = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const [loading, setLoading] = useState<boolean>(true);
@@ -27,25 +29,46 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const [notiLogMessages, setNotiLogMessages] = useState<ITNotiLogsMessage[]>([]);
   const [countNoti, setCountNoti] = useState<any>();
   const [avatar, setAvatar] = useState<any>();
+  const [profileDetail, setProfileDetail] = useState<any>();
+
+  const [userRequestedLogout, setUserRequestedLogout] = useState(false);
   const pathname = usePathname();
+  const defaultPath = `${window.location.origin}/page/home`;
 
   useEffect(() => {
-    featchData();
-  }, [authenticated]);
-
-  if (!authenticated) {
-    login(window.location.href, false);
-  }
+    if (authenticated) {
+      if (loading) featchData();
+    }
+  }, [authenticated, loading]);
 
   const featchData = async () => {
-    if (authenticated) {
-      // const notiLogMessage = await NotiLogsServices(baseUrlIntra).findByUsers(session.user.userId);
-      // setNotiLogMessages(notiLogMessage);
-      // const image = await UserServices(baseUrlUser).getImage(session.user.userId);
-      // setAvatar(image);
-      setLoading(false);
-    }
+    await UsersServices(baseUrlUser)
+      .findByToken()
+      .then((profile) => {
+        setProfileDetail(profile);
+        saveUser(profile);
+      });
+    // const notiLogMessage = await NotiLogsServices(baseUrlIntra).findByUsers(session.user.userId);
+    // setNotiLogMessages(notiLogMessage);
+    // const image = await UserServices(baseUrlUser).getImage(session.user.userId);
+    // setAvatar(image);
+    setLoading(false);
   };
+
+  if (!authenticated) {
+    if (userRequestedLogout) {
+      login(defaultPath, false);
+    } else {
+      login(defaultPath, false);
+    }
+    return <Button onClick={() => login(defaultPath, false)}>Login</Button>;
+  }
+
+  const logOut = async () => {
+    setUserRequestedLogout(true);
+    logout().then(() => login(defaultPath, false));
+  };
+
   // const stockAuth = useAxiosStock();
   // const userAuth = useAxiosUser();
   // const indexServices = IndexServices(stockAuth);
@@ -118,8 +141,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         collapsible
         collapsed={collapsed}
         style={{ backgroundColor: "#ffff" }}
-        className=" min-h-screen  hidden  md:block bg "
-      >
+        className=" min-h-screen  hidden  md:block bg ">
         <div className="flex justify-center py-4 ">
           {!collapsed ? (
             <>
@@ -139,7 +161,8 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <Layout>
         <div className="w-full">
           <Navigation
-            // session={session}
+            logOut={logOut}
+            profileDetail={profileDetail}
             countNoti={countNoti}
             collapsed={collapsed}
             setCollapsed={setCollapsed}
@@ -155,8 +178,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             padding: 20,
             margin: 0,
             marginBottom: 20,
-          }}
-        >
+          }}>
           {children}
         </Content>
         <Footer style={{ textAlign: "center" }}>Intranet ©{new Date().getFullYear()} Created by OSD</Footer>

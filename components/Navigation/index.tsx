@@ -103,7 +103,7 @@ const Navigation: React.FC<Prop> = ({ profileDetail, collapsed, setCollapsed, cu
           <Dropdown menu={{ items: MenuNav }} className="text-black hover:text-zinc-300">
             <a onClick={(e) => e.preventDefault()}>
               <Space className="text-base">
-                {`คุณ ${profileDetail?.username}`}
+                {`คุณ ${profileDetail?.firstNameTh} ${profileDetail?.lastNameTh}`}
                 {avatar && avatar instanceof Blob ? (
                   <Avatar size={40} src={avatar instanceof Blob ? URL.createObjectURL(avatar) : ""} />
                 ) : (

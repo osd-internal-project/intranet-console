@@ -1,34 +1,23 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Breadcrumb, Button, Card, Col, message, Row, Spin } from "antd";
-import {
-  ITCustomerForm,
-  ITPagination,
-  ITConfigData,
-  ITSelectUsers,
-} from "../common";
+import React, { useContext, useEffect, useState } from "react";
+import { Breadcrumb, Card, Col, message, Row } from "antd";
+import { ITCustomerForm, ITConfigData, ITSelectUsers } from "../common";
 import CrmServices from "../services/index.service";
 import { useAxiosCrm, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
-
-import { checkRule } from "@/app/utils/rules";
 import CreateCustomerForm from "./components/create-form";
 import { useRouter } from "next/navigation";
 import UserServices from "../services/user.service";
-import { useSession } from "next-auth/react";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 export default function AddCustomerPage() {
-  const { data: session } = useSession();
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const intranetAuth = useAxiosCrm();
   const crmServices = CrmServices(intranetAuth);
   const userAuth = useAxiosUser();
   const userServices = UserServices(userAuth);
   const router = useRouter();
-  const [customerTypeGroup, setCustomerTypeGroup] = useState<ITConfigData[]>(
-    []
-  );
-  const [customerResponsibles, setCustomerResponsibles] = useState<
-    ITSelectUsers[]
-  >([]);
+  const [customerTypeGroup, setCustomerTypeGroup] = useState<ITConfigData[]>([]);
+  const [customerResponsibles, setCustomerResponsibles] = useState<ITSelectUsers[]>([]);
   const [customerTypes, setCustomerTypes] = useState<ITConfigData[]>([]);
   useEffect(() => {
     fetchData();
@@ -37,10 +26,8 @@ export default function AddCustomerPage() {
   const fetchData = async () => {
     const group = await crmServices.findConfigCustomerTypeGroup();
     setCustomerTypeGroup(group);
-    if (session?.user.userId) {
-      const responsibles = await userServices.findSaleUserBySalePermission(
-        session?.user.userId
-      );
+    if (user?.userId) {
+      const responsibles = await userServices.findSaleUserBySalePermission(user?.userId);
       if (responsibles && responsibles.length > 0) {
         setCustomerResponsibles(responsibles);
       }
@@ -53,9 +40,7 @@ export default function AddCustomerPage() {
   function onFinishAdd(form: ITCustomerForm): void {
     let createForm = form;
     if (form.customerTypeId) {
-      const customerTypeSelected = customerTypes.findLast(
-        (group) => group.id === form.customerTypeGroupId
-      );
+      const customerTypeSelected = customerTypes.findLast((group) => group.id === form.customerTypeGroupId);
       if (customerTypeSelected?.name) {
         createForm = {
           ...createForm,
@@ -64,9 +49,7 @@ export default function AddCustomerPage() {
       }
     }
     if (form.customerTypeGroupId) {
-      const customerTypeGroupSelected = customerTypeGroup.findLast(
-        (group) => group.id === form.customerTypeGroupId
-      );
+      const customerTypeGroupSelected = customerTypeGroup.findLast((group) => group.id === form.customerTypeGroupId);
       if (customerTypeGroupSelected?.name) {
         createForm = {
           ...createForm,

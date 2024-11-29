@@ -1,15 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import {
-  Breadcrumb,
-  Button,
-  Card,
-  Col,
-  message,
-  Row,
-  Spin,
-  TablePaginationConfig,
-} from "antd";
+import React, { useContext, useEffect, useState } from "react";
+import { Breadcrumb, Button, Card, Col, message, Row, Spin, TablePaginationConfig } from "antd";
 import CustomerFilterComponent from "./components/customer-filter";
 import CustomerTableComponent from "./components/customer-table";
 import { ITCustomer, ITCustomerForm, ITPagination } from "./common";
@@ -17,16 +8,16 @@ import CrmServices from "./services/index.service";
 import { useAxiosCrm } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { checkRule } from "@/app/utils/rules";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 export default function MaTaskPage() {
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const rules = {
     ruleCustomerShow: checkRule("crm-c-s"),
     ruleCustomerAdd: checkRule("crm-c-a"),
     ruleCustomerDelete: checkRule("crm-c-d"),
   };
 
-  const { data: session } = useSession();
   const intranetAuth = useAxiosCrm();
   const crmServices = CrmServices(intranetAuth);
   const [loading, setloading] = useState<boolean>(true);
@@ -42,16 +33,10 @@ export default function MaTaskPage() {
   }, [loading]);
 
   const fetchData = async () => {
-    if (session?.user.userId) {
-      const skip: number =
-        (Number(pagination.current) - 1) * Number(pagination.pageSize);
+    if (user?.userId) {
+      const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
       const take: number = Number(pagination.pageSize);
-      const res = await crmServices.findCustomerDataTable(
-        search,
-        take,
-        skip,
-        session?.user.userId
-      );
+      const res = await crmServices.findCustomerDataTable(search, take, skip, user?.userId);
       setDataTable(res.data);
       setPagination({ ...pagination, total: res.count });
     }

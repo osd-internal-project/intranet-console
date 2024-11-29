@@ -3,6 +3,7 @@ export type TUser = {
   userId: string;
   username: string;
   firstNameTh: string;
+  lastNameTh: string;
   phoneNumber: string;
   capabilities: JSON;
   token: string;

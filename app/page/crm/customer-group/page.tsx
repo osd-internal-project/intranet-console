@@ -1,25 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  Breadcrumb,
-  Button,
-  Card,
-  Col,
-  message,
-  Modal,
-  Row,
-  Spin,
-  TablePaginationConfig,
-} from "antd";
+import { Breadcrumb, Button, Card, Col, message, Row, Spin, TablePaginationConfig } from "antd";
 import { useAxiosCrm } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { checkRule } from "@/app/utils/rules";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 
-import {
-  ExclamationCircleFilled,
-  ExclamationCircleOutlined,
-} from "@ant-design/icons";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 import CustomerGroupServices from "@/app/services/customer-group.service";
 import { ITCustomerGroup, ITCustomerGroupForm } from "@/app/common/customer";
 import CustomerGroupTableComponent from "./components/customer-group-table";
@@ -30,7 +15,6 @@ import CustomerGroupEditComponent from "./components/customer-group-edit";
 import modal from "antd/es/modal";
 
 export default function CustomerGroupPage() {
-  const { data: session } = useSession();
   const crmAuth = useAxiosCrm();
   const customerGroupServices = CustomerGroupServices(crmAuth);
   const [addForm] = useForm();
@@ -50,8 +34,7 @@ export default function CustomerGroupPage() {
   }, [loading]);
 
   const fetchData = async () => {
-    const skip: number =
-      (Number(pagination.current) - 1) * Number(pagination.pageSize);
+    const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
     const take: number = Number(pagination.pageSize);
     const res = await customerGroupServices.findDatatable(search, take, skip);
     setDataTable(res.data);
@@ -146,11 +129,7 @@ export default function CustomerGroupPage() {
           <div className="grid grid-cols-1 ">
             <Card>
               <div className=" flex justify-end mb-2">
-                <Button
-                  type="primary"
-                  size="small"
-                  onClick={() => setAddState(true)}
-                >
+                <Button type="primary" size="small" onClick={() => setAddState(true)}>
                   Add Customer Group
                 </Button>
               </div>
@@ -180,12 +159,7 @@ export default function CustomerGroupPage() {
         />
       )}
       {editId && (
-        <CustomerGroupEditComponent
-          editId={editId}
-          setEditId={(state) => setEditId(state)}
-          handdleUpdate={handdleUpdate}
-          editForm={editForm}
-        />
+        <CustomerGroupEditComponent editId={editId} setEditId={(state) => setEditId(state)} handdleUpdate={handdleUpdate} editForm={editForm} />
       )}
     </Spin>
   );

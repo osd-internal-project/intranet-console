@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Table,
   Tag,
@@ -17,50 +17,22 @@ import {
   TablePaginationConfig,
 } from "antd";
 import type { TableProps, FormProps } from "antd";
-import {
-  useAxiosIntranet,
-  useAxiosUser,
-} from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageRoomServices } from "../services/manage-room.service";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { useForm } from "antd/es/form/Form";
-import { useSession } from "next-auth/react";
 import isBetween from "dayjs/plugin/isBetween";
+import { BookingType, MasterRoomType } from "../common";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 dayjs.extend(isBetween);
 
-interface BookingType {
-  id: string;
-  bookingId: number;
-  roomName: string;
-  roomType: string;
-  bookerName: string;
-  bookerPhone: string;
-  bookerDepartment: string;
-  bookingStatus: string;
-  startDate: Dayjs;
-  endDate: Dayjs;
-  title: string;
-  member: string;
-  outSider: string;
-  note: string;
-}
-
-interface MasterRoomType {
-  roomName: string;
-  roomDescription: string;
-  masterRoomTypeId: number;
-}
-
-interface UserData {
-  firstNameTh: string;
-}
-
 const ManageRoom: React.FC = () => {
-  const intraAuth = useAxiosIntranet();
   const [form] = useForm();
+  const intraAuth = useAxiosIntranet();
   const manageRoomServices = ManageRoomServices(intraAuth);
-  const [isModalBooking, setIsModalBooking] = useState(false);
+
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const [modalEditBooking, setModalEditBooking] = useState(false);
   const [modalApproveBooking, setModalApproveBooking] = useState(false);
   const [bookingStatus, setBookingStatus] = useState("");
@@ -68,13 +40,38 @@ const ManageRoom: React.FC = () => {
   const [masterRoomData, setMasterRoomData] = useState<MasterRoomType[]>([]);
   const [currentBookingId, setCurrentBookingId] = useState<string | null>(null);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const { data: session } = useSession();
   const [loading, setloading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
     total: 0,
   });
+
+  useEffect(() => {
+    if (loading === true) fetchData();
+  }, [loading]);
+
+  const fetchData = async () => {
+    const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
+    const take: number = Number(pagination.pageSize);
+    try {
+      const masterRoom = await manageRoomServices.getMasterRoomQuery();
+      const masterRoomActive = masterRoom.filter((room: any) => room.roomsStatus === true);
+      setMasterRoomData(masterRoomActive);
+      const bookings = await manageRoomServices.findBookingRoom(skip, take);
+      setPagination({ ...pagination, total: bookings.count });
+      setBookingData(
+        bookings.data.map((item: any, index: number) => ({
+          ...item,
+          key: index.toString(),
+          id: item.id,
+        })),
+      );
+      setloading(false);
+    } catch (error) {
+      console.error("Failed to fetch data", error);
+    }
+  };
 
   const changePagination = (page: TablePaginationConfig) => {
     setPagination({ ...page });
@@ -88,9 +85,7 @@ const ManageRoom: React.FC = () => {
       key: "no",
       width: "50px",
       render: (id: number, record: any, index: number) =>
-        pagination.current && pagination.pageSize
-          ? (pagination.current - 1) * pagination.pageSize + (index + 1)
-          : "",
+        pagination.current && pagination.pageSize ? (pagination.current - 1) * pagination.pageSize + (index + 1) : "",
     },
     {
       title: "ชื่อห้องประชุม",
@@ -110,8 +105,7 @@ const ManageRoom: React.FC = () => {
       width: "250px",
       render: (_, record) => (
         <span>
-          {dayjs(record.startDate).format("YYYY-MM-DD")} -{" "}
-          {dayjs(record.endDate).format("YYYY-MM-DD")}
+          {dayjs(record.startDate).format("YYYY-MM-DD")} - {dayjs(record.endDate).format("YYYY-MM-DD")}
         </span>
       ),
     },
@@ -121,8 +115,7 @@ const ManageRoom: React.FC = () => {
       width: "150px",
       render: (_, record) => (
         <span>
-          {dayjs(record.startDate).format("HH:mm")} -{" "}
-          {dayjs(record.endDate).format("HH:mm")}
+          {dayjs(record.startDate).format("HH:mm")} - {dayjs(record.endDate).format("HH:mm")}
         </span>
       ),
     },
@@ -138,24 +131,8 @@ const ManageRoom: React.FC = () => {
       dataIndex: "bookingStatus",
       width: "100px",
       render: (status: string) => (
-        <Tag
-          color={
-            status === "process"
-              ? "blue"
-              : status === "Approve"
-              ? "green"
-              : status === "cancel"
-              ? "red"
-              : undefined
-          }
-        >
-          {status === "process"
-            ? "กำลังรออนุมัติ"
-            : status === "Approve"
-            ? "อนุมัติสำเร็จ"
-            : status === "cancel"
-            ? "ยกเลิกการจอง"
-            : ""}
+        <Tag color={status === "process" ? "blue" : status === "Approve" ? "green" : status === "cancel" ? "red" : undefined}>
+          {status === "process" ? "กำลังรออนุมัติ" : status === "Approve" ? "อนุมัติสำเร็จ" : status === "cancel" ? "ยกเลิกการจอง" : ""}
         </Tag>
       ),
     },
@@ -165,14 +142,9 @@ const ManageRoom: React.FC = () => {
       dataIndex: "note",
       width: "150px",
       render: (_, record) => (
-        <Space >
+        <Space>
           <a onClick={() => showModalEditBooking(record)}>แก้ไข</a>
-          <Popconfirm
-            title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?"
-            onConfirm={() => handleDeleteBooking(record.id)}
-            okText="ใช่"
-            cancelText="ไม่"
-          >
+          <Popconfirm title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?" onConfirm={() => handleDeleteBooking(record.id)} okText="ใช่" cancelText="ไม่">
             <a>ลบ</a>
           </Popconfirm>
           <a onClick={() => showModalApproveBooking(record)}>อนุมัติ</a>
@@ -266,12 +238,8 @@ const ManageRoom: React.FC = () => {
         return false;
       });
 
-      console.log(roomName);
-
       if (hasOverlap) {
-        message.error(
-          "ไม่สามารถแก้ไขการจองนี้ได้เนื่องจากมีการจองห้องนี้ในช่วงเวลานี้แล้ว"
-        );
+        message.error("ไม่สามารถแก้ไขการจองนี้ได้เนื่องจากมีการจองห้องนี้ในช่วงเวลานี้แล้ว");
         setSubmitLoading(false);
         return;
       }
@@ -300,11 +268,8 @@ const ManageRoom: React.FC = () => {
     try {
       const updatedApproveBooking = {
         id: currentBookingId,
-        approverId: session?.user.userId,
-        approver:
-          session?.user.firstNameTh && session?.user.lastNameTh
-            ? `${session.user.firstNameTh} ${session.user.lastNameTh}`
-            : "",
+        approverId: user?.userId,
+        approver: `${user?.firstNameTh} ${user?.lastNameTh}`,
         bookingStatus: "Approve",
         approveDate: dayjs(),
       };
@@ -318,74 +283,17 @@ const ManageRoom: React.FC = () => {
     }
   };
 
-  const onFinishFailed: FormProps<BookingType>["onFinishFailed"] = (
-    errorInfo
-  ) => {
-    console.log("Failed:", errorInfo);
-  };
-
-  const handleCancel = () => {
-    setIsModalBooking(false);
-  };
-
-  useEffect(() => {
-    if (loading === true) fetchData();
-  }, [loading]);
-
-  const fetchData = async () => {
-    const skip: number =
-      (Number(pagination.current) - 1) * Number(pagination.pageSize);
-    const take: number = Number(pagination.pageSize);
-    try {
-      const masterRoom = await manageRoomServices.getMasterRoomQuery();
-      const masterRoomActive = masterRoom.filter(
-        (room: any) => room.roomsStatus === true
-      );
-      setMasterRoomData(masterRoomActive);
-      const bookings = await manageRoomServices.findBookingRoom(skip, take);
-      setPagination({ ...pagination, total: bookings.count });
-      setBookingData(
-        bookings.data.map((item: any, index: number) => ({
-          ...item,
-          key: index.toString(),
-          id: item.id,
-        }))
-      );
-      setloading(false);
-    } catch (error) {
-      console.error("Failed to fetch data", error);
-    }
-  };
-
   return (
     <>
-      <Modal
-        title="จองห้องประชุม"
-        open={modalEditBooking}
-        onCancel={handleEditBookingCancel}
-        footer={null}
-        width={1000}
-      >
-        <Form
-          form={form}
-          layout="vertical"
-          name="edit_booking"
-          initialValues={{ remember: true }}
-          onFinish={updatedBooking}
-          onFinishFailed={onFinishFailed}
-          autoComplete="off"
-        >
+      <Modal title="จองห้องประชุม" open={modalEditBooking} onCancel={handleEditBookingCancel} footer={null} width={1000}>
+        <Form form={form} layout="vertical" name="edit_booking" initialValues={{ remember: true }} onFinish={updatedBooking} autoComplete="off">
           <Form.Item<BookingType> name="bookingId" hidden>
             <Input />
           </Form.Item>
           <Divider orientation="left">ข้อมูลผู้จอง</Divider>
           <Row gutter={16}>
             <Col span={8}>
-              <Form.Item<BookingType>
-                label="ชื่อผู้จอง"
-                name="bookerName"
-                rules={[{ required: true, message: "กรุณากรอกชื่อผู้จอง!" }]}
-              >
+              <Form.Item<BookingType> label="ชื่อผู้จอง" name="bookerName" rules={[{ required: true, message: "กรุณากรอกชื่อผู้จอง!" }]}>
                 <Input disabled placeholder="กรอกชื่อผู้จอง" />
               </Form.Item>
             </Col>
@@ -393,19 +301,12 @@ const ManageRoom: React.FC = () => {
               <Form.Item<BookingType>
                 label="เบอร์โทรศัพท์ผู้จอง"
                 name="bookerPhone"
-                rules={[
-                  { required: true, message: "กรุณากรอกเบอร์โทรศัพท์ผู้จอง!" },
-                ]}
-              >
+                rules={[{ required: true, message: "กรุณากรอกเบอร์โทรศัพท์ผู้จอง!" }]}>
                 <Input disabled placeholder="กรอกเบอร์โทรศัพท์ผู้จอง" />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<BookingType>
-                label="ชื่อแผนก"
-                name="bookerDepartment"
-                rules={[{ required: true, message: "กรุณากรอกกรอกชื่อแผนก!" }]}
-              >
+              <Form.Item<BookingType> label="ชื่อแผนก" name="bookerDepartment" rules={[{ required: true, message: "กรุณากรอกกรอกชื่อแผนก!" }]}>
                 <Select
                   placeholder="โปรดเลือกเเผนกผู้จอง"
                   options={[
@@ -421,11 +322,7 @@ const ManageRoom: React.FC = () => {
           <Divider orientation="left">ข้อมูลการจอง</Divider>
           <Row gutter={16}>
             <Col span={8}>
-              <Form.Item<BookingType>
-                label="ชื่อห้อง"
-                name="roomName"
-                rules={[{ required: true, message: "กรุณาเลือกห้องประชุม!" }]}
-              >
+              <Form.Item<BookingType> label="ชื่อห้อง" name="roomName" rules={[{ required: true, message: "กรุณาเลือกห้องประชุม!" }]}>
                 <Select placeholder="โปรดเลือกห้องประชุม">
                   {masterRoomData.map((room) => (
                     <Select.Option key={room.roomName} value={room.roomName}>
@@ -436,13 +333,7 @@ const ManageRoom: React.FC = () => {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<BookingType>
-                label="วันที่เริ่มการจอง"
-                name="startDate"
-                rules={[
-                  { required: true, message: "กรุณากรอกวันที่เริ่มการจอง!" },
-                ]}
-              >
+              <Form.Item<BookingType> label="วันที่เริ่มการจอง" name="startDate" rules={[{ required: true, message: "กรุณากรอกวันที่เริ่มการจอง!" }]}>
                 <DatePicker showTime style={{ width: "100%" }} />
               </Form.Item>
             </Col>
@@ -450,40 +341,21 @@ const ManageRoom: React.FC = () => {
               <Form.Item<BookingType>
                 label="วันที่สิ้นสุดการจอง"
                 name="endDate"
-                rules={[
-                  { required: true, message: "กรุณากรอกวันที่สิ้นสุดการจอง!" },
-                ]}
-              >
+                rules={[{ required: true, message: "กรุณากรอกวันที่สิ้นสุดการจอง!" }]}>
                 <DatePicker showTime style={{ width: "100%" }} />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<BookingType>
-                label="หัวข้อการประชุม"
-                name="title"
-                rules={[
-                  { required: true, message: "กรุณากรอกหัวข้อการประชุม!" },
-                ]}
-              >
+              <Form.Item<BookingType> label="หัวข้อการประชุม" name="title" rules={[{ required: true, message: "กรุณากรอกหัวข้อการประชุม!" }]}>
                 <Input placeholder="กรอกหัวข้อการประชุม" />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<BookingType>
-                label="ประเภทการจอง"
-                name="roomType"
-                rules={[
-                  { required: true, message: "กรุณาเลือกประเภทการประชุม!" },
-                ]}
-              >
+              <Form.Item<BookingType> label="ประเภทการจอง" name="roomType" rules={[{ required: true, message: "กรุณาเลือกประเภทการประชุม!" }]}>
                 <Select placeholder="โปรดเลือกประเภทการประชุม">
-                  <Select.Option value="Meeting">
-                    ประชุม (Meeting)
-                  </Select.Option>
+                  <Select.Option value="Meeting">ประชุม (Meeting)</Select.Option>
                   <Select.Option value="Train">อบรม (Train)</Select.Option>
-                  <Select.Option value="Seminar">
-                    สัมมนา (Seminar)
-                  </Select.Option>
+                  <Select.Option value="Seminar">สัมมนา (Seminar)</Select.Option>
                 </Select>
               </Form.Item>
             </Col>
@@ -508,11 +380,7 @@ const ManageRoom: React.FC = () => {
           </Row>
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Row justify="end">
-              <Button
-                type="default"
-                onClick={handleEditBookingCancel}
-                style={{ marginRight: 8 }}
-              >
+              <Button type="default" onClick={handleEditBookingCancel} style={{ marginRight: 8 }}>
                 ยกเลิก
               </Button>
               <Button type="primary" htmlType="submit" loading={submitLoading}>
@@ -522,42 +390,17 @@ const ManageRoom: React.FC = () => {
           </Form.Item>
         </Form>
       </Modal>
-      <Modal
-        width={400}
-        title="อนุมัติจองห้อง"
-        open={modalApproveBooking}
-        onCancel={handleApproveBookingCancel}
-        footer={null}
-      >
+      <Modal width={400} title="อนุมัติจองห้อง" open={modalApproveBooking} onCancel={handleApproveBookingCancel} footer={null}>
         <p>ยืนยันอนุมัติจองห้อง</p>
-        <Form
-          form={form}
-          layout="vertical"
-          name="edit_booking"
-          initialValues={{ remember: true }}
-          onFinish={onFinishApprove}
-          onFinishFailed={onFinishFailed}
-          autoComplete="off"
-        >
+        <Form form={form} layout="vertical" name="edit_booking" initialValues={{ remember: true }} onFinish={onFinishApprove} autoComplete="off">
           <Row justify="end">
-            <Button
-              type="primary"
-              htmlType="submit"
-              disabled={bookingStatus === "Approve"}
-              loading={submitLoading}
-            >
+            <Button type="primary" htmlType="submit" disabled={bookingStatus === "Approve"} loading={submitLoading}>
               อนุมัติ
             </Button>
           </Row>
         </Form>
       </Modal>
-      <Table
-        columns={columns}
-        dataSource={bookingData}
-        rowKey="id"
-        pagination={pagination}
-        onChange={changePagination}
-      />
+      <Table columns={columns} dataSource={bookingData} rowKey="id" pagination={pagination} onChange={changePagination} />
     </>
   );
 };

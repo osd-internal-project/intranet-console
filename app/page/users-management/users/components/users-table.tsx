@@ -37,14 +37,12 @@ const UserTable: React.FC<Props> = ({ setManagePage, managePage, filterForm, cre
       title: "NO.",
       dataIndex: "no",
       key: "no",
-      width: 100,
       render: (value: string, record: TUserAllDto, index: number) => index + 1 + (managePage.pagination.current - 1) * managePage.pagination.pageSize,
     },
     {
       title: "USERNAME",
       dataIndex: "username",
       key: "username",
-      width: 200,
       render: (value: string, record: TUserAllDto) => (
         <>
           <b>{value}</b>
@@ -56,34 +54,29 @@ const UserTable: React.FC<Props> = ({ setManagePage, managePage, filterForm, cre
       title: "FULL NAME",
       dataIndex: "fullname",
       key: "fullname",
-      width: 200,
       render: (value: string, record: TUserAllDto) => `${record.firstNameTh} ${record.lastNameTh}`,
     },
     {
       title: "POSITION",
       dataIndex: "position",
       key: "position",
-      width: 200,
       render: (value: string, record: TUserAllDto) => <>{record.masterPosition?.nameEn}</>,
     },
     {
       title: "PHONE NUMBER",
       dataIndex: "phoneNumber",
       key: "phoneNumber",
-      width: 200,
     },
     {
       title: "STATUS",
       dataIndex: "activeStatus",
       key: "activeStatus",
-      width: 100,
       render: (value: string, record: TUserAllDto, index: number) => (value ? <Tag color="green">Active</Tag> : <Tag color="volcano">Inactive</Tag>),
     },
     {
       title: "CREATED",
       dataIndex: "createdAt",
       key: "createdAt",
-      width: 300,
       render: (value: Date, record: TUserAllDto, index: number) => (value ? dateToStringTh(value) : ""),
     },
     {
@@ -127,10 +120,11 @@ const UserTable: React.FC<Props> = ({ setManagePage, managePage, filterForm, cre
   };
 
   const onClickEdit = (record: TUserAllDto) => {
-    console.log(record);
-    createForm.setFieldsValue(record);
-    createForm.setFieldValue("masterPositionId", record.masterPosition?.posId);
-    // createForm.setFieldValue("departmentId", record.userMapOrganizeChart[0].positionId);
+    createForm.setFieldsValue({
+      ...record,
+      masterPositionId: record.masterPosition?.posId,
+      ...(record.userMapOrganizeGroupOwner.length > 0 && { organizeId: record.userMapOrganizeGroupOwner[0].organizedId }),
+    });
     setManagePage({ ...managePage, modalStatus: true, modalTitle: "update" });
   };
 

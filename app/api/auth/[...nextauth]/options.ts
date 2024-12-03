@@ -17,8 +17,6 @@ export const authOptions = {
         if (!credentials?.username || !credentials?.password) {
           return null;
         }
-        // console.log("authorize");
-        // console.log(`${process.env.AUTH_BACKEND_URL}`);
         try {
           const response = await axios
             .post(`${process.env.AUTH_BACKEND_URL}/auth/login`, {
@@ -58,9 +56,7 @@ export const authOptions = {
       session.refreshToken = token.refreshToken;
       session.user = { ...profile };
       const permission = await axios
-        .get(
-          `${process.env.AUTH_BACKEND_URL}/auth/permission/${profile.userId}`
-        )
+        .get(`${process.env.AUTH_BACKEND_URL}/auth/permission/${profile.userId}`)
         .then((res) => {
           return res.data;
         })

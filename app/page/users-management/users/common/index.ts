@@ -54,6 +54,7 @@ export type TUserAllDto = {
   userMapOrganizeGroupOwner: TUserMapOrganizeGroupOwner[];
   dataModule: string[];
   positionId: number;
+  departmentId: number;
 };
 
 export type TMasterPosition = {

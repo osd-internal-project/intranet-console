@@ -1,8 +1,9 @@
 import { AxiosInstance } from "axios";
 const MasterPositionService = (axiosInstance: AxiosInstance) => {
+  const baseUrl = "master-position";
+  const baseHrUrl = "hr-management";
   return {
     getMasterPositionAll: async () => {
-      const baseUrl = "master-position";
       return await axiosInstance
         .get(`${baseUrl}/`)
         .then((res) => {

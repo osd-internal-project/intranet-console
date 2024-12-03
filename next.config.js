@@ -63,6 +63,7 @@ const nextConfig = {
     REACT_APP_API_BASE_URL: "http://localhost:3000",
     REACT_APP_API_BASE_URL_USER: "http://localhost:4000/api",
     REACT_APP_API_BASE_URL_INTRANET: "http://localhost:4003/api",
+    REACT_APP_API_BASE_URL_HR_MANAGEMENT: "http://localhost:4005/api",
     REACT_APP_USE_AUTH: "https://id24-demo.osd.co.th",
     MOUNT_DIR: "services/intranet/src",
   },

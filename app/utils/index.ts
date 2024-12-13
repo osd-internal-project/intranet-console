@@ -64,7 +64,31 @@ export const diffDayDate = (startDate: Date, endDate: Date) => {
       (1000 * 60 * 60 * 24)
   );
 };
+export const diffHourBetweenDate = (startDate: Date, endDate: Date) => {
+  return dayjs(endDate).diff(dayjs(startDate), "hours");
+};
 
+export const diffHourBetweenHour = (start: string, end: string) => {
+  //HH:mm
+  // Parse the time strings into hours and minutes
+  const [startHour, startMinute] = start.split(":").map(Number);
+  const [endHour, endMinute] = end.split(":").map(Number);
+
+  // Convert times to total minutes from midnight
+  const startTotalMinutes = startHour * 60 + startMinute;
+  let endTotalMinutes = endHour * 60 + endMinute;
+
+  // Handle time ranges spanning midnight
+  if (endTotalMinutes < startTotalMinutes) {
+    endTotalMinutes += 24 * 60; // Add 24 hours in minutes
+  }
+
+  // Calculate the difference in minutes
+  const diffMinutes = endTotalMinutes - startTotalMinutes;
+
+  // Convert minutes to hours
+  return parseFloat((diffMinutes / 60).toFixed(2)); // Round to 2 decimal places
+};
 const Formatter = (value: any) => {
   if (!value) {
     return "";

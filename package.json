@@ -29,6 +29,7 @@
     "and": "^0.0.3",
     "antd": "^5.19.0",
     "antd-img-crop": "^4.18.0",
+    "antd-style": "^3.7.1",
     "axios": "^1.7.2",
     "cookie": "^0.5.0",
     "cookies-next": "^4.1.0",

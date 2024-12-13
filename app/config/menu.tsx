@@ -190,39 +190,39 @@ export const MenuSider: MenuItem[] = [
     ],
   },
 
-  // {
-  //   key: "crm",
-  //   icon: contactListIcon,
-  //   label: `CRM`,
-  //   rule: "crm-s",
-  //   children: [
-  //     {
-  //       key: `crm/customer-group`,
-  //       label: `ข้อมูลลูกค้า`,
-  //       rule: "crm-c-s",
-  //     },
-  //     {
-  //       key: `crm/project`,
-  //       label: `Project`,
-  //       rule: "crm-p-s",
-  //     },
-  //     {
-  //       key: `crm/ticket`,
-  //       label: `Ticket`,
-  //       rule: "crm-t-s",
-  //     },
-  //     {
-  //       key: `crm/products`,
-  //       label: `Products`,
-  //       rule: "crm-ex",
-  //     },
-  //     {
-  //       key: `crm/expense`,
-  //       label: `ข้อมูลการเบิก`,
-  //       rule: "crm-ex",
-  //     },
-  //   ],
-  // },
+  {
+    key: "crm",
+    icon: contactListIcon,
+    label: `CRM`,
+    rule: "crm-s",
+    children: [
+      {
+        key: `crm/customer-group`,
+        label: `ข้อมูลลูกค้า`,
+        rule: "crm-c-s",
+      },
+      {
+        key: `crm/project`,
+        label: `Project`,
+        rule: "crm-p-s",
+      },
+      {
+        key: `crm/ticket`,
+        label: `Ticket`,
+        rule: "crm-t-s",
+      },
+      {
+        key: `crm/products`,
+        label: `Products`,
+        rule: "crm-ex",
+      },
+      {
+        key: `crm/expense`,
+        label: `ข้อมูลการเบิก`,
+        rule: "crm-ex",
+      },
+    ],
+  },
   {
     key: "macar",
     icon: macarIcon,

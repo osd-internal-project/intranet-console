@@ -3,7 +3,7 @@ import { ITSelectUsers } from "@/app/common/customer";
 export interface TUserServices {
   findOrganizeUserByUserId: (userId: string) => Promise<ITSelectUsers[]>;
   findSaleUserBySalePermission: (userId: string) => Promise<ITSelectUsers[]>;
-  findHeaderUserByUserId: (userId: string) => Promise<any[]>;
+  findHeaderUserByUserId: (userId: string) => Promise<ITUser[]>;
 }
 const UserServices = (axiosInstance: AxiosInstance): TUserServices => {
   //User Service

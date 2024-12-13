@@ -5,12 +5,10 @@ import { Row, Col, Breadcrumb, Input, Divider } from "antd";
 import OrderManagementServices from "../services/order-management.service";
 import { useEffect, useState } from "react";
 import { ITypeOrderShow } from "../common";
-import { useSession } from "next-auth/react";
 import { useParams, useSearchParams } from "next/navigation";
 export default function AddOrder() {
   const params = useParams();
   const orderId = params.orderId as string;
-  const { data: session } = useSession();
   const searchParams = useSearchParams();
   const locationId = searchParams.get("locationId") as string;
   const stockAuth = useAxiosStock();
@@ -22,9 +20,7 @@ export default function AddOrder() {
   }, [loading]);
   const fetchData = async () => {
     if (orderId) {
-      const order = await orderManagementService.findDetailByid(
-        Number(orderId)
-      );
+      const order = await orderManagementService.findDetailByid(Number(orderId));
       setOrder(order);
       setLoading(false);
     }
@@ -59,17 +55,10 @@ export default function AddOrder() {
       <Col span={24} className=" flex space-x-4">
         <div className="flex space-x-3  items-center">
           <div className=" text-lg">Location :</div>
-          <Input
-            style={{ width: "200px" }}
-            className=" read-only-input-disable font-bold"
-            value={order?.locationName}
-            disabled
-          />
+          <Input style={{ width: "200px" }} className=" read-only-input-disable font-bold" value={order?.locationName} disabled />
         </div>
       </Col>
-      <Col span={24}>
-        {order ? <ShowOrder order={order} propData={propData} /> : <></>}
-      </Col>
+      <Col span={24}>{order ? <ShowOrder order={order} propData={propData} /> : <></>}</Col>
     </Row>
   );
 }

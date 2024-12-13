@@ -15,9 +15,7 @@ import {
   Modal,
   Popover,
   Row,
-  Select,
   Space,
-  Spin,
   Switch,
   Table,
   Tag,
@@ -26,18 +24,18 @@ import {
   Upload,
   message,
 } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { InventoryStockServices } from "../../services/inventory-stock.service";
 import GhsServices from "@/app/page/stock-management/ghs/services/ghs.service";
 import { TableDetailLot } from "./TableDetailLot";
 import { dateToStringTh, numberWithCommas } from "@/app/utils/format";
 import type { UploadFile } from "antd/es/upload/interface";
-import type { RcFile, UploadProps } from "antd/es/upload";
-import { ITypeBrand, ITypeOption, ITypeVender, ITypeImagesGHS, ITypeInventory, filterproductlist } from "../../common";
+import type { UploadProps } from "antd/es/upload";
+import { ITypeImagesGHS, ITypeInventory, filterproductlist } from "../../common";
 import { v4 as uuidv4 } from "uuid";
 import { ColumnsType } from "antd/es/table";
 import { checkRule } from "@/app/utils/rules";
-import { useSession } from "next-auth/react";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 export interface props {
   inventoryId: string;
@@ -59,7 +57,7 @@ type TFormValue = {
   venderId: string;
 };
 export const TableStock: React.FC<props> = ({ inventoryId, location, userId, username, inventoryName, ownerGroup }): React.ReactElement => {
-  const { data: session } = useSession();
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const stockAuth = useAxiosStock();
   const addStockRule = checkRule("inventory-stock-add");
   const inventorystockservices = InventoryStockServices(stockAuth);
@@ -132,7 +130,7 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
           reciepdate_last: reciepdate_last,
         };
         return mapData;
-      })
+      }),
     );
     setdataResult(data);
     setloading(false);
@@ -164,7 +162,7 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
           } else {
             return null;
           }
-        })
+        }),
       );
       return data;
     } else {
@@ -419,7 +417,7 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
         InventorylotId: uuidc,
       };
       uploadfiles.push(mapuploads);
-      let datacreateStock = { ...value, updateName: `${session?.user?.firstNameTh} ${session?.user?.lastNameTh}` };
+      let datacreateStock = { ...value, updateName: `${user?.firstNameTh} ${user?.lastNameTh}` };
 
       delete datacreateStock["uploadfile"];
       const mapdata = {
@@ -434,7 +432,7 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
       const condition = {
         data: {
           updateId: userId,
-          updateName: `${session?.user?.firstNameTh} ${session?.user?.lastNameTh}`,
+          updateName: `${user?.firstNameTh} ${user?.lastNameTh}`,
           inventoryId: Number(inventoryId),
           masterProductId: Number(headerModalAdd?.masterProductId),
           inventoryLot: {
@@ -472,7 +470,7 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
         productId: Number(headerModalAdd?.masterProductId),
         data: {
           updateId: userId,
-          updateName: `${session?.user?.firstNameTh} ${session?.user?.lastNameTh}`,
+          updateName: `${user?.firstNameTh} ${user?.lastNameTh}`,
           inventoryLot: {
             createMany: {
               data,
@@ -570,7 +568,13 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
           <Input placeholder="Search Text" />
         </Form.Item>
         <Form.Item label="Minimum" name="minumumStock">
-          <Switch checkedChildren="Low" unCheckedChildren="All" defaultChecked={false} onChange={setSwitch} className={getswitch === true ? "active-switch" : "inactive-switch"} />
+          <Switch
+            checkedChildren="Low"
+            unCheckedChildren="All"
+            defaultChecked={false}
+            onChange={setSwitch}
+            className={getswitch === true ? "active-switch" : "inactive-switch"}
+          />
         </Form.Item>
         <div className=" md:col-span-4">
           <Form.Item style={{ justifyContent: "end", display: "flex", alignItems: "center" }}>
@@ -628,7 +632,9 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
                   <Form.Item label={<div style={{ color: "#9E9E9E" }}>{`Chemical Formula`}</div>}>{modalDetail?.chemicalFormula}</Form.Item>
                 </Col>
                 <Col span={8}>
-                  <Form.Item label={<div style={{ color: "#9E9E9E" }}>{`Category`}</div>}>{modalDetail?.masterProductGroup?.masterProductCategories?.categoryName}</Form.Item>
+                  <Form.Item label={<div style={{ color: "#9E9E9E" }}>{`Category`}</div>}>
+                    {modalDetail?.masterProductGroup?.masterProductCategories?.categoryName}
+                  </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label={<div style={{ color: "#9E9E9E" }}>{`Group`}</div>}>{modalDetail?.masterProductGroup?.groupName}</Form.Item>
@@ -663,28 +669,6 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
                     )}
                   </Form.Item>
                 </Col>
-
-                {/* <Col span={8}>
-                  <Form.Item label={<div style={{ color: "#9E9E9E" }}>{`Brand`}</div>}>{modalDetail?.brandName}</Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label={<div style={{ color: "#9E9E9E" }}>{`Vender`}</div>}>{modalDetail?.venderName}</Form.Item>
-                </Col> */}
-                {/* <Col span={8}>
-                  <Form.Item label={<div style={{ color: "#9E9E9E" }}>{`Type`}</div>}>
-                    {modalDetail?.masterProductGroup?.masterProductGroupMapType ? (
-                      <div style={{ display: "flex", flexWrap: "wrap" }}>
-                        {modalDetail?.masterProductGroup?.masterProductGroupMapType?.map((event: { typeName: string }, index: number) => {
-                          return (
-                            <div className="m-0.5" key={index}>
-                              <Tag>{event?.typeName}</Tag>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    ) : null}
-                  </Form.Item>
-                </Col> */}
                 <Col span={8}>
                   <Form.Item label={<div style={{ color: "#9E9E9E" }}>{`Brand`}</div>}>{modalDetail?.brandName}</Form.Item>
                 </Col>
@@ -766,8 +750,7 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
         open={isModalOpenAdd}
         onCancel={handleCancelAdd}
         footer={false}
-        width={1500}
-      >
+        width={1500}>
         <Form form={addForm} name="dynamic_form_nest_item" onFinish={onFinish} onValuesChange={handleTotal} autoComplete="off">
           <Card>
             <Row gutter={[2, 2]}>
@@ -802,7 +785,9 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
                         {/* <div>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`BRAND`}</span>}</div>
                         <div>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`VENDER`}</span>}</div> */}
                         <div>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`QTY`}</span>}</div>
-                        <div style={{ textAlign: "center", fontSize: "14px" }}>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`UNIT`}</span>}</div>
+                        <div style={{ textAlign: "center", fontSize: "14px" }}>
+                          {<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`UNIT`}</span>}
+                        </div>
                         <div>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`PRODUCTION DATE`}</span>}</div>
                         <div>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`EXPIRY DATE`}</span>}</div>
                         <div>{<span style={{ color: "#9E9E9E", fontSize: "14px" }}>{`TOTAL`}</span>}</div>
@@ -817,7 +802,10 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
                             <div key={name + 1}>
                               <div className=" grid  md:grid-cols-8  gap-1">
                                 <div>
-                                  <Form.Item {...restField} name={[name, "receiptDate"]} rules={[{ required: true, message: "please select receipt date" }]}>
+                                  <Form.Item
+                                    {...restField}
+                                    name={[name, "receiptDate"]}
+                                    rules={[{ required: true, message: "please select receipt date" }]}>
                                     <DatePicker style={{ width: "100%" }} />
                                   </Form.Item>
                                 </div>
@@ -836,12 +824,18 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
                                   <Typography style={{ color: "#9E9E9E" }}>{headerModalAdd.unitName}</Typography>
                                 </div>
                                 <div>
-                                  <Form.Item {...restField} name={[name, "productionDate"]} rules={[{ required: true, message: "please select production date" }]}>
+                                  <Form.Item
+                                    {...restField}
+                                    name={[name, "productionDate"]}
+                                    rules={[{ required: true, message: "please select production date" }]}>
                                     <DatePicker style={{ width: "100%", fontSize: "14px" }} />
                                   </Form.Item>
                                 </div>
                                 <div>
-                                  <Form.Item {...restField} name={[name, "expiryDate"]} rules={[{ required: true, message: "please select expiry date" }]}>
+                                  <Form.Item
+                                    {...restField}
+                                    name={[name, "expiryDate"]}
+                                    rules={[{ required: true, message: "please select expiry date" }]}>
                                     <DatePicker style={{ width: "100%" }} />
                                   </Form.Item>
                                 </div>
@@ -850,8 +844,7 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
                                     {...restField}
                                     name={[name, "totalPrice"]}
                                     style={{ color: "#9E9E9E" }}
-                                    rules={[{ required: true, message: "please input total price" }]}
-                                  >
+                                    rules={[{ required: true, message: "please input total price" }]}>
                                     <InputNumber min={0} placeholder="total" type="number" style={{ width: "100%", fontSize: "14px" }} />
                                   </Form.Item>
                                 </div>
@@ -866,14 +859,14 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
                                           <Tooltip
                                             placement="top"
                                             title={
-                                              addForm.getFieldValue(["data", name, "uploadfile"]) ? addForm.getFieldValue(["data", name, "uploadfile", "file", "name"]) : undefined
-                                            }
-                                          >
+                                              addForm.getFieldValue(["data", name, "uploadfile"])
+                                                ? addForm.getFieldValue(["data", name, "uploadfile", "file", "name"])
+                                                : undefined
+                                            }>
                                             <Button
                                               icon={addForm.getFieldValue(["data", name, "uploadfile"]) ? successIcon : undefined}
                                               type="link"
-                                              style={{ justifyContent: "center", display: "flex" }}
-                                            >{`  Upload`}</Button>
+                                              style={{ justifyContent: "center", display: "flex" }}>{`  Upload`}</Button>
                                           </Tooltip>
                                         </Upload>
                                       </Form.Item>
@@ -941,8 +934,7 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
             placement="bottomLeft"
             title="Search"
             trigger="click"
-            overlayStyle={{ width: "calc(100% - 240px)" }}
-          >
+            overlayStyle={{ width: "calc(100% - 240px)" }}>
             <Button type="primary" icon={<FilterOutlined />}>
               Filters
             </Button>

@@ -1,25 +1,14 @@
 "use client";
-import {
-  Breadcrumb,
-  Button,
-  Card,
-  Col,
-  Divider,
-  Form,
-  Row,
-  Select,
-  Table,
-} from "antd";
+import { Breadcrumb, Col, Divider, Row, Select } from "antd";
 import TableOrders from "./components/TableOrders";
 import { useEffect, useState } from "react";
 import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
 import OrderManagementServices from "./services/order-management.service";
-import { useSession } from "next-auth/react";
 import { ITypeMasterLocation, ITypeOption } from "./common";
 import { useSearchParams } from "next/navigation";
 import { useForm } from "antd/es/form/Form";
+
 export default function ProductListPage() {
-  const { data: session } = useSession();
   const searchParams = useSearchParams();
   const locationId = searchParams.get("locationId") as string;
   const stockAuth = useAxiosStock();
@@ -33,16 +22,15 @@ export default function ProductListPage() {
   }, []);
 
   const fetchData = async () => {
-    if (session?.grouplist) {
-      const locations: ITypeMasterLocation[] =
-        await orderManagementService.getLocationByGroup(session?.grouplist);
-      const options = locations.map((d: ITypeMasterLocation) => ({
-        value: d.id,
-        label: d.locationName,
-      }));
-      setOption(options);
-      setLocation(options.length > 0 ? options[0].value : undefined);
-    }
+    // if (session?.grouplist) {
+    //   const locations: ITypeMasterLocation[] = await orderManagementService.getLocationByGroup(session?.grouplist);
+    //   const options = locations.map((d: ITypeMasterLocation) => ({
+    //     value: d.id,
+    //     label: d.locationName,
+    //   }));
+    //   setOption(options);
+    //   setLocation(options.length > 0 ? options[0].value : undefined);
+    // }
   };
 
   return (
@@ -76,9 +64,9 @@ export default function ProductListPage() {
           />
         </div>
       </Col>
-      <Col span={24}>
+      {/* <Col span={24}>
         <TableOrders location={location} grouplist={session?.grouplist} />
-      </Col>
+      </Col> */}
     </Row>
   );
 }

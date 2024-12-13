@@ -1,7 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Breadcrumb, Col, Divider, Row, UploadFile, message, Form, Modal } from "antd";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import LeaveManagementServices from "../../../services/leave-management.service";
@@ -9,15 +8,17 @@ import { RcFile, UploadProps } from "antd/es/upload";
 import { IDataUser, ISelect, ITypetypeleave, ITypeDataLeaveCreate, UserGroupType, ITypeDataLeave } from "../common";
 import { CreateOnlineLeave } from "./components/create-online-leave";
 import { TableOnlineDetailLeave } from "./components/table-online-detail-leave";
-import { checkStatusTypeLeave, validateCheckLeaveDay, validateSumTotalLeave } from "@/app/utils/validatefield";
+import { checkStatusTypeLeave, validateSumTotalLeave } from "@/app/utils/validatefield";
 import MasterHolidaysService from "../../setting/master-holidays/services/index.service";
 import { IFindAllDayDto } from "../../setting/master-holidays/common";
 import MasterTypeLeaveService from "../../setting/typeleave/services/index.service";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import dayjs from "dayjs";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 export default function Page() {
-  const { data: session } = useSession();
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
+
   const router = useRouter();
   const Intra = useAxiosIntranet();
   const AuthUser = useAxiosUser();
@@ -26,7 +27,7 @@ export default function Page() {
   const masterholidaysService = MasterHolidaysService(Intra);
   const mastertypeleaveservices = MasterTypeLeaveService(Intra);
 
-  const [getUser] = useState<IDataUser | null>(session ? session?.user : null);
+  // const [getUser] = useState<IDataUser | null>(session ? session?.user : null);
   const [getTypeLeaveOption, setTypeLeaveOption] = useState<ISelect[]>([]);
   const [typeLeaveTable, setTypeLeaveTable] = useState<ITypetypeleave[]>([]);
   const [groupDetail, setGroupDetail] = useState<UserGroupType[]>([]);
@@ -57,22 +58,22 @@ export default function Page() {
 
   const loadDataTypeLeave = async () => {
     const res = await leavemanagementservices.getdataAll();
-    const resTableDeatilTypeLeave = await leavemanagementservices.findDetailTypeLeaveByUserId(getUser?.userId);
-    const resTableUserTypeLeave = await leavemanagementservices.findUserByUserId(getUser?.userId);
+    // const resTableDeatilTypeLeave = await leavemanagementservices.findDetailTypeLeaveByUserId(getUser?.userId);
+    // const resTableUserTypeLeave = await leavemanagementservices.findUserByUserId(getUser?.userId);
     const options = res.map((event: ITypetypeleave) => {
       return { value: event.typeId, label: event.typeName };
     });
-    const groupId = session?.user?.userMapOwnerGroupId[0].ownerGroupId;
-    if (groupId) {
-      const dataGroupDetail = await dataleaveserviceUser.getUserGroupByGroupId(groupId);
-      setGroupDetail(dataGroupDetail);
-    }
-    const dataGroupUserId = await leavemanagementservices.getdataLeaveByUserId(session?.user.userId);
-    console.log(dataGroupUserId);
+    // const groupId = session?.user?.userMapOwnerGroupId[0].ownerGroupId;
+    // if (groupId) {
+    //   const dataGroupDetail = await dataleaveserviceUser.getUserGroupByGroupId(groupId);
+    //   setGroupDetail(dataGroupDetail);
+    // }
 
-    setDataGroupUserId(dataGroupUserId);
-    setTypeLeaveTable(resTableDeatilTypeLeave);
-    setTypeLeaveTableAll(resTableUserTypeLeave.typeLeaveDisabledMap);
+    // const dataGroupUserId = await leavemanagementservices.getHeaderByUserId(session?.user.userId);
+
+    // setDataGroupUserId(dataGroupUserId);
+    // setTypeLeaveTable(resTableDeatilTypeLeave);
+    // setTypeLeaveTableAll(resTableUserTypeLeave.typeLeaveDisabledMap);
     setTypeLeaveOption(options);
     setLoading(false);
   };
@@ -106,49 +107,49 @@ export default function Page() {
     let total: number = 0;
     let sumDataLeave = await validateSumTotalLeave(values, dataHolidayDay);
 
-    if (session?.user.userId) {
-      const dataMasterType = await leavemanagementservices.getdataMasterTypeLeaveByTypeId(values.type_id);
-      const datadisabledLeave = await leavemanagementservices.getdataTypeLeaveMap(session?.user.id, dataMasterType.typeId);
-      if (datadisabledLeave.length > 0) {
-        message.error(`ท่านไม่มีสิทธ์${dataMasterType.typeName}`);
-        return false;
-      }
-      await checkStatusTypeLeave(values, masterdataTypeLeave);
-      let remainingLeave: number = 0;
+    // if (session?.user.userId) {
+    //   const dataMasterType = await leavemanagementservices.getdataMasterTypeLeaveByTypeId(values.type_id);
+    //   const datadisabledLeave = await leavemanagementservices.getdataTypeLeaveMap(session?.user.id, dataMasterType.typeId);
+    //   if (datadisabledLeave.length > 0) {
+    //     message.error(`ท่านไม่มีสิทธ์${dataMasterType.typeName}`);
+    //     return false;
+    //   }
+    await checkStatusTypeLeave(values, masterdataTypeLeave);
+    let remainingLeave: number = 0;
 
-      let bases = {};
-      if (session?.user.userId) bases = { ...bases, userId: session?.user.userId };
-      if (values.type_id) bases = { ...bases, typeId: values.type_id };
-      const dataLeaveUserById = await leavemanagementservices.getdataLeaveUserById(bases);
+    let bases = {};
+    // if (session?.user.userId) bases = { ...bases, userId: session?.user.userId };
+    if (values.type_id) bases = { ...bases, typeId: values.type_id };
+    const dataLeaveUserById = await leavemanagementservices.getdataLeaveUserById(bases);
 
-      remainingLeave = await validateCheckLeaveDay(dataLeaveUserById, dataMasterType, session?.user.startWork);
+    // remainingLeave = await validateCheckLeaveDay(dataLeaveUserById, dataMasterType, session?.user.startWork);
 
-      total = remainingLeave - sumDataLeave;
+    total = remainingLeave - sumDataLeave;
 
-      if (total <= 0) {
-        message.error(`ไม่สามารถทำการลาได้เนื่องจากวันลาที่เหลืออยู่ หมด หรือไม่เพียงพอ`);
-        return false;
-      }
-      base = {
-        userId: values.userId,
-        firstName: values.firstNameTh,
-        lastName: values.lastNameTh,
-        positionId: values.posId,
-        position: values.position,
-        typeId: values.type_id,
-        typeName: dataMasterType ? dataMasterType.typeName : undefined,
-        startDate: values.startDate,
-        endDate: values.endDate,
-        detail: values.detail,
-        phoneNumber: values.phoneNumber,
-        status: "waitting",
-        ownerId: values.ownerId,
-        ownerName: values.ownerName,
-        groupId: session?.user.ownerGroup,
-        attrachFile: attendFiles[0]?.name,
-        leaveHour: sumDataLeave,
-      };
+    if (total <= 0) {
+      message.error(`ไม่สามารถทำการลาได้เนื่องจากวันลาที่เหลืออยู่ หมด หรือไม่เพียงพอ`);
+      return false;
     }
+    base = {
+      userId: values.userId,
+      firstName: values.firstNameTh,
+      lastName: values.lastNameTh,
+      positionId: values.posId,
+      position: values.position,
+      typeId: values.type_id,
+      // typeName: dataMasterType ? dataMasterType.typeName : undefined,
+      startDate: values.startDate,
+      endDate: values.endDate,
+      detail: values.detail,
+      phoneNumber: values.phoneNumber,
+      status: "waitting",
+      ownerId: values.ownerId,
+      ownerName: values.ownerName,
+      // groupId: session?.user.ownerGroup,
+      attrachFile: attendFiles[0]?.name,
+      leaveHour: sumDataLeave,
+    };
+    // }
 
     Modal.confirm({
       title: "Add ",
@@ -163,24 +164,24 @@ export default function Page() {
         },
       },
       onOk: async () => {
-        const result = await leavemanagementservices.createDataLeave(base);
-        if (result) {
-          if (attendFiles.length > 0) {
-            attendFiles.forEach(async (file) => {
-              const formData: any = new FormData();
-              formData.append("type", "attend");
-              formData.append("files", file.originFileObj);
-              await leavemanagementservices.uploadFiles(result.id, formData);
-            });
-          }
-          message.success(`Add success`);
-          setStartDate(undefined);
-          setEndDate(undefined);
-          setCheckSwitch(false);
-          createdataleaveForm.resetFields();
-          setLoading(true);
-          router.push("/page/leave-control-management/leave-history");
-        }
+        // const result = await leavemanagementservices.createDataLeave(base);
+        // if (result) {
+        //   if (attendFiles.length > 0) {
+        //     attendFiles.forEach(async (file) => {
+        //       const formData: any = new FormData();
+        //       formData.append("type", "attend");
+        //       formData.append("files", file.originFileObj);
+        //       await leavemanagementservices.uploadFiles(result.id, formData);
+        //     });
+        //   }
+        //   message.success(`Add success`);
+        //   setStartDate(undefined);
+        //   setEndDate(undefined);
+        //   setCheckSwitch(false);
+        //   createdataleaveForm.resetFields();
+        //   setLoading(true);
+        //   router.push("/page/leave-control-management/leave-history");
+        // }
       },
       onCancel() {
         setLoading(false);
@@ -211,7 +212,7 @@ export default function Page() {
       <Row gutter={{ xs: 3, sm: 3, md: 3, lg: 3 }}>
         <Col span={12}>
           <CreateOnlineLeave
-            getUser={getUser}
+            // getUser={getUser}
             getTypeLeaveOption={getTypeLeaveOption}
             onfinishCreate={(e: ITypeDataLeaveCreate) => onfinishCreate(e)}
             createdataleaveForm={createdataleaveForm}

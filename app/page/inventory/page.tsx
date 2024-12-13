@@ -1,12 +1,12 @@
 "use client";
 import { Breadcrumb, Card, Col, Divider, Row, Space } from "antd";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FiltersInventory } from "./components/FiltersInventory";
 import { TableInventory } from "./components/TableInventory";
-import { useSession } from "next-auth/react";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 const page = () => {
-  const { data: session } = useSession();
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const [search, setSearch] = useState({});
   return (
     <div>
@@ -31,7 +31,7 @@ const page = () => {
           <div className="grid grid-cols-1 gap-y-2">
             <Card>
               <FiltersInventory prop={(e) => setSearch(e)} />
-              <TableInventory groupID={session} search={search} />
+              <TableInventory groupID={user} search={search} />
             </Card>
           </div>
         </Col>

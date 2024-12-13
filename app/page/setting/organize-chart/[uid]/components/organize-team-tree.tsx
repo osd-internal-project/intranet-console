@@ -4,7 +4,7 @@ import { Card, Tree } from "antd";
 
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { CarryOutOutlined, PlusOutlined } from "@ant-design/icons";
-import OrganizeServices from "../../services/organize-chart.service";
+import OrganizeServices from "../../../../../services/organize-chart.service";
 import { TfindAllOrganizeDto, TfindChildrenOrganizeById } from "../../common";
 
 export interface props {

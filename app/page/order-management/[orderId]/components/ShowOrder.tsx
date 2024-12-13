@@ -4,9 +4,8 @@ import React, { useEffect, useState } from "react";
 import OrderManagementServices from "../../services/order-management.service";
 import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ColumnsType } from "antd/lib/table";
-import { ITypeOption, ITypeOrderShow, ITypeOrderLot } from "../../common";
+import { ITypeOrderShow, ITypeOrderLot } from "../../common";
 import { dateToStringTh, dateToStringThNoTime, numberWithCommas } from "@/app/utils/format";
-import { useSession } from "next-auth/react";
 import { checkRule } from "@/app/utils/rules";
 export interface props {
   order: ITypeOrderShow;
@@ -14,7 +13,6 @@ export interface props {
 }
 
 const ShowOrder: React.FC<props> = ({ order, propData }): React.ReactElement => {
-  const { data: session } = useSession();
   const stockAuth = useAxiosStock();
   const cancelOrderRule = checkRule("sm-order-c");
   const successOrderRule = checkRule("sm-order-s");
@@ -229,7 +227,7 @@ const ShowOrder: React.FC<props> = ({ order, propData }): React.ReactElement => 
                     <div className="font-bold">New Request</div>
                     <div className="text-gray-500">{dateToStringTh(date)}</div>
                   </div>
-                  <div className=" text-gray-500">{`${session?.user.firstNameTh} ${session?.user.lastNameTh}`}</div>
+                  {/* <div className=" text-gray-500">{`${session?.user.firstNameTh} ${session?.user.lastNameTh}`}</div> */}
                 </div>
                 <div>
                   {successOrderRule ? (
@@ -249,7 +247,7 @@ const ShowOrder: React.FC<props> = ({ order, propData }): React.ReactElement => 
                     <div className="font-bold">{order.status === "cancel" ? `Cancel` : `Done`}</div>
                     <div className="text-gray-500">{dateToStringTh(new Date())}</div>
                   </div>
-                  <div className=" text-gray-500">{`${session?.user.firstNameTh} ${session?.user.lastNameTh}`}</div>
+                  {/* <div className=" text-gray-500">{`${session?.user.firstNameTh} ${session?.user.lastNameTh}`}</div> */}
                 </div>
               </>
             )}

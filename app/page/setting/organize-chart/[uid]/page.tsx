@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Breadcrumb, Card, Col, Row, Spin } from "antd";
 import { useParams } from "next/navigation";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import OrganizeServices from "../services/organize-chart.service";
+import OrganizeServices from "../../../../services/organize-chart.service";
 import OrganizeTeamTree from "./components/organize-team-tree";
 import OrganizeTeamManage from "./components/organize-team-manage";
 

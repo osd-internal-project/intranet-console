@@ -1,38 +1,10 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import {
-  Breadcrumb,
-  Button,
-  Card,
-  Col,
-  ConfigProvider,
-  DatePicker,
-  Dropdown,
-  Form,
-  Input,
-  InputNumber,
-  MenuProps,
-  message,
-  Modal,
-  Row,
-  Select,
-  Space,
-  Spin,
-  Switch,
-  TablePaginationConfig,
-  Tabs,
-} from "antd";
+import React, { useContext, useEffect, useState } from "react";
+import { Breadcrumb, Card, Col, Form, message, Modal, Row, Spin, Tabs } from "antd";
 import { useAxiosCrm, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { checkRule } from "@/app/utils/rules";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
-const { TextArea } = Input;
-import {
-  ExclamationCircleFilled,
-  ExclamationCircleOutlined,
-  MinusCircleOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { ExclamationCircleFilled } from "@ant-design/icons";
 import CustomerGroupServices from "@/app/services/customer-group.service";
 
 import CustomerServices from "@/app/services/customer.service";
@@ -41,12 +13,10 @@ import CustomerProductServices from "@/app/services/customer-product.service";
 import CustomerProjectServices from "@/app/services/customer-project.service";
 import UserServices from "@/app/services/user.service";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import dayjs from "dayjs";
-import modal from "antd/es/modal";
 import {
   ITCustomerGroup,
-  ITBranch,
   ITCustomer,
   ITCustomerForm,
   ITSelectUsers,
@@ -65,11 +35,11 @@ import { ITProject } from "@/app/common/project";
 import CusomterEditForm from "./components/customer-edit-form";
 import BranchEdit from "./components/branch-edit";
 import CustomerGroupSearch from "./components/customer-group-search";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 const { useForm } = Form;
 export default function ProductsAddPage() {
-  const { data: session } = useSession();
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const { pid } = useParams();
-
   const crmAuth = useAxiosCrm();
   const userAuth = useAxiosUser();
   const rules = {
@@ -96,7 +66,6 @@ export default function ProductsAddPage() {
   const customerProductServices = CustomerProductServices(crmAuth);
   const customerProjectServices = CustomerProjectServices(crmAuth);
   const customerGroupId = String(pid);
-  // const router = useRouter();
   const [descriptionCustomerForm] = useForm();
   const [customerBrahEditForm] = useForm();
   const [details, setDetails] = useState<ITCustomerGroup>();
@@ -104,9 +73,7 @@ export default function ProductsAddPage() {
   const [loading, setloading] = useState<boolean>(true);
   const [activeTabsKey, setActiveTabKey] = useState<string>("products");
   const [openCustomerCreate, setOpenCustomerCreate] = useState<boolean>(false);
-  const [openCustomerUpdateId, setOpenCustomerUpdateId] = useState<
-    number | undefined
-  >(undefined);
+  const [openCustomerUpdateId, setOpenCustomerUpdateId] = useState<number | undefined>(undefined);
   const [openBranchUpdateId, setOpenBranchUpdateId] = useState<{
     branchId: number | undefined;
     customerId: number | undefined;
@@ -114,21 +81,12 @@ export default function ProductsAddPage() {
 
   const [customerList, setCustomerList] = useState<ITCustomer[]>([]);
   const [branchList, setBranchList] = useState<ITBranchDetail[]>([]);
-  const [customerProductsByCustomerGroup, setCustomerProductsByCustomerGroup] =
-    useState<ITCustomerProduct[]>([]);
-  const [customerProductsByCustomer, setCustomerProductsByCustomer] = useState<
-    ITCustomerProduct[]
-  >([]);
-  const [customerProductsByBranch, setCustomerProductsByBranch] = useState<
-    ITCustomerProduct[]
-  >([]);
+  const [customerProductsByCustomerGroup, setCustomerProductsByCustomerGroup] = useState<ITCustomerProduct[]>([]);
+  const [customerProductsByCustomer, setCustomerProductsByCustomer] = useState<ITCustomerProduct[]>([]);
+  const [customerProductsByBranch, setCustomerProductsByBranch] = useState<ITCustomerProduct[]>([]);
   const [projectDatas, setProjectDatas] = useState<ITProject[]>([]);
-  const [customerTypeGroup, setCustomerTypeGroup] = useState<ITConfigData[]>(
-    []
-  );
-  const [customerResponsibles, setCustomerResponsibles] = useState<
-    ITSelectUsers[]
-  >([]);
+  const [customerTypeGroup, setCustomerTypeGroup] = useState<ITConfigData[]>([]);
+  const [customerResponsibles, setCustomerResponsibles] = useState<ITSelectUsers[]>([]);
   const [customerTypes, setCustomerTypes] = useState<ITConfigData[]>([]);
   useEffect(() => {
     fetchData();
@@ -143,9 +101,7 @@ export default function ProductsAddPage() {
   }, [allSearch]);
   const fetchData = async () => {
     setloading(true);
-    const data = await customerGroupServices.findDetailsById(
-      Number(customerGroupId)
-    );
+    const data = await customerGroupServices.findDetailsById(Number(customerGroupId));
     if (data) {
       setDetails(data);
     }
@@ -168,10 +124,8 @@ export default function ProductsAddPage() {
   const fetchConfigs = async () => {
     const group = await customerServices.findConfigCustomerTypeGroup();
     setCustomerTypeGroup(group);
-    if (session?.user.userId) {
-      const responsibles = await userServices.findSaleUserBySalePermission(
-        session?.user.userId
-      );
+    if (user?.userId) {
+      const responsibles = await userServices.findSaleUserBySalePermission(user?.userId);
       if (responsibles && responsibles.length > 0) {
         setCustomerResponsibles(responsibles);
       }
@@ -182,23 +136,17 @@ export default function ProductsAddPage() {
   };
   const fetchDataCustomers = async () => {
     setloading(true);
-    const res = await customerServices.findCustomerListByCustomerGroup(
-      Number(customerGroupId),
-      {
-        ...allSearch,
-        userid: session?.user.userId ? session.user.userId : null,
-      }
-    );
+    const res = await customerServices.findCustomerListByCustomerGroup(Number(customerGroupId), {
+      ...allSearch,
+      userid: user?.userId ? user?.userId : null,
+    });
     if (res.data) {
       setCustomerList(res.data);
     }
     setloading(false);
   };
   const fetchDataProductsByCustomerGroup = async () => {
-    const data = await customerProductServices.findManyByCustomerGroup(
-      Number(customerGroupId),
-      allSearch
-    );
+    const data = await customerProductServices.findManyByCustomerGroup(Number(customerGroupId), allSearch);
     if (data) {
       setCustomerProductsByCustomerGroup(data);
     } else {
@@ -211,28 +159,16 @@ export default function ProductsAddPage() {
   const onChangeTabs = async (key: string) => {
     setActiveTabKey(key);
   };
-  const getCustomerProductsByCustomer = async (
-    customerId: number,
-    search: any
-  ) => {
-    const products = await customerProductServices.findManyByCustomer(
-      customerId,
-      allSearch
-    );
+  const getCustomerProductsByCustomer = async (customerId: number, search: any) => {
+    const products = await customerProductServices.findManyByCustomer(customerId, allSearch);
     if (products) {
       setCustomerProductsByCustomer(products);
     } else {
       setCustomerProductsByCustomer([]);
     }
   };
-  const getCustomerProductsByBranch = async (
-    bracnchId: number,
-    search: any
-  ) => {
-    const products = await customerProductServices.findManyByBranch(
-      bracnchId,
-      allSearch
-    );
+  const getCustomerProductsByBranch = async (bracnchId: number, search: any) => {
+    const products = await customerProductServices.findManyByBranch(bracnchId, allSearch);
 
     if (products) {
       console.log(products);
@@ -243,43 +179,23 @@ export default function ProductsAddPage() {
   };
   const getCustomerBrachList = async (customerId: number) => {
     setloading(true);
-    const branchs = await customerBranchServices.findManyByCustomerId(
-      customerId,
-      allSearch
-    );
+    const branchs = await customerBranchServices.findManyByCustomerId(customerId, allSearch);
     setBranchList(branchs);
     setloading(false);
   };
 
-  async function getProjectDataTable(
-    productId: string,
-    parentId: string,
-    type: string,
-    search: any
-  ) {
-    const projects =
-      await customerProjectServices.findProjectsByProductIdAndParentId(
-        productId,
-        parentId,
-        type,
-        search
-      );
+  async function getProjectDataTable(productId: string, parentId: string, type: string, search: any) {
+    const projects = await customerProjectServices.findProjectsByProductIdAndParentId(productId, parentId, type, search);
     setProjectDatas(projects);
   }
   function onFinishAddCustomer(form: ITCustomerForm): void {
     let createForm = form;
     const customerNameTh =
-      form.customerTypeId === "natural"
-        ? `${form.details?.firstNameTh} ${form.details?.lastNameTh}`
-        : form.details?.customerNameTh;
+      form.customerTypeId === "natural" ? `${form.details?.firstNameTh} ${form.details?.lastNameTh}` : form.details?.customerNameTh;
     const customerNameEn =
-      form.customerTypeId === "natural"
-        ? `${form.details?.firstNameTh} ${form.details?.lastNameTh}`
-        : form.details?.customerNameEn;
+      form.customerTypeId === "natural" ? `${form.details?.firstNameTh} ${form.details?.lastNameTh}` : form.details?.customerNameEn;
     if (form.customerTypeId) {
-      const customerTypeSelected = customerTypes.findLast(
-        (group) => group.id === form.customerTypeGroupId
-      );
+      const customerTypeSelected = customerTypes.findLast((group) => group.id === form.customerTypeGroupId);
       if (customerTypeSelected?.name) {
         createForm = {
           ...createForm,
@@ -288,9 +204,7 @@ export default function ProductsAddPage() {
       }
     }
     if (form.customerTypeGroupId) {
-      const customerTypeGroupSelected = customerTypeGroup.findLast(
-        (group) => group.id === form.customerTypeGroupId
-      );
+      const customerTypeGroupSelected = customerTypeGroup.findLast((group) => group.id === form.customerTypeGroupId);
       if (customerTypeGroupSelected?.name) {
         createForm = {
           ...createForm,
@@ -363,14 +277,12 @@ export default function ProductsAddPage() {
     let form = {
       ...data,
       ...(data.registration && { registration: Number(data.registration) }),
-      updatedById: session?.user.userId,
-      updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+      updatedById: user?.userId,
+      updatedByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
     };
     let updateForm = form;
     if (form.customerTypeId) {
-      const customerTypeSelected = customerTypes.findLast(
-        (d) => d.id === form.customerTypeGroupId
-      );
+      const customerTypeSelected = customerTypes.findLast((d) => d.id === form.customerTypeGroupId);
       if (customerTypeSelected?.name) {
         updateForm = {
           ...updateForm,
@@ -379,9 +291,7 @@ export default function ProductsAddPage() {
       }
     }
     if (form.customerTypeGroupId) {
-      const customerTypeGroupSelected = customerTypeGroup.findLast(
-        (d) => d.id === form.customerTypeGroupId
-      );
+      const customerTypeGroupSelected = customerTypeGroup.findLast((d) => d.id === form.customerTypeGroupId);
       if (customerTypeGroupSelected?.name) {
         updateForm = {
           ...updateForm,
@@ -405,13 +315,9 @@ export default function ProductsAddPage() {
       }
     }
     const customerNameTh =
-      form.customerTypeId === "natural"
-        ? `${form.details?.firstNameTh} ${form.details?.lastNameTh}`
-        : form.details?.customerNameTh;
+      form.customerTypeId === "natural" ? `${form.details?.firstNameTh} ${form.details?.lastNameTh}` : form.details?.customerNameTh;
     const customerNameEn =
-      form.customerTypeId === "natural"
-        ? `${form.details?.firstNameTh} ${form.details?.lastNameTh}`
-        : form.details?.customerNameEn;
+      form.customerTypeId === "natural" ? `${form.details?.firstNameTh} ${form.details?.lastNameTh}` : form.details?.customerNameEn;
     updateForm = {
       ...updateForm,
       responsibleId: form.responsibleId,
@@ -464,8 +370,8 @@ export default function ProductsAddPage() {
   async function onSaveBranchEdit(form: ITBranchForm): Promise<void> {
     const base = {
       ...form,
-      updatedBy: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
-      updatedByID: session?.user.userId,
+      updatedBy: `${user?.firstNameTh} ${user?.lastNameTh}`,
+      updatedByID: user?.userId,
       updatedAt: dayjs(),
     };
 
@@ -486,11 +392,7 @@ export default function ProductsAddPage() {
     setloading(true);
   }
 
-  async function onSaveBranchAddress(
-    branchId: number,
-    form: ITBranchAddressForm,
-    customerId: number
-  ): Promise<void> {
+  async function onSaveBranchAddress(branchId: number, form: ITBranchAddressForm, customerId: number): Promise<void> {
     await customerBranchServices
       .createBranchAddress(branchId, form)
       .then((res) => {
@@ -502,11 +404,7 @@ export default function ProductsAddPage() {
       });
   }
 
-  async function onDeleteCustomerBranchAddress(
-    branchId: number,
-    addressId: number,
-    customerId: number
-  ): Promise<void> {
+  async function onDeleteCustomerBranchAddress(branchId: number, addressId: number, customerId: number): Promise<void> {
     await customerBranchServices
       .deleteBranchAddress(addressId)
       .then((res) => {
@@ -518,11 +416,7 @@ export default function ProductsAddPage() {
       });
   }
 
-  async function onSaveBranchContact(
-    branchId: number,
-    form: ITBranchContactForm,
-    customerId: number
-  ): Promise<void> {
+  async function onSaveBranchContact(branchId: number, form: ITBranchContactForm, customerId: number): Promise<void> {
     await customerBranchServices
       .createBranchContact(branchId, form)
       .then((res) => {
@@ -534,11 +428,7 @@ export default function ProductsAddPage() {
       });
   }
 
-  async function onDeleteCustomerBranchContact(
-    branchId: number,
-    contactId: number,
-    customerId: number
-  ): Promise<void> {
+  async function onDeleteCustomerBranchContact(branchId: number, contactId: number, customerId: number): Promise<void> {
     await customerBranchServices
       .deleteBranchContact(contactId)
       .then((res) => {
@@ -563,9 +453,7 @@ export default function ProductsAddPage() {
                 title: <span>CRM</span>,
               },
               {
-                title: (
-                  <Link href={"/page/crm/customer-group"}>Customer Group</Link>
-                ),
+                title: <Link href={"/page/crm/customer-group"}>Customer Group</Link>,
               },
               {
                 title: <span>{String(customerGroupId)}</span>,
@@ -574,21 +462,16 @@ export default function ProductsAddPage() {
           />
         </Col>
         <Col span={24}>
-          <div className="title-page-font">
-            {details ? details.customerGroupName : ""}
-          </div>
+          <div className="title-page-font">{details ? details.customerGroupName : ""}</div>
         </Col>
 
         <Col span={24}>
-          <div className="grid grid-cols-1 ">
-            {details && <CustomerGroupDetails details={details} />}
-          </div>
+          <div className="grid grid-cols-1 ">{details && <CustomerGroupDetails details={details} />}</div>
         </Col>
         <Col span={24}>
           <div className="grid grid-cols-1 ">
             <CustomerGroupSearch
               onSearch={(search: object) => {
-                console.log(search);
                 setAllSearch(search);
               }}
             />
@@ -606,12 +489,8 @@ export default function ProductsAddPage() {
                   children: details ? (
                     <CustomerGroupProductList
                       customerGroupId={String(customerGroupId)}
-                      customerProductsByCustomerGroup={
-                        customerProductsByCustomerGroup
-                      }
-                      fetchDataProductsByCustomerGroup={
-                        fetchDataProductsByCustomerGroup
-                      }
+                      customerProductsByCustomerGroup={customerProductsByCustomerGroup}
+                      fetchDataProductsByCustomerGroup={fetchDataProductsByCustomerGroup}
                       projectDatas={projectDatas}
                       getProjectDataTable={getProjectDataTable}
                     />
@@ -627,9 +506,7 @@ export default function ProductsAddPage() {
                       rules={rules}
                       customerList={customerList}
                       customerProductsByCustomer={customerProductsByCustomer}
-                      getCustomerProductsByCustomer={
-                        getCustomerProductsByCustomer
-                      }
+                      getCustomerProductsByCustomer={getCustomerProductsByCustomer}
                       branchList={branchList}
                       customerProductsByBranch={customerProductsByBranch}
                       onOpenCustomerCreateForm={onOpenCustomerCreateForm}
@@ -642,18 +519,13 @@ export default function ProductsAddPage() {
                       onOpenEditBranch={onOpenEditBranch}
                       onDeleteBranch={onDeleteBranch}
                       onSaveBranchAddress={onSaveBranchAddress}
-                      onDeleteCustomerBranchAddress={
-                        onDeleteCustomerBranchAddress
-                      }
+                      onDeleteCustomerBranchAddress={onDeleteCustomerBranchAddress}
                       onSaveBranchContact={onSaveBranchContact}
-                      onDeleteCustomerBranchContact={
-                        onDeleteCustomerBranchContact
-                      }
+                      onDeleteCustomerBranchContact={onDeleteCustomerBranchContact}
                     />
                   ) : (
-                    <Card>ไม่พบข้อมูล</Card>
+                    <Card>{`ไม่พบข้อมูล`}</Card>
                   ),
-                  // icon: <Icon />,
                 },
               ]}
             />

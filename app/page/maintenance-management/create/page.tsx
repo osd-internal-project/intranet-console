@@ -1,17 +1,16 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, message, Row } from "antd";
+import React, { useContext, useEffect, useState } from "react";
+import { Breadcrumb, Col, message, Row } from "antd";
 import MaTaskCreate from "./components/MaTaskCreate";
-import { ITMaCreateForm, ITMaDetail, ITMaType, ITPagination } from "../common";
+import { ITMaCreateForm, ITMaType } from "../common";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import MaServices from "../services/ma.service";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 export default function MaTaskCreatePage() {
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const router = useRouter();
-  const { data: session } = useSession();
-
   const intranetAuth = useAxiosIntranet();
   const maServices = MaServices(intranetAuth);
   const [loading, setloading] = useState<boolean>(true);
@@ -24,20 +23,15 @@ export default function MaTaskCreatePage() {
     const maTypes = await maServices.findActiveType();
     setMaTypes(maTypes);
   };
-  const changePagination = (page: ITPagination) => {
-    console.log(page);
-  };
 
   async function createMa(data: ITMaCreateForm): Promise<void> {
-    const maTypeSelected = maTypes.findLast(
-      (type) => type.id === data.maTypeId
-    );
+    const maTypeSelected = maTypes.findLast((type) => type.id === data.maTypeId);
     const form = {
       ...data,
       maTypeName: maTypeSelected?.name,
       maStatus: "process",
-      createdById: session?.user.userId,
-      createdByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+      createdById: user?.userId,
+      createdByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
     };
     await maServices
       .create(form)
@@ -76,12 +70,7 @@ export default function MaTaskCreatePage() {
         </Col>
         <Col span={24}>
           <div className="grid grid-cols-1 ">
-            <MaTaskCreate
-              maTypes={maTypes}
-              loading={loading}
-              setLoading={(e: boolean) => setloading(e)}
-              createMa={createMa}
-            />
+            <MaTaskCreate maTypes={maTypes} loading={loading} setLoading={(e: boolean) => setloading(e)} createMa={createMa} />
           </div>
         </Col>
       </Row>

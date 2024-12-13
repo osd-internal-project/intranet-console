@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import {
   Breadcrumb,
@@ -25,7 +25,7 @@ import TableComponent from "./components/BookingTable";
 import RoomStatusComponent from "./components/RoomStatus";
 import { BookingRoomServices } from "./services/booking-room.service";
 import { useForm } from "antd/es/form/Form";
-import { useSession } from "next-auth/react";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 type BookingType = {
   roomId: string;
@@ -56,7 +56,7 @@ type MasterRoomType = {
 };
 
 const BookingRoomPage: React.FC = () => {
-  const { data: session } = useSession();
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const intraAuth = useAxiosIntranet();
   const bookingRoomServices = BookingRoomServices(intraAuth);
   const [isModalBooking, setIsModalBooking] = useState(false);
@@ -98,8 +98,8 @@ const BookingRoomPage: React.FC = () => {
 
   const showModal = () => {
     form.setFieldsValue({
-      bookerName: `${session?.user.firstNameTh || ""} ${session?.user.lastNameTh || ""}`,
-      bookerPhone: session?.user.phoneNumber ? session?.user.phoneNumber : "",
+      bookerName: `${user?.firstNameTh}`,
+      bookerPhone: user?.phoneNumber,
     });
     setIsModalBooking(true);
   };
@@ -148,12 +148,12 @@ const BookingRoomPage: React.FC = () => {
       return;
     }
     const data = {
-      userId: session?.user.userId,
+      userId: user?.userId,
       roomId: values.roomId,
       roomName: selectedOption ? selectedOption.label : undefined,
       roomType: values.roomType,
-      bookerName: session?.user.firstNameTh && session?.user.lastNameTh ? `${session.user.firstNameTh} ${session.user.lastNameTh}` : "",
-      bookerPhone: session?.user.phoneNumber ? session.user.phoneNumber : "",
+      bookerName: user?.firstNameTh,
+      bookerPhone: user?.phoneNumber,
       title: values.title,
       bookerDepartment: values.bookerDepartment,
       bookingStatus: "process",

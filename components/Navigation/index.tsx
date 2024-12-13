@@ -1,95 +1,58 @@
 "use client";
-
-import {
-  Avatar,
-  Badge,
-  Button,
-  Drawer,
-  Dropdown,
-  Menu,
-  MenuProps,
-  Space,
-} from "antd";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Avatar, Badge, Button, Drawer, Dropdown, Menu, MenuProps, Space } from "antd";
 import { Header } from "antd/es/layout/layout";
-import MenuNav from "@/app/config/menu";
+import { ItemType } from "antd/es/menu/interface";
 import {
   ArrowLeftOutlined,
   ArrowRightOutlined,
-  BellOutlined,
   BellTwoTone,
+  LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { useRefreshToken } from "@/app/lib/axios/hooks/useRefreshToken";
-import { useAxiosRefreshToken } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { ItemType } from "antd/es/menu/interface";
-import { ITNotiLogsMessage } from "@/app/common/noti-logs";
 
-type Profile = {
-  userId: string;
-  username: string;
-  firstNameTh: string;
-  lastNameTh: string;
-  email: string;
-  accessToken: string;
-  refreshToken: string;
-  groupList?: string[];
-  rulelist: string[];
-  ownerGroup?: string;
-} | null;
 interface Prop {
   collapsed: boolean;
+  profileDetail: any;
   setCollapsed: (setCollapsed: boolean) => void;
   currentPath: string;
   menulist: MenuProps["items"];
-  notiLogMessages: ITNotiLogsMessage[];
-  session: any;
+  countNoti: number;
   avatar: any;
+  logOut: () => void;
 }
 
-const Navigation: React.FC<Prop> = ({
-  session,
-  collapsed,
-  setCollapsed,
-  currentPath,
-  menulist,
-  notiLogMessages,
-  avatar,
-}) => {
+const Navigation: React.FC<Prop> = ({ profileDetail, collapsed, setCollapsed, currentPath, menulist, avatar, logOut }) => {
   const [open, setOpen] = useState(false);
   const [notiDetails, setNotiDetils] = useState<{
     count: number;
     list: ItemType[];
   }>({ count: 0, list: [] });
   const navigate = useRouter();
-  useAxiosRefreshToken(session);
-  useEffect(() => {
-    const fetchData = async () => {
-      let noticount = 0;
-      const notiMsgs = await notiLogMessages.map(
-        (noti: ITNotiLogsMessage, index) => {
-          noticount += noti.count;
-          return {
-            key: index + 1,
-            label: (
-              <Link href={noti.path}>
-                <div className=" w-44 flex justify-between">
-                  <div>{noti.title}</div> <Badge count={noti.count} />
-                </div>{" "}
-              </Link>
-            ),
-          };
-        }
-      );
-
-      setNotiDetils({ count: noticount, list: notiMsgs });
-    };
-    fetchData();
-  }, [notiLogMessages]);
+  const MenuNav: MenuProps["items"] = [
+    {
+      key: "1",
+      label: <Link href={`/page/user-profile`}>Profile</Link>,
+      icon: <UserOutlined />,
+    },
+    {
+      key: "2",
+      label: (
+        <Link
+          href={"#"}
+          onClick={async () => {
+            logOut();
+          }}>
+          {`Sign Out`}
+        </Link>
+      ),
+      icon: <LogoutOutlined />,
+    },
+  ];
 
   return (
     <>
@@ -128,16 +91,7 @@ const Navigation: React.FC<Prop> = ({
           </div>
         </div>
         <div className="pr-8 space-x-4">
-          {/* notification */}
-          {/* <Link href={`/page/notification-before-expired`}>
-            <Badge size="small" count={countNoti}>
-              <BellOutlined />
-            </Badge>
-          </Link> */}
-          <Dropdown
-            menu={{ items: notiDetails.list }}
-            className="text-black hover:text-zinc-300"
-          >
+          <Dropdown menu={{ items: notiDetails.list }} className="text-black hover:text-zinc-300">
             <a onClick={(e) => e.preventDefault()}>
               <Space className=" text-base">
                 <Badge count={notiDetails.count} size="small">
@@ -146,22 +100,14 @@ const Navigation: React.FC<Prop> = ({
               </Space>
             </a>
           </Dropdown>
-          <Dropdown
-            menu={{ items: MenuNav }}
-            className="text-black hover:text-zinc-300"
-          >
+          <Dropdown menu={{ items: MenuNav }} className="text-black hover:text-zinc-300">
             <a onClick={(e) => e.preventDefault()}>
-              <Space className=" text-base">
-                {`คุณ ${session.user.firstNameTh} ${session.user.lastNameTh} `}
+              <Space className="text-base">
+                {`คุณ ${profileDetail?.firstNameTh} ${profileDetail?.lastNameTh}`}
                 {avatar && avatar instanceof Blob ? (
-                  <Avatar
-                    size={40}
-                    src={
-                      avatar instanceof Blob ? URL.createObjectURL(avatar) : ""
-                    }
-                  />
+                  <Avatar size={40} src={avatar instanceof Blob ? URL.createObjectURL(avatar) : ""} />
                 ) : (
-                  <UserOutlined />
+                  <Avatar icon={<UserOutlined />} />
                 )}
               </Space>
             </a>
@@ -171,25 +117,14 @@ const Navigation: React.FC<Prop> = ({
       <Drawer
         title={
           <div className="flex justify-center bg-white ">
-            <img
-              src="/images/logo-osd-mini-v2.png"
-              alt="logo-page"
-              className={`w-20 h-auto`}
-            />
+            <img src="/images/logo-osd-mini-v2.png" alt="logo-page" className={`w-20 h-auto`} />
           </div>
         }
         placement="left"
         onClose={() => setOpen(!open)}
         open={open}
-        width={250}
-      >
-        <Menu
-          mode="inline"
-          selectedKeys={[currentPath]}
-          style={{ height: 100, borderRight: 0 }}
-          items={menulist}
-          onClick={() => setOpen(!open)}
-        />
+        width={250}>
+        <Menu mode="inline" selectedKeys={[currentPath]} style={{ height: 100, borderRight: 0 }} items={menulist} onClick={() => setOpen(!open)} />
       </Drawer>
     </>
   );

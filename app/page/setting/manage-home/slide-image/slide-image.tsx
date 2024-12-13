@@ -1,17 +1,17 @@
 "use client";
 import { Card, Col, message, Row } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { CreateSlideImage } from "./components/create-slide-image";
 import { TableSlideImage } from "./components/table-slide-image";
-import { useSession } from "next-auth/react";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { SlideImageType } from "./common";
 import ManageHomeService from "./services/index.service";
 import { useForm } from "antd/es/form/Form";
 import { RcFile } from "antd/es/upload";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 export default function SlideImageSetting() {
-  const { data: session } = useSession();
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const Auth = useAxiosIntranet();
   const intraAuthService = ManageHomeService(Auth);
   const [slideImage, setSlideImage] = useState<SlideImageType[]>([]);
@@ -34,7 +34,7 @@ export default function SlideImageSetting() {
 
   const showModal = () => {
     createSlideImageForm.setFieldsValue({
-      createByName: `${session?.user.firstNameTh || ""} ${session?.user.lastNameTh || ""}`,
+      createByName: `${user?.firstNameTh || ""} ${user?.lastNameTh || ""}`,
     });
     setModalAddSlide(true);
   };
@@ -72,8 +72,8 @@ export default function SlideImageSetting() {
         return;
       }
       if (imageFiles.length > 0) {
-        let createdByName = session?.user.firstNameTh && session?.user.lastNameTh ? `${session.user.firstNameTh} ${session.user.lastNameTh}` : "";
-        let createdById = session?.user.userId;
+        let createdByName = user?.firstNameTh && user?.lastNameTh ? `${user?.firstNameTh} ${user?.lastNameTh}` : "";
+        let createdById = user?.userId;
         let formData: any = new FormData();
         formData.append("files", imageFiles[0].originFileObj);
         formData.append("createdByName", createdByName);

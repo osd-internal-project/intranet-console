@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import moment from "moment";
 import {
   Table,
@@ -33,7 +33,7 @@ import { DeleteIcon, ApproveIcon, EditIcon } from "@/components/icon";
 import { EyeOutlined, UploadOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/es/upload";
 import { UploadFileStatus } from "antd/es/upload/interface";
-import { useSession } from "next-auth/react";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 export interface MaCarType {
   id: number;
   typeName: string;
@@ -92,6 +92,7 @@ export interface MaCarWrapupImage {
 }
 
 const WrapupCar: React.FC = () => {
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const [form] = useForm();
   const [formchange] = useForm();
   const [formdetail] = useForm();
@@ -112,13 +113,7 @@ const WrapupCar: React.FC = () => {
     }[]
   >([]);
 
-  const handleSubmit = (status: boolean | null) => {
-    formchange.setFieldsValue({ status });
-    formchange.submit();
-  };
-
   const [maDataWarpup, setMaDataWarpup] = useState<MaCarwarpup[]>([]);
-  const [maDataWarpupImage, setMaDataWarpupImage] = useState<MaCarWrapupImage[]>([]);
   const [selectedMaCarwarpup, setSelectedMaCarwarpup] = useState<MaCarwarpup | null>(null);
   const [IsmodlaOpencreate, setIsmodlaOpencreate] = useState(false);
   const [Ismodlasubmit, setIsmodlasubmit] = useState(false);
@@ -129,10 +124,8 @@ const WrapupCar: React.FC = () => {
   const [maCar, setMaCar] = useState<MaCarwarpup[]>([]);
   const [selectedCar, setSelectedCar] = useState<string>("");
   const [mileage, setMileage] = useState<number | undefined>(undefined);
-  const [searchTerm, setSearchTerm] = useState("");
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [existingFiles, setExistingFiles] = useState<UploadFile[]>([]);
-  const { data: session } = useSession();
 
   useEffect(() => {
     fetchData();
@@ -155,6 +148,11 @@ const WrapupCar: React.FC = () => {
     } catch (error) {
       message.error("ไม่สามารถโหลดข้อมูลได้");
     }
+  };
+
+  const handleSubmit = (status: boolean | null) => {
+    formchange.setFieldsValue({ status });
+    formchange.submit();
   };
 
   const handleSelectChange = (value: string) => {
@@ -210,7 +208,7 @@ const WrapupCar: React.FC = () => {
         cost: values?.cost ?? 0,
         dateStart: values.dateStart,
         dateEnd: values.dateEnd,
-        createbyName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+        createbyName: `${user?.firstNameTh} ${user?.lastNameTh}`,
         remark: values?.remark ?? "",
         status: null,
       },
@@ -253,7 +251,7 @@ const WrapupCar: React.FC = () => {
       wrapupMiles: new String(values.wrapupMiles),
       detail: values.detail,
       cost: values.cost,
-      createbyName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+      createbyName: `${user?.firstNameTh} ${user?.lastNameTh}`,
       dateStart: new Date(values.dateStart),
       dateEnd: new Date(values.dateEnd),
       remark: values.remark,

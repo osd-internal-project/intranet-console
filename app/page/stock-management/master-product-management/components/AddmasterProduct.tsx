@@ -1,25 +1,8 @@
 import { dateToStringTh } from "@/app/utils/format";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
-import {
-  Button,
-  Card,
-  Col,
-  Form,
-  Input,
-  Modal,
-  Row,
-  Select,
-  Spin,
-  Switch,
-  Tag,
-  Upload,
-  UploadFile,
-  UploadProps,
-  message,
-} from "antd";
+import { Button, Card, Col, Form, Input, Modal, Row, Select, Spin, Switch, Tag, Upload, UploadFile, UploadProps, message } from "antd";
 import { RcFile } from "antd/es/upload";
-import { useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   ITypeOption,
   ITypeLocation,
@@ -37,11 +20,12 @@ import AddMasterProductService from "../services/add-master-product.service";
 import { useRouter } from "next/navigation";
 import MasterProductServices from "../services/master-product.service";
 import MasterHazardTypeService from "../../master-hazard-type/services/index.service";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 const AddMasterProduct: React.FC = () => {
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const { data: session } = useSession();
   const [formadmasterproduct] = Form.useForm();
   const stockAuth = useAxiosStock();
   const addMasterProductService = AddMasterProductService(stockAuth);
@@ -77,15 +61,12 @@ const AddMasterProduct: React.FC = () => {
 
   useEffect(() => {}, []);
   const loaddata = async () => {
-    const getcategories =
-      await addMasterProductService.getMasterProductCategoryAll();
+    const getcategories = await addMasterProductService.getMasterProductCategoryAll();
     if (getcategories.length > 0) {
-      const categories = getcategories.map(
-        (data: ITypeMasterProductCategory) => ({
-          value: data.id,
-          label: data.categoryName,
-        })
-      );
+      const categories = getcategories.map((data: ITypeMasterProductCategory) => ({
+        value: data.id,
+        label: data.categoryName,
+      }));
       setCategoriesOption(categories);
     }
     const getGhs = await addMasterProductService.getMasterGhs();
@@ -146,10 +127,7 @@ const AddMasterProduct: React.FC = () => {
   };
 
   const selectGroupOption = async (value: number) => {
-    const getgroup =
-      await addMasterProductService.getActiveMasterProductGroupByCategoryId(
-        value
-      );
+    const getgroup = await addMasterProductService.getActiveMasterProductGroupByCategoryId(value);
     if (groupOfCategory.length !== getgroup.length) {
       formadmasterproduct.resetFields(["groupCode"]);
       setTypeSelected([]);
@@ -175,9 +153,7 @@ const AddMasterProduct: React.FC = () => {
   // };
 
   //Imange
-  const handleChangePic: UploadProps["onChange"] = async ({
-    fileList: newFileList,
-  }) => {
+  const handleChangePic: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
     return await setImageList(newFileList);
   };
 
@@ -193,9 +169,7 @@ const AddMasterProduct: React.FC = () => {
   const handlePreview = async (file: UploadFile) => {
     setPreviewImage(file.thumbUrl || (file.preview as string));
     setPreviewOpen(true);
-    setPreviewTitle(
-      file.name || file.thumbUrl!.substring(file.url!.lastIndexOf("/") + 1)
-    );
+    setPreviewTitle(file.name || file.thumbUrl!.substring(file.url!.lastIndexOf("/") + 1));
   };
 
   const uploadProps: UploadProps = {
@@ -281,25 +255,14 @@ const AddMasterProduct: React.FC = () => {
       return false;
     }
     if (values?.casNo.length > 20) {
-      message.warning(
-        "จำนวน CasNo ที่ท่านกรอกเกิน 20 ตัวอักษร ระบบรองรับ CasNo ได้ 20 อักษรโปรดกรอกข้อมูลใหม่"
-      );
+      message.warning("จำนวน CasNo ที่ท่านกรอกเกิน 20 ตัวอักษร ระบบรองรับ CasNo ได้ 20 อักษรโปรดกรอกข้อมูลใหม่");
       return false;
     }
     setLoading(true);
     setbuttonLoading(true);
-    const locations =
-      values.location.length > 0
-        ? values.location.map((id: number) => ({ locationId: id }))
-        : [];
-    const ghs =
-      values.ghs.length > 0
-        ? values.ghs.map((id: number) => ({ ghsId: id }))
-        : [];
-    const hazards =
-      values.nameHazard.length > 0
-        ? values.nameHazard.map((id: number) => ({ hazardId: id }))
-        : [];
+    const locations = values.location.length > 0 ? values.location.map((id: number) => ({ locationId: id })) : [];
+    const ghs = values.ghs.length > 0 ? values.ghs.map((id: number) => ({ ghsId: id })) : [];
+    const hazards = values.nameHazard.length > 0 ? values.nameHazard.map((id: number) => ({ hazardId: id })) : [];
 
     const productNameList = values.productNameList.map((data: string) => ({
       name: data,
@@ -331,8 +294,8 @@ const AddMasterProduct: React.FC = () => {
       maximumStock: Number(values.maximumStock ? values.maximumStock : 0),
       beforeExpiry: Number(values.beforeExpiry ? values.beforeExpiry : 0),
       notiExpiry: switchChecked,
-      updatedById: session?.user.userId,
-      updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh} `,
+      updatedById: user?.userId,
+      updatedByName: `${user?.firstNameTh} ${user?.lastNameTh} `,
       masterProductLocationMap: {
         createMany: {
           data: locations,
@@ -340,15 +303,11 @@ const AddMasterProduct: React.FC = () => {
       },
     };
     if (values.venderId !== undefined) {
-      const vender = venderOption.findLast(
-        (item) => item.value === values.venderId
-      );
+      const vender = venderOption.findLast((item) => item.value === values.venderId);
       form = { ...form, venderId: values.venderId, venderName: vender?.label };
     }
     if (values.brandId !== undefined) {
-      const brand = brandOption.findLast(
-        (item) => item.value === values.brandId
-      );
+      const brand = brandOption.findLast((item) => item.value === values.brandId);
       form = { ...form, brandId: values.venderId, brandName: brand?.label };
     }
     const result = await addMasterProductService.create(form);
@@ -421,8 +380,7 @@ const AddMasterProduct: React.FC = () => {
         labelCol={{ flex: "150px" }}
         labelAlign="left"
         onFinish={onFinish}
-        autoComplete="off"
-      >
+        autoComplete="off">
         <Row gutter={[8, 8]}>
           <Col span={24}>
             <Card>
@@ -431,26 +389,16 @@ const AddMasterProduct: React.FC = () => {
                   <div>
                     <span className="sub-title-page-font">{`Add Master Product`}</span>
                     <br />
-                    <div className=" text-slate-400">{`${dateToStringTh(
-                      addDate
-                    )} from ${session?.user.firstNameTh} ${
-                      session?.user.lastNameTh
-                    }`}</div>
+                    <div className=" text-slate-400">{`${dateToStringTh(addDate)} from ${user?.firstNameTh} ${user?.lastNameTh}`}</div>
                   </div>
                   <div className="">
                     <Form.Item
                       // className=" m-2"
                       name={`location`}
                       label={<div className=" font-bold">Location</div>}
-                      rules={[
-                        { required: true, message: "กรุณากรอก Location" },
-                      ]}
-                    >
+                      rules={[{ required: true, message: "กรุณากรอก Location" }]}>
                       <Select
-                        options={[
-                          { label: "Select all Location", value: "all" },
-                          ...locationOption,
-                        ]}
+                        options={[{ label: "Select all Location", value: "all" }, ...locationOption]}
                         mode="multiple"
                         showSearch={false}
                         allowClear
@@ -471,22 +419,17 @@ const AddMasterProduct: React.FC = () => {
                             beforeUpload={beforeUpload}
                             onPreview={handlePreview}
                             accept=".jpg,.png,.gif"
-                            maxCount={1}
-                          >
+                            maxCount={1}>
                             {imageList.length >= 1 ? null : uploadButton}
                           </Upload>
                         </Col>
-                        <Col
-                          span={12}
-                          style={{ justifyContent: "start", display: "flex" }}
-                        >
+                        <Col span={12} style={{ justifyContent: "start", display: "flex" }}>
                           <Row
                             style={{
                               textAlign: "center",
                               alignItems: "center",
                               display: "flex",
-                            }}
-                          >
+                            }}>
                             {imageList.length >= 1 ? null : (
                               <>
                                 <Col span={24}>{`Drag image here`}</Col>
@@ -500,8 +443,7 @@ const AddMasterProduct: React.FC = () => {
                                 onChange={handleChangePic}
                                 beforeUpload={beforeUpload}
                                 accept=".jpg,.png,.gif"
-                                maxCount={1}
-                              >
+                                maxCount={1}>
                                 {imageList.length >= 1 ? null : (
                                   <Button type="link" icon={<UploadOutlined />}>
                                     Browse image
@@ -521,10 +463,7 @@ const AddMasterProduct: React.FC = () => {
                       className=" m-2"
                       name={`productNameList`}
                       label={<div className=" font-bold">Product Name</div>}
-                      rules={[
-                        { required: true, message: "กรุณากรอก Product Name" },
-                      ]}
-                    >
+                      rules={[{ required: true, message: "กรุณากรอก Product Name" }]}>
                       <Select
                         suffixIcon={null}
                         filterOption={false}
@@ -545,8 +484,7 @@ const AddMasterProduct: React.FC = () => {
                           required: true,
                           message: "กรุณากรอก Chemical Formula",
                         },
-                      ]}
-                    >
+                      ]}>
                       <Input />
                     </Form.Item>
                   </div>
@@ -555,8 +493,7 @@ const AddMasterProduct: React.FC = () => {
                       className=" m-2"
                       name={`casNo`}
                       label={<div className=" font-bold">CAS No.</div>}
-                      rules={[{ required: true, message: "กรุณากรอก CAS No." }]}
-                    >
+                      rules={[{ required: true, message: "กรุณากรอก CAS No." }]}>
                       <Input />
                     </Form.Item>
                   </div>
@@ -565,17 +502,8 @@ const AddMasterProduct: React.FC = () => {
                       className=" m-2 "
                       name={`nameHazard`}
                       label={<div className=" font-bold">Hazard Type</div>}
-                      rules={[
-                        { required: true, message: "กรุณากรอก Hazard Type" },
-                      ]}
-                    >
-                      <Select
-                        showSearch={false}
-                        options={hazardOption}
-                        placeholder="กรุณาเลือก Hazard Type"
-                        mode="multiple"
-                        allowClear
-                      />
+                      rules={[{ required: true, message: "กรุณากรอก Hazard Type" }]}>
+                      <Select showSearch={false} options={hazardOption} placeholder="กรุณาเลือก Hazard Type" mode="multiple" allowClear />
                     </Form.Item>
                   </div>
 
@@ -584,15 +512,8 @@ const AddMasterProduct: React.FC = () => {
                       className=" m-2 "
                       name={`ghs`}
                       label={<div className=" font-bold">GHS</div>}
-                      rules={[{ required: true, message: "กรุณากรอก GHS" }]}
-                    >
-                      <Select
-                        showSearch={false}
-                        options={ghsOption}
-                        placeholder="กรุณาเลือก GHS"
-                        mode="multiple"
-                        allowClear
-                      />
+                      rules={[{ required: true, message: "กรุณากรอก GHS" }]}>
+                      <Select showSearch={false} options={ghsOption} placeholder="กรุณาเลือก GHS" mode="multiple" allowClear />
                     </Form.Item>
                   </div>
 
@@ -601,16 +522,8 @@ const AddMasterProduct: React.FC = () => {
                       className=" m-2"
                       name={`categoryCode`}
                       label={<div className=" font-bold">Category</div>}
-                      rules={[
-                        { required: true, message: "กรุณากรอก Category" },
-                      ]}
-                    >
-                      <Select
-                        options={categoriesOption}
-                        onSelect={selectGroupOption}
-                        placeholder="กรุณาเลือก Category"
-                        allowClear
-                      />
+                      rules={[{ required: true, message: "กรุณากรอก Category" }]}>
+                      <Select options={categoriesOption} onSelect={selectGroupOption} placeholder="กรุณาเลือก Category" allowClear />
                     </Form.Item>
                   </div>
                   <div className=" col-span-3 md:col-span-1  ml-5">
@@ -618,8 +531,7 @@ const AddMasterProduct: React.FC = () => {
                       className=" m-2"
                       name={`groupCode`}
                       label={<div className=" font-bold">Group</div>}
-                      rules={[{ required: true, message: "กรุณากรอก Group" }]}
-                    >
+                      rules={[{ required: true, message: "กรุณากรอก Group" }]}>
                       <Select
                         options={groupOption}
                         disabled={disableGroup}
@@ -651,56 +563,32 @@ const AddMasterProduct: React.FC = () => {
                     <Form.Item
                       className=" m-2"
                       name={"brandId"}
-                      rules={[
-                        { required: true, message: "please select brand" },
-                      ]}
-                      label={<div className=" font-bold">Brand</div>}
-                    >
-                      <Select
-                        placeholder="กรุณาเลือก Brand"
-                        options={brandOption}
-                      />
+                      rules={[{ required: true, message: "please select brand" }]}
+                      label={<div className=" font-bold">Brand</div>}>
+                      <Select placeholder="กรุณาเลือก Brand" options={brandOption} />
                     </Form.Item>
                   </div>
                   <div className=" col-span-3 md:col-span-1 ml-5">
                     <Form.Item
                       className=" m-2"
                       name={"venderId"}
-                      rules={[
-                        { required: true, message: "please select vender" },
-                      ]}
-                      label={<div className=" font-bold">Vender</div>}
-                    >
-                      <Select
-                        placeholder="กรุณาเลือก Vender"
-                        options={venderOption}
-                      />
+                      rules={[{ required: true, message: "please select vender" }]}
+                      label={<div className=" font-bold">Vender</div>}>
+                      <Select placeholder="กรุณาเลือก Vender" options={venderOption} />
                     </Form.Item>
                   </div>
                   <div className=" col-span-3 md:col-span-3 ml-5">
-                    <Form.Item
-                      className=" m-2"
-                      name={`description`}
-                      label={<div className=" font-bold">Description</div>}
-                    >
+                    <Form.Item className=" m-2" name={`description`} label={<div className=" font-bold">Description</div>}>
                       <Input />
                     </Form.Item>
                   </div>
                   <div className=" col-span-3 md:col-span-1 ml-5">
-                    <Form.Item
-                      className=" m-2"
-                      name={`hyperlink`}
-                      label={<div className=" font-bold">Hyperlink</div>}
-                    >
+                    <Form.Item className=" m-2" name={`hyperlink`} label={<div className=" font-bold">Hyperlink</div>}>
                       <Input />
                     </Form.Item>
                   </div>
                   <div className=" col-span-3 md:col-span-2 ml-5">
-                    <Form.Item
-                      className=" m-2"
-                      name={`attachFile`}
-                      label={<div className=" font-bold">Attach File</div>}
-                    >
+                    <Form.Item className=" m-2" name={`attachFile`} label={<div className=" font-bold">Attach File</div>}>
                       <Upload {...uploadProps}>
                         <Button icon={<UploadOutlined />}>Attach file</Button>
                       </Upload>
@@ -722,12 +610,8 @@ const AddMasterProduct: React.FC = () => {
                       className="m-2"
                       name={`unit`}
                       label={<div className=" font-bold">Unit</div>}
-                      rules={[{ required: true, message: "กรุณากรอก Unit" }]}
-                    >
-                      <Select
-                        options={unitOption}
-                        placeholder=" กรุณาเลือก Unit"
-                      />
+                      rules={[{ required: true, message: "กรุณากรอก Unit" }]}>
+                      <Select options={unitOption} placeholder=" กรุณาเลือก Unit" />
                     </Form.Item>
                   </div>
                   <div className=" col-span-3 md:col-span-1 ml-5">
@@ -735,11 +619,7 @@ const AddMasterProduct: React.FC = () => {
                       className="m-2"
                       name={`minimumStock`}
                       label={<div className=" font-bold">Minimum Stock</div>}
-                      rules={[
-                        { required: true, message: "กรุณากรอก Minimum Stock" },
-                        { validator: validateMinMaxStock },
-                      ]}
-                    >
+                      rules={[{ required: true, message: "กรุณากรอก Minimum Stock" }, { validator: validateMinMaxStock }]}>
                       <Input
                         min={0}
                         value={String(minimum)}
@@ -749,22 +629,8 @@ const AddMasterProduct: React.FC = () => {
                             setMinimum(parseInt(value) || 0);
                           }
                         }}
-                        addonAfter={
-                          <Button
-                            size="small"
-                            type="link"
-                            style={{ color: "black" }}
-                            onClick={handleMinIncrease}
-                          >{`+`}</Button>
-                        }
-                        addonBefore={
-                          <Button
-                            size="small"
-                            type="link"
-                            style={{ color: "black" }}
-                            onClick={handleMinDecrement}
-                          >{`-`}</Button>
-                        }
+                        addonAfter={<Button size="small" type="link" style={{ color: "black" }} onClick={handleMinIncrease}>{`+`}</Button>}
+                        addonBefore={<Button size="small" type="link" style={{ color: "black" }} onClick={handleMinDecrement}>{`-`}</Button>}
                       />
                     </Form.Item>
                   </div>
@@ -773,11 +639,7 @@ const AddMasterProduct: React.FC = () => {
                       className=" m-2"
                       name={`maximumStock`}
                       label={<div className=" font-bold">Maximum Stock </div>}
-                      rules={[
-                        { required: true, message: "กรุณากรอก Maximum Stock" },
-                        { validator: validateMinMaxStock },
-                      ]}
-                    >
+                      rules={[{ required: true, message: "กรุณากรอก Maximum Stock" }, { validator: validateMinMaxStock }]}>
                       <Input
                         min={0}
                         value={String(maximum)}
@@ -787,22 +649,8 @@ const AddMasterProduct: React.FC = () => {
                             setMaximum(parseInt(value) || 0);
                           }
                         }}
-                        addonAfter={
-                          <Button
-                            size="small"
-                            type="link"
-                            style={{ color: "black" }}
-                            onClick={handleMaxIncrease}
-                          >{`+`}</Button>
-                        }
-                        addonBefore={
-                          <Button
-                            size="small"
-                            type="link"
-                            style={{ color: "black" }}
-                            onClick={handleMaxDecrement}
-                          >{`-`}</Button>
-                        }
+                        addonAfter={<Button size="small" type="link" style={{ color: "black" }} onClick={handleMaxIncrease}>{`+`}</Button>}
+                        addonBefore={<Button size="small" type="link" style={{ color: "black" }} onClick={handleMaxDecrement}>{`-`}</Button>}
                       />
                     </Form.Item>
                   </div>
@@ -810,17 +658,14 @@ const AddMasterProduct: React.FC = () => {
                     <Form.Item
                       className=" m-2"
                       name={`beforeExpiry`}
-                      label={
-                        <div className=" font-bold">Noti before (Expiry)</div>
-                      }
+                      label={<div className=" font-bold">Noti before (Expiry)</div>}
                       rules={[
                         {
                           required: false,
                           message: "กรุณากรอก Noti before (Expiry)",
                         },
                         { validator: validateExpire },
-                      ]}
-                    >
+                      ]}>
                       <Input
                         min={0}
                         value={String(expire)}
@@ -830,31 +675,13 @@ const AddMasterProduct: React.FC = () => {
                             setExpire(parseInt(value) || 0);
                           }
                         }}
-                        addonAfter={
-                          <Button
-                            size="small"
-                            style={{ color: "black" }}
-                            type="link"
-                            onClick={handleExpireIncrease}
-                          >{`+`}</Button>
-                        }
-                        addonBefore={
-                          <Button
-                            size="small"
-                            style={{ color: "black" }}
-                            type="link"
-                            onClick={handleExpireDecrement}
-                          >{`-`}</Button>
-                        }
+                        addonAfter={<Button size="small" style={{ color: "black" }} type="link" onClick={handleExpireIncrease}>{`+`}</Button>}
+                        addonBefore={<Button size="small" style={{ color: "black" }} type="link" onClick={handleExpireDecrement}>{`-`}</Button>}
                       />
                     </Form.Item>
                   </div>
                   <div className=" col-span-3 md:col-span-1 ml-5">
-                    <Form.Item
-                      className=" m-2"
-                      name={`notiExpiry`}
-                      label={<div className=" font-bold">Noti expiry</div>}
-                    >
+                    <Form.Item className=" m-2" name={`notiExpiry`} label={<div className=" font-bold">Noti expiry</div>}>
                       <Switch
                         checkedChildren="On"
                         unCheckedChildren="Off"
@@ -863,11 +690,7 @@ const AddMasterProduct: React.FC = () => {
                         }}
                         checked={switchChecked}
                         defaultChecked={switchChecked}
-                        className={
-                          switchChecked === true
-                            ? "active-switch"
-                            : "inactive-switch"
-                        }
+                        className={switchChecked === true ? "active-switch" : "inactive-switch"}
                       />
                     </Form.Item>
                   </div>
@@ -886,12 +709,7 @@ const AddMasterProduct: React.FC = () => {
             </Card>
           </Col>
           <Col span={24} className="  flex justify-end space-x-2">
-            <Button
-              className=" m-2"
-              onClick={() =>
-                router.push("/page/setting/master-product-management")
-              }
-            >
+            <Button className=" m-2" onClick={() => router.push("/page/setting/master-product-management")}>
               Cancel
             </Button>
             <Form.Item className=" m-2">
@@ -908,8 +726,7 @@ const AddMasterProduct: React.FC = () => {
         footer={null}
         onCancel={() => {
           setPreviewOpen(false);
-        }}
-      >
+        }}>
         <img alt="example" style={{ width: "100%" }} src={previewImage} />
       </Modal>
     </Spin>

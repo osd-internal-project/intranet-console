@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button, message } from "antd";
 import { TablePaginationConfig } from "antd";
 import { useForm } from "antd/es/form/Form";
-import { useSession } from "next-auth/react";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../../services/manage-car.service";
 import ManagementCarAvailableTable from "./components/management-car-available-table";
 import ManagementCarAvailableManage from "./components/management-car-available-manage";
 import dayjs from "dayjs";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 export interface props {
   loading: boolean;
@@ -18,8 +18,8 @@ export interface props {
 }
 
 const ManagementCarAvailable: React.FC<props> = ({ setLoading, loading, maCarData, pagination, changePagination }): React.ReactElement => {
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const [form] = useForm();
-  const { data: session } = useSession();
   const intraAuth = useAxiosIntranet();
   const intraAuthService = ManageCarServices(intraAuth);
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -48,15 +48,15 @@ const ManagementCarAvailable: React.FC<props> = ({ setLoading, loading, maCarDat
         carMile: values.carMile,
         detail: values.detail,
         status: values.status,
-        createdById: session?.user.userId,
-        createdByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+        createdById: user?.userId,
+        createdByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
       };
     } else if (status === "edit") {
       maCarCreateData = {
         ...values,
         updatedAt: dayjs().toISOString(),
-        updatedById: session?.user.userId,
-        updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+        updatedById: user?.userId,
+        updatedByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
       };
     } else {
     }

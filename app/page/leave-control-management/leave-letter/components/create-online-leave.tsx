@@ -21,7 +21,6 @@ export interface props {
   beforeUploadAttendFiles: (e: RcFile) => void;
   handleChangeAttendFiles: (e: any) => void;
   attendFiles: UploadFile[];
-  // onChangeParams: (value: Dayjs, type: string) => void;
   groupDetail: any;
   groupUserId: any;
 }
@@ -39,19 +38,20 @@ export const CreateOnlineLeave: React.FC<props> = ({
   beforeUploadAttendFiles,
   handleChangeAttendFiles,
   attendFiles,
-  // onChangeParams,
   groupDetail,
   groupUserId,
 }: any): React.ReactElement => {
   useEffect(() => {
     const getdatauser = () => {
-      if (groupUserId?.length) {
-        const ownerName = groupUserId
-          .filter((u: ITypeDataLeaveCreate) => u.firstNameTh && u.lastNameTh)
-          .map((u: ITypeDataLeaveCreate) => `${u.firstNameTh} ${u.lastNameTh}`)
-          .join(", ");
-        ownerName && createdataleaveForm.setFieldsValue({ ownerName: ownerName, ownerId: groupUserId[0].userId });
-      }
+      console.log(groupUserId);
+      
+      // if (groupUserId?.length) {
+      //   const ownerName = groupUserId
+      //     .filter((u: ITypeDataLeaveCreate) => u.firstNameTh && u.lastNameTh)
+      //     .map((u: ITypeDataLeaveCreate) => `${u.firstNameTh} ${u.lastNameTh}`)
+      //     .join(", ");
+      //   ownerName && createdataleaveForm.setFieldsValue({ ownerName: ownerName, ownerId: groupUserId[0].userId });
+      // }
 
       createdataleaveForm.setFieldsValue({
         userId: getUser?.userId,

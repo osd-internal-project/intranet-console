@@ -24,13 +24,7 @@ export const cubeIcon = (
 
 export const truckIcon = (
   <svg width="15" height="15" viewBox="0 0 24 24">
-    <g
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-    >
+    <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
       <path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11m0-9h4l4 4v4c0 .6-.4 1-1 1h-2" />
       <circle cx="7" cy="18" r="2" />
       <path d="M15 18H9" />
@@ -41,13 +35,7 @@ export const truckIcon = (
 
 export const circleSqureIcon = (
   <svg width="15" height="15" viewBox="0 0 24 24">
-    <g
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-    >
+    <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
       <path d="M3 9.5a6.5 6.5 0 1 0 13 0a6.5 6.5 0 1 0-13 0" />
       <path d="M10 12a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2z" />
     </g>
@@ -90,13 +78,7 @@ export const groupLineIcon = (
 
 export const profileCircleIcon = (
   <svg width="15" height="15" viewBox="0 0 24 24">
-    <g
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.5"
-    >
+    <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
       <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2Z" />
       <path d="M4.271 18.346S6.5 15.5 12 15.5s7.73 2.846 7.73 2.846M12 12a3 3 0 1 0 0-6a3 3 0 0 0 0 6Z" />
     </g>
@@ -136,13 +118,7 @@ export const vectorIcon = (
 );
 
 export const shieldExclamationIcon = (
-  <svg
-    width="15"
-    height="15"
-    viewBox="0 0 21 21"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
+  <svg width="15" height="15" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M19.4968 4.47896C19.2922 4.48934 19.0861 4.49459 18.8789 4.49459C15.8055 4.49459 13.0019 3.33915 10.8788 1.43896C8.75582 3.33908 5.95229 4.49447 2.87891 4.49447C2.67168 4.49447 2.46568 4.48922 2.26104 4.47884C2.01161 5.44245 1.87891 6.45304 1.87891 7.49463C1.87891 13.0861 5.70323 17.7845 10.8789 19.1166C16.0546 17.7845 19.8789 13.0861 19.8789 7.49463C19.8789 6.45309 19.7462 5.44254 19.4968 4.47896Z"
       stroke="#111B29"
@@ -153,12 +129,7 @@ export const shieldExclamationIcon = (
   </svg>
 );
 export const colorSwatchIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="15"
-    height="15"
-    viewBox="0 0 24 24"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24">
     <path
       fill="none"
       stroke="currentColor"
@@ -171,12 +142,7 @@ export const colorSwatchIcon = (
 );
 
 export const warningIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="15"
-    height="15"
-    viewBox="0 0 256 256"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 256 256">
     <path
       fill="currentColor"
       d="M240.26 186.1L152.81 34.23a28.74 28.74 0 0 0-49.62 0L15.74 186.1a27.45 27.45 0 0 0 0 27.71A28.31 28.31 0 0 0 40.55 228h174.9a28.31 28.31 0 0 0 24.79-14.19a27.45 27.45 0 0 0 .02-27.71m-20.8 15.7a4.46 4.46 0 0 1-4 2.2H40.55a4.46 4.46 0 0 1-4-2.2a3.56 3.56 0 0 1 0-3.73L124 46.2a4.77 4.77 0 0 1 8 0l87.44 151.87a3.56 3.56 0 0 1 .02 3.73M116 136v-32a12 12 0 0 1 24 0v32a12 12 0 0 1-24 0m28 40a16 16 0 1 1-16-16a16 16 0 0 1 16 16"
@@ -194,8 +160,7 @@ export const editIcon = (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    className="ai ai-Edit"
-  >
+    className="ai ai-Edit">
     <path d="M16.474 5.408l2.118 2.117m-.756-3.982L12.109 9.27a2.118 2.118 0 0 0-.58 1.082L11 13l2.648-.53c.41-.082.786-.283 1.082-.579l5.727-5.727a1.853 1.853 0 1 0-2.621-2.621z" />
     <path d="M19 15v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h3" />
   </svg>
@@ -212,8 +177,7 @@ export const deleteIcon = (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    className="ai ai-TrashCan"
-  >
+    className="ai ai-TrashCan">
     <path d="M4 6h16l-1.58 14.22A2 2 0 0 1 16.432 22H7.568a2 2 0 0 1-1.988-1.78L4 6z" />
     <path d="M7.345 3.147A2 2 0 0 1 9.154 2h5.692a2 2 0 0 1 1.81 1.147L18 6H6l1.345-2.853z" />
     <path d="M2 6h20" />
@@ -233,8 +197,7 @@ export const deleteIconAddInventory = (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    className="ai ai-TrashCan"
-  >
+    className="ai ai-TrashCan">
     <path d="M4 6h16l-1.58 14.22A2 2 0 0 1 16.432 22H7.568a2 2 0 0 1-1.988-1.78L4 6z" />
     <path d="M7.345 3.147A2 2 0 0 1 9.154 2h5.692a2 2 0 0 1 1.81 1.147L18 6H6l1.345-2.853z" />
     <path d="M2 6h20" />
@@ -244,12 +207,7 @@ export const deleteIconAddInventory = (
 );
 
 export const persentationChartLoneIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="15"
-    height="15"
-    viewBox="0 0 24 24"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24">
     <path
       fill="none"
       stroke="currentColor"
@@ -262,12 +220,7 @@ export const persentationChartLoneIcon = (
 );
 
 export const exportIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="15"
-    height="15"
-    viewBox="0 0 24 24"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24">
     <path
       fill="currentColor"
       d="M8.71 7.71L11 5.41V15a1 1 0 0 0 2 0V5.41l2.29 2.3a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.42l-4-4a1 1 0 0 0-.33-.21a1 1 0 0 0-.76 0a1 1 0 0 0-.33.21l-4 4a1 1 0 1 0 1.42 1.42M21 14a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-4a1 1 0 0 0-2 0v4a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-4a1 1 0 0 0-1-1"
@@ -277,18 +230,8 @@ export const exportIcon = (
 // export default Icon;s
 
 export const IconInboxIn = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="15"
-    height="15"
-    viewBox="0 0 24 24"
-  >
-    <g
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeWidth="1.5"
-    >
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24">
+    <g fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5">
       <path d="M17 2.127c1.625.16 2.72.521 3.535 1.338C22 4.929 22 7.286 22 12s0 7.071-1.465 8.536C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.464C2 19.07 2 16.714 2 12c0-4.714 0-7.07 1.464-8.535c.817-.817 1.91-1.178 3.536-1.338" />
       <path strokeLinejoin="round" d="M12 10V2m0 0l3 3m-3-3L9 5" />
       <path d="M2 13h3.16c.905 0 1.358 0 1.756.183c.398.183.692.527 1.281 1.214l.606.706c.589.687.883 1.031 1.281 1.214c.398.183.85.183 1.756.183h.32c.905 0 1.358 0 1.756-.183c.398-.183.692-.527 1.281-1.214l.606-.706c.589-.687.883-1.031 1.281-1.214c.398-.183.85-.183 1.756-.183H22" />
@@ -307,19 +250,8 @@ export const IconInboxOut = (
 );
 
 export const IconCash = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="15"
-    height="15"
-    viewBox="0 0 24 24"
-  >
-    <g
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-    >
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24">
+    <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
       <path d="M7 11a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2z" />
       <path d="M12 14a2 2 0 1 0 4 0a2 2 0 1 0-4 0m5-5V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
     </g>
@@ -327,12 +259,7 @@ export const IconCash = (
 );
 
 export const IconBeaker = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="15"
-    height="15"
-    viewBox="0 0 24 24"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24">
     <path
       fill="none"
       stroke="currentColor"
@@ -345,12 +272,7 @@ export const IconBeaker = (
 );
 
 export const IconExport = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="15"
-    height="15"
-    viewBox="0 0 24 24"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24">
     <path
       fill="currentColor"
       d="M8.71 7.71L11 5.41V15a1 1 0 0 0 2 0V5.41l2.29 2.3a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.42l-4-4a1 1 0 0 0-.33-.21a1 1 0 0 0-.76 0a1 1 0 0 0-.33.21l-4 4a1 1 0 1 0 1.42 1.42M21 14a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-4a1 1 0 0 0-2 0v4a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-4a1 1 0 0 0-1-1"
@@ -359,12 +281,7 @@ export const IconExport = (
 );
 
 export const IconPluscircle = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="15"
-    height="15"
-    viewBox="0 0 32 32"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 32 32">
     <path
       fill="currentColor"
       d="M16 3C8.832 3 3 8.832 3 16s5.832 13 13 13s13-5.832 13-13S23.168 3 16 3m0 2c6.087 0 11 4.913 11 11s-4.913 11-11 11S5 22.087 5 16S9.913 5 16 5m-1 5v5h-5v2h5v5h2v-5h5v-2h-5v-5z"
@@ -373,12 +290,7 @@ export const IconPluscircle = (
 );
 
 export const IconEye = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="15"
-    height="15"
-    viewBox="0 0 256 256"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 256 256">
     <path
       fill="currentColor"
       d="M247.31 124.76c-.35-.79-8.82-19.58-27.65-38.41C194.57 61.26 162.88 48 128 48S61.43 61.26 36.34 86.35C17.51 105.18 9 124 8.69 124.76a8 8 0 0 0 0 6.5c.35.79 8.82 19.57 27.65 38.4C61.43 194.74 93.12 208 128 208s66.57-13.26 91.66-38.34c18.83-18.83 27.3-37.61 27.65-38.4a8 8 0 0 0 0-6.5M128 192c-30.78 0-57.67-11.19-79.93-33.25A133.47 133.47 0 0 1 25 128a133.33 133.33 0 0 1 23.07-30.75C70.33 75.19 97.22 64 128 64s57.67 11.19 79.93 33.25A133.46 133.46 0 0 1 231.05 128c-7.21 13.46-38.62 64-103.05 64m0-112a48 48 0 1 0 48 48a48.05 48.05 0 0 0-48-48m0 80a32 32 0 1 1 32-32a32 32 0 0 1-32 32"
@@ -386,30 +298,13 @@ export const IconEye = (
   </svg>
 );
 export const moveRightIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="15"
-    height="15"
-    viewBox="0 0 24 24"
-  >
-    <path
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="m18 8l4 4l-4 4M2 12h20"
-    />
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24">
+    <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m18 8l4 4l-4 4M2 12h20" />
   </svg>
 );
 
 export const IconPosition = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="15"
-    height="15"
-    viewBox="0 0 24 24"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24">
     <g fill="none" stroke="currentColor" strokeWidth="1.5">
       <circle cx="9" cy="9" r="2" />
       <path d="M13 15c0 1.105 0 2-4 2s-4-.895-4-2s1.79-2 4-2s4 .895 4 2Z" />
@@ -456,13 +351,36 @@ export const stockSetting = (
   </svg>
 );
 
-export const organizeChart = (
-  <svg width="15" height="15" viewBox="0 0 36 36">
+export const hrIcon = (
+  <svg width="15" height="15" viewBox="0 0 24 24">
     <path
       fill="currentColor"
-      d="M9.8 18.8h16.4v3.08h1.6V17.2h-9V14h-1.6v3.2h-9v4.68h1.6z"
-      className="clr-i-outline clr-i-outline-path-1"
+      d="M4.5 6.375a4.125 4.125 0 1 1 8.25 0a4.125 4.125 0 0 1-8.25 0m9.75 2.25a3.375 3.375 0 1 1 6.75 0a3.375 3.375 0 0 1-6.75 0M1.5 19.125a7.125 7.125 0 0 1 14.25 0v.003l-.001.119a.75.75 0 0 1-.363.63a13.07 13.07 0 0 1-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 0 1-.364-.63zm15.75.003l-.001.144a2.25 2.25 0 0 1-.233.96q.302.018.609.018c1.596 0 3.107-.37 4.451-1.029a.75.75 0 0 0 .42-.642l.004-.204a4.875 4.875 0 0 0-6.961-4.407a8.6 8.6 0 0 1 1.71 5.157z"
     />
+  </svg>
+);
+
+export const listIcon = (
+  <svg width="15" height="15" viewBox="0 0 16 16">
+    <path
+      fill="currentColor"
+      d="M1 3a1 1 0 1 0 2 0a1 1 0 0 0-2 0m3 1h11V2H4zm11 5H4V7h11zM1 8a1 1 0 1 0 2 0a1 1 0 0 0-2 0m14 6H4v-2h11zM1 13a1 1 0 1 0 2 0a1 1 0 0 0-2 0"
+    />
+  </svg>
+);
+
+export const gridIconHr = (
+  <svg width="15" height="15" viewBox="0 0 24 24">
+    <path
+      fill="currentColor"
+      d="M10 4v4h4V4zm6 0v4h4V4zm0 6v4h4v-4zm0 6v4h4v-4zm-2 4v-4h-4v4zm-6 0v-4H4v4zm0-6v-4H4v4zm0-6V4H4v4zm2 6h4v-4h-4zM4 2h16a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H4c-1.08 0-2-.9-2-2V4a2 2 0 0 1 2-2"
+    />
+  </svg>
+);
+
+export const organizeChart = (
+  <svg width="15" height="15" viewBox="0 0 36 36">
+    <path fill="currentColor" d="M9.8 18.8h16.4v3.08h1.6V17.2h-9V14h-1.6v3.2h-9v4.68h1.6z" className="clr-i-outline clr-i-outline-path-1" />
     <path
       fill="currentColor"
       d="M14 23H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2M4 31v-6h10v6Z"
@@ -557,18 +475,12 @@ export const bookingIcon = (
   <svg width="15" height="15" viewBox="0 0 24 24">
     <path
       fill="currentColor"
-      d="M6.616 21q-.691 0-1.153-.462T5 19.385V4.615q0-.69.463-1.152T6.616 3h10.769q.69 0 1.153.463T19 4.616v14.769q0 .69-.462 1.153T17.384 21zm0-1h10.769q.23 0 .423-.192t.192-.424V4.616q0-.231-.192-.424T17.384 4H16v6.116l-2-1.193l-2 1.193V4H6.616q-.231 0-.424.192T6 4.615v14.77q0 .23.192.423t.423.192M6 20V4zm6-9.885l2-1.192l2 1.192l-2-1.192z"
-    ></path>
+      d="M6.616 21q-.691 0-1.153-.462T5 19.385V4.615q0-.69.463-1.152T6.616 3h10.769q.69 0 1.153.463T19 4.616v14.769q0 .69-.462 1.153T17.384 21zm0-1h10.769q.23 0 .423-.192t.192-.424V4.616q0-.231-.192-.424T17.384 4H16v6.116l-2-1.193l-2 1.193V4H6.616q-.231 0-.424.192T6 4.615v14.77q0 .23.192.423t.423.192M6 20V4zm6-9.885l2-1.192l2 1.192l-2-1.192z"></path>
   </svg>
 );
 
 export const contactListIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="15"
-    height="15"
-    viewBox="0 0 2048 2048"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 2048 2048">
     <path
       fill="black"
       d="M740 1461q65 33 117 81t90 108t57 128t20 142H896q0-79-30-149t-82-122t-123-83t-149-30q-80 0-149 30t-122 82t-83 123t-30 149H0q0-73 20-141t57-128t89-108t118-82q-74-55-115-136t-41-173q0-79 30-149t82-122t122-83t150-30q92 0 173 41t136 115q38-75 97-134t134-97q-74-55-115-136t-41-173q0-79 30-149t82-122t122-83t150-30q79 0 149 30t122 82t83 123t30 149q0 92-41 173t-115 136q65 33 117 81t90 108t57 128t20 142h-128q0-79-30-149t-82-122t-123-83t-149-30q-80 0-149 30t-122 82t-83 123t-30 149q0 92-41 173t-115 136m284-1077q0 53 20 99t55 82t81 55t100 20q53 0 99-20t82-55t55-81t20-100q0-53-20-99t-55-82t-81-55t-100-20q-53 0-99 20t-82 55t-55 81t-20 100m-768 768q0 53 20 99t55 82t81 55t100 20q53 0 99-20t82-55t55-81t20-100q0-53-20-99t-55-82t-81-55t-100-20q-53 0-99 20t-82 55t-55 81t-20 100m1024 256h768v128h-768zm0 384v-128h768v128zm0 256v-128h768v128z"
@@ -577,12 +489,7 @@ export const contactListIcon = (
 );
 
 export const macarIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="15"
-    height="15"
-    viewBox="0 0 512 512"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 512 512">
     <path
       fill="none"
       stroke="currentColor"
@@ -606,12 +513,7 @@ export const macarIcon = (
   </svg>
 );
 export const MaCarIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="50"
-    height="50"
-    viewBox="0 0 512 512"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 512 512">
     <path
       fill="none"
       stroke="currentColor"
@@ -636,16 +538,8 @@ export const MaCarIcon = (
 );
 
 const DeleteIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="2em"
-    height="2em"
-    viewBox="0 0 72 72"
-  >
-    <path
-      fill="red"
-      d="M51.76 17H20.153v37.65c0 4.06 3.29 5.62 7.35 5.62H44.41c4.06 0 7.35-1.56 7.35-5.62zM31 16v-4h10v4"
-    />
+  <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 72 72">
+    <path fill="red" d="M51.76 17H20.153v37.65c0 4.06 3.29 5.62 7.35 5.62H44.41c4.06 0 7.35-1.56 7.35-5.62zM31 16v-4h10v4" />
     <path fill="white" d="M51 37v20.621L48.3 60H33z" />
     <path fill="red" d="M17 16h38v4H17z" />
     <path
@@ -662,12 +556,7 @@ const DeleteIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 export { DeleteIcon };
 
 export const EditIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="2em"
-    height="2em"
-    viewBox="0 0 24 24"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
     <path
       fill="blue"
       fillRule="evenodd"
@@ -677,19 +566,8 @@ export const EditIcon = (
 );
 
 export const ApproveIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="1.8rem"
-    height="1.8rem"
-    viewBox="0 0 24 24"
-  >
-    <g
-      fill="none"
-      stroke="green"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.2"
-    >
+  <svg xmlns="http://www.w3.org/2000/svg" width="1.8rem" height="1.8rem" viewBox="0 0 24 24">
+    <g fill="none" stroke="green" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.2">
       <circle cx="12" cy="12" r="9" />
       <path d="M8 12L11 15L16 10" />
     </g>
@@ -702,19 +580,8 @@ interface ExcelIconProps extends React.SVGProps<SVGSVGElement> {
   height?: string;
 }
 
-const ExcelIcon: React.FC<ExcelIconProps> = ({
-  strokeColor = "#000",
-  width = "1.8rem",
-  height = "1.8rem",
-  ...props
-}) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={width}
-    height={height}
-    viewBox="0 0 32 32"
-    {...props}
-  >
+const ExcelIcon: React.FC<ExcelIconProps> = ({ strokeColor = "#000", width = "1.8rem", height = "1.8rem", ...props }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 32 32" {...props}>
     <defs>
       <linearGradient
         id="vscodeIconsFileTypeExcel0"
@@ -723,38 +590,19 @@ const ExcelIcon: React.FC<ExcelIconProps> = ({
         y1="-2092.086"
         y2="-2075.914"
         gradientTransform="translate(0 2100)"
-        gradientUnits="userSpaceOnUse"
-      >
+        gradientUnits="userSpaceOnUse">
         <stop offset="0" stopColor="#18884f" />
         <stop offset=".5" stopColor="#117e43" />
         <stop offset="1" stopColor="#0b6631" />
       </linearGradient>
     </defs>
-    <path
-      fill="#185c37"
-      d="M19.581 15.35L8.512 13.4v14.409A1.19 1.19 0 0 0 9.705 29h19.1A1.19 1.19 0 0 0 30 27.809V22.5Z"
-    />
-    <path
-      fill="#21a366"
-      d="M19.581 3H9.705a1.19 1.19 0 0 0-1.193 1.191V9.5L19.581 16l5.861 1.95L30 16V9.5Z"
-    />
+    <path fill="#185c37" d="M19.581 15.35L8.512 13.4v14.409A1.19 1.19 0 0 0 9.705 29h19.1A1.19 1.19 0 0 0 30 27.809V22.5Z" />
+    <path fill="#21a366" d="M19.581 3H9.705a1.19 1.19 0 0 0-1.193 1.191V9.5L19.581 16l5.861 1.95L30 16V9.5Z" />
     <path fill="#107c41" d="M8.512 9.5h11.069V16H8.512Z" />
-    <path
-      d="M16.434 8.2H8.512v16.25h7.922a1.2 1.2 0 0 0 1.194-1.191V9.391A1.2 1.2 0 0 0 16.434 8.2"
-      opacity="0.1"
-    />
-    <path
-      d="M15.783 8.85H8.512V25.1h7.271a1.2 1.2 0 0 0 1.194-1.191V10.041a1.2 1.2 0 0 0-1.194-1.191"
-      opacity="0.2"
-    />
-    <path
-      d="M15.783 8.85H8.512V23.8h7.271a1.2 1.2 0 0 0 1.194-1.191V10.041a1.2 1.2 0 0 0-1.194-1.191"
-      opacity="0.2"
-    />
-    <path
-      d="M15.132 8.85h-6.62V23.8h6.62a1.2 1.2 0 0 0 1.194-1.191V10.041a1.2 1.2 0 0 0-1.194-1.191"
-      opacity="0.2"
-    />
+    <path d="M16.434 8.2H8.512v16.25h7.922a1.2 1.2 0 0 0 1.194-1.191V9.391A1.2 1.2 0 0 0 16.434 8.2" opacity="0.1" />
+    <path d="M15.783 8.85H8.512V25.1h7.271a1.2 1.2 0 0 0 1.194-1.191V10.041a1.2 1.2 0 0 0-1.194-1.191" opacity="0.2" />
+    <path d="M15.783 8.85H8.512V23.8h7.271a1.2 1.2 0 0 0 1.194-1.191V10.041a1.2 1.2 0 0 0-1.194-1.191" opacity="0.2" />
+    <path d="M15.132 8.85h-6.62V23.8h6.62a1.2 1.2 0 0 0 1.194-1.191V10.041a1.2 1.2 0 0 0-1.194-1.191" opacity="0.2" />
     <path
       fill="url(#vscodeIconsFileTypeExcel0)"
       d="M3.194 8.85h11.938a1.193 1.193 0 0 1 1.194 1.191v11.918a1.193 1.193 0 0 1-1.194 1.191H3.194A1.19 1.19 0 0 1 2 21.959V10.041A1.19 1.19 0 0 1 3.194 8.85"
@@ -763,22 +611,14 @@ const ExcelIcon: React.FC<ExcelIconProps> = ({
       fill="white"
       d="m5.7 19.873l2.511-3.884l-2.3-3.862h1.847L9.013 14.6c.116.234.2.408.238.524h.017q.123-.281.26-.546l1.342-2.447h1.7l-2.359 3.84l2.419 3.905h-1.809l-1.45-2.711A2.4 2.4 0 0 1 9.2 16.8h-.024a1.7 1.7 0 0 1-.168.351l-1.493 2.722Z"
     />
-    <path
-      fill="#33c481"
-      d="M28.806 3h-9.225v6.5H30V4.191A1.19 1.19 0 0 0 28.806 3"
-    />
+    <path fill="#33c481" d="M28.806 3h-9.225v6.5H30V4.191A1.19 1.19 0 0 0 28.806 3" />
     <path fill="#107c41" d="M19.581 16H30v6.5H19.581Z" />
   </svg>
 );
 export { ExcelIcon };
 
 export const MouseIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="1.5em"
-    height="1.5em"
-    viewBox="0 0 16 16"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 16 16">
     <rect width="16" height="16" fill="none" />
     <path
       fill="#3366FF"
@@ -788,12 +628,7 @@ export const MouseIcon = (
 );
 
 export const CancelIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="1.5em"
-    height="1.5em"
-    viewBox="0 0 24 24"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
     <rect width="24" height="24" fill="none" />
     <path
       fill="currentColor"
@@ -802,12 +637,7 @@ export const CancelIcon = (
   </svg>
 );
 export const CheckIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="1.5em"
-    height="1.5em"
-    viewBox="0 0 24 24"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
     <rect width="24" height="24" fill="none" />
     <path
       fill="currentColor"
@@ -817,12 +647,7 @@ export const CheckIcon = (
 );
 
 export const CancelMaCarIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="2em"
-    height="2em"
-    viewBox="0 0 48 48"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 48 48">
     <rect width="48" height="48" fill="none" />
     <path
       fill="#d50000"
@@ -832,12 +657,7 @@ export const CancelMaCarIcon = (
 );
 
 export const CarApproveIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="2em"
-    height="2em"
-    viewBox="0 0 24 24"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
     <rect width="24" height="24" fill="none" />
     <path
       fill="green"
@@ -847,12 +667,7 @@ export const CarApproveIcon = (
 );
 
 export const downloadLoopIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="2em"
-    height="2em"
-    viewBox="0 0 24 24"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
     <rect width="24" height="24" fill="none" />
     <path
       fill="none"
@@ -861,6 +676,58 @@ export const downloadLoopIcon = (
       strokeLinejoin="round"
       strokeWidth="1.2"
       d="M12 12v6m0 0l3-2m-3 2l-3-2m4-13H8.2c-1.12 0-1.68 0-2.108.218a2 2 0 0 0-.874.874C5 4.52 5 5.08 5 6.2v11.6c0 1.12 0 1.68.218 2.108a2 2 0 0 0 .874.874c.427.218.987.218 2.105.218h7.606c1.118 0 1.677 0 2.104-.218c.377-.192.683-.498.875-.874c.218-.428.218-.986.218-2.104V9m-6-6c.286.003.466.014.639.055q.308.075.578.24c.202.124.375.297.72.643l3.126 3.125c.346.346.518.518.642.72q.165.271.24.578c.04.173.051.354.054.639M13 3v2.8c0 1.12 0 1.68.218 2.108a2 2 0 0 0 .874.874c.427.218.987.218 2.105.218h2.802m0 0H19"
+    />
+  </svg>
+);
+
+export const IconUserPause = (
+  <svg width="20px" height="20px" viewBox="0 0 24 24">
+    <path
+      fill="none"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0-8 0M6 21v-2a4 4 0 0 1 4-4h3.5m3.5 2v5m4-5v5"
+    />
+  </svg>
+);
+
+export const IconUserPlus = (
+  <svg width="20px" height="20px" viewBox="0 0 24 24">
+    <path
+      fill="none"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0-8 0m8 12h6m-3-3v6M6 21v-2a4 4 0 0 1 4-4h4"
+    />
+  </svg>
+);
+
+export const IconUserActive = (
+  <svg width="20px" height="20px" viewBox="0 0 24 24">
+    <path
+      fill="none"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0-8 0M6 21v-2a4 4 0 0 1 4-4h3m3 7l5-5m0 4.5V17h-4.5"
+    />
+  </svg>
+);
+
+export const IconUsers = (
+  <svg width="20px" height="20px" viewBox="0 0 24 24">
+    <path
+      fill="none"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M5 7a4 4 0 1 0 8 0a4 4 0 1 0-8 0M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2m1-17.87a4 4 0 0 1 0 7.75M21 21v-2a4 4 0 0 0-3-3.85"
     />
   </svg>
 );

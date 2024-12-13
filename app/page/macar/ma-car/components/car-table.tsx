@@ -1,16 +1,15 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Table, Button, Row, Col, Space, Modal, Form, Input, message, TablePaginationConfig, Tooltip } from "antd";
 import type { FormProps, TableProps } from "antd";
-import { EditIcon, CancelMaCarIcon } from "@/components/icon";
 import dayjs from "dayjs";
 import ShareMaCarBook from "../../common/export-excel";
 import { MaCarServices } from "../../../../services/ma-car.service";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { useSession } from "next-auth/react";
 import { MaCarBookType, MaCarType, dataMaCarbook, ProvincesType } from "../../common/index";
 import { checkStatus, CheckStatusMaCarBookType, isSelectDisabled, showStatus } from "@/app/utils/validatefield";
 import { dateFormatTime } from "@/app/utils";
 import { CarForm } from "./car-form";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 interface props {
   loading: boolean;
@@ -33,7 +32,7 @@ const MaCarBookTable: React.FC<props> = ({
   maCarBookById,
   dataProvinces,
 }: any): React.ReactElement => {
-  const { data: session } = useSession();
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const [form] = Form.useForm();
   const [formCancel] = Form.useForm();
   const intraAuth = useAxiosIntranet();
@@ -111,8 +110,8 @@ const MaCarBookTable: React.FC<props> = ({
         detail: values.detail,
         remark: values.remark || null,
         updatedAt: dayjs().toISOString(),
-        updatedById: session?.user.userId,
-        updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+        updatedById: user?.userId,
+        updatedByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
       };
       await intraAuthService.updateMaCarBook(maCarBookData);
       message.success("แก้ไขการจองสำเร็จ");
@@ -132,8 +131,8 @@ const MaCarBookTable: React.FC<props> = ({
         carBookApprovedStatus: "Cancel",
         remarkCancel: values.remarkCancel,
         carBookApprovedDate: dayjs().toISOString(),
-        carBookApprovedById: session?.user.userId,
-        carBookApprovedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+        carBookApprovedById: user?.userId,
+        carBookApprovedByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
       };
       const dataUpdate = await intraAuthService.updateMaCarBook(updatedApproveMa);
       if (dataUpdate) {

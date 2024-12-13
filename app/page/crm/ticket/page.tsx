@@ -1,24 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { Breadcrumb, Card, Col, message, Row, UploadFile, Modal, Form, TablePaginationConfig, InputNumber } from "antd";
 import {
-  Breadcrumb,
-  Card,
-  Col,
-  message,
-  Row,
-  UploadFile,
-  Modal,
-  Form,
-  TablePaginationConfig,
-  InputNumber,
-  Button,
-} from "antd";
-import {
-  ITBranchContact,
   ITExpenseType,
   ITProject,
-  ITProjectTask,
-  ITProjectTaskForm,
   ITProjectTicket,
   ITProjectTicketCreateForm,
   ITProjectTicketEditForm,
@@ -28,10 +13,7 @@ import {
 } from "./common";
 import { useAxiosCrm, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import CrmServices from "./services/index.service";
-import { useParams } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { useForm } from "antd/es/form/Form";
-import dayjs from "dayjs";
 import TicketComponent from "./components/project-ticket";
 import ProjectTicketDetailComponent from "./components/project-ticket-detail";
 import { ExclamationCircleFilled } from "@ant-design/icons";
@@ -39,10 +21,10 @@ import TextArea from "antd/es/input/TextArea";
 import ProjectTicketFilterComponent from "./components/project-ticket-filter";
 import UserServices from "./services/user.service";
 import { checkRule } from "@/app/utils/rules";
-import ProjectTicketAddComponent from "./components/project-ticket-add";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 export default function CustomerDetailPage() {
-  const { data: session } = useSession();
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const rules = {
     ruleTicketShow: checkRule("crm-t-s"),
     ruleTicketAdd: checkRule("crm-t-a"),
@@ -54,8 +36,6 @@ export default function CustomerDetailPage() {
   };
   const crmAuth = useAxiosCrm();
   const crmServices = CrmServices(crmAuth);
-  const userAuth = useAxiosUser();
-  const userServices = UserServices(userAuth);
   const [finishForm] = useForm();
   const [summaryForm] = useForm();
   const [search, setSearch] = useState<object>({});
@@ -69,12 +49,8 @@ export default function CustomerDetailPage() {
     pageSize: 10,
     total: 0,
   });
-  const [projectTicketList, setProjecTicketList] = useState<ITProjectTicket[]>(
-    []
-  );
-  const [projectTicketDetail, setProjectTicketDetail] = useState<
-    ITProjectTicket | undefined
-  >(undefined);
+  const [projectTicketList, setProjecTicketList] = useState<ITProjectTicket[]>([]);
+  const [projectTicketDetail, setProjectTicketDetail] = useState<ITProjectTicket | undefined>(undefined);
 
   const [ticketConfigs, setTicketConfigs] = useState<ITTicketConfigs>({
     channelTypeList: [],
@@ -110,17 +86,11 @@ export default function CustomerDetailPage() {
     setExpenseType(expenseTyoe);
   }
   const fetchDataTable = async () => {
-    const skip: number =
-      (Number(pagination.current) - 1) * Number(pagination.pageSize);
+    const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
     const take: number = Number(pagination.pageSize);
 
-    if (session?.user.userId) {
-      const tickets = await crmServices.findProjectTicketTableByUserId(
-        session?.user.userId,
-        search,
-        skip,
-        take
-      );
+    if (user?.userId) {
+      const tickets = await crmServices.findProjectTicketTableByUserId(user?.userId, search, skip, take);
       if (tickets) {
         setProjecTicketList(tickets.data);
         setPagination({ ...pagination, total: tickets.total });
@@ -138,26 +108,16 @@ export default function CustomerDetailPage() {
   //   setProjecTicketList(tickets);
   // };
 
-  async function onFinishEdit(data: ITProject): Promise<void> {
-    setloading(true);
-  }
-
-  const onSaveProjectTicket = async (
-    taskId: number | undefined,
-    data: ITProjectTicketCreateForm,
-    attendFiles: UploadFile[]
-  ) => {
+  const onSaveProjectTicket = async (taskId: number | undefined, data: ITProjectTicketCreateForm, attendFiles: UploadFile[]) => {
     let form = {
       ...data,
       status: "new",
-      createdById: session?.user.userId,
-      groupId: session?.user.ownerGroup,
-      createdByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+      createdById: user?.userId,
+      groupId: user?.groupOwner?.groupId,
+      createdByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
     };
     if (form.requestTypeId) {
-      const selected = ticketConfigs.requestTypeList.findLast(
-        (config) => config.id === form.requestTypeId
-      );
+      const selected = ticketConfigs.requestTypeList.findLast((config) => config.id === form.requestTypeId);
       if (selected?.name) {
         form = {
           ...form,
@@ -166,9 +126,7 @@ export default function CustomerDetailPage() {
       }
     }
     if (form.jobTypeId) {
-      const selected = ticketConfigs.jobTypeList.findLast(
-        (config) => config.id === form.jobTypeId
-      );
+      const selected = ticketConfigs.jobTypeList.findLast((config) => config.id === form.jobTypeId);
       if (selected?.name) {
         form = {
           ...form,
@@ -177,9 +135,7 @@ export default function CustomerDetailPage() {
       }
     }
     if (form.workTypeId) {
-      const selected = ticketConfigs.workTypeList.findLast(
-        (config) => config.id === form.workTypeId
-      );
+      const selected = ticketConfigs.workTypeList.findLast((config) => config.id === form.workTypeId);
       if (selected?.name) {
         form = {
           ...form,
@@ -188,9 +144,7 @@ export default function CustomerDetailPage() {
       }
     }
     if (form.channelTypeId) {
-      const selected = ticketConfigs.channelTypeList.findLast(
-        (config) => config.id === form.channelTypeId
-      );
+      const selected = ticketConfigs.channelTypeList.findLast((config) => config.id === form.channelTypeId);
       if (selected?.name) {
         form = {
           ...form,
@@ -199,9 +153,7 @@ export default function CustomerDetailPage() {
       }
     }
     if (form.priorityId) {
-      const selected = ticketConfigs.priorityList.findLast(
-        (config) => config.id === form.priorityId
-      );
+      const selected = ticketConfigs.priorityList.findLast((config) => config.id === form.priorityId);
       if (selected?.name) {
         form = {
           ...form,
@@ -233,9 +185,7 @@ export default function CustomerDetailPage() {
     setloading(true);
   };
 
-  async function onShowModalProjectTicketDetail(
-    ticketId: number | undefined
-  ): Promise<void> {
+  async function onShowModalProjectTicketDetail(ticketId: number | undefined): Promise<void> {
     if (ticketId) {
       const detail = await crmServices.findProjectTicketDetailById(ticketId);
       setProjectTicketDetail(detail);
@@ -243,11 +193,7 @@ export default function CustomerDetailPage() {
       setProjectTicketDetail(undefined);
     }
   }
-  async function onEditProjectTicket(
-    ticketId: number,
-    form: ITProjectTicketEditForm,
-    attendFiles: UploadFile[]
-  ) {
+  async function onEditProjectTicket(ticketId: number, form: ITProjectTicketEditForm, attendFiles: UploadFile[]) {
     await crmServices
       .updateProjectTicket(+ticketId, form)
       .then(async (data) => {
@@ -269,10 +215,7 @@ export default function CustomerDetailPage() {
       });
   }
 
-  async function saveRequestTicketFile(
-    ticketId: number,
-    reqFiles: UploadFile[]
-  ) {
+  async function saveRequestTicketFile(ticketId: number, reqFiles: UploadFile[]) {
     if (ticketId && reqFiles.length > 0) {
       reqFiles.forEach(async (file) => {
         const formData: any = new FormData();
@@ -289,11 +232,7 @@ export default function CustomerDetailPage() {
     setloading(true);
   }
 
-  async function updateTicketStatus(
-    ticketId: number,
-    status: string,
-    action: string
-  ): Promise<void> {
+  async function updateTicketStatus(ticketId: number, status: string, action: string): Promise<void> {
     let form = {};
     let title = "";
     let content = <></>;
@@ -318,11 +257,7 @@ export default function CustomerDetailPage() {
       content = (
         <>
           <Form form={finishForm}>
-            <Form.Item
-              label={"Manhour"}
-              name={"manhour"}
-              rules={[{ required: true, message: "กรุณากรอก Manhour" }]}
-            >
+            <Form.Item label={"Manhour"} name={"manhour"} rules={[{ required: true, message: "กรุณากรอก Manhour" }]}>
               <InputNumber min={0} />
             </Form.Item>
           </Form>
@@ -343,10 +278,7 @@ export default function CustomerDetailPage() {
       content = (
         <>
           <Form form={summaryForm}>
-            <Form.Item
-              name={"summary"}
-              rules={[{ required: true, message: "กรุณากรอก Summary" }]}
-            >
+            <Form.Item name={"summary"} rules={[{ required: true, message: "กรุณากรอก Summary" }]}>
               <TextArea showCount={true} />
             </Form.Item>
           </Form>
@@ -437,10 +369,8 @@ export default function CustomerDetailPage() {
       customerProjectTicketId: ticketId,
       updatedAt: new Date(),
       type: type,
-      updatedById: session?.user.userId ? session?.user.userId : "",
-      updatedByName: session?.user.firstNameTh
-        ? `${session?.user.firstNameTh} ${session?.user.lastNameTh} `
-        : "",
+      updatedById: user?.userId ? user?.userId : "",
+      updatedByName: user?.firstNameTh ? `${user?.firstNameTh} ${user?.lastNameTh} ` : "",
       detail: detail,
     };
     await crmServices.createTicketHistoryLogs(form);
@@ -489,8 +419,8 @@ export default function CustomerDetailPage() {
             create: {
               ...value,
               processStatus: "wait",
-              updatedById: session?.user.userId,
-              updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+              updatedById: user?.userId,
+              updatedByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
             },
           },
         })
@@ -505,10 +435,7 @@ export default function CustomerDetailPage() {
         });
     }
   }
-  async function handleEditTicketExpense(
-    expenseId: number,
-    value: ITTicketExpense
-  ) {
+  async function handleEditTicketExpense(expenseId: number, value: ITTicketExpense) {
     if (projectTicketDetail?.id) {
       const ticketId = projectTicketDetail.id;
       await crmServices
@@ -535,9 +462,7 @@ export default function CustomerDetailPage() {
         okButtonProps: { type: "primary", danger: true },
         cancelText: "Cancel",
         onOk: async () => {
-          const dataResult = await crmServices.deleteProjectTicketExpense(
-            expenseId
-          );
+          const dataResult = await crmServices.deleteProjectTicketExpense(expenseId);
           if (dataResult) {
             message.success("สำเร็จ");
             await onSaveHistoryLogs(ticketId, "delete-expense");
@@ -581,15 +506,11 @@ export default function CustomerDetailPage() {
                   projectTaskSelectId={undefined}
                   projectTicketList={projectTicketList}
                   showModalTicketAdd={showModalTicketAdd}
-                  onShowModalProjectTicketAdd={function (
-                    status: boolean
-                  ): void {
+                  onShowModalProjectTicketAdd={function (status: boolean): void {
                     setShowModalTicketAdd(status);
                   }}
                   onSaveProjectTicket={onSaveProjectTicket}
-                  onShowModalProjectTicketDetail={
-                    onShowModalProjectTicketDetail
-                  }
+                  onShowModalProjectTicketDetail={onShowModalProjectTicketDetail}
                   ticketConfigs={ticketConfigs}
                   changePagination={changePagination}
                   pagination={pagination}

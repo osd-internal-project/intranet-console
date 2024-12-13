@@ -1,15 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import {
-  Breadcrumb,
-  Card,
-  Col,
-  message,
-  Row,
-  UploadFile,
-  Tabs,
-  Form,
-} from "antd";
+import React, { useContext, useEffect, useState } from "react";
+import { Breadcrumb, Card, Col, message, Row, UploadFile, Tabs, Form } from "antd";
 import DescriptionCustomerComponent from "./components/description-form";
 import BranchCustomerComponent from "./components/customer-branch";
 import ProjectCustomerComponent from "./components/customer-project";
@@ -31,13 +22,13 @@ import {
 import { useAxiosCrm, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import CrmServices from "../services/index.service";
 import { useParams } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { useForm } from "antd/es/form/Form";
 import dayjs from "dayjs";
 import UserServices from "../services/user.service";
 import { ITProject } from "../../project/common";
 import { checkRule } from "@/app/utils/rules";
 import CustomerSubDetailComponent from "./components/customer-sub-detail";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 export default function CustomerDetailPage() {
   const rules = {
@@ -55,7 +46,8 @@ export default function CustomerDetailPage() {
     ruleCustomerContactDelete: checkRule("crm-cc-d"),
     ruleProjectShow: checkRule("crm-p-s"),
   };
-  const { data: session } = useSession();
+
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const crmAuth = useAxiosCrm();
   const crmServices = CrmServices(crmAuth);
   const userAuth = useAxiosUser();
@@ -66,28 +58,19 @@ export default function CustomerDetailPage() {
   const [formCustomerSubEdit] = useForm();
 
   const [customerSubs, setCustomerSubs] = useState<ITCustomerSubDetail[]>([]);
-  const [customerSubIdSelected, setCustomerSubIdSelected] = useState<
-    number | undefined
-  >(undefined);
+  const [customerSubIdSelected, setCustomerSubIdSelected] = useState<number | undefined>(undefined);
   const [branchs, setBranchs] = useState<ITBranch[]>([]);
   const [loading, setloading] = useState<boolean>(true);
   const [isEdit, setIsEdit] = useState(false);
   const [showModalCustomeSubAdd, setShowModalCustomerSubAdd] = useState(false);
-  const [showModalCustomeSubEdit, setShowModalCustomerSubEdit] =
-    useState(false);
+  const [showModalCustomeSubEdit, setShowModalCustomerSubEdit] = useState(false);
   const [showModalBranchAdd, setShowModalBranchAdd] = useState(false);
 
   const [showModalBranchEdit, setShowModalBranchEdit] = useState(false);
-  const [branchDetail, setBranchDetail] = useState<ITBranchDetail | undefined>(
-    undefined
-  );
+  const [branchDetail, setBranchDetail] = useState<ITBranchDetail | undefined>(undefined);
   const [projectDetail, setProjectDetail] = useState<ITProject[]>([]);
-  const [customerTypeGroup, setCustomerTypeGroup] = useState<ITConfigData[]>(
-    []
-  );
-  const [customerResponsibles, setCustomerResponsibles] = useState<
-    ITSelectUsers[]
-  >([]);
+  const [customerTypeGroup, setCustomerTypeGroup] = useState<ITConfigData[]>([]);
+  const [customerResponsibles, setCustomerResponsibles] = useState<ITSelectUsers[]>([]);
   const [customerTypes, setCustomerTypes] = useState<ITConfigData[]>([]);
   useEffect(() => {
     fetchData();
@@ -111,18 +94,10 @@ export default function CustomerDetailPage() {
   const fetchConfig = async () => {
     const group = await crmServices.findConfigCustomerTypeGroup();
     setCustomerTypeGroup(group);
-    if (session?.user.userId) {
-      const responsibles = await userServices.findOrganizeUserByUserId(
-        session?.user.userId
-      );
-
-      if (session?.user.userId) {
-        const responsibles = await userServices.findSaleUserBySalePermission(
-          session?.user.userId
-        );
-        if (responsibles && responsibles.length > 0) {
-          setCustomerResponsibles(responsibles);
-        }
+    if (user?.userId) {
+      const responsibles = await userServices.findSaleUserBySalePermission(user?.userId);
+      if (responsibles && responsibles.length > 0) {
+        setCustomerResponsibles(responsibles);
       }
     }
 
@@ -130,12 +105,8 @@ export default function CustomerDetailPage() {
     setCustomerTypes(types);
   };
   const fetchDescription = async () => {
-    const customerDetail = await crmServices.findCustomerByCustomerId(
-      +params.cusid
-    );
-    const regisDate = customerDetail?.regisDate
-      ? dayjs(customerDetail.regisDate)
-      : null;
+    const customerDetail = await crmServices.findCustomerByCustomerId(+params.cusid);
+    const regisDate = customerDetail?.regisDate ? dayjs(customerDetail.regisDate) : null;
     descriptionForm.setFieldsValue({
       ...customerDetail,
       regisDate: regisDate,
@@ -144,27 +115,17 @@ export default function CustomerDetailPage() {
     setIsEdit(false);
   };
   const fetchCustomerSubs = async () => {
-    const customerSubs = await crmServices.findCustomerSubByCustomerId(
-      +params.cusid,
-      {}
-    );
+    const customerSubs = await crmServices.findCustomerSubByCustomerId(+params.cusid, {});
     setCustomerSubs(customerSubs);
     setShowModalBranchAdd(false);
   };
-  async function fetchBranchByCustomerSubId(
-    customerSubId: number
-  ): Promise<void> {
-    const branchs = await crmServices.findBranchByCustomerSubId(
-      customerSubId,
-      {}
-    );
+  async function fetchBranchByCustomerSubId(customerSubId: number): Promise<void> {
+    const branchs = await crmServices.findBranchByCustomerSubId(customerSubId, {});
     setCustomerSubIdSelected(customerSubId);
     setBranchs(branchs);
   }
   const fetchProject = async () => {
-    const projects = await crmServices.findProjectDataTableByCustomerId(
-      +params.cusid
-    );
+    const projects = await crmServices.findProjectDataTableByCustomerId(+params.cusid);
     setProjectDetail(projects);
     setloading(false);
   };
@@ -173,14 +134,12 @@ export default function CustomerDetailPage() {
     let form = {
       ...data,
       ...(data.registration && { registration: Number(data.registration) }),
-      updatedById: session?.user.userId,
-      updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+      updatedById: user?.userId,
+      updatedByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
     };
     let updateForm = form;
     if (form.customerTypeId) {
-      const customerTypeSelected = customerTypes.findLast(
-        (d) => d.id === form.customerTypeGroupId
-      );
+      const customerTypeSelected = customerTypes.findLast((d) => d.id === form.customerTypeGroupId);
       if (customerTypeSelected?.name) {
         updateForm = {
           ...updateForm,
@@ -189,9 +148,7 @@ export default function CustomerDetailPage() {
       }
     }
     if (form.customerTypeGroupId) {
-      const customerTypeGroupSelected = customerTypeGroup.findLast(
-        (d) => d.id === form.customerTypeGroupId
-      );
+      const customerTypeGroupSelected = customerTypeGroup.findLast((d) => d.id === form.customerTypeGroupId);
       if (customerTypeGroupSelected?.name) {
         updateForm = {
           ...updateForm,
@@ -255,8 +212,8 @@ export default function CustomerDetailPage() {
   async function onSaveBranchEdit(form: ITBranchForm): Promise<void> {
     const base = {
       ...form,
-      updatedBy: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
-      updatedByID: session?.user.userId,
+      updatedBy: `${user?.firstNameTh} ${user?.lastNameTh}`,
+      updatedByID: user?.userId,
       updatedAt: dayjs(),
     };
     await crmServices
@@ -270,9 +227,7 @@ export default function CustomerDetailPage() {
       });
     setloading(true);
   }
-  async function onShowModalBranchDetail(
-    id: number | undefined
-  ): Promise<void> {
+  async function onShowModalBranchDetail(id: number | undefined): Promise<void> {
     if (id) {
       const branchDetail = await crmServices.findBranchDetailByBranchId(id);
       setBranchDetail(branchDetail);
@@ -291,10 +246,7 @@ export default function CustomerDetailPage() {
       });
     setloading(true);
   }
-  async function onSaveBranchAddress(
-    id: number,
-    form: ITBranchAddressForm
-  ): Promise<void> {
+  async function onSaveBranchAddress(id: number, form: ITBranchAddressForm): Promise<void> {
     await crmServices
       .createBranchAddress(id, form)
       .then((res) => {
@@ -305,10 +257,7 @@ export default function CustomerDetailPage() {
       });
     onShowModalBranchDetail(id);
   }
-  async function onDeleteCustomerBranchAddress(
-    branchId: number,
-    addressId: number
-  ): Promise<void> {
+  async function onDeleteCustomerBranchAddress(branchId: number, addressId: number): Promise<void> {
     await crmServices
       .deleteBranchAddress(addressId)
       .then((res) => {
@@ -319,10 +268,7 @@ export default function CustomerDetailPage() {
       });
     onShowModalBranchDetail(branchId);
   }
-  async function onSaveBranchContact(
-    branchId: number,
-    form: ITBranchContactForm
-  ): Promise<void> {
+  async function onSaveBranchContact(branchId: number, form: ITBranchContactForm): Promise<void> {
     await crmServices
       .createBranchContact(branchId, form)
       .then((res) => {
@@ -333,10 +279,7 @@ export default function CustomerDetailPage() {
       });
     onShowModalBranchDetail(branchId);
   }
-  async function onDeleteCustomerBranchContact(
-    branchId: number,
-    contactId: number
-  ): Promise<void> {
+  async function onDeleteCustomerBranchContact(branchId: number, contactId: number): Promise<void> {
     await crmServices
       .deleteBranchContact(contactId)
       .then((res) => {
@@ -435,14 +378,10 @@ export default function CustomerDetailPage() {
                               customerSubs={customerSubs}
                               showModalCustomerSubAdd={showModalCustomeSubAdd}
                               showModalCustomerSubEdit={showModalCustomeSubEdit}
-                              onShowModalCustomerSubAdd={function (
-                                status: boolean
-                              ): void {
+                              onShowModalCustomerSubAdd={function (status: boolean): void {
                                 setShowModalCustomerSubAdd(status);
                               }}
-                              onShowModalCustomerSubEdit={function (
-                                status: boolean
-                              ): void {
+                              onShowModalCustomerSubEdit={function (status: boolean): void {
                                 setShowModalCustomerSubEdit(status);
                               }}
                               onSaveCustomerSub={onSaveCustomerSub}
@@ -451,19 +390,13 @@ export default function CustomerDetailPage() {
                               // formEdit={undefined}
                               formBranchEdit={formBranchEdit}
                               branchs={branchs}
-                              fetchBranchByCustomerSubId={
-                                fetchBranchByCustomerSubId
-                              }
+                              fetchBranchByCustomerSubId={fetchBranchByCustomerSubId}
                               showModalBranchAdd={showModalBranchAdd}
                               showModalBranchEdit={showModalBranchEdit}
-                              onShowModalBranchAdd={function (
-                                status: boolean
-                              ): void {
+                              onShowModalBranchAdd={function (status: boolean): void {
                                 setShowModalBranchAdd(status);
                               }}
-                              onShowModalBranchEdit={function (
-                                status: boolean
-                              ): void {
+                              onShowModalBranchEdit={function (status: boolean): void {
                                 setShowModalBranchEdit(status);
                               }}
                               onShowModalBranchDetail={onShowModalBranchDetail}
@@ -471,13 +404,9 @@ export default function CustomerDetailPage() {
                               onSaveBranchEdit={onSaveBranchEdit}
                               onDeleteCustomerBranch={onDeleteCustomerBranch}
                               onSaveBranchAddress={onSaveBranchAddress}
-                              onDeleteCustomerBranchAddress={
-                                onDeleteCustomerBranchAddress
-                              }
+                              onDeleteCustomerBranchAddress={onDeleteCustomerBranchAddress}
                               onSaveBranchContact={onSaveBranchContact}
-                              onDeleteCustomerBranchContact={
-                                onDeleteCustomerBranchContact
-                              }
+                              onDeleteCustomerBranchContact={onDeleteCustomerBranchContact}
                               formCustomerSubEdit={formCustomerSubEdit}
                             />
                             {/* <BranchCustomerComponent
@@ -512,14 +441,7 @@ export default function CustomerDetailPage() {
                       {
                         key: "project",
                         label: "Project",
-                        children: (
-                          <ProjectCustomerComponent
-                            rules={rules}
-                            projectDetail={projectDetail}
-                            loading={loading}
-                            setLoading={setloading}
-                          />
-                        ),
+                        children: <ProjectCustomerComponent rules={rules} projectDetail={projectDetail} loading={loading} setLoading={setloading} />,
                       },
                     ]}
                   />

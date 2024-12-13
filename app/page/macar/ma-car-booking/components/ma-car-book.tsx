@@ -1,15 +1,15 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { message, Form, FormProps } from "antd";
 import { MaCarBookServices } from "../../../../services/ma-car-book.service";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { MaCarType, MaCarBookType, ProvincesType } from "../../common/index";
 import { RangePickerProps } from "antd/es/date-picker";
 import dayjs, { Dayjs } from "dayjs";
 import { CarBookForm } from "./car-book-form";
 import { checkMaCarBookConfig } from "@/app/utils/validatefield";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 export interface props {
   maCarData: MaCarType[];
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -17,8 +17,8 @@ export interface props {
 }
 
 const MaCarBook: React.FC<props> = ({ maCarData, setLoading, dataoptionsProvinces }): React.ReactElement => {
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const router = useRouter();
-  const { data: session } = useSession();
   const intraAuth = useAxiosIntranet();
   const macarbookservices = MaCarBookServices(intraAuth);
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -32,8 +32,8 @@ const MaCarBook: React.FC<props> = ({ maCarData, setLoading, dataoptionsProvince
       setCarName(maCarData);
     }
     formUser.setFieldsValue({
-      userName: `${session?.user.firstNameTh || ""} ${session?.user.lastNameTh || ""}`,
-      phoneNumber: session?.user.phoneNumber,
+      userName: `${user?.firstNameTh} ${user?.lastNameTh}`,
+      phoneNumber: user?.phoneNumber,
     });
   }, [maCarData]);
 
@@ -56,8 +56,8 @@ const MaCarBook: React.FC<props> = ({ maCarData, setLoading, dataoptionsProvince
     const data = {
       carId: values.carId,
       carName: carSelected?.carName,
-      createdById: session?.user.userId,
-      createdByName: `${session?.user.firstNameTh || ""} ${session?.user.lastNameTh || ""}`,
+      createdById: user?.userId,
+      createdByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
       carBookProvince: values.idProvinces,
       carBookPlace: values.carBookPlace,
       carBookUsers: Number(values.carBookUsers),

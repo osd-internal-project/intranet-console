@@ -1,29 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  Breadcrumb,
-  Button,
-  Card,
-  Col,
-  message,
-  Modal,
-  Row,
-  Spin,
-  TablePaginationConfig,
-} from "antd";
+import { Breadcrumb, Button, Card, Col, Row, Spin, TablePaginationConfig } from "antd";
 import { useAxiosCrm } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { checkRule } from "@/app/utils/rules";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
-
-import { ExclamationCircleFilled } from "@ant-design/icons";
 import CustomerProductServices from "@/app/services/customer-product.service";
 import { ITCustomerProduct } from "@/app/common/product";
 import ProductTableComponent from "./components/product-table";
 import ProductFilterComponent from "./components/product-filter";
 
 export default function ProductsPage() {
-  const { data: session } = useSession();
   const crmAuth = useAxiosCrm();
   const customerProductServices = CustomerProductServices(crmAuth);
   const [loading, setloading] = useState<boolean>(true);
@@ -39,8 +24,7 @@ export default function ProductsPage() {
   }, [loading]);
 
   const fetchData = async () => {
-    const skip: number =
-      (Number(pagination.current) - 1) * Number(pagination.pageSize);
+    const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
     const take: number = Number(pagination.pageSize);
     const res = await customerProductServices.findDatatable(search, take, skip);
     setDataTable(res.data);
@@ -92,11 +76,7 @@ export default function ProductsPage() {
                 <ProductFilterComponent onSearch={handdleSearch} />
               </div>
               <div>
-                <ProductTableComponent
-                  dataTable={dataTable}
-                  pagination={pagination}
-                  changePagination={changePagination}
-                />
+                <ProductTableComponent dataTable={dataTable} pagination={pagination} changePagination={changePagination} />
               </div>
             </Card>
           </div>

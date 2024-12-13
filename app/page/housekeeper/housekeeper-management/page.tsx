@@ -1,25 +1,9 @@
 "use client";
-import {
-  Breadcrumb,
-  Button,
-  Card,
-  Checkbox,
-  Col,
-  Divider,
-  Form,
-  Input,
-  Row,
-  Tabs,
-  TabsProps,
-} from "antd";
-import { useParams } from "next/navigation";
-import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import React from "react";
+import { Breadcrumb, Card, Col, Divider, Row, Tabs, TabsProps } from "antd";
 import Floor from "./components/floor";
 import Housekeeper from "./components/housekeeper";
 export default function Page() {
-  const onChange = (key: string) => {};
-
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -55,7 +39,7 @@ export default function Page() {
       <Col span={24}>
         <div className=" grid-span-1 space-y-2">
           <Card>
-            <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+            <Tabs defaultActiveKey="1" items={items} />
           </Card>
         </div>
       </Col>

@@ -1,20 +1,18 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import type { TableProps, FormProps } from "antd";
-import { DeleteIcon, EditIcon } from "@/components/icon";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useForm } from "antd/es/form/Form";
-import { useSession } from "next-auth/react";
 import type { UploadFile, UploadProps } from "antd";
 import { DeleteOutlined, FormOutlined, UploadOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/es/upload";
 import { UploadFileStatus } from "antd/es/upload/interface";
 import dayjs from "dayjs";
-import weekday from "dayjs/plugin/weekday";
 import { Table, Space, Button, Modal, Form, Input, message, Popconfirm, Tooltip, Switch, Upload, Image, Tag, Select } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { ManageinformationNewsServices } from "../services/information.service";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 export interface informationNews {
   [x: string]: any;
@@ -45,7 +43,7 @@ export interface newsType {
   status: boolean;
 }
 const InfoTableNews: React.FC = () => {
-  const { data: session } = useSession();
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const intraAuth = useAxiosIntranet();
   const [informationNews, setinformationNews] = useState<informationNews[]>([]);
   const [newsimage, setnewsimage] = useState<newsImage[]>([]);
@@ -141,7 +139,7 @@ const InfoTableNews: React.FC = () => {
       newsName: values.newsName,
       content: values.content,
       newsType: values.newsType,
-      author: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+      author: `${user?.firstNameTh} ${user?.lastNameTh}`,
       updatedAt: new Date().toISOString(),
       status: values.status,
     };
@@ -154,7 +152,7 @@ const InfoTableNews: React.FC = () => {
             const formData = new FormData();
             formData.append("file", file.originFileObj as RcFile);
             await manageinformationNewsServices.uploadFiles(response.newsId, formData);
-          })
+          }),
         );
       }
       if (response) {
@@ -264,7 +262,8 @@ const InfoTableNews: React.FC = () => {
   };
 
   const filteredData = informationNews.filter(
-    (news) => news.newsName.toLowerCase().includes(searchFileName.toLowerCase()) || news.newsType.toLowerCase().includes(searchFileType.toLowerCase())
+    (news) =>
+      news.newsName.toLowerCase().includes(searchFileName.toLowerCase()) || news.newsType.toLowerCase().includes(searchFileType.toLowerCase()),
   );
 
   const handledetail = () => {
@@ -384,8 +383,7 @@ const InfoTableNews: React.FC = () => {
           justifyContent: "space-between",
           alignItems: "center",
           fontSize: "16px",
-        }}
-      >
+        }}>
         <div>
           <div>
             ค้นหาชื่อข่าวสาร :
@@ -429,8 +427,7 @@ const InfoTableNews: React.FC = () => {
         onCancel={handledetail}
         footer={null}
         destroyOnClose
-        style={{ textAlign: "center" }}
-      >
+        style={{ textAlign: "center" }}>
         <Form form={formdetail}>
           <Form.Item<informationNews> name="content">
             <Input.TextArea
@@ -459,24 +456,21 @@ const InfoTableNews: React.FC = () => {
               width: "300px",
               visibility: "hidden",
               margin: " 0 -60px -60px 0 ",
-            }}
-          >
+            }}>
             <Input placeholder="ชื่อประเภทข่าวสาร" />
           </Form.Item>
           <Form.Item
             name="newsName"
             label="หัวข้อข่าวสาร :"
             rules={[{ required: true, message: "กรุณากรอกหัวข้อข่าวสาร" }]}
-            style={{ width: "300px" }}
-          >
+            style={{ width: "300px" }}>
             <Input placeholder="หัวข้อข่าวสาร" showCount maxLength={50} />
           </Form.Item>
           <Form.Item
             name="newsType"
             label="ประเภทข่าวสาร :"
             rules={[{ required: true, message: "กรุณากรอกประเภทข่าวสาร" }]}
-            style={{ width: "300px" }}
-          >
+            style={{ width: "300px" }}>
             <Select placeholder="ประเภทข่าวสาร">
               {newsTypeOptions
                 .filter((option) => {
@@ -494,8 +488,7 @@ const InfoTableNews: React.FC = () => {
             name="content"
             label="เนื้อหาข่าวสาร : "
             rules={[{ required: true, message: "กรุณากรอกเนื้อหาข่าวสาร" }]}
-            style={{ width: "900px" }}
-          >
+            style={{ width: "900px" }}>
             <Input.TextArea rows={12} placeholder="เนื้อหาข่าวสาร" />
           </Form.Item>
           <Form.Item label="รูปภาพปัจจุบัน:">
@@ -510,8 +503,7 @@ const InfoTableNews: React.FC = () => {
                     top: 10,
                     right: 10,
                   }}
-                  onClick={() => handleDeleteImage(file)}
-                >
+                  onClick={() => handleDeleteImage(file)}>
                   ลบรูปภาพ
                 </Button>
               </div>
@@ -524,8 +516,7 @@ const InfoTableNews: React.FC = () => {
                   color: "red",
                   fontSize: "16px",
                   margin: " 0 0 -5px 0",
-                }}
-              >
+                }}>
                 คำเตือน **
               </p>
               รูปภาพของคุณในการอัปเดตข่าวสาร รวมถึงรูปเก่าในข้อมูลเดิม คุณจะไม่สามารถอัพรูปภาพได้เกิน 3 ภาพ / 1 ข่าวสาร
@@ -536,8 +527,7 @@ const InfoTableNews: React.FC = () => {
               beforeUpload={beforeUploadAttendFiles}
               multiple={true}
               accept=".png,.jpg,.jpeg"
-              listType="picture"
-            >
+              listType="picture">
               <Button icon={<UploadOutlined />}>อัปโหลดรูปภาพ</Button>
             </Upload>
           </Form.Item>

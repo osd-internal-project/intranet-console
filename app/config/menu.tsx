@@ -1,11 +1,4 @@
-import {
-  LogoutOutlined,
-  UserOutlined,
-  HomeOutlined,
-  BarChartOutlined,
-  BookOutlined,
-  MailOutlined,
-} from "@ant-design/icons";
+import { LogoutOutlined, UserOutlined, HomeOutlined, BarChartOutlined, BookOutlined, MailOutlined } from "@ant-design/icons";
 import { Icon } from "@iconify/react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
@@ -231,6 +224,17 @@ export const MenuSider: MenuItem[] = [
       {
         key: `setting/email-template`,
         label: `Email Template`,
+      },
+    ],
+  },
+  {
+    key: `overtime`,
+    icon: <Icon icon="uil:setting" width="15" height="15" />,
+    label: `Overtime`,
+    children: [
+      {
+        key: `overtime/overtime-form`,
+        label: `การบำรุงรักษา`,
       },
     ],
   },

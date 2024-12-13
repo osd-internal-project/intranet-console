@@ -11,7 +11,6 @@ import { UserAction } from "./components/user-action";
 import dayjs from "dayjs";
 import { DataNode } from "antd/es/tree";
 import { groupWithSubGroupsToGroupTree } from "./components/group-tree-mapper";
-import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import UserGroupServices from "../../../services/usergroup.service";
 import OrganizeServices from "@/app/services/organize-chart.service";
 import { CarryOutOutlined } from "@ant-design/icons";
@@ -79,7 +78,11 @@ export default function UsermanagementPage() {
 
   const loaddata = async () => {
     const resOrganize = await OrganizeServices(baseUrlIntranet).getOrganizeByType("department");
+    console.log(resOrganize);
+    
     const tree = createTreeDepartMent(resOrganize, null);
+    console.log(tree);
+    
     setTreeListDepartment(tree);
   };
 
@@ -91,7 +94,6 @@ export default function UsermanagementPage() {
     const groupResponse = await UsersServices(baseUrlUser).findGroupsId24();
     const resOrganize = await UserGroupServices(baseUrlUser).findAllOrganize();
     const orgList = resOrganize.map((item: TOrganizeAllDto) => ({ value: item.organizedId, label: item.organizedName }));
-
     const positionOption: ITypeOption[] = resultMasterPosition.map((d: any) => ({
       label: d.nameTh,
       value: d.id,

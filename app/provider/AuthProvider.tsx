@@ -83,7 +83,7 @@ export default function AuthProviderId24({ children }: { children: React.ReactNo
     <Id24InstanceProvider instance={id24InstanceS} authenticationHelper={authenticationHelperS}>
       <Id24Provider
         config={{
-          refreshTokenIntervalInSeconds: 110,
+          refreshTokenIntervalInSeconds: 40,
           resourceApiBaseUrl: `${process.env.REACT_APP_API_BASE_URL}` || "http://localhost:3000",
         }}>
         <>{children}</>

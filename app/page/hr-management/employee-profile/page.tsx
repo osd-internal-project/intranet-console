@@ -10,11 +10,15 @@ import EmployeeProfileManageUser from "./components/employee-profile-manage-user
 import EmployeeProfileDetail from "@/app/services/employee-profile.services";
 import { gridIconHr, listIcon } from "@/components/icon";
 import EmployeeProfileDashboard from "./components/employee-profile-dashboard";
+import { MasterPositionServices } from "@/app/services/master-position.service";
 
 export default function EmployeeProfilePage() {
   const { id24Axios } = useId24();
   const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const baseUrlHrManagement = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_HR_MANAGEMENT);
+
+  // MasterPositionServices
   const [form] = Form.useForm();
   const [typeGroup, setTypeGroup] = useState<string>("list");
   const [typeManageUser, setTypeManageUser] = useState<string>("Create");
@@ -24,6 +28,9 @@ export default function EmployeeProfilePage() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [masterPosition, setMasterPosition] = useState<{ key: number; value: number; label: string }[]>([{ key: 0, value: 0, label: "" }]);
+  const [masterDepartments, setMasterDepartments] = useState<{ key: number; value: number; label: string }[]>([{ key: 0, value: 0, label: "" }]);
+
   const [dataSourceDashboard, setDataSourceDashboard] = useState<{ active: number; inactive: number; new: number; status: string; total: number }>({
     active: 0,
     inactive: 0,
@@ -41,6 +48,25 @@ export default function EmployeeProfilePage() {
     if (loading) fecthDataDashboard();
   }, [loading]);
 
+  useEffect(() => {
+    masterDataDropdown();
+  }, []);
+
+  const masterDataDropdown = async () => {
+    const resMasterPosition = await MasterPositionServices(baseUrlUser).findAllPosition();
+    const optionsPositions = resMasterPosition.map((events: any, index: number) => {
+      return { key: index, value: events.posId, label: events.nameTh };
+    });
+    setMasterPosition(optionsPositions);
+    const DepartmentsAll = await MasterPositionServices(baseUrlIntranet).findAllDepartment();
+    console.log(DepartmentsAll);
+
+    const optionsDepartment = DepartmentsAll.map((events: any, index: number) => {
+      return { key: index, value: events.id, label: events.departName };
+    });
+    setMasterDepartments(optionsDepartment);
+  };
+
   const fecthDataDashboard = async () => {
     const baseParams = {
       valueOne: "non-params",
@@ -50,8 +76,20 @@ export default function EmployeeProfilePage() {
     };
     const dataCountDashboards = await EmployeeProfileDetail(baseUrlHrManagement).getCount(baseParams);
     const dataEmployeeProfileAll = await EmployeeProfileDetail(baseUrlHrManagement).getEmployeeProfileAll(pagination);
+    if (dataEmployeeProfileAll) {
+      const data = await Promise.all(
+        dataEmployeeProfileAll.map(async (record: any, index: number) => {
+          const image = await EmployeeProfileDetail(baseUrlHrManagement).getImage(record.userId);
+          const mapdata = {
+            ...record,
+            image,
+          };
+          return mapdata;
+        }),
+      );
+      setDataSource(data);
+    }
     if (dataCountDashboards.status === "success") setDataSourceDashboard(dataCountDashboards);
-    setDataSource(dataEmployeeProfileAll);
     setLoading(false);
   };
   const options = [
@@ -79,8 +117,18 @@ export default function EmployeeProfilePage() {
   };
 
   const onFinish = async (values: any, type: string) => {
-    console.log(type);
-    console.log(values);
+    const result: any = await EmployeeProfileDetail(baseUrlHrManagement).createProfile(values);
+    console.log(result);
+
+    if (result.status === 200) {
+      let formData: any = new FormData();
+      formData.append("files", fileList[0].originFileObj);
+      await EmployeeProfileDetail(baseUrlHrManagement).createImageProfile(result?.data.userId, formData);
+    }
+    setFileList([]);
+    setPreviewImage("");
+    setLoading(true);
+    form.resetFields();
   };
 
   return (
@@ -144,6 +192,8 @@ export default function EmployeeProfilePage() {
             previewImage={previewImage}
             fileList={fileList}
             onFinish={onFinish}
+            masterPosition={masterPosition}
+            masterDepartments={masterDepartments}
           />
         ) : null}
       </div>

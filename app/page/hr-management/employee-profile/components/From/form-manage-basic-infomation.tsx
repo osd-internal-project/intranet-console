@@ -6,9 +6,17 @@ export interface props {
   fileList: any;
   handlePreview: (events: any) => void;
   handleChange: (events: any) => void;
+  masterPosition: { key: number; value: number; label: string }[];
+  masterDepartments: { key: number; value: number; label: string }[];
 }
 
-const FormManageBasicInformation: React.FC<props> = ({ fileList, handlePreview, handleChange }): React.ReactElement => {
+const FormManageBasicInformation: React.FC<props> = ({
+  fileList,
+  handlePreview,
+  handleChange,
+  masterPosition,
+  masterDepartments,
+}): React.ReactElement => {
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
       <PlusOutlined />
@@ -18,18 +26,27 @@ const FormManageBasicInformation: React.FC<props> = ({ fileList, handlePreview, 
 
   return (
     <div>
-      <Card className="mb-2">
-        <Upload
-          action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-          listType="picture-circle"
-          fileList={fileList}
-          onPreview={handlePreview}
-          onChange={handleChange}>
-          {fileList.length >= 1 ? null : uploadButton}
-        </Upload>
-        <div>
-          <div>{`Upload Profile Image`}</div>
-          <div>{`Image should be below 4 mb`}</div>
+      <Card>
+        <div className="grid grid-cols-4 col-span-2">
+          <div className="col-span-1 flex justify-center items-center">
+            <Upload
+              listType="picture-circle"
+              fileList={fileList}
+              multiple={false}
+              maxCount={1}
+              onPreview={handlePreview}
+              onChange={handleChange}
+              accept="image/png, image/jpeg">
+              {fileList.length >= 1 ? null : uploadButton}
+            </Upload>
+          </div>
+          <div className="col-span-3">
+            <div>{`Upload Profile Image`}</div>
+            <div>{`Image should be below 4 Mb.`}</div>
+            <div>{`filename : ${fileList.length > 0 ? fileList[0].name : "-"}`}</div>
+            <div>{`type : ${fileList.length > 0 ? fileList[0].type : "-"}`}</div>
+            <div>{`size : ${fileList.length > 0 ? (fileList[0].size / (1024 * 1024)).toFixed(2) : "-"} Mb.`}</div>
+          </div>
         </div>
       </Card>
       <div className="grid col-span-4 grid-cols-2 gap-4">
@@ -47,6 +64,9 @@ const FormManageBasicInformation: React.FC<props> = ({ fileList, handlePreview, 
         </Form.Item>
         <Form.Item name={`address`} label={`ที่อยู่`}>
           <Input.TextArea showCount maxLength={250} rows={5} />
+        </Form.Item>
+        <Form.Item name={`idCard`} label={`เลขบัตรประชาชน`}>
+          <Input />
         </Form.Item>
         <Form.Item name={`gender`} label={`เพศ`}>
           <Select
@@ -76,14 +96,17 @@ const FormManageBasicInformation: React.FC<props> = ({ fileList, handlePreview, 
         <Form.Item name={`phoneNumber`} label={`เบอร์โทรศัพท์`}>
           <Input min={10} />
         </Form.Item>
-        <Form.Item name={`departmentId`} label={`บริษัท`}>
+        <Form.Item name={`extensionNumber`} label={`เบอร์ที่ทำงาน`}>
+          <Input min={10} />
+        </Form.Item>
+        <Form.Item name={`company`} label={`บริษัท`}>
           <Select />
         </Form.Item>
         <Form.Item name={`departmentId`} label={`แผนก`}>
-          <Select />
+          <Select options={masterDepartments} placeholder={"Please Select"} allowClear />
         </Form.Item>
         <Form.Item name={`positionId`} label={`ตำแหน่ง`}>
-          <Select />
+          <Select options={masterPosition} placeholder={"Please Select"} allowClear />
         </Form.Item>
       </div>
     </div>

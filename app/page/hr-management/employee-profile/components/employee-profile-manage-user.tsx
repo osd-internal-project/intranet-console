@@ -22,6 +22,8 @@ export interface props {
   previewImage: string;
   fileList: UploadFile[];
   onFinish: (values: any, type: string) => void;
+  masterPosition: { key: number; value: number; label: string }[];
+  masterDepartments: { key: number; value: number; label: string }[];
 }
 
 const EmployeeProfileManageUser: React.FC<props> = ({
@@ -36,6 +38,8 @@ const EmployeeProfileManageUser: React.FC<props> = ({
   previewImage,
   fileList,
   onFinish,
+  masterPosition,
+  masterDepartments,
 }): React.ReactElement => {
   const getBase64 = (file: FileType): Promise<string> =>
     new Promise((resolve, reject) => {
@@ -59,7 +63,15 @@ const EmployeeProfileManageUser: React.FC<props> = ({
     {
       key: "1",
       label: "Basic Information",
-      children: <FormManageBasicInformation fileList={fileList} handlePreview={handlePreview} handleChange={handleChange} />,
+      children: (
+        <FormManageBasicInformation
+          fileList={fileList}
+          handlePreview={handlePreview}
+          handleChange={handleChange}
+          masterPosition={masterPosition}
+          masterDepartments={masterDepartments}
+        />
+      ),
     },
     {
       key: "2",

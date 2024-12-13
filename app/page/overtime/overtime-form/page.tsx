@@ -1,45 +1,30 @@
 "use client";
-import {
-  Breadcrumb,
-  Button,
-  Card,
-  Checkbox,
-  Col,
-  ConfigProvider,
-  DatePicker,
-  Divider,
-  Form,
-  Input,
-  Radio,
-  Row,
-  Select,
-  Table,
-} from "antd";
-import { useEffect, useState } from "react";
+import { Breadcrumb, Button, Card, Checkbox, Col, ConfigProvider, DatePicker, Divider, Form, Input, Radio, Row, Select, Table } from "antd";
+import { useContext, useEffect, useState } from "react";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
 import UserServices from "@/app/services/user.service";
-export default function ProductListPage() {
-  const { data: session } = useSession();
+import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
+export default function OverTimePage() {
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const { user } = useContext(UserContext) as UserContectType;
   const searchParams = useSearchParams();
   const locationId = searchParams.get("locationId") as string;
-  const auth = useAxiosIntranet();
   const [createForm] = useForm();
-  const userproductServices = UserServices(auth);
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    if (session?.user.userId) {
-      const headers = userproductServices.findHeaderUserByUserId(
-        session?.user.userId
-      );
+    if (user && user.userId) {
+      fetchData();
     }
+  }, [user]);
+  const fetchData = async () => {
+    if (!user) return;
+    const headers = await UserServices(baseUrlUser).findHeaderUserByUserId(user.userId);
   };
 
   return (
@@ -72,16 +57,11 @@ export default function ProductListPage() {
                 DatePicker: { colorBgContainerDisabled: "#fff" },
                 Form: { itemMarginBottom: 1 },
               },
-            }}
-          >
+            }}>
             <Form layout="vertical" size="small" form={createForm}>
               <div className=" w-full grid  grid-cols-1 md:grid-cols-4 gap-2">
                 <div className=" md:col-start-4">
-                  <Form.Item
-                    label={"วันที่ทำรายการ"}
-                    name={"createDate"}
-                    initialValue={dayjs()}
-                  >
+                  <Form.Item label={"วันที่ทำรายการ"} name={"createDate"} initialValue={dayjs()}>
                     <DatePicker className=" w-full" disabled />
                   </Form.Item>
                 </div>
@@ -141,12 +121,7 @@ export default function ProductListPage() {
                   </Form.Item>
                 </div>
                 <div className="  md:col-span-2 ">
-                  <Form.Item
-                    name={"extension"}
-                    label={
-                      <div className="text-blue-600 font-bold"> เพิ่มเติม</div>
-                    }
-                  >
+                  <Form.Item name={"extension"} label={<div className="text-blue-600 font-bold"> เพิ่มเติม</div>}>
                     <div className="grid grid-cols-2">
                       <Checkbox value="travelTo" style={{ lineHeight: "32px" }}>
                         เดินทางไป
@@ -154,25 +129,16 @@ export default function ProductListPage() {
                       <Checkbox value="return" style={{ lineHeight: "32px" }}>
                         เดินทางกลับ
                       </Checkbox>
-                      <Checkbox
-                        value="otherProvinces"
-                        style={{ lineHeight: "32px" }}
-                      >
+                      <Checkbox value="otherProvinces" style={{ lineHeight: "32px" }}>
                         เดินทางต่างจังหวัด
                       </Checkbox>
-                      <Checkbox
-                        value="overnightStay"
-                        style={{ lineHeight: "32px" }}
-                      >
+                      <Checkbox value="overnightStay" style={{ lineHeight: "32px" }}>
                         มีการค้างคืน
                       </Checkbox>
                       <Checkbox value="company" style={{ lineHeight: "32px" }}>
                         เดินทางด้วยรถบริษัท
                       </Checkbox>
-                      <Checkbox
-                        value="over350km"
-                        style={{ lineHeight: "32px" }}
-                      >
+                      <Checkbox value="over350km" style={{ lineHeight: "32px" }}>
                         ระยะการเดินทางมากกว่า 350 กม.
                       </Checkbox>
                     </div>
@@ -180,9 +146,7 @@ export default function ProductListPage() {
                 </div>
                 <div className="  md:col-span-2 ">
                   <Card>
-                    <div className=" text-blue-600  text-base font-bold">
-                      คำนวณเวลา
-                    </div>
+                    <div className=" text-blue-600  text-base font-bold">คำนวณเวลา</div>
                     <div className=" flex ">
                       <div className=" w-28">เวลาทั้งหมด (ช.ม.)</div>
                       <div className=" ml-2 font-bold text-base"> : {2}</div>

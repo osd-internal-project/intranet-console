@@ -20,7 +20,6 @@ import {
   UploadProps,
 } from "antd";
 import { CarryOutOutlined, CheckOutlined, CloseOutlined, FilterOutlined, PlusCircleOutlined, UploadOutlined } from "@ant-design/icons";
-import { checkRule } from "@/app/utils/rules";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import { UsersServices } from "@/app/services/users.service";
@@ -73,7 +72,7 @@ export const UserAction: React.FC<Props> = ({
   const [valueTreeSelect, setValueTreeSelect] = useState<string>();
   const [groupOption, setGroupOption] = useState<any[]>([]);
   const [organizeId, setOrganizeId] = useState<string>("");
-  const [userGroupSelect, setUserGroupSelect] = useState<SelectProps["options"]>([]);
+  // const [userGroupSelect, setUserGroupSelect] = useState<SelectProps["options"]>([]);
 
   const handleOpenFilter = (state: boolean) => {
     setOpenFilter(state);
@@ -91,26 +90,28 @@ export const UserAction: React.FC<Props> = ({
     UsersServices(baseUrlUser).validateEmail(email, userType);
 
   const onFinishAdd = async (value: TCreateUserDto) => {
-    if (managePage.modalTitle === "create") {
-      if (selectUserType === "local") {
-        const validationPassFailReason = await UsersServices(baseUrlUser).validatePassword(value.password);
-        if (validationPassFailReason.length > 0) {
-          return message.error({
-            content: validationPassFailReason.map((error: string, index: number) => (
-              <>
-                <React.Fragment key={index}>{error}</React.Fragment>
-                <br />
-              </>
-            )),
-          });
-        }
-      }
-    }
-    const resCreate = await UsersServices(baseUrlUser).addUser(value);
-    if (resCreate) {
-      message.success("Add Success");
-    }
-    setManagePage({ ...managePage, loading: true });
+    console.log(value);
+    // if (managePage.modalTitle === "create") {
+    //   if (selectUserType === "local") {
+    //     const validationPassFailReason = await UsersServices(baseUrlUser).validatePassword(value.password);
+    //     if (validationPassFailReason.length > 0) {
+    //       return message.error({
+    //         content: validationPassFailReason.map((error: string, index: number) => (
+    //           <>
+    //             <React.Fragment key={index}>{error}</React.Fragment>
+    //             <br />
+    //           </>
+    //         )),
+    //       });
+    //     }
+    //   }
+    // }
+    // const resCreate = await UsersServices(baseUrlUser).addUser(value);
+    // if (resCreate) {
+    //   message.success("Add Success");
+    // }
+    // setManagePage({ ...managePage, loading: true });
+    // createForm.resetFields();
   };
 
   const searchContent = (
@@ -125,9 +126,9 @@ export const UserAction: React.FC<Props> = ({
         <Form.Item label="Email" name="email">
           <Input placeholder="Search Text" />
         </Form.Item>
-        <Form.Item label="Position" name="positionId">
-          {/* <Select placeholder="Please Select" options={positionOption} allowClear /> */}
-        </Form.Item>
+        {/* <Form.Item label="Position" name="positionId">
+          <Select placeholder="Please Select" options={positionOption} allowClear />
+        </Form.Item> */}
         <Form.Item label="First Name" name="firstNameTh">
           <Input placeholder="Search Text" />
         </Form.Item>
@@ -245,26 +246,17 @@ export const UserAction: React.FC<Props> = ({
             placement="bottomLeft"
             title="Search"
             trigger="click"
-            overlayStyle={{ width: "calc(100% - 240px)" }}
-          >
+            overlayStyle={{ width: "calc(100% - 240px)" }}>
             <Button type="primary" icon={<FilterOutlined />}>
               Filters
             </Button>
           </Popover>
         </div>
         <div className=" space-x-2">
-          {/* {checkRule("um-a") ? (
-            <Button icon={<PlusCircleOutlined />} className="button-blue" onClick={() => setIsModalOpen(true)}>
-              Add User
-            </Button>
-          ) : (
-            <></>
-          )} */}
           <Button
             icon={<PlusCircleOutlined />}
             className="button-blue"
-            onClick={() => setManagePage({ ...managePage, modalStatus: true, modalTitle: "create" })}
-          >
+            onClick={() => setManagePage({ ...managePage, modalStatus: true, modalTitle: "create" })}>
             สร้างผู้ใช้
           </Button>
         </div>
@@ -273,9 +265,10 @@ export const UserAction: React.FC<Props> = ({
         title={`${managePage.modalTitle} user`}
         open={managePage.modalStatus}
         footer={[]}
-        onCancel={() => setManagePage({ ...managePage, modalStatus: false })}
-        width={1200}
-      >
+        onCancel={() => {
+          setManagePage({ ...managePage, modalStatus: false }), createForm.resetFields();
+        }}
+        width={1200}>
         <Form form={createForm} name="create" wrapperCol={{ span: 24 }} onFinish={onFinishAdd} autoComplete="off" layout="vertical">
           <div className=" flex justify-center p-1">
             <Avatar size={128} src={image ? URL.createObjectURL(image) : ""} />
@@ -289,8 +282,7 @@ export const UserAction: React.FC<Props> = ({
                 beforeUpload={beforeUploadImageFiles}
                 multiple={false}
                 maxCount={1}
-                listType="picture"
-              >
+                listType="picture">
                 <Button icon={<UploadOutlined />}>Click to upload</Button>
               </Upload>
             </Form.Item>
@@ -316,8 +308,7 @@ export const UserAction: React.FC<Props> = ({
                     ]
                   : undefined
               }
-              initialValue={selectUserType}
-            >
+              initialValue={selectUserType}>
               <Select
                 disabled={managePage.modalTitle === "update" ? true : false}
                 onChange={onChangeUserType}
@@ -342,8 +333,7 @@ export const UserAction: React.FC<Props> = ({
                     }
                   },
                 },
-              ]}
-            >
+              ]}>
               <Input />
             </Form.Item>
             <Form.Item<TCreateUserDto>
@@ -363,8 +353,7 @@ export const UserAction: React.FC<Props> = ({
                   },
                 },
               ]}
-              style={{ marginBottom: "2px" }}
-            >
+              style={{ marginBottom: "2px" }}>
               <Input />
             </Form.Item>
           </div>
@@ -377,8 +366,7 @@ export const UserAction: React.FC<Props> = ({
                     <Form.Item<TCreateUserDto>
                       name={"password"}
                       label="รหัสผ่าน"
-                      rules={managePage.modalTitle === "create" ? [{ required: true }] : undefined}
-                    >
+                      rules={managePage.modalTitle === "create" ? [{ required: true }] : undefined}>
                       <Input.Password autoComplete="new-password" />
                     </Form.Item>
                   </div>
@@ -399,8 +387,7 @@ export const UserAction: React.FC<Props> = ({
                             return Promise.reject(new Error("The new password that you entered do not match!"));
                           },
                         }),
-                      ]}
-                    >
+                      ]}>
                       <Input.Password />
                     </Form.Item>
                   </div>
@@ -416,7 +403,7 @@ export const UserAction: React.FC<Props> = ({
               <></>
             )}
             <div className=" col-span-1">
-              <Form.Item<TCreateUserDto> name={"activeStatus"} label="สถานะ" initialValue={true}>
+              <Form.Item<TCreateUserDto> name={"activeStatus"} label="สถานะ" initialValue={true} className="p-0 mb-0">
                 <Switch checkedChildren={<CheckOutlined />} unCheckedChildren={<CloseOutlined />} />
               </Form.Item>
             </div>
@@ -444,8 +431,7 @@ export const UserAction: React.FC<Props> = ({
                 label="เบอร์โทรติดต่อ"
                 name="phoneNumber"
                 rules={[{ required: true }, { validator: validateNumber }]}
-                style={{ marginBottom: "2px" }}
-              >
+                style={{ marginBottom: "2px" }}>
                 <Input />
               </Form.Item>
             </div>
@@ -534,8 +520,7 @@ export const UserAction: React.FC<Props> = ({
                 setManagePage({ ...managePage, modalStatus: false });
                 createForm.resetFields();
                 setOrganizeId("");
-              }}
-            >{`Cancel`}</Button>
+              }}>{`Cancel`}</Button>
             <Button type={"primary"} htmlType="submit" loading={buttonLoading}>
               {`Add User`}
             </Button>

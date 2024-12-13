@@ -30,6 +30,43 @@ const EmployeeProfileDetail = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    getImage: async (userId: string) => {
+      return await axiosInstance
+        .get(`${baseHrUrl}/upload-image/${userId}`, { responseType: "blob" })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    createProfile: async (values: any) => {
+      return await axiosInstance
+        .post(`${baseHrUrl}`, values)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    createImageProfile: async (userId: string, formdata: any) => {
+      return await axiosInstance
+        .post(`${baseHrUrl}/upload-image/${userId}`, formdata, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
   };
 };
 

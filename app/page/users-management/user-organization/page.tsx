@@ -17,6 +17,7 @@ import OrganizedServices from "./services/organized.service";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { editIcon } from "@/components/icon";
+import dayjs from "dayjs";
 
 const { RangePicker } = DatePicker;
 const dateFormat = "DD/MM/YYYY";
@@ -98,7 +99,7 @@ export default function Organization() {
       dataIndex: "createdAt",
       key: "createdAt",
       width: "20%",
-      // render: (text: string, record: any, index: number) => index + 1,
+      render: (text: string, record: any, index: number) => dayjs(text).format("DD-MM-YYYY , HH:mm")
     },
     {
       title: "Active",

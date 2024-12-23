@@ -25,6 +25,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "antd/es/form/Form";
 import { FilterOutlined } from "@ant-design/icons";
 import { HouseKeeperStockServices } from "../../housekeepers/services/housekeeper.service";
+import dayjs from "dayjs";
 
 type FieldType = {
   type: string;
@@ -74,6 +75,7 @@ export default function Floor() {
       dataIndex: "createdAt",
       key: "createdAt",
       width: "20%",
+      render:(text:string)=>dayjs(text).format("DD-MM-YYYY , HH:mm")
     },
     {
       title: "อัปเดท",

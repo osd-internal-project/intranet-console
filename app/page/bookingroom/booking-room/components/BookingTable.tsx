@@ -137,6 +137,8 @@ const BookingTable: React.FC<props> = ({
     switch (status) {
       case "Approve":
         return <Tag color={"green"}>อนุมัติสำเร็จ</Tag>;
+      case "Reject":
+        return <Tag color={"red"}>ไม่อนุมัติ</Tag>;
       case "process":
         return <Tag color={"blue"}>กำลังรออนุมัติ</Tag>;
       case "cancel":

@@ -183,7 +183,9 @@ const ManageRoom: React.FC = () => {
             {record.bookingStatus === "process" && (
               <a onClick={() => showModalApproveBooking(record)}>อนุมัติ</a>
             )}
-            <a type="link" onClick={() => showModalBookingDetails(record)}>รายละเอียด</a>
+            <a type="link" onClick={() => showModalBookingDetails(record)}>
+              รายละเอียด
+            </a>
           </Space>
         );
       },
@@ -194,6 +196,8 @@ const ManageRoom: React.FC = () => {
     switch (status) {
       case "Approve":
         return <Tag color={"green"}>อนุมัติสำเร็จ</Tag>;
+      case "Reject":
+        return <Tag color="red">ไม่อนุมัติ</Tag>;
       case "process":
         return <Tag color={"blue"}>กำลังรออนุมัติ</Tag>;
       case "cancel":

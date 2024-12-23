@@ -183,6 +183,11 @@ const ManageRoom: React.FC = () => {
             {record.bookingStatus === "process" && (
               <a onClick={() => showModalApproveBooking(record)}>อนุมัติ</a>
             )}
+            {record.bookingStatus === "Approve" && (
+              <a onClick={() => showModalApproveBooking(record)}>
+                ยกเลิกอนุมัติ
+              </a>
+            )}
             <a type="link" onClick={() => showModalBookingDetails(record)}>
               รายละเอียด
             </a>
@@ -329,7 +334,7 @@ const ManageRoom: React.FC = () => {
     }
   };
 
-  const onFinishApprove = async (status: "Approve" | "Reject") => {
+  const onFinishApprove = async (status: "Approve" | "Reject" | "process") => {
     setSubmitLoading(true);
     try {
       const updatedApproveBooking = {
@@ -343,14 +348,20 @@ const ManageRoom: React.FC = () => {
       setModalApproveBooking(false);
       fetchData();
       message.success(
-        status === "Approve" ? "อนุมัติการจองสำเร็จ" : "ปฏิเสธการจองสำเร็จ"
+        status === "Approve"
+          ? "อนุมัติการจองสำเร็จ"
+          : status === "Reject"
+          ? "ปฏิเสธการจองสำเร็จ"
+          : "ยกเลิกการอนุมัติสำเร็จ"
       );
       setSubmitLoading(false);
     } catch (error) {
       message.error(
         status === "Approve"
           ? "อนุมัติการจองไม่สำเร็จ"
-          : "ปฏิเสธการจองไม่สำเร็จ"
+          : status === "Reject"
+          ? "ปฏิเสธการจองไม่สำเร็จ"
+          : "ยกเลิกการอนุมัติไม่สำเร็จ"
       );
     }
   };
@@ -521,12 +532,20 @@ const ManageRoom: React.FC = () => {
       </Modal>
       <Modal
         width={400}
-        title="อนุมัติจองห้อง"
+        title={
+          bookingStatus === "Approve"
+            ? "ยกเลิกอนุมัติจองห้อง"
+            : "อนุมัติจองห้อง"
+        }
         open={modalApproveBooking}
         onCancel={handleApproveBookingCancel}
         footer={null}
       >
-        <p>ยืนยันอนุมัติจองห้อง</p>
+        <p>
+          {bookingStatus === "Approve"
+            ? "ยืนยันยกเลิกอนุมัติจองห้อง"
+            : "ยืนยันอนุมัติจองห้อง"}
+        </p>
         <Form
           form={form}
           layout="vertical"
@@ -535,24 +554,36 @@ const ManageRoom: React.FC = () => {
           autoComplete="off"
         >
           <Row justify="end">
-            <Button
-              type="primary"
-              danger
-              htmlType="submit"
-              loading={submitLoading}
-              style={{ marginRight: 8 }}
-              onClick={() => onFinishApprove("Reject")}
-            >
-              ไม่อนุมัติ
-            </Button>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={submitLoading}
-              onClick={() => onFinishApprove("Approve")}
-            >
-              อนุมัติ
-            </Button>
+            {bookingStatus === "Approve" ? (
+              <Button
+                type="primary"
+                danger
+                loading={submitLoading}
+                style={{ marginRight: 8 }}
+                onClick={() => onFinishApprove("process")}
+              >
+                ยกเลิกการอนุมัติ
+              </Button>
+            ) : (
+              <>
+                <Button
+                  type="primary"
+                  danger
+                  loading={submitLoading}
+                  style={{ marginRight: 8 }}
+                  onClick={() => onFinishApprove("Reject")}
+                >
+                  ไม่อนุมัติ
+                </Button>
+                <Button
+                  type="primary"
+                  loading={submitLoading}
+                  onClick={() => onFinishApprove("Approve")}
+                >
+                  อนุมัติ
+                </Button>
+              </>
+            )}
           </Row>
         </Form>
       </Modal>

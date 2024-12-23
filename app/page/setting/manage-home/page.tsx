@@ -22,12 +22,12 @@ export default function TypeLeave() {
   const items: TabsProps["items"] = [
     {
       key: "1",
-      label: "ตั่งค่า รูปภาพสไลด์",
+      label: "ตั้งค่า รูปภาพสไลด์",
       children: <SlideImageSetting />,
     },
     {
       key: "2",
-      label: "ตั่งค่า กิจกรรมและข่าวสาร",
+      label: "ตั้งค่า กิจกรรมและข่าวสาร",
       children: (
         <Col span={24}>
           <Tabs
@@ -36,12 +36,12 @@ export default function TypeLeave() {
             items={[
               {
                 key: "1",
-                label: "ตั่งค่า",
+                label: "ตั้งค่า",
                 children: <InfomationManagement />,
               },
               {
                 key: "2",
-                label: "ขอมูลแสดง",
+                label: "ข้อมูลแสดง",
                 children: <InfomationResult />,
               },
             ]}
@@ -52,7 +52,7 @@ export default function TypeLeave() {
     },
     {
       key: "3",
-      label: "ตั่งค่า เอกสาร",
+      label: "ตั้งค่า เอกสาร",
       children: <HandBook />,
     },
   ];

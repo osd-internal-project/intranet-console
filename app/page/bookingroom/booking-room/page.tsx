@@ -56,7 +56,9 @@ type MasterRoomType = {
 };
 
 const BookingRoomPage: React.FC = () => {
-  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
+  const { user } = (useContext(UserContext) as UserContectType) || {
+    user: null,
+  };
   const intraAuth = useAxiosIntranet();
   const bookingRoomServices = BookingRoomServices(intraAuth);
   const [isModalBooking, setIsModalBooking] = useState(false);
@@ -82,12 +84,20 @@ const BookingRoomPage: React.FC = () => {
     {
       key: "1",
       label: "แสดงข้อมูลแบบปฎิทิน",
-      children: <CalendarComponent bookingFetchCalendar={bookingFetchCalendar} />,
+      children: (
+        <CalendarComponent bookingFetchCalendar={bookingFetchCalendar} />
+      ),
     },
     {
       key: "2",
       label: "แสดงข้อมูลแบบตาราง",
-      children: <TableComponent bookingFetchData={bookingFetchData} pagination={pagination} changePagination={changePagination} />,
+      children: (
+        <TableComponent
+          bookingFetchData={bookingFetchData}
+          pagination={pagination}
+          changePagination={changePagination}
+        />
+      ),
     },
     {
       key: "3",
@@ -109,14 +119,21 @@ const BookingRoomPage: React.FC = () => {
     setIsModalBooking(false);
   };
 
-  const checkBookingConflict = async (roomName: string, startDate: string, endDate: string) => {
+  const checkBookingConflict = async (
+    roomName: string,
+    startDate: string,
+    endDate: string
+  ) => {
     const existingBookings = await bookingRoomServices.getBookingRoomQuery();
     return existingBookings.some((booking: any) => {
       return (
         booking.roomName === roomName &&
-        ((new Date(startDate) >= new Date(booking.startDate) && new Date(startDate) < new Date(booking.endDate)) ||
-          (new Date(endDate) > new Date(booking.startDate) && new Date(endDate) <= new Date(booking.endDate)) ||
-          (new Date(startDate) <= new Date(booking.startDate) && new Date(endDate) >= new Date(booking.endDate)))
+        ((new Date(startDate) >= new Date(booking.startDate) &&
+          new Date(startDate) < new Date(booking.endDate)) ||
+          (new Date(endDate) > new Date(booking.startDate) &&
+            new Date(endDate) <= new Date(booking.endDate)) ||
+          (new Date(startDate) <= new Date(booking.startDate) &&
+            new Date(endDate) >= new Date(booking.endDate)))
       );
     });
   };
@@ -127,7 +144,9 @@ const BookingRoomPage: React.FC = () => {
     const roomName = values.roomName as string;
     const startDate = values.startDate as string;
     const endDate = values.endDate as string;
-    const selectedOption = masterRoomData.find((option) => option.value === values.roomId);
+    const selectedOption = masterRoomData.find(
+      (option) => option.value === values.roomId
+    );
 
     const today = new Date();
     if (new Date(startDate) < today) {
@@ -141,7 +160,11 @@ const BookingRoomPage: React.FC = () => {
       setSubmitLoading(false);
       return;
     }
-    const count = await bookingRoomServices.countBookingRoomCountByRoomAndRange(values.roomId, startDate, endDate);
+    const count = await bookingRoomServices.countBookingRoomCountByRoomAndRange(
+      values.roomId,
+      startDate,
+      endDate
+    );
     if (count > 0) {
       message.error("ห้องที่เลือกมีการจองในช่วงเวลานั้นแล้ว");
       setSubmitLoading(false);
@@ -169,7 +192,9 @@ const BookingRoomPage: React.FC = () => {
     try {
       const conflict = await checkBookingConflict(roomName, startDate, endDate);
       if (conflict) {
-        message.error("ห้องนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่.");
+        message.error(
+          "ห้องนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่."
+        );
         setSubmitLoading(false);
         return;
       }
@@ -192,18 +217,25 @@ const BookingRoomPage: React.FC = () => {
     }
   };
 
-  const onFinishFailed: FormProps<BookingType>["onFinishFailed"] = (errorInfo) => {
+  const onFinishFailed: FormProps<BookingType>["onFinishFailed"] = (
+    errorInfo
+  ) => {
     console.log("Failed:", errorInfo);
   };
 
   const fetchData = async () => {
-    const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
+    const skip: number =
+      (Number(pagination.current) - 1) * Number(pagination.pageSize);
     const take: number = Number(pagination.pageSize);
     try {
       const bookingRoom = await bookingRoomServices.getMasterRoomQuery();
-      const masterRoomActive = bookingRoom.filter((room: any) => room.roomsStatus === true);
-      const options = bookingRoom.map((event: any) => {
-        return { value: event.roomId, label: event.roomName };
+      const masterRoomActive = bookingRoom.filter(
+        (room: any) => room.roomsStatus === true
+      );
+      const options = masterRoomActive.map((event: any) => {
+        if (event.roomsStatus) {
+          return { value: event.roomId, label: event.roomName };
+        }
       });
       setMasterRoomData(options);
       const bookingCalendar = await bookingRoomServices.getBookingRoomQuery();
@@ -212,7 +244,9 @@ const BookingRoomPage: React.FC = () => {
       setBookingFetchCalendar(bookingCalendar);
       setPagination({ ...pagination, total: bookings.count });
       const organizeChart = await bookingRoomServices.getOrganizeChartQuery();
-      const department = organizeChart.filter((organize: any) => organize.type === "department");
+      const department = organizeChart.filter(
+        (organize: any) => organize.type === "department"
+      );
       setDepartment(department);
       setloading(false);
     } catch (error) {
@@ -233,7 +267,8 @@ const BookingRoomPage: React.FC = () => {
         open={isModalBooking}
         onCancel={handleCancel}
         footer={null}
-        width={1000}>
+        width={1000}
+      >
         <Form
           form={form}
           layout="vertical"
@@ -243,11 +278,16 @@ const BookingRoomPage: React.FC = () => {
           initialValues={{ remember: true }}
           onFinish={createBooking}
           onFinishFailed={onFinishFailed}
-          autoComplete="off">
+          autoComplete="off"
+        >
           <Divider orientation="left">ข้อมูลผู้จอง</Divider>
           <Row gutter={16}>
             <Col span={8}>
-              <Form.Item<BookingType> label="ชื่อผู้จอง" name="bookerName" rules={[{ required: true, message: "กรุณากรอกชื่อผู้จอง!" }]}>
+              <Form.Item<BookingType>
+                label="ชื่อผู้จอง"
+                name="bookerName"
+                rules={[{ required: true, message: "กรุณากรอกชื่อผู้จอง!" }]}
+              >
                 <Input disabled placeholder="กรอกชื่อผู้จอง" />
               </Form.Item>
             </Col>
@@ -255,13 +295,23 @@ const BookingRoomPage: React.FC = () => {
               <Form.Item<BookingType>
                 label="เบอร์โทรศัพท์ผู้จอง"
                 name="bookerPhone"
-                rules={[{ required: true, message: "กรุณากรอกเบอร์โทรศัพท์ผู้จอง!" }]}>
+                rules={[
+                  { required: true, message: "กรุณากรอกเบอร์โทรศัพท์ผู้จอง!" },
+                ]}
+              >
                 <Input disabled placeholder="กรอกเบอร์โทรศัพท์ผู้จอง" />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<BookingType> label="ชื่อแผนก" name="bookerDepartment" rules={[{ required: true, message: "กรุณากรอกกรอกชื่อแผนก!" }]}>
-                <Select placeholder="โปรดเลือกชื่อแผนก" style={{ width: "100%" }}>
+              <Form.Item<BookingType>
+                label="ชื่อแผนก"
+                name="bookerDepartment"
+                rules={[{ required: true, message: "กรุณากรอกกรอกชื่อแผนก!" }]}
+              >
+                <Select
+                  placeholder="โปรดเลือกชื่อแผนก"
+                  style={{ width: "100%" }}
+                >
                   {department.map((organize, index) => (
                     <Select.Option key={index} value={organize.positionName}>
                       {organize.positionName}
@@ -274,30 +324,69 @@ const BookingRoomPage: React.FC = () => {
           <Divider orientation="left">ข้อมูลการจอง</Divider>
           <Row gutter={16}>
             <Col span={8}>
-              <Form.Item<BookingType> label="ชื่อห้อง" name="roomId" rules={[{ required: true, message: "กรุณากเลือกห้องประชุม" }]}>
-                <Select placeholder="โปรดเลือกห้องประชุม" style={{ width: "100%" }} options={masterRoomData} showSearch optionFilterProp="label" />
+              <Form.Item<BookingType>
+                label="ชื่อห้อง"
+                name="roomId"
+                rules={[{ required: true, message: "กรุณากเลือกห้องประชุม" }]}
+              >
+                <Select
+                  placeholder="โปรดเลือกห้องประชุม"
+                  style={{ width: "100%" }}
+                  options={masterRoomData}
+                  showSearch
+                  optionFilterProp="label"
+                />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<BookingType> label="วันที่เริ่มการจอง" name="startDate" rules={[{ required: true, message: "กรุณากรอกวันที่เริ่มการจอง!" }]}>
-                <DatePicker placeholder="กรอกวันที่เริ่มการจอง" showTime style={{ width: "100%" }} />
+              <Form.Item<BookingType>
+                label="วันที่เริ่มการจอง"
+                name="startDate"
+                rules={[
+                  { required: true, message: "กรุณากรอกวันที่เริ่มการจอง!" },
+                ]}
+              >
+                <DatePicker
+                  placeholder="กรอกวันที่เริ่มการจอง"
+                  showTime
+                  style={{ width: "100%" }}
+                />
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item<BookingType>
                 label="วันที่สิ้นสุดการจอง"
                 name="endDate"
-                rules={[{ required: true, message: "กรุณากรอกวันที่สิ้นสุดการจอง!" }]}>
-                <DatePicker placeholder="กรอกวันที่สิ้นสุดการจอง" showTime style={{ width: "100%" }} />
+                rules={[
+                  { required: true, message: "กรุณากรอกวันที่สิ้นสุดการจอง!" },
+                ]}
+              >
+                <DatePicker
+                  placeholder="กรอกวันที่สิ้นสุดการจอง"
+                  showTime
+                  style={{ width: "100%" }}
+                />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<BookingType> label="หัวข้อการประชุม" name="title" rules={[{ required: true, message: "กรุณากรอกหัวข้อการประชุม!" }]}>
+              <Form.Item<BookingType>
+                label="หัวข้อการประชุม"
+                name="title"
+                rules={[
+                  { required: true, message: "กรุณากรอกหัวข้อการประชุม!" },
+                ]}
+              >
                 <Input placeholder="กรอกหัวข้อการประชุม" />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<BookingType> label="ประเทภการจอง" name="roomType" rules={[{ required: true, message: "กรุณาเลือกประภทการประชุม!" }]}>
+              <Form.Item<BookingType>
+                label="ประเภทการจอง"
+                name="roomType"
+                rules={[
+                  { required: true, message: "กรุณาเลือกประภทการประชุม!" },
+                ]}
+              >
                 <Select
                   placeholder="โปรดเลือกประภทการประชุม"
                   style={{ width: "100%" }}
@@ -324,7 +413,11 @@ const BookingRoomPage: React.FC = () => {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<BookingType> label="บุคคลภายนอก" name="outSider" rules={[{ required: true, message: "กรุณาเลือกบุคคลภายนอก!" }]}>
+              <Form.Item<BookingType>
+                label="บุคคลภายนอก"
+                name="outSider"
+                rules={[{ required: true, message: "กรุณาเลือกบุคคลภายนอก!" }]}
+              >
                 <Select
                   placeholder="บุคคลภายนอก"
                   style={{ width: "100%" }}
@@ -343,7 +436,11 @@ const BookingRoomPage: React.FC = () => {
           </Row>
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Row justify="end">
-              <Button type="default" onClick={handleCancel} style={{ marginRight: 8 }}>
+              <Button
+                type="default"
+                onClick={handleCancel}
+                style={{ marginRight: 8 }}
+              >
                 ยกเลิก
               </Button>
               <Button type="primary" htmlType="submit" loading={submitLoading}>

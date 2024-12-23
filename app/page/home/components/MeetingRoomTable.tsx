@@ -9,6 +9,8 @@ export interface props {
 const MeetingRoomTableComponent: React.FC<props> = ({
   masterBookingRoom,
 }): React.ReactElement => {
+  console.log(masterBookingRoom);
+
   const columns: TableProps<MasterRoomType>["columns"] = [
     {
       title: "ชื่อห้องประชุม",
@@ -21,15 +23,21 @@ const MeetingRoomTableComponent: React.FC<props> = ({
       align: "center",
       render: (value: string, row: any) => {
         const now = new Date();
+        console.log(row);
+        const roomStatus = row?.roomsStatus;
         const isRoomBooked = row.bookingRoom?.some((booking: any) => {
           const startDate = new Date(booking.startDate);
           const endDate = new Date(booking.endDate);
           return now >= startDate && now <= endDate;
         });
-        if (isRoomBooked) {
-          return <Tag color="red">ไม่ว่างใช้งาน</Tag>;
+        if (roomStatus) {
+          if (isRoomBooked) {
+            return <Tag color="red">ไม่ว่างใช้งาน</Tag>;
+          } else {
+            return <Tag color="green">ว่าง</Tag>;
+          }
         } else {
-          return <Tag color="green">ว่าง</Tag>;
+          return <Tag color="red">ไม่พร้อมใช้งาน</Tag>;
         }
       },
     },

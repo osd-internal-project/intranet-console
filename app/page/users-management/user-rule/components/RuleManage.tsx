@@ -41,7 +41,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, manageStatus }): React.R
       });
       setContent(
         <Form form={form} labelCol={{ span: 8 }} onFinish={finishAdd}>
-          <Form.Item label="Name" name="ruleName">
+          <Form.Item label="Name" name="ruleName" rules={[{required:true,message:'Plese Select'}]}>
             <Input />
           </Form.Item>
           <Form.Item label="Description" name="description">
@@ -66,7 +66,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, manageStatus }): React.R
       });
       setContent(
         <Form labelCol={{ span: 8 }} form={form} onFinish={finishEdit}>
-          <Form.Item label="Name" name="ruleName">
+          <Form.Item label="Name" name="ruleName"  rules={[{required:true,message:'Plese Select'}]}>
             <Input />
           </Form.Item>
           <Form.Item label="Description" name="description">

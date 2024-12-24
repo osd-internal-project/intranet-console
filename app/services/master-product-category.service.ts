@@ -1,17 +1,31 @@
 import { AxiosInstance } from "axios";
-type CreateType = {
-  categoryName: string;
-};
+import {
+  ITMasterProductCategory,
+  ITMasterProductCategoryForm,
+} from "../common/master-product-category";
+interface TServices {
+  findMany: (search: any) => Promise<ITMasterProductCategory[]>;
+  findFirst: (id: number) => Promise<ITMasterProductCategory>;
+  create: (
+    data: ITMasterProductCategoryForm
+  ) => Promise<ITMasterProductCategory>;
+  update: (
+    id: number,
+    data: ITMasterProductCategoryForm
+  ) => Promise<ITMasterProductCategory>;
+  delete: (id: number) => any;
+}
 
-type UpdateType = {
-  categoryName: string;
-};
-const masterProductCategoryServices = (axiosInstance: AxiosInstance) => {
+const masterProductCategoryServices = (
+  axiosInstance: AxiosInstance
+): TServices => {
   const masterProductCategoriesUrl = "/master-product-categories";
   return {
-    getMasterProductCategoryAll: async () => {
+    findMany: async (search: any) => {
       return await axiosInstance
-        .post(`${masterProductCategoriesUrl}/condition`, { orderBy: { id: "asc" } })
+        .get(`${masterProductCategoriesUrl}/many`, {
+          params: search,
+        })
         .then((res) => {
           return res.data;
         })
@@ -20,7 +34,18 @@ const masterProductCategoryServices = (axiosInstance: AxiosInstance) => {
           return err;
         });
     },
-    create: async (data: CreateType) => {
+    findFirst: async (id: number) => {
+      return await axiosInstance
+        .post(`${masterProductCategoriesUrl}/${id}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return err;
+        });
+    },
+    create: async (data: ITMasterProductCategoryForm) => {
       const req = {
         data: data,
       };
@@ -34,13 +59,12 @@ const masterProductCategoryServices = (axiosInstance: AxiosInstance) => {
           return err;
         });
     },
-    update: async (id: number, data: UpdateType) => {
+    update: async (id: number, data: ITMasterProductCategoryForm) => {
       const req = {
-        id: id,
         data: data,
       };
       return await axiosInstance
-        .patch(`${masterProductCategoriesUrl}/`, req)
+        .patch(`${masterProductCategoriesUrl}/${id}`, req)
         .then((res) => {
           return res.data;
         })

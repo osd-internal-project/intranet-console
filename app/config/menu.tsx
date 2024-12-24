@@ -1,4 +1,12 @@
-import { LogoutOutlined, UserOutlined, HomeOutlined, BarChartOutlined, BookOutlined, MailOutlined } from "@ant-design/icons";
+import {
+  LogoutOutlined,
+  UserOutlined,
+  HomeOutlined,
+  BarChartOutlined,
+  BookOutlined,
+  MailOutlined,
+  ShoppingCartOutlined,
+} from "@ant-design/icons";
 import { Icon } from "@iconify/react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
@@ -163,6 +171,24 @@ export const MenuSider: MenuItem[] = [
     ],
   },
   {
+    key: "vender",
+    icon: <ShoppingCartOutlined />,
+    label: `Vender`,
+    // rule: "mac-s",
+    children: [
+      {
+        key: `vender/venders`,
+        label: `ข้อมูลผู้ขาย`,
+        // rule: "h-s",
+      },
+      {
+        key: `vender/category`,
+        label: `Product Category`,
+        // rule: "mac-b-s",
+      },
+    ],
+  },
+  {
     key: "macar",
     icon: macarIcon,
     label: `ข้อมูลการจองรถยนต์`,
@@ -189,7 +215,7 @@ export const MenuSider: MenuItem[] = [
     key: `setting`,
     icon: <Icon icon="uil:setting" width="15" height="15" />,
     label: `ตั้งค่า`,
-    rule: "st-s",
+    // rule: "st-s",
     children: [
       {
         key: `setting/maintenance-type`,

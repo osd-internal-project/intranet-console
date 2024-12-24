@@ -1,27 +1,27 @@
 import { AxiosInstance } from "axios";
-type CreateType = {
-  typeName: string;
-  activeStatus: boolean;
-};
+import {
+  ITMasterProductType,
+  ITMasterProductTypeForm,
+} from "../common/master-product-type";
+interface TServices {
+  findMany: (search: any) => Promise<ITMasterProductType[]>;
+  findFirst: (id: number) => Promise<ITMasterProductType>;
+  create: (data: ITMasterProductTypeForm) => Promise<ITMasterProductType>;
+  update: (
+    id: number,
+    data: ITMasterProductTypeForm
+  ) => Promise<ITMasterProductType>;
+  delete: (id: number) => any;
+}
 
-type UpdateType = {
-  typeName: string;
-  activeStatus: boolean;
-};
-const MasterProductTypeServices = (axiosInstance: AxiosInstance) => {
-  const masterProductTypeUrl = "/master-product-type";
+const masterProductTypeServices = (axiosInstance: AxiosInstance): TServices => {
+  const masterProductCategoriesUrl = "/master-product-categories";
   return {
-    getMasterProductTypeAll: async () => {
-      const condition = {
-        condition: {
-          // where: {
-          //   activeStatus: true,
-          // },
-          orderBy: { id: "asc" },
-        },
-      };
+    findMany: async (search: any) => {
       return await axiosInstance
-        .post(`${masterProductTypeUrl}/condition`, condition)
+        .get(`${masterProductCategoriesUrl}/many`, {
+          params: search,
+        })
         .then((res) => {
           return res.data;
         })
@@ -30,17 +30,9 @@ const MasterProductTypeServices = (axiosInstance: AxiosInstance) => {
           return err;
         });
     },
-    getMasterProductTypeAllConditinons: async () => {
-      const condition = {
-        condition: {
-          where: {
-            activeStatus: true,
-          },
-          orderBy: { id: "asc" },
-        },
-      };
+    findFirst: async (id: number) => {
       return await axiosInstance
-        .post(`${masterProductTypeUrl}/condition`, condition)
+        .post(`${masterProductCategoriesUrl}/${id}`)
         .then((res) => {
           return res.data;
         })
@@ -49,23 +41,12 @@ const MasterProductTypeServices = (axiosInstance: AxiosInstance) => {
           return err;
         });
     },
-    getMasterProductTypeActive: async () => {
-      return await axiosInstance
-        .post(`${masterProductTypeUrl}/condition`, { where: { activeStatus: true } })
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return err;
-        });
-    },
-    create: async (data: CreateType) => {
+    create: async (data: ITMasterProductTypeForm) => {
       const req = {
         data: data,
       };
       return await axiosInstance
-        .post(`${masterProductTypeUrl}/`, req)
+        .post(`${masterProductCategoriesUrl}/`, req)
         .then((res) => {
           return res.data;
         })
@@ -74,13 +55,12 @@ const MasterProductTypeServices = (axiosInstance: AxiosInstance) => {
           return err;
         });
     },
-    update: async (id: number, data: UpdateType) => {
+    update: async (id: number, data: ITMasterProductTypeForm) => {
       const req = {
-        id: id,
         data: data,
       };
       return await axiosInstance
-        .patch(`${masterProductTypeUrl}/`, req)
+        .patch(`${masterProductCategoriesUrl}/${id}`, req)
         .then((res) => {
           return res.data;
         })
@@ -89,8 +69,8 @@ const MasterProductTypeServices = (axiosInstance: AxiosInstance) => {
         });
     },
     delete: async (id: number) => {
-      return await axiosInstance.delete(`${masterProductTypeUrl}/${id}`);
+      return await axiosInstance.delete(`${masterProductCategoriesUrl}/${id}`);
     },
   };
 };
-export default MasterProductTypeServices;
+export default masterProductTypeServices;

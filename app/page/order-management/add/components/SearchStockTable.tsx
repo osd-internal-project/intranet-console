@@ -1,23 +1,46 @@
 "use client";
 import OrderManagementServices from "../../services/order-management.service";
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Col, Form, Input, Modal, Row, Select, Space, Spin, Switch, Table, Tag, message } from "antd";
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  Modal,
+  Row,
+  Select,
+  Space,
+  Spin,
+  Switch,
+  Table,
+  Tag,
+  message,
+} from "antd";
 import { ColumnsType } from "antd/es/table";
 import React, { useEffect, useState } from "react";
 import { ITypeOrderLotForm } from "../../common";
 import { useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { dateToStringThNoTime, numberWithCommas } from "@/app/utils/format";
-import masterProductGroupServices from "@/app/page/stock-management/cetagory-group-type/services/master-product-group.service";
+import masterProductGroupServices from "@/app/page/stock-management/category-group-type/services/master-product-group.service";
 
 export interface props {
   openModal: boolean;
   inventoryId: number;
   difLotId: number[];
-  propDataManage: (res: { openModal: boolean; selectedProduct?: ITypeOrderLotForm }) => void;
+  propDataManage: (res: {
+    openModal: boolean;
+    selectedProduct?: ITypeOrderLotForm;
+  }) => void;
   selectedProduct: any;
 }
 
-export const SearchStockTable: React.FC<props> = ({ openModal, inventoryId, difLotId, propDataManage, selectedProduct }) => {
+export const SearchStockTable: React.FC<props> = ({
+  openModal,
+  inventoryId,
+  difLotId,
+  propDataManage,
+  selectedProduct,
+}) => {
   const stockAuth = useAxiosStock();
   const masterproductgroupservices = masterProductGroupServices(stockAuth);
   const orderManagementServices = OrderManagementServices(stockAuth);
@@ -39,7 +62,13 @@ export const SearchStockTable: React.FC<props> = ({ openModal, inventoryId, difL
 
   const getDeta = async () => {
     if (inventoryId) {
-      const productList = await orderManagementServices.getOrderLotsByInventoryID(inventoryId, expiredStatus, difLotId, search);
+      const productList =
+        await orderManagementServices.getOrderLotsByInventoryID(
+          inventoryId,
+          expiredStatus,
+          difLotId,
+          search
+        );
       const data = await Promise.all(
         productList
           ?.filter((event: any) => event.remain !== 0)
@@ -47,9 +76,11 @@ export const SearchStockTable: React.FC<props> = ({ openModal, inventoryId, difL
             inventoryLotId: event.id,
             lotNo: event.lotNo,
             detail: event.detail,
-            masterProductDetails: event.inventoryStock.masterProduct.masterProductDetails,
+            masterProductDetails:
+              event.inventoryStock.masterProduct.masterProductDetails,
             casNo: event.inventoryStock.masterProduct.casNo,
-            masterProductGroup: event.inventoryStock.masterProduct.masterProductGroup,
+            masterProductGroup:
+              event.inventoryStock.masterProduct.masterProductGroup,
             balance: event.remain,
             expiryDate: event.expiryDate,
             price: event.price,
@@ -66,8 +97,12 @@ export const SearchStockTable: React.FC<props> = ({ openModal, inventoryId, difL
     setLoading(false);
   };
   const getdatagroup = async () => {
-    const groupAll = await masterproductgroupservices.getMasterProductGroupAll();
-    const result = groupAll.map((event: any, index: number) => ({ value: event.id, label: event.groupName }));
+    const groupAll =
+      await masterproductgroupservices.getMasterProductGroupAll();
+    const result = groupAll.map((event: any, index: number) => ({
+      value: event.id,
+      label: event.groupName,
+    }));
     setgroupAll(result);
   };
   const handleOk = () => {
@@ -163,7 +198,9 @@ export const SearchStockTable: React.FC<props> = ({ openModal, inventoryId, difL
     if (value.productName) {
       search = {
         ...search,
-        masterProductDetails: { some: { name: { contains: value.productName } } },
+        masterProductDetails: {
+          some: { name: { contains: value.productName } },
+        },
       };
     }
     if (value.group) {
@@ -177,16 +214,37 @@ export const SearchStockTable: React.FC<props> = ({ openModal, inventoryId, difL
   };
   return (
     <div>
-      <Row gutter={[8, 8]} style={{ justifyContent: "space-between", display: "flex", alignItems: "center" }}>
+      <Row
+        gutter={[8, 8]}
+        style={{
+          justifyContent: "space-between",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
         <Col>
           <Modal
             title={
               <>
                 <Space>
-                  <div style={{ justifyContent: "center", alignItems: "center", display: "flex", fontWeight: "bold" }}>
+                  <div
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      display: "flex",
+                      fontWeight: "bold",
+                    }}
+                  >
                     <SearchOutlined />
                   </div>
-                  <div style={{ justifyContent: "center", alignItems: "center", display: "flex", fontWeight: "bold" }}>{`Search Product`}</div>
+                  <div
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      display: "flex",
+                      fontWeight: "bold",
+                    }}
+                  >{`Search Product`}</div>
                 </Space>
               </>
             }
@@ -198,15 +256,26 @@ export const SearchStockTable: React.FC<props> = ({ openModal, inventoryId, difL
           >
             <Spin spinning={loading}>
               <div className=" flex space-x-2  mb-2 justify-start">
-                <Form onFinish={onFinishSearch} className=" flex space-x-2 ite mt-1  ">
+                <Form
+                  onFinish={onFinishSearch}
+                  className=" flex space-x-2 ite mt-1  "
+                >
                   <Form.Item name="casNo">
                     <Input className=" w-60" placeholder="Search by  CAS no." />
                   </Form.Item>
                   <Form.Item name="productName">
-                    <Input className=" w-60" placeholder="Search by Product Name" />
+                    <Input
+                      className=" w-60"
+                      placeholder="Search by Product Name"
+                    />
                   </Form.Item>
                   <Form.Item name="group">
-                    <Select className=" w-60" placeholder="Filter by Group" options={groupall} allowClear />
+                    <Select
+                      className=" w-60"
+                      placeholder="Filter by Group"
+                      options={groupall}
+                      allowClear
+                    />
                   </Form.Item>
                   <Form.Item>
                     <Button htmlType="submit" icon={<SearchOutlined />}>
@@ -223,7 +292,11 @@ export const SearchStockTable: React.FC<props> = ({ openModal, inventoryId, difL
                       }}
                       checked={expiredStatus}
                       defaultChecked={expiredStatus}
-                      className={expiredStatus === true ? "active-expired-switch" : "inactive-expired-switch"}
+                      className={
+                        expiredStatus === true
+                          ? "active-expired-switch"
+                          : "inactive-expired-switch"
+                      }
                     />
                   </Form.Item>
                 </Form>

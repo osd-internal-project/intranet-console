@@ -199,8 +199,7 @@ const NewsCarouselComponent: React.FC<Props> = ({
             </h5>
             {selectedNews.updatedAt && (
               <h5>
-                <strong>วันที่อัปเดต:</strong>
-                {dayjs(selectedNews.updatedAt).format("DD-MM-YYYY , HH:mm")}
+                <strong>วันที่อัปเดต:</strong> {dayjs(selectedNews.updatedAt).format("DD-MM-YYYY , HH:mm")}
               </h5>
             )}
           </div>

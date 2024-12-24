@@ -6,6 +6,7 @@ import {
   axiosStock,
   axiosIntranet,
   axiosCrm,
+  axiosVender,
 } from "../axios";
 import { useSession, signOut } from "next-auth/react";
 import { useEffect } from "react";
@@ -235,4 +236,7 @@ export const useAxiosCrm = () => {
   // }, [session]);
 
   return axiosCrm;
+};
+export const useAxiosVender = () => {
+  return axiosVender;
 };

@@ -22,6 +22,11 @@ export const axiosIntranet = axios.create({
   baseURL: config.backendIntranetUrl,
   headers: { "Content-Type": "application/json" },
 });
+export const axiosVender = axios.create({
+  baseURL: config.backendVendertUrl,
+  headers: { "Content-Type": "application/json" },
+});
+
 export const axiosCrm = axios.create({
   baseURL: config.backendCrmUrl,
   headers: { "Content-Type": "application/json" },

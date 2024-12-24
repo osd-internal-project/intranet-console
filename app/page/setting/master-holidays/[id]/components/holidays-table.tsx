@@ -6,6 +6,7 @@ import "dayjs/locale/en";
 import { IFindAllDayDto } from "../../common";
 import { dateToStringTh } from "@/app/utils/format";
 import { DateTH } from "@/app/utils/time-convertor";
+import dayjs from "dayjs";
 
 export interface props {
   loading: boolean;
@@ -30,8 +31,8 @@ export const HolidayTable: React.FC<props> = ({ loading, dataHolidayDay, onDelet
       render: (value: Date) => DateTH(new Date(value), "DD-MM-BBBB"),
     },
     { key: "id", title: "ชื่อวันหยุด", dataIndex: "holidaysName", width: "20%" },
-    { key: "id", title: "สร้างเมื่อ", dataIndex: "createdAt", width: "20%", render: (value: Date) => dateToStringTh(value) },
-    { key: "id", title: "อัปเดทเมื่อ", dataIndex: "createdAt", width: "20%", render: (value: Date) => dateToStringTh(value) },
+    { key: "id", title: "สร้างเมื่อ", dataIndex: "createdAt", width: "20%", render: (text: string) =>dayjs(text).format("DD-MM-YYYY , HH:mm")},
+    { key: "id", title: "อัปเดทเมื่อ", dataIndex: "updatedAt", width: "20%", render: (text: string) =>dayjs(text).format("DD-MM-YYYY , HH:mm")},
     {
       key: "id",
       title: "ลบ",

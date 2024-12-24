@@ -15,6 +15,7 @@ export interface BookingType {
   member: string;
   outSider: string;
   note: string;
+  guest: string;
 }
 
 export interface MasterRoomType {

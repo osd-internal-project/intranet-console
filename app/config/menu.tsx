@@ -233,8 +233,12 @@ export const MenuSider: MenuItem[] = [
     label: `Overtime`,
     children: [
       {
+        key: `overtime/overtime-calendar`,
+        label: `ตารางการเบิก OT`,
+      },
+      {
         key: `overtime/overtime-form`,
-        label: `การบำรุงรักษา`,
+        label: `แบบฟอร์มขอเบิกค่าทำงานล่วงเวลา`,
       },
     ],
   },

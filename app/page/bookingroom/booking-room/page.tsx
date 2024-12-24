@@ -20,6 +20,7 @@ import {
   DatePicker,
   TablePaginationConfig,
 } from "antd";
+import { MinusCircleOutlined } from "@ant-design/icons";
 import CalendarComponent from "./components/BookingCalendar";
 import TableComponent from "./components/BookingTable";
 import RoomStatusComponent from "./components/RoomStatus";
@@ -44,6 +45,9 @@ type BookingType = {
   approver: string;
   outSider: String;
   note: String;
+  guestname: String;
+  guestlevel: String;
+  guest?: any[];
 };
 
 type MasterRoomType = {
@@ -65,9 +69,11 @@ const BookingRoomPage: React.FC = () => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [masterRoomData, setMasterRoomData] = useState<MasterRoomType[]>([]);
   const [bookingFetchData, setBookingFetchData] = useState([]);
+  const [refreshmentData, setRefreshmentData] = useState([]);
   const [bookingFetchCalendar, setBookingFetchCalendar] = useState([]);
   const [department, setDepartment] = useState<BookingType[]>([]);
   const [form] = useForm();
+  const outSider = Form.useWatch("outSider", form);
   const [loading, setloading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -139,6 +145,8 @@ const BookingRoomPage: React.FC = () => {
   };
 
   const createBooking: FormProps<BookingType>["onFinish"] = async (values) => {
+    console.log(values);
+
     setSubmitLoading(true);
 
     const roomName = values.roomName as string;
@@ -170,6 +178,9 @@ const BookingRoomPage: React.FC = () => {
       setSubmitLoading(false);
       return;
     }
+
+    const guestData = values.guest ? JSON.stringify(values.guest) : "";
+
     const data = {
       userId: user?.userId,
       roomId: values.roomId,
@@ -187,6 +198,7 @@ const BookingRoomPage: React.FC = () => {
       member: values.member ? values.member : "",
       outSider: values.outSider,
       note: values.note ? values.note : "",
+      guest: values.guest ? guestData : "",
     };
 
     try {
@@ -239,8 +251,12 @@ const BookingRoomPage: React.FC = () => {
       });
       setMasterRoomData(options);
       const bookingCalendar = await bookingRoomServices.getBookingRoomQuery();
+      const refreshment = await bookingRoomServices.getMasterRefreshmentQuery();
       const bookings = await bookingRoomServices.findBookingRoom(skip, take);
       setBookingFetchData(bookings.data);
+      setRefreshmentData(refreshment);
+      console.log(refreshment);
+
       setBookingFetchCalendar(bookingCalendar);
       setPagination({ ...pagination, total: bookings.count });
       const organizeChart = await bookingRoomServices.getOrganizeChartQuery();
@@ -434,6 +450,81 @@ const BookingRoomPage: React.FC = () => {
               </Form.Item>
             </Col>
           </Row>
+          {outSider === "มี" && (
+            <>
+              <Divider orientation="left">ข้อมูลบุคคลภายนอก</Divider>
+              <Form.List name="guest">
+                {(fields, { add, remove }) => (
+                  <>
+                    {fields.map(({ key, name, ...restField }) => (
+                      <Row gutter={16} key={key}>
+                        <Col span={5}>
+                          <Form.Item
+                            {...restField}
+                            label="ชื่อ-นามสกุล"
+                            name={[name, "guestname"]}
+                          >
+                            <Input placeholder="ชื่อ-นามสกุล" />
+                          </Form.Item>
+                        </Col>
+                        <Col span={5}>
+                          <Form.Item
+                            {...restField}
+                            label="ตำแหน่ง"
+                            name={[name, "guestlevel"]}
+                          >
+                            <Input placeholder="ตำแหน่ง" />
+                          </Form.Item>
+                        </Col>
+                        <Col span={5}>
+                          <Form.Item
+                            {...restField}
+                            label="ลำดับความสำคัญ"
+                            name={[name, "guestpriority"]}
+                          >
+                            <Select placeholder="เลือกความสำคัญ">
+                              <Select.Option value="1">สูง</Select.Option>
+                              <Select.Option value="2">กลาง</Select.Option>
+                              <Select.Option value="3">ต่ำ</Select.Option>
+                            </Select>
+                          </Form.Item>
+                        </Col>
+                        <Col span={8}>
+                          <Form.Item
+                            {...restField}
+                            label="อาหารว่าง"
+                            name={[name, "refreshment"]}
+                          >
+                            <Select
+                              placeholder="เลือกอาหารว่าง"
+                              mode="multiple"
+                            >
+                              {refreshmentData.map((item: any) => (
+                                <Select.Option
+                                  key={item.refreshmentId}
+                                  value={item.refreshmentName}
+                                >
+                                  {item.refreshmentName}
+                                </Select.Option>
+                              ))}
+                            </Select>
+                          </Form.Item>
+                        </Col>
+                        <Col span={1}>
+                          <MinusCircleOutlined onClick={() => remove(name)} />
+                        </Col>
+                      </Row>
+                    ))}
+                    <Form.Item>
+                      <Button type="dashed" onClick={() => add()} block>
+                        เพิ่มบุคคลภายนอก
+                      </Button>
+                    </Form.Item>
+                  </>
+                )}
+              </Form.List>
+            </>
+          )}
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Row justify="end">
               <Button

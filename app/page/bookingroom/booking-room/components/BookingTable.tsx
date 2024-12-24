@@ -6,8 +6,10 @@ import {
   Modal,
   Divider,
   TablePaginationConfig,
+  Collapse,
 } from "antd";
 import type { TableProps } from "antd";
+import { CaretRightOutlined } from "@ant-design/icons";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { BookingRoomServices } from "../services/booking-room.service";
 import dayjs from "dayjs";
@@ -22,6 +24,8 @@ interface DataType {
   bookerName: string;
   bookingStatus: string;
   details: string;
+  outSider: string;
+  guest: string;
   created_at: string;
 }
 
@@ -164,11 +168,11 @@ const BookingTable: React.FC<props> = ({
     <>
       <Modal
         title="รายละเอียดการจอง"
-        visible={modalBookingDetails}
+        open={modalBookingDetails}
         onCancel={handleBookingDetailsCancel}
         footer={null}
         centered
-        width={400}
+        width={600}
         style={{ top: 20 }}
       >
         {currentBookingDetails && (
@@ -215,6 +219,64 @@ const BookingTable: React.FC<props> = ({
                 {currentBookingDetails.bookerName}
               </span>
             </p>
+            {currentBookingDetails.outSider === "มี" &&
+              currentBookingDetails.guest && (
+                <>
+                  <Collapse
+                    bordered={false}
+                    defaultActiveKey={[]}
+                    expandIcon={({ isActive }) => (
+                      <CaretRightOutlined rotate={isActive ? 90 : 0} />
+                    )}
+                  >
+                    <Collapse.Panel header="ข้อมูลบุคคลภายนอก" key="1">
+                      {JSON.parse(currentBookingDetails.guest).map(
+                        (guest: any, index: number) => (
+                          <div key={index}>
+                            <p>
+                              <strong>ลำดับที่ {index + 1}</strong>
+                            </p>
+                            <p>
+                              <strong>ชื่อ-นามสกุล : </strong>
+                              <span className="modal-content">
+                                {guest.guestname}
+                              </span>
+                            </p>
+                            <p>
+                              <strong>ตำแหน่ง : </strong>
+                              <span className="modal-content">
+                                {guest.guestlevel}
+                              </span>
+                            </p>
+                            <p>
+                              <strong>ลำดับความสำคัญ : </strong>
+                              <span className="modal-content">
+                                {guest.guestpriority === "1"
+                                  ? "สูง"
+                                  : guest.guestpriority === "2"
+                                  ? "กลาง"
+                                  : "ต่ำ"}
+                              </span>
+                            </p>
+                            {guest.refreshment &&
+                              guest.refreshment.length > 0 && (
+                                <p>
+                                  <strong>อาหารว่าง : </strong>
+                                  <span className="modal-content">
+                                    {guest.refreshment.join(", ")}
+                                  </span>
+                                </p>
+                              )}
+                            {index !==
+                              JSON.parse(currentBookingDetails.guest).length -
+                                1 && <Divider dashed />}
+                          </div>
+                        )
+                      )}
+                    </Collapse.Panel>
+                  </Collapse>
+                </>
+              )}
           </>
         )}
       </Modal>

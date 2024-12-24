@@ -12,17 +12,19 @@ import {
   Divider,
   message,
   Select,
+  Collapse,
   DatePicker,
   Popconfirm,
   TablePaginationConfig,
 } from "antd";
-import type { TableProps, FormProps } from "antd";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { ManageRoomServices } from "../services/manage-room.service";
 import dayjs from "dayjs";
 import { useForm } from "antd/es/form/Form";
 import isBetween from "dayjs/plugin/isBetween";
+import type { TableProps, FormProps } from "antd";
+import { CaretRightOutlined } from "@ant-design/icons";
 import { BookingType, MasterRoomType } from "../common";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { ManageRoomServices } from "../services/manage-room.service";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 
 dayjs.extend(isBetween);
@@ -213,6 +215,8 @@ const ManageRoom: React.FC = () => {
   };
 
   const showModalBookingDetails = (record: BookingType) => {
+    console.log(record);
+    
     setCurrentBookingDetails(record);
     setModalBookingDetails(true);
   };
@@ -589,11 +593,11 @@ const ManageRoom: React.FC = () => {
       </Modal>
       <Modal
         title="รายละเอียดการจอง"
-        visible={modalBookingDetails}
+        open={modalBookingDetails}
         onCancel={handleBookingDetailsCancel}
         footer={null}
         centered
-        width={400}
+        width={600}
         style={{ top: 20 }}
       >
         {currentBookingDetails && (
@@ -640,6 +644,64 @@ const ManageRoom: React.FC = () => {
                 {currentBookingDetails.bookerName}
               </span>
             </p>
+            {currentBookingDetails.outSider === "มี" &&
+              currentBookingDetails.guest && (
+                <>
+                  <Collapse
+                    bordered={false}
+                    defaultActiveKey={[]}
+                    expandIcon={({ isActive }) => (
+                      <CaretRightOutlined rotate={isActive ? 90 : 0} />
+                    )}
+                  >
+                    <Collapse.Panel header="ข้อมูลบุคคลภายนอก" key="1">
+                      {JSON.parse(currentBookingDetails.guest).map(
+                        (guest: any, index: number) => (
+                          <div key={index}>
+                            <p>
+                              <strong>ลำดับที่ {index + 1}</strong>
+                            </p>
+                            <p>
+                              <strong>ชื่อ-นามสกุล : </strong>
+                              <span className="modal-content">
+                                {guest.guestname}
+                              </span>
+                            </p>
+                            <p>
+                              <strong>ตำแหน่ง : </strong>
+                              <span className="modal-content">
+                                {guest.guestlevel}
+                              </span>
+                            </p>
+                            <p>
+                              <strong>ลำดับความสำคัญ : </strong>
+                              <span className="modal-content">
+                                {guest.guestpriority === "1"
+                                  ? "สูง"
+                                  : guest.guestpriority === "2"
+                                  ? "กลาง"
+                                  : "ต่ำ"}
+                              </span>
+                            </p>
+                            {guest.refreshment &&
+                              guest.refreshment.length > 0 && (
+                                <p>
+                                  <strong>อาหารว่าง : </strong>
+                                  <span className="modal-content">
+                                    {guest.refreshment.join(", ")}
+                                  </span>
+                                </p>
+                              )}
+                            {index !==
+                              JSON.parse(currentBookingDetails.guest).length -
+                                1 && <Divider dashed />}
+                          </div>
+                        )
+                      )}
+                    </Collapse.Panel>
+                  </Collapse>
+                </>
+              )}
           </>
         )}
       </Modal>

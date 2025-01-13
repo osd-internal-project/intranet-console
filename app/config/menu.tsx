@@ -108,7 +108,7 @@ export const MenuSider: MenuItem[] = [
     ],
   },
   {
-    key: "3",
+    key: "bookingroom",
     icon: bookingIcon,
     label: "ห้องประชุม",
     // rule: "br-s",
@@ -120,6 +120,10 @@ export const MenuSider: MenuItem[] = [
       {
         key: `bookingroom/booking-room-management`,
         label: `จัดการข้อมูลห้องประชุม`,
+      },
+      {
+        key: `bookingroom/booking-room-refreshment`,
+        label: `จัดการอาหารว่าง`,
       },
     ],
   },
@@ -259,8 +263,12 @@ export const MenuSider: MenuItem[] = [
     label: `Overtime`,
     children: [
       {
+        key: `overtime/overtime-calendar`,
+        label: `ตารางการเบิก OT`,
+      },
+      {
         key: `overtime/overtime-form`,
-        label: `การบำรุงรักษา`,
+        label: `แบบฟอร์มขอเบิกค่าทำงานล่วงเวลา`,
       },
     ],
   },

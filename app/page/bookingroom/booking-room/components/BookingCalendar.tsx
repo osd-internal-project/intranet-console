@@ -99,7 +99,7 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar }) => {
           <Form form={formUpdate} labelCol={{ span: 4 }}>
             <Collapse
               bordered={false}
-              defaultActiveKey={["1", "2", "3"]}
+              defaultActiveKey={["1"]}
               expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
               <Collapse.Panel header="ข้อมูลการจอง" key="1">
                 <Form.Item label="หัวข้อการประชุม" name="title">

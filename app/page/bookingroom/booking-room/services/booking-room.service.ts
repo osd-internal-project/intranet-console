@@ -4,6 +4,7 @@ export const BookingRoomServices = (axiosInstance: AxiosInstance) => {
   const baseUrlApiBookingRoom = "/booking-room";
   const baseUrlApiMasterRoom = "/master-room";
   const baseUrlApiOrganizeChart = "/organize-chart";
+  const baseUrlApiMasterRefreshment = "/refreshment";
 
   return {
     getBookingRoomQuery: async () => {
@@ -72,6 +73,18 @@ export const BookingRoomServices = (axiosInstance: AxiosInstance) => {
     getOrganizeChartQuery: async () => {
       return await axiosInstance
         .get(`${baseUrlApiOrganizeChart}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+
+    getMasterRefreshmentQuery: async () => {
+      return await axiosInstance
+        .get(`${baseUrlApiMasterRefreshment}`)
         .then((res) => {
           return res.data;
         })

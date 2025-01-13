@@ -16,7 +16,7 @@ interface TServices {
   delete: (id: number) => any;
 }
 
-const masterProductCategoryServices = (
+const MasterProductCategoryServices = (
   axiosInstance: AxiosInstance
 ): TServices => {
   const masterProductCategoriesUrl = "/master-product-categories";
@@ -77,4 +77,4 @@ const masterProductCategoryServices = (
     },
   };
 };
-export default masterProductCategoryServices;
+export default MasterProductCategoryServices;

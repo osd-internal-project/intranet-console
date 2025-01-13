@@ -1,5 +1,8 @@
 import { AxiosInstance } from "axios";
-import { TCreateUserDto, TUserAllDto } from "../page/users-management/users/common";
+import {
+  TCreateUserDto,
+  TUserAllDto,
+} from "../page/users-management/users/common";
 
 export interface TUsersService {
   findAllUser: (search: {}) => Promise<{ data: TUserAllDto[]; total: number }>;
@@ -10,7 +13,10 @@ export interface TUsersService {
   findByToken: () => Promise<any>;
   addUser: (formData: TCreateUserDto) => Promise<any>;
   findAssignGroup: (userId: string, organizeId: string) => Promise<any>;
-  findOwnerGroupByOrganizeId: (userId: string, organizeId: string) => Promise<any>;
+  findOwnerGroupByOrganizeId: (
+    userId: string,
+    organizeId: string
+  ) => Promise<any>;
 }
 
 export const UsersServices = (axiosInstance: AxiosInstance): TUsersService => {
@@ -21,13 +27,19 @@ export const UsersServices = (axiosInstance: AxiosInstance): TUsersService => {
       return result?.data || [];
     },
     validateUsername: async (username, type) => {
-      return await axiosInstance.post(`${baseUrl}/check-id`, { username: username, type: type }).then((response) => response.data.message);
+      return await axiosInstance
+        .post(`${baseUrl}/check-id`, { username: username, type: type })
+        .then((response) => response.data.message);
     },
     validateEmail: async (email, type) => {
-      return await axiosInstance.post(`${baseUrl}/check-id`, { email: email, type: type }).then((response) => response.data.message);
+      return await axiosInstance
+        .post(`${baseUrl}/check-id`, { email: email, type: type })
+        .then((response) => response.data.message);
     },
     validatePassword: async (password) => {
-      return await axiosInstance.post(`${baseUrl}/validate/password`, { password: password }).then((response) => response.data);
+      return await axiosInstance
+        .post(`${baseUrl}/validate/password`, { password: password })
+        .then((response) => response.data);
     },
     findGroupsId24: async () => {
       return await axiosInstance
@@ -47,7 +59,9 @@ export const UsersServices = (axiosInstance: AxiosInstance): TUsersService => {
         });
     },
     findByToken: async () => {
-      return await axiosInstance.get(`${baseUrl}/findByToken`).then((result) => result.data);
+      return await axiosInstance
+        .get(`${baseUrl}/findByToken`)
+        .then((result) => result.data);
     },
     findAssignGroup: async (userId, organizeId) => {
       return await axiosInstance

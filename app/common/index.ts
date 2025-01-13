@@ -25,7 +25,7 @@ export type TUser = {
         groupId: string;
         groupName: string;
       };
-    },
+    }
   ];
   updateBy: {
     updateById: string;
@@ -34,3 +34,5 @@ export type TUser = {
 };
 
 export type UserType = "local" | "ldap";
+
+export type ITActionStatus = "create" | "update" | "delete" | undefined;

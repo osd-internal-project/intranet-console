@@ -1,17 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createStyles } from "antd-style";
-import {
-  Alert,
-  Badge,
-  BadgeProps,
-  Calendar,
-  CalendarProps,
-  Col,
-  Radio,
-  Row,
-  Select,
-} from "antd";
-import axios from "axios";
+import { Alert, Calendar, CalendarProps } from "antd";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import classNames from "classnames";
@@ -152,18 +141,11 @@ const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
     setPanelDate(value);
   };
 
-  const onDateChange: CalendarProps<Dayjs>["onSelect"] = (
-    value,
-    selectInfo
-  ) => {
+  const onDateChange: CalendarProps<Dayjs>["onSelect"] = (value, selectInfo) => {
     // console.log(value, selectInfo);
     if (selectInfo.source === "date") {
       const holidaySelect = holiday
-        .filter(
-          (item: THoliday) =>
-            dayjs(new Date(item.holidaysDate)).format("YYYY-MM-DD") ===
-            dayjs(value).format("YYYY-MM-DD")
-        )
+        .filter((item: THoliday) => dayjs(new Date(item.holidaysDate)).format("YYYY-MM-DD") === dayjs(value).format("YYYY-MM-DD"))
         .map((item: THoliday) => item.holidaysName);
       setResultHoliday(holidaySelect && holidaySelect);
       setSelectDate(value);
@@ -176,17 +158,9 @@ const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
   const cellRender: CalendarProps<Dayjs>["fullCellRender"] = (date, info) => {
     const isWeekend = date.day() === 6 || date.day() === 0;
     const isHoliday =
-      holiday &&
-      holiday.find(
-        (event) =>
-          dayjs(new Date(event.holidaysDate)).format("YYYY-MM-DD") ===
-          dayjs(date).format("YYYY-MM-DD")
-      )
+      holiday && holiday.find((event) => dayjs(new Date(event.holidaysDate)).format("YYYY-MM-DD") === dayjs(date).format("YYYY-MM-DD"))
         ? true
         : false;
-    if (isHoliday) {
-      console.log(date.date(), isHoliday);
-    }
 
     if (info.type === "date") {
       return React.cloneElement(info.originNode, {
@@ -200,15 +174,13 @@ const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
             className={classNames({
               [styles.text]: true,
               [styles.holiday]: isHoliday,
-            })}
-          >
+            })}>
             <span
               className={classNames({
                 [styles.weekend]: isWeekend,
                 // [styles.holiday]: isHoliday,
                 gray: !panelDateDate.isSame(date, "month"),
-              })}
-            >
+              })}>
               {date.get("date")}
             </span>
             {info.type === "date" && <div className={styles.lunar}>-</div>}
@@ -221,8 +193,7 @@ const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
         <div
           className={classNames(styles.monthCell, {
             [styles.monthCellCurrent]: selectDate.isSame(date, "month"),
-          })}
-        >
+          })}>
           {dayjs(date).format("MMM")}
         </div>
       );
@@ -231,20 +202,8 @@ const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
   return (
     <>
       <div className={` max-w-full ${styles.wrapper}`}>
-        <Calendar
-          fullCellRender={cellRender}
-          fullscreen={false}
-          onPanelChange={onPanelChange}
-          onSelect={onDateChange}
-        />
-        {resultHoliday[0] ? (
-          <Alert
-            type="warning"
-            message={`${resultHoliday.map((item: string) => `${item}`)}`}
-          />
-        ) : (
-          <></>
-        )}
+        <Calendar fullCellRender={cellRender} fullscreen={false} onPanelChange={onPanelChange} onSelect={onDateChange} />
+        {resultHoliday[0] ? <Alert type="warning" message={`${resultHoliday.map((item: string) => `${item}`)}`} /> : <></>}
       </div>
     </>
   );

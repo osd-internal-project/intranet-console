@@ -1,8 +1,7 @@
 "use client";
-import { Breadcrumb, Button, Card, Checkbox, Col, ConfigProvider, DatePicker, Divider, Form, Input, Radio, Row, Select, Table } from "antd";
+import { Breadcrumb, Button, Card, Checkbox, Col, ConfigProvider, DatePicker, Divider, Form, Input, message, Modal, Row, Select } from "antd";
 import { useContext, useEffect, useState } from "react";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
@@ -10,21 +9,122 @@ import UserServices from "@/app/services/user.service";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import { optionsTimes, optionsTimesNormall } from "./common";
+import { OvertimeShowDetail } from "./components/overtime-show-detail";
+import OverTimeServices from "@/app/services/overtime.service";
+import { ExclamationCircleFilled } from "@ant-design/icons";
+import { MaCarServices } from "@/app/services/ma-car.service";
+dayjs.locale("th");
+
 export default function OverTimePage() {
+  const [createForm] = useForm();
+  const navigate = useRouter();
+  const searchParams = useSearchParams();
+  const { user } = useContext(UserContext) as UserContectType;
   const { id24Axios } = useId24();
   const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
-  const { user } = useContext(UserContext) as UserContectType;
-  const searchParams = useSearchParams();
-  const locationId = searchParams.get("locationId") as string;
-  const [createForm] = useForm();
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+
+  const date = searchParams.get("date") as string;
+  const [getHeader, setHeader] = useState<any[]>([]);
+  const [getStartTime, setStartTime] = useState<number>(18);
+  const [getEndTime, setEndTime] = useState<number>(19);
+  const [getCar, setCar] = useState<any[]>([]);
+  const [getcarName, setCarName] = useState<string>("");
+  const [getSelectCar, setSelectCar] = useState<boolean>(false);
+  const [getMasterOt, setMasterOt] = useState<number>(0);
+
   useEffect(() => {
+    if (date !== undefined && user) {
+      createForm.setFieldsValue({
+        startDate: dayjs(date),
+        startTime: "18:00",
+        endTime: "19:00",
+        fullname: `${user.firstNameTh} ${user.lastNameTh}`,
+        phoneNumber: user.phoneNumber,
+        positionName: user.masterPosition.nameEn,
+      });
+    }
     if (user && user.userId) {
       fetchData();
     }
   }, [user]);
+
   const fetchData = async () => {
     if (!user) return;
     const headers = await UserServices(baseUrlUser).findHeaderUserByUserId(user.userId);
+    const masterConfigTime = await OverTimeServices(baseUrlIntranet).findMasterOt(date);
+    setMasterOt(masterConfigTime);
+    const resCar = await MaCarServices(baseUrlIntranet).getMaCarQuery();
+    setCar(resCar);
+    setHeader(headers);
+  };
+
+  const handleStartTime = (value: string) => {
+    let data;
+    if (value) {
+      data = value.split(":");
+    }
+    setStartTime(data ? (data[1][0] === "3" ? Number(data[0]) + 0.5 : Number(data[0])) : 18);
+  };
+  const handleEndTime = (value: string) => {
+    let data;
+    if (value) {
+      data = value.split(":");
+    }
+    setEndTime(data ? (data[1][0] === "3" ? Number(data[0]) + 0.5 : Number(data[0])) : 19);
+  };
+
+  const onFinish = async (values: any) => {
+    console.log(values.startDate);
+
+    const res = {
+      dateStart: values.startDate,
+      startTime: values.startTime,
+      endTime: values.endTime,
+      fullname: values.fullname,
+      userId: user?.userId,
+      customerName: values.customerName,
+      detailWork: values.detailWork,
+      partTimeType: values.partTimeType,
+      phoneNumber: values.phoneNumber,
+      checkTravelUpCountry: values.extension ? values.extension.includes("checkTravelUpCountry") : null,
+      checkOvernight: values.extension ? values.extension.includes("checkOvernight") : null,
+      checkTravelByCompanyCar: values.extension ? values.extension.includes("checkTravelByCompanyCar") : null,
+      checkDistance: values.extension ? values.extension.includes("checkDistance") : null,
+      ...(values.extension.includes("checkTravelByCompanyCar") ? { carId: values.carName } : null),
+      ...(values.extension.includes("checkTravelByCompanyCar") ? { carName: getcarName } : null),
+    };
+    Modal.confirm({
+      title: "Do you want to delete these items?",
+      icon: <ExclamationCircleFilled />,
+      content: "Some descriptions",
+      onOk: async () => {
+        const resultCreate: any = await OverTimeServices(baseUrlIntranet).create(res);
+        if (resultCreate.status === 200) {
+          message.success("create success");
+          setHeader([]);
+          setStartTime(18);
+          setEndTime(19);
+          setCarName("");
+          setSelectCar(false);
+          // navigate.push(`${window.location.origin}/page/overtime/overtime-calendar`);
+        }
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  };
+
+  const handleSelectCar = async (value: any) => {
+    value.includes("checkTravelByCompanyCar") ? setSelectCar(true) : setSelectCar(false);
+  };
+
+  const handleUseCar = async (value: string) => {
+    setCarName("");
+    const data = getCar.find((events: any) => (events.carId = value));
+    setCarName(data.carName);
   };
 
   return (
@@ -58,111 +158,127 @@ export default function OverTimePage() {
                 Form: { itemMarginBottom: 1 },
               },
             }}>
-            <Form layout="vertical" size="small" form={createForm}>
+            <Form layout="vertical" size="small" form={createForm} onFinish={onFinish}>
               <div className=" w-full grid  grid-cols-1 md:grid-cols-4 gap-2">
                 <div className=" md:col-start-4">
                   <Form.Item label={"วันที่ทำรายการ"} name={"createDate"} initialValue={dayjs()}>
                     <DatePicker className=" w-full" disabled />
                   </Form.Item>
                 </div>
-                <div className="  md:col-span-4 ">
-                  <Form.Item label={"เรียน"}>
+                <div className="md:col-span-4 ">
+                  <Form.Item label={"เรียน"} name={`ownerGroupId`} initialValue={{ ownerGroupId: getHeader }}>
+                    <Input disabled multiple />
+                  </Form.Item>
+                </div>
+                <div>
+                  <Form.Item label={"ชื่อ - สกุล"} name={"fullname"}>
                     <Input disabled />
                   </Form.Item>
                 </div>
                 <div>
-                  <Form.Item label={"ชื่อ"}>
+                  <Form.Item label={"ตำแหน่ง"} name={`positionName`}>
                     <Input disabled />
                   </Form.Item>
                 </div>
                 <div>
-                  <Form.Item label={"นามสกุล"}>
+                  <Form.Item label={"เบอร์โทรศัพท์"} name={`phoneNumber`}>
                     <Input disabled />
                   </Form.Item>
                 </div>
                 <div>
-                  <Form.Item label={"ตำแหน่ง"}>
-                    <Input disabled />
+                  <Form.Item label={"ประเภท"} name={`partTimeType`} rules={[{ required: true, message: "กรุณาเลือกประเภท" }]}>
+                    <Select
+                      placeholder={`Please Select`}
+                      options={[
+                        { value: "working", label: `ทำงาน` },
+                        { value: "driving", label: "ขับรถ" },
+                      ]}
+                    />
                   </Form.Item>
                 </div>
                 <div>
-                  <Form.Item label={"เบอร์โทรศัพท์"}>
-                    <Input disabled />
-                  </Form.Item>
-                </div>
-                <div>
-                  <Form.Item label={"ประเภท"}>
-                    <Select />
-                  </Form.Item>
-                </div>{" "}
-                <div>
-                  <Form.Item label={"วันที่"}>
+                  <Form.Item name={"startDate"} label={"วันที่"} rules={[{ required: true, message: "กรุณาเลือกวันที่" }]}>
                     <DatePicker className=" w-full" />
                   </Form.Item>
                 </div>
                 <div>
-                  <Form.Item label={"เวลาเข้า"}>
-                    <Select />
+                  <Form.Item name={"startTime"} label={"เวลาเข้า"} rules={[{ required: true, message: "กรุณาเลือกเวลาเข้า" }]}>
+                    <Select
+                      allowClear
+                      placeholder={`Please Select`}
+                      options={getMasterOt === 1 ? optionsTimes : optionsTimesNormall}
+                      onChange={(value) => handleStartTime(value)}
+                    />
                   </Form.Item>
                 </div>
                 <div>
-                  <Form.Item label={"เวลาออก"}>
-                    <Select />
+                  <Form.Item name={"endTime"} label={"เวลาออก"} rules={[{ required: true, message: "กรุณาเลือกเวลาออก" }]}>
+                    <Select
+                      allowClear
+                      placeholder={`Please Select`}
+                      options={getMasterOt === 1 ? optionsTimes : optionsTimesNormall}
+                      onChange={(value) => handleEndTime(value)}
+                    />
                   </Form.Item>
                 </div>
-                <div className="  md:col-span-4 ">
-                  <Form.Item label={"ชื่อลูกค้า"}>
+                <div>
+                  <Form.Item label={"ชื่อลูกค้า"} name={`customerName`} rules={[{ required: true, message: "กรุณากรอกชื่อลูกค้า" }]}>
                     <Input />
                   </Form.Item>
                 </div>
                 <div className="  md:col-span-4 ">
-                  <Form.Item label={"รายละเอียด"}>
+                  <Form.Item label={"รายละเอียด"} name={`detailWork`}>
                     <TextArea />
                   </Form.Item>
                 </div>
                 <div className="  md:col-span-2 ">
-                  <Form.Item name={"extension"} label={<div className="text-blue-600 font-bold"> เพิ่มเติม</div>}>
-                    <div className="grid grid-cols-2">
-                      <Checkbox value="travelTo" style={{ lineHeight: "32px" }}>
-                        เดินทางไป
-                      </Checkbox>
-                      <Checkbox value="return" style={{ lineHeight: "32px" }}>
-                        เดินทางกลับ
-                      </Checkbox>
-                      <Checkbox value="otherProvinces" style={{ lineHeight: "32px" }}>
-                        เดินทางต่างจังหวัด
-                      </Checkbox>
-                      <Checkbox value="overnightStay" style={{ lineHeight: "32px" }}>
-                        มีการค้างคืน
-                      </Checkbox>
-                      <Checkbox value="company" style={{ lineHeight: "32px" }}>
-                        เดินทางด้วยรถบริษัท
-                      </Checkbox>
-                      <Checkbox value="over350km" style={{ lineHeight: "32px" }}>
-                        ระยะการเดินทางมากกว่า 350 กม.
-                      </Checkbox>
-                    </div>
+                  <Form.Item name="extension" label={<div className="text-blue-600 font-bold">เพิ่มเติม</div>}>
+                    <Checkbox.Group onChange={handleSelectCar}>
+                      <div className="grid grid-cols-2">
+                        <Checkbox value="checkTravelUpCountry" style={{ lineHeight: "32px" }}>
+                          เดินทางต่างจังหวัด
+                        </Checkbox>
+                        <Checkbox value="checkOvernight" style={{ lineHeight: "32px" }}>
+                          มีการค้างคืน
+                        </Checkbox>
+                        <Checkbox value="checkTravelByCompanyCar" style={{ lineHeight: "32px" }}>
+                          เดินทางด้วยรถบริษัท
+                        </Checkbox>
+                        <Checkbox value="checkDistance" style={{ lineHeight: "32px" }}>
+                          ระยะการเดินทางมากกว่า 350 กม.
+                        </Checkbox>
+                      </div>
+                    </Checkbox.Group>
                   </Form.Item>
                 </div>
                 <div className="  md:col-span-2 ">
-                  <Card>
-                    <div className=" text-blue-600  text-base font-bold">คำนวณเวลา</div>
-                    <div className=" flex ">
-                      <div className=" w-28">เวลาทั้งหมด (ช.ม.)</div>
-                      <div className=" ml-2 font-bold text-base"> : {2}</div>
-                    </div>
-                    <div className=" flex ">
-                      <div className=" w-28">เวลาพัก (ช.ม.) </div>
-                      <div className=" ml-2 font-bold text-base"> : {2}</div>
-                    </div>
-                    <div className=" flex">
-                      <div className=" w-28">สรุปเวลา (ช.ม.) </div>
-                      <div className=" ml-2 font-bold  text-base"> : {2}</div>
-                    </div>
-                  </Card>
+                  {getStartTime && getEndTime ? <OvertimeShowDetail getStartTime={getStartTime} getEndTime={getEndTime} /> : <></>}
+                </div>
+                <div className="  md:col-span-2 ">
+                  {getSelectCar ? (
+                    <Form.Item name={`carName`}>
+                      <Select
+                        placeholder={`Please Select`}
+                        allowClear
+                        onChange={handleUseCar}
+                        options={getCar.map((event: any) => {
+                          return { value: event.carId, label: event.carName };
+                        })}
+                      />
+                    </Form.Item>
+                  ) : null}
                 </div>
                 <div className=" col-span-4 flex justify-end space-x-2">
-                  <Button>Back</Button> <Button type="primary">Create</Button>
+                  <Button
+                    onClick={() => {
+                      navigate.push(`${window.location.origin}/page/overtime/overtime-calendar`);
+                      createForm.resetFields();
+                    }}>
+                    Back
+                  </Button>
+                  <Button htmlType="submit" type="primary">
+                    Create
+                  </Button>
                 </div>
               </div>
             </Form>

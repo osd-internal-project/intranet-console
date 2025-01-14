@@ -63,7 +63,7 @@ export const Id24Provider: React.FC<ProviderProps> = ({ children, config }): Rea
 
   useEffect(() => {
     if (id24Instance.state === Id24State.Authorized) {
-      const renewTokenTask = setInterval(() => {
+      const renewTokenTask = setInterval(() => { 
         authenticationHelper.renewAccessToken().then((tokenInfo) => {
           if (tokenInfo) {
             setId24ContextValue({

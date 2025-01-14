@@ -186,7 +186,7 @@ export const MenuSider: MenuItem[] = [
         // rule: "h-s",
       },
       {
-        key: `vender/category`,
+        key: `vender/master-product-category`,
         label: `Product Category`,
         // rule: "mac-b-s",
       },
@@ -301,6 +301,11 @@ export const MenuSider: MenuItem[] = [
       {
         key: `users-management/user-rule`,
         label: `Rules`,
+        // rule: "um-ru-s",
+      },
+      {
+        key: `users-management/user-header-type`,
+        label: `Permission Type`,
         // rule: "um-ru-s",
       },
     ],

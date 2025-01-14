@@ -1,5 +1,8 @@
 import { AxiosInstance } from "axios";
-import { ITpyeUser, ITypeDataLeave } from "../page/leave-control-management/common";
+import {
+  ITpyeUser,
+  ITypeDataLeave,
+} from "../page/leave-control-management/common";
 
 const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
   const baseUrlTypeleave = "/master-type-leave";
@@ -364,9 +367,9 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
         });
     },
 
-    getUserGroupMapHeader: async () => {
+    getUserGroupMapPermission: async () => {
       return await axiosInstance
-        .get(`/user-group-map-header/`)
+        .get(`/user-group-map-permission/`)
         .then((res) => {
           return res.data;
         })

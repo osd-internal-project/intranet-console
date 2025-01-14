@@ -14,7 +14,7 @@ interface TServices {
   delete: (id: number) => any;
 }
 
-const masterProductTypeServices = (axiosInstance: AxiosInstance): TServices => {
+const MasterProductTypeServices = (axiosInstance: AxiosInstance): TServices => {
   const masterProductCategoriesUrl = "/master-product-categories";
   return {
     findMany: async (search: any) => {
@@ -73,4 +73,4 @@ const masterProductTypeServices = (axiosInstance: AxiosInstance): TServices => {
     },
   };
 };
-export default masterProductTypeServices;
+export default MasterProductTypeServices;

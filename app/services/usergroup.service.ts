@@ -67,7 +67,7 @@ const UserGroupServices = (axiosInstance: AxiosInstance) => {
           engineerUsersId: true,
           user: true,
           headId: true,
-          userGroupMapHeader: true,
+          userGroupMapPermission: true,
         },
       };
       return await axiosInstance
@@ -93,6 +93,20 @@ const UserGroupServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    getUserGroupMapPermission: async (condition: any) => {
+      const req = {
+        condition: condition,
+      };
+      return await axiosInstance
+        .get(`/user-group-map-permission/`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
     addUserGroup: async (data: Object) => {
       const req = {
         data: data,
@@ -110,31 +124,19 @@ const UserGroupServices = (axiosInstance: AxiosInstance) => {
       );
     },
 
-    createdUserGroupHeaderPermission: async (data: Object) => {
-      return await axiosInstance.post(`/user-group-map-header/`, data);
+    createdUserGroupMapPermission: async (data: Object) => {
+      return await axiosInstance.post(`/user-group-map-permission/`, data);
     },
 
-    updateUserGroupHeaderPermission: async (
+    updateUserGroupMapPermission: async (
       groupId: string,
       data: Object,
       type: string
     ) => {
       return await axiosInstance.patch(
-        `/user-group-map-header/permission/${groupId}`,
+        `/user-group-map-permission/permission/${groupId}`,
         { ...data, type: type }
       );
-    },
-
-    getUserGroupMapHeader: async () => {
-      return await axiosInstance
-        .get(`/user-group-map-header/`)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
     },
 
     deleteUserGroup: async (groupId: string) => {

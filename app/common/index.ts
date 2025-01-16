@@ -14,6 +14,10 @@ export type TUser = {
   createdAt: string;
   updatedAt: string;
   profileExtension: [{ extension: number }];
+  masterPosition: {
+    nameEn: string;
+    posId: number;
+  };
   groupOwner: {
     groupId: string;
     groupName: string;

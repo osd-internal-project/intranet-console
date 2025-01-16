@@ -7,7 +7,7 @@ import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import EmployeeProfileGrid from "./components/employee-profile-grid";
 import EmployeeProfileList from "./components/employee-profile-list";
 import EmployeeProfileManageUser from "./components/employee-profile-manage-user";
-import EmployeeProfileDetail from "@/app/services/employee-profile.services";
+import EmployeeProfileDetail from "@/app/services/employee-profile.service";
 import { gridIconHr, listIcon } from "@/components/icon";
 import EmployeeProfileDashboard from "./components/employee-profile-dashboard";
 import { MasterPositionServices } from "@/app/services/master-position.service";

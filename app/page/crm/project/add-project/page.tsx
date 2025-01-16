@@ -1,7 +1,13 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
 import { Breadcrumb, Card, Col, message, Row, SelectProps } from "antd";
-import { ITBranchForSelect, ITCustomerForSelect, ITProjectCreateForm, ITSelectUsers, ITContractCompany } from "../common";
+import {
+  ITBranchForSelect,
+  ITCustomerForSelect,
+  ITProjectCreateForm,
+  ITSelectUsers,
+  ITContractCompany,
+} from "../common";
 import { useAxiosCrm, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import ProjectServices from "../services/index.service";
 import ProductsServices from "@/app/services/customer-product.service";
@@ -15,7 +21,9 @@ import { ITCustomerGroup } from "@/app/common/customer";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 
 export default function AddProjectPage() {
-  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
+  const { user } = (useContext(UserContext) as UserContectType) || {
+    user: null,
+  };
   const crmAuth = useAxiosCrm();
   const userAuth = useAxiosUser();
   const projectServices = ProjectServices(crmAuth);
@@ -23,7 +31,9 @@ export default function AddProjectPage() {
   const customerGroupServices = CustomerGroupServices(crmAuth);
   const userServices = UserServices(userAuth);
   const [loading, setloading] = useState<boolean>(true);
-  const [customerGroupList, setCustomerGroupList] = useState<ITCustomerGroup[]>([]);
+  const [customerGroupList, setCustomerGroupList] = useState<ITCustomerGroup[]>(
+    []
+  );
   const [customerList, setCustomerList] = useState<ITCustomerForSelect[]>([]);
   const [branchList, setBranchList] = useState<ITBranchForSelect[]>([]);
   const [customerSubList, setCustomerSubList] = useState<ITCustomerSub[]>([]);
@@ -31,7 +41,9 @@ export default function AddProjectPage() {
   const [saleList, setSaleList] = useState<{ uid: string; name: string }[]>([]);
   const [groupOption, setGroupOption] = useState<SelectProps["options"]>([]);
   const [usersFormGroup, setUsersFormGroup] = useState<ITSelectUsers[]>([]);
-  const [cntractCompany, setContractCompany] = useState<ITContractCompany[]>([]);
+  const [cntractCompany, setContractCompany] = useState<ITContractCompany[]>(
+    []
+  );
   const [productOptions, setProductOptions] = useState<ITCustomerProduct[]>([]);
   useEffect(() => {
     if (loading === true) fetchData();
@@ -61,7 +73,8 @@ export default function AddProjectPage() {
       if (item.group.parentGroupId === parentId) {
         const children = createTree(obj, item.group.groupId);
         if (children.length > 0) {
-          (item.group.icon = <CarryOutOutlined />), (item.group.children = children);
+          (item.group.icon = <CarryOutOutlined />),
+            (item.group.children = children);
         }
         tree.push({
           value: item.group.groupId,
@@ -89,7 +102,9 @@ export default function AddProjectPage() {
       }),
     };
     if (form.projectManagerId) {
-      const user = userList.findLast((user) => user.userId === form.projectManagerId);
+      const user = userList.findLast(
+        (user) => user.userId === form.projectManagerId
+      );
 
       if (user) {
         data = {
@@ -99,7 +114,9 @@ export default function AddProjectPage() {
       }
     }
     if (form.saleManagerId) {
-      const user = userList.findLast((user) => user.userId === form.saleManagerId);
+      const user = userList.findLast(
+        (user) => user.userId === form.saleManagerId
+      );
       if (user) {
         data = {
           ...data,
@@ -133,7 +150,9 @@ export default function AddProjectPage() {
   }
   async function changeCustomerGroupSelect(id: number): Promise<void> {
     if (id) {
-      const data = await projectServices.findCustomerSelectByCustomerGroupId(id);
+      const data = await projectServices.findCustomerSelectByCustomerGroupId(
+        id
+      );
       setCustomerList(data);
       const customer = customerList.findLast((customer) => customer.id === id);
       if (customer?.responsible) {
@@ -164,7 +183,7 @@ export default function AddProjectPage() {
     }
   }
   async function onChangeGroupSelect(value: string[]): Promise<void> {
-    const data = await userServices.findUsersByOwnerGroup(value);
+    const data = await userServices.findUsersLowerByOwnerGroup(value);
     setUsersFormGroup(data);
   }
 

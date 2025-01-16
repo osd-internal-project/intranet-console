@@ -107,6 +107,22 @@ const UserGroupServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    getPermissionGroupByGroupIdAndModuleId: async (condition: {
+      groupid: string;
+      moduleid: string;
+    }) => {
+      return await axiosInstance
+        .get(`/user-group/find-group-by-moduleid-and-groupid/`, {
+          params: { condition },
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
     addUserGroup: async (data: Object) => {
       const req = {
         data: data,
@@ -164,10 +180,23 @@ const UserGroupServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    findUsersByOwnerGroup: async (ownerGroup: string[]) => {
+    findUsersLowerByOwnerGroup: async (ownerGroup: string[]) => {
       return await axiosInstance
         .get(`user/find-same-and-lower-users-by-ownergroup/`, {
           params: ownerGroup,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    setUserPermissionGroup: async (value: any) => {
+      return await axiosInstance
+        .post(`/user-permission-group/set`, {
+          data: value,
         })
         .then((res) => {
           return res.data;

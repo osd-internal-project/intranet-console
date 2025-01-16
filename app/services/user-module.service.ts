@@ -1,23 +1,15 @@
 import { AxiosInstance } from "axios";
-import {
-  ITUserPermissionType,
-  ITUserPermissionTypeForm,
-} from "../common/user-permission-type";
+import { ITUserModule, ITUserModuleForm } from "../common/user-module";
 interface TServices {
-  findMany: (search: any) => Promise<ITUserPermissionType[]>;
-  findFirst: (id: number) => Promise<ITUserPermissionType>;
-  create: (data: ITUserPermissionTypeForm) => Promise<ITUserPermissionType>;
-  update: (
-    id: number,
-    data: ITUserPermissionTypeForm
-  ) => Promise<ITUserPermissionType>;
+  findMany: (search: any) => Promise<ITUserModule[]>;
+  findFirst: (id: number) => Promise<ITUserModule>;
+  create: (data: ITUserModuleForm) => Promise<ITUserModule>;
+  update: (id: number, data: ITUserModuleForm) => Promise<ITUserModule>;
   delete: (id: number) => any;
 }
 
-const UserPermissionTypeServices = (
-  axiosInstance: AxiosInstance
-): TServices => {
-  const baseUrl = "/user-permission-type";
+const UserModuleServices = (axiosInstance: AxiosInstance): TServices => {
+  const baseUrl = "/user-module";
   return {
     findMany: async (search: any) => {
       return await axiosInstance
@@ -43,7 +35,7 @@ const UserPermissionTypeServices = (
           return undefined;
         });
     },
-    create: async (data: ITUserPermissionTypeForm) => {
+    create: async (data: ITUserModuleForm) => {
       const req = {
         data: data,
       };
@@ -57,7 +49,7 @@ const UserPermissionTypeServices = (
           return undefined;
         });
     },
-    update: async (id: number, data: ITUserPermissionTypeForm) => {
+    update: async (id: number, data: ITUserModuleForm) => {
       const req = {
         data: data,
       };
@@ -75,4 +67,4 @@ const UserPermissionTypeServices = (
     },
   };
 };
-export default UserPermissionTypeServices;
+export default UserModuleServices;

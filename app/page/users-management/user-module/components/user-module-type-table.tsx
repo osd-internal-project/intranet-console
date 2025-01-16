@@ -1,12 +1,12 @@
-import { ITUserPermissionType } from "@/app/common/user-permission-type";
+import { ITUserModule } from "@/app/common/user-module";
 import { Button, Switch, Table, TableProps, Tag } from "antd";
 
 interface Props {
-  userPermissionTypes: ITUserPermissionType[];
-  openModal: (state: string, record: ITUserPermissionType | undefined) => void;
+  userModules: ITUserModule[];
+  openModal: (state: string, record: ITUserModule | undefined) => void;
 }
-export const UserPermissionTypeTable: React.FC<Props> = ({
-  userPermissionTypes,
+export const UserModuleTable: React.FC<Props> = ({
+  userModules,
   openModal,
 }) => {
   const columns: TableProps["columns"] = [
@@ -44,7 +44,7 @@ export const UserPermissionTypeTable: React.FC<Props> = ({
   ];
   return (
     <>
-      <Table columns={columns} dataSource={userPermissionTypes} />
+      <Table columns={columns} dataSource={userModules} />
     </>
   );
 };

@@ -6,7 +6,10 @@ import { Button, FloatButton, Layout, Menu, message, Spin } from "antd";
 import { MenuSiderWithModule } from "@/app/config/menu";
 import { pageWithoutMenu } from "@/app/config/data";
 import { Footer } from "antd/es/layout/layout";
-import { useAxiosIntranet, useAxiosUser } from "../lib/axios/hooks/userAxiosAuth";
+import {
+  useAxiosIntranet,
+  useAxiosUser,
+} from "../lib/axios/hooks/userAxiosAuth";
 import IndexServices from "./services/index.service";
 import NotiLogsServices from "../services/noti-logs.service";
 import { PhoneOutlined } from "@ant-design/icons";
@@ -19,14 +22,22 @@ import { UserContectType, UserContext } from "../config/userContext";
 
 const { Content, Sider } = Layout;
 
-export default function MainLayout({ children }: { children: React.ReactNode }) {
+export default function MainLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { tokenAccess, authenticated, login, logout, id24Axios } = useId24();
   const { saveUser } = useContext(UserContext) as UserContectType;
-  const baseUrlIntra = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntra = id24Axios(
+    loadAppConfig().REACT_APP_API_BASE_URL_INTRANET
+  );
   const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const [loading, setLoading] = useState<boolean>(true);
   const [collapsed, setCollapsed] = useState(false);
-  const [notiLogMessages, setNotiLogMessages] = useState<ITNotiLogsMessage[]>([]);
+  const [notiLogMessages, setNotiLogMessages] = useState<ITNotiLogsMessage[]>(
+    []
+  );
   const [countNoti, setCountNoti] = useState<any>();
   const [avatar, setAvatar] = useState<any>();
   const [profileDetail, setProfileDetail] = useState<any>();
@@ -46,6 +57,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       .findByToken()
       .then((profile) => {
         setProfileDetail(profile);
+        console.log(profile);
         saveUser(profile);
       });
     // const notiLogMessage = await NotiLogsServices(baseUrlIntra).findByUsers(session.user.userId);
@@ -141,20 +153,32 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         collapsible
         collapsed={collapsed}
         style={{ backgroundColor: "#ffff" }}
-        className=" min-h-screen  hidden  md:block bg ">
+        className=" min-h-screen  hidden  md:block bg "
+      >
         <div className="flex justify-center py-4 ">
           {!collapsed ? (
             <>
-              <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : " w-40"}`} />
+              <img
+                src="/images/osd-logo.png"
+                alt="logo-page"
+                className={`${collapsed ? "w-14 " : " w-40"}`}
+              />
             </>
           ) : (
-            <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
+            <img
+              src="/images/osd-logo.png"
+              alt="logo-page"
+              className={`${collapsed ? "w-14 " : "w-28 "}`}
+            />
           )}
         </div>
         <Menu
           mode="inline"
           selectedKeys={[currentPath, `${currentPath}/${currentPathSub}`]}
-          defaultSelectedKeys={[currentPath, `${currentPath}/${currentPathSub}`]}
+          defaultSelectedKeys={[
+            currentPath,
+            `${currentPath}/${currentPathSub}`,
+          ]}
           items={menulist}
         />
       </Sider>
@@ -178,10 +202,13 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             padding: 20,
             margin: 0,
             marginBottom: 20,
-          }}>
+          }}
+        >
           {children}
         </Content>
-        <Footer style={{ textAlign: "center" }}>Intranet ©{new Date().getFullYear()} Created by OSD</Footer>
+        <Footer style={{ textAlign: "center" }}>
+          Intranet ©{new Date().getFullYear()} Created by OSD
+        </Footer>
       </Layout>
     </Layout>
   );

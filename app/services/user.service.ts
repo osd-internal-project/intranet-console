@@ -4,6 +4,7 @@ export interface TUserServices {
   findOrganizeUserByUserId: (userId: string) => Promise<ITSelectUsers[]>;
   findSaleUserBySalePermission: (userId: string) => Promise<ITSelectUsers[]>;
   findHeaderUserByUserId: (userId: string) => Promise<ITUser[]>;
+  findUsersByOwnerGroupIds: (userGroupId: string[]) => Promise<any>;
 }
 const UserServices = (axiosInstance: AxiosInstance): TUserServices => {
   //User Service
@@ -41,6 +42,12 @@ const UserServices = (axiosInstance: AxiosInstance): TUserServices => {
           console.log(err);
           return;
         });
+    },
+    findUsersByOwnerGroupIds: async (userGroupId) => {
+      return await axiosInstance
+        .post(`${userUrl}/users-in-owner-groups`, { groups: userGroupId })
+        .then((result) => result.data)
+        .catch((err) => err);
     },
   };
 };

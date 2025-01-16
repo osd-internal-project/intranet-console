@@ -3,7 +3,7 @@ import { ITSelectUsers } from "../common";
 export interface TCrmServices {
   findOrganizeUserByUserId: (userId: string) => Promise<ITSelectUsers[]>;
   getUserGroupFormOrganizedByUserId: (userId: string) => Promise<any>;
-  findUsersByOwnerGroup: (group: string[]) => Promise<ITSelectUsers[]>;
+  findUsersLowerByOwnerGroup: (group: string[]) => Promise<ITSelectUsers[]>;
 }
 const UserServices = (axiosInstance: AxiosInstance): TCrmServices => {
   //User Service
@@ -33,7 +33,7 @@ const UserServices = (axiosInstance: AxiosInstance): TCrmServices => {
           return [];
         });
     },
-    findUsersByOwnerGroup: async (ownerGroup: string[]) => {
+    findUsersLowerByOwnerGroup: async (ownerGroup: string[]) => {
       return await axiosInstance
         .get(`${userUrl}/find-same-and-lower-users-by-ownergroup/`, {
           params: ownerGroup,

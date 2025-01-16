@@ -54,9 +54,9 @@ type groupDetail = {
   headId?: string;
   parentGroupId: string;
   // organizedGroupId: string;
-  userGroupMapPermission: userGroupMapPermissionType[];
+  userGroupMapPermission: userGroupMapModule[];
 };
-type userGroupMapPermissionType = {
+type userGroupMapModule = {
   leaveGroupId: string;
   leaveUserId: string;
   expenseGroupId: string;
@@ -219,29 +219,29 @@ const GroupManage: React.FC<props> = ({
   };
 
   async function onChangeSaleGroupSelect(group: string[]): Promise<void> {
-    const data = await userGroupServices.findUsersByOwnerGroup(group);
+    const data = await userGroupServices.findUsersLowerByOwnerGroup(group);
     setSaleUsersFormGroup(data);
   }
 
   async function onChangeEngineerGroupSelect(group: string[]): Promise<void> {
-    const data = await userGroupServices.findUsersByOwnerGroup(group);
+    const data = await userGroupServices.findUsersLowerByOwnerGroup(group);
     setEngineerUsersFormGroup(data);
   }
 
   // async function onChangeLeaveGroupSelect(group: string[]): Promise<void> {
-  //   const data = await userGroupServices.findUsersByOwnerGroup(group);
+  //   const data = await userGroupServices.findUsersLowerByOwnerGroup(group);
   //   setLeaveUsersFormGroup(data);
   // }
 
   // async function onChangeExpenseGroupSelect(group: string[]): Promise<void> {
-  //   const data = await userGroupServices.findUsersByOwnerGroup(group);
+  //   const data = await userGroupServices.findUsersLowerByOwnerGroup(group);
   //   setExpenseUsersFormGroup(data);
   // }
   async function onChangeHeaderGroupSelect(
     group: string[],
     type: string
   ): Promise<void> {
-    const data = await userGroupServices.findUsersByOwnerGroup(group);
+    const data = await userGroupServices.findUsersLowerByOwnerGroup(group);
     let lists = headerUsersFormGroup;
     const oldIndex = lists.findIndex((list) => list.type === type);
     if (oldIndex) {

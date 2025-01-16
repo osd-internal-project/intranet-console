@@ -20,7 +20,7 @@ export interface TUsersService {
 }
 
 export const UsersServices = (axiosInstance: AxiosInstance): TUsersService => {
-  const baseUrl = "/users";
+  const baseUrl = "/id24users";
   return {
     findAllUser: async (search) => {
       const result = await axiosInstance.get(`${baseUrl}`, { params: search });

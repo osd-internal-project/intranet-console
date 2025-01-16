@@ -304,8 +304,13 @@ export const MenuSider: MenuItem[] = [
         // rule: "um-ru-s",
       },
       {
-        key: `users-management/user-header-type`,
-        label: `Permission Type`,
+        key: `users-management/user-module`,
+        label: `Module`,
+        // rule: "um-ru-s",
+      },
+      {
+        key: `users-management/user-group-permission`,
+        label: `Group Permission`,
         // rule: "um-ru-s",
       },
     ],

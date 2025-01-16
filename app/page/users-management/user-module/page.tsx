@@ -1,6 +1,6 @@
 "use client";
 import { use, useEffect, useState } from "react";
-import { UserPermissionTypeTable } from "./components/user-permission-type-table";
+import { UserModuleTable } from "./components/user-module-type-table";
 import {
   Breadcrumb,
   Button,
@@ -16,67 +16,59 @@ import {
 } from "antd";
 import { Col } from "antd/lib";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
-import UserPermissionTypeServices from "@/app/services/user-permission-type.service";
-import {
-  ITUserPermissionType,
-  ITUserPermissionTypeForm,
-} from "@/app/common/user-permission-type";
+import UserModuleServices from "@/app/services/user-module.service";
+import { ITUserModule, ITUserModuleForm } from "@/app/common/user-module";
 import { useForm } from "antd/es/form/Form";
 import modal from "antd/es/modal";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
 
-export default function UserPermissionTypePage() {
+export default function UserModulePage() {
   const userAuth = useAxiosUser();
-  const userPermissionTypeServices = UserPermissionTypeServices(userAuth);
+  const userModuleServices = UserModuleServices(userAuth);
   const [form] = useForm();
   const [loading, setLoading] = useState<boolean>(true);
   const [titleModal, setTitleModal] = useState<string>("");
   const [stateModal, setStateModal] = useState<
     "add" | "edit" | "delete" | undefined
   >(undefined);
-  const [userPermissionTypes, setUserPermissionTypes] = useState<
-    ITUserPermissionType[]
-  >([]);
+  const [userModules, setUserModules] = useState<ITUserModule[]>([]);
 
   useEffect(() => {
     fetchData();
   }, [loading]);
 
   async function fetchData() {
-    const userPermissionTypes = await userPermissionTypeServices.findMany({});
-    if (userPermissionTypes) {
-      setUserPermissionTypes(userPermissionTypes);
+    const userModules = await userModuleServices.findMany({});
+    if (userModules) {
+      setUserModules(userModules);
     } else {
-      setUserPermissionTypes([]);
+      setUserModules([]);
     }
     setLoading(false);
   }
 
-  function openModal(
-    state: string,
-    record: ITUserPermissionType | undefined
-  ): void {
+  function openModal(state: string, record: ITUserModule | undefined): void {
     form.resetFields();
     if (state === "add") {
       setStateModal(state);
-      setTitleModal("Add Permission Type");
+      setTitleModal("Add Module");
     } else if (state === "edit") {
       setStateModal(state);
-      setTitleModal("Edit Permission Type");
+      setTitleModal("Edit Module");
       form.setFieldsValue(record);
     } else if (state === "delete") {
       if (record?.id) {
         modal.confirm({
           title: "ยืนยันการลบ",
           icon: <ExclamationCircleOutlined />,
-          content: "ยืนยันการลบ Permission Type",
+          content: "ยืนยันการลบ Module",
           okText: "Delete",
           cancelText: "Cancel",
           okButtonProps: { danger: true },
           async onOk() {
-            await userPermissionTypeServices
+            await userModuleServices
               .delete(Number(record?.id))
               .then(() => {
                 message.success("Success");
@@ -95,12 +87,12 @@ export default function UserPermissionTypePage() {
     }
   }
 
-  async function onFinishPermissionType(
-    values: ITUserPermissionType | ITUserPermissionTypeForm
+  async function onFinishModule(
+    values: ITUserModule | ITUserModuleForm
   ): Promise<void> {
     if (stateModal === "add") {
-      const dataForm = values as ITUserPermissionTypeForm;
-      await userPermissionTypeServices
+      const dataForm = values as ITUserModuleForm;
+      await userModuleServices
         .create(dataForm)
         .then(() => {
           message.success("Success");
@@ -114,14 +106,14 @@ export default function UserPermissionTypePage() {
         });
     } else if (stateModal === "edit") {
       if (values) {
-        const data = values as ITUserPermissionType;
+        const data = values as ITUserModule;
         const dataForm = {
           code: data.code,
           name: data.name,
           status: data.status,
           description: data.description,
         };
-        await userPermissionTypeServices
+        await userModuleServices
           .update(data.id, dataForm)
           .then(() => {
             message.success("Success");
@@ -148,13 +140,13 @@ export default function UserPermissionTypePage() {
                 title: <span>หน้าหลัก</span>,
               },
               {
-                title: <span>Permission Type</span>,
+                title: <span>Module</span>,
               },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
-          <div className="title-page-font">{`Permission Type`}</div>
+          <div className="title-page-font">{`Module`}</div>
         </Divider>
         <div className="w-full">
           <Card>
@@ -163,13 +155,10 @@ export default function UserPermissionTypePage() {
                 type="primary"
                 onClick={() => openModal("add", undefined)}
               >
-                Add Permission Type
+                Add Module
               </Button>
             </div>
-            <UserPermissionTypeTable
-              userPermissionTypes={userPermissionTypes}
-              openModal={openModal}
-            />
+            <UserModuleTable userModules={userModules} openModal={openModal} />
           </Card>
         </div>
       </Row>
@@ -182,7 +171,7 @@ export default function UserPermissionTypePage() {
           setTitleModal("");
         }}
       >
-        <Form form={form} layout="vertical" onFinish={onFinishPermissionType}>
+        <Form form={form} layout="vertical" onFinish={onFinishModule}>
           {stateModal === "edit" && (
             <Form.Item name={"id"} hidden>
               <Input placeholder="Plese Enter" />
@@ -195,7 +184,11 @@ export default function UserPermissionTypePage() {
             <Input placeholder="Plese Enter" />
           </Form.Item>
           <Form.Item name={"status"} label={"Status"} valuePropName="checked">
-            <Switch checkedChildren={"Used"} unCheckedChildren={"Not Used"} />
+            <Switch
+              checkedChildren={"Used"}
+              unCheckedChildren={"Not Used"}
+              defaultChecked
+            />
           </Form.Item>
           <Form.Item name={"description"} label={"Description"}>
             <TextArea placeholder="Plese Enter" />

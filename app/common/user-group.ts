@@ -4,9 +4,9 @@ type ITUserGroup = {
   description: string;
   headId?: string;
   parentGroupId: string;
-  userGroupMapPermission: ITUserGroupMapPermissionType[];
+  userGroupMapPermission: ITUserGroupMapModule[];
 };
-type ITUserGroupMapPermissionType = {
+type ITUserGroupMapModule = {
   id: number;
   leaveGroupId: string;
   leaveUserId: string;

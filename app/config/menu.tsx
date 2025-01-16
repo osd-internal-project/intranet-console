@@ -1,12 +1,4 @@
-import {
-  LogoutOutlined,
-  UserOutlined,
-  HomeOutlined,
-  BarChartOutlined,
-  BookOutlined,
-  MailOutlined,
-  ShoppingCartOutlined,
-} from "@ant-design/icons";
+import { LogoutOutlined, UserOutlined, HomeOutlined, BarChartOutlined, BookOutlined, MailOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { Icon } from "@iconify/react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
@@ -216,48 +208,6 @@ export const MenuSider: MenuItem[] = [
     ],
   },
   {
-    key: `setting`,
-    icon: <Icon icon="uil:setting" width="15" height="15" />,
-    label: `ตั้งค่า`,
-    // rule: "st-s",
-    children: [
-      {
-        key: `setting/maintenance-type`,
-        label: `การบำรุงรักษา`,
-        rule: "ma-t-s",
-      },
-      {
-        key: `setting/organize-chart`,
-        label: `Organize Chart`,
-        // rule: "st-p-s",
-      },
-      {
-        key: `setting/typeleave`,
-        label: `Type Leave`,
-        rule: "st-tl-s",
-      },
-      {
-        key: `setting/master-holidays`,
-        label: `Master Holidays`,
-        // rule: "st-mth-s",
-      },
-      {
-        key: `setting/masterdata-position`,
-        label: `Master Position`,
-        rule: "st-p-s",
-      },
-      {
-        key: `setting/manage-home`,
-        label: `Manage Home`,
-        rule: "ma-h-s",
-      },
-      {
-        key: `setting/email-template`,
-        label: `Email Template`,
-      },
-    ],
-  },
-  {
     key: `overtime`,
     icon: <Icon icon="uil:setting" width="15" height="15" />,
     label: `Overtime`,
@@ -307,6 +257,52 @@ export const MenuSider: MenuItem[] = [
         key: `users-management/user-header-type`,
         label: `Permission Type`,
         // rule: "um-ru-s",
+      },
+    ],
+  },
+  {
+    key: `setting`,
+    icon: <Icon icon="uil:setting" width="15" height="15" />,
+    label: `ตั้งค่า`,
+    // rule: "st-s",
+    children: [
+      {
+        key: `setting/maintenance-type`,
+        label: `การบำรุงรักษา`,
+        rule: "ma-t-s",
+      },
+      {
+        key: `setting/organize-chart`,
+        label: `Organize Chart`,
+        // rule: "st-p-s",
+      },
+      {
+        key: `setting/typeleave`,
+        label: `Type Leave`,
+        rule: "st-tl-s",
+      },
+      {
+        key: `setting/master-holidays`,
+        label: `Master Holidays`,
+        // rule: "st-mth-s",
+      },
+      {
+        key: `setting/masterdata-position`,
+        label: `Master Position`,
+        rule: "st-p-s",
+      },
+      {
+        key: `setting/manage-home`,
+        label: `Manage Home`,
+        rule: "ma-h-s",
+      },
+      {
+        key: `setting/email-template`,
+        label: `Email Template`,
+      },
+      {
+        key: `setting/master-overtime-config`,
+        label: `Master Overtime Config`,
       },
     ],
   },

@@ -79,3 +79,14 @@ export const optionsTimesNormall = [
   { value: "23:00", label: "23:00", key: "23:00" },
   { value: "23:30", label: "23:30", key: "23:30" },
 ];
+
+export const optionsDays = [
+  { value: "Sunday", label: "วันอาทิตย์", key: "Sunday" },
+  { value: "Monday", label: "วันจันทร์", key: "Monday" },
+  { value: "Tuesday", label: "วันอังคาร", key: "Tuesday" },
+  { value: "Wednesday", label: "วันพุธ", key: "Wednesday" },
+  { value: "Thursday", label: "วันพฤหัสบดี", key: "Thursday" },
+  { value: "Friday", label: "วันศุกร์", key: "Friday" },
+  { value: "Saturday", label: "วันเสาร์", key: "Saturday" },
+  { value: "Holiday", label: "วันหยุดนักขัตฤกษ์", key: "Holiday" },
+];

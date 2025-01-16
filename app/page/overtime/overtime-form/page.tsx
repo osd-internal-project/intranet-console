@@ -55,7 +55,7 @@ export default function OverTimePage() {
     const headers = await UserServices(baseUrlUser).findHeaderUserByUserId(user.userId);
     const masterConfigTime = await OverTimeServices(baseUrlIntranet).findMasterOt(date);
     setMasterOt(masterConfigTime);
-    const resCar = await MaCarServices(baseUrlIntranet).getMaCarQuery();
+    const resCar: any = await MaCarServices(baseUrlIntranet).getMaCarQuery();
     setCar(resCar);
     setHeader(headers);
   };

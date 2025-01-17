@@ -97,7 +97,7 @@ export default function UserModulePage() {
       const permissionGroup =
         await userGroupServices.getPermissionGroupByGroupIdAndModuleId({
           groupid: value,
-          moduleid: moduleSelected,
+          modulecode: moduleSelected,
         });
       form.setFieldValue(
         "permissionGroupId",
@@ -143,6 +143,7 @@ export default function UserModulePage() {
             <div className=" flex w-full gap-2">
               <div className="flex-none">
                 <Segmented
+                  size="large"
                   vertical
                   options={userModuleOptions}
                   onChange={(value) => {

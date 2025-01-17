@@ -109,7 +109,7 @@ const UserGroupServices = (axiosInstance: AxiosInstance) => {
     },
     getPermissionGroupByGroupIdAndModuleId: async (condition: {
       groupid: string;
-      moduleid: string;
+      modulecode: string;
     }) => {
       return await axiosInstance
         .get(`/user-group/find-group-by-moduleid-and-groupid/`, {

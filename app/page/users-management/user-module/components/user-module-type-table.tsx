@@ -9,7 +9,7 @@ export const UserModuleTable: React.FC<Props> = ({
   userModules,
   openModal,
 }) => {
-  const columns: TableProps["columns"] = [
+  const columns: TableProps<ITUserModule>["columns"] = [
     { key: "code", title: "Code", dataIndex: "code" },
     { key: "name", title: "Name", dataIndex: "name" },
     { key: "description", title: "Description", dataIndex: "description" },
@@ -44,7 +44,7 @@ export const UserModuleTable: React.FC<Props> = ({
   ];
   return (
     <>
-      <Table columns={columns} dataSource={userModules} />
+      <Table size="small" columns={columns} dataSource={userModules} />
     </>
   );
 };

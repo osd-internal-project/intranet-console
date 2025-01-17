@@ -101,7 +101,7 @@ export default function UserModulePage() {
         });
       form.setFieldValue(
         "permissionGroupId",
-        permissionGroup.permissionGroupIds
+        permissionGroup.map((group: ITUserGroup) => group.groupId)
       );
     } else {
       form.setFieldValue("permissionGroupId", undefined);

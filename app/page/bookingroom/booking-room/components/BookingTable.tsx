@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Table,
-  Tag,
-  Button,
-  Modal,
-  Divider,
-  TablePaginationConfig,
-  Collapse,
-} from "antd";
+import { Table, Tag, Button, Modal, Divider, TablePaginationConfig, Collapse } from "antd";
 import type { TableProps } from "antd";
 import { CaretRightOutlined } from "@ant-design/icons";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -27,6 +19,7 @@ interface DataType {
   outSider: string;
   guest: string;
   created_at: string;
+  officer: string;
 }
 
 export interface props {
@@ -35,17 +28,9 @@ export interface props {
   changePagination: (pagination: TablePaginationConfig) => void;
 }
 
-const BookingTable: React.FC<props> = ({
-  bookingFetchData,
-  pagination,
-  changePagination,
-}: any): React.ReactElement => {
-  const intraAuth = useAxiosIntranet();
-  const bookingRoomServices = BookingRoomServices(intraAuth);
-  const [bookingData, setBookingData] = useState<DataType[]>([]);
+const BookingTable: React.FC<props> = ({ bookingFetchData, pagination, changePagination }: any): React.ReactElement => {
   const [modalBookingDetails, setModalBookingDetails] = useState(false);
-  const [currentBookingDetails, setCurrentBookingDetails] =
-    useState<DataType | null>(null);
+  const [currentBookingDetails, setCurrentBookingDetails] = useState<DataType | null>(null);
 
   const columns: TableProps<DataType>["columns"] = [
     {
@@ -53,9 +38,7 @@ const BookingTable: React.FC<props> = ({
       title: "ลำดับ",
       dataIndex: "no",
       render: (id: number, record: any, index: number) =>
-        pagination.current && pagination.pageSize
-          ? (pagination.current - 1) * pagination.pageSize + (index + 1)
-          : "",
+        pagination.current && pagination.pageSize ? (pagination.current - 1) * pagination.pageSize + (index + 1) : "",
     },
     {
       key: "roomName",
@@ -72,8 +55,7 @@ const BookingTable: React.FC<props> = ({
       title: "วันที่จอง",
       render: (_, record) => (
         <span>
-          {dayjs(record.startDate).format("YYYY-MM-DD")} -{" "}
-          {dayjs(record.endDate).format("YYYY-MM-DD")}
+          {dayjs(record.startDate).format("YYYY-MM-DD")} - {dayjs(record.endDate).format("YYYY-MM-DD")}
         </span>
       ),
     },
@@ -82,8 +64,7 @@ const BookingTable: React.FC<props> = ({
       title: "เวลาจอง",
       render: (_, record) => (
         <span>
-          {dayjs(record.startDate).format("HH:mm")} -{" "}
-          {dayjs(record.endDate).format("HH:mm")}
+          {dayjs(record.startDate).format("HH:mm")} - {dayjs(record.endDate).format("HH:mm")}
         </span>
       ),
     },
@@ -173,110 +154,111 @@ const BookingTable: React.FC<props> = ({
         footer={null}
         centered
         width={600}
-        style={{ top: 20 }}
-      >
+        style={{ top: 20 }}>
         {currentBookingDetails && (
           <>
             <Divider />
             <p>
-              <strong>ชื่อห้องประชุม : </strong>{" "}
-              <span className="modal-content">
-                {currentBookingDetails.roomName}
-              </span>
+              <strong>ชื่อห้องประชุม : </strong> <span className="modal-content">{currentBookingDetails.roomName}</span>
             </p>
             <p>
               <strong>ประเภทการจอง : </strong>{" "}
               <span className="modal-content">
-                {currentBookingDetails.roomType}
+                {currentBookingDetails.roomType === "Meeting"
+                  ? "ประชุม (Meeting)"
+                  : currentBookingDetails.roomType === "Train"
+                  ? "อบรม (Train)"
+                  : "สัมมนา (seminar)"}
               </span>
             </p>
             <p>
               <strong>วันที่จอง : </strong>{" "}
               <span className="modal-content">
-                {dayjs(currentBookingDetails.startDate).format("YYYY-MM-DD")} -{" "}
-                {dayjs(currentBookingDetails.endDate).format("YYYY-MM-DD")}
+                {dayjs(currentBookingDetails.startDate).format("DD-MM-YYYY")} - {dayjs(currentBookingDetails.endDate).format("DD-MM-YYYY")}
               </span>
             </p>
             <p>
               <strong>เวลาจอง : </strong>{" "}
               <span className="modal-content">
-                {dayjs(currentBookingDetails.startDate).format("HH:mm")} -{" "}
-                {dayjs(currentBookingDetails.endDate).format("HH:mm")}
+                {dayjs(currentBookingDetails.startDate).format("HH:mm")} - {dayjs(currentBookingDetails.endDate).format("HH:mm")}
               </span>
             </p>
             <p>
               <strong>สถานะ : </strong>
               <span className="modal-content">
-                {currentBookingDetails.bookingStatus
-                  ? renderStatusTag(currentBookingDetails.bookingStatus)
-                  : "ไม่มีสถานะ"}
+                {currentBookingDetails.bookingStatus ? renderStatusTag(currentBookingDetails.bookingStatus) : "ไม่มีสถานะ"}
               </span>
             </p>
             <Divider />
             <p>
-              <strong>ชื่อผู้จอง : </strong>{" "}
-              <span className="modal-content">
-                {currentBookingDetails.bookerName}
-              </span>
+              <strong>ชื่อผู้จอง : </strong> <span className="modal-content">{currentBookingDetails.bookerName}</span>
             </p>
-            {currentBookingDetails.outSider === "มี" &&
-              currentBookingDetails.guest && (
-                <>
-                  <Collapse
-                    bordered={false}
-                    defaultActiveKey={[]}
-                    expandIcon={({ isActive }) => (
-                      <CaretRightOutlined rotate={isActive ? 90 : 0} />
-                    )}
-                  >
-                    <Collapse.Panel header="ข้อมูลบุคคลภายนอก" key="1">
-                      {JSON.parse(currentBookingDetails.guest).map(
-                        (guest: any, index: number) => (
-                          <div key={index}>
-                            <p>
-                              <strong>ลำดับที่ {index + 1}</strong>
-                            </p>
-                            <p>
-                              <strong>ชื่อ-นามสกุล : </strong>
-                              <span className="modal-content">
-                                {guest.guestname}
-                              </span>
-                            </p>
-                            <p>
-                              <strong>ตำแหน่ง : </strong>
-                              <span className="modal-content">
-                                {guest.guestlevel}
-                              </span>
-                            </p>
-                            <p>
-                              <strong>ลำดับความสำคัญ : </strong>
-                              <span className="modal-content">
-                                {guest.guestpriority === "1"
-                                  ? "สูง"
-                                  : guest.guestpriority === "2"
-                                  ? "กลาง"
-                                  : "ต่ำ"}
-                              </span>
-                            </p>
-                            {guest.refreshment &&
-                              guest.refreshment.length > 0 && (
-                                <p>
-                                  <strong>อาหารว่าง : </strong>
-                                  <span className="modal-content">
-                                    {guest.refreshment.join(", ")}
-                                  </span>
-                                </p>
-                              )}
-                            {index !==
-                              JSON.parse(currentBookingDetails.guest).length -
-                                1 && <Divider dashed />}
-                          </div>
-                        )
-                      )}
-                    </Collapse.Panel>
-                  </Collapse>
-                </>
-              )}
+            {currentBookingDetails.officer && currentBookingDetails.officer.length > 0 && (
+              <>
+                <Collapse bordered={false} defaultActiveKey={[]} expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
+                  <Collapse.Panel header="ข้อมูลบุคคลภายใน" key="1">
+                    {Object.values(currentBookingDetails.officer).map((officer: any, index: number) => (
+                      <div key={index}>
+                        <p>
+                          <strong>ลำดับที่ {index + 1}</strong>
+                        </p>
+                        <p>
+                          <strong>ชื่อ-นามสกุล : </strong>
+                          <span className="modal-content">{officer.guestname}</span>
+                        </p>
+                        <p>
+                          <strong>ลำดับความสำคัญ : </strong>
+                          <span className="modal-content">
+                            {officer.guestpriority === "1" ? "สูง" : officer.guestpriority === "2" ? "กลาง" : "ต่ำ"}
+                          </span>
+                        </p>
+                        {officer.refreshment && officer.refreshment.length > 0 && (
+                          <p>
+                            <strong>อาหารว่าง : </strong>
+                            <span className="modal-content">{officer.refreshment.join(", ")}</span>
+                          </p>
+                        )}
+                        {index !== Object.values(currentBookingDetails.officer).length - 1 && <Divider dashed />}
+                      </div>
+                    ))}
+                  </Collapse.Panel>
+                </Collapse>
+              </>
+            )}
+            {currentBookingDetails.outSider === "มี" && currentBookingDetails.guest && (
+              <>
+                <Collapse bordered={false} defaultActiveKey={[]} expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
+                  <Collapse.Panel header="ข้อมูลบุคคลภายนอก" key="1">
+                    {JSON.parse(currentBookingDetails.guest).map((guest: any, index: number) => (
+                      <div key={index}>
+                        <p>
+                          <strong>ลำดับที่ {index + 1}</strong>
+                        </p>
+                        <p>
+                          <strong>ชื่อ-นามสกุล : </strong>
+                          <span className="modal-content">{guest.guestname}</span>
+                        </p>
+                        <p>
+                          <strong>ตำแหน่ง : </strong>
+                          <span className="modal-content">{guest.guestlevel}</span>
+                        </p>
+                        <p>
+                          <strong>ลำดับความสำคัญ : </strong>
+                          <span className="modal-content">{guest.guestpriority === "1" ? "สูง" : guest.guestpriority === "2" ? "กลาง" : "ต่ำ"}</span>
+                        </p>
+                        {guest.refreshment && guest.refreshment.length > 0 && (
+                          <p>
+                            <strong>อาหารว่าง : </strong>
+                            <span className="modal-content">{guest.refreshment.join(", ")}</span>
+                          </p>
+                        )}
+                        {index !== JSON.parse(currentBookingDetails.guest).length - 1 && <Divider dashed />}
+                      </div>
+                    ))}
+                  </Collapse.Panel>
+                </Collapse>
+              </>
+            )}
           </>
         )}
       </Modal>

@@ -53,11 +53,7 @@ export const BookingRoomServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    countBookingRoomCountByRoomAndRange: async (
-      roomId: string,
-      startDate: string,
-      endDate: string
-    ) => {
+    countBookingRoomCountByRoomAndRange: async (roomId: string, startDate: string, endDate: string) => {
       return await axiosInstance
         .get(`${baseUrlApiBookingRoom}/count-by-room-and-range`, {
           params: { roomId, startDate, endDate },

@@ -6,11 +6,7 @@ export interface props {
   pagination: any;
   masterBookingRoom: MasterRoomType[];
 }
-const MeetingRoomTableComponent: React.FC<props> = ({
-  masterBookingRoom,
-}): React.ReactElement => {
-  console.log(masterBookingRoom);
-
+const MeetingRoomTableComponent: React.FC<props> = ({ masterBookingRoom }): React.ReactElement => {
   const columns: TableProps<MasterRoomType>["columns"] = [
     {
       title: "ชื่อห้องประชุม",
@@ -43,14 +39,7 @@ const MeetingRoomTableComponent: React.FC<props> = ({
     },
   ];
 
-  return (
-    <Table
-      columns={columns}
-      dataSource={masterBookingRoom}
-      pagination={false}
-      rowKey="id"
-    />
-  );
+  return <Table columns={columns} dataSource={masterBookingRoom} pagination={false} rowKey="id" />;
 };
 
 export default MeetingRoomTableComponent;

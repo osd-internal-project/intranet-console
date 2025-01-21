@@ -1,20 +1,9 @@
-import { LogoutOutlined, UserOutlined, HomeOutlined, BarChartOutlined, BookOutlined, MailOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { HomeOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { Icon } from "@iconify/react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
 import React from "react";
-import { signOut } from "next-auth/react";
-import {
-  gridIcon,
-  IconDataLeave,
-  bookingIcon,
-  maintenanceIcon,
-  organizeChart,
-  stockIcon,
-  contactListIcon,
-  macarIcon,
-  hrIcon,
-} from "@/components/icon";
+import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, organizeChart, contactListIcon, macarIcon, hrIcon } from "@/components/icon";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -44,7 +33,7 @@ export const MenuSider: MenuItem[] = [
   {
     key: "hr-management",
     label: "ระบบบริหารงานบุคคล",
-    // rule:''
+    rule: "iss-s",
     icon: hrIcon,
     children: [
       {
@@ -57,17 +46,17 @@ export const MenuSider: MenuItem[] = [
     key: "housekeeper",
     icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
     label: "งานแม่บ้าน",
-    // rule: "hk-s",
+    rule: "hk-s",
     children: [
       {
         key: `housekeeper/housekeepers`,
         label: `ข้อมูลการการทำงานของแม่บ้าน`,
-        // rule: "hk-h",
+        rule: "hk-h",
       },
       {
         key: `housekeeper/housekeeper-management`,
         label: `จัดการข้อมูลแม่บ้าน`,
-        // rule: "hk-m",
+        rule: "hk-m",
       },
     ],
   },
@@ -75,27 +64,27 @@ export const MenuSider: MenuItem[] = [
     key: "leave-control-management",
     icon: IconDataLeave,
     label: `ข้อมูลการลา`,
-    // rule: "dl-s",
+    rule: "dl-s",
     children: [
       {
         key: `leave-control-management/leave-letter`,
         label: `ใบลาออนไลน์`,
-        // rule: "dl-a",
+        rule: "dl-a",
       },
       {
         key: `leave-control-management/leave-history`,
         label: `ประวัติการลา`,
-        // rule: "dl-dt-u",
+        rule: "dl-dt-u",
       },
       {
         key: `leave-control-management/leave-history-admin`,
         label: `ประวัติการลา (สำหรับ Admin)`,
-        // rule: "dl-dt-a",
+        rule: "dl-dt-a",
       },
       {
         key: `leave-control-management/leave-disabled-management`,
         label: `จัดการสิทธิ์การลา`,
-        // rule: "dl-dis",
+        rule: "dl-dis",
       },
     ],
   },
@@ -103,19 +92,22 @@ export const MenuSider: MenuItem[] = [
     key: "bookingroom",
     icon: bookingIcon,
     label: "ห้องประชุม",
-    // rule: "br-s",
+    rule: "br-s",
     children: [
       {
         key: `bookingroom/booking-room`,
         label: `จองห้องประชุม`,
+        rule: "br-s-dt",
       },
       {
         key: `bookingroom/booking-room-management`,
         label: `จัดการข้อมูลห้องประชุม`,
+        rule: "br-m",
       },
       {
         key: `bookingroom/booking-room-refreshment`,
         label: `จัดการอาหารว่าง`,
+        rule: "br-rf",
       },
     ],
   },
@@ -123,12 +115,12 @@ export const MenuSider: MenuItem[] = [
     key: "maintenance",
     icon: maintenanceIcon,
     label: "Maintenance",
-    // rule: "ma-s",
+    rule: "ma-s",
     children: [
       {
         key: `maintenance-management`,
         label: `Maintenance Management`,
-        // rule: "ma-m-s",
+        rule: "ma-m-s",
       },
     ],
   },
@@ -170,17 +162,17 @@ export const MenuSider: MenuItem[] = [
     key: "vender",
     icon: <ShoppingCartOutlined />,
     label: `Vender`,
-    // rule: "mac-s",
+    rule: "mac-s",
     children: [
       {
         key: `vender/venders`,
         label: `ข้อมูลผู้ขาย`,
-        // rule: "h-s",
+        rule: "h-s",
       },
       {
         key: `vender/master-product-category`,
         label: `Product Category`,
-        // rule: "mac-b-s",
+        rule: "mac-b-s",
       },
     ],
   },
@@ -211,6 +203,7 @@ export const MenuSider: MenuItem[] = [
     key: `overtime`,
     icon: <Icon icon="uil:setting" width="15" height="15" />,
     label: `Overtime`,
+    rule: "mac-s",
     children: [
       {
         key: `overtime/overtime-calendar`,
@@ -226,42 +219,42 @@ export const MenuSider: MenuItem[] = [
     key: `users-management`,
     icon: gridIcon,
     label: `User Management`,
-    // rule: "um-s",
+    rule: "um-s",
     children: [
       {
         key: `users-management/users`,
         label: `Users`,
-        // rule: "um-s",
+        rule: "um-s",
       },
       {
         key: `users-management/user-organization`,
         label: `Organizations`,
-        // rule: "user-organize-show",
+        rule: "user-organize-show",
       },
       {
         key: `users-management/user-group`,
         label: `Groups`,
-        // rule: "um-ug-s",
+        rule: "um-ug-s",
       },
       {
         key: `users-management/user-role`,
         label: `Roles`,
-        // rule: "um-ro-s",
+        rule: "um-ro-s",
       },
       {
         key: `users-management/user-rule`,
         label: `Rules`,
-        // rule: "um-ru-s",
+        rule: "um-ru-s",
       },
       {
         key: `users-management/user-module`,
         label: `Module`,
-        // rule: "um-ru-s",
+        rule: "um-ru-s",
       },
       {
         key: `users-management/user-group-permission`,
         label: `Group Permission`,
-        // rule: "um-ru-s",
+        rule: "um-ru-s",
       },
     ],
   },
@@ -269,7 +262,7 @@ export const MenuSider: MenuItem[] = [
     key: `setting`,
     icon: <Icon icon="uil:setting" width="15" height="15" />,
     label: `ตั้งค่า`,
-    // rule: "st-s",
+    rule: "st-s",
     children: [
       {
         key: `setting/maintenance-type`,
@@ -279,7 +272,7 @@ export const MenuSider: MenuItem[] = [
       {
         key: `setting/organize-chart`,
         label: `Organize Chart`,
-        // rule: "st-p-s",
+        rule: "st-p-s",
       },
       {
         key: `setting/typeleave`,
@@ -289,7 +282,7 @@ export const MenuSider: MenuItem[] = [
       {
         key: `setting/master-holidays`,
         label: `Master Holidays`,
-        // rule: "st-mth-s",
+        rule: "st-mth-s",
       },
       {
         key: `setting/masterdata-position`,
@@ -333,16 +326,18 @@ export const MenuSiderWithModule = (modules: string[]) => {
             .filter((item: any) => {
               return !item.rule || modules.includes(item.rule);
             })
-            .map((item: any) => ({
-              ...item,
-              label: (
-                <Tooltip placement="right" title={item.label}>
-                  <div style={{ width: 140 }}>
-                    <Link href={`/page/${item.key}`}>{item.label}</Link>
-                  </div>
-                </Tooltip>
-              ),
-            }))
+            .map((item: any) => {
+              return {
+                ...item,
+                label: (
+                  <Tooltip placement="right" title={item.label}>
+                    <div style={{ width: 140 }}>
+                      <Link href={`/page/${item.key}`}>{item.label}</Link>
+                    </div>
+                  </Tooltip>
+                ),
+              };
+            })
         : null,
     }));
     const menu = menuFilterChildren.filter((item: any) => {

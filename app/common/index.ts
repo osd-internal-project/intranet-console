@@ -8,6 +8,7 @@ export type TUser = {
   capabilities: JSON;
   token: string;
   active: boolean;
+  departmentId: number;
   phone?: string;
   email: string;
   userType: UserType;
@@ -29,7 +30,7 @@ export type TUser = {
         groupId: string;
         groupName: string;
       };
-    }
+    },
   ];
   updateBy: {
     updateById: string;

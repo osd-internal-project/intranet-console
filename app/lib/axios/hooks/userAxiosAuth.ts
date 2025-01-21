@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  axiosUser,
-  axiosReport,
-  axiosStock,
-  axiosIntranet,
-  axiosCrm,
-  axiosVender,
-} from "../axios";
+import { axiosUser, axiosReport, axiosStock, axiosIntranet, axiosCrm, axiosVender } from "../axios";
 import { useSession, signOut } from "next-auth/react";
 import { useEffect } from "react";
 // import { useRefreshToken } from "./useRefreshToken";

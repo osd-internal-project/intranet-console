@@ -12,6 +12,7 @@ export interface TUsersService {
   findGroupsId24: () => Promise<any>;
   findByToken: () => Promise<any>;
   addUser: (formData: TCreateUserDto) => Promise<any>;
+  updateUser: (userId: string, formData: TCreateUserDto) => Promise<any>;
   findAssignGroup: (userId: string, organizeId: string) => Promise<any>;
   findOwnerGroupByOrganizeId: (
     userId: string,
@@ -50,6 +51,17 @@ export const UsersServices = (axiosInstance: AxiosInstance): TUsersService => {
     addUser: async (formData: TCreateUserDto) => {
       return await axiosInstance
         .post(`${baseUrl}`, formData)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    updateUser: async (userId, formData: TCreateUserDto) => {
+      return await axiosInstance
+        .patch(`${baseUrl}/${userId}`, formData)
         .then((res) => {
           return res.data;
         })

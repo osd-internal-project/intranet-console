@@ -171,7 +171,12 @@ export default function UserModulePage() {
           setTitleModal("");
         }}
       >
-        <Form form={form} layout="vertical" onFinish={onFinishModule}>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinishModule}
+          autoComplete="off"
+        >
           {stateModal === "edit" && (
             <Form.Item name={"id"} hidden>
               <Input placeholder="Plese Enter" />

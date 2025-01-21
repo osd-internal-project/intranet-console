@@ -17,9 +17,12 @@ export type TCreateUserDto = {
   phoneNumber: string;
   masterPositionId: number;
   ldapQuery?: string;
-  dataModule?: string;
+  ownerGroupId?: string;
 };
-
+export type TUpdateUserDto = {
+  id: number;
+  userId: string;
+} & TCreateUserDto;
 export type TManageUserPageDto = {
   loading: boolean;
   pagination: {
@@ -51,6 +54,7 @@ export type TUserAllDto = {
     positionId: string;
     userId: string;
   }[];
+  ownerGroupId?: string;
   userMapOrganizeGroupOwner: TUserMapOrganizeGroupOwner[];
   dataModule: string[];
   positionId: number;

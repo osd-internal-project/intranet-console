@@ -60,14 +60,7 @@ const UserGroupServices = (axiosInstance: AxiosInstance) => {
           parentGroupId: true,
           organizedGroupId: true,
           description: true,
-          userGroupUserRoleMap: true,
-          saleUserGroupId: true,
-          saleUsersId: true,
-          engineerUserGroupId: true,
-          engineerUsersId: true,
           user: true,
-          headId: true,
-          userGroupMapPermission: true,
         },
       };
       return await axiosInstance

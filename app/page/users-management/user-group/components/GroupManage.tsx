@@ -124,10 +124,8 @@ const GroupManage: React.FC<props> = ({
     setEditState(false);
     setGroupDetail(null);
     if (user?.userId) {
-      const groups = await userGroupServices.getUserGroupFormOrganizedByUserId(
-        user?.userId
-      );
-      const tree = createTree(groups.organizeMapGroup, null);
+      const groups = await userGroupServices.getUserGroupAll();
+      const tree = createTree(groups, null);
       setGroupOption(tree);
     }
 
@@ -135,6 +133,8 @@ const GroupManage: React.FC<props> = ({
       const groupDetail: any = await userGroupServices.getUserGroupByGroupId(
         groupSelect
       );
+      editform.setFieldsValue(groupDetail);
+      setGroupDetail(groupDetail);
       const usersInGroup: any =
         await userServices.findUserInOnwerGroupByUserGroupId(groupSelect);
       const userInGroupSelect = usersInGroup.map((user: any) => ({
@@ -153,65 +153,20 @@ const GroupManage: React.FC<props> = ({
         label: `${user.firstNameTh} ${user.lastNameTh}`,
       }));
       setUserSelect(userSelect);
-
-      const resRole = await userRolesServices.getUserRoleAll();
-      editform.setFieldsValue(groupDetail);
-      editform.setFieldValue(
-        "userRole",
-        groupDetail.userGroupUserRoleMap.length > 0
-          ? groupDetail.userGroupUserRoleMap.map(
-              (item: { id: number; roleId: string; userGroupId: string }) =>
-                item.roleId
-            )
-          : []
-      );
-      setGroupDetail(groupDetail);
-      setSeleceRole(resRole);
-      await onChangeSaleGroupSelect(groupDetail.saleUserGroupId);
-      await onChangeEngineerGroupSelect(groupDetail.engineerUserGroupId);
-
-      permissionform.setFieldsValue({
-        exceptionalSatatus: groupDetail.exceptionalSatatus,
-        saleUserGroupId: groupDetail.saleUserGroupId,
-        saleUsersId: groupDetail.saleUsersId,
-        engineerUserGroupId: groupDetail.engineerUserGroupId,
-        engineerUsersId: groupDetail.engineerUsersId,
-      });
-      groupDetail.userGroupMapPermission.map(
-        (header: {
-          headerGroupId: string;
-          headerUserId: string;
-          type: string;
-        }) => {
-          console.log(header);
-          if (header.type === "leave") {
-            const form = {
-              headerGroupId: header.headerGroupId,
-            };
-            userpermissionform.setFieldValue("leave", form);
-          } else if (header.type === "expense") {
-            const form = {
-              headerGroupId: header.headerGroupId,
-            };
-            userpermissionform.setFieldValue("expense", form);
-          }
-        }
-      );
     }
   };
   const createTree = (obj: any[], parentId: string | null) => {
     const tree: any[] = [];
     obj.forEach((item) => {
-      if (item.group.parentGroupId === parentId) {
-        const children = createTree(obj, item.group.groupId);
+      if (item.parentGroupId === parentId) {
+        const children = createTree(obj, item.groupId);
         if (children.length > 0) {
-          (item.group.icon = <CarryOutOutlined />),
-            (item.group.children = children);
+          (item.icon = <CarryOutOutlined />), (item.children = children);
         }
         tree.push({
-          value: item.group.groupId,
-          title: item.group.groupName,
-          children: item.group.children,
+          value: item.groupId,
+          title: item.groupName,
+          children: item.children,
         });
       }
     });
@@ -342,94 +297,6 @@ const GroupManage: React.FC<props> = ({
     setEditState(!editState);
   };
 
-  const onSetPermission = async (form: {
-    exceptionalSatatus: boolean;
-    saleUserGroupId: string[];
-    saleUsersId: string[];
-    engineerUserGroupId: string[];
-    engineerUsersId: string[];
-  }): Promise<void> => {
-    const data = {
-      exceptionalSatatus: form.exceptionalSatatus,
-      saleUserGroupId: form.saleUserGroupId,
-      saleUsersId: form.saleUsersId,
-      engineerUserGroupId: form.engineerUserGroupId,
-      engineerUsersId: form.engineerUsersId,
-    };
-    if (groupSelect) {
-      await userGroupServices
-        .updateUserGroupPermission(groupSelect, data)
-        .then(() => {
-          message.success(`Edit success`);
-          setShowModalPermission(false);
-        })
-        .catch((err) => message.error(err));
-    }
-  };
-
-  const setUserPermission = async (value: {
-    leave: { headerGroupId: string[] };
-    expense: { headerGroupId: string[] };
-  }): Promise<void> => {
-    if (groupSelect) {
-      if (value.leave) {
-        try {
-          await userGroupServices.updateUserGroupMapPermission(
-            groupSelect,
-            value.leave,
-            "leave"
-          );
-          message.success(`Updated success`);
-        } catch (err) {
-          message.error("Update failed");
-        }
-      }
-      if (
-        value.expense.headerGroupId.length &&
-        value.expense.headerGroupId.length > 0
-      ) {
-        try {
-          await userGroupServices.updateUserGroupMapPermission(
-            groupSelect,
-            value.expense,
-            "expense"
-          );
-          message.success(`Updated success`);
-        } catch (err) {
-          message.error("Update failed");
-        }
-      }
-    }
-    // if (groupSelect && userGroupIds.includes(groupSelect)) {
-    //   try {
-    //     await userGroupServices.updateUserGroupHeaderPermission(
-    //       groupSelect,
-    //       groupUpdateForm
-    //     );
-    //     message.success(`Updated success`);
-    //   } catch (err) {
-    //     message.error("Update failed");
-    //   }
-    // } else {
-    //   const createForm = {
-    //     userGroupId: groupSelect,
-    //     ...groupUpdateForm,
-    //   };
-
-    //   try {
-    //     await userGroupServices.createdUserGroupHeaderPermission(createForm);
-    //     message.success(`Updated success`);
-    //   } catch (err) {
-    //     message.error("Updated failed");
-    //   }
-    // }
-
-    setShowModalUserPermission(false);
-  };
-
-  const onShowSetPermission = () => {
-    setShowModalPermission(true);
-  };
   return groupDetail ? (
     <>
       <Card className="mx-2 my-2 md:my-0  " style={{ minHeight: " 500px" }}>
@@ -536,29 +403,6 @@ const GroupManage: React.FC<props> = ({
               </Form.Item>
             </div>
             <div>
-              <ConfigProvider
-                theme={{
-                  token: {
-                    colorBgContainerDisabled: "#fff",
-                    colorTextDisabled: "#000",
-                  },
-                  components: {
-                    Select: { colorBorder: !editState ? "#fff" : "#d9d9d9" },
-                  },
-                }}
-              >
-                <Form.Item name="headId" label="Head:">
-                  <Select
-                    disabled={editState === false ? true : false}
-                    allowClear
-                    showSearch
-                    optionFilterProp="label"
-                    options={userInGroupSelect}
-                  />
-                </Form.Item>
-              </ConfigProvider>
-            </div>
-            <div>
               <Form.Item name="description" label="Description :">
                 <Input.TextArea
                   disabled={editState === false ? true : false}
@@ -566,38 +410,8 @@ const GroupManage: React.FC<props> = ({
                 />
               </Form.Item>
             </div>
-            <div>
-              <ConfigProvider
-                theme={{
-                  token: {
-                    colorBgContainerDisabled: "#fff",
-                    colorTextDisabled: "#000",
-                  },
-                  components: {
-                    Select: { colorBorder: !editState ? "#fff" : "#d9d9d9" },
-                  },
-                }}
-              >
-                <Form.Item name="userRole" label="user role :">
-                  <Select
-                    mode="multiple"
-                    options={selectRole.map((item: TSelectRoleDto) => ({
-                      value: item.roleId,
-                      label: item.roleName,
-                    }))}
-                    disabled={editState === false ? true : false}
-                    className={!editState ? "read-only-input" : ""}
-                  />
-                </Form.Item>
-              </ConfigProvider>
-            </div>
             {!editState && (
               <div style={{ display: "flex", justifyContent: "end" }}>
-                <div>
-                  <Button onClick={onShowSetPermission} type="link">
-                    Set CRM Permission
-                  </Button>
-                </div>
                 <div style={{ marginLeft: "20px" }}>
                   <Button
                     href={`/page/users-management/user-group/${groupDetail.groupId}`}
@@ -717,32 +531,6 @@ const GroupManage: React.FC<props> = ({
           columns={[{ title: "Name", dataIndex: "label", key: "value" }]}
         />
       </Modal>
-      <GroupPermissionComponent
-        groupOption={groupOption}
-        onChangeSaleGroupSelect={onChangeSaleGroupSelect}
-        onChangeEngineerGroupSelect={onChangeEngineerGroupSelect}
-        saleUsersFormGroup={saleUsersFormGroup}
-        engineerUsersFormGroup={engineerUsersFormGroup}
-        showModalPermission={showModalPermission}
-        onShowModalPermission={(status: boolean) =>
-          setShowModalPermission(status)
-        }
-        permissionform={permissionform}
-        onSetPermission={onSetPermission}
-      />
-      <GroupUserPermission
-        groupOption={groupOption}
-        // onChangeLeaveGroupSelect={onChangeLeaveGroupSelect}
-        // onChangeExpenseGroupSelect={onChangeExpenseGroupSelect}
-        // expenseUsersFormGroup={expenseUsersFormGroup}
-        // leaveUsersFormGroup={leaveUsersFormGroup}
-        showModalUserPermission={showModalUserPermission}
-        setShowModalUserPermission={(e: boolean) =>
-          setShowModalUserPermission(e)
-        }
-        userpermissionform={userpermissionform}
-        setUserPermission={setUserPermission}
-      />
     </>
   ) : (
     <GroupManageSkeleton />

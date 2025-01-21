@@ -142,7 +142,6 @@ const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
   };
 
   const onDateChange: CalendarProps<Dayjs>["onSelect"] = (value, selectInfo) => {
-    // console.log(value, selectInfo);
     if (selectInfo.source === "date") {
       const holidaySelect = holiday
         .filter((item: THoliday) => dayjs(new Date(item.holidaysDate)).format("YYYY-MM-DD") === dayjs(value).format("YYYY-MM-DD"))

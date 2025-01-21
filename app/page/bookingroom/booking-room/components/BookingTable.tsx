@@ -55,7 +55,7 @@ const BookingTable: React.FC<props> = ({ bookingFetchData, pagination, changePag
       title: "วันที่จอง",
       render: (_, record) => (
         <span>
-          {dayjs(record.startDate).format("YYYY-MM-DD")} - {dayjs(record.endDate).format("YYYY-MM-DD")}
+          {dayjs(record.startDate).format("DD-MM-YYYY")} - {dayjs(record.endDate).format("DD-MM-YYYY")}
         </span>
       ),
     },

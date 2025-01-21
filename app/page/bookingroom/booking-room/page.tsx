@@ -225,12 +225,11 @@ const BookingRoomPage: React.FC = () => {
     const take: number = Number(pagination.pageSize);
     try {
       const bookingRoom = await BookingRoomServices(baseUrIntranet).getMasterRoomQuery();
-      const masterRoomActive = bookingRoom.filter((room: any) => room.roomsStatus === true);
-      const options = masterRoomActive.map((event: any) => {
-        if (event.roomsStatus) {
+      const options = bookingRoom
+        .filter((filtersroom: any) => filtersroom.roomsStatus === true)
+        .map((event: any) => {
           return { value: event.roomId, label: event.roomName };
-        }
-      });
+        });
       setMasterRoomData(options);
       const bookingCalendar = await BookingRoomServices(baseUrIntranet).getBookingRoomQuery();
       const refreshment = await BookingRoomServices(baseUrIntranet).getMasterRefreshmentQuery();
@@ -254,7 +253,7 @@ const BookingRoomPage: React.FC = () => {
 
   return (
     <>
-      <Modal title="จองห้องปรssะชุม" open={isModalBooking} onCancel={handleCancel} footer={false} width={1000}>
+      <Modal title="จองห้องประชุม" open={isModalBooking} onCancel={handleCancel} footer={false} width={1000}>
         <Form form={form} layout="vertical" name="create" onFinish={createBooking} autoComplete="off">
           <Divider orientation="left">ข้อมูลผู้จอง</Divider>
           <Row gutter={16}>
@@ -301,7 +300,7 @@ const BookingRoomPage: React.FC = () => {
             </Col>
             <Col span={8}>
               <Form.Item<BookingType> label="วันที่เริ่มการจอง" name="startDate" rules={[{ required: true, message: "กรุณากรอกวันที่เริ่มการจอง!" }]}>
-                <DatePicker allowClear placeholder="กรอกวันที่เริ่มการจอง" showTime style={{ width: "100%" }} />
+                <DatePicker allowClear placeholder="กรอกวันที่เริ่มการจอง" showTime style={{ width: "100%" }} format={"DD-MM-YYYY HH:mm:ss"} />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -309,7 +308,7 @@ const BookingRoomPage: React.FC = () => {
                 label="วันที่สิ้นสุดการจอง"
                 name="endDate"
                 rules={[{ required: true, message: "กรุณากรอกวันที่สิ้นสุดการจอง!" }]}>
-                <DatePicker allowClear placeholder="กรอกวันที่สิ้นสุดการจอง" showTime style={{ width: "100%" }} />
+                <DatePicker allowClear placeholder="กรอกวันที่สิ้นสุดการจอง" showTime style={{ width: "100%" }} format={"DD-MM-YYYY HH:mm:ss"} />
               </Form.Item>
             </Col>
             <Col span={8}>

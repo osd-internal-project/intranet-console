@@ -108,7 +108,7 @@ const ManageRoom: React.FC = () => {
       key: "bookingDate",
       render: (_, record) => (
         <span>
-          {dayjs(record.startDate).format("YYYY-MM-DD")} - {dayjs(record.endDate).format("YYYY-MM-DD")}
+          {dayjs(record.startDate).format("DD-MM-YYYY")} - {dayjs(record.endDate).format("DD-MM-YYYY")}
         </span>
       ),
     },
@@ -578,7 +578,7 @@ const ManageRoom: React.FC = () => {
             <p>
               <strong>วันที่จอง : </strong>{" "}
               <span className="modal-content">
-                {dayjs(currentBookingDetails.startDate).format("YYYY-MM-DD")} - {dayjs(currentBookingDetails.endDate).format("YYYY-MM-DD")}
+                {dayjs(currentBookingDetails.startDate).format("DD-MM-YYYY")} - {dayjs(currentBookingDetails.endDate).format("DD-MM-YYYY")}
               </span>
             </p>
             <p>

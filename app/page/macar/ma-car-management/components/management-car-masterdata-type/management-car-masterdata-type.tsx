@@ -8,13 +8,14 @@ import { ManageCarServices } from "../../services/manage-car.service";
 import { MaCarType } from "../../../common";
 import ExportExcel from "../../export/export-excel-ma-type";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 const ManagementCarMasterdataType: React.FC = (): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const [form] = Form.useForm();
-  const IntranetAuth = useAxiosIntranet();
-  const maCarServices = ManageCarServices(IntranetAuth);
-  const manageCarServices = ManageCarServices(IntranetAuth);
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [checkType, setCheckType] = useState<string>("create");
   const [loading, setLoading] = useState<boolean>(true);
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -25,7 +26,7 @@ const ManagementCarMasterdataType: React.FC = (): React.ReactElement => {
   }, [loading]);
 
   const fetchData = async () => {
-    const response = await maCarServices.getMaCarQueryType();
+    const response = await ManageCarServices(baseUrIntranet).getMaCarQueryType();
     setDataSourtce(response);
     setLoading(false);
   };
@@ -61,11 +62,11 @@ const ManagementCarMasterdataType: React.FC = (): React.ReactElement => {
 
     try {
       if (status === "create") {
-        await manageCarServices.createMaCarType(base);
+        await ManageCarServices(baseUrIntranet).createMaCarType(base);
       } else if (status === "edit") {
-        await manageCarServices.updateMaCarType(form.getFieldValue("id"), base);
+        await ManageCarServices(baseUrIntranet).updateMaCarType(form.getFieldValue("id"), base);
       } else {
-        await maCarServices.deleteMaCarType(form.getFieldValue("id"));
+        await ManageCarServices(baseUrIntranet).deleteMaCarType(form.getFieldValue("id"));
       }
       message.success(
         status === "create" ? "เพิ่มประเภทการตรวจสภาพสำเร็จ" : status === "edit" ? "แก้ไขประเภทการตรวจสภาพสำเร็จ" : "ลบประเภทการตรวจสภาพสำเร็จ",

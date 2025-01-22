@@ -140,9 +140,11 @@ export const UserAction: React.FC<Props> = ({
       }
     } else if (managePage.modalTitle === "update") {
       const updateForm = value as TUpdateUserDto;
-      if (user?.token) {
+
+      if (updateForm?.userId) {
+        const userId = updateForm?.userId;
         const resUpdate = await UsersServices(baseUrlUser).updateUser(
-          user.token,
+          userId,
           updateForm
         );
         if (resUpdate) {
@@ -336,11 +338,6 @@ export const UserAction: React.FC<Props> = ({
           autoComplete="off"
           layout="vertical"
         >
-          {managePage.modalTitle === "update" && (
-            <Form.Item name="token" hidden>
-              <Input placeholder="Search Text" />
-            </Form.Item>
-          )}
           <div className=" flex justify-center p-1">
             <Avatar size={128} src={image ? URL.createObjectURL(image) : ""} />
           </div>
@@ -360,6 +357,11 @@ export const UserAction: React.FC<Props> = ({
             </Form.Item>
           </div>
           <div className="grid grid-cols-3 gap-2">
+            {managePage.modalTitle === "update" && (
+              <Form.Item label="userId" name="userId" hidden>
+                <Input />
+              </Form.Item>
+            )}
             <Form.Item<TCreateUserDto>
               name={"userType"}
               label="ประเภทการสร้าง"
@@ -496,6 +498,7 @@ export const UserAction: React.FC<Props> = ({
             ) : (
               <></>
             )}
+
             <div className=" col-span-1">
               <Form.Item<TCreateUserDto>
                 name={"activeStatus"}

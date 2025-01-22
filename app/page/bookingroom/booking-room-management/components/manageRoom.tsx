@@ -23,7 +23,6 @@ import isBetween from "dayjs/plugin/isBetween";
 import type { TableProps, FormProps } from "antd";
 import { CaretRightOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import { BookingType, MasterRoomType } from "../common";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageRoomServices } from "../services/manage-room.service";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";

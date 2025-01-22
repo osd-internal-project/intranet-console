@@ -6,9 +6,9 @@ export const MaCarServices = (axiosInstance: AxiosInstance) => {
   const baseUrlApiOrganizeChart = "/organize-chart";
 
   return {
-    getMaCarBookQuery: async (userId: any) => {
+    getMaCarBookQuery: async () => {
       return await axiosInstance
-        .get(`${baseUrlApiMaCarBook}/${userId}`)
+        .get(`${baseUrlApiMaCarBook}/findbytoken`)
         .then((res) => {
           return res.data;
         })
@@ -28,9 +28,9 @@ export const MaCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    findMaCarBook: async (id: any, skip: number, take: number) => {
+    findMaCarBook: async (skip: number, take: number) => {
       return await axiosInstance
-        .get(`${baseUrlApiMaCarBook}/${id}/${skip}/${take}`)
+        .get(`${baseUrlApiMaCarBook}/${skip}/${take}`)
         .then((res) => {
           return res.data;
         })

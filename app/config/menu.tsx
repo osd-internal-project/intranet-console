@@ -3,7 +3,16 @@ import { Icon } from "@iconify/react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
 import React from "react";
-import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, organizeChart, contactListIcon, macarIcon, hrIcon } from "@/components/icon";
+import {
+  gridIcon,
+  IconDataLeave,
+  bookingIcon,
+  maintenanceIcon,
+  organizeChart,
+  contactListIcon,
+  macarIcon,
+  hrIcon,
+} from "@/components/icon";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -254,7 +263,7 @@ export const MenuSider: MenuItem[] = [
       {
         key: `users-management/user-group-permission`,
         label: `Group Permission`,
-        rule: "um-ru-s",
+        rule: "um-up-s",
       },
     ],
   },
@@ -272,7 +281,7 @@ export const MenuSider: MenuItem[] = [
       {
         key: `setting/organize-chart`,
         label: `Organize Chart`,
-        rule: "st-p-s",
+        rule: "st-oc-s",
       },
       {
         key: `setting/typeleave`,
@@ -297,10 +306,12 @@ export const MenuSider: MenuItem[] = [
       {
         key: `setting/email-template`,
         label: `Email Template`,
+        rule: "st-et-s",
       },
       {
         key: `setting/master-overtime-config`,
         label: `Master Overtime Config`,
+        rule: "st-moc-s",
       },
     ],
   },

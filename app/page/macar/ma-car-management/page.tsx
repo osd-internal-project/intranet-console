@@ -1,5 +1,14 @@
 "use client";
-import { Breadcrumb, Card, Col, Divider, Row, Tabs, TabsProps, TablePaginationConfig } from "antd";
+import {
+  Breadcrumb,
+  Card,
+  Col,
+  Divider,
+  Row,
+  Tabs,
+  TabsProps,
+  TablePaginationConfig,
+} from "antd";
 import React, { useEffect, useState } from "react";
 import ManageCar from "./components/management-car-booking/management-car-booking";
 import { ManageCarServices } from "./services/manage-car.service";
@@ -12,8 +21,13 @@ import { loadAppConfig } from "@/app/config/app-config";
 
 const ManageMaCar = () => {
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
-  const [maCarBookData, setMaCarBookData] = useState<dataMaCarbook>({ total: 0, docs: [] });
+  const baseUrIntranet = id24Axios(
+    loadAppConfig().REACT_APP_API_BASE_URL_INTRANET
+  );
+  const [maCarBookData, setMaCarBookData] = useState<dataMaCarbook>({
+    total: 0,
+    docs: [],
+  });
   const [maCarBookAll, setMaCarBookAll] = useState<MaCarBookType[]>([]);
   const [maCarData, setmaCarData] = useState<MaCarType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -32,10 +46,13 @@ const ManageMaCar = () => {
   }, [loading, maCarBookAll]);
 
   const fetchData = async () => {
-    const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
+    const skip: number =
+      (Number(pagination.current) - 1) * Number(pagination.pageSize);
     const take: number = Number(pagination.pageSize);
     try {
-      const MaCarBook = await ManageCarServices(baseUrIntranet).findMaCarBook(skip, take);
+      const MaCarBook = await ManageCarServices(
+        baseUrIntranet
+      ).findMaCarBookForApprove(skip, take);
       const MaCar = await ManageCarServices(baseUrIntranet).getMaCarQuery();
       setMaCarBookData(MaCarBook);
       setMaCarBookAll(MaCarBook.docs);
@@ -102,8 +119,13 @@ const ManageMaCar = () => {
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
-          <div className="title-page-font" style={{ display: "flex", alignItems: "left" }}>
-            <span style={{ marginRight: "8px" }}>ข้อมูลการจองรถยนต์ (สำหรับ แอดมิน)</span>
+          <div
+            className="title-page-font"
+            style={{ display: "flex", alignItems: "left" }}
+          >
+            <span style={{ marginRight: "8px" }}>
+              ข้อมูลการจองรถยนต์ (สำหรับ แอดมิน)
+            </span>
           </div>
         </Divider>
         <Col span={24}>

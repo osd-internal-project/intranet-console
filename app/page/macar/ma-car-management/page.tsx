@@ -4,15 +4,15 @@ import React, { useEffect, useState } from "react";
 import ManageCar from "./components/management-car-booking/management-car-booking";
 import { ManageCarServices } from "./services/manage-car.service";
 import { MaCarBookType, MaCarType, dataMaCarbook } from "../common/index";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import ManagementCarAvailable from "./components/management-car-available/management-car-available.tsx";
 import ManagementCarMasterdataType from "./components/management-car-masterdata-type/management-car-masterdata-type";
 import ManagementCarWrapup from "./components/management-car-wrapup/management-car-wrapup";
-import WrapupCar from "./components/wrapup-car";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 const ManageMaCar = () => {
-  const intraAuth = useAxiosIntranet();
-  const intraAuthService = ManageCarServices(intraAuth);
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [maCarBookData, setMaCarBookData] = useState<dataMaCarbook>({ total: 0, docs: [] });
   const [maCarBookAll, setMaCarBookAll] = useState<MaCarBookType[]>([]);
   const [maCarData, setmaCarData] = useState<MaCarType[]>([]);
@@ -35,8 +35,8 @@ const ManageMaCar = () => {
     const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
     const take: number = Number(pagination.pageSize);
     try {
-      const MaCarBook = await intraAuthService.findMaCarBook(skip, take);
-      const MaCar = await intraAuthService.getMaCarQuery();
+      const MaCarBook = await ManageCarServices(baseUrIntranet).findMaCarBook(skip, take);
+      const MaCar = await ManageCarServices(baseUrIntranet).getMaCarQuery();
       setMaCarBookData(MaCarBook);
       setMaCarBookAll(MaCarBook.docs);
       setmaCarData(MaCar);

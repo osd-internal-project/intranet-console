@@ -3,13 +3,14 @@ import { Form, message } from "antd";
 import type { TablePaginationConfig } from "antd";
 import { dataMaCarbook } from "../../../common";
 import { showStatus } from "@/app/utils/validatefield";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../../services/manage-car.service";
 import { MaCarServices } from "@/app/services/ma-car.service";
 import ManagementCarBookingModal from "./components/management-car-booking-modal";
 import ManagementCarBookingTable from "./components/management-car-booking-table";
 import dayjs from "dayjs";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export interface props {
   loading: boolean;
@@ -23,9 +24,8 @@ const managementCarBooking: React.FC<props> = ({ setLoading, loading, maCarBookD
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const showStatusBox = showStatus();
   const [form] = Form.useForm();
-  const intraAuth = useAxiosIntranet();
-  const macarservice = MaCarServices(intraAuth);
-  const managecarservices = ManageCarServices(intraAuth);
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [checkType, setCheckType] = useState<string>("");
   const [checkStatusApproved, setCheckStatusApproved] = useState<string>("");
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -75,15 +75,15 @@ const managementCarBooking: React.FC<props> = ({ setLoading, loading, maCarBookD
         updatedApproveMa = { id: form.getFieldValue("id"), carBookApprovedStatus: "Cancel", remarkCancel: values.remarkCancel };
       }
       if (status === "delete") {
-        await managecarservices.deleteMaCarBook(form.getFieldValue("id"));
+        await ManageCarServices(baseUrIntranet).deleteMaCarBook(form.getFieldValue("id"));
       }
       let result;
       if (status !== "delete") {
-        result = await managecarservices.updateMaCarBook(updatedApproveMa);
+        result = await ManageCarServices(baseUrIntranet).updateMaCarBook(updatedApproveMa);
       }
       if (result && status !== "approved" && checkStatusApproved !== "approved") {
         const updataStatusCar = { status: true };
-        await macarservice.updateMaCar(form.getFieldValue("carId"), updataStatusCar);
+        await MaCarServices(baseUrIntranet).updateMaCar(form.getFieldValue("carId"), updataStatusCar);
       }
       setCheckType("");
       setCheckStatusApproved("");

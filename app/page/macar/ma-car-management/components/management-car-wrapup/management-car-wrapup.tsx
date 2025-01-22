@@ -3,18 +3,19 @@ import ManagementCarWrapupManage from "./components/management-car-wrapup-manage
 import ManagementCarWrapupTable from "./components/management-car-wrapup-table";
 import { Button, Col, Form, message, Row, UploadFile } from "antd";
 import ExportExcel from "../../export/export-excel";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../../services/manage-car.service";
 import { MaCarType } from "../wrapup-car";
 import { RcFile } from "antd/lib/upload";
 import dayjs from "dayjs";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 const ManagementCarWrapup: React.FC = (): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const [form] = Form.useForm();
-  const intraAuth = useAxiosIntranet();
-  const manageCarServices = ManageCarServices(intraAuth);
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [dataSourceWrapup, setDataSourceWrapup] = useState<any[]>([]);
   const [carDetail, setDataCarDetail] = useState<any[]>([]);
   const [optionsType, setOptionsType] = useState<{ value: string; label: string; key: number }[]>([]);
@@ -33,8 +34,8 @@ const ManagementCarWrapup: React.FC = (): React.ReactElement => {
 
   const fetchData = async () => {
     try {
-      const responseWrapup = await manageCarServices.getMaCarQueryWarpup();
-      const responseCar = await manageCarServices.getMaCarQuery();
+      const responseWrapup = await ManageCarServices(baseUrIntranet).getMaCarQueryWarpup();
+      const responseCar = await ManageCarServices(baseUrIntranet).getMaCarQuery();
       setDataSourceWrapup(responseWrapup);
       setDataCarDetail(responseCar);
       setLoading(false);
@@ -44,7 +45,7 @@ const ManagementCarWrapup: React.FC = (): React.ReactElement => {
   };
 
   const fectdataOptions = async () => {
-    const responseTypeOptions = await manageCarServices.getMaCarQueryType();
+    const responseTypeOptions = await ManageCarServices(baseUrIntranet).getMaCarQueryType();
     const optionsType = responseTypeOptions.map((event: MaCarType, index: number) => {
       return {
         value: event.typeName,
@@ -68,7 +69,7 @@ const ManagementCarWrapup: React.FC = (): React.ReactElement => {
   };
 
   const getFileImages = async (e: any) => {
-    const getImages = await manageCarServices.getImages(e[0]?.idwarpupImage);
+    const getImages = await ManageCarServices(baseUrIntranet).getImages(e[0]?.idwarpupImage);
     console.log(getImages);
   };
 
@@ -83,7 +84,7 @@ const ManagementCarWrapup: React.FC = (): React.ReactElement => {
   const handleChangeSelect = async (value: string) => {
     setCarMileage(0);
     if (value) {
-      const response = await manageCarServices.getMaCarQueryByCarId(value);
+      const response = await ManageCarServices(baseUrIntranet).getMaCarQueryByCarId(value);
       form.setFieldsValue({ wrapupMiles: response.carMile, carName: response.carName });
       setCarMileage(response.carMile);
     }
@@ -113,16 +114,16 @@ const ManagementCarWrapup: React.FC = (): React.ReactElement => {
       };
     }
     status === "create"
-      ? (response = await manageCarServices.createMaCarWarpup(base))
+      ? (response = await ManageCarServices(baseUrIntranet).createMaCarWarpup(base))
       : status === "delete"
-      ? (response = await manageCarServices.deleteMaCarWarpup(form.getFieldValue("carWrapupId")))
-      : (response = await manageCarServices.updateMaCarWarpup(form.getFieldValue("carWrapupId"), base));
+      ? (response = await ManageCarServices(baseUrIntranet).deleteMaCarWarpup(form.getFieldValue("carWrapupId")))
+      : (response = await ManageCarServices(baseUrIntranet).updateMaCarWarpup(form.getFieldValue("carWrapupId"), base));
     if (status === "create" || (status === "edit" && response && attendFiles.length > 0)) {
       await Promise.all(
         attendFiles.map(async (file) => {
           const formData = new FormData();
           formData.append("file", file.originFileObj as RcFile);
-          await manageCarServices.uploadFiles(response.carWrapupId, formData);
+          await ManageCarServices(baseUrIntranet).uploadFiles(response.carWrapupId, formData);
         }),
       );
     }

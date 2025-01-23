@@ -22,7 +22,7 @@ export interface props {
   handleChangeAttendFiles: (e: any) => void;
   attendFiles: UploadFile[];
   groupDetail: any;
-  groupUserId: any;
+  getHeader: any;
 }
 export const CreateOnlineLeave: React.FC<props> = ({
   getUser,
@@ -39,12 +39,10 @@ export const CreateOnlineLeave: React.FC<props> = ({
   handleChangeAttendFiles,
   attendFiles,
   groupDetail,
-  groupUserId,
+  getHeader,
 }: any): React.ReactElement => {
   useEffect(() => {
     const getdatauser = () => {
-      console.log(groupUserId);
-      
       // if (groupUserId?.length) {
       //   const ownerName = groupUserId
       //     .filter((u: ITypeDataLeaveCreate) => u.firstNameTh && u.lastNameTh)
@@ -55,15 +53,15 @@ export const CreateOnlineLeave: React.FC<props> = ({
 
       createdataleaveForm.setFieldsValue({
         userId: getUser?.userId,
-        posId: getUser?.position?.posId,
-        position: getUser?.position?.nameEn,
+        posId: getUser?.masterPosition?.posId,
+        position: getUser?.masterPosition?.nameEn,
         firstNameTh: getUser?.firstNameTh,
         lastNameTh: getUser?.lastNameTh,
-        groupName: groupDetail.groupName,
+        groupName: getUser?.ownerGroup.groupName,
       });
     };
     getdatauser();
-  }, [checkSwitch, groupUserId]);
+  }, [checkSwitch, getHeader]);
 
   return (
     <div>

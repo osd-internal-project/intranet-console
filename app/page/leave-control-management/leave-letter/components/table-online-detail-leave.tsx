@@ -1,4 +1,4 @@
-import { Button, Card, Modal, Space, Table, TableColumnsType, Tag, Tooltip, Typography } from "antd";
+import { Card, Modal, Space, Table, TableColumnsType, Tag, Tooltip, Typography } from "antd";
 import React, { useState } from "react";
 import dayjs from "dayjs";
 import { ITypetypeleave } from "../../common";

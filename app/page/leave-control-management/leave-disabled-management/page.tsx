@@ -7,13 +7,18 @@ import DataLeaveService from "../../../services/leave-management.service";
 import { TableLeavManagement } from "./components/table-leave-management";
 import { CreateLeaveManagement } from "./components/create-leave-management";
 import { ExclamationCircleFilled } from "@ant-design/icons";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 const page = () => {
   const [formcreate] = Form.useForm();
-  const AuthIntra = useAxiosIntranet();
-  const AuthUser = useAxiosUser();
-  const dataleaveserviceIntra = DataLeaveService(AuthIntra);
-  const dataleaveserviceUser = DataLeaveService(AuthUser);
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  // const AuthIntra = useAxiosIntranet();
+  // const AuthUser = useAxiosUser();
+  // const dataleaveserviceIntra = DataLeaveService(AuthIntra);
+  // const dataleaveserviceUser = DataLeaveService(AuthUser);
   const [getdataTypeLeave, setdataTypeLeave] = useState<ITypetypeleave[]>([]);
   const [getdataUser, setdataUser] = useState<ISelect[]>([]);
   const [getdataUserByTypeId, setdataUserByTypeId] = useState<ITpyeUser[]>([]);
@@ -33,8 +38,10 @@ const page = () => {
 
   const fecthData = async () => {
     try {
-      const resTypeLeave = await dataleaveserviceIntra.getdataAll();
-      const resUser = await dataleaveserviceUser.getdataUserAll();
+      const resTypeLeave = await DataLeaveService(baseUrlIntranet).getdataAll();
+      const resUser = await DataLeaveService(baseUrlUser).getdataUserAll();
+      // console.log(resUser);
+
       const options = resUser.map((event: ITpyeUser) => ({
         value: event.id,
         label: `${event.firstNameTh} ${event.lastNameTh}`,
@@ -50,7 +57,7 @@ const page = () => {
   const fecthDataDisabledUser = async () => {
     setLoadingTableUsers(true);
     try {
-      const result = await dataleaveserviceIntra.getdataUserByTypeLeaveId({
+      const result = await DataLeaveService(baseUrlIntranet).getdataUserByTypeLeaveId({
         typeid: getdataType,
       });
       const typeLeaveDisabledUser = result.typeLeaveDisabledMap.map((event: { id: ITypeDataleaveMap; user: ITpyeUser }) => ({
@@ -74,7 +81,7 @@ const page = () => {
   }
 
   const onFinishCreate = async (event: any) => {
-    const resTypeLeaveMap = await dataleaveserviceIntra.getdataTypeLeaveMap(event.userId, event.masterTypeleaveId);
+    const resTypeLeaveMap = await DataLeaveService(baseUrlIntranet).getdataTypeLeaveMap(event.userId, event.masterTypeleaveId);
     if (event.userId && event.typeId && resTypeLeaveMap.length > 0) {
       message.warning(`ประเภทการลานี้มีการเพิ่มชื่อผู้ใช้นี้แล้ว!`);
       return false;
@@ -93,7 +100,7 @@ const page = () => {
       },
       onOk: async () => {
         try {
-          const result = await dataleaveserviceIntra.createTypeLeaveDisabled(event);
+          const result = await DataLeaveService(baseUrlIntranet).createTypeLeaveDisabled(event);
           if (result) {
             message.success("Add success");
             formcreate.resetFields();
@@ -123,7 +130,7 @@ const page = () => {
       cancelText: "Cancel",
       onOk: async () => {
         try {
-          const dataResult = await dataleaveserviceIntra.deleteTypeLeaveDisabled(id);
+          const dataResult = await DataLeaveService(baseUrlIntranet).deleteTypeLeaveDisabled(id);
           if (dataResult) {
             message.success("Delete success");
             setLoading(true);

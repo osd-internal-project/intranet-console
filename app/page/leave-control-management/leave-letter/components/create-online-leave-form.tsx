@@ -43,11 +43,11 @@ export const CreateLeaveForm: React.FC<props> = ({
             <Typography.Text>{dayjs(new Date()).format("DD-MM-YYYY")}</Typography.Text>
           </Form.Item>
         </div>
-        <div className=" col-span-3 md:col-span-1 ml-5" hidden>
+        {/* <div className=" col-span-3 md:col-span-1 ml-5" hidden>
           <Form.Item label={`เรียนถึง :`} name={`ownerId`}>
             <Input disabled />
           </Form.Item>
-        </div>
+        </div> */}
         <div className=" col-span-3 md:col-span-1 ml-5">
           <Form.Item label={`เรียนถึง :`} name={`ownerName`}>
             <Input disabled />

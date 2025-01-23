@@ -8,29 +8,33 @@ import DataLeaveService from "../../../services/leave-management.service";
 import { ITypeDataLeave } from "../common";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export default function Page() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const Auth = useAxiosIntranet();
-  const dataleaveservice = DataLeaveService(Auth);
+
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [loading, setLoading] = useState<boolean>(true);
   const [dataSource, setDataSource] = useState<ITypeDataLeave[]>([]);
-  const [department, setDataLeaveDepartment] = useState<ITypeDataLeave[]>([]);
+  const [dataLeaveGroup, setDataLeaveGroup] = useState<ITypeDataLeave[]>([]);
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
   const [formdetail] = Form.useForm();
 
   useEffect(() => {
     if (loading) loadData();
-  }, [loading]);
+  }, [loading, user]);
 
   const loadData = async () => {
-    if (user?.userId) {
-      const result = await dataleaveservice.getdataLeaveUserById({ userId: user?.userId });
-      const resDataLeaveGrouptId = await dataleaveservice.getdataLeavefindBygroup(user?.userId);
-      setDataLeaveDepartment(resDataLeaveGrouptId);
+    if (user) {
+      const result = await DataLeaveService(baseUrlIntranet).getdataLeaveUserById({ userId: user?.userId });
+      const resDataLeaveByGrouptId = await DataLeaveService(baseUrlIntranet).getdataLeavefindBygroup(user?.userId);
+      setDataLeaveGroup(resDataLeaveByGrouptId);
       setDataSource(result);
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const onFinishUpdate = async (type: string, id: number) => {
@@ -42,7 +46,7 @@ export default function Page() {
       okButtonProps: { type: "primary", danger: true },
       cancelText: "Cancel",
       onOk: async () => {
-        const res = await dataleaveservice.approvedDataLeave(type, id, user);
+        const res = await DataLeaveService(baseUrlIntranet).approvedDataLeave(type, id, user);
         if (res) {
           type === "cancel" ? message.error("cancel success") : message.success("approved success");
           setLoading(true);
@@ -55,7 +59,7 @@ export default function Page() {
 
   async function downloadFile(id: number, name: string): Promise<void> {
     if (id) {
-      const response = await dataleaveservice.downloadFile(id);
+      const response = await DataLeaveService(baseUrlIntranet).downloadFile(id);
       const url = URL.createObjectURL(response);
       const a = document.createElement("a");
       a.href = url;
@@ -75,7 +79,7 @@ export default function Page() {
     {
       key: "2",
       label: "ปฏิธินการลาทีม",
-      children: <DepartmentCalendarDetail dataSource={department} downloadFile={(id: number, filename: string) => downloadFile(id, filename)} />,
+      children: <DepartmentCalendarDetail dataSource={dataLeaveGroup} downloadFile={(id: number, filename: string) => downloadFile(id, filename)} />,
     },
     {
       key: "3",

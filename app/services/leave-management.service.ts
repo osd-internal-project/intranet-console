@@ -1,8 +1,5 @@
 import { AxiosInstance } from "axios";
-import {
-  ITpyeUser,
-  ITypeDataLeave,
-} from "../page/leave-control-management/common";
+import { ITpyeUser, ITypeDataLeave } from "../page/leave-control-management/common";
 
 const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
   const baseUrlTypeleave = "/master-type-leave";
@@ -24,13 +21,11 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
         });
     },
     getdataUserAll: async () => {
-      const condition = {
-        orderBy: { id: "asc" },
-      };
+      // const condition = {
+      //   orderBy: { id: "asc" },
+      // };
       return await axiosInstance
-        .post(`${baseUrlUser}/condition`, {
-          condition: condition,
-        })
+        .get(`${baseUrlUser}`)
         .then((res) => {
           return res.data;
         })
@@ -132,8 +127,8 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
     //       return;
     //     });
     // },
-    getHeaderByUserId: async (userId: string | undefined) => {
-      let url = `${baseUrlDataLeave}/leave-header/${userId}`;
+    getHeaderByUserId: async () => {
+      let url = `${baseUrlDataLeave}/leave-header`;
       return await axiosInstance
         .get(url)
         .then((res) => {

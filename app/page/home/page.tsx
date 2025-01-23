@@ -11,10 +11,13 @@ import { CarFilled, FileFilled, TeamOutlined } from "@ant-design/icons";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import SlideImageService from "./services/index.service";
 import { MasterRoomType, HandbookFileType, InformationNewsType } from "./common";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export default function HomePage() {
-  const intraAuth = useAxiosIntranet();
-  const intraAuthService = SlideImageService(intraAuth);
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [loading, setLoading] = useState<boolean>(true);
   const [slideImage, setSlideImage] = useState<any[]>([]);
   const [masterBookingRoom, setMasterBookingRoom] = useState<MasterRoomType[]>([]);
@@ -22,10 +25,10 @@ export default function HomePage() {
   const [informationNews, setInformationNews] = useState<InformationNewsType[]>([]);
 
   const fetchData = async () => {
-    const dataSlideImage = await intraAuthService.getSlideImageByOrder();
-    const MasterBookingresponse = await intraAuthService.getMasterRoomQuery();
-    const dataHandbookFileQuery = await intraAuthService.getHandbookFileQuery();
-    const dataInformationNews = await intraAuthService.getinformationNewsQuery();
+    const dataSlideImage = await SlideImageService(baseUrlIntranet).getSlideImageByOrder();
+    const MasterBookingresponse = await SlideImageService(baseUrlIntranet).getMasterRoomQuery();
+    const dataHandbookFileQuery = await SlideImageService(baseUrlIntranet).getHandbookFileQuery();
+    const dataInformationNews = await SlideImageService(baseUrlIntranet).getinformationNewsQuery();
     setInformationNews(dataInformationNews);
     setHandbookFile(dataHandbookFileQuery);
     setMasterBookingRoom(MasterBookingresponse);
@@ -39,7 +42,7 @@ export default function HomePage() {
 
   async function downloadFile(id: number, name: string): Promise<void> {
     if (id) {
-      const response = await intraAuthService.downloadFile(id);
+      const response = await SlideImageService(baseUrlIntranet).downloadFile(id);
       const url = URL.createObjectURL(response);
       const a = document.createElement("a");
       a.href = url;

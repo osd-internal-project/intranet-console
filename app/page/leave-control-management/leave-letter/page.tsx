@@ -15,23 +15,27 @@ import MasterTypeLeaveService from "../../setting/typeleave/services/index.servi
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export default function Page() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
 
-  const router = useRouter();
-  const Intra = useAxiosIntranet();
-  const AuthUser = useAxiosUser();
-  const leavemanagementservices = LeaveManagementServices(Intra);
-  const dataleaveserviceUser = LeaveManagementServices(AuthUser);
-  const masterholidaysService = MasterHolidaysService(Intra);
-  const mastertypeleaveservices = MasterTypeLeaveService(Intra);
+  // console.log(user);
+
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  // const leavemanagementservices = LeaveManagementServices(Intra);
+  // const dataleaveserviceUser = LeaveManagementServices(AuthUser);
+  // const masterholidaysService = MasterHolidaysService(baseUrlIntranet);
+  // const mastertypeleaveservices = MasterTypeLeaveService(baseUrlIntranet);
 
   // const [getUser] = useState<IDataUser | null>(session ? session?.user : null);
   const [getTypeLeaveOption, setTypeLeaveOption] = useState<ISelect[]>([]);
   const [typeLeaveTable, setTypeLeaveTable] = useState<ITypetypeleave[]>([]);
   const [groupDetail, setGroupDetail] = useState<UserGroupType[]>([]);
-  const [groupUserId, setDataGroupUserId] = useState<any>();
+  const [getHeader, setHeader] = useState<any>();
   const [getStartDate, setStartDate] = useState<Date>();
   const [getEndDate, setEndDate] = useState<Date>();
   const [checkSwitch, setCheckSwitch] = useState<boolean>(false);
@@ -54,34 +58,30 @@ export default function Page() {
   useEffect(() => {
     fecthDataHoliday();
     if (loading) loadDataTypeLeave();
-  }, [loading, params]);
+  }, [loading, params, user]);
 
   const loadDataTypeLeave = async () => {
-    const res = await leavemanagementservices.getdataAll();
-    // const resTableDeatilTypeLeave = await leavemanagementservices.findDetailTypeLeaveByUserId(getUser?.userId);
-    // const resTableUserTypeLeave = await leavemanagementservices.findUserByUserId(getUser?.userId);
-    const options = res.map((event: ITypetypeleave) => {
-      return { value: event.typeId, label: event.typeName };
-    });
-    // const groupId = session?.user?.userMapOwnerGroupId[0].ownerGroupId;
-    // if (groupId) {
-    //   const dataGroupDetail = await dataleaveserviceUser.getUserGroupByGroupId(groupId);
-    //   setGroupDetail(dataGroupDetail);
-    // }
-
-    // const dataGroupUserId = await leavemanagementservices.getHeaderByUserId(session?.user.userId);
-
-    // setDataGroupUserId(dataGroupUserId);
-    // setTypeLeaveTable(resTableDeatilTypeLeave);
-    // setTypeLeaveTableAll(resTableUserTypeLeave.typeLeaveDisabledMap);
-    setTypeLeaveOption(options);
-    setLoading(false);
+    if (user) {
+      const res = await LeaveManagementServices(baseUrlIntranet).getdataAll();
+      const resTableDeatilTypeLeave = await LeaveManagementServices(baseUrlIntranet).findDetailTypeLeaveByUserId(user?.userId);
+      const resTableUserTypeLeave = await LeaveManagementServices(baseUrlIntranet).findUserByUserId(user?.userId);
+      const options = res.map((event: ITypetypeleave) => {
+        return { value: event.typeId, label: event.typeName };
+      });
+      const HeaderGroup = await LeaveManagementServices(baseUrlIntranet).getHeaderByUserId();
+      
+      setHeader(HeaderGroup);
+      setTypeLeaveTable(resTableDeatilTypeLeave);
+      setTypeLeaveTableAll(resTableUserTypeLeave.typeLeaveDisabledMap);
+      setTypeLeaveOption(options);
+      setLoading(false);
+    }
   };
 
   const fecthDataHoliday = async () => {
     const yearNow = dayjs(new Date()).format("YYYY");
-    const dataResult = await masterholidaysService.getHolidayByYear(yearNow);
-    const masterTypeLeave = await mastertypeleaveservices.getdataAll({});
+    const dataResult = await MasterHolidaysService(baseUrlIntranet).getHolidayByYear(yearNow);
+    const masterTypeLeave = await MasterTypeLeaveService(baseUrlIntranet).getdataAll({});
     setDataHolidayDay(dataResult);
     setMasterDataTypeLeave(masterTypeLeave);
   };
@@ -120,7 +120,7 @@ export default function Page() {
     let bases = {};
     // if (session?.user.userId) bases = { ...bases, userId: session?.user.userId };
     if (values.type_id) bases = { ...bases, typeId: values.type_id };
-    const dataLeaveUserById = await leavemanagementservices.getdataLeaveUserById(bases);
+    const dataLeaveUserById = await LeaveManagementServices(baseUrlIntranet).getdataLeaveUserById(bases);
 
     // remainingLeave = await validateCheckLeaveDay(dataLeaveUserById, dataMasterType, session?.user.startWork);
 
@@ -145,7 +145,6 @@ export default function Page() {
       status: "waitting",
       ownerId: values.ownerId,
       ownerName: values.ownerName,
-      // groupId: session?.user.ownerGroup,
       attrachFile: attendFiles[0]?.name,
       leaveHour: sumDataLeave,
     };
@@ -164,14 +163,14 @@ export default function Page() {
         },
       },
       onOk: async () => {
-        // const result = await leavemanagementservices.createDataLeave(base);
+        // const result = await LeaveManagementServices(baseUrlIntranet).createDataLeave(base);
         // if (result) {
         //   if (attendFiles.length > 0) {
         //     attendFiles.forEach(async (file) => {
         //       const formData: any = new FormData();
         //       formData.append("type", "attend");
         //       formData.append("files", file.originFileObj);
-        //       await leavemanagementservices.uploadFiles(result.id, formData);
+        //       await LeaveManagementServices(baseUrlIntranet).uploadFiles(result.id, formData);
         //     });
         //   }
         //   message.success(`Add success`);
@@ -209,30 +208,37 @@ export default function Page() {
           <div className="title-page-font">{`ใบลาออนไลน์`}</div>
         </Divider>
       </Row>
-      <Row gutter={{ xs: 3, sm: 3, md: 3, lg: 3 }}>
-        <Col span={12}>
-          <CreateOnlineLeave
-            // getUser={getUser}
-            getTypeLeaveOption={getTypeLeaveOption}
-            onfinishCreate={(e: ITypeDataLeaveCreate) => onfinishCreate(e)}
-            createdataleaveForm={createdataleaveForm}
-            setStartDate={(e: Date) => setStartDate(e)}
-            setEndDate={(e: Date) => setEndDate(e)}
-            setCheckSwitch={(e: boolean) => setCheckSwitch(e)}
-            getStartDate={getStartDate}
-            getEndDate={getEndDate}
-            checkSwitch={checkSwitch}
-            beforeUploadAttendFiles={(e: RcFile) => beforeUploadAttendFiles(e)}
-            handleChangeAttendFiles={(e: any) => handleChangeAttendFiles(e)}
-            attendFiles={attendFiles}
-            groupDetail={groupDetail}
-            groupUserId={groupUserId}
-          />
-        </Col>
-        <Col span={12}>
-          <TableOnlineDetailLeave typeLeaveTable={typeLeaveTable} params={params} typeLeaveTableAll={typeLeaveTableAll} rowClassName={rowClassName} />
-        </Col>
-      </Row>
+      {user ? (
+        <Row gutter={{ xs: 3, sm: 3, md: 3, lg: 3 }}>
+          <Col span={12}>
+            <CreateOnlineLeave
+              getUser={user}
+              getTypeLeaveOption={getTypeLeaveOption}
+              onfinishCreate={(e: ITypeDataLeaveCreate) => onfinishCreate(e)}
+              createdataleaveForm={createdataleaveForm}
+              setStartDate={(e: Date) => setStartDate(e)}
+              setEndDate={(e: Date) => setEndDate(e)}
+              setCheckSwitch={(e: boolean) => setCheckSwitch(e)}
+              getStartDate={getStartDate}
+              getEndDate={getEndDate}
+              checkSwitch={checkSwitch}
+              beforeUploadAttendFiles={(e: RcFile) => beforeUploadAttendFiles(e)}
+              handleChangeAttendFiles={(e: any) => handleChangeAttendFiles(e)}
+              attendFiles={attendFiles}
+              groupDetail={groupDetail}
+              getHeader={getHeader}
+            />
+          </Col>
+          <Col span={12}>
+            <TableOnlineDetailLeave
+              typeLeaveTable={typeLeaveTable}
+              params={params}
+              typeLeaveTableAll={typeLeaveTableAll}
+              rowClassName={rowClassName}
+            />
+          </Col>
+        </Row>
+      ) : null}
     </div>
   );
 }

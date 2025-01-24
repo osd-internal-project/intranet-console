@@ -1,3 +1,62 @@
+export type TUserRoles = {
+  //User Management
+  userManagementShow?: boolean;
+  usersShow?: boolean;
+  usersGroupShow?: boolean;
+  userRoleShow?: boolean;
+  userRuleShow?: boolean;
+  userModuleShow?: boolean;
+  userGroupPermissionShow?: boolean;
+  //CRM
+  //HR
+  //Intranet
+  //Intranet Leave
+  leaveShow?: boolean;
+  leaveUserDetailShow?: boolean;
+  leaveUserDetailAdd?: boolean;
+  leaveUserDetailEdit?: boolean;
+  leaveUserDetailDelete?: boolean;
+  leaveAdminDetailShow?: boolean;
+  leaveAdminDetailApprove?: boolean;
+  leaveAdminConfigShow?: boolean;
+  leaveAdminConfigAdd?: boolean;
+  leaveAdminConfigEdit?: boolean;
+  leaveAdminConfigDelete?: boolean;
+  //Intranet Booking Room
+  bookingRoomShow?: boolean;
+  bookingRoomDetailShow?: boolean;
+  bookingRoomDetailAdd?: boolean;
+  bookingRoomDetailEdit?: boolean;
+  bookingRoomDetailDelete?: boolean;
+  bookingRoomAdminDetailShow?: boolean;
+  bookingRoomAdminConfigShow?: boolean;
+  bookingRoomAdminConfigAdd?: boolean;
+  bookingRoomAdminConfigEdit?: boolean;
+  bookingRoomAdminConfigDelete?: boolean;
+  //Intranet Ma Building
+  maBuildingShow?: boolean;
+  maBuildingUserDetailShow?: boolean;
+  maBuildingUserDetailAdd?: boolean;
+  maBuildingUserDetailEdit?: boolean;
+  maBuildingUserDetailDelete?: boolean;
+  maBuildingAdminConfigShow?: boolean;
+  maBuildingAdminConfigAdd?: boolean;
+  maBuildingAdminConfigEdit?: boolean;
+  maBuildingAdminConfigDelete?: boolean;
+  //Intranet Ma Car
+  maCarShow?: boolean;
+  maCarUserDetailShow?: boolean;
+  maCarUserDetailAdd?: boolean;
+  maCarUserDetailEdit?: boolean;
+  maCarUserDetailDelete?: boolean;
+  maCarAdminDetailShow?: boolean;
+  maCarAdminDetailApprove?: boolean;
+  maCarAdminConfigShow?: boolean;
+  maCarAdminConfigAdd?: boolean;
+  maCarAdminConfigEdit?: boolean;
+  maCarAdminConfigDelete?: boolean;
+};
+
 export enum UserRoles {
   //User Management
   userManagementShow = "um-s",

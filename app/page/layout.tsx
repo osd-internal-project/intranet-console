@@ -6,7 +6,10 @@ import { Button, FloatButton, Layout, Menu, message, Spin } from "antd";
 import { MenuSiderWithModule } from "@/app/config/menu";
 import { pageWithoutMenu } from "@/app/config/data";
 import { Footer } from "antd/es/layout/layout";
-import { useAxiosIntranet, useAxiosUser } from "../lib/axios/hooks/userAxiosAuth";
+import {
+  useAxiosIntranet,
+  useAxiosUser,
+} from "../lib/axios/hooks/userAxiosAuth";
 import IndexServices from "./services/index.service";
 import NotiLogsServices from "../services/noti-logs.service";
 import { PhoneOutlined } from "@ant-design/icons";
@@ -19,9 +22,13 @@ import { UserContectType, UserContext } from "../config/userContext";
 
 const { Content, Sider } = Layout;
 
-export default function MainLayout({ children }: { children: React.ReactNode }) {
+export default function MainLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { tokenAccess, authenticated, login, logout, id24Axios } = useId24();
-  const { saveUser } = useContext(UserContext) as UserContectType;
+  const { saveUser, saveRoles } = useContext(UserContext) as UserContectType;
   // const baseUrlIntra = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const [loading, setLoading] = useState<boolean>(true);
@@ -40,7 +47,16 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       if (loading) featchData();
     }
   }, [authenticated, loading]);
+  useEffect(() => {
+    const sideMenuGroups =
+      tokenAccess && tokenAccess.userAccess.length > 0
+        ? Array.from(
+            new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())
+          )
+        : [];
 
+    saveRoles(sideMenuGroups);
+  }, [tokenAccess?.userAccess]);
   const featchData = async () => {
     await UsersServices(baseUrlUser)
       .findByToken()
@@ -66,7 +82,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   };
 
   const sideMenuGroups =
-    tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
+    tokenAccess && tokenAccess.userAccess.length > 0
+      ? Array.from(
+          new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())
+        )
+      : [];
 
   const menulist = MenuSiderWithModule(sideMenuGroups);
   const currentPath = pathname.split("/")[2];
@@ -80,20 +100,32 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         collapsible
         collapsed={collapsed}
         style={{ backgroundColor: "#ffff" }}
-        className=" min-h-screen  hidden  md:block bg ">
+        className=" min-h-screen  hidden  md:block bg "
+      >
         <div className="flex justify-center py-4 ">
           {!collapsed ? (
             <>
-              <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : " w-40"}`} />
+              <img
+                src="/images/osd-logo.png"
+                alt="logo-page"
+                className={`${collapsed ? "w-14 " : " w-40"}`}
+              />
             </>
           ) : (
-            <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
+            <img
+              src="/images/osd-logo.png"
+              alt="logo-page"
+              className={`${collapsed ? "w-14 " : "w-28 "}`}
+            />
           )}
         </div>
         <Menu
           mode="inline"
           selectedKeys={[currentPath, `${currentPath}/${currentPathSub}`]}
-          defaultSelectedKeys={[currentPath, `${currentPath}/${currentPathSub}`]}
+          defaultSelectedKeys={[
+            currentPath,
+            `${currentPath}/${currentPathSub}`,
+          ]}
           items={menulist}
         />
       </Sider>
@@ -117,10 +149,13 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             padding: 20,
             margin: 0,
             marginBottom: 20,
-          }}>
+          }}
+        >
           {children}
         </Content>
-        <Footer style={{ textAlign: "center" }}>Intranet ©{new Date().getFullYear()} Created by OSD</Footer>
+        <Footer style={{ textAlign: "center" }}>
+          Intranet ©{new Date().getFullYear()} Created by OSD
+        </Footer>
       </Layout>
     </Layout>
   );

@@ -112,11 +112,16 @@ export default function UserModulePage() {
     groupId: string;
     permissionGroupId: string[];
   }): Promise<void> {
-    await userGroupServices.setUserPermissionGroup({
-      userGroupId: value.groupId,
-      userModuleId: moduleSelected,
-      permissionGroupIds: value.permissionGroupId,
-    });
+    await userGroupServices
+      .setUserPermissionGroup({
+        userGroupId: value.groupId,
+        userModuleId: moduleSelected,
+        permissionGroupIds: value.permissionGroupId,
+      })
+      .then((res) => {
+        message.success("Success");
+      })
+      .catch((res) => console.log(res));
   }
 
   return (

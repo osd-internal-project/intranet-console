@@ -1,21 +1,27 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { Breadcrumb, Button, Card, Col, message, Row, Spin, TablePaginationConfig } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Card,
+  Col,
+  message,
+  Row,
+  Spin,
+  TablePaginationConfig,
+} from "antd";
 import CustomerFilterComponent from "./components/customer-filter";
 import CustomerTableComponent from "./components/customer-table";
 import { ITCustomer, ITCustomerForm, ITPagination } from "./common";
 import CrmServices from "./services/index.service";
 import { useAxiosCrm } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { checkRule } from "@/app/utils/rules";
+
 import Link from "next/link";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 
 export default function MaTaskPage() {
-  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const rules = {
-    ruleCustomerShow: checkRule("crm-c-s"),
-    ruleCustomerAdd: checkRule("crm-c-a"),
-    ruleCustomerDelete: checkRule("crm-c-d"),
+  const { user, roles } = (useContext(UserContext) as UserContectType) || {
+    user: null,
   };
 
   const intranetAuth = useAxiosCrm();
@@ -34,9 +40,15 @@ export default function MaTaskPage() {
 
   const fetchData = async () => {
     if (user?.userId) {
-      const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
+      const skip: number =
+        (Number(pagination.current) - 1) * Number(pagination.pageSize);
       const take: number = Number(pagination.pageSize);
-      const res = await crmServices.findCustomerDataTable(search, take, skip, user?.userId);
+      const res = await crmServices.findCustomerDataTable(
+        search,
+        take,
+        skip,
+        user?.userId
+      );
       setDataTable(res.data);
       setPagination({ ...pagination, total: res.count });
     }
@@ -85,11 +97,11 @@ export default function MaTaskPage() {
 
         <Col span={24}>
           <div className="grid grid-cols-1 ">
-            {rules.ruleCustomerShow ? (
+            {roles?.crmCustomerShow ? (
               <Card>
                 <div className=" grid grid-col-1 space-y-2">
                   <div className=" flex justify-end">
-                    {rules.ruleCustomerAdd ? (
+                    {roles.crmCustomerShow ? (
                       <Link href="/page/crm/customer/add-customer">
                         <Button size="small" type="primary">
                           Add Customer GROUP
@@ -109,7 +121,7 @@ export default function MaTaskPage() {
                     />
                   </div>
                   <CustomerTableComponent
-                    rules={rules}
+                    roles={roles}
                     dataTable={dataTable}
                     loading={loading}
                     setLoading={(e: boolean) => setloading(e)}

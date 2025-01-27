@@ -8,6 +8,10 @@ export type TUserRoles = {
   userModuleShow?: boolean;
   userGroupPermissionShow?: boolean;
   //CRM
+  crmCustomerShow?: boolean;
+  crmCustomerAdd?: boolean;
+  crmCustomerEdit?: boolean;
+  crmCustomerDelete?: boolean;
   //HR
   //Intranet
   //Intranet Leave
@@ -67,6 +71,10 @@ export enum UserRoles {
   userModuleShow = "um-m-s",
   userGroupPermissionShow = "um-up-s",
   //CRM
+  crmCustomerShow = "crm-c-s",
+  crmCustomerAdd = "crm-c-a",
+  crmCustomerEdit = "crm-c-e",
+  crmCustomerDelete = "crm-c-d",
   //HR
   //Intranet
   //Intranet Leave

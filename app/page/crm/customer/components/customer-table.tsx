@@ -27,9 +27,10 @@ import { deleteIcon, editIcon } from "@/components/icon";
 import { useForm } from "antd/es/form/Form";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import Link from "next/link";
+import { TUserRoles } from "@/app/config/user-roles";
 
 export interface props {
-  rules: any;
+  roles: TUserRoles | null;
   dataTable: ITCustomer[];
   loading: boolean;
   setLoading: (loading: boolean) => void;
@@ -40,7 +41,7 @@ export interface props {
 }
 
 const CustomerTableComponent: React.FC<props> = ({
-  rules,
+  roles,
   dataTable,
   loading,
   setLoading,
@@ -220,7 +221,7 @@ const CustomerTableComponent: React.FC<props> = ({
           {/* <Button type="link" onClick={() => showModalEdit(record)}>
             {editIcon}
           </Button> */}
-          {rules.ruleCustomerDelete ? (
+          {roles?.crmCustomerDelete ? (
             <Button type="link" onClick={() => showModalDelete(id)} danger>
               {deleteIcon}
             </Button>

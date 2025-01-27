@@ -3,6 +3,9 @@ export type TUserRoles = {
   userManagementShow?: boolean;
   usersShow?: boolean;
   usersGroupShow?: boolean;
+  usersGroupAdd?: boolean;
+  usersGroupEdit?: boolean;
+  usersGroupDelete?: boolean;
   userRoleShow?: boolean;
   userRuleShow?: boolean;
   userModuleShow?: boolean;
@@ -66,6 +69,9 @@ export enum UserRoles {
   userManagementShow = "um-s",
   usersShow = "um-u-s",
   usersGroupShow = "um-ug-s",
+  usersGroupAdd = "um-ug-a",
+  usersGroupEdit = "um-ug-e",
+  usersGroupDelete = "um-ug-d",
   userRoleShow = "um-ro-s",
   userRuleShow = "um-ru-s",
   userModuleShow = "um-m-s",

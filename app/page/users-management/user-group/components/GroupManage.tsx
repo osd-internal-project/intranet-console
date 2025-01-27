@@ -72,13 +72,11 @@ const GroupManage: React.FC<props> = ({
   groupSelect,
   selectOrganize,
 }): React.ReactElement => {
-  const { user } = (useContext(UserContext) as UserContectType) || {
+  const { user, roles } = (useContext(UserContext) as UserContectType) || {
     user: null,
   };
   const userAuth = useAxiosUser();
-  const addRule = checkRule("um-ug-a");
-  const editRule = checkRule("um-ug-e");
-  const deleteRule = checkRule("um-ug-d");
+
   const [addform] = Form.useForm();
   const [editform] = Form.useForm();
   const [permissionform] = Form.useForm();
@@ -327,18 +325,22 @@ const GroupManage: React.FC<props> = ({
             </Col>
             <Col span={14} style={{ justifyContent: "end", display: "flex" }}>
               <div className=" inline-block space-x-2 ">
-                <Button
-                  type="primary"
-                  onClick={() => {
-                    setOpenAddModel(true);
-                  }}
-                  icon={<PlusOutlined />}
-                >
-                  Add Sub Group
-                </Button>
+                {roles?.usersGroupAdd ? (
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      setOpenAddModel(true);
+                    }}
+                    icon={<PlusOutlined />}
+                  >
+                    Add Sub Group
+                  </Button>
+                ) : (
+                  <></>
+                )}
                 {!editState ? (
                   <>
-                    {editRule ? (
+                    {roles?.usersGroupEdit ? (
                       <Button
                         type="primary"
                         onClick={onClickEdit}
@@ -349,7 +351,7 @@ const GroupManage: React.FC<props> = ({
                     ) : (
                       <></>
                     )}
-                    {deleteRule ? (
+                    {roles?.usersGroupDelete ? (
                       <Button
                         type="primary"
                         danger
@@ -500,7 +502,7 @@ const GroupManage: React.FC<props> = ({
               </Button>
             </Col>
             <Col>
-              {addRule ? (
+              {roles?.usersGroupAdd ? (
                 <Form.Item>
                   <Button
                     key="submit"

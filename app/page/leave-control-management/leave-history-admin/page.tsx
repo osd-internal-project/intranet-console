@@ -2,16 +2,18 @@
 import React, { useContext, useEffect, useState } from "react";
 import { TableDetail } from "./components/table-detail";
 import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, message } from "antd";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../../../services/leave-management.service";
 import { ITypeDataLeave } from "../common";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export default function Page() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const Auth = useAxiosIntranet();
-  const dataleaveservice = DataLeaveService(Auth);
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [loading, setLoading] = useState<boolean>(true);
   const [dataLeaveUser, setDataLeaveUser] = useState<ITypeDataLeave[]>([]);
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
@@ -22,11 +24,11 @@ export default function Page() {
   }, [loading]);
 
   const loadData = async () => {
-    if (user) {
-      const res = await dataleaveservice.getdataLeaveAll(user?.userId);
+    if (user?.userId) {
+      const res = await DataLeaveService(baseUrlIntranet).getdataLeavefindBygroup(user.userId);
       setDataLeaveUser(res);
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const onFinishUpdate = (type: string, id: number) => {
@@ -52,7 +54,7 @@ export default function Page() {
         },
       },
       onOk: async () => {
-        const res = await dataleaveservice.approvedDataLeave(type, id, user);
+        const res = await DataLeaveService(baseUrlIntranet).approvedDataLeave(type, id, user);
         if (res) {
           type === "cancel" ? message.error("cancel success") : message.success("approved success");
           setLoading(true);
@@ -83,7 +85,7 @@ export default function Page() {
       },
       onOk: async () => {
         try {
-          const res = await dataleaveservice.deleteDataLeave(id);
+          const res = await DataLeaveService(baseUrlIntranet).deleteDataLeave(id);
           if (res) {
             message.success("Delete success");
           } else {
@@ -101,7 +103,7 @@ export default function Page() {
 
   async function downloadFile(id: number, name: string): Promise<void> {
     if (id) {
-      const response = await dataleaveservice.downloadFile(id);
+      const response = await DataLeaveService(baseUrlIntranet).downloadFile(id);
       const url = URL.createObjectURL(response);
       const a = document.createElement("a");
       a.href = url;
@@ -111,6 +113,8 @@ export default function Page() {
       document.body.removeChild(a);
     }
   }
+
+  console.log(dataLeaveUser);
 
   return (
     <>
@@ -131,6 +135,7 @@ export default function Page() {
         <Divider orientation="left" orientationMargin="0">
           <div className="title-page-font">{`จัดการการลา`}</div>
         </Divider>
+
         <div className="w-full">
           <Card>
             <TableDetail

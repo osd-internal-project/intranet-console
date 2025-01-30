@@ -14,6 +14,8 @@ export type TUser = {
   userType: UserType;
   createdAt: string;
   updatedAt: string;
+  startWork?: string;
+  ownerGroupId?: string;
   profileExtension: [{ extension: number }];
   masterPosition: {
     nameEn: string;

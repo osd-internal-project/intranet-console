@@ -1,27 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  Button,
-  Card,
-  Col,
-  ConfigProvider,
-  Form,
-  Input,
-  Modal,
-  Row,
-  Select,
-  SelectProps,
-  Table,
-  message,
-} from "antd";
+import { Button, Card, Col, ConfigProvider, Form, Input, Modal, Row, Select, SelectProps, Table, message } from "antd";
 import UserGroupServices from "../../../../services/usergroup.service";
 import { GroupManageSkeleton } from "./Skeleton";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
-import {
-  CarryOutOutlined,
-  ExclamationCircleFilled,
-  EyeOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { CarryOutOutlined, ExclamationCircleFilled, EyeOutlined, PlusOutlined } from "@ant-design/icons";
 import { checkRule } from "@/app/utils/rules";
 import RolesServices from "../../user-role/services/role.service";
 import UserServices from "../../users/services/user.service";
@@ -30,11 +12,7 @@ import GroupUserPermission from "./GroupUserPermission";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 
 export interface props {
-  propDataManage: (res: {
-    selectOrganize: string | null;
-    groupSelect: string | null;
-    loading: boolean;
-  }) => void;
+  propDataManage: (res: { selectOrganize: string | null; groupSelect: string | null; loading: boolean }) => void;
   groupSelect: string | null;
   selectOrganize: string | null;
 }
@@ -67,13 +45,10 @@ export type ITSelectUsers = {
   firstNameTh: string;
   lastNameTh: string;
 };
-const GroupManage: React.FC<props> = ({
-  propDataManage,
-  groupSelect,
-  selectOrganize,
-}): React.ReactElement => {
+const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrganize }): React.ReactElement => {
   const { user, roles } = (useContext(UserContext) as UserContectType) || {
     user: null,
+    roles: null,
   };
   const userAuth = useAxiosUser();
 
@@ -89,20 +64,13 @@ const GroupManage: React.FC<props> = ({
   const [editState, setEditState] = useState<boolean>(false);
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
   const [selectRole, setSeleceRole] = useState<TSelectRoleDto[]>([]);
-  const [showModalPermission, setShowModalPermission] =
-    useState<boolean>(false);
+  const [showModalPermission, setShowModalPermission] = useState<boolean>(false);
   const [showModalUserList, setShowModalUserList] = useState<boolean>(false);
   const [groupOption, setGroupOption] = useState<SelectProps["options"]>([]);
   const [userSelect, setUserSelect] = useState<SelectProps["options"]>([]);
-  const [userInGroupSelect, setUserInGroupSelect] = useState<
-    SelectProps["options"]
-  >([]);
-  const [saleUsersFormGroup, setSaleUsersFormGroup] = useState<ITSelectUsers[]>(
-    []
-  );
-  const [engineerUsersFormGroup, setEngineerUsersFormGroup] = useState<
-    ITSelectUsers[]
-  >([]);
+  const [userInGroupSelect, setUserInGroupSelect] = useState<SelectProps["options"]>([]);
+  const [saleUsersFormGroup, setSaleUsersFormGroup] = useState<ITSelectUsers[]>([]);
+  const [engineerUsersFormGroup, setEngineerUsersFormGroup] = useState<ITSelectUsers[]>([]);
 
   const [headerUsersFormGroup, setHeaderUsersFormGroup] = useState<
     {
@@ -110,8 +78,7 @@ const GroupManage: React.FC<props> = ({
       users: ITSelectUsers[];
     }[]
   >([]);
-  const [showModalUserPermission, setShowModalUserPermission] =
-    useState<boolean>(false);
+  const [showModalUserPermission, setShowModalUserPermission] = useState<boolean>(false);
   const [userGroupIds, setUserGroupIds] = useState<string[]>([]);
 
   useEffect(() => {
@@ -128,23 +95,17 @@ const GroupManage: React.FC<props> = ({
     }
 
     if (groupSelect) {
-      const groupDetail: any = await userGroupServices.getUserGroupByGroupId(
-        groupSelect
-      );
+      const groupDetail: any = await userGroupServices.getUserGroupByGroupId(groupSelect);
       editform.setFieldsValue(groupDetail);
       setGroupDetail(groupDetail);
-      const usersInGroup: any =
-        await userServices.findUserInOnwerGroupByUserGroupId(groupSelect);
+      const usersInGroup: any = await userServices.findUserInOnwerGroupByUserGroupId(groupSelect);
       const userInGroupSelect = usersInGroup.map((user: any) => ({
         value: user.userId,
         label: `${user.firstNameTh} ${user.lastNameTh}`,
       }));
       setUserInGroupSelect(userInGroupSelect);
-      const userGroupMapPermission =
-        await userGroupServices.getUserGroupMapPermission({});
-      setUserGroupIds(
-        userGroupMapPermission.map((item: any) => item.userGroupId)
-      );
+      const userGroupMapPermission = await userGroupServices.getUserGroupMapPermission({});
+      setUserGroupIds(userGroupMapPermission.map((item: any) => item.userGroupId));
       const usersAll: any = await userGroupServices.getdataUserAll();
       const userSelect = usersAll.map((user: any) => ({
         value: user.userId,
@@ -190,10 +151,7 @@ const GroupManage: React.FC<props> = ({
   //   const data = await userGroupServices.findUsersLowerByOwnerGroup(group);
   //   setExpenseUsersFormGroup(data);
   // }
-  async function onChangeHeaderGroupSelect(
-    group: string[],
-    type: string
-  ): Promise<void> {
+  async function onChangeHeaderGroupSelect(group: string[], type: string): Promise<void> {
     const data = await userGroupServices.findUsersLowerByOwnerGroup(group);
     let lists = headerUsersFormGroup;
     const oldIndex = lists.findIndex((list) => list.type === type);
@@ -243,20 +201,18 @@ const GroupManage: React.FC<props> = ({
       okText: "Confirm",
       async onOk() {
         if (groupDetail) {
-          await userGroupServices
-            .deleteUserGroup(groupDetail.groupId)
-            .then((res) => {
-              if (res.data.status === 401) {
-                message.error(res.data.message);
-              } else {
-                message.success("Delete Success");
-                propDataManage({
-                  selectOrganize: selectOrganize,
-                  loading: true,
-                  groupSelect: null,
-                });
-              }
-            });
+          await userGroupServices.deleteUserGroup(groupDetail.groupId).then((res) => {
+            if (res.data.status === 401) {
+              message.error(res.data.message);
+            } else {
+              message.success("Delete Success");
+              propDataManage({
+                selectOrganize: selectOrganize,
+                loading: true,
+                groupSelect: null,
+              });
+            }
+          });
         } else {
           message.error(`ผิดพลาด กรุณาลองใหม่`);
         }
@@ -310,16 +266,13 @@ const GroupManage: React.FC<props> = ({
                       type="link"
                       onClick={() => {
                         setShowModalUserList(true);
-                      }}
-                    >
+                      }}>
                       <EyeOutlined />
                     </Button>
                   </div>
                 </div>
                 <div className=" text-slate-400">
-                  {!groupDetail.parentGroupId
-                    ? `*หากต้องการเพิ่มกลุ่มย่อยภายใต้ชื่อกลุ่มนี้ให้กด Add Sub Group`
-                    : ``}
+                  {!groupDetail.parentGroupId ? `*หากต้องการเพิ่มกลุ่มย่อยภายใต้ชื่อกลุ่มนี้ให้กด Add Sub Group` : ``}
                 </div>
               </div>
             </Col>
@@ -331,8 +284,7 @@ const GroupManage: React.FC<props> = ({
                     onClick={() => {
                       setOpenAddModel(true);
                     }}
-                    icon={<PlusOutlined />}
-                  >
+                    icon={<PlusOutlined />}>
                     Add Sub Group
                   </Button>
                 ) : (
@@ -341,11 +293,7 @@ const GroupManage: React.FC<props> = ({
                 {!editState ? (
                   <>
                     {roles?.usersGroupEdit ? (
-                      <Button
-                        type="primary"
-                        onClick={onClickEdit}
-                        loading={buttonLoading}
-                      >
+                      <Button type="primary" onClick={onClickEdit} loading={buttonLoading}>
                         Edit
                       </Button>
                     ) : (
@@ -357,8 +305,7 @@ const GroupManage: React.FC<props> = ({
                         danger
                         onClick={handleDelete}
                         disabled={!groupDetail.parentGroupId ? true : false}
-                        loading={buttonLoading}
-                      >
+                        loading={buttonLoading}>
                         Delete
                       </Button>
                     ) : (
@@ -374,14 +321,7 @@ const GroupManage: React.FC<props> = ({
           </Row>
           {/* </div> */}
 
-          <Form
-            form={editform}
-            onFinish={onFinishEdit}
-            onFinishFailed={onFinishFailed}
-            name="editForm"
-            layout="vertical"
-            initialValues={groupDetail}
-          >
+          <Form form={editform} onFinish={onFinishEdit} onFinishFailed={onFinishFailed} name="editForm" layout="vertical" initialValues={groupDetail}>
             <div>
               <Form.Item name="groupId" label="Group Id :">
                 <Input className="read-only-input" disabled />
@@ -391,34 +331,19 @@ const GroupManage: React.FC<props> = ({
               </Form.Item>
             </div>
             <div>
-              <Form.Item
-                name="groupName"
-                label="Name :"
-                rules={[
-                  { required: true, message: "Please enter sub group name" },
-                ]}
-              >
-                <Input
-                  disabled={editState === false ? true : false}
-                  className={!editState ? "read-only-input" : ""}
-                />
+              <Form.Item name="groupName" label="Name :" rules={[{ required: true, message: "Please enter sub group name" }]}>
+                <Input disabled={editState === false ? true : false} className={!editState ? "read-only-input" : ""} />
               </Form.Item>
             </div>
             <div>
               <Form.Item name="description" label="Description :">
-                <Input.TextArea
-                  disabled={editState === false ? true : false}
-                  className={!editState ? "read-only-input" : ""}
-                />
+                <Input.TextArea disabled={editState === false ? true : false} className={!editState ? "read-only-input" : ""} />
               </Form.Item>
             </div>
             {!editState && (
               <div style={{ display: "flex", justifyContent: "end" }}>
                 <div style={{ marginLeft: "20px" }}>
-                  <Button
-                    href={`/page/users-management/user-group/${groupDetail.groupId}`}
-                    type="link"
-                  >
+                  <Button href={`/page/users-management/user-group/${groupDetail.groupId}`} type="link">
                     {`Set User Permission`}
                   </Button>
                 </div>
@@ -431,17 +356,11 @@ const GroupManage: React.FC<props> = ({
                     onClick={() => {
                       setEditState(false);
                       editform.resetFields();
-                    }}
-                  >
+                    }}>
                     Back
                   </Button>
                 </Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={buttonLoading}
-                  style={{ marginTop: "20px" }}
-                >
+                <Button type="primary" htmlType="submit" loading={buttonLoading} style={{ marginTop: "20px" }}>
                   Save Change
                 </Button>
               </div>
@@ -459,57 +378,38 @@ const GroupManage: React.FC<props> = ({
           setOpenAddModel(false);
           addform.resetFields();
         }}
-        footer={[]}
-      >
+        footer={[]}>
         <Form
           form={addform}
           initialValues={{ parentName: groupDetail.groupName }}
           onFinish={onFinishAdd}
           onFinishFailed={onFinishFailed}
           labelCol={{ span: 7 }}
-          style={{ marginBottom: "-30px" }}
-        >
-          <Form.Item
-            label="Group Parent"
-            name="parentName"
-            style={{ marginTop: "22px" }}
-          >
+          style={{ marginBottom: "-30px" }}>
+          <Form.Item label="Group Parent" name="parentName" style={{ marginTop: "22px" }}>
             <Input disabled />
           </Form.Item>
-          <Form.Item
-            label="Sub Group Name"
-            name="groupName"
-            rules={[{ required: true, message: "Please enter sub group name" }]}
-          >
+          <Form.Item label="Sub Group Name" name="groupName" rules={[{ required: true, message: "Please enter sub group name" }]}>
             <Input />
           </Form.Item>
           <Form.Item label="Description" name="description">
             <Input.TextArea />
           </Form.Item>
-          <Row
-            gutter={[8, 8]}
-            style={{ justifyContent: "end", display: "flex" }}
-          >
+          <Row gutter={[8, 8]} style={{ justifyContent: "end", display: "flex" }}>
             <Col>
               <Button
                 key="cancel"
                 onClick={() => {
                   addform.resetFields();
                   setOpenAddModel(false);
-                }}
-              >
+                }}>
                 Cancel
               </Button>
             </Col>
             <Col>
               {roles?.usersGroupAdd ? (
                 <Form.Item>
-                  <Button
-                    key="submit"
-                    htmlType="submit"
-                    type="primary"
-                    loading={buttonLoading}
-                  >
+                  <Button key="submit" htmlType="submit" type="primary" loading={buttonLoading}>
                     Add
                   </Button>
                 </Form.Item>
@@ -525,13 +425,8 @@ const GroupManage: React.FC<props> = ({
         onCancel={() => {
           setShowModalUserList(false);
         }}
-        title="รายชื่อ"
-      >
-        <Table
-          pagination={false}
-          dataSource={userInGroupSelect}
-          columns={[{ title: "Name", dataIndex: "label", key: "value" }]}
-        />
+        title="รายชื่อ">
+        <Table pagination={false} dataSource={userInGroupSelect} columns={[{ title: "Name", dataIndex: "label", key: "value" }]} />
       </Modal>
     </>
   ) : (

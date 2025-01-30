@@ -12,9 +12,7 @@ export type UserContectType = {
 
 export const UserContext = createContext<UserContectType | null>(null);
 
-const TodoProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+const TodoProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<TUser | null>(null);
   const [roles, setRoles] = useState<TUserRoles | null>(null);
   const saveUser = async (user: TUser) => {
@@ -24,15 +22,11 @@ const TodoProvider: React.FC<{ children: React.ReactNode }> = ({
     const result = Object.fromEntries(
       Object.entries(UserRoles)
         .filter(([key, value]) => roles.includes(value))
-        .map(([key]) => [key, true])
+        .map(([key]) => [key, true]),
     );
-    console.log(result);
+
     setRoles(result);
   };
-  return (
-    <UserContext.Provider value={{ user, saveUser, roles, saveRoles }}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={{ user, saveUser, roles, saveRoles }}>{children}</UserContext.Provider>;
 };
 export default TodoProvider;

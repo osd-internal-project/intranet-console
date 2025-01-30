@@ -10,6 +10,25 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
   const basrUrIDepartment = "/department";
 
   return {
+    countDataLeaveRange: async (userId: string, TypeId: number, startDate: Date, endDate: Date, startTime: string, endTime: string) => {
+      const url = `${baseUrlDataLeave}/check-data-range`;
+      const params = {
+        userId,
+        TypeId,
+        startDate,
+        endDate,
+        startTime,
+        endTime,
+      };
+      return await axiosInstance
+        .get(url, { params })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
     getdataAll: async () => {
       return await axiosInstance
         .get(`${baseUrlTypeleave}/condition`)

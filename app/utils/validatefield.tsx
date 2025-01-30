@@ -133,7 +133,7 @@ export const checkStatusTypeLeave = async (values: ITypeDataLeaveCreate, masterd
     //ลาล่วงหน้า 2
     meassage = totalDays < 2 ? message.warning(`อย่างน้อยต้องลาล่วงหน้า 2 วัน`) : false;
   }
-  return meassage;
+  return { status: !meassage ? 201 : 500 };
 };
 
 export const CheckStatusMaCarBookType = (status: string) => {

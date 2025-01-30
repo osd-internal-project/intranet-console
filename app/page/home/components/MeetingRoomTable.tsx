@@ -19,7 +19,6 @@ const MeetingRoomTableComponent: React.FC<props> = ({ masterBookingRoom }): Reac
       align: "center",
       render: (value: string, row: any) => {
         const now = new Date();
-        console.log(row);
         const roomStatus = row?.roomsStatus;
         const isRoomBooked = row.bookingRoom?.some((booking: any) => {
           const startDate = new Date(booking.startDate);

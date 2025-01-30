@@ -1,13 +1,12 @@
-import "../../styles/style.css";
+"use client";
 import React, { useEffect, useState } from "react";
 import { Button, Col, Form, Input, Modal, Row, Table, Tooltip } from "antd";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { deleteIcon, CancelIcon, CheckIcon } from "@/components/icon";
 import ExportDataLeaveAll from "../../until/export-excel";
 import { ITypeDataLeave } from "../../common";
 import DataLeaveService from "../../../../services/leave-management.service";
-import { CheckStatusLeaveType, showStatus, showStatusLeave } from "@/app/utils/validatefield";
+import { CheckStatusLeaveType, showStatusLeave } from "@/app/utils/validatefield";
 import { dateFormatTime } from "@/app/utils";
 import { LeaveDetailForm } from "./leave-detail-form";
 
@@ -31,18 +30,18 @@ export const TableDetail: React.FC<props> = ({
   downloadFile,
 }): React.ReactElement => {
   const { Search } = Input;
-  const Auth = useAxiosIntranet();
-  const dataleaveservice = DataLeaveService(Auth);
   const [statusById, setStatusById] = useState<any | null>(null);
   const [dataById, setDataById] = useState<number | undefined>(undefined);
   const [dataSource, setDataSource] = React.useState<any[]>([]);
 
   useEffect(() => {
-    setDataSource(dataLeaveUser);
+    if (dataLeaveUser) {
+      setDataSource(dataLeaveUser);
+    }
   }, [dataLeaveUser]);
 
   const dataLeaveSearch = (value: string) => {
-    const filteredData = dataLeaveUser.filter(
+    const filteredData = dataSource.filter(
       (item) =>
         item.firstName?.toLowerCase().includes(value.toLowerCase()) ||
         item.lastName?.toLowerCase().includes(value.toLowerCase()) ||
@@ -204,7 +203,9 @@ export const TableDetail: React.FC<props> = ({
           </div>
         </div>
       </div>
-      <Table dataSource={dataSource} columns={columns} size="small" rowKey="id" scroll={{ x: "max-content" }} />
+      <div style={{ marginTop: "10px" }}>
+        <Table dataSource={dataLeaveUser.length > 0 ? dataLeaveUser : []} columns={columns} size="small" rowKey="id" scroll={{ x: "max-content" }} />
+      </div>
     </div>
   );
 };

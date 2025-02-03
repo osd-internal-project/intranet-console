@@ -36,7 +36,7 @@ const EditAssignGroupComponent: React.FC<props> = ({ userid }): React.ReactEleme
   const [optionsOrganize, setOptionsOrganize] = useState<TabType[]>([]);
   const [loadTree, setLoadTree] = useState<boolean>(false);
   const [valueTreeSelect, setValueTreeSelect] = useState<string>();
-  const [groupOption, setGroupOption] = useState<SelectProps["options"]>([]);
+  const [groupOption, setGroupOption] = useState<DataNode[]>([]);
 
   useEffect(() => {
     featchData();

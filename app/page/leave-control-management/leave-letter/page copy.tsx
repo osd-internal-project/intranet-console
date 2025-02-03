@@ -367,7 +367,7 @@ export default function Page() {
       </Row>
       <Row gutter={{ xs: 3, sm: 3, md: 3, lg: 3 }}>
         <Col span={12}>
-          <CreateOnlineLeave
+          {/* <CreateOnlineLeave
             getUser={getUser}
             getTypeLeaveOption={getTypeLeaveOption}
             onfinishCreate={(e: ITypeDataLeaveCreate) => onfinishCreate(e)}
@@ -383,9 +383,9 @@ export default function Page() {
             attendFiles={attendFiles}
             // getUserOwner={getUserOwner}
             // onChangeParams={onChangeParams}
-            groupDetail={groupDetail}
-            groupUserId={groupUserId}
-          />
+            // groupDetail={groupDetail}
+            // groupUserId={groupUserId}
+          /> */}
         </Col>
         <Col span={12}>
           <TableOnlineDetailLeave typeLeaveTable={typeLeaveTable} params={params} typeLeaveTableAll={typeLeaveTableAll} rowClassName={rowClassName} />

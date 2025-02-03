@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import type { SelectProps } from "antd";
+// import type { SelectProps } from "antd";
+import type { DataNode } from "antd/es/tree";
 import { Button, Form, Modal, Select, TreeSelect } from "antd";
 
 import { ITSelectUsers } from "./GroupManage";
 import { FormInstance } from "antd/lib";
 export interface props {
-  groupOption: SelectProps["options"];
+  groupOption: DataNode[];
   showModalUserPermission: boolean;
   setShowModalUserPermission: (e: boolean) => void;
   setUserPermission: (form: any) => void;
@@ -26,13 +27,8 @@ const GroupUserPermission: React.FC<props> = ({
       onCancel={() => setShowModalUserPermission(false)}
       footer={[]}
       width={800}
-      maskClosable={false}
-    >
-      <Form
-        form={userpermissionform}
-        layout="vertical"
-        onFinish={setUserPermission}
-      >
+      maskClosable={false}>
+      <Form form={userpermissionform} layout="vertical" onFinish={setUserPermission}>
         <Form.Item name={["leave", "headerGroupId"]} label={<b>Leave Group</b>}>
           <TreeSelect
             multiple
@@ -41,7 +37,7 @@ const GroupUserPermission: React.FC<props> = ({
             style={{ width: "100%" }}
             treeDefaultExpandAll
             placeholder="Please select"
-            treeData={groupOption}
+            treeData={groupOption ? groupOption : []}
             // onChange={onChangeLeaveGroupSelect}
           />
         </Form.Item>
@@ -59,10 +55,7 @@ const GroupUserPermission: React.FC<props> = ({
           />
         </Form.Item> */}
 
-        <Form.Item
-          name={["expense", "headerGroupId"]}
-          label={<b>Expense Group</b>}
-        >
+        <Form.Item name={["expense", "headerGroupId"]} label={<b>Expense Group</b>}>
           <TreeSelect
             multiple
             allowClear
@@ -93,9 +86,7 @@ const GroupUserPermission: React.FC<props> = ({
 
         <Form.Item>
           <div className=" text-right space-x-4 mt-5">
-            <Button onClick={() => setShowModalUserPermission(false)}>
-              Cancel
-            </Button>
+            <Button onClick={() => setShowModalUserPermission(false)}>Cancel</Button>
 
             <Button type="primary" htmlType="submit">
               Save

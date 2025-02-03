@@ -1,12 +1,6 @@
 "use client";
 import { useContext, useState } from "react";
-import {
-  ITypeOption,
-  TCreateUserDto,
-  TManageUserPageDto,
-  TUpdateUserDto,
-  TUserAllDto,
-} from "../common";
+import { ITypeOption, TCreateUserDto, TManageUserPageDto, TUpdateUserDto, TUserAllDto } from "../common";
 import {
   Avatar,
   Button,
@@ -25,14 +19,7 @@ import {
   UploadFile,
   UploadProps,
 } from "antd";
-import {
-  CarryOutOutlined,
-  CheckOutlined,
-  CloseOutlined,
-  FilterOutlined,
-  PlusCircleOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { CarryOutOutlined, CheckOutlined, CloseOutlined, FilterOutlined, PlusCircleOutlined, UploadOutlined } from "@ant-design/icons";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import { UsersServices } from "@/app/services/users.service";
@@ -100,15 +87,10 @@ export const UserAction: React.FC<Props> = ({
     setOpenFilter(false);
   };
 
-  const onValidateUserName = async (
-    username: string
-  ): Promise<string | undefined> =>
+  const onValidateUserName = async (username: string): Promise<string | undefined> =>
     UsersServices(baseUrlUser).validateUsername(username, selectUserType);
 
-  const onValidateEmail = async (
-    email: string,
-    userType: "ldap" | "local"
-  ): Promise<string | undefined> =>
+  const onValidateEmail = async (email: string, userType: "ldap" | "local"): Promise<string | undefined> =>
     UsersServices(baseUrlUser).validateEmail(email, userType);
 
   const onFinishSave = async (value: TCreateUserDto | TUpdateUserDto) => {
@@ -116,19 +98,15 @@ export const UserAction: React.FC<Props> = ({
     // console.log(managePage.modalTitle);
     if (managePage.modalTitle === "create") {
       if (selectUserType === "local") {
-        const validationPassFailReason = await UsersServices(
-          baseUrlUser
-        ).validatePassword(value.password);
+        const validationPassFailReason = await UsersServices(baseUrlUser).validatePassword(value.password);
         if (validationPassFailReason.length > 0) {
           return message.error({
-            content: validationPassFailReason.map(
-              (error: string, index: number) => (
-                <>
-                  <React.Fragment key={index}>{error}</React.Fragment>
-                  <br />
-                </>
-              )
-            ),
+            content: validationPassFailReason.map((error: string, index: number) => (
+              <>
+                <React.Fragment key={index}>{error}</React.Fragment>
+                <br />
+              </>
+            )),
           });
         }
       }
@@ -143,10 +121,7 @@ export const UserAction: React.FC<Props> = ({
 
       if (updateForm?.userId) {
         const userId = updateForm?.userId;
-        const resUpdate = await UsersServices(baseUrlUser).updateUser(
-          userId,
-          updateForm
-        );
+        const resUpdate = await UsersServices(baseUrlUser).updateUser(userId, updateForm);
         if (resUpdate) {
           message.success("Update Success");
           setManagePage({ ...managePage, loading: true });
@@ -156,12 +131,7 @@ export const UserAction: React.FC<Props> = ({
   };
 
   const searchContent = (
-    <Form
-      layout="vertical"
-      form={filterForm}
-      onFinish={onSearch}
-      autoComplete="off"
-    >
+    <Form layout="vertical" form={filterForm} onFinish={onSearch} autoComplete="off">
       <div className="grid grid-cols-1 md:gap-4 md:grid-cols-4">
         <Form.Item label="User Id" name="userId">
           <Input placeholder="Search Text" />
@@ -234,18 +204,14 @@ export const UserAction: React.FC<Props> = ({
     return false;
   };
 
-  const handleChangeImageFiles: UploadProps["onChange"] = async ({
-    fileList: newFileList,
-  }) => {
+  const handleChangeImageFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
     return setImageFiles(newFileList);
   };
 
   const selectOrganize = async (organizeId: string) => {
     setLoadTree(true);
     setOrganizeId(organizeId);
-    const groups = await UserGroupServices(
-      baseUrlUser
-    ).getUserGroupByOrganizedGroupId(organizeId);
+    const groups = await UserGroupServices(baseUrlUser).getUserGroupByOrganizedGroupId(organizeId);
     const tree = createTree(groups.organizeMapGroup, null) as any;
     createForm.setFieldsValue({ groupList: undefined });
     // const assignGroup = await UsersServices(baseUrlUser).findAssignGroup(userid, organizeId);
@@ -273,8 +239,7 @@ export const UserAction: React.FC<Props> = ({
       if (item.group.parentGroupId === parentId) {
         const children = createTree(obj, item.group.groupId);
         if (children.length > 0) {
-          (item.group.icon = <CarryOutOutlined />),
-            (item.group.children = children);
+          (item.group.icon = <CarryOutOutlined />), (item.group.children = children);
         }
         tree.push({
           value: item.group.groupId,
@@ -297,8 +262,7 @@ export const UserAction: React.FC<Props> = ({
             placement="bottomLeft"
             title="Search"
             trigger="click"
-            overlayStyle={{ width: "calc(100% - 240px)" }}
-          >
+            overlayStyle={{ width: "calc(100% - 240px)" }}>
             <Button type="primary" icon={<FilterOutlined />}>
               Filters
             </Button>
@@ -314,8 +278,7 @@ export const UserAction: React.FC<Props> = ({
                 modalStatus: true,
                 modalTitle: "create",
               })
-            }
-          >
+            }>
             สร้างผู้ใช้
           </Button>
         </div>
@@ -325,19 +288,10 @@ export const UserAction: React.FC<Props> = ({
         open={managePage.modalStatus}
         footer={[]}
         onCancel={() => {
-          setManagePage({ ...managePage, modalStatus: false }),
-            createForm.resetFields();
+          setManagePage({ ...managePage, modalStatus: false }), createForm.resetFields();
         }}
-        width={1200}
-      >
-        <Form
-          form={createForm}
-          name="create"
-          wrapperCol={{ span: 24 }}
-          onFinish={onFinishSave}
-          autoComplete="off"
-          layout="vertical"
-        >
+        width={1200}>
+        <Form form={createForm} name="create" wrapperCol={{ span: 24 }} onFinish={onFinishSave} autoComplete="off" layout="vertical">
           <div className=" flex justify-center p-1">
             <Avatar size={128} src={image ? URL.createObjectURL(image) : ""} />
           </div>
@@ -350,8 +304,7 @@ export const UserAction: React.FC<Props> = ({
                 beforeUpload={beforeUploadImageFiles}
                 multiple={false}
                 maxCount={1}
-                listType="picture"
-              >
+                listType="picture">
                 <Button icon={<UploadOutlined />}>Click to upload</Button>
               </Upload>
             </Form.Item>
@@ -383,8 +336,7 @@ export const UserAction: React.FC<Props> = ({
               //       ]
               //     : undefined
               // }
-              initialValue={selectUserType}
-            >
+              initialValue={selectUserType}>
               <Select
                 disabled={managePage.modalTitle === "update" ? true : false}
                 onChange={onChangeUserType}
@@ -435,8 +387,7 @@ export const UserAction: React.FC<Props> = ({
               //     },
               //   },
               // ]}
-              style={{ marginBottom: "2px" }}
-            >
+              style={{ marginBottom: "2px" }}>
               <Input />
             </Form.Item>
           </div>
@@ -448,12 +399,7 @@ export const UserAction: React.FC<Props> = ({
                     <Form.Item<TCreateUserDto>
                       name={"password"}
                       label="รหัสผ่าน"
-                      rules={
-                        managePage.modalTitle === "create"
-                          ? [{ required: true }]
-                          : undefined
-                      }
-                    >
+                      rules={managePage.modalTitle === "create" ? [{ required: true }] : undefined}>
                       <Input.Password autoComplete="new-password" />
                     </Form.Item>
                   </div>
@@ -471,26 +417,17 @@ export const UserAction: React.FC<Props> = ({
                             if (!value || getFieldValue("password") === value) {
                               return Promise.resolve();
                             }
-                            return Promise.reject(
-                              new Error(
-                                "The new password that you entered do not match!"
-                              )
-                            );
+                            return Promise.reject(new Error("The new password that you entered do not match!"));
                           },
                         }),
-                      ]}
-                    >
+                      ]}>
                       <Input.Password />
                     </Form.Item>
                   </div>
                 </>
               ) : (
                 <div className=" col-span-2">
-                  <Form.Item<TCreateUserDto>
-                    name={"ldapQuery"}
-                    label="LDAP Query"
-                    rules={[{ required: true }]}
-                  >
+                  <Form.Item<TCreateUserDto> name={"ldapQuery"} label="LDAP Query" rules={[{ required: true }]}>
                     <Input placeholder="CN=John Smith,OU=User,DC=example" />
                   </Form.Item>
                 </div>
@@ -500,16 +437,8 @@ export const UserAction: React.FC<Props> = ({
             )}
 
             <div className=" col-span-1">
-              <Form.Item<TCreateUserDto>
-                name={"activeStatus"}
-                label="สถานะ"
-                initialValue={true}
-                className="p-0 mb-0"
-              >
-                <Switch
-                  checkedChildren={<CheckOutlined />}
-                  unCheckedChildren={<CloseOutlined />}
-                />
+              <Form.Item<TCreateUserDto> name={"activeStatus"} label="สถานะ" initialValue={true} className="p-0 mb-0">
+                <Switch checkedChildren={<CheckOutlined />} unCheckedChildren={<CloseOutlined />} />
               </Form.Item>
             </div>
           </div>
@@ -517,34 +446,16 @@ export const UserAction: React.FC<Props> = ({
             <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-200" />
           </div>
           <div className="grid grid-cols-4 gap-2">
-            <Form.Item<TCreateUserDto>
-              label="ชื่อ(ภาษาไทย)"
-              name="firstNameTh"
-              rules={[{ required: true }]}
-            >
+            <Form.Item<TCreateUserDto> label="ชื่อ(ภาษาไทย)" name="firstNameTh" rules={[{ required: true }]}>
               <Input />
             </Form.Item>
-            <Form.Item<TCreateUserDto>
-              label="นามสกุล(ภาษาไทย)"
-              name="lastNameTh"
-              rules={[{ required: true }]}
-              style={{ marginBottom: "2px" }}
-            >
+            <Form.Item<TCreateUserDto> label="นามสกุล(ภาษาไทย)" name="lastNameTh" rules={[{ required: true }]} style={{ marginBottom: "2px" }}>
               <Input />
             </Form.Item>
-            <Form.Item<TCreateUserDto>
-              label="ชื่อ(ภาษาอังกฤษ)"
-              name="firstNameEn"
-              rules={[{ required: true }]}
-            >
+            <Form.Item<TCreateUserDto> label="ชื่อ(ภาษาอังกฤษ)" name="firstNameEn" rules={[{ required: true }]}>
               <Input />
             </Form.Item>
-            <Form.Item<TCreateUserDto>
-              label="นามสกุล(ภาษาอังกฤษ)"
-              name="lastNameEn"
-              rules={[{ required: true }]}
-              style={{ marginBottom: "2px" }}
-            >
+            <Form.Item<TCreateUserDto> label="นามสกุล(ภาษาอังกฤษ)" name="lastNameEn" rules={[{ required: true }]} style={{ marginBottom: "2px" }}>
               <Input />
             </Form.Item>
           </div>
@@ -554,8 +465,7 @@ export const UserAction: React.FC<Props> = ({
                 label="เบอร์โทรติดต่อ"
                 name="phoneNumber"
                 rules={[{ required: true }, { validator: validateNumber }]}
-                style={{ marginBottom: "2px" }}
-              >
+                style={{ marginBottom: "2px" }}>
                 <Input />
               </Form.Item>
             </div>
@@ -565,10 +475,7 @@ export const UserAction: React.FC<Props> = ({
                 name="masterPositionId"
                 // rules={[{ required: true }]}
               >
-                <Select
-                  placeholder="กรุณาเลือก ตำแหน่ง"
-                  options={positionOption}
-                />
+                <Select placeholder="กรุณาเลือก ตำแหน่ง" options={positionOption} />
               </Form.Item>
             </div>
             {/* <div className=" col-span-1">
@@ -590,11 +497,7 @@ export const UserAction: React.FC<Props> = ({
           </div>
           <div className="grid grid-cols-4 gap-2">
             <div className=" col-span-2">
-              <Form.Item<TCreateUserDto>
-                name={"ownerGroupId"}
-                label="สิทธิ์การใช้งาน"
-                rules={[{ required: true }]}
-              >
+              <Form.Item<TCreateUserDto> name={"ownerGroupId"} label="สิทธิ์การใช้งาน" rules={[{ required: true }]}>
                 <TreeSelect
                   allowClear
                   showSearch={false}
@@ -654,8 +557,7 @@ export const UserAction: React.FC<Props> = ({
                 setManagePage({ ...managePage, modalStatus: false });
                 createForm.resetFields();
                 setOrganizeId("");
-              }}
-            >{`Cancel`}</Button>
+              }}>{`Cancel`}</Button>
             <Button type={"primary"} htmlType="submit" loading={buttonLoading}>
               {`Save`}
             </Button>

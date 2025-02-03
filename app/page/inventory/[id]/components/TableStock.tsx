@@ -26,7 +26,7 @@ import {
 } from "antd";
 import React, { useContext, useEffect, useState } from "react";
 import { InventoryStockServices } from "../../services/inventory-stock.service";
-import GhsServices from "@/app/page/stock-management/ghs/services/ghs.service";
+// import GhsServices from "@/app/page/stock-management/ghs/services/ghs.service";
 import { TableDetailLot } from "./TableDetailLot";
 import { dateToStringTh, numberWithCommas } from "@/app/utils/format";
 import type { UploadFile } from "antd/es/upload/interface";
@@ -61,7 +61,7 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
   const stockAuth = useAxiosStock();
   const addStockRule = checkRule("inventory-stock-add");
   const inventorystockservices = InventoryStockServices(stockAuth);
-  const ghsServices = GhsServices(stockAuth);
+  // const ghsServices = GhsServices(stockAuth);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isModalOpenAdd, setIsModalOpenAdd] = useState<boolean>(false);
   const [searchLot, setSearchLot] = useState<object>({});
@@ -154,11 +154,11 @@ export const TableStock: React.FC<props> = ({ inventoryId, location, userId, use
       const data = await Promise.all(
         event.map(async (r: ITypeImagesGHS, i: number) => {
           if (r?.masterGhsType?.imagesGhs.length !== 0) {
-            const getImages = await ghsServices.getImages(r.masterGhsType.imagesGhs[0]?.idfile);
-            const mapData = {
-              imagefile: getImages,
-            };
-            return mapData;
+            // const getImages = await ghsServices.getImages(r.masterGhsType.imagesGhs[0]?.idfile);
+            // const mapData = {
+            //   imagefile: getImages,
+            // };
+            // return mapData;
           } else {
             return null;
           }

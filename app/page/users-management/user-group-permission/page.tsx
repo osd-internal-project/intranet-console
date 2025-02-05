@@ -1,61 +1,33 @@
 "use client";
-import { use, useContext, useEffect, useState } from "react";
-import {
-  Breadcrumb,
-  Button,
-  Card,
-  Divider,
-  Form,
-  Input,
-  message,
-  Modal,
-  Row,
-  Segmented,
-  Select,
-  SelectProps,
-  Spin,
-  Switch,
-  Tabs,
-  TreeSelect,
-  TreeSelectProps,
-} from "antd";
+import { useContext, useEffect, useState } from "react";
+import { Breadcrumb, Card, Divider, message, Row, Segmented, Spin, TreeSelectProps } from "antd";
 import { Col, SegmentedProps } from "antd/lib";
-import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import UserModuleServices from "@/app/services/user-module.service";
-import { ITUserModule, ITUserModuleForm } from "@/app/common/user-module";
 import { useForm } from "antd/es/form/Form";
-import modal from "antd/es/modal";
-import { CarryOutOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import { CarryOutOutlined } from "@ant-design/icons";
 import { PermissionConfig } from "./components/permission-config";
 import UserGroupServices from "@/app/services/usergroup.service";
 import { UserContectType, UserContext } from "@/app/config/userContext";
-
-const { TextArea } = Input;
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export default function UserModulePage() {
   const { user } = (useContext(UserContext) as UserContectType) || {
     user: null,
   };
-  const userAuth = useAxiosUser();
-  const userModuleServices = UserModuleServices(userAuth);
-  const userGroupServices = UserGroupServices(userAuth);
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const [form] = useForm();
   const [loading, setLoading] = useState<boolean>(true);
-  const [moduleSelected, setModuleSelected] = useState<string | undefined>(
-    undefined
-  );
-  const [userModuleOptions, setUserModuleOptions] = useState<
-    SegmentedProps["options"]
-  >([]);
-  const [groupOptions, setGroupOptions] = useState<TreeSelectProps["treeData"]>(
-    []
-  );
+  const [moduleSelected, setModuleSelected] = useState<string | undefined>(undefined);
+  const [userModuleOptions, setUserModuleOptions] = useState<SegmentedProps["options"]>([]);
+  const [groupOptions, setGroupOptions] = useState<TreeSelectProps["treeData"]>([]);
   useEffect(() => {
     fetchData();
   }, [loading]);
 
   async function fetchData() {
-    const userModules = await userModuleServices.findMany({});
+    const userModules = await UserModuleServices(baseUrlUser).findMany({});
     if (userModules) {
       const options = userModules.map((module) => ({
         value: module.code,
@@ -69,7 +41,7 @@ export default function UserModulePage() {
     setLoading(false);
   }
   const getgroups = async () => {
-    const groups = await userGroupServices.getUserGroupAll();
+    const groups = await UserGroupServices(baseUrlUser).getUserGroupAll();
     const tree = createTree(groups, null);
     setGroupOptions(tree);
   };
@@ -94,25 +66,21 @@ export default function UserModulePage() {
   };
   async function onSelectGroups(value: string): Promise<void> {
     if (moduleSelected && value) {
-      const permissionGroup =
-        await userGroupServices.getPermissionGroupByGroupIdAndModuleId({
-          groupid: value,
-          modulecode: moduleSelected,
-        });
+      const permissionGroup = await UserGroupServices(baseUrlUser).getPermissionGroupByGroupIdAndModuleId({
+        groupid: value,
+        modulecode: moduleSelected,
+      });
       form.setFieldValue(
         "permissionGroupId",
-        permissionGroup.map((group: ITUserGroup) => group.groupId)
+        permissionGroup.map((group: ITUserGroup) => group.groupId),
       );
     } else {
       form.setFieldValue("permissionGroupId", undefined);
     }
   }
 
-  async function onSubmitPermission(value: {
-    groupId: string;
-    permissionGroupId: string[];
-  }): Promise<void> {
-    await userGroupServices
+  async function onSubmitPermission(value: { groupId: string; permissionGroupId: string[] }): Promise<void> {
+    await UserGroupServices(baseUrlUser)
       .setUserPermissionGroup({
         userGroupId: value.groupId,
         userModuleId: moduleSelected,

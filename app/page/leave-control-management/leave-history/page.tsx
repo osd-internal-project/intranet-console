@@ -1,21 +1,19 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
 import { Breadcrumb, Card, Col, Tabs, Divider, Form, Modal, Row, TabsProps, message } from "antd";
-import { TableDetail } from "./components/table-detail";
 import { DepartmentCalendarDetail } from "./components/leave-history-calendar";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import DataLeaveService from "../../../services/leave-management.service";
 import { ITypeDataLeave } from "../common";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import { TableDetail } from "./components/table-detail";
 
 export default function Page() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  // const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [loading, setLoading] = useState<boolean>(true);
   const [dataSource, setDataSource] = useState<ITypeDataLeave[]>([]);
@@ -39,7 +37,7 @@ export default function Page() {
 
   const onFinishUpdate = async (type: string, id: number) => {
     Modal.confirm({
-      title: <>{type === "cancel" ? "Cancel " : "Approved"}</>,
+      title: <>{type === "cancel" ? "Cancel" : "Approved"}</>,
       icon: <ExclamationCircleFilled />,
       content: <>{type === "cancel" ? "Are you sure you want to cancel this ?" : "Are you sure you want to Approved this ?"}</>,
       okText: "Confirm",

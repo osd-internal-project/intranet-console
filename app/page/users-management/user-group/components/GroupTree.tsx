@@ -1,11 +1,12 @@
 "use client";
+import "../style.css";
 import React, { useEffect, useState } from "react";
 import UserGroupServices from "../../../../services/usergroup.service";
 import { Card, Tabs, Tree } from "antd";
 
-import "../style.css";
-import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { CarryOutOutlined } from "@ant-design/icons";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 type TabType = {
   label: string;
@@ -21,48 +22,39 @@ type TOrganizeDto = {
   updatedAt: string;
 };
 export interface props {
-  propDataTree: (res: {
-    selectOrganize: string | null;
-    groupSelect: string | null;
-    loading: boolean;
-  }) => void;
+  propDataTree: (res: { selectOrganize: string | null; groupSelect: string | null; loading: boolean }) => void;
   loading: boolean;
   selectOrganize: string | null;
 }
-const GroupTree: React.FC<props> = ({
-  propDataTree,
-  loading,
-  selectOrganize,
-}): React.ReactElement => {
-  const userAuth = useAxiosUser();
-  const userGroupServices = UserGroupServices(userAuth);
+const GroupTree: React.FC<props> = ({ propDataTree, loading, selectOrganize }): React.ReactElement => {
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const [treeList, setTreeList] = useState<any[] | null>(null);
   const [tabList, setTabList] = useState<TabType[]>([]);
   const [tabsKey, setTabsKey] = useState<string>("0");
 
   useEffect(() => {
     if (loading) {
-      // featchData();
       featchDataTree(tabsKey);
     }
   }, [loading]);
 
-  const featchData = async () => {
-    const resOrganize = await userGroupServices.findAllOrganize();
-    const orgList = resOrganize.map((item: TOrganizeDto) => ({
-      key: item.organizedId,
-      label: item.organizedName,
-    }));
-    setTabList([...orgList]);
-    propDataTree({
-      selectOrganize: selectOrganize,
-      groupSelect: null,
-      loading: false,
-    });
-  };
+  // const featchData = async () => {
+  //   const resOrganize = await UserGroupServices(baseUrlUser).findAllOrganize();
+  //   const orgList = resOrganize.map((item: TOrganizeDto) => ({
+  //     key: item.organizedId,
+  //     label: item.organizedName,
+  //   }));
+  //   setTabList([...orgList]);
+  //   propDataTree({
+  //     selectOrganize: selectOrganize,
+  //     groupSelect: null,
+  //     loading: false,
+  //   });
+  // };
 
   const featchDataTree = async (organize: string) => {
-    const groups = await userGroupServices.getUserGroupAll();
+    const groups = await UserGroupServices(baseUrlUser).getUserGroupAll();
     const tree = createTree(groups, null);
     setTreeList(tree);
     propDataTree({
@@ -124,9 +116,7 @@ const GroupTree: React.FC<props> = ({
                 blockNode
                 showLine
               />
-            ) : (
-              ``
-            )}
+            ) : null}
           </div>
         </div>
       </div>

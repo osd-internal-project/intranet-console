@@ -1,16 +1,4 @@
-import { ITUserModule } from "@/app/common/user-module";
-import {
-  Button,
-  Card,
-  Form,
-  SelectProps,
-  Switch,
-  Table,
-  TableProps,
-  Tag,
-  TreeSelect,
-  TreeSelectProps,
-} from "antd";
+import { Button, Card, Form, TreeSelect, TreeSelectProps } from "antd";
 import { FormInstance } from "antd/lib";
 
 interface Props {
@@ -18,18 +6,9 @@ interface Props {
   groupOption: TreeSelectProps["treeData"];
   onSelectGroups: (value: string) => void;
   form: FormInstance;
-  onSubmitPermission: (vale: {
-    groupId: string;
-    permissionGroupId: string[];
-  }) => void;
+  onSubmitPermission: (vale: { groupId: string; permissionGroupId: string[] }) => void;
 }
-export const PermissionConfig: React.FC<Props> = ({
-  userModuleSelected,
-  groupOption,
-  onSelectGroups,
-  form,
-  onSubmitPermission,
-}) => {
+export const PermissionConfig: React.FC<Props> = ({ userModuleSelected, groupOption, onSelectGroups, form, onSubmitPermission }) => {
   return (
     <>
       <Card>

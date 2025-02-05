@@ -1,37 +1,24 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Card, Col, ConfigProvider, Form, Input, Modal, Row, Select, SelectProps, Table, message } from "antd";
-import UserGroupServices from "../../../../services/usergroup.service";
+import { Button, Card, Col, Form, Input, Modal, Row, SelectProps, Table, message } from "antd";
 import { GroupManageSkeleton } from "./Skeleton";
-import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { CarryOutOutlined, ExclamationCircleFilled, EyeOutlined, PlusOutlined } from "@ant-design/icons";
-import { checkRule } from "@/app/utils/rules";
-import RolesServices from "../../user-role/services/role.service";
+import UserGroupServices from "../../../../services/usergroup.service";
 import UserServices from "../../users/services/user.service";
-import GroupPermissionComponent from "./GroupPermission";
-import GroupUserPermission from "./GroupUserPermission";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export interface props {
   propDataManage: (res: { selectOrganize: string | null; groupSelect: string | null; loading: boolean }) => void;
   groupSelect: string | null;
   selectOrganize: string | null;
 }
-
-type TSelectRoleDto = {
-  roleId: string;
-  roleName: string;
-  description: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
 type groupDetail = {
   groupId: string;
   groupName: string;
   description: string;
   headId?: string;
   parentGroupId: string;
-  // organizedGroupId: string;
   userGroupMapPermission: userGroupMapModule[];
 };
 type userGroupMapModule = {
@@ -46,39 +33,30 @@ export type ITSelectUsers = {
   lastNameTh: string;
 };
 const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrganize }): React.ReactElement => {
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const { user, roles } = (useContext(UserContext) as UserContectType) || {
     user: null,
     roles: null,
   };
-  const userAuth = useAxiosUser();
-
   const [addform] = Form.useForm();
   const [editform] = Form.useForm();
-  const [permissionform] = Form.useForm();
-  const [userpermissionform] = Form.useForm();
-  const userGroupServices = UserGroupServices(userAuth);
-  const userRolesServices = RolesServices(userAuth);
-  const userServices = UserServices(userAuth);
   const [groupDetail, setGroupDetail] = useState<groupDetail | null>(null);
   const [openAddModel, setOpenAddModel] = useState<boolean>(false);
   const [editState, setEditState] = useState<boolean>(false);
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
-  const [selectRole, setSeleceRole] = useState<TSelectRoleDto[]>([]);
-  const [showModalPermission, setShowModalPermission] = useState<boolean>(false);
   const [showModalUserList, setShowModalUserList] = useState<boolean>(false);
   const [groupOption, setGroupOption] = useState<SelectProps["options"]>([]);
   const [userSelect, setUserSelect] = useState<SelectProps["options"]>([]);
   const [userInGroupSelect, setUserInGroupSelect] = useState<SelectProps["options"]>([]);
-  const [saleUsersFormGroup, setSaleUsersFormGroup] = useState<ITSelectUsers[]>([]);
-  const [engineerUsersFormGroup, setEngineerUsersFormGroup] = useState<ITSelectUsers[]>([]);
-
-  const [headerUsersFormGroup, setHeaderUsersFormGroup] = useState<
-    {
-      type: string;
-      users: ITSelectUsers[];
-    }[]
-  >([]);
-  const [showModalUserPermission, setShowModalUserPermission] = useState<boolean>(false);
+  // const [saleUsersFormGroup, setSaleUsersFormGroup] = useState<ITSelectUsers[]>([]);
+  // const [engineerUsersFormGroup, setEngineerUsersFormGroup] = useState<ITSelectUsers[]>([]);
+  // const [headerUsersFormGroup, setHeaderUsersFormGroup] = useState<
+  //   {
+  //     type: string;
+  //     users: ITSelectUsers[];
+  //   }[]
+  // >([]);
   const [userGroupIds, setUserGroupIds] = useState<string[]>([]);
 
   useEffect(() => {
@@ -89,24 +67,24 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
     setEditState(false);
     setGroupDetail(null);
     if (user?.userId) {
-      const groups = await userGroupServices.getUserGroupAll();
+      const groups = await UserGroupServices(baseUrlUser).getUserGroupAll();
       const tree = createTree(groups, null);
       setGroupOption(tree);
     }
 
     if (groupSelect) {
-      const groupDetail: any = await userGroupServices.getUserGroupByGroupId(groupSelect);
+      const groupDetail: any = await UserGroupServices(baseUrlUser).getUserGroupByGroupId(groupSelect);
       editform.setFieldsValue(groupDetail);
       setGroupDetail(groupDetail);
-      const usersInGroup: any = await userServices.findUserInOnwerGroupByUserGroupId(groupSelect);
+      const usersInGroup: any = await UserServices(baseUrlUser).findUserInOnwerGroupByUserGroupId(groupSelect);
       const userInGroupSelect = usersInGroup.map((user: any) => ({
         value: user.userId,
         label: `${user.firstNameTh} ${user.lastNameTh}`,
       }));
       setUserInGroupSelect(userInGroupSelect);
-      const userGroupMapPermission = await userGroupServices.getUserGroupMapPermission({});
+      const userGroupMapPermission = await UserGroupServices(baseUrlUser).getUserGroupMapPermission({});
       setUserGroupIds(userGroupMapPermission.map((item: any) => item.userGroupId));
-      const usersAll: any = await userGroupServices.getdataUserAll();
+      const usersAll: any = await UserGroupServices(baseUrlUser).getdataUserAll();
       const userSelect = usersAll.map((user: any) => ({
         value: user.userId,
         label: `${user.firstNameTh} ${user.lastNameTh}`,
@@ -132,36 +110,36 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
     return tree;
   };
 
-  async function onChangeSaleGroupSelect(group: string[]): Promise<void> {
-    const data = await userGroupServices.findUsersLowerByOwnerGroup(group);
-    setSaleUsersFormGroup(data);
-  }
+  // async function onChangeSaleGroupSelect(group: string[]): Promise<void> {
+  //   const data = await UserGroupServices(baseUrlUser).findUsersLowerByOwnerGroup(group);
+  //   setSaleUsersFormGroup(data);
+  // }
 
-  async function onChangeEngineerGroupSelect(group: string[]): Promise<void> {
-    const data = await userGroupServices.findUsersLowerByOwnerGroup(group);
-    setEngineerUsersFormGroup(data);
-  }
+  // async function onChangeEngineerGroupSelect(group: string[]): Promise<void> {
+  //   const data = await UserGroupServices(baseUrlUser).findUsersLowerByOwnerGroup(group);
+  //   setEngineerUsersFormGroup(data);
+  // }
 
   // async function onChangeLeaveGroupSelect(group: string[]): Promise<void> {
-  //   const data = await userGroupServices.findUsersLowerByOwnerGroup(group);
+  //   const data = await UserGroupServices(baseUrlUser).findUsersLowerByOwnerGroup(group);
   //   setLeaveUsersFormGroup(data);
   // }
 
   // async function onChangeExpenseGroupSelect(group: string[]): Promise<void> {
-  //   const data = await userGroupServices.findUsersLowerByOwnerGroup(group);
+  //   const data = await UserGroupServices(baseUrlUser).findUsersLowerByOwnerGroup(group);
   //   setExpenseUsersFormGroup(data);
   // }
-  async function onChangeHeaderGroupSelect(group: string[], type: string): Promise<void> {
-    const data = await userGroupServices.findUsersLowerByOwnerGroup(group);
-    let lists = headerUsersFormGroup;
-    const oldIndex = lists.findIndex((list) => list.type === type);
-    if (oldIndex) {
-      lists[oldIndex] = { type: type, users: data };
-    } else {
-      lists.push({ type: type, users: data });
-    }
-    setHeaderUsersFormGroup(lists);
-  }
+  // async function onChangeHeaderGroupSelect(group: string[], type: string): Promise<void> {
+  //   const data = await UserGroupServices(baseUrlUser).findUsersLowerByOwnerGroup(group);
+  //   let lists = headerUsersFormGroup;
+  //   const oldIndex = lists.findIndex((list) => list.type === type);
+  //   if (oldIndex) {
+  //     lists[oldIndex] = { type: type, users: data };
+  //   } else {
+  //     lists.push({ type: type, users: data });
+  //   }
+  //   setHeaderUsersFormGroup(lists);
+  // }
 
   const onCloseDetail = () => {
     setGroupDetail(null);
@@ -176,7 +154,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
 
   const onFinishEdit = async (values: groupDetail) => {
     setbuttonLoading(true);
-    await userGroupServices
+    await UserGroupServices(baseUrlUser)
       .updateUserGroup(values.groupId, values)
       .then(() => {
         message.success(`Edit success`);
@@ -201,18 +179,20 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
       okText: "Confirm",
       async onOk() {
         if (groupDetail) {
-          await userGroupServices.deleteUserGroup(groupDetail.groupId).then((res) => {
-            if (res.data.status === 401) {
-              message.error(res.data.message);
-            } else {
-              message.success("Delete Success");
-              propDataManage({
-                selectOrganize: selectOrganize,
-                loading: true,
-                groupSelect: null,
-              });
-            }
-          });
+          await UserGroupServices(baseUrlUser)
+            .deleteUserGroup(groupDetail.groupId)
+            .then((res) => {
+              if (res.data.status === 401) {
+                message.error(res.data.message);
+              } else {
+                message.success("Delete Success");
+                propDataManage({
+                  selectOrganize: selectOrganize,
+                  loading: true,
+                  groupSelect: null,
+                });
+              }
+            });
         } else {
           message.error(`ผิดพลาด กรุณาลองใหม่`);
         }
@@ -232,7 +212,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
       parentGroupId: groupDetail?.groupId,
       organizeId: selectOrganize,
     };
-    await userGroupServices
+    await UserGroupServices(baseUrlUser)
       .addUserGroup(form)
       .then(() => {
         message.success(`Add success`);
@@ -319,8 +299,6 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
               </div>
             </Col>
           </Row>
-          {/* </div> */}
-
           <Form form={editform} onFinish={onFinishEdit} onFinishFailed={onFinishFailed} name="editForm" layout="vertical" initialValues={groupDetail}>
             <div>
               <Form.Item name="groupId" label="Group Id :">

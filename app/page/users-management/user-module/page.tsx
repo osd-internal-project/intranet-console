@@ -1,38 +1,28 @@
 "use client";
 import { use, useEffect, useState } from "react";
 import { UserModuleTable } from "./components/user-module-type-table";
-import {
-  Breadcrumb,
-  Button,
-  Card,
-  Divider,
-  Form,
-  Input,
-  message,
-  Modal,
-  Row,
-  Spin,
-  Switch,
-} from "antd";
+import { Breadcrumb, Button, Card, Divider, Form, Input, message, Modal, Row, Spin, Switch } from "antd";
 import { Col } from "antd/lib";
-import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
+// import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import UserModuleServices from "@/app/services/user-module.service";
 import { ITUserModule, ITUserModuleForm } from "@/app/common/user-module";
 import { useForm } from "antd/es/form/Form";
 import modal from "antd/es/modal";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 const { TextArea } = Input;
 
 export default function UserModulePage() {
-  const userAuth = useAxiosUser();
-  const userModuleServices = UserModuleServices(userAuth);
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  // const userAuth = useAxiosUser();
+  // const userModuleServices = UserModuleServices(baseUrlUser);
   const [form] = useForm();
   const [loading, setLoading] = useState<boolean>(true);
   const [titleModal, setTitleModal] = useState<string>("");
-  const [stateModal, setStateModal] = useState<
-    "add" | "edit" | "delete" | undefined
-  >(undefined);
+  const [stateModal, setStateModal] = useState<"add" | "edit" | "delete" | undefined>(undefined);
   const [userModules, setUserModules] = useState<ITUserModule[]>([]);
 
   useEffect(() => {
@@ -40,7 +30,7 @@ export default function UserModulePage() {
   }, [loading]);
 
   async function fetchData() {
-    const userModules = await userModuleServices.findMany({});
+    const userModules = await UserModuleServices(baseUrlUser).findMany({});
     if (userModules) {
       setUserModules(userModules);
     } else {
@@ -68,7 +58,7 @@ export default function UserModulePage() {
           cancelText: "Cancel",
           okButtonProps: { danger: true },
           async onOk() {
-            await userModuleServices
+            await UserModuleServices(baseUrlUser)
               .delete(Number(record?.id))
               .then(() => {
                 message.success("Success");
@@ -87,12 +77,10 @@ export default function UserModulePage() {
     }
   }
 
-  async function onFinishModule(
-    values: ITUserModule | ITUserModuleForm
-  ): Promise<void> {
+  async function onFinishModule(values: ITUserModule | ITUserModuleForm): Promise<void> {
     if (stateModal === "add") {
       const dataForm = values as ITUserModuleForm;
-      await userModuleServices
+      await UserModuleServices(baseUrlUser)
         .create(dataForm)
         .then(() => {
           message.success("Success");
@@ -113,7 +101,7 @@ export default function UserModulePage() {
           status: data.status,
           description: data.description,
         };
-        await userModuleServices
+        await UserModuleServices(baseUrlUser)
           .update(data.id, dataForm)
           .then(() => {
             message.success("Success");
@@ -151,10 +139,7 @@ export default function UserModulePage() {
         <div className="w-full">
           <Card>
             <div className=" flex justify-end mb-2 ">
-              <Button
-                type="primary"
-                onClick={() => openModal("add", undefined)}
-              >
+              <Button type="primary" onClick={() => openModal("add", undefined)}>
                 Add Module
               </Button>
             </div>
@@ -169,14 +154,8 @@ export default function UserModulePage() {
         onCancel={() => {
           setStateModal(undefined);
           setTitleModal("");
-        }}
-      >
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={onFinishModule}
-          autoComplete="off"
-        >
+        }}>
+        <Form form={form} layout="vertical" onFinish={onFinishModule} autoComplete="off">
           {stateModal === "edit" && (
             <Form.Item name={"id"} hidden>
               <Input placeholder="Plese Enter" />
@@ -189,11 +168,7 @@ export default function UserModulePage() {
             <Input placeholder="Plese Enter" />
           </Form.Item>
           <Form.Item name={"status"} label={"Status"} valuePropName="checked">
-            <Switch
-              checkedChildren={"Used"}
-              unCheckedChildren={"Not Used"}
-              defaultChecked
-            />
+            <Switch checkedChildren={"Used"} unCheckedChildren={"Not Used"} defaultChecked />
           </Form.Item>
           <Form.Item name={"description"} label={"Description"}>
             <TextArea placeholder="Plese Enter" />

@@ -9,6 +9,8 @@ import Title from "antd/es/skeleton/Title";
 import "../../style.css";
 import { useForm } from "antd/es/form/Form";
 import UserGroupServices from "../../../../../services/usergroup.service";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 export interface props {
   userid: string;
 }
@@ -18,9 +20,12 @@ type optionType = {
   value: string;
 };
 const EditTreeComponent: React.FC<props> = ({ userid }): React.ReactElement => {
-  const userAuth = useAxiosUser();
-  const userGroupServices = UserGroupServices(userAuth);
-  const userServices = UserServices(userAuth);
+  // const userAuth = useAxiosUser();
+
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const userGroupServices = UserGroupServices(baseUrlUser);
+  const userServices = UserServices(baseUrlUser);
   const [treeform] = useForm();
   const [treeList, setTreeList] = useState<any[]>([]);
   const [loadTree, setLoadTree] = useState<boolean>(false);

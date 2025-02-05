@@ -1,28 +1,10 @@
 "use client";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
-import {
-  Button,
-  Card,
-  DatePicker,
-  Form,
-  FormInstance,
-  Input,
-  Modal,
-  Popover,
-  Select,
-  Table,
-  TablePaginationConfig,
-  Tag,
-  message,
-} from "antd";
+import { Button, Card, DatePicker, Form, FormInstance, Input, Modal, Popover, Select, Table, TablePaginationConfig, Tag, message } from "antd";
 import { useState } from "react";
 import Link from "next/link";
 import { deleteIcon, editIcon } from "@/components/icon";
-import {
-  ExclamationCircleFilled,
-  FilterOutlined,
-  PlusCircleOutlined,
-} from "@ant-design/icons";
+import { ExclamationCircleFilled, FilterOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { checkRule } from "@/app/utils/rules";
 import { dateToStringTh } from "@/app/utils/format";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
@@ -40,19 +22,12 @@ export interface Props {
   selectUserType: "ldap" | "local";
 }
 
-const UserTable: React.FC<Props> = ({
-  setManagePage,
-  managePage,
-  filterForm,
-  createForm,
-  setSelectUserType,
-  selectUserType,
-}): React.ReactElement => {
+const UserTable: React.FC<Props> = ({ setManagePage, managePage, filterForm, createForm, setSelectUserType, selectUserType }): React.ReactElement => {
   const { id24Axios } = useId24();
-  const userAuth = useAxiosUser();
-  const userServices = UserServices(userAuth);
+  // const userAuth = useAxiosUser();
   const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
-  const masterPositionService = MasterPositionServices(userAuth);
+  const userServices = UserServices(baseUrlUser);
+  const masterPositionService = MasterPositionServices(baseUrlUser);
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
   const userEditRules = checkRule("um-e");
   const userDeleteRules = checkRule("um-d");
@@ -62,10 +37,7 @@ const UserTable: React.FC<Props> = ({
       title: "NO.",
       dataIndex: "no",
       key: "no",
-      render: (value: string, record: TUserAllDto, index: number) =>
-        index +
-        1 +
-        (managePage.pagination.current - 1) * managePage.pagination.pageSize,
+      render: (value: string, record: TUserAllDto, index: number) => index + 1 + (managePage.pagination.current - 1) * managePage.pagination.pageSize,
     },
     {
       title: "USERNAME",
@@ -82,16 +54,13 @@ const UserTable: React.FC<Props> = ({
       title: "FULL NAME",
       dataIndex: "fullname",
       key: "fullname",
-      render: (value: string, record: TUserAllDto) =>
-        `${record.firstNameTh} ${record.lastNameTh}`,
+      render: (value: string, record: TUserAllDto) => `${record.firstNameTh} ${record.lastNameTh}`,
     },
     {
       title: "POSITION",
       dataIndex: "position",
       key: "position",
-      render: (value: string, record: TUserAllDto) => (
-        <>{record.masterPosition?.nameEn}</>
-      ),
+      render: (value: string, record: TUserAllDto) => <>{record.masterPosition?.nameEn}</>,
     },
     {
       title: "PHONE NUMBER",
@@ -102,19 +71,13 @@ const UserTable: React.FC<Props> = ({
       title: "STATUS",
       dataIndex: "activeStatus",
       key: "activeStatus",
-      render: (value: string, record: TUserAllDto, index: number) =>
-        value ? (
-          <Tag color="green">Active</Tag>
-        ) : (
-          <Tag color="volcano">Inactive</Tag>
-        ),
+      render: (value: string, record: TUserAllDto, index: number) => (value ? <Tag color="green">Active</Tag> : <Tag color="volcano">Inactive</Tag>),
     },
     {
       title: "CREATED",
       dataIndex: "createdAt",
       key: "createdAt",
-      render: (value: Date, record: TUserAllDto, index: number) =>
-        value ? dateToStringTh(value) : "",
+      render: (value: Date, record: TUserAllDto, index: number) => (value ? dateToStringTh(value) : ""),
     },
     {
       title: "ACTIVE",
@@ -125,11 +88,7 @@ const UserTable: React.FC<Props> = ({
       align: "center",
       render: (value: string, record: TUserAllDto, index: number) => (
         <div className=" space-x-2">
-          <Button
-            type="link"
-            className="p-1"
-            onClick={() => onClickEdit(record)}
-          >
+          <Button type="link" className="p-1" onClick={() => onClickEdit(record)}>
             {editIcon}
           </Button>
         </div>

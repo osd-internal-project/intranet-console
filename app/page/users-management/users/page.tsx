@@ -144,7 +144,6 @@ export default function UsermanagementPage() {
       group: groupResponse,
     });
     setOptionsOrganize([...orgList]);
-    // console.log(resultUsers);
     setManagePage({ ...managePage, loading: false, dataUsers: resultUsers });
   };
   const createTreeDepartMent = (

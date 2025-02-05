@@ -1,13 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Card, DatePicker, Dropdown, Form, Input, Popover, Space, Table, Tag, Tree } from "antd";
-import type { DataNode } from "antd/es/tree";
-import Title from "antd/es/skeleton/Title";
+import { Button, DatePicker, Form, Input, Popover, Space, Table, Tag, } from "antd";
 import RuleServices from "../services/rule.service";
-import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { FilterOutlined } from "@ant-design/icons";
-import data from "@iconify/icons-icon-park-outline/setting-two";
 import { dateToEndofDay, dateToStartofDay, dateToStringTh } from "@/app/utils/format";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export interface props {
   propDataTable: (res: { status: string | null; ruleCode: string | null; ruleName: string | null; description: string | null }) => void;
@@ -29,8 +27,8 @@ const RuleTable: React.FC<props> = ({
   setPaginationConfig,
   paginationConfig,
 }): React.ReactElement => {
-  const userAuth = useAxiosUser();
-  const ruleServices = RuleServices(userAuth);
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const [currentPage, setCurrentPage] = useState(1);
   const [openFilter, setOpenFilter] = useState<boolean>(false);
   const [search, setSearch] = useState<object>({});
@@ -92,7 +90,7 @@ const RuleTable: React.FC<props> = ({
 
   const loaddata = async () => {
     setCurrentPage(1);
-    const data = await ruleServices.getMasterRuleByFilter(search);
+    const data = await RuleServices(baseUrlUser).getMasterRuleByFilter(search);
     setPaginationConfig(data.length);
     setDataTable(data);
     propLoading(false);
@@ -163,8 +161,7 @@ const RuleTable: React.FC<props> = ({
             placement="bottomLeft"
             title="Search"
             trigger="click"
-            overlayStyle={{ width: "calc(100% - 240px)" }}
-          >
+            overlayStyle={{ width: "calc(100% - 240px)" }}>
             <Button type="primary" className="button-blue" icon={<FilterOutlined />}>
               Filters
             </Button>

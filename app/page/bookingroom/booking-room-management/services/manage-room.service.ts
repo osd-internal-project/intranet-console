@@ -18,7 +18,7 @@ export const ManageRoomServices = (axiosInstance: AxiosInstance) => {
     },
     findBookingRoom: async (skip: number, take: number) => {
       return await axiosInstance
-        .get(`${baseUrlApiBookingRoom}?take=${take}&skip=${skip}`)
+        .get(`${baseUrlApiBookingRoom}?take=${take}&skip=${skip}&role=admin`)
         .then((res) => {
           return res.data;
         })

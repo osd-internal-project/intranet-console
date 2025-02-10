@@ -106,12 +106,15 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
       return await axiosInstance
         .get(`${baseUrlApiHandbookFile}/get-file/${id}`, {
           responseType: "blob",
+          headers: {
+            "Content-Type": "application/pdf",
+          },
         })
         .then((result) => {
           return result.data;
         })
         .catch((err) => {
-          return;
+          return err;
         });
     },
 
@@ -122,7 +125,7 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
           return res.data;
         })
         .catch((err) => {
-          return;
+          return err;
         });
     },
     getNewsImageQuery: async (newsId?: any) => {

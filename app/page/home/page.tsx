@@ -10,47 +10,29 @@ import "antd/dist/reset.css";
 import { CarFilled, FileFilled, TeamOutlined } from "@ant-design/icons";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import SlideImageService from "./services/index.service";
-import {
-  MasterRoomType,
-  HandbookFileType,
-  InformationNewsType,
-} from "./common";
+import { MasterRoomType, HandbookFileType, InformationNewsType } from "./common";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
 export default function HomePage() {
   const { id24Axios, tokenAccess } = useId24();
   const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
-  const baseUrlIntranet = id24Axios(
-    loadAppConfig().REACT_APP_API_BASE_URL_INTRANET
-  );
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [loading, setLoading] = useState<boolean>(true);
   const [slideImage, setSlideImage] = useState<any[]>([]);
-  const [masterBookingRoom, setMasterBookingRoom] = useState<MasterRoomType[]>(
-    []
-  );
+  const [masterBookingRoom, setMasterBookingRoom] = useState<MasterRoomType[]>([]);
   const [handbookFile, setHandbookFile] = useState<HandbookFileType[]>([]);
-  const [informationNews, setInformationNews] = useState<InformationNewsType[]>(
-    []
-  );
+  const [informationNews, setInformationNews] = useState<InformationNewsType[]>([]);
   useEffect(() => {
     //  if(tokenAccess?.userAccess.roles){
     //  }
   }, [tokenAccess?.userAccess]);
 
   const fetchData = async () => {
-    const dataSlideImage = await SlideImageService(
-      baseUrlIntranet
-    ).getSlideImageByOrder();
-    const MasterBookingresponse = await SlideImageService(
-      baseUrlIntranet
-    ).getMasterRoomQuery();
-    const dataHandbookFileQuery = await SlideImageService(
-      baseUrlIntranet
-    ).getHandbookFileQuery();
-    const dataInformationNews = await SlideImageService(
-      baseUrlIntranet
-    ).getinformationNewsQuery();
+    const dataSlideImage = await SlideImageService(baseUrlIntranet).getSlideImageByOrder();
+    const MasterBookingresponse = await SlideImageService(baseUrlIntranet).getMasterRoomQuery();
+    const dataHandbookFileQuery = await SlideImageService(baseUrlIntranet).getHandbookFileQuery();
+    const dataInformationNews = await SlideImageService(baseUrlIntranet).getinformationNewsQuery();
     setInformationNews(dataInformationNews);
     setHandbookFile(dataHandbookFileQuery);
     setMasterBookingRoom(MasterBookingresponse);
@@ -64,16 +46,21 @@ export default function HomePage() {
 
   async function downloadFile(id: number, name: string): Promise<void> {
     if (id) {
-      const response = await SlideImageService(baseUrlIntranet).downloadFile(
-        id
-      );
-      const url = URL.createObjectURL(response);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = name;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      console.log(id);
+
+      const response = await SlideImageService(baseUrlIntranet).downloadFile(id);
+      console.log(response);
+
+      // console.log(response);
+      if (response) {
+        const url = URL.createObjectURL(response);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
     }
   }
 
@@ -112,47 +99,21 @@ export default function HomePage() {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h">
         <div className="lg:col-span-2">
-          <Card
-            title="กิจกรรมและข่าวสาร"
-            bordered={false}
-            className="text-center"
-            style={{ height: "500px" }}
-          >
+          <Card title="กิจกรรมและข่าวสาร" bordered={false} className="text-center" style={{ height: "500px" }}>
             <NewsCarouselComponent informationNews={informationNews} />
           </Card>
           <div className="my-4"></div>
-          <Card
-            title="เอกสาร"
-            bordered={false}
-            className="text-center"
-            style={{ height: "520px" }}
-          >
-            <DocumentComponent
-              handbookFile={handbookFile}
-              downloadFile={(id: number, filename: string) =>
-                downloadFile(id, filename)
-              }
-            />
+          <Card title="เอกสาร" bordered={false} className="text-center" style={{ height: "520px" }}>
+            <DocumentComponent handbookFile={handbookFile} downloadFile={(id: number, filename: string) => downloadFile(id, filename)} />
           </Card>
         </div>
 
         <div className="lg:col-span-1">
-          <Card
-            title="ห้องประชุม"
-            className="text-center"
-            style={{ height: "500px" }}
-          >
-            <MeetingRoomTableComponent
-              pagination={false}
-              masterBookingRoom={masterBookingRoom}
-            />
+          <Card title="ห้องประชุม" className="text-center" style={{ height: "500px" }}>
+            <MeetingRoomTableComponent pagination={false} masterBookingRoom={masterBookingRoom} />
           </Card>
           <div className="my-4"></div>
-          <Card
-            title="วันหยุดประจำปี"
-            className="text-center"
-            style={{ height: "520px" }}
-          >
+          <Card title="วันหยุดประจำปี" className="text-center" style={{ height: "520px" }}>
             <HolidaysCalendarComponent />
           </Card>
         </div>

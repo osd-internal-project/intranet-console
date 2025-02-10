@@ -8,13 +8,9 @@ export interface Props {
   informationNews: InformationNewsType[];
 }
 
-const NewsCarouselComponent: React.FC<Props> = ({
-  informationNews,
-}): React.ReactElement => {
+const NewsCarouselComponent: React.FC<Props> = ({ informationNews }): React.ReactElement => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedNews, setSelectedNews] = useState<InformationNewsType | null>(
-    null
-  );
+  const [selectedNews, setSelectedNews] = useState<InformationNewsType | null>(null);
   const baseImageUrl = process.env.BACKEND_INTRANET_URL;
   const carouselRef = useRef<any>(null);
   const { Paragraph } = Typography;
@@ -38,8 +34,7 @@ const NewsCarouselComponent: React.FC<Props> = ({
           // autoplay
           dots={false}
           // infinite
-          arrows={false}
-        >
+          arrows={false}>
           {chunkedNews?.map((chunk, index) => (
             <div key={index} style={{ display: "flex" }}>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 ">
@@ -57,11 +52,9 @@ const NewsCarouselComponent: React.FC<Props> = ({
                       display: "flex",
                       flexDirection: "column",
                     }}
-                    hoverable
-                  >
+                    hoverable>
                     <div className=" h-40">
-                      {file.newsImage.length > 0 &&
-                      file.newsImage[0]?.fileName ? (
+                      {file.newsImage.length > 0 && file.newsImage[0]?.fileName ? (
                         <Image
                           alt="news"
                           preview={false}
@@ -84,14 +77,12 @@ const NewsCarouselComponent: React.FC<Props> = ({
                             display: "flex",
                             flexDirection: "column",
                             marginTop: "20px",
-                          }}
-                        >
+                          }}>
                           <p style={{ margin: 0 }} className=" text-sm">
                             ผู้เขียน : {file.author}
                           </p>
                           <p style={{ margin: 0 }} className=" text-sm">
-                            วันที่ :{" "}
-                            {dayjs(file.updatedAt).format("DD-MM-YYYY , HH:mm")}
+                            วันที่ : {dayjs(file.updatedAt).format("DD-MM-YYYY , HH:mm")}
                           </p>
                         </div>
                       }
@@ -130,33 +121,21 @@ const NewsCarouselComponent: React.FC<Props> = ({
         />
       </div>
 
-      <Modal
-        open={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        width={700}
-        footer={null}
-      >
+      <Modal open={isModalVisible} onCancel={() => setIsModalVisible(false)} width={700} footer={null}>
         {selectedNews && (
           <div>
             <h3
               style={{
                 textAlign: "center",
                 margin: "10px 10px",
-              }}
-            >
+              }}>
               <strong>{selectedNews.newsName}</strong>
             </h3>
-            <Carousel
-              arrows
-              infinite={true}
-              autoplay={true}
-              autoplaySpeed={1500}
-              effect="fade"
-            >
+            <Carousel arrows infinite={true} autoplay={true} autoplaySpeed={1500} effect="fade">
               {selectedNews?.newsImage.map((image, index) => (
                 <Image
                   key={index}
-                  preview={true}
+                  preview={false}
                   src={`${baseImageUrl}/news-image/${image.fileimagePath}`}
                   crossOrigin="anonymous"
                   style={{ width: "calc(100% - 5px)", marginBottom: "5px" }}
@@ -172,8 +151,7 @@ const NewsCarouselComponent: React.FC<Props> = ({
                   minHeight: "150px",
                   maxHeight: "350px",
                   overflowY: "auto",
-                }}
-              >
+                }}>
                 <Input.TextArea
                   style={{
                     fontSize: "14px",

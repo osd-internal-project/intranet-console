@@ -9,6 +9,8 @@ import { RcFile } from "antd/es/upload";
 import { Select, Button, Form, Input, message, DatePicker, Upload } from "antd";
 import { ManageinformationNewsServices } from "../services/information.service";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 export interface informationNews {
   newsId: Number;
   newsName: String;
@@ -39,8 +41,10 @@ export interface newsType {
 
 const InfoCreateNews: React.FC<newsImage> = ({}) => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
+  const { id24Axios, tokenAccess } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [submitLoading, setSubmitLoading] = useState(true);
-  const intraAuth = useAxiosIntranet();
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [informationNews, setinformationNews] = useState<informationNews[]>([]);
   const [newsType, setnewsType] = useState<newsType[]>([]);
@@ -51,7 +55,7 @@ const InfoCreateNews: React.FC<newsImage> = ({}) => {
       label: string;
     }[]
   >([]);
-  const manageinformationNewsServices = ManageinformationNewsServices(intraAuth);
+  const manageinformationNewsServices = ManageinformationNewsServices(baseUrlIntranet);
   const [form] = useForm();
 
   useEffect(() => {

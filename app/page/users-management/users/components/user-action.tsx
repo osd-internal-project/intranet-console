@@ -94,8 +94,6 @@ export const UserAction: React.FC<Props> = ({
     UsersServices(baseUrlUser).validateEmail(email, userType);
 
   const onFinishSave = async (value: TCreateUserDto | TUpdateUserDto) => {
-    // console.log(value);
-    // console.log(managePage.modalTitle);
     if (managePage.modalTitle === "create") {
       if (selectUserType === "local") {
         const validationPassFailReason = await UsersServices(baseUrlUser).validatePassword(value.password);
@@ -113,7 +111,7 @@ export const UserAction: React.FC<Props> = ({
       const resCreate = await UsersServices(baseUrlUser).addUser(value);
       if (resCreate) {
         message.success("Add Success");
-        setManagePage({ ...managePage, loading: true });
+        setManagePage({ ...managePage, loading: true, modalStatus: false });
         createForm.resetFields();
       }
     } else if (managePage.modalTitle === "update") {
@@ -124,7 +122,8 @@ export const UserAction: React.FC<Props> = ({
         const resUpdate = await UsersServices(baseUrlUser).updateUser(userId, updateForm);
         if (resUpdate) {
           message.success("Update Success");
-          setManagePage({ ...managePage, loading: true });
+          createForm.resetFields();
+          setManagePage({ ...managePage, loading: true, modalStatus: false });
         }
       }
     }
@@ -476,6 +475,11 @@ export const UserAction: React.FC<Props> = ({
                 // rules={[{ required: true }]}
               >
                 <Select placeholder="กรุณาเลือก ตำแหน่ง" options={positionOption} />
+              </Form.Item>
+            </div>
+            <div className=" col-span-1">
+              <Form.Item<TCreateUserDto> label="วันที่เริ่มงาน" name="startWork">
+                <DatePicker className="w-full" />
               </Form.Item>
             </div>
             {/* <div className=" col-span-1">

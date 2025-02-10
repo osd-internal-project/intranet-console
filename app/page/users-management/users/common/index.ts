@@ -18,6 +18,7 @@ export type TCreateUserDto = {
   masterPositionId: number;
   ldapQuery?: string;
   ownerGroupId?: string;
+  startWork?: Date;
 };
 export type TUpdateUserDto = {
   id: number;
@@ -59,6 +60,7 @@ export type TUserAllDto = {
   dataModule: string[];
   positionId: number;
   departmentId: number;
+  startWork?: Date;
 };
 
 export type TMasterPosition = {

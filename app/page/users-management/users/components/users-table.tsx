@@ -12,6 +12,7 @@ import { loadAppConfig } from "@/app/config/app-config";
 import MasterPositionServices from "../services/position.service";
 import { ITypeOption, TManageUserPageDto, TUserAllDto } from "../common";
 import UserServices from "../services/user.service";
+import dayjs from "dayjs";
 
 export interface Props {
   setManagePage: (event: TManageUserPageDto) => void;
@@ -120,10 +121,10 @@ const UserTable: React.FC<Props> = ({ setManagePage, managePage, filterForm, cre
   };
 
   const onClickEdit = (record: TUserAllDto) => {
-    // console.log(record);
     createForm.setFieldsValue({
       ...record,
       masterPositionId: record.masterPosition?.posId,
+      startWork: record.startWork ? dayjs(record.startWork) : null,
     });
     setManagePage({ ...managePage, modalStatus: true, modalTitle: "update" });
   };

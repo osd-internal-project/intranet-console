@@ -38,24 +38,39 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const defaultPath = `${window.location.origin}/page/home`;
 
   useEffect(() => {
-    if (authenticated) {
-      if (loading) featchData();
-    }
-  }, [authenticated, loading]);
-  useEffect(() => {
     const sideMenuGroups =
       tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
 
     saveRoles(sideMenuGroups);
   }, [tokenAccess?.userAccess]);
-  const featchData = async () => {
-    const profileUser = await UsersServices(baseUrlUser).findByToken();
-    if (profileUser) {
-      setProfileDetail(profileUser);
-      saveUser(profileUser);
+
+  const fetchData = async () => {
+    try {
+      const profileUser = await UsersServices(baseUrlUser).findByToken();
+      if (profileUser) {
+        setProfileDetail(profileUser);
+        saveUser(profileUser);
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
+  useEffect(() => {
+    if (authenticated && loading) {
+      fetchData();
+    }
+  }, [authenticated, loading]);
+
+  useEffect(() => {
+    if (authenticated && !loading) {
+      if (profileDetail === undefined) {
+        const pathLocation = `${window.location.origin}/permission-access`;
+        navigate.push(pathLocation);
+      }
+    }
+  }, [authenticated, loading, profileDetail, navigate]);
 
   if (!authenticated) {
     if (userRequestedLogout) {
@@ -66,12 +81,13 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     return <Button onClick={() => login(defaultPath, false)}>Login</Button>;
   }
 
-  if (!authenticated) {
-    if (profileDetail === undefined) {
-      const pathLocation = `${window.location.origin}/permission-access`;
-      navigate.push(pathLocation);
-    }
-  }
+  // if (authenticated) {
+  //   console.log(profileDetail);
+  //   if (profileDetail === undefined) {
+  //     const pathLocation = `${window.location.origin}/permission-access`;
+  //     navigate.push(pathLocation);
+  //   }
+  // }
 
   const logOut = async () => {
     setUserRequestedLogout(true);
@@ -86,56 +102,58 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const currentPathSub = pathname.split("/")[3];
 
   return (
-    <Layout className=" min-h-screen  overflow-auto ">
-      <Sider
-        width={200}
-        trigger={null}
-        collapsible
-        collapsed={collapsed}
-        style={{ backgroundColor: "#ffff" }}
-        className=" min-h-screen  hidden  md:block bg ">
-        <div className="flex justify-center py-4 ">
-          {!collapsed ? (
-            <>
-              <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : " w-40"}`} />
-            </>
-          ) : (
-            <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
-          )}
-        </div>
-        <Menu
-          mode="inline"
-          selectedKeys={[currentPath, `${currentPath}/${currentPathSub}`]}
-          defaultSelectedKeys={[currentPath, `${currentPath}/${currentPathSub}`]}
-          items={menulist}
-        />
-      </Sider>
-      <Layout>
-        <div className="w-full">
-          <Navigation
-            logOut={logOut}
-            profileDetail={profileDetail}
-            countNoti={countNoti}
-            collapsed={collapsed}
-            setCollapsed={setCollapsed}
-            currentPath={currentPath}
-            menulist={menulist}
-            avatar={avatar}
+    <Spin percent={"auto"} size="large" spinning={loading}>
+      <Layout className=" min-h-screen  overflow-auto ">
+        <Sider
+          width={200}
+          trigger={null}
+          collapsible
+          collapsed={collapsed}
+          style={{ backgroundColor: "#ffff" }}
+          className=" min-h-screen  hidden  md:block bg ">
+          <div className="flex justify-center py-4 ">
+            {!collapsed ? (
+              <>
+                <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : " w-40"}`} />
+              </>
+            ) : (
+              <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
+            )}
+          </div>
+          <Menu
+            mode="inline"
+            selectedKeys={[currentPath, `${currentPath}/${currentPathSub}`]}
+            defaultSelectedKeys={[currentPath, `${currentPath}/${currentPathSub}`]}
+            items={menulist}
           />
-        </div>
+        </Sider>
+        <Layout>
+          <div className="w-full">
+            <Navigation
+              logOut={logOut}
+              profileDetail={profileDetail}
+              countNoti={countNoti}
+              collapsed={collapsed}
+              setCollapsed={setCollapsed}
+              currentPath={currentPath}
+              menulist={menulist}
+              avatar={avatar}
+            />
+          </div>
 
-        <Content
-          className=" mb-10"
-          style={{
-            padding: 20,
-            margin: 0,
-            marginBottom: 20,
-          }}>
-          {children}
-        </Content>
-        <Footer style={{ textAlign: "center" }}>Intranet ©{new Date().getFullYear()} Created by OSD</Footer>
+          <Content
+            className=" mb-10"
+            style={{
+              padding: 20,
+              margin: 0,
+              marginBottom: 20,
+            }}>
+            {children}
+          </Content>
+          <Footer style={{ textAlign: "center" }}>Intranet ©{new Date().getFullYear()} Created by OSD</Footer>
+        </Layout>
       </Layout>
-    </Layout>
+    </Spin>
   );
 
   // }

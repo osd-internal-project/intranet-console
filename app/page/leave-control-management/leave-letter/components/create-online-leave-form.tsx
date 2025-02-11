@@ -105,7 +105,7 @@ export const CreateLeaveForm: React.FC<props> = ({
                   },
                 }),
               ]}>
-              <DatePicker allowClear className="w-full" onChange={(e: any) => setStartDate(e)} />
+              <DatePicker allowClear className="w-full" onChange={(e: any) => setStartDate(e)} format={'DD/MM/YYYY'} />
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
@@ -122,7 +122,7 @@ export const CreateLeaveForm: React.FC<props> = ({
                   },
                 }),
               ]}>
-              <DatePicker allowClear className="w-full" onChange={(e: any) => setEndDate(e)} />
+              <DatePicker allowClear className="w-full" onChange={(e: any) => setEndDate(e)}format={'DD/MM/YYYY'} />
             </Form.Item>
           </div>
         </div>
@@ -218,7 +218,7 @@ export const CreateLeaveForm: React.FC<props> = ({
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`แนบไฟล์ :`} name={"attrachFile"}>
               <Upload fileList={attendFiles} onChange={handleChangeAttendFiles} beforeUpload={beforeUploadAttendFiles} multiple={false} maxCount={1}>
-                <Button icon={<UploadOutlined />}>{`อัพโหลดไฟล์`}</Button>
+                <Button icon={<UploadOutlined />}>{`อัปโหลดไฟล์`}</Button>
               </Upload>
             </Form.Item>
           </div>

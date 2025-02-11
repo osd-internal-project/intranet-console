@@ -1,5 +1,5 @@
 "use client";
-import { Button, Card, Checkbox, Form, Input, Modal, Select, Switch, message } from "antd";
+import { Button, Card, Checkbox, Form, Input, Modal, Select, Spin, Switch, message } from "antd";
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -9,6 +9,8 @@ import { Icon } from "@iconify/react";
 import { useRouter } from "next/navigation";
 import "../style.css";
 import { dateToStringTh } from "@/app/utils/format";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 export interface props {
   userid: string;
 }
@@ -24,7 +26,7 @@ type detailType = {
   activeStatus: boolean;
   createdAt: Date | null;
   updatedAt: Date | null;
-  masterPositionId: any | null;
+  masterPosition: any | null;
 };
 type option = {
   label: number;
@@ -32,8 +34,11 @@ type option = {
 };
 const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement => {
   const router = useRouter();
-  const userAuth = useAxiosUser();
-  const userServices = UserServices(userAuth);
+  // const userAuth = useAxiosUser();
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const userServices = UserServices(baseUrlUser);
   const [detailForm] = useForm();
   const [repasswordForm] = Form.useForm();
   const [loading, setLoading] = useState(true);
@@ -58,7 +63,7 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
         phoneNumber: data.phoneNumber,
         createdAt: data.createdAt ? dateToStringTh(data.createdAt) : "",
         updatedAt: data.updatedAt ? dateToStringTh(data.updatedAt) : "",
-        masterPositionId: data.masterPositionId,
+        masterPositionId: data.masterPosition.posId,
       };
       setCheckedActiveStatus(data.activeStatus);
       detailForm.setFieldsValue(formdata);
@@ -142,8 +147,7 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
           // style={{ maxWidth: 600 }}
           // onFinishFailed={}
           autoComplete="off"
-          layout="vertical"
-        >
+          layout="vertical">
           <div className="grid grid-cols-1 md:grid-cols-3 space-y-0">
             <div>
               <Form.Item label="User Id" name="userId" style={{ marginBottom: "2px" }}>
@@ -155,8 +159,7 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                 label="Username"
                 name="username"
                 style={{ marginBottom: "2px" }}
-                rules={[{ required: true, message: "กรุณากรอก  Username" }, { validator: validateNoSpaces }]}
-              >
+                rules={[{ required: true, message: "กรุณากรอก  Username" }, { validator: validateNoSpaces }]}>
                 <Input disabled className="read-only-input" />
               </Form.Item>
             </div>
@@ -187,8 +190,7 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                     onClick={() => {
                       setOpenChangePassword(true);
                       repasswordForm.resetFields();
-                    }}
-                  >
+                    }}>
                     Change Password
                   </Button>
                 </div>
@@ -205,7 +207,11 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
               </Form.Item>
             </div>
             <div>
-              <Form.Item label="Last Name" name="lastNameTh" rules={[{ required: true, message: "กรุณากรอก Last Name" }]} style={{ marginBottom: "2px" }}>
+              <Form.Item
+                label="Last Name"
+                name="lastNameTh"
+                rules={[{ required: true, message: "กรุณากรอก Last Name" }]}
+                style={{ marginBottom: "2px" }}>
                 <Input disabled className="read-only-input" />
               </Form.Item>
             </div>
@@ -233,9 +239,13 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
           </div>
         </Form>
       </Card>
+
       <Modal open={openChangePassword} onCancel={() => setOpenChangePassword(false)} footer={null} title="Change Password">
         <Form form={repasswordForm} wrapperCol={{ span: 16 }} labelCol={{ span: 8 }} onFinish={changeUserPassword} autoComplete="off">
-          <Form.Item label="New Password" name="newPassword" rules={[{ required: true, message: "กรุณากรอกรหัสผ่านใหม่" }, { validator: validatePassword }]}>
+          <Form.Item
+            label="New Password"
+            name="newPassword"
+            rules={[{ required: true, message: "กรุณากรอกรหัสผ่านใหม่" }, { validator: validatePassword }]}>
             <Input.Password type="password" />
           </Form.Item>
           <Form.Item
@@ -249,8 +259,7 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                   return validateConfirmPassword(_, value);
                 },
               }),
-            ]}
-          >
+            ]}>
             <Input.Password type="password" />
           </Form.Item>
           <div className="flex justify-end">

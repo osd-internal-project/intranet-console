@@ -3,6 +3,7 @@ import * as XLSX from "xlsx";
 import { Button } from "antd";
 import { ITypeDataLeave } from "../common/index";
 import { ExcelIcon } from "@/components/icon";
+import dayjs from "dayjs";
 
 interface ExportDataLeaveProps {
   data: ITypeDataLeave[];
@@ -11,48 +12,30 @@ interface ExportDataLeaveProps {
 const ExportDataLeaveAll: React.FC<ExportDataLeaveProps> = ({ data }) => {
   const handleOnExport = () => {
     const transdata = data.map((dataItem) => ({
-      firstName: dataItem.firstName,
-      lastName: dataItem.lastName,
+      fuulname: `${dataItem.firstName} ${dataItem.lastName}`,
       position: dataItem.position,
       typeName: dataItem.typeName,
-      startDate: new Date(dataItem.startDate).toLocaleDateString("th-TH", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      }),
-      endDate: new Date(dataItem.endDate).toLocaleDateString("th-TH", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      }),
-      status: dataItem.status,
+      rangeDate: `${dayjs(dataItem.startDate).format("DD/MM/YYYY")} ถึง ${dayjs(dataItem.endDate).format("DD/MM/YYYY")}`,
+      status:
+        dataItem.status === "waitting"
+          ? "รอการอนุมัติ"
+          : dataItem.status === "cancel"
+          ? "ยกเลิก"
+          : dataItem.status === "approved"
+          ? "อนุมัติ"
+          : "UNKNOWN",
       userApproved: dataItem.userApproved ?? "-",
-      approvedDate: dataItem.approvedDate
-        ? new Date(dataItem.approvedDate).toLocaleDateString("th-TH", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-          })
-        : "-",
+      approvedDate: dataItem.approvedDate ? dayjs(dataItem.approvedDate).format("DD/MM/YYYY") : "-",
       detail: dataItem.detail,
     }));
 
+    const customHeader = [["ชื่อ - นามสกุล", "ตำแหน่ง", "ประเภทการลา", "วันที่ลา", "สถานะ", "ผู้อนุมัติ", "วันที่อนุมัติ", "รายละเอียด"]];
+    const dataArray = transdata.map((item) => Object.values(item));
+    const result = [...customHeader, ...dataArray];
     const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.aoa_to_sheet(result);
 
-    const worksheet = XLSX.utils.json_to_sheet(transdata);
-
-    const colWidths = [
-      { wch: 10 },
-      { wch: 10 },
-      { wch: 20 },
-      { wch: 20 },
-      { wch: 15 },
-      { wch: 15 },
-      { wch: 15 },
-      { wch: 15 },
-      { wch: 15 },
-      { wch: 15 },
-    ];
+    const colWidths = [{ wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 40 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, { wch: 20 }];
 
     worksheet["!cols"] = colWidths;
 

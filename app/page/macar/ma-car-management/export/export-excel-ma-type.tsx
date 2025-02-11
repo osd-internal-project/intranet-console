@@ -2,6 +2,7 @@ import React from "react";
 import * as XLSX from "xlsx";
 import { FileExcelFilled } from "@ant-design/icons";
 import { Button } from "antd";
+import dayjs from "dayjs";
 
 interface ExportExcelProps {
   datamacartype: any[];
@@ -9,9 +10,9 @@ interface ExportExcelProps {
 
 const ExportExcel: React.FC<ExportExcelProps> = ({ datamacartype }) => {
   const handleExport = () => {
-    const transdata = datamacartype.map((datadic) => {
+    const transdata = datamacartype.map((datadic, index) => {
       return {
-        ลำดับ: datadic.key,
+        ลำดับ: index + 1,
         ประเภทการตรวตสภาพ: datadic.typeName,
         รายละเอียดการตรวตสภาพ: datadic.detail,
         ประเภทตรวจสภาพ: datadic.createdByName,
@@ -53,7 +54,7 @@ const ExportExcel: React.FC<ExportExcelProps> = ({ datamacartype }) => {
     worksheet["!cols"] = columnWidths;
 
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-    XLSX.writeFile(workbook, "DataMacartpye.xlsx");
+    XLSX.writeFile(workbook, `maintainance-car-${dayjs(new Date()).format("DDMMYYYY")}.xlsx`);
   };
 
   return (

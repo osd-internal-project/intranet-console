@@ -31,12 +31,10 @@ export const LeaveHistoryDetail: React.FC<props> = ({
           <div>
             <p />
           </div>
-          <div style={{ paddingLeft: "380px", margin: "10px  " }}>
-            <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`วันที่ :`} name={`createAt`}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
+          <div className=" col-span-3 md:col-span-1 ml-5 flex justify-end">
+            <Form.Item label={`วันที่ :`} name={`createdAt`}>
+              <Input disabled className="read-only-input text-right w-24" />
+            </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เรียนถึง :`} name={`ownerName`}>

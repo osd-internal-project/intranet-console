@@ -78,7 +78,7 @@ export const MenuSider: MenuItem[] = [
       },
       {
         key: `leave-control-management/leave-history-admin`,
-        label: `ประวัติการลา (สำหรับ Admin)`,
+        label: `ประวัติการลา (แอดมิน)`,
         rule: "dl-dt-a",
       },
       {
@@ -194,7 +194,7 @@ export const MenuSider: MenuItem[] = [
       },
       {
         key: `macar/ma-car-management`,
-        label: `ข้อมูลการจองรถยนต์ (สำหรับ แอดมิน)`,
+        label: `ข้อมูลการจองรถยนต์ (แอดมิน)`,
         rule: "mac-m-s",
       },
     ],

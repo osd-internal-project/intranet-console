@@ -1,12 +1,12 @@
 import { AxiosInstance } from "axios";
 import {
-  ITBranch,
-  ITBranchAddress,
-  ITBranchAddressForm,
-  ITBranchContact,
-  ITBranchContactForm,
-  ITBranchDetail,
-  ITBranchForm,
+  ITCustomerDetailSub,
+  ITCustomerDetailSubAddress,
+  ITCustomerDetailSubAddressForm,
+  ITCustomerDetailSubContact,
+  ITCustomerDetailSubContactForm,
+  ITCustomerDetailSubDetail,
+  ITCustomerDetailSubForm,
   ITConfigData,
   ITCustomer,
   ITCustomerForm,
@@ -19,38 +19,38 @@ export interface TCrmServices {
   findManyByCustomerId: (
     customerId: number,
     search: object
-  ) => Promise<ITBranchDetail[]>;
+  ) => Promise<ITCustomerDetailSubDetail[]>;
   findManyByCustomerSubId: (
     customerSubId: number,
     condition: object
-  ) => Promise<ITBranch[]>;
-  findDetailByBranchId: (branchId: number) => Promise<ITBranchDetail>;
+  ) => Promise<ITCustomerDetailSub[]>;
+  findDetailByCustomerDetailSubId: (branchId: number) => Promise<ITCustomerDetailSubDetail>;
   create: (
     customerId: number,
     customerSubId: number,
-    branchForm: ITBranchForm
-  ) => Promise<ITBranch>;
-  update: (id: number, branchForm: ITBranchForm) => Promise<ITBranch>;
-  delete: (id: number) => Promise<ITBranch>;
-  createBranchAddress: (
-    customerBranchId: number,
-    address: ITBranchAddressForm
-  ) => Promise<ITBranchAddress>;
-  deleteBranchAddress: (addressId: number) => Promise<ITBranchAddress>;
-  createBranchContact: (
-    customerBranchId: number,
-    contact: ITBranchContactForm
-  ) => Promise<ITBranchAddress>;
-  deleteBranchContact: (contactId: number) => Promise<ITBranchContact>;
+    branchForm: ITCustomerDetailSubForm
+  ) => Promise<ITCustomerDetailSub>;
+  update: (id: number, branchForm: ITCustomerDetailSubForm) => Promise<ITCustomerDetailSub>;
+  delete: (id: number) => Promise<ITCustomerDetailSub>;
+  createCustomerDetailSubAddress: (
+    customerCustomerDetailSubId: number,
+    address: ITCustomerDetailSubAddressForm
+  ) => Promise<ITCustomerDetailSubAddress>;
+  deleteCustomerDetailSubAddress: (addressId: number) => Promise<ITCustomerDetailSubAddress>;
+  createCustomerDetailSubContact: (
+    customerCustomerDetailSubId: number,
+    contact: ITCustomerDetailSubContactForm
+  ) => Promise<ITCustomerDetailSubAddress>;
+  deleteCustomerDetailSubContact: (contactId: number) => Promise<ITCustomerDetailSubContact>;
 }
 const CrmServices = (axiosInstance: AxiosInstance): TCrmServices => {
-  const customerBranchUrl = "/customer-branch";
+  const customerCustomerDetailSubUrl = "/customer-detail-sub";
   const customerAddressUrl = "/customer-address";
   const customerContactUrl = "/customer-contact";
   return {
     findManyByCustomerId: async (customerId, search) => {
       return await axiosInstance
-        .get(`${customerBranchUrl}/detail-list-by-customer/${customerId}`, {
+        .get(`${customerCustomerDetailSubUrl}/detail-list-by-customer/${customerId}`, {
           params: { search: search },
         })
         .then((res) => {
@@ -67,7 +67,7 @@ const CrmServices = (axiosInstance: AxiosInstance): TCrmServices => {
       };
       return await axiosInstance
         .get(
-          `${customerBranchUrl}/detail-list-by-customer-sub/${customerSubId}`,
+          `${customerCustomerDetailSubUrl}/detail-list-by-customer-sub/${customerSubId}`,
           { params: query }
         )
         .then((res) => {
@@ -78,9 +78,9 @@ const CrmServices = (axiosInstance: AxiosInstance): TCrmServices => {
           return [];
         });
     },
-    findDetailByBranchId: async (branchId) => {
+    findDetailByCustomerDetailSubId: async (branchId) => {
       return await axiosInstance
-        .get(`${customerBranchUrl}/detail/${branchId}`)
+        .get(`${customerCustomerDetailSubUrl}/detail/${branchId}`)
         .then((res) => {
           return res.data;
         })
@@ -95,35 +95,35 @@ const CrmServices = (axiosInstance: AxiosInstance): TCrmServices => {
         customerDetailId: customerId,
         customerDetailSubId: customerSubId,
       };
-      return await axiosInstance.post(`${customerBranchUrl}/`, formData);
+      return await axiosInstance.post(`${customerCustomerDetailSubUrl}/`, formData);
     },
     update: async (id, form) => {
       const formData = {
         ...form,
       };
-      return await axiosInstance.patch(`${customerBranchUrl}/${id}`, formData);
+      return await axiosInstance.patch(`${customerCustomerDetailSubUrl}/${id}`, formData);
     },
     delete: async (id) => {
-      return await axiosInstance.delete(`${customerBranchUrl}/${id}`);
+      return await axiosInstance.delete(`${customerCustomerDetailSubUrl}/${id}`);
     },
-    createBranchAddress: async (customerBranchId, form) => {
+    createCustomerDetailSubAddress: async (customerCustomerDetailSubId, form) => {
       const formData = {
         ...form,
-        customerBranchId: customerBranchId,
+        customerCustomerDetailSubId: customerCustomerDetailSubId,
       };
       return await axiosInstance.post(`${customerAddressUrl}/`, formData);
     },
-    deleteBranchAddress: async (id) => {
+    deleteCustomerDetailSubAddress: async (id) => {
       return await axiosInstance.delete(`${customerAddressUrl}/${id}`);
     },
-    createBranchContact: async (customerBranchId, form) => {
+    createCustomerDetailSubContact: async (customerCustomerDetailSubId, form) => {
       const formData = {
         ...form,
-        customerBranchId: customerBranchId,
+        customerCustomerDetailSubId: customerCustomerDetailSubId,
       };
       return await axiosInstance.post(`${customerContactUrl}/`, formData);
     },
-    deleteBranchContact: async (id) => {
+    deleteCustomerDetailSubContact: async (id) => {
       return await axiosInstance.delete(`${customerContactUrl}/${id}`);
     },
   };

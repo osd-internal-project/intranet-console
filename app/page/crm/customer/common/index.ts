@@ -56,16 +56,16 @@ export interface ITypeRequester {
     groupName: string;
   };
 }
-export type ITBranchForm = {
+export type ITCustomerDetailSubForm = {
   id: number;
-  branchCode: string;
-  branchName: string;
+  code: string;
+  name: string;
   activeStatus?: boolean;
   remark?: string;
 };
 
-export type ITBranch = { id: number } & ITBranchForm;
-export type ITBranchAddressForm = {
+export type ITCustomerDetailSub = { id: number } & ITCustomerDetailSubForm;
+export type ITCustomerDetailSubAddressForm = {
   addressTypeId?: string;
   addressTypeName?: string;
   alley: string;
@@ -80,8 +80,8 @@ export type ITBranchAddressForm = {
   village: string;
   zipCode: string;
 };
-export type ITBranchAddress = { id: number } & ITBranchAddressForm;
-export type ITBranchContactForm = {
+export type ITCustomerDetailSubAddress = { id: number } & ITCustomerDetailSubAddressForm;
+export type ITCustomerDetailSubContactForm = {
   name: string;
   nickName: string;
   position: string;
@@ -92,12 +92,12 @@ export type ITBranchContactForm = {
   birthday: Date;
   activeStatus: boolean;
 };
-export type ITBranchContact = { id: number } & ITBranchContactForm;
-export type ITBranchDetail = {
+export type ITCustomerDetailSubContact = { id: number } & ITCustomerDetailSubContactForm;
+export type ITCustomerDetailSubDetail = {
   id: number;
-  customerAddress: ITBranchAddress[];
-  customerContact: ITBranchContact[];
-} & ITBranchForm;
+  customerAddress: ITCustomerDetailSubAddress[];
+  customerContact: ITCustomerDetailSubContact[];
+} & ITCustomerDetailSubForm;
 export type ITCustomerSubForm = {
   id: number;
   code: string;
@@ -107,8 +107,8 @@ export type ITCustomerSubForm = {
 export type ITCustomerSub = { id: number } & ITCustomerSubForm;
 export type ITCustomerSubDetail = {
   id: number;
-  customerBranch?: ITBranch[];
-} & ITBranchForm;
+  customerBranch?: ITCustomerDetailSub[];
+} & ITCustomerDetailSubForm;
 export type ITConfigData = { id: number; name: string; customerTypeId: string };
 export type ITSelectUsers = {
   userId: string;

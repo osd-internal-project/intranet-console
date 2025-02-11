@@ -14,7 +14,7 @@ import dayjs from "dayjs";
 import TicketComponent from "./project-ticket";
 import ProjectTaskAddComponent from "./project-task-add";
 import {
-  ITBranchContactForm,
+  ITCustomerDetailSubContactForm,
   ITProjectTask,
   ITProjectTaskForm,
   ITProjectTicket,

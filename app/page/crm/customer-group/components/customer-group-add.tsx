@@ -52,6 +52,7 @@ const CustomerGroupAddComponent: React.FC<props> = ({
         form={addForm}
         layout="vertical"
         size="small"
+        autoComplete="off"
       >
         <Form.Item
           name={"customerGroupCode"}

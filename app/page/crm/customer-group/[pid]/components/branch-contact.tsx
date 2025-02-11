@@ -13,11 +13,11 @@ import {
   Tag,
 } from "antd";
 import {
-  ITBranch,
-  ITBranchContact,
-  ITBranchContactForm,
-  ITBranchDetail,
-  ITBranchForm,
+  ITCustomerDetailSub,
+  ITCustomerDetailSubContact,
+  ITCustomerDetailSubContactForm,
+  ITCustomerDetailSubDetail,
+  ITCustomerDetailSubForm,
 } from "@/app/common/customer";
 import {
   CloseOutlined,
@@ -34,10 +34,10 @@ import { dateToStringThNoTime } from "@/app/utils/format";
 export interface props {
   rules: any;
   customerId: number;
-  branchDetail?: ITBranchDetail;
+  branchDetail?: ITCustomerDetailSubDetail;
   onSaveBranchContact: (
     branchId: number,
-    form: ITBranchContactForm,
+    form: ITCustomerDetailSubContactForm,
     customerId: number
   ) => void;
   onDeleteCustomerBranchContact: (
@@ -75,13 +75,13 @@ const BranchContact: React.FC<props> = ({
     }
   };
 
-  const columns: TableColumnsType<ITBranchContact> = [
+  const columns: TableColumnsType<ITCustomerDetailSubContact> = [
     {
       key: "id",
       dataIndex: "id",
       title: "No",
       width: "80px",
-      render: (id: number, record: ITBranchContact, index: number) => index + 1,
+      render: (id: number, record: ITCustomerDetailSubContact, index: number) => index + 1,
     },
     {
       key: "name",

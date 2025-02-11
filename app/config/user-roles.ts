@@ -15,6 +15,18 @@ export type TUserRoles = {
   crmCustomerAdd?: boolean;
   crmCustomerEdit?: boolean;
   crmCustomerDelete?: boolean;
+  crmProductShow?: boolean;
+  crmProductAdd?: boolean;
+  crmProductEdit?: boolean;
+  crmProductDelete?: boolean;
+  crmProjectShow?: boolean;
+  crmProjectAdd?: boolean;
+  crmProjectEdit?: boolean;
+  crmProjectDelete?: boolean;
+  crmTicketShow?: boolean;
+  crmTicketAdd?: boolean;
+  crmTicketEdit?: boolean;
+  crmTicketDelete?: boolean;
   //HR
   //Intranet
   //Intranet Leave
@@ -77,10 +89,23 @@ export enum UserRoles {
   userModuleShow = "um-m-s",
   userGroupPermissionShow = "um-up-s",
   //CRM
+  crmShow = "crm-s",
   crmCustomerShow = "crm-c-s",
   crmCustomerAdd = "crm-c-a",
   crmCustomerEdit = "crm-c-e",
-  crmCustomerDelete = "crm-c-d",
+  crmCustomerDelete = "crm-c-d", 
+  crmProductShow = "crm-pd-s", 
+  crmProductAdd = "crm-pd-a", 
+  crmProductEdit = "crm-pd-e", 
+  crmProductDelete = "crm-pd-d", 
+  crmProjectShow = "crm-pj-s", 
+  crmProjectAdd = "crm-pj-a", 
+  crmProjectEdit = "crm-pj-e", 
+  crmProjectDelete = "crm-pj-d", 
+  crmTicketShow = "crm-t-s", 
+  crmTicketAdd = "crm-t-a", 
+  crmTicketEdit = "crm-t-e", 
+  crmTicketDelete = "crm-t-d", 
   //HR
   //Intranet
   //Intranet Leave

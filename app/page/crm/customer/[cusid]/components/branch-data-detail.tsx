@@ -12,12 +12,12 @@ import {
   Tabs,
 } from "antd";
 import {
-  ITBranch,
-  ITBranchAddress,
-  ITBranchAddressForm,
-  ITBranchContactForm,
-  ITBranchDetail,
-  ITBranchForm,
+  ITCustomerDetailSub,
+  ITCustomerDetailSubAddress,
+  ITCustomerDetailSubAddressForm,
+  ITCustomerDetailSubContactForm,
+  ITCustomerDetailSubDetail,
+  ITCustomerDetailSubForm,
 } from "../../common";
 import {
   CloseOutlined,
@@ -40,17 +40,17 @@ const layout = {
 };
 export interface props {
   rules: any;
-  branchDetail?: ITBranchDetail;
+  customerDetailSubDetail?: ITCustomerDetailSubDetail;
   onShowModalBranchDetail: (id: number | undefined) => void;
-  onSaveBranchAddress: (branchId: number, form: ITBranchAddressForm) => void;
+  onSaveBranchAddress: (branchId: number, form: ITCustomerDetailSubAddressForm) => void;
   onDeleteCustomerBranchAddress: (branchId: number, addressId: number) => void;
-  onSaveBranchContact: (branchId: number, form: ITBranchContactForm) => void;
+  onSaveBranchContact: (branchId: number, form: ITCustomerDetailSubContactForm) => void;
   onDeleteCustomerBranchContact: (branchId: number, contactId: number) => void;
 }
 
 const BranchDetailComponent: React.FC<props> = ({
   rules,
-  branchDetail,
+  customerDetailSubDetail,
   onShowModalBranchDetail,
   onSaveBranchAddress,
   onDeleteCustomerBranchAddress,
@@ -60,12 +60,12 @@ const BranchDetailComponent: React.FC<props> = ({
   const [showModalAddressAdd, setShowModalAddressAdd] = useState(false);
   useEffect(() => {
     setShowModalAddressAdd(false);
-  }, [branchDetail?.customerAddress]);
+  }, [customerDetailSubDetail?.customerAddress]);
 
   return (
     <>
       <Modal
-        open={branchDetail ? true : false}
+        open={customerDetailSubDetail ? true : false}
         title={"ข้อมูลสาขา"}
         width={1500}
         footer={[]}
@@ -79,16 +79,16 @@ const BranchDetailComponent: React.FC<props> = ({
           <div className=" grid grid-cols-1  md:grid-cols-4 ">
             <div>
               <b>Code :</b>
-              {branchDetail?.branchCode}
+              {customerDetailSubDetail?.code}
             </div>
             <div>
               <b>Name :</b>
-              {branchDetail?.branchName}
+              {customerDetailSubDetail?.name}
             </div>
           </div>
           <div className=" grid grid-cols-1">
             <b>Remark :</b>
-            <TextArea readOnly rows={4} value={branchDetail?.remark} />
+            <TextArea readOnly rows={4} value={customerDetailSubDetail?.remark} />
           </div>
           <Divider />
           <Tabs
@@ -100,7 +100,7 @@ const BranchDetailComponent: React.FC<props> = ({
                 children: (
                   <BranchAddressComponent
                     rules={rules}
-                    branchDetail={branchDetail}
+                    customerDetailSubDetail={customerDetailSubDetail}
                     onDeleteCustomerBranchAddress={
                       onDeleteCustomerBranchAddress
                     }
@@ -114,7 +114,7 @@ const BranchDetailComponent: React.FC<props> = ({
                 children: (
                   <BranchContactComponent
                     rules={rules}
-                    branchDetail={branchDetail}
+                    customerDetailSubDetail={customerDetailSubDetail}
                     onDeleteCustomerBranchContact={
                       onDeleteCustomerBranchContact
                     }

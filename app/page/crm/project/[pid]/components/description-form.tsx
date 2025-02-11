@@ -10,7 +10,7 @@ import {
   Select,
   Switch,
 } from "antd";
-import { ITBranchContact, ITProject } from "../../common";
+import { ITCustomerDetailSubContact, ITProject } from "../../common";
 
 import "../../style.css";
 import { dateToStringThNoTime } from "@/app/utils/format";
@@ -19,7 +19,7 @@ const { TextArea } = Input;
 export interface props {
   // descriptionForm: FormInstance<ITProject>;
   projectDescription: ITProject;
-  contactDescription: ITBranchContact | undefined;
+  contactDescription: ITCustomerDetailSubContact | undefined;
   isEdit: boolean;
   setIsEdit: (isEdit: boolean) => void;
   onFinishEdit: (form: ITProject) => void;
@@ -104,9 +104,9 @@ const DescriptionCustomerForm: React.FC<props> = ({
                       Customer Group :
                     </div>
                     <div className=" col-span-2 md:col-span-1 text-slate-500">
-                      {projectDescription.customerBranch.customerDetail
+                      {projectDescription.customerDetailSub.customerDetail
                         .customerNameTh
-                        ? projectDescription.customerBranch.customerDetail
+                        ? projectDescription.customerDetailSub.customerDetail
                             .customerNameTh
                         : ""}
                     </div>
@@ -114,17 +114,17 @@ const DescriptionCustomerForm: React.FC<props> = ({
                       Customer :
                     </div>
                     <div className=" col-span-2 md:col-span-1 text-slate-500">
-                      {projectDescription?.customerBranch?.customerDetailSub
-                        ?.name
-                        ? `${projectDescription.customerBranch.customerDetailSub.name}`
+                      {projectDescription?.customerDetailSub?.customerDetail
+                        ?.customerNameTh
+                        ? `${projectDescription.customerDetailSub.customerDetail.customerNameTh}`
                         : "-"}
                     </div>
                     <div className=" font-bold pl-3 pr-3 text-right">
                       Sub Customer / Branch :
                     </div>
                     <div className=" col-span-2 md:col-span-1 text-slate-500">
-                      {projectDescription.customerBranch.branchName
-                        ? projectDescription.customerBranch.branchName
+                      {projectDescription.customerDetailSub.name
+                        ? projectDescription.customerDetailSub.name
                         : "-"}
                     </div>
                     {contactDescription ? (

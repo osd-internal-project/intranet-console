@@ -14,7 +14,7 @@ import {
   Upload,
 } from "antd";
 import {
-  ITBranchContactForm,
+  ITCustomerDetailSubContactForm,
   ITConfigData,
   ITProjectTicketCreateForm,
   ITSelectUsers,

@@ -18,12 +18,13 @@ import {
   ITCustomerForm,
   ITSelectUsers,
 } from "@/app/common/customer";
+import { TUserRoles } from "@/app/config/user-roles";
 
 // import "../../style.css";
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 export interface props {
-  rules: any;
+  roles: TUserRoles | null;
   openCustomerUpdateId: number | undefined;
   customerTypeGroup: ITConfigData[];
   customerTypes: ITConfigData[];
@@ -41,7 +42,7 @@ const layout = {
 };
 
 const CusomterEditForm: React.FC<props> = ({
-  rules,
+  roles,
   openCustomerUpdateId,
   customerTypeGroup,
   customerTypes,
@@ -116,7 +117,7 @@ const CusomterEditForm: React.FC<props> = ({
                     Cancel
                   </Button>
                 </div>
-              ) : rules.ruleCustomerBranchEdit ? (
+              ) : roles?.crmCustomerEdit ? (
                 <Button
                   type="primary"
                   onClick={() => setIsEdit(!isEdit)}

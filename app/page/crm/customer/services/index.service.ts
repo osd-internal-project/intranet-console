@@ -1,12 +1,12 @@
 import { AxiosInstance } from "axios";
 import {
-  ITBranch,
-  ITBranchAddress,
-  ITBranchAddressForm,
-  ITBranchContact,
-  ITBranchContactForm,
-  ITBranchDetail,
-  ITBranchForm,
+  ITCustomerDetailSub,
+  ITCustomerDetailSubAddress,
+  ITCustomerDetailSubAddressForm,
+  ITCustomerDetailSubContact,
+  ITCustomerDetailSubContactForm,
+  ITCustomerDetailSubDetail,
+  ITCustomerDetailSubForm,
   ITConfigData,
   ITCustomer,
   ITCustomerForm,
@@ -36,38 +36,38 @@ export interface TCrmServices {
   createCustomerSub: (
     customerId: number,
     customerSubForm: ITCustomerSubForm
-  ) => Promise<ITBranch>;
+  ) => Promise<ITCustomerDetailSub>;
   editCustomerSub: (
     id: number,
     customerSubForm: ITCustomerSubForm
-  ) => Promise<ITBranch>;
+  ) => Promise<ITCustomerDetailSub>;
   deleteCustomerSub: (id: number) => Promise<ITCustomerSubForm>;
   findBranchByCustomerId: (
     customerId: number,
     condition: object
-  ) => Promise<ITBranch[]>;
+  ) => Promise<ITCustomerDetailSub[]>;
   findBranchByCustomerSubId: (
     customerId: number,
     condition: object
-  ) => Promise<ITBranch[]>;
-  findBranchDetailByBranchId: (branchId: number) => Promise<ITBranchDetail>;
+  ) => Promise<ITCustomerDetailSub[]>;
+  findBranchDetailByBranchId: (branchId: number) => Promise<ITCustomerDetailSubDetail>;
   createBranch: (
     customerId: number,
     customerSubId: number,
-    branchForm: ITBranchForm
-  ) => Promise<ITBranch>;
-  editBranch: (id: number, branchForm: ITBranchForm) => Promise<ITBranch>;
-  deleteBranch: (id: number) => Promise<ITBranch>;
+    branchForm: ITCustomerDetailSubForm
+  ) => Promise<ITCustomerDetailSub>;
+  editBranch: (id: number, branchForm: ITCustomerDetailSubForm) => Promise<ITCustomerDetailSub>;
+  deleteBranch: (id: number) => Promise<ITCustomerDetailSub>;
   createBranchAddress: (
     customerBranchId: number,
-    address: ITBranchAddressForm
-  ) => Promise<ITBranchAddress>;
-  deleteBranchAddress: (addressId: number) => Promise<ITBranchAddress>;
+    address: ITCustomerDetailSubAddressForm
+  ) => Promise<ITCustomerDetailSubAddress>;
+  deleteBranchAddress: (addressId: number) => Promise<ITCustomerDetailSubAddress>;
   createBranchContact: (
     customerBranchId: number,
-    contact: ITBranchContactForm
-  ) => Promise<ITBranchAddress>;
-  deleteBranchContact: (contactId: number) => Promise<ITBranchContact>;
+    contact: ITCustomerDetailSubContactForm
+  ) => Promise<ITCustomerDetailSubAddress>;
+  deleteBranchContact: (contactId: number) => Promise<ITCustomerDetailSubContact>;
   findConfigCustomerTypeGroup: () => Promise<ITConfigData[]>;
   findConfigCustomerResponsible: () => Promise<ITConfigData[]>;
   findConfigCustomerType: () => Promise<[ITConfigData]>;

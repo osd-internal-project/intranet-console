@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Breadcrumb, Card, Col, message, Row, UploadFile, Tabs, Modal, Form, InputNumber } from "antd";
 import DescriptionCustomerComponent from "./components/description-form";
 import {
-  ITBranchContact,
+  ITCustomerDetailSubContact,
   ITExpenseType,
   ITProject,
   ITProjectTask,
@@ -53,7 +53,7 @@ export default function CustomerDetailPage() {
 
   const [editTaskForm] = useForm();
   const [projectDescription, setProjectDescription] = useState<ITProject>();
-  const [contactDescription, setContactDescription] = useState<ITBranchContact | undefined>();
+  const [contactDescription, setContactDescription] = useState<ITCustomerDetailSubContact | undefined>();
   const [loading, setloading] = useState<boolean>(true);
   const [showModalTaskAdd, setShowModalTaskAdd] = useState<boolean>(false);
   const [showModalTaskEdit, setShowModalTaskEdit] = useState<boolean>(false);

@@ -1,14 +1,23 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, Form, message, Modal, Row, Spin, Tabs } from "antd";
-import { useAxiosCrm, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { checkRule } from "@/app/utils/rules";
+import {
+  Breadcrumb,
+  Card,
+  Col,
+  Form,
+  message,
+  Modal,
+  Row,
+  Spin,
+  Tabs,
+} from "antd";
+import { useAxiosCrm, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth"; 
 import Link from "next/link";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import CustomerGroupServices from "@/app/services/customer-group.service";
 
 import CustomerServices from "@/app/services/customer.service";
-import CustomerBranchServices from "@/app/services/customer-branch.service";
+import CustomerBranchServices from "@/app/services/customer-detail-sub.service";
 import CustomerProductServices from "@/app/services/customer-product.service";
 import CustomerProjectServices from "@/app/services/customer-project.service";
 import UserServices from "@/app/services/user.service";
@@ -21,10 +30,10 @@ import {
   ITCustomerForm,
   ITSelectUsers,
   ITConfigData,
-  ITBranchForm,
-  ITBranchDetail,
-  ITBranchAddressForm,
-  ITBranchContactForm,
+  ITCustomerDetailSubForm,
+  ITCustomerDetailSubDetail,
+  ITCustomerDetailSubAddressForm,
+  ITCustomerDetailSubContactForm,
 } from "@/app/common/customer";
 import CustomerGroupDetails from "./components/customer-group-details";
 import CustomerGroupCustomerList from "./components/customer-group-customer-list";
@@ -36,35 +45,25 @@ import CusomterEditForm from "./components/customer-edit-form";
 import BranchEdit from "./components/branch-edit";
 import CustomerGroupSearch from "./components/customer-group-search";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { loadAppConfig } from "@/app/config/app-config";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
 const { useForm } = Form;
-export default function ProductsAddPage() {
-  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const { pid } = useParams();
-  const crmAuth = useAxiosCrm();
-  const userAuth = useAxiosUser();
-  const rules = {
-    ruleCustomerShow: checkRule("crm-c-s"),
-    ruleCustomerAdd: checkRule("crm-c-a"),
-    ruleCustomerEdit: checkRule("crm-c-e"),
-    ruleCustomerSubAdd: checkRule("crm-cs-a"),
-    ruleCustomerSubEdit: checkRule("crm-cs-e"),
-    ruleCustomerSubDelete: checkRule("crm-cs-d"),
-    ruleCustomerBranchAdd: checkRule("crm-cb-a"),
-    ruleCustomerBranchEdit: checkRule("crm-cb-e"),
-    ruleCustomerBranchDelete: checkRule("crm-cb-d"),
-    ruleCustomerAddressAdd: checkRule("crm-ca-a"),
-    ruleCustomerAddressDelete: checkRule("crm-ca-d"),
-    ruleCustomerContactAdd: checkRule("crm-cc-a"),
-    ruleCustomerContactDelete: checkRule("crm-cc-d"),
-    ruleProjectShow: checkRule("crm-p-s"),
-  };
-
-  const customerGroupServices = CustomerGroupServices(crmAuth);
-  const userServices = UserServices(userAuth);
-  const customerServices = CustomerServices(crmAuth);
-  const customerBranchServices = CustomerBranchServices(crmAuth);
-  const customerProductServices = CustomerProductServices(crmAuth);
-  const customerProjectServices = CustomerProjectServices(crmAuth);
+export default function CustomerGroupDetailPage() {
+  const { user, roles } = (useContext(UserContext) as UserContectType) || {
+    user: null,
+    roles: null,
+  };    
+  const { id24Axios } = useId24();  
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlCrm = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_CRM);
+  const { pid } = useParams(); 
+  
+  const userServices = UserServices(baseUrlUser);
+  const customerGroupServices = CustomerGroupServices(baseUrlCrm);
+  const customerServices = CustomerServices(baseUrlCrm);
+  const customerBranchServices = CustomerBranchServices(baseUrlCrm);
+  const customerProductServices = CustomerProductServices(baseUrlCrm);
+  const customerProjectServices = CustomerProjectServices(baseUrlCrm);
   const customerGroupId = String(pid);
   const [descriptionCustomerForm] = useForm();
   const [customerBrahEditForm] = useForm();
@@ -73,25 +72,36 @@ export default function ProductsAddPage() {
   const [loading, setloading] = useState<boolean>(true);
   const [activeTabsKey, setActiveTabKey] = useState<string>("products");
   const [openCustomerCreate, setOpenCustomerCreate] = useState<boolean>(false);
-  const [openCustomerUpdateId, setOpenCustomerUpdateId] = useState<number | undefined>(undefined);
+  const [openCustomerUpdateId, setOpenCustomerUpdateId] = useState<
+    number | undefined
+  >(undefined);
   const [openBranchUpdateId, setOpenBranchUpdateId] = useState<{
     branchId: number | undefined;
     customerId: number | undefined;
   }>({ branchId: undefined, customerId: undefined });
 
   const [customerList, setCustomerList] = useState<ITCustomer[]>([]);
-  const [branchList, setBranchList] = useState<ITBranchDetail[]>([]);
-  const [customerProductsByCustomerGroup, setCustomerProductsByCustomerGroup] = useState<ITCustomerProduct[]>([]);
-  const [customerProductsByCustomer, setCustomerProductsByCustomer] = useState<ITCustomerProduct[]>([]);
-  const [customerProductsByBranch, setCustomerProductsByBranch] = useState<ITCustomerProduct[]>([]);
+  const [customerDetailSubList, setCustomerDetailSubList] = useState<ITCustomerDetailSubDetail[]>([]);
+  const [customerProductsByCustomerGroup, setCustomerProductsByCustomerGroup] =
+    useState<ITCustomerProduct[]>([]);
+  const [customerProductsByCustomer, setCustomerProductsByCustomer] = useState<
+    ITCustomerProduct[]
+  >([]);
+  const [customerProductsByBranch, setCustomerProductsByBranch] = useState<
+    ITCustomerProduct[]
+  >([]);
   const [projectDatas, setProjectDatas] = useState<ITProject[]>([]);
-  const [customerTypeGroup, setCustomerTypeGroup] = useState<ITConfigData[]>([]);
-  const [customerResponsibles, setCustomerResponsibles] = useState<ITSelectUsers[]>([]);
+  const [customerTypeGroup, setCustomerTypeGroup] = useState<ITConfigData[]>(
+    []
+  );
+  const [customerResponsibles, setCustomerResponsibles] = useState<
+    ITSelectUsers[]
+  >([]);
   const [customerTypes, setCustomerTypes] = useState<ITConfigData[]>([]);
   useEffect(() => {
-    fetchData();
+    // fetchData();
     fetchConfigs();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     fetchData();
@@ -101,7 +111,9 @@ export default function ProductsAddPage() {
   }, [allSearch]);
   const fetchData = async () => {
     setloading(true);
-    const data = await customerGroupServices.findDetailsById(Number(customerGroupId));
+    const data = await customerGroupServices.findDetailsById(
+      Number(customerGroupId)
+    );
     if (data) {
       setDetails(data);
     }
@@ -123,9 +135,12 @@ export default function ProductsAddPage() {
   };
   const fetchConfigs = async () => {
     const group = await customerServices.findConfigCustomerTypeGroup();
-    setCustomerTypeGroup(group);
+    setCustomerTypeGroup(group); 
     if (user?.userId) {
-      const responsibles = await userServices.findSaleUserBySalePermission(user?.userId);
+    
+      const responsibles = await userServices.findUsersFormSaleProjectModuleByUserId(
+        user?.userId
+      );
       if (responsibles && responsibles.length > 0) {
         setCustomerResponsibles(responsibles);
       }
@@ -136,17 +151,23 @@ export default function ProductsAddPage() {
   };
   const fetchDataCustomers = async () => {
     setloading(true);
-    const res = await customerServices.findCustomerListByCustomerGroup(Number(customerGroupId), {
-      ...allSearch,
-      userid: user?.userId ? user?.userId : null,
-    });
+    const res = await customerServices.findCustomerListByCustomerGroup(
+      Number(customerGroupId),
+      {
+        ...allSearch,
+        userid: user?.userId ? user?.userId : null,
+      }
+    );
     if (res.data) {
       setCustomerList(res.data);
     }
     setloading(false);
   };
   const fetchDataProductsByCustomerGroup = async () => {
-    const data = await customerProductServices.findManyByCustomerGroup(Number(customerGroupId), allSearch);
+    const data = await customerProductServices.findManyByCustomerGroup(
+      Number(customerGroupId),
+      allSearch
+    );
     if (data) {
       setCustomerProductsByCustomerGroup(data);
     } else {
@@ -159,19 +180,30 @@ export default function ProductsAddPage() {
   const onChangeTabs = async (key: string) => {
     setActiveTabKey(key);
   };
-  const getCustomerProductsByCustomer = async (customerId: number, search: any) => {
-    const products = await customerProductServices.findManyByCustomer(customerId, allSearch);
+  const getCustomerProductsByCustomer = async (
+    customerId: number,
+    search: any
+  ) => {
+    const products = await customerProductServices.findManyByCustomer(
+      customerId,
+      allSearch
+    );
     if (products) {
       setCustomerProductsByCustomer(products);
     } else {
       setCustomerProductsByCustomer([]);
     }
   };
-  const getCustomerProductsByBranch = async (bracnchId: number, search: any) => {
-    const products = await customerProductServices.findManyByBranch(bracnchId, allSearch);
+  const getCustomerProductsByBranch = async (
+    bracnchId: number,
+    search: any
+  ) => {
+    const products = await customerProductServices.findManyByBranch(
+      bracnchId,
+      allSearch
+    );
 
     if (products) {
-      console.log(products);
       setCustomerProductsByBranch(products);
     } else {
       setCustomerProductsByBranch([]);
@@ -179,23 +211,43 @@ export default function ProductsAddPage() {
   };
   const getCustomerBrachList = async (customerId: number) => {
     setloading(true);
-    const branchs = await customerBranchServices.findManyByCustomerId(customerId, allSearch);
-    setBranchList(branchs);
+    const customerDetailSubs = await customerBranchServices.findManyByCustomerId(
+      customerId,
+      allSearch
+    );
+    setCustomerDetailSubList(customerDetailSubs);
     setloading(false);
   };
 
-  async function getProjectDataTable(productId: string, parentId: string, type: string, search: any) {
-    const projects = await customerProjectServices.findProjectsByProductIdAndParentId(productId, parentId, type, search);
+  async function getProjectDataTable(
+    productId: string,
+    parentId: string,
+    type: string,
+    search: any
+  ) {
+    const projects =
+      await customerProjectServices.findProjectsByProductIdAndParentId(
+        productId,
+        parentId,
+        type,
+        search
+      );
     setProjectDatas(projects);
   }
   function onFinishAddCustomer(form: ITCustomerForm): void {
     let createForm = form;
     const customerNameTh =
-      form.customerTypeId === "natural" ? `${form.details?.firstNameTh} ${form.details?.lastNameTh}` : form.details?.customerNameTh;
+      form.customerTypeId === "natural"
+        ? `${form.details?.firstNameTh} ${form.details?.lastNameTh}`
+        : form.details?.customerNameTh;
     const customerNameEn =
-      form.customerTypeId === "natural" ? `${form.details?.firstNameTh} ${form.details?.lastNameTh}` : form.details?.customerNameEn;
+      form.customerTypeId === "natural"
+        ? `${form.details?.firstNameTh} ${form.details?.lastNameTh}`
+        : form.details?.customerNameEn;
     if (form.customerTypeId) {
-      const customerTypeSelected = customerTypes.findLast((group) => group.id === form.customerTypeGroupId);
+      const customerTypeSelected = customerTypes.findLast(
+        (group) => group.id === form.customerTypeGroupId
+      );
       if (customerTypeSelected?.name) {
         createForm = {
           ...createForm,
@@ -204,7 +256,9 @@ export default function ProductsAddPage() {
       }
     }
     if (form.customerTypeGroupId) {
-      const customerTypeGroupSelected = customerTypeGroup.findLast((group) => group.id === form.customerTypeGroupId);
+      const customerTypeGroupSelected = customerTypeGroup.findLast(
+        (group) => group.id === form.customerTypeGroupId
+      );
       if (customerTypeGroupSelected?.name) {
         createForm = {
           ...createForm,
@@ -282,7 +336,9 @@ export default function ProductsAddPage() {
     };
     let updateForm = form;
     if (form.customerTypeId) {
-      const customerTypeSelected = customerTypes.findLast((d) => d.id === form.customerTypeGroupId);
+      const customerTypeSelected = customerTypes.findLast(
+        (d) => d.id === form.customerTypeGroupId
+      );
       if (customerTypeSelected?.name) {
         updateForm = {
           ...updateForm,
@@ -291,7 +347,9 @@ export default function ProductsAddPage() {
       }
     }
     if (form.customerTypeGroupId) {
-      const customerTypeGroupSelected = customerTypeGroup.findLast((d) => d.id === form.customerTypeGroupId);
+      const customerTypeGroupSelected = customerTypeGroup.findLast(
+        (d) => d.id === form.customerTypeGroupId
+      );
       if (customerTypeGroupSelected?.name) {
         updateForm = {
           ...updateForm,
@@ -315,9 +373,13 @@ export default function ProductsAddPage() {
       }
     }
     const customerNameTh =
-      form.customerTypeId === "natural" ? `${form.details?.firstNameTh} ${form.details?.lastNameTh}` : form.details?.customerNameTh;
+      form.customerTypeId === "natural"
+        ? `${form.details?.firstNameTh} ${form.details?.lastNameTh}`
+        : form.details?.customerNameTh;
     const customerNameEn =
-      form.customerTypeId === "natural" ? `${form.details?.firstNameTh} ${form.details?.lastNameTh}` : form.details?.customerNameEn;
+      form.customerTypeId === "natural"
+        ? `${form.details?.firstNameTh} ${form.details?.lastNameTh}`
+        : form.details?.customerNameEn;
     updateForm = {
       ...updateForm,
       responsibleId: form.responsibleId,
@@ -356,7 +418,7 @@ export default function ProductsAddPage() {
   }
 
   function onOpenEditBranch(branchId: number, customerId: number): void {
-    const branchSelected = branchList.find((branch) => branch.id === branchId);
+    const branchSelected = customerDetailSubList.find((branch) => branch.id === branchId);
     customerBrahEditForm.setFieldsValue({
       ...branchSelected,
       customerId: customerId,
@@ -367,7 +429,7 @@ export default function ProductsAddPage() {
     setOpenBranchUpdateId({ branchId: undefined, customerId: undefined });
     customerBrahEditForm.resetFields();
   }
-  async function onSaveBranchEdit(form: ITBranchForm): Promise<void> {
+  async function onSaveBranchEdit(form: ITCustomerDetailSubForm): Promise<void> {
     const base = {
       ...form,
       updatedBy: `${user?.firstNameTh} ${user?.lastNameTh}`,
@@ -392,9 +454,13 @@ export default function ProductsAddPage() {
     setloading(true);
   }
 
-  async function onSaveBranchAddress(branchId: number, form: ITBranchAddressForm, customerId: number): Promise<void> {
+  async function onSaveBranchAddress(
+    branchId: number,
+    form: ITCustomerDetailSubAddressForm,
+    customerId: number
+  ): Promise<void> {
     await customerBranchServices
-      .createBranchAddress(branchId, form)
+      .createCustomerDetailSubAddress(branchId, form)
       .then((res) => {
         message.success("สร้างผู้ติดต่อสำเร็จ");
         getCustomerBrachList(customerId);
@@ -404,9 +470,13 @@ export default function ProductsAddPage() {
       });
   }
 
-  async function onDeleteCustomerBranchAddress(branchId: number, addressId: number, customerId: number): Promise<void> {
+  async function onDeleteCustomerBranchAddress(
+    branchId: number,
+    addressId: number,
+    customerId: number
+  ): Promise<void> {
     await customerBranchServices
-      .deleteBranchAddress(addressId)
+      .deleteCustomerDetailSubAddress(addressId)
       .then((res) => {
         message.success("สร้างผู้ติดต่อสำเร็จ");
         getCustomerBrachList(customerId);
@@ -416,9 +486,13 @@ export default function ProductsAddPage() {
       });
   }
 
-  async function onSaveBranchContact(branchId: number, form: ITBranchContactForm, customerId: number): Promise<void> {
+  async function onSaveBranchContact(
+    branchId: number,
+    form: ITCustomerDetailSubContactForm,
+    customerId: number
+  ): Promise<void> {
     await customerBranchServices
-      .createBranchContact(branchId, form)
+      .createCustomerDetailSubContact(branchId, form)
       .then((res) => {
         message.success("สร้างผู้ติดต่อสำเร็จ");
         getCustomerBrachList(customerId);
@@ -428,9 +502,13 @@ export default function ProductsAddPage() {
       });
   }
 
-  async function onDeleteCustomerBranchContact(branchId: number, contactId: number, customerId: number): Promise<void> {
+  async function onDeleteCustomerBranchContact(
+    branchId: number,
+    contactId: number,
+    customerId: number
+  ): Promise<void> {
     await customerBranchServices
-      .deleteBranchContact(contactId)
+      .deleteCustomerDetailSubContact(contactId)
       .then((res) => {
         message.success("สร้างผู้ติดต่อสำเร็จ");
         getCustomerBrachList(customerId);
@@ -441,7 +519,7 @@ export default function ProductsAddPage() {
   }
 
   return (
-    <Spin spinning={loading}>
+    <Spin spinning={loading}> 
       <Row gutter={[8, 8]}>
         <Col span={24}>
           <Breadcrumb
@@ -453,7 +531,9 @@ export default function ProductsAddPage() {
                 title: <span>CRM</span>,
               },
               {
-                title: <Link href={"/page/crm/customer-group"}>Customer Group</Link>,
+                title: (
+                  <Link href={"/page/crm/customer-group"}>Customer Group</Link>
+                ),
               },
               {
                 title: <span>{String(customerGroupId)}</span>,
@@ -462,11 +542,15 @@ export default function ProductsAddPage() {
           />
         </Col>
         <Col span={24}>
-          <div className="title-page-font">{details ? details.customerGroupName : ""}</div>
+          <div className="title-page-font">
+            {details ? details.customerGroupName : ""}
+          </div>
         </Col>
 
         <Col span={24}>
-          <div className="grid grid-cols-1 ">{details && <CustomerGroupDetails details={details} />}</div>
+          <div className="grid grid-cols-1 ">
+            {details && <CustomerGroupDetails details={details} />}
+          </div>
         </Col>
         <Col span={24}>
           <div className="grid grid-cols-1 ">
@@ -489,8 +573,12 @@ export default function ProductsAddPage() {
                   children: details ? (
                     <CustomerGroupProductList
                       customerGroupId={String(customerGroupId)}
-                      customerProductsByCustomerGroup={customerProductsByCustomerGroup}
-                      fetchDataProductsByCustomerGroup={fetchDataProductsByCustomerGroup}
+                      customerProductsByCustomerGroup={
+                        customerProductsByCustomerGroup
+                      }
+                      fetchDataProductsByCustomerGroup={
+                        fetchDataProductsByCustomerGroup
+                      }
                       projectDatas={projectDatas}
                       getProjectDataTable={getProjectDataTable}
                     />
@@ -503,11 +591,13 @@ export default function ProductsAddPage() {
                   label: `Customers`,
                   children: details ? (
                     <CustomerGroupCustomerList
-                      rules={rules}
+                      roles={roles}
                       customerList={customerList}
                       customerProductsByCustomer={customerProductsByCustomer}
-                      getCustomerProductsByCustomer={getCustomerProductsByCustomer}
-                      branchList={branchList}
+                      getCustomerProductsByCustomer={
+                        getCustomerProductsByCustomer
+                      }
+                      customerDetailSubList={customerDetailSubList}
                       customerProductsByBranch={customerProductsByBranch}
                       onOpenCustomerCreateForm={onOpenCustomerCreateForm}
                       getCustomerBrachList={getCustomerBrachList}
@@ -519,9 +609,13 @@ export default function ProductsAddPage() {
                       onOpenEditBranch={onOpenEditBranch}
                       onDeleteBranch={onDeleteBranch}
                       onSaveBranchAddress={onSaveBranchAddress}
-                      onDeleteCustomerBranchAddress={onDeleteCustomerBranchAddress}
+                      onDeleteCustomerBranchAddress={
+                        onDeleteCustomerBranchAddress
+                      }
                       onSaveBranchContact={onSaveBranchContact}
-                      onDeleteCustomerBranchContact={onDeleteCustomerBranchContact}
+                      onDeleteCustomerBranchContact={
+                        onDeleteCustomerBranchContact
+                      }
                     />
                   ) : (
                     <Card>{`ไม่พบข้อมูล`}</Card>
@@ -544,7 +638,7 @@ export default function ProductsAddPage() {
       )}
       {openCustomerUpdateId && (
         <CusomterEditForm
-          rules={rules}
+          roles={roles}
           customerTypeGroup={customerTypeGroup}
           customerTypes={customerTypes}
           customerResponsibles={customerResponsibles}
@@ -565,3 +659,4 @@ export default function ProductsAddPage() {
     </Spin>
   );
 }
+ 

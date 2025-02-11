@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Breadcrumb, Button, Card, Col, message, Row, Spin, TablePaginationConfig } from "antd";
-import { useAxiosCrm } from "@/app/lib/axios/hooks/userAxiosAuth";
+ 
 import Link from "next/link";
 
 import { ExclamationCircleOutlined } from "@ant-design/icons";
@@ -13,10 +13,13 @@ import CustomerGroupAddComponent from "./components/customer-group-add";
 import { useForm } from "antd/es/form/Form";
 import CustomerGroupEditComponent from "./components/customer-group-edit";
 import modal from "antd/es/modal";
+import { loadAppConfig } from "@/app/config/app-config";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
 
 export default function CustomerGroupPage() {
-  const crmAuth = useAxiosCrm();
-  const customerGroupServices = CustomerGroupServices(crmAuth);
+  const { id24Axios } = useId24();  
+  const baseUrlCrm = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_CRM);
+  const customerGroupServices = CustomerGroupServices(baseUrlCrm);
   const [addForm] = useForm();
   const [editForm] = useForm();
   const [loading, setloading] = useState<boolean>(true);

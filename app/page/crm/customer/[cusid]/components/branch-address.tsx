@@ -12,11 +12,11 @@ import {
   Tabs,
 } from "antd";
 import {
-  ITBranch,
-  ITBranchAddress,
-  ITBranchAddressForm,
-  ITBranchDetail,
-  ITBranchForm,
+  ITCustomerDetailSub,
+  ITCustomerDetailSubAddress,
+  ITCustomerDetailSubAddressForm,
+  ITCustomerDetailSubDetail,
+  ITCustomerDetailSubForm,
 } from "../../common";
 import {
   CloseOutlined,
@@ -30,24 +30,24 @@ import { deleteIcon } from "@/components/icon";
 
 export interface props {
   rules: any;
-  branchDetail?: ITBranchDetail;
-  onSaveBranchAddress: (branchId: number, form: ITBranchAddressForm) => void;
+  customerDetailSubDetail?: ITCustomerDetailSubDetail;
+  onSaveBranchAddress: (branchId: number, form: ITCustomerDetailSubAddressForm) => void;
   onDeleteCustomerBranchAddress: (branchId: number, addressId: number) => void;
 }
 
 const BranchAddressComponent: React.FC<props> = ({
   rules,
-  branchDetail,
+  customerDetailSubDetail,
   onSaveBranchAddress,
   onDeleteCustomerBranchAddress,
 }): React.ReactElement => {
   const [showModalAddressAdd, setShowModalAddressAdd] = useState(false);
   useEffect(() => {
     setShowModalAddressAdd(false);
-  }, [branchDetail?.customerAddress]);
+  }, [customerDetailSubDetail?.customerAddress]);
 
   const showModalBranchAddressDelete = (id: number) => {
-    if (branchDetail?.id) {
+    if (customerDetailSubDetail?.id) {
       Modal.confirm({
         title: "Delete this Address",
         icon: <ExclamationCircleFilled />,
@@ -56,19 +56,19 @@ const BranchAddressComponent: React.FC<props> = ({
         okButtonProps: { type: "primary", danger: true },
         cancelText: "Cancel",
         onOk: async () => {
-          onDeleteCustomerBranchAddress(branchDetail.id, id);
+          onDeleteCustomerBranchAddress(customerDetailSubDetail.id, id);
         },
       });
     }
   };
 
-  const columns: TableColumnsType<ITBranchAddress> = [
+  const columns: TableColumnsType<ITCustomerDetailSubAddress> = [
     // {
     //   key: "addressTypeName",
     //   dataIndex: "addressTypeName",
     //   title: "ประเภทที่อยู่",
     //   width: "100px",
-    //   // render: (id: number, record: ITBranchAddress, index: number) => index + 1,
+    //   // render: (id: number, record: ITCustomerDetailSubAddress, index: number) => index + 1,
     // },
     {
       key: "houseNumber",
@@ -191,9 +191,9 @@ const BranchAddressComponent: React.FC<props> = ({
           <></>
         )}
       </div>
-      {showModalAddressAdd && branchDetail?.id ? (
+      {showModalAddressAdd && customerDetailSubDetail?.id ? (
         <BranchAdressAddComponent
-          branchId={branchDetail?.id}
+          branchId={customerDetailSubDetail?.id}
           showModalAddressAdd={showModalAddressAdd}
           onShowModalAddressAdd={function (status: boolean): void {
             setShowModalAddressAdd(status);
@@ -207,7 +207,7 @@ const BranchAddressComponent: React.FC<props> = ({
         size="small"
         columns={columns}
         dataSource={
-          branchDetail?.customerAddress ? branchDetail.customerAddress : []
+          customerDetailSubDetail?.customerAddress ? customerDetailSubDetail.customerAddress : []
         }
       />
     </div>

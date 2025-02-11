@@ -188,22 +188,7 @@ const CustomerCreateForm: React.FC<props> = ({
           <Form.Item label="รหัสอ้างอิงลูกค้า" name={"referenceCode"}>
             <Input placeholder="Enter Text" />
           </Form.Item>
-
-          {/* <Form.Item
-          label="สาขาใหญ่ ?"
-          valuePropName="checked"
-          name={"mainBranchStatus"}
-          initialValue={true}
-        >
-          <Switch
-            size="default"
-            unCheckedChildren={"สาขาย่อย"}
-            checkedChildren={"สาขาใหญ่"}
-          />
-        </Form.Item> */}
-          {/* <Form.Item label="สาขา" name={"branchName"}>
-          <Input placeholder="Enter Text" />
-        </Form.Item> */}
+ 
           <Form.Item label="เลขที่ทะเบียนบริษัท" name={"companyRegisNumber"}>
             <Input placeholder="Enter Text" />
           </Form.Item>

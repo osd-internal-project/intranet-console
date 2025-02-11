@@ -2,11 +2,11 @@ import React from "react";
 import type { FormInstance, TableColumnsType } from "antd";
 import { Button, ConfigProvider, Input, Modal, Table, Tag } from "antd";
 import {
-  ITBranch,
-  ITBranchAddressForm,
-  ITBranchContactForm,
-  ITBranchDetail,
-  ITBranchForm,
+  ITCustomerDetailSub,
+  ITCustomerDetailSubAddressForm,
+  ITCustomerDetailSubContactForm,
+  ITCustomerDetailSubDetail,
+  ITCustomerDetailSubForm,
 } from "../../common";
 import BranchModalAdd from "./branch-data-add";
 import BranchModalEdit from "./branch-data-edit";
@@ -15,27 +15,27 @@ import { deleteIcon, editIcon } from "@/components/icon";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 export interface props {
   rules: any;
-  branchs: ITBranch[];
-  branchDetail?: ITBranchDetail;
+  customerDetailSubs: ITCustomerDetailSub[];
+  customerDetailSubDetail?: ITCustomerDetailSubDetail;
   showModalBranchAdd: boolean;
   showModalBranchEdit: boolean;
   onShowModalBranchAdd: (status: boolean) => void;
   onShowModalBranchEdit: (status: boolean) => void;
   onShowModalBranchDetail: (id: number | undefined) => void;
-  onSaveBranch: (form: ITBranchForm) => void;
-  onSaveBranchEdit: (form: ITBranchForm) => void;
+  onSaveBranch: (form: ITCustomerDetailSubForm) => void;
+  onSaveBranchEdit: (form: ITCustomerDetailSubForm) => void;
   onDeleteCustomerBranch: (id: number) => void;
-  onSaveBranchAddress: (branchId: number, form: ITBranchAddressForm) => void;
+  onSaveBranchAddress: (branchId: number, form: ITCustomerDetailSubAddressForm) => void;
   onDeleteCustomerBranchAddress: (branchId: number, addressId: number) => void;
-  onSaveBranchContact: (branchId: number, form: ITBranchContactForm) => void;
+  onSaveBranchContact: (branchId: number, form: ITCustomerDetailSubContactForm) => void;
   onDeleteCustomerBranchContact: (branchId: number, contactId: number) => void;
   formEdit: FormInstance;
 }
 
 const BranchComponent: React.FC<props> = ({
   rules,
-  branchs,
-  branchDetail,
+  customerDetailSubs,
+  customerDetailSubDetail,
   showModalBranchAdd,
   showModalBranchEdit,
   onShowModalBranchAdd,
@@ -63,24 +63,24 @@ const BranchComponent: React.FC<props> = ({
       },
     });
   };
-  const columns: TableColumnsType<ITBranch> = [
+  const columns: TableColumnsType<ITCustomerDetailSub> = [
     {
       key: "id",
       dataIndex: "id",
       title: "No",
       width: "100px",
       align: "center",
-      render: (id: number, record: ITBranch, index: number) => index + 1,
+      render: (id: number, record: ITCustomerDetailSub, index: number) => index + 1,
     },
     {
-      key: "branchCode",
-      dataIndex: "branchCode",
+      key: "code",
+      dataIndex: "code",
       title: "รหัสสาขา",
       width: "200px",
     },
     {
-      key: "branchName",
-      dataIndex: "branchName",
+      key: "name",
+      dataIndex: "name",
       title: "ชื่อสาขา",
       width: "300px",
     },
@@ -100,7 +100,7 @@ const BranchComponent: React.FC<props> = ({
       dataIndex: "id",
       title: "รายละเอียด",
       width: "100px",
-      render: (id: number, record: ITBranch, index: number) => (
+      render: (id: number, record: ITCustomerDetailSub, index: number) => (
         <div className="space-x-1">
           <Button type="link" onClick={() => onShowModalBranchDetail(id)}>
             View
@@ -114,7 +114,7 @@ const BranchComponent: React.FC<props> = ({
       title: "ดำเนินการ",
       width: "150px",
       align: "center",
-      render: (id: number, record: ITBranch, index: number) => (
+      render: (id: number, record: ITCustomerDetailSub, index: number) => (
         <div className="space-x-1">
           {/* {rules.ruleCustomerBranchEdit ? ( */}
           <Button
@@ -177,8 +177,8 @@ const BranchComponent: React.FC<props> = ({
             rowHoverable={false}
             size="small"
             columns={columns}
-            dataSource={branchs}
-            rowKey={(data: ITBranch) => data.id}
+            dataSource={customerDetailSubs}
+            rowKey={(data: ITCustomerDetailSub) => data.id}
             pagination={false}
           />
         </ConfigProvider>
@@ -194,10 +194,10 @@ const BranchComponent: React.FC<props> = ({
         onShowModalBranchEdit={onShowModalBranchEdit}
         formEdit={formEdit}
       />
-      {branchDetail && (
+      {customerDetailSubDetail && (
         <BranchModalDetail
           rules={rules}
-          branchDetail={branchDetail}
+          customerDetailSubDetail={customerDetailSubDetail}
           onDeleteCustomerBranchAddress={onDeleteCustomerBranchAddress}
           onShowModalBranchDetail={onShowModalBranchDetail}
           onSaveBranchAddress={onSaveBranchAddress}

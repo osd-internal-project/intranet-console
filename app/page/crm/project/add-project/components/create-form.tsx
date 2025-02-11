@@ -28,9 +28,9 @@ import {
 } from "antd";
 import type { Dayjs } from "dayjs";
 import {
-  ITBranchAddress,
-  ITBranchContact,
-  ITBranchForSelect,
+  ITCustomerDetailSubAddress,
+  ITCustomerDetailSubContact,
+  ITCustomerDetailSubForSelect,
   ITContractCompany,
   ITCustomerForSelect,
   ITProject,
@@ -52,7 +52,7 @@ export interface props {
   customerList: ITCustomerForSelect[];
   customerGroupList: ITCustomerGroup[];
   customerSubList: ITCustomerSubForm[];
-  branchList: ITBranchForSelect[];
+  branchList: ITCustomerDetailSubForSelect[];
   userList: ITSelectUsers[];
   groupOption: SelectProps["options"];
   saleList: { uid: string; name: string }[];
@@ -93,8 +93,8 @@ const CreateProjectForm: React.FC<props> = ({
   productOptions,
 }): React.ReactElement => {
   const [form] = useForm();
-  const [addressSelect, setAddressSelect] = useState<ITBranchAddress[]>([]);
-  const [contactSelect, setContactSelect] = useState<ITBranchContact[]>([]);
+  const [addressSelect, setAddressSelect] = useState<ITCustomerDetailSubAddress[]>([]);
+  const [contactSelect, setContactSelect] = useState<ITCustomerDetailSubContact[]>([]);
   const [productSelects, setProductSelects] = useState<ITCustomerProduct[]>([]);
   useEffect(() => {
     const users = usersFormGroup.map((user) => user.userId);
@@ -389,7 +389,7 @@ const CreateProjectForm: React.FC<props> = ({
             onChange={onChangeBranchSelect}
             options={branchList.map((branch) => ({
               value: branch.id,
-              label: branch.branchName,
+              label: branch.name,
             }))}
           />
         </Form.Item>

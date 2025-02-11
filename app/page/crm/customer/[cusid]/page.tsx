@@ -8,11 +8,11 @@ import {
   ITCustomerForm,
   ITCustomer,
   ITPagination,
-  ITBranchForm,
-  ITBranch,
-  ITBranchAddressForm,
-  ITBranchDetail,
-  ITBranchContactForm,
+  ITCustomerDetailSubForm,
+  ITCustomerDetailSub,
+  ITCustomerDetailSubAddressForm,
+  ITCustomerDetailSubDetail,
+  ITCustomerDetailSubContactForm,
   ITSelectUsers,
   ITConfigData,
   ITCustomerSubForm,
@@ -24,7 +24,7 @@ import CrmServices from "../services/index.service";
 import { useParams } from "next/navigation";
 import { useForm } from "antd/es/form/Form";
 import dayjs from "dayjs";
-import UserServices from "../services/user.service";
+import UserServices from "@/app/services/user.service";
 import { ITProject } from "../../project/common";
 import { checkRule } from "@/app/utils/rules";
 import CustomerSubDetailComponent from "./components/customer-sub-detail";
@@ -59,7 +59,7 @@ export default function CustomerDetailPage() {
 
   const [customerSubs, setCustomerSubs] = useState<ITCustomerSubDetail[]>([]);
   const [customerSubIdSelected, setCustomerSubIdSelected] = useState<number | undefined>(undefined);
-  const [branchs, setBranchs] = useState<ITBranch[]>([]);
+  const [customerDetailSubs, setCustomerDetailSubs] = useState<ITCustomerDetailSub[]>([]);
   const [loading, setloading] = useState<boolean>(true);
   const [isEdit, setIsEdit] = useState(false);
   const [showModalCustomeSubAdd, setShowModalCustomerSubAdd] = useState(false);
@@ -67,7 +67,7 @@ export default function CustomerDetailPage() {
   const [showModalBranchAdd, setShowModalBranchAdd] = useState(false);
 
   const [showModalBranchEdit, setShowModalBranchEdit] = useState(false);
-  const [branchDetail, setBranchDetail] = useState<ITBranchDetail | undefined>(undefined);
+  const [customerDetailSubDetail, setCustomerDetailSubDetail] = useState<ITCustomerDetailSubDetail | undefined>(undefined);
   const [projectDetail, setProjectDetail] = useState<ITProject[]>([]);
   const [customerTypeGroup, setCustomerTypeGroup] = useState<ITConfigData[]>([]);
   const [customerResponsibles, setCustomerResponsibles] = useState<ITSelectUsers[]>([]);
@@ -95,7 +95,7 @@ export default function CustomerDetailPage() {
     const group = await crmServices.findConfigCustomerTypeGroup();
     setCustomerTypeGroup(group);
     if (user?.userId) {
-      const responsibles = await userServices.findSaleUserBySalePermission(user?.userId);
+      const responsibles = await userServices.findUsersFormSaleProjectModuleByUserId(user?.userId);
       if (responsibles && responsibles.length > 0) {
         setCustomerResponsibles(responsibles);
       }
@@ -122,7 +122,7 @@ export default function CustomerDetailPage() {
   async function fetchBranchByCustomerSubId(customerSubId: number): Promise<void> {
     const branchs = await crmServices.findBranchByCustomerSubId(customerSubId, {});
     setCustomerSubIdSelected(customerSubId);
-    setBranchs(branchs);
+    setCustomerDetailSubs(branchs);
   }
   const fetchProject = async () => {
     const projects = await crmServices.findProjectDataTableByCustomerId(+params.cusid);
@@ -194,7 +194,7 @@ export default function CustomerDetailPage() {
     setloading(true);
   }
 
-  async function onSaveBranch(form: ITBranchForm): Promise<void> {
+  async function onSaveBranch(form: ITCustomerDetailSubForm): Promise<void> {
     if (customerSubIdSelected) {
       await crmServices
         .createBranch(+params.cusid, customerSubIdSelected, form)
@@ -209,7 +209,7 @@ export default function CustomerDetailPage() {
       message.error("ผิดพลาด กรุณาลองใหม่");
     }
   }
-  async function onSaveBranchEdit(form: ITBranchForm): Promise<void> {
+  async function onSaveBranchEdit(form: ITCustomerDetailSubForm): Promise<void> {
     const base = {
       ...form,
       updatedBy: `${user?.firstNameTh} ${user?.lastNameTh}`,
@@ -230,9 +230,9 @@ export default function CustomerDetailPage() {
   async function onShowModalBranchDetail(id: number | undefined): Promise<void> {
     if (id) {
       const branchDetail = await crmServices.findBranchDetailByBranchId(id);
-      setBranchDetail(branchDetail);
+      setCustomerDetailSubDetail(branchDetail);
     } else {
-      setBranchDetail(undefined);
+      setCustomerDetailSubDetail(undefined);
     }
   }
   async function onDeleteCustomerBranch(id: number): Promise<void> {
@@ -246,7 +246,7 @@ export default function CustomerDetailPage() {
       });
     setloading(true);
   }
-  async function onSaveBranchAddress(id: number, form: ITBranchAddressForm): Promise<void> {
+  async function onSaveBranchAddress(id: number, form: ITCustomerDetailSubAddressForm): Promise<void> {
     await crmServices
       .createBranchAddress(id, form)
       .then((res) => {
@@ -268,7 +268,7 @@ export default function CustomerDetailPage() {
       });
     onShowModalBranchDetail(branchId);
   }
-  async function onSaveBranchContact(branchId: number, form: ITBranchContactForm): Promise<void> {
+  async function onSaveBranchContact(branchId: number, form: ITCustomerDetailSubContactForm): Promise<void> {
     await crmServices
       .createBranchContact(branchId, form)
       .then((res) => {
@@ -374,7 +374,7 @@ export default function CustomerDetailPage() {
                           <div>
                             <CustomerSubDetailComponent
                               rules={rules}
-                              branchDetail={branchDetail}
+                              customerDetailSubDetail={customerDetailSubDetail}
                               customerSubs={customerSubs}
                               showModalCustomerSubAdd={showModalCustomeSubAdd}
                               showModalCustomerSubEdit={showModalCustomeSubEdit}
@@ -389,7 +389,7 @@ export default function CustomerDetailPage() {
                               onDeleteCustomerSub={onDeleteCustomerSub}
                               // formEdit={undefined}
                               formBranchEdit={formBranchEdit}
-                              branchs={branchs}
+                              customerDetailSubs={customerDetailSubs}
                               fetchBranchByCustomerSubId={fetchBranchByCustomerSubId}
                               showModalBranchAdd={showModalBranchAdd}
                               showModalBranchEdit={showModalBranchEdit}

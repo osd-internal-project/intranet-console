@@ -23,10 +23,10 @@ import {
 } from "antd";
 import type { Dayjs } from "dayjs";
 import {
-  ITBranch,
-  ITBranchAddressForm,
-  ITBranchContactForm,
-  ITBranchDetail,
+  ITCustomerDetailSub,
+  ITCustomerDetailSubAddressForm,
+  ITCustomerDetailSubContactForm,
+  ITCustomerDetailSubDetail,
   ITCustomerGroup,
 } from "@/app/common/customer";
 import { ColumnType } from "antd/es/table";
@@ -38,11 +38,12 @@ import CustomerDetails from "./customer-details";
 import { ITCustomerProduct } from "@/app/common/product";
 import { ITProject } from "@/app/common/project";
 import data from "@iconify/icons-icon-park-outline/setting-two";
+import { TUserRoles } from "@/app/config/user-roles";
 
 export interface props {
   customerList: ITCustomer[];
-  branchList: ITBranchDetail[];
-  rules: any;
+  customerDetailSubList: ITCustomerDetailSubDetail[];
+  roles: TUserRoles | null;
   customerProductsByCustomer: ITCustomerProduct[];
   customerProductsByBranch: ITCustomerProduct[];
   projectDatas: ITProject[];
@@ -62,7 +63,7 @@ export interface props {
   onDeleteBranch: (branchId: number, customerId: number) => void;
   onSaveBranchAddress: (
     branchId: number,
-    form: ITBranchAddressForm,
+    form: ITCustomerDetailSubAddressForm,
     customerId: number
   ) => void;
   onDeleteCustomerBranchAddress: (
@@ -72,7 +73,7 @@ export interface props {
   ) => void;
   onSaveBranchContact: (
     branchId: number,
-    form: ITBranchContactForm,
+    form: ITCustomerDetailSubContactForm,
     customerId: number
   ) => void;
   onDeleteCustomerBranchContact: (
@@ -84,8 +85,8 @@ export interface props {
 
 const CustomerGroupCustomerList: React.FC<props> = ({
   customerList,
-  branchList,
-  rules,
+  customerDetailSubList,
+  roles,
   customerProductsByCustomer,
   customerProductsByBranch,
   projectDatas,
@@ -178,9 +179,9 @@ const CustomerGroupCustomerList: React.FC<props> = ({
       );
       const children = (
         <CustomerDetails
-          rules={rules}
+          roles={roles}
           details={customer}
-          branchList={branchList}
+          customerDetailSubList={customerDetailSubList}
           getCustomerProductsByCustomer={getCustomerProductsByCustomer}
           customerProductsByCustomer={customerProductsByCustomer}
           getCustomerBrachList={getCustomerBrachList}
@@ -208,7 +209,7 @@ const CustomerGroupCustomerList: React.FC<props> = ({
     <div>
       <div className=" flex justify-between mb-2">
         <div className=" font-bold text-base">Customers</div>
-        {rules.ruleCustomerAdd ? (
+        {roles?.crmCustomerAdd ? (
           <Button
             type="primary"
             size="small"

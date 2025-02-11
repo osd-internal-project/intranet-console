@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Button, Form, Input, Modal, Switch } from "antd";
-import { ITBranchForm } from "@/app/common/customer";
+import { ITCustomerDetailSubForm } from "@/app/common/customer";
 import { FormInstance, useForm } from "antd/es/form/Form";
 const { TextArea } = Input;
 const layout = {
@@ -14,7 +14,7 @@ const layout = {
 export interface props {
   openBranchUpdateId: number;
   onCloseUpdate: () => void;
-  onSaveBranchEdit: (form: ITBranchForm) => void;
+  onSaveBranchEdit: (form: ITCustomerDetailSubForm) => void;
   customerBrahEditForm: FormInstance;
 }
 
@@ -47,14 +47,14 @@ const BranchEdit: React.FC<props> = ({
         </Form.Item>
         <Form.Item
           label={"รหัสสาขา"}
-          name={"branchCode"}
+          name={"code"}
           rules={[{ required: true, message: `กรุณากรอกรหัสสาขา` }]}
         >
           <Input />
         </Form.Item>
         <Form.Item
           label={"ชื่อสาขา"}
-          name={"branchName"}
+          name={"name"}
           rules={[{ required: true, message: `กรุณากรอกชื่อสาขา` }]}
         >
           <Input />

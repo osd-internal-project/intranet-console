@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Breadcrumb, Card, Col, message, Row, SelectProps } from "antd";
 import {
-  ITBranchForSelect,
+  ITCustomerDetailSubForSelect,
   ITCustomerForSelect,
   ITProjectCreateForm,
   ITSelectUsers,
@@ -35,7 +35,7 @@ export default function AddProjectPage() {
     []
   );
   const [customerList, setCustomerList] = useState<ITCustomerForSelect[]>([]);
-  const [branchList, setBranchList] = useState<ITBranchForSelect[]>([]);
+  const [branchList, setBranchList] = useState<ITCustomerDetailSubForSelect[]>([]);
   const [customerSubList, setCustomerSubList] = useState<ITCustomerSub[]>([]);
   const [userList, setUserList] = useState<ITSelectUsers[]>([]);
   const [saleList, setSaleList] = useState<{ uid: string; name: string }[]>([]);

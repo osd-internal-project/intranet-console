@@ -9,25 +9,29 @@ import ManageHomeService from "./services/index.service";
 import { useForm } from "antd/es/form/Form";
 import { RcFile } from "antd/es/upload";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export default function SlideImageSetting() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const Auth = useAxiosIntranet();
-  const intraAuthService = ManageHomeService(Auth);
+  const { id24Axios, tokenAccess } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const intraAuthService = ManageHomeService(baseUrlIntranet);
   const [slideImage, setSlideImage] = useState<SlideImageType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [createSlideImageForm] = useForm();
   const [modalAddSlide, setModalAddSlide] = useState<boolean>(false);
   const [imageFiles, setImageFiles] = useState<any[]>([]);
-  const [messages, messageHeader] = message.useMessage();
 
   useEffect(() => {
     if (loading) loadData();
   }, [loading]);
 
   const loadData = async () => {
-    const dataSlideImage = await intraAuthService.getSlideImageByOrder();
+    const dataSlideImage = await ManageHomeService(baseUrlIntranet).getSlideImageByOrder();
+    console.log(dataSlideImage);
     setSlideImage(dataSlideImage);
     setLoading(false);
   };
@@ -44,16 +48,16 @@ export default function SlideImageSetting() {
     try {
       await intraAuthService.deleteSlideImage(id);
       setSlideImage(slideImage.filter((item) => item.id !== id));
-      messages.success("ลบข้อมูลรูปภาพสำเร็จ");
+      message.success("ลบข้อมูลรูปภาพสำเร็จ");
       setSubmitLoading(false);
     } catch (error) {
-      messages.error("ลบข้อมูลรูปภาพไม่สำเร็จ");
+      message.error("ลบข้อมูลรูปภาพไม่สำเร็จ");
     }
   };
 
   const beforeUploadAddFiles = (file: RcFile) => {
     if (slideImage.find((oneFile) => oneFile.fileName === file.name)) {
-      messages.warning(`ชื่อไฟล์นี้ซ้ำ ${file.name} `);
+      message.warning(`ชื่อไฟล์นี้ซ้ำ ${file.name} `);
       return false;
     }
     return false;
@@ -62,13 +66,13 @@ export default function SlideImageSetting() {
   const onfinishCreateSlide = async (values: any) => {
     try {
       if (slideImage && slideImage.length >= 10) {
-        messages.error("ไม่สามารถอัปโหลดได้ เนื่องจากรูปภาพครบ 10 รูปแล้ว !");
+        message.error("ไม่สามารถอัปโหลดได้ เนื่องจากรูปภาพครบ 10 รูปแล้ว !");
         return;
       }
       const newFileName = values.addFile.fileList[0].name;
       const isDuplicate = slideImage.some((image) => image.fileName === newFileName);
       if (isDuplicate) {
-        messages.error("ไม่สามารถอัปโหลดไฟล์ที่มีชื่อซ้ำกันได้");
+        message.error("ไม่สามารถอัปโหลดไฟล์ที่มีชื่อซ้ำกันได้");
         return;
       }
       if (imageFiles.length > 0) {
@@ -80,10 +84,10 @@ export default function SlideImageSetting() {
         formData.append("createdById", createdById);
         await intraAuthService.uploadImage(formData);
         createSlideImageForm.resetFields();
-        messages.success("อัปโหลดรูปสำเร็จ");
+        message.success("อัปโหลดรูปสำเร็จ");
       }
     } catch (error) {
-      messages.error("การอัปโหลดล้มเหลว");
+      message.error("การอัปโหลดล้มเหลว");
     } finally {
       setSubmitLoading(false);
       setModalAddSlide(false);

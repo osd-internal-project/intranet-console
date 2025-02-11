@@ -113,7 +113,7 @@ const ManageMaCar = () => {
                 title: <span>หน้าหลัก</span>,
               },
               {
-                title: <span>ข้อมูลการจองรถยนต์ (สำหรับ แอดมิน)</span>,
+                title: <span>ข้อมูลการจองรถยนต์ (แอดมิน)</span>,
               },
             ]}
           />
@@ -124,7 +124,7 @@ const ManageMaCar = () => {
             style={{ display: "flex", alignItems: "left" }}
           >
             <span style={{ marginRight: "8px" }}>
-              ข้อมูลการจองรถยนต์ (สำหรับ แอดมิน)
+              ข้อมูลการจองรถยนต์ (แอดมิน)
             </span>
           </div>
         </Divider>

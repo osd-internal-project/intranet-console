@@ -23,7 +23,7 @@ const page = () => {
   const [getdataUser, setdataUser] = useState<ISelect[]>([]);
   const [getdataUserByTypeId, setdataUserByTypeId] = useState<ITpyeUser[]>([]);
   const [getLoading, setLoading] = useState<boolean>(true);
-  const [loadingTableUsers, setLoadingTableUsers] = useState<boolean>(false);
+  const [loadingTableUsers, setLoadingTableUsers] = useState<boolean>(true);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [getdataType, setDataType] = useState<string>("1");
 
@@ -31,10 +31,10 @@ const page = () => {
     if (getLoading) {
       fecthData();
     }
-    if (getdataType) {
+    if (getdataType || loadingTableUsers) {
       fecthDataDisabledUser();
     }
-  }, [getLoading, getdataType]);
+  }, [getLoading, getdataType, loadingTableUsers]);
 
   const fecthData = async () => {
     try {
@@ -55,7 +55,6 @@ const page = () => {
   };
 
   const fecthDataDisabledUser = async () => {
-    setLoadingTableUsers(true);
     try {
       const result = await DataLeaveService(baseUrlIntranet).getdataUserByTypeLeaveId({
         typeid: getdataType,
@@ -82,7 +81,7 @@ const page = () => {
 
   const onFinishCreate = async (event: any) => {
     const resTypeLeaveMap = await DataLeaveService(baseUrlIntranet).getdataTypeLeaveMap(event.userId, event.masterTypeleaveId);
-    if (event.userId && event.typeId && resTypeLeaveMap.length > 0) {
+    if (event.userId && event.masterTypeleaveId && resTypeLeaveMap.length > 0) {
       message.warning(`ประเภทการลานี้มีการเพิ่มชื่อผู้ใช้นี้แล้ว!`);
       return false;
     }
@@ -105,12 +104,14 @@ const page = () => {
             message.success("Add success");
             formcreate.resetFields();
             setLoading(true);
+            setLoadingTableUsers(true);
             setOpenModal(false);
           }
         } catch (error) {
           message.error("Failed to add data.");
         } finally {
-          setLoading(false);
+          setLoading(true);
+          setLoadingTableUsers(true);
         }
       },
       onCancel() {
@@ -122,7 +123,7 @@ const page = () => {
 
   const onFinishDel = (id: number) => {
     Modal.confirm({
-      title: "Delete this unit",
+      title: "Delete",
       icon: <ExclamationCircleFilled />,
       content: "Are you sure you want to delete this?",
       okText: "Confirm",
@@ -134,11 +135,13 @@ const page = () => {
           if (dataResult) {
             message.success("Delete success");
             setLoading(true);
+            setLoadingTableUsers(true);
           }
         } catch (error) {
           message.error("Failed to delete data.");
         } finally {
-          setLoading(false);
+          setLoadingTableUsers(true);
+          setLoading(true);
         }
       },
       onCancel() {

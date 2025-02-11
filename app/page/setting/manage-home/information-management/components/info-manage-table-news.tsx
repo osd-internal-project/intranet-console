@@ -13,6 +13,8 @@ import { EyeOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { ManageinformationNewsServices } from "../services/information.service";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export interface informationNews {
   [x: string]: any;
@@ -44,10 +46,12 @@ export interface newsType {
 }
 const InfoTableNews: React.FC = () => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const intraAuth = useAxiosIntranet();
+  const { id24Axios, tokenAccess } = useId24();
+  // const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [informationNews, setinformationNews] = useState<informationNews[]>([]);
   const [newsimage, setnewsimage] = useState<newsImage[]>([]);
-  const manageinformationNewsServices = ManageinformationNewsServices(intraAuth);
+  const manageinformationNewsServices = ManageinformationNewsServices(baseUrlIntranet);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [form] = useForm();
   const [formdetail] = useForm();
@@ -58,7 +62,6 @@ const InfoTableNews: React.FC = () => {
   const [existingFiles, setExistingFiles] = useState<UploadFile[]>([]);
   const [searchFileName, setSearchFileName] = useState("");
   const [searchFileType, setSearchFileType] = useState("");
-  const baseImageUrl = process.env.BACKEND_INTRANET_URL;
   const [selectedNews, setSelectedNews] = useState<informationNews | null>(null);
   const [newsTypeOptions, setnewsTypeOptions] = useState<
     {
@@ -227,7 +230,7 @@ const InfoTableNews: React.FC = () => {
       uid: String(image.imageId),
       name: image.fileimageName as string,
       status: "done" as UploadFileStatus,
-      url: `${baseImageUrl}/public/news-image/${image.fileName}`,
+      url: `${process.env.REACT_APP_API_BASE_URL_INTRANET}/public/news-image/${image.fileName}`,
     }));
     setExistingFiles(existingFilesList);
     setSelectedNews(record);

@@ -283,7 +283,7 @@ const HandBookOption: React.FC = () => {
         </div>
         <div></div>
         <Button style={{ alignContent: "right" }} type="primary" onClick={modalopencreate}>
-          การอัพโหลดไฟล์
+          การอัปโหลดไฟล์
         </Button>
       </div>
       <Modal title="เพิ่มข้อมูลตรวจสภาพรถ" open={IsmodlaOpencreate} onCancel={handleclosecreate} footer={null} destroyOnClose>

@@ -6,25 +6,16 @@ export interface Props {
 }
 
 export const BigCarouselComponent: React.FC<Props> = ({ slideImage }) => {
-  const baseImageUrl = process.env.BACKEND_INTRANET_URL;
-
   return (
     <Card styles={{ body: { padding: 0 } }}>
       {slideImage?.length > 0 ? (
         <ConfigProvider theme={{ components: { Carousel: { arrowSize: 35 } } }}>
-          <Carousel
-            autoplay={true}
-            adaptiveHeight={true}
-            arrows
-            infinite
-            effect="fade"
-            lazyLoad="progressive"
-          >
+          <Carousel autoplay={true} adaptiveHeight={true} arrows infinite effect="fade" lazyLoad="progressive">
             {slideImage.map((image) => {
               return (
                 <div key={image.id}>
                   <Image
-                    src={`${baseImageUrl}/slide-image/get-file/${image.fileId}`}
+                    src={`${process.env.REACT_APP_API_BASE_URL_INTRANET}/slide-image/get-file/${image.fileId}`}
                     crossOrigin="anonymous"
                     style={{
                       objectFit: "cover",
@@ -40,9 +31,7 @@ export const BigCarouselComponent: React.FC<Props> = ({ slideImage }) => {
           </Carousel>
         </ConfigProvider>
       ) : (
-        <div style={{ padding: "450px", color: "#888" }}>
-          No images available
-        </div>
+        <div style={{ padding: "450px", color: "#888" }}>No images available</div>
       )}
     </Card>
   );

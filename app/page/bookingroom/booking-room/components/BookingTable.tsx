@@ -55,7 +55,7 @@ const BookingTable: React.FC<props> = ({ bookingFetchData, pagination, changePag
       title: "วันที่จอง",
       render: (_, record) => (
         <span>
-          {dayjs(record.startDate).format("DD-MM-YYYY")} - {dayjs(record.endDate).format("DD-MM-YYYY")}
+          {dayjs(record.startDate).format("DD/MM/YYYY")} ถึง {dayjs(record.endDate).format("DD/MM/YYYY")}
         </span>
       ),
     },
@@ -64,7 +64,7 @@ const BookingTable: React.FC<props> = ({ bookingFetchData, pagination, changePag
       title: "เวลาจอง",
       render: (_, record) => (
         <span>
-          {dayjs(record.startDate).format("HH:mm")} - {dayjs(record.endDate).format("HH:mm")}
+          {dayjs(record.startDate).format("HH:mm")} - {dayjs(record.endDate).format("HH:mm")} น.
         </span>
       ),
     },
@@ -168,19 +168,19 @@ const BookingTable: React.FC<props> = ({ bookingFetchData, pagination, changePag
                   ? "ประชุม (Meeting)"
                   : currentBookingDetails.roomType === "Train"
                   ? "อบรม (Train)"
-                  : "สัมมนา (seminar)"}
+                  : "สัมมนา (Seminar)"}
               </span>
             </p>
             <p>
               <strong>วันที่จอง : </strong>{" "}
               <span className="modal-content">
-                {dayjs(currentBookingDetails.startDate).format("DD-MM-YYYY")} - {dayjs(currentBookingDetails.endDate).format("DD-MM-YYYY")}
+                {dayjs(currentBookingDetails.startDate).format("DD/MM/YYYY")} ถึง {dayjs(currentBookingDetails.endDate).format("DD/MM/YYYY")}
               </span>
             </p>
             <p>
               <strong>เวลาจอง : </strong>{" "}
               <span className="modal-content">
-                {dayjs(currentBookingDetails.startDate).format("HH:mm")} - {dayjs(currentBookingDetails.endDate).format("HH:mm")}
+                {dayjs(currentBookingDetails.startDate).format("HH:mm")} - {dayjs(currentBookingDetails.endDate).format("HH:mm")} น.
               </span>
             </p>
             <p>

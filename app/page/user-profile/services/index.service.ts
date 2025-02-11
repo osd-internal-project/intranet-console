@@ -89,12 +89,7 @@ const ProfileServices = (axiosInstance: AxiosInstance) => {
           createdAt: true,
           updatedAt: true,
           // masterPositionId: true,
-          // masterPosition: {
-          //   select: {
-          //     nameTh: true,
-          //     nameEn: true,
-          //   },
-          // },
+          masterPosition: true,
         },
       };
       return await axiosInstance

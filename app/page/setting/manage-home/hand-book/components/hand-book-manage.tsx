@@ -375,7 +375,7 @@ const HandBookManage: React.FC = () => {
         </div>
         <div></div>
         <Button style={{ alignContent: "right" }} type="primary" onClick={opencreate}>
-          การอัพโหลดไฟล์
+          การอัปโหลดไฟล์
         </Button>
       </div>
 

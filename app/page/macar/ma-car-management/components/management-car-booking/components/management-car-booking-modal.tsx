@@ -65,12 +65,12 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
             </Col>
             <Col span={6}>
               <Form.Item name="carBookStartDate" label="วันที่เริ่มการจอง">
-                <DatePicker disabled placeholder="กรอกวันที่เริ่มการจอง" style={{ width: "100%" }} />
+                <DatePicker disabled placeholder="กรอกวันที่เริ่มการจอง" style={{ width: "100%" }} format={"DD/MM/YYYY"} />
               </Form.Item>
             </Col>
             <Col span={6}>
               <Form.Item name="carBookEndDate" label="วันที่สิ้นสุดการจอง" rules={[{ required: true, message: "กรุณาเลือกวันที่สิ้นสุดการจอง!" }]}>
-                <DatePicker disabled placeholder="กรอกวันที่สิ้นสุดการจอง" style={{ width: "100%" }} />
+                <DatePicker disabled placeholder="กรอกวันที่สิ้นสุดการจอง" style={{ width: "100%" }} format={"DD/MM/YYYY"} />
               </Form.Item>
             </Col>
           </Row>

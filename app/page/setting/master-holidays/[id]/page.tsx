@@ -3,11 +3,7 @@ import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import MasterHolidaysService from "../services/index.service";
-import {
-  ICreateMasterHolidayDto,
-  IFindAllDayDto,
-  IManagePageDay,
-} from "../common";
+import { ICreateMasterHolidayDto, IFindAllDayDto, IManagePageDay } from "../common";
 import { HolidayTable } from "./components/holidays-table";
 import { Breadcrumb, Card, Col, Divider, message, Modal, Row } from "antd";
 import { HolidayActions } from "./components/holidays-action";
@@ -71,9 +67,7 @@ export default function MasterdataHolidaysByYear() {
         },
       },
       onOk: async () => {
-        const result = await masterholidaysService.createMasterHolidays(
-          dataCreate
-        );
+        const result = await masterholidaysService.createMasterHolidays(dataCreate);
         if (result) {
           message.success(`Add success`);
           formAction.resetFields();
@@ -89,16 +83,14 @@ export default function MasterdataHolidaysByYear() {
 
   const onDelete = (value: number) => {
     Modal.confirm({
-      title: "Delete this unit",
+      title: "Delete ",
       icon: <ExclamationCircleFilled />,
       content: "Are you sure you want to delete this ?",
       okText: "Confirm",
       okButtonProps: { type: "primary", danger: true },
       cancelText: "Cancel",
       onOk: async () => {
-        const dataResult = await masterholidaysService.deleteMasterHoliday(
-          value
-        );
+        const dataResult = await masterholidaysService.deleteMasterHoliday(value);
         if (dataResult) {
           message.success(`Delete success`);
           setLoading(true);
@@ -145,11 +137,7 @@ export default function MasterdataHolidaysByYear() {
               manageStatusDay={manageStatusDay}
               formAction={formAction}
             />
-            <HolidayTable
-              loading={loading}
-              dataHolidayDay={dataHolidayDay}
-              onDelete={onDelete}
-            />
+            <HolidayTable loading={loading} dataHolidayDay={dataHolidayDay} onDelete={onDelete} />
           </Card>
         </Col>
       </Row>

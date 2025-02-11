@@ -258,20 +258,17 @@ const BookingRoomPage: React.FC = () => {
           <Divider orientation="left">ข้อมูลผู้จอง</Divider>
           <Row gutter={16}>
             <Col span={8}>
-              <Form.Item<BookingType> label="ชื่อผู้จอง" name="bookerName" rules={[{ required: true, message: "กรุณากรอกชื่อผู้จอง!" }]}>
+              <Form.Item<BookingType> label="ชื่อผู้จอง" name="bookerName">
                 <Input disabled placeholder="กรอกชื่อผู้จอง" />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<BookingType>
-                label="เบอร์โทรศัพท์ผู้จอง"
-                name="bookerPhone"
-                rules={[{ required: true, message: "กรุณากรอกเบอร์โทรศัพท์ผู้จอง!" }]}>
+              <Form.Item<BookingType> label="เบอร์โทรศัพท์ผู้จอง" name="bookerPhone">
                 <Input disabled placeholder="กรอกเบอร์โทรศัพท์ผู้จอง" />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<BookingType> label="ชื่อแผนก" name="bookerDepartment" rules={[{ required: true, message: "กรุณากรอกกรอกชื่อแผนก!" }]}>
+              <Form.Item<BookingType> label="ชื่อแผนก" name="bookerDepartment">
                 <Select placeholder="โปรดเลือกชื่อแผนก" style={{ width: "100%" }} disabled>
                   {department.map((records, index) => {
                     return (
@@ -325,7 +322,7 @@ const BookingRoomPage: React.FC = () => {
                   options={[
                     { value: "Meeting", label: "ประชุม (Meeting)" },
                     { value: "Train", label: "อบรม (Train)" },
-                    { value: "seminar", label: "สัมมนา (seminar)" },
+                    { value: "seminar", label: "สัมมนา (Seminar)" },
                   ]}
                 />
               </Form.Item>

@@ -1,15 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  Breadcrumb,
-  Card,
-  Col,
-  Divider,
-  Form,
-  Modal,
-  Row,
-  message,
-} from "antd";
+import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, message } from "antd";
 import { CreateTypeLeave } from "./components/create-type-leave";
 import { TableTypeLeave } from "./components/table-type-leave";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -120,7 +111,7 @@ export default function TypeLeave() {
 
   const onFinishDel = (event: number) => {
     Modal.confirm({
-      title: "Delete this unit",
+      title: "Delete ",
       icon: <ExclamationCircleFilled />,
       content: "Are you sure you want to delete this ?",
       okText: "Confirm",

@@ -36,7 +36,7 @@ export const TableDetail: React.FC<props> = ({
       const base = {
         id: record.id,
         name: `${record.firstName} ${record.lastName}`,
-        createAt: record.createdAt ? dateToStringThNoTime(record.createdAt) : "-",
+        createdAt: record.createdAt ? dateToStringThNoTime(record.createdAt) : "-",
         detail: record.detail,
         leaveHour: record.leaveHour ? (record.leaveHour % 8 === 0 ? `${record.leaveHour / 8} วัน` : `${record.leaveHour} ชม.`) : "ไม่มีข้อมูล",
         startDate: record?.startDate ? dateToStringThNoTime(record?.startDate) : "-",

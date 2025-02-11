@@ -266,15 +266,11 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         });
     },
     uploadFiles: async (carWrapupId: string, formData: FormData) => {
-      return axiosInstance.post(
-        `${baseUrlApiMaCarwarpupimage}/${carWrapupId}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      return axiosInstance.post(`${baseUrlApiMaCarwarpupimage}/${carWrapupId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
     },
 
     createMaCarWarpupimage: async (body: any) => {

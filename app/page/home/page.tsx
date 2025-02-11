@@ -46,12 +46,7 @@ export default function HomePage() {
 
   async function downloadFile(id: number, name: string): Promise<void> {
     if (id) {
-      console.log(id);
-
       const response = await SlideImageService(baseUrlIntranet).downloadFile(id);
-      console.log(response);
-
-      // console.log(response);
       if (response) {
         const url = URL.createObjectURL(response);
         const a = document.createElement("a");

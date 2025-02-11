@@ -105,9 +105,9 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
     downloadFile: async (id: number) => {
       return await axiosInstance
         .get(`${baseUrlApiHandbookFile}/get-file/${id}`, {
-          responseType: "blob",
+          // responseType: "blob",
           headers: {
-            "Content-Type": "application/pdf",
+            "Content-Type": "*",
           },
         })
         .then((result) => {

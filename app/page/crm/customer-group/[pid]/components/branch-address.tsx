@@ -12,11 +12,11 @@ import {
   Tabs,
 } from "antd";
 import {
-  ITBranch,
-  ITBranchAddress,
-  ITBranchAddressForm,
-  ITBranchDetail,
-  ITBranchForm,
+  ITCustomerDetailSub,
+  ITCustomerDetailSubAddress,
+  ITCustomerDetailSubAddressForm,
+  ITCustomerDetailSubDetail,
+  ITCustomerDetailSubForm,
 } from "@/app/common/customer";
 import {
   CloseOutlined,
@@ -31,10 +31,10 @@ import { deleteIcon } from "@/components/icon";
 export interface props {
   rules: any;
   customerId: number;
-  branchDetail?: ITBranchDetail;
+  branchDetail?: ITCustomerDetailSubDetail;
   onSaveBranchAddress: (
     branchId: number,
-    form: ITBranchAddressForm,
+    form: ITCustomerDetailSubAddressForm,
     customerId: number
   ) => void;
   onDeleteCustomerBranchAddress: (
@@ -72,13 +72,13 @@ const BranchAddress: React.FC<props> = ({
     }
   };
 
-  const columns: TableColumnsType<ITBranchAddress> = [
+  const columns: TableColumnsType<ITCustomerDetailSubAddress> = [
     // {
     //   key: "addressTypeName",
     //   dataIndex: "addressTypeName",
     //   title: "ประเภทที่อยู่",
     //   width: "100px",
-    //   // render: (id: number, record: ITBranchAddress, index: number) => index + 1,
+    //   // render: (id: number, record: ITCustomerDetailSubAddress, index: number) => index + 1,
     // },
     {
       key: "houseNumber",

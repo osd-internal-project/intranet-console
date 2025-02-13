@@ -23,10 +23,10 @@ import {
 } from "antd";
 import type { Dayjs } from "dayjs";
 import {
-  ITBranch,
-  ITBranchAddressForm,
-  ITBranchContactForm,
-  ITBranchDetail,
+  ITCustomerDetailSub,
+  ITCustomerDetailSubAddressForm,
+  ITCustomerDetailSubContactForm,
+  ITCustomerDetailSubDetail,
   ITCustomer,
 } from "@/app/common/customer";
 import BranchProductList from "./branch-product-list";
@@ -34,10 +34,11 @@ import { ITCustomerProduct } from "@/app/common/product";
 import { ITProject } from "@/app/common/project";
 import BranchContact from "./branch-contact";
 import BranchAddress from "./branch-address";
+import { TUserRoles } from "@/app/config/user-roles";
 const { RangePicker } = DatePicker;
 export interface props {
-  rules: any;
-  details: ITBranchDetail;
+  roles: TUserRoles | null;
+  details: ITCustomerDetailSubDetail;
   customerProductsByBranch: ITCustomerProduct[];
   projectDatas: ITProject[];
   getCustomerProductsByBranch: (branchId: number, search: any) => void;
@@ -50,7 +51,7 @@ export interface props {
   customerId: number;
   onSaveBranchAddress: (
     branchId: number,
-    form: ITBranchAddressForm,
+    form: ITCustomerDetailSubAddressForm,
     customerId: number
   ) => void;
   onDeleteCustomerBranchAddress: (
@@ -60,7 +61,7 @@ export interface props {
   ) => void;
   onSaveBranchContact: (
     branchId: number,
-    form: ITBranchContactForm,
+    form: ITCustomerDetailSubContactForm,
     customerId: number
   ) => void;
   onDeleteCustomerBranchContact: (
@@ -71,7 +72,7 @@ export interface props {
 }
 
 const BranchDetails: React.FC<props> = ({
-  rules,
+  roles,
   details,
   customerProductsByBranch,
   projectDatas,
@@ -107,14 +108,14 @@ const BranchDetails: React.FC<props> = ({
       render: (id: number, record: any, index: number) => index + 1,
     },
     {
-      key: "branchCode",
-      dataIndex: "branchCode",
+      key: "code",
+      dataIndex: "code",
       title: "รหัสสาขา",
       width: "200px",
     },
     {
-      key: "branchName",
-      dataIndex: "branchName",
+      key: "name",
+      dataIndex: "name",
       title: "ชื่อสาขา",
       width: "300px",
     },
@@ -148,18 +149,18 @@ const BranchDetails: React.FC<props> = ({
       align: "center",
       render: (id: number) => (
         <div className="space-x-1">
-          {/* {rules.ruleCustomerBranchEdit ? ( */}
+          {roles?.crmCustomerEdit ? (
           <Button type="link">Edit</Button>
-          {/* ) : (
+          ) : (
             <></>
-          )} */}
-          {/* {rules.ruleCustomerBranchDelete ? ( */}
+          )} 
+          {roles?.crmCustomerDelete ? (
           <Button type="link" danger>
             Delete
           </Button>
-          {/* ) : (
+        ) : (
             <></>
-          )} */}
+          )} 
         </div>
       ),
     },
@@ -189,7 +190,7 @@ const BranchDetails: React.FC<props> = ({
             label: `Address`,
             children: (
               <BranchAddress
-                rules={rules}
+                rules={roles}
                 customerId={customerId}
                 branchDetail={details}
                 onSaveBranchAddress={onSaveBranchAddress}
@@ -203,7 +204,7 @@ const BranchDetails: React.FC<props> = ({
             label: `Contact`,
             children: (
               <BranchContact
-                rules={rules}
+                rules={roles}
                 customerId={customerId}
                 branchDetail={details}
                 onSaveBranchContact={onSaveBranchContact}

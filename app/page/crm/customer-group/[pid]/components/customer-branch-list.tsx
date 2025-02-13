@@ -23,23 +23,24 @@ import {
 } from "antd";
 import type { Dayjs } from "dayjs";
 import {
-  ITBranchAddressForm,
-  ITBranchContactForm,
-  ITBranchDetail,
+  ITCustomerDetailSubAddressForm,
+  ITCustomerDetailSubContactForm,
+  ITCustomerDetailSubDetail,
+  ITCustomerDetailSub,
   ITCustomerGroup,
 } from "@/app/common/customer";
 import { ColumnType } from "antd/es/table";
 import { useForm } from "antd/es/form/Form";
 import { CaretRightOutlined, ExclamationCircleFilled } from "@ant-design/icons";
 import Link from "next/link";
-import { ITBranch, ITCustomer } from "@/app/common/customer";
 import BranchDetails from "./branch-details";
 import { ITCustomerProduct } from "@/app/common/product";
 import { ITProject } from "@/app/common/project";
+import { TUserRoles } from "@/app/config/user-roles";
 
 export interface props {
-  rules: any;
-  branchList: ITBranchDetail[];
+  roles: TUserRoles | null;
+  customerDetailSubList: ITCustomerDetailSubDetail[];
   customerId: number;
   customerProductsByBranch: ITCustomerProduct[];
   projectDatas: ITProject[];
@@ -56,7 +57,7 @@ export interface props {
   onDeleteBranch: (branchId: number, customerId: number) => void;
   onSaveBranchAddress: (
     branchId: number,
-    form: ITBranchAddressForm,
+    form: ITCustomerDetailSubAddressForm,
     customerId: number
   ) => void;
   onDeleteCustomerBranchAddress: (
@@ -66,7 +67,7 @@ export interface props {
   ) => void;
   onSaveBranchContact: (
     branchId: number,
-    form: ITBranchContactForm,
+    form: ITCustomerDetailSubContactForm,
     customerId: number
   ) => void;
   onDeleteCustomerBranchContact: (
@@ -77,8 +78,8 @@ export interface props {
 }
 
 const CustomerBranchList: React.FC<props> = ({
-  rules,
-  branchList,
+  roles,
+  customerDetailSubList,
   customerId,
   customerProductsByBranch,
   projectDatas,
@@ -101,21 +102,21 @@ const CustomerBranchList: React.FC<props> = ({
   const dataList: (panelStyle: CSSProperties) => CollapseProps["items"] = (
     panelStyle
   ) =>
-    branchList.map((branch) => {
+    customerDetailSubList.map((customerSub) => {
       const label = (
         <div className="  text-xs text-center grid grid-cols-7">
           <div>
             <div>Code</div>
-            <div className=" font-bold">{branch.branchCode}</div>
+            <div className=" font-bold">{customerSub.code}</div>
           </div>
           <div>
             <div>Name</div>
-            <div className=" font-bold">{branch.branchName}</div>
+            <div className=" font-bold">{customerSub.name}</div>
           </div>
           <div>
             <div>Active Status</div>
             <div className=" font-bold">
-              {branch.activeStatus ? (
+              {customerSub.activeStatus ? (
                 <Tag color="green">Active</Tag>
               ) : (
                 <Tag color="red">not Active</Tag>
@@ -125,19 +126,19 @@ const CustomerBranchList: React.FC<props> = ({
           <div className=" col-span-3"> </div>
           <div>
             <div className=" space-x-2">
-              {rules.ruleCustomerBranchEdit && (
+              {roles?.crmCustomerEdit && (
                 <Button
                   type="link"
-                  onClick={() => onOpenEditBranch(branch.id, customerId)}
+                  onClick={() => onOpenEditBranch(customerSub.id, customerId)}
                 >
                   Edit
                 </Button>
               )}
-              {rules.ruleCustomerBranchDelete && (
+              {roles?.crmCustomerDelete && (
                 <Button
                   type="link"
                   danger
-                  onClick={() => onDeleteBranch(branch.id, customerId)}
+                  onClick={() => onDeleteBranch(customerSub.id, customerId)}
                 >
                   Delete
                 </Button>
@@ -148,8 +149,8 @@ const CustomerBranchList: React.FC<props> = ({
       );
       const children = (
         <BranchDetails
-          rules={rules}
-          details={branch}
+          roles={roles}
+          details={customerSub}
           customerId={customerId}
           customerProductsByBranch={customerProductsByBranch}
           getCustomerProductsByBranch={getCustomerProductsByBranch}
@@ -162,8 +163,8 @@ const CustomerBranchList: React.FC<props> = ({
         />
       );
       return {
-        key: branch.id,
-        label: label,
+        key: customerSub.id,
+        label: label, 
         children: children,
         style: panelStyle,
       };
@@ -173,13 +174,17 @@ const CustomerBranchList: React.FC<props> = ({
     <div>
       <div className=" flex justify-between mb-2">
         <div className=" font-bold text-base">Branch</div>
-        <Button
-          type="primary"
-          size="small"
-          onClick={() => onOpenCustomerCreateForm(true)}
-        >
-          Add Branch
-        </Button>
+        <div>
+          {roles?.crmCustomerAdd && (
+            <Button
+              type="primary"
+              size="small"
+              onClick={() => onOpenCustomerCreateForm(true)}
+            >
+              Add Sub Customer /Branch
+            </Button>
+          )}
+        </div>
       </div>
       <div>
         {/* <Form layout="vertical" size="small">
@@ -205,7 +210,7 @@ const CustomerBranchList: React.FC<props> = ({
             style={{ maxHeight: "500px" }}
             className=" bg-slate-100 mt-2  overflow-x-auto"
           >
-            <Collapse
+            {dataList.length >0 &&     <Collapse
               collapsible="icon"
               accordion
               bordered={false}
@@ -215,7 +220,8 @@ const CustomerBranchList: React.FC<props> = ({
               style={{ background: " #f1f5f9" }}
               destroyInactivePanel
               items={dataList(panelStyle)}
-            />
+            />}
+        
           </div>
         </div>
       </div>

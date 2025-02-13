@@ -10,7 +10,7 @@ import {
   Select,
   Switch,
 } from "antd";
-import { ITBranchContactForm } from "../../common";
+import { ITCustomerDetailSubContactForm } from "../../common";
 import { CloseOutlined } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
 
@@ -28,7 +28,7 @@ export interface props {
   branchId: number;
   showModalContactAdd: boolean;
   onShowModalContactAdd: (status: boolean) => void;
-  onSaveBranchContact: (branchId: number, form: ITBranchContactForm) => void;
+  onSaveBranchContact: (branchId: number, form: ITCustomerDetailSubContactForm) => void;
 }
 
 const BranchContactAddComponent: React.FC<props> = ({
@@ -42,7 +42,7 @@ const BranchContactAddComponent: React.FC<props> = ({
   useEffect(() => {
     form.resetFields();
   }, [showModalContactAdd]);
-  const onFinishBranchContact = (form: ITBranchContactForm) => {
+  const onFinishBranchContact = (form: ITCustomerDetailSubContactForm) => {
     onSaveBranchContact(branchId, {
       ...form,
     });

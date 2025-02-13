@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import type { FormInstance } from "antd";
 import { Button, Card, Form, Input, Modal, Select } from "antd";
-import { ITBranchAddressForm } from "../../common";
+import { ITCustomerDetailSubAddressForm } from "../../common";
 import { CloseOutlined } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
 
@@ -19,7 +19,7 @@ export interface props {
   branchId: number;
   showModalAddressAdd: boolean;
   onShowModalAddressAdd: (status: boolean) => void;
-  onSaveBranchAddress: (branchId: number, form: ITBranchAddressForm) => void;
+  onSaveBranchAddress: (branchId: number, form: ITCustomerDetailSubAddressForm) => void;
 }
 
 const BranchAddressAddComponent: React.FC<props> = ({
@@ -37,7 +37,7 @@ const BranchAddressAddComponent: React.FC<props> = ({
   useEffect(() => {
     form.resetFields();
   }, [showModalAddressAdd]);
-  const onFinishBranchAddress = (form: ITBranchAddressForm) => {
+  const onFinishBranchAddress = (form: ITCustomerDetailSubAddressForm) => {
     // const addressTypeName = addressType.findLast(
     //   (type) => (type.value = form.addressTypeId)
     // );

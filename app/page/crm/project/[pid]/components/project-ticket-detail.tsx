@@ -18,7 +18,7 @@ import {
   Upload,
 } from "antd";
 import {
-  ITBranchContactForm,
+  ITCustomerDetailSubContactForm,
   ITExpenseType,
   ITProjectTicket,
   ITProjectTicketCreateForm,

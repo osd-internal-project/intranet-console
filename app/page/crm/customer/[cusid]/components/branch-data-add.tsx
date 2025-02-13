@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import type { FormInstance } from "antd";
 import { Button, Card, Form, Input, Modal, Select, Switch } from "antd";
-import { ITBranchForm } from "../../common";
+import { ITCustomerDetailSubForm } from "../../common";
 import { CloseOutlined } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
 
@@ -18,7 +18,7 @@ const layout = {
 export interface props {
   showModalBranchAdd: boolean;
   onShowModalBranchAdd: (status: boolean) => void;
-  onSaveBranch: (form: ITBranchForm) => void;
+  onSaveBranch: (form: ITCustomerDetailSubForm) => void;
 }
 
 const BranchAddComponent: React.FC<props> = ({
@@ -51,14 +51,14 @@ const BranchAddComponent: React.FC<props> = ({
       >
         <Form.Item
           label={"รหัสสาขา"}
-          name={"branchCode"}
+          name={"code"}
           rules={[{ required: true, message: `กรุณากรอกรหัสสาขา` }]}
         >
           <Input />
         </Form.Item>
         <Form.Item
           label={"ชื่อสาขา"}
-          name={"branchName"}
+          name={"name"}
           rules={[{ required: true, message: `กรุณากรอกชื่อสาขา` }]}
         >
           <Input />

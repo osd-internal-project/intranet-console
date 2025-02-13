@@ -1,8 +1,8 @@
 import { AxiosInstance } from "axios";
 import {
-  ITBranchForSelect,
+  ITCustomerDetailSubForSelect,
   ITCustomerForSelect,
-  ITBranchContact,
+  ITCustomerDetailSubContact,
   ITProjectTaskForm,
   ITProjectTask,
   ITProjectTicket,
@@ -16,7 +16,7 @@ import {
 } from "../common";
 import { ITMaTaskFiles } from "@/app/page/maintenance-management/common";
 export interface TMaServices {
-  findContactlById: (contactId: number) => Promise<ITBranchContact>;
+  findContactlById: (contactId: number) => Promise<ITCustomerDetailSubContact>;
   findProjectTicketByTaskId: (task: number) => Promise<ITProjectTicket[]>;
   findProjectTicketDetailById: (ticket: number) => Promise<ITProjectTicket>;
   findProjectTicketByProjectId: (

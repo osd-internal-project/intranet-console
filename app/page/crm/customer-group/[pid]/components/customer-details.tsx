@@ -23,21 +23,22 @@ import {
 } from "antd";
 import type { Dayjs } from "dayjs";
 import {
-  ITBranch,
-  ITBranchAddressForm,
-  ITBranchContactForm,
-  ITBranchDetail,
+  ITCustomerDetailSub,
+  ITCustomerDetailSubAddressForm,
+  ITCustomerDetailSubContactForm,
+  ITCustomerDetailSubDetail,
   ITCustomer,
 } from "@/app/common/customer";
 import CustomerBranchList from "./customer-branch-list";
 import { ITCustomerProduct } from "@/app/common/product";
 import CustomerProductList from "./customer-product-list";
 import { ITProject } from "@/app/common/project";
+import { TUserRoles } from "@/app/config/user-roles";
 const { RangePicker } = DatePicker;
 export interface props {
-  rules: any;
+  roles: TUserRoles | null;
   details: ITCustomer;
-  branchList: ITBranchDetail[];
+  customerDetailSubList: ITCustomerDetailSubDetail[];
   customerProductsByCustomer: ITCustomerProduct[];
   customerProductsByBranch: ITCustomerProduct[];
   projectDatas: ITProject[];
@@ -54,7 +55,7 @@ export interface props {
   onDeleteBranch: (branchId: number, customerId: number) => void;
   onSaveBranchAddress: (
     branchId: number,
-    form: ITBranchAddressForm,
+    form: ITCustomerDetailSubAddressForm,
     customerId: number
   ) => void;
   onDeleteCustomerBranchAddress: (
@@ -64,7 +65,7 @@ export interface props {
   ) => void;
   onSaveBranchContact: (
     branchId: number,
-    form: ITBranchContactForm,
+    form: ITCustomerDetailSubContactForm,
     customerId: number
   ) => void;
   onDeleteCustomerBranchContact: (
@@ -75,9 +76,9 @@ export interface props {
 }
 
 const CustomerDetails: React.FC<props> = ({
-  rules,
+  roles,
   details,
-  branchList,
+  customerDetailSubList,
   customerProductsByCustomer,
   customerProductsByBranch,
   projectDatas,
@@ -109,6 +110,10 @@ const CustomerDetails: React.FC<props> = ({
   const onChangeCustomerTabs = (key: React.SetStateAction<string>) => {
     setCustomerTabsKey(key);
   };
+  useEffect(() => {
+    console.log("customerDetailSubList");
+    console.log(customerDetailSubList);
+  }, [customerDetailSubList]);
 
   return (
     <div>
@@ -133,9 +138,9 @@ const CustomerDetails: React.FC<props> = ({
             label: `Sub Customers/Branch`,
             children: (
               <CustomerBranchList
-                rules={rules}
+                roles={roles}
                 customerId={details.id}
-                branchList={branchList}
+                customerDetailSubList={[]}
                 onOpenCustomerCreateForm={function (state: boolean): void {
                   throw new Error("Function not implemented.");
                 }}

@@ -1,8 +1,8 @@
 import { AxiosInstance } from "axios";
 import {
-  ITBranchForSelect,
+  ITCustomerDetailSubForSelect,
   ITCustomerForSelect,
-  ITBranchContact,
+  ITCustomerDetailSubContact,
   ITProjectTaskForm,
   ITProjectTask,
   ITProjectTicket,
@@ -37,14 +37,14 @@ export interface TMaServices {
   ) => Promise<ITCustomerSub[]>;
   findBranchSelectByCustomerId: (
     customerId: number
-  ) => Promise<ITBranchForSelect[]>;
+  ) => Promise<ITCustomerDetailSubForSelect[]>;
   findBranchSelectByCustomerSubId: (
     customerSubId: number
-  ) => Promise<ITBranchForSelect[]>;
+  ) => Promise<ITCustomerDetailSubForSelect[]>;
   findProjectDetailById: (project: number) => Promise<ITProject>;
   findProjectTaskByProjectId: (project: number) => Promise<ITProjectTask[]>;
 
-  findContactlById: (contactId: number) => Promise<ITBranchContact>;
+  findContactlById: (contactId: number) => Promise<ITCustomerDetailSubContact>;
   findProjectTicketByTaskId: (task: number) => Promise<ITProjectTicket[]>;
   findProjectTicketDetailById: (ticket: number) => Promise<ITProjectTicket>;
   findProjectTicketByProjectId: (

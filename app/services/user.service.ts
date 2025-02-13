@@ -2,7 +2,7 @@ import { AxiosInstance } from "axios";
 import { ITSelectUsers } from "@/app/common/customer";
 export interface TUserServices {
   findOrganizeUserByUserId: (userId: string) => Promise<ITSelectUsers[]>;
-  findSaleUserBySalePermission: (userId: string) => Promise<ITSelectUsers[]>;
+  findUsersFormSaleProjectModuleByUserId: (userId: string) => Promise<ITSelectUsers[]>;
   findHeaderUserByUserId: (userId: string) => Promise<ITUser[]>;
   findUsersByOwnerGroupIds: (userGroupId: string[]) => Promise<any>;
 }
@@ -21,9 +21,9 @@ const UserServices = (axiosInstance: AxiosInstance): TUserServices => {
           return;
         });
     },
-    findSaleUserBySalePermission: async (userId) => {
+    findUsersFormSaleProjectModuleByUserId: async (userId) => {
       return await axiosInstance
-        .get(`${userUrl}/find-sale-user-by-sale-permission/${userId}`)
+        .get(`${userUrl}/find-users-form-saleproject-module-by-userid/${userId}`)
         .then((res) => {
           return res.data;
         })

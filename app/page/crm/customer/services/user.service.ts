@@ -2,7 +2,7 @@ import { AxiosInstance } from "axios";
 import { ITSelectUsers } from "../common";
 export interface TCrmServices {
   findOrganizeUserByUserId: (userId: string) => Promise<ITSelectUsers[]>;
-  findSaleUserBySalePermission: (userId: string) => Promise<ITSelectUsers[]>;
+  findUsersFormSaleProjectModuleByUserId: (userId: string) => Promise<ITSelectUsers[]>;
 }
 const UserServices = (axiosInstance: AxiosInstance): TCrmServices => {
   //User Service
@@ -19,7 +19,7 @@ const UserServices = (axiosInstance: AxiosInstance): TCrmServices => {
           return;
         });
     },
-    findSaleUserBySalePermission: async (userId) => {
+    findUsersFormSaleProjectModuleByUserId: async (userId) => {
       return await axiosInstance
         .get(`${userUrl}/find-sale-user-by-sale-permission/${userId}`)
         .then((res) => {

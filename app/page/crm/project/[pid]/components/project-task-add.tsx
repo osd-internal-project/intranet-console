@@ -12,7 +12,7 @@ import {
   Switch,
 } from "antd";
 import {
-  ITBranchContactForm,
+  ITCustomerDetailSubContactForm,
   ITProjectTaskForm,
   ITTicketConfigs,
 } from "../../common";

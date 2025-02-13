@@ -25,13 +25,13 @@ export interface ITCustomerFile {
   fileCode: string;
   fileName: string;
 }
-export type ITBranchForSelect = {
+export type ITCustomerDetailSubForSelect = {
   id: number;
-  branchName: string;
-  customerAddress: ITBranchAddress[];
-  customerContact: ITBranchContact[];
+  name: string;
+  customerAddress: ITCustomerDetailSubAddress[];
+  customerContact: ITCustomerDetailSubContact[];
 };
-export type ITBranchAddressForm = {
+export type ITCustomerDetailSubAddressForm = {
   addressTypeId: string;
   addressTypeName: string;
   alley: string;
@@ -46,8 +46,8 @@ export type ITBranchAddressForm = {
   village: string;
   zipCode: string;
 };
-export type ITBranchAddress = { id: number } & ITBranchAddressForm;
-export type ITBranchContactForm = {
+export type ITCustomerDetailSubAddress = { id: number } & ITCustomerDetailSubAddressForm;
+export type ITCustomerDetailSubContactForm = {
   name: string;
   nickName: string;
   position: string;
@@ -58,7 +58,7 @@ export type ITBranchContactForm = {
   birthday: Date;
   activeStatus: boolean;
 };
-export type ITBranchContact = { id: number } & ITBranchContactForm;
+export type ITCustomerDetailSubContact = { id: number } & ITCustomerDetailSubContactForm;
 // export type ITCustomerProject = {
 //   id: number;
 //   projectName: string;
@@ -69,7 +69,7 @@ export type ITBranchContact = { id: number } & ITBranchContactForm;
 //   deliveryAddressText?: string;
 //   notiAddressText?: string;
 //   contactId?: string;
-//   customerBranch: { customerDetail: ITCustomerForSelect } & ITBranchForSelect;
+//   customerBranch: { customerDetail: ITCustomerForSelect } & ITCustomerDetailSubForSelect;
 // };
 
 export type ITProjectCreateForm = {
@@ -100,10 +100,9 @@ export type ITProjectCreateForm = {
 };
 export type ITProject = {
   id: number;
-  customerBranch: {
-    customerDetail: ITCustomerForSelect;
-    customerDetailSub: ITCustomerSub;
-  } & ITBranchForSelect;
+  customerDetailSub: {
+    customerDetail: ITCustomerForSelect; 
+  } & ITCustomerDetailSubForSelect;
   contractCompany?: { id: number; name: string };
 } & ITProjectCreateForm;
 export type ITProjectTicketCreateForm = {

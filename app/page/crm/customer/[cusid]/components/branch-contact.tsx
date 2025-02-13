@@ -13,11 +13,11 @@ import {
   Tag,
 } from "antd";
 import {
-  ITBranch,
-  ITBranchContact,
-  ITBranchContactForm,
-  ITBranchDetail,
-  ITBranchForm,
+  ITCustomerDetailSub,
+  ITCustomerDetailSubContact,
+  ITCustomerDetailSubContactForm,
+  ITCustomerDetailSubDetail,
+  ITCustomerDetailSubForm,
 } from "../../common";
 import {
   CloseOutlined,
@@ -33,24 +33,24 @@ import { dateToStringThNoTime } from "@/app/utils/format";
 
 export interface props {
   rules: any;
-  branchDetail?: ITBranchDetail;
-  onSaveBranchContact: (branchId: number, form: ITBranchContactForm) => void;
+  customerDetailSubDetail?: ITCustomerDetailSubDetail;
+  onSaveBranchContact: (branchId: number, form: ITCustomerDetailSubContactForm) => void;
   onDeleteCustomerBranchContact: (branchId: number, contactId: number) => void;
 }
 
 const BranchContactComponent: React.FC<props> = ({
   rules,
-  branchDetail,
+  customerDetailSubDetail,
   onSaveBranchContact,
   onDeleteCustomerBranchContact,
 }): React.ReactElement => {
   const [showModalContactAdd, setShowModalContactAdd] = useState(false);
   useEffect(() => {
     setShowModalContactAdd(false);
-  }, [branchDetail?.customerContact]);
+  }, [customerDetailSubDetail?.customerContact]);
 
   const showModalBranchContactDelete = (id: number) => {
-    if (branchDetail?.id) {
+    if (customerDetailSubDetail?.id) {
       Modal.confirm({
         title: "Delete this Contact",
         icon: <ExclamationCircleFilled />,
@@ -59,19 +59,19 @@ const BranchContactComponent: React.FC<props> = ({
         okButtonProps: { type: "primary", danger: true },
         cancelText: "Cancel",
         onOk: async () => {
-          onDeleteCustomerBranchContact(branchDetail.id, id);
+          onDeleteCustomerBranchContact(customerDetailSubDetail.id, id);
         },
       });
     }
   };
 
-  const columns: TableColumnsType<ITBranchContact> = [
+  const columns: TableColumnsType<ITCustomerDetailSubContact> = [
     {
       key: "id",
       dataIndex: "id",
       title: "No",
       width: "80px",
-      render: (id: number, record: ITBranchContact, index: number) => index + 1,
+      render: (id: number, record: ITCustomerDetailSubContact, index: number) => index + 1,
     },
     {
       key: "name",
@@ -177,9 +177,9 @@ const BranchContactComponent: React.FC<props> = ({
           <></>
         )}
       </div>
-      {showModalContactAdd && branchDetail?.id ? (
+      {showModalContactAdd && customerDetailSubDetail?.id ? (
         <BranchContactAddComponent
-          branchId={branchDetail?.id}
+          branchId={customerDetailSubDetail?.id}
           showModalContactAdd={showModalContactAdd}
           onShowModalContactAdd={function (status: boolean): void {
             setShowModalContactAdd(status);
@@ -193,7 +193,7 @@ const BranchContactComponent: React.FC<props> = ({
         size="small"
         columns={columns}
         dataSource={
-          branchDetail?.customerContact ? branchDetail.customerContact : []
+          customerDetailSubDetail?.customerContact ? customerDetailSubDetail.customerContact : []
         }
       />
     </div>

@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import type { FormInstance, TableColumnsType } from "antd";
 import { Button, ConfigProvider, Input, Modal, Table, Tag } from "antd";
 import {
-  ITBranch,
-  ITBranchAddressForm,
-  ITBranchContactForm,
-  ITBranchDetail,
-  ITBranchForm,
+  ITCustomerDetailSub,
+  ITCustomerDetailSubAddressForm,
+  ITCustomerDetailSubContactForm,
+  ITCustomerDetailSubDetail,
+  ITCustomerDetailSubForm,
   ITCustomerSub,
   ITCustomerSubDetail,
   ITCustomerSubForm,
@@ -21,7 +21,7 @@ import BranchComponent from "./customer-branch";
 import CustomerSubEditComponent from "./customer-sub-edit";
 export interface props {
   rules: any;
-  branchs: ITBranch[];
+  customerDetailSubs: ITCustomerDetailSub[];
   customerSubs: ITCustomerSubDetail[];
   showModalCustomerSubAdd: boolean;
   showModalCustomerSubEdit: boolean;
@@ -33,24 +33,24 @@ export interface props {
   formBranchEdit: FormInstance;
   fetchBranchByCustomerSubId: (customerSubId: number) => void;
   formCustomerSubEdit: FormInstance;
-  branchDetail?: ITBranchDetail;
+  customerDetailSubDetail?: ITCustomerDetailSubDetail;
   showModalBranchAdd: boolean;
   showModalBranchEdit: boolean;
   onShowModalBranchAdd: (status: boolean) => void;
   onShowModalBranchEdit: (status: boolean) => void;
   onShowModalBranchDetail: (id: number | undefined) => void;
-  onSaveBranch: (form: ITBranchForm) => void;
-  onSaveBranchEdit: (form: ITBranchForm) => void;
+  onSaveBranch: (form: ITCustomerDetailSubForm) => void;
+  onSaveBranchEdit: (form: ITCustomerDetailSubForm) => void;
   onDeleteCustomerBranch: (id: number) => void;
-  onSaveBranchAddress: (branchId: number, form: ITBranchAddressForm) => void;
+  onSaveBranchAddress: (branchId: number, form: ITCustomerDetailSubAddressForm) => void;
   onDeleteCustomerBranchAddress: (branchId: number, addressId: number) => void;
-  onSaveBranchContact: (branchId: number, form: ITBranchContactForm) => void;
+  onSaveBranchContact: (branchId: number, form: ITCustomerDetailSubContactForm) => void;
   onDeleteCustomerBranchContact: (branchId: number, contactId: number) => void;
 }
 
 const CustomerSubDetailComponent: React.FC<props> = ({
   rules,
-  branchs,
+  customerDetailSubs,
   customerSubs,
   formBranchEdit,
   showModalCustomerSubAdd,
@@ -62,7 +62,7 @@ const CustomerSubDetailComponent: React.FC<props> = ({
   onDeleteCustomerSub,
   fetchBranchByCustomerSubId,
   formCustomerSubEdit,
-  branchDetail,
+  customerDetailSubDetail,
   showModalBranchAdd,
   showModalBranchEdit,
   onShowModalBranchAdd,
@@ -179,8 +179,8 @@ const CustomerSubDetailComponent: React.FC<props> = ({
     return (
       <BranchComponent
         rules={rules}
-        branchs={branchs}
-        branchDetail={branchDetail}
+        customerDetailSubs={customerDetailSubs}
+        customerDetailSubDetail={customerDetailSubDetail}
         showModalBranchAdd={showModalBranchAdd}
         showModalBranchEdit={showModalBranchEdit}
         onShowModalBranchAdd={onShowModalBranchAdd}

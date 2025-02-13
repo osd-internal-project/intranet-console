@@ -4,7 +4,7 @@ import { Button, Card, Form, Input, Modal, Select } from "antd";
 
 import { CloseOutlined } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
-import { ITBranchAddressForm } from "@/app/common/customer";
+import { ITCustomerDetailSubAddressForm } from "@/app/common/customer";
 
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -23,7 +23,7 @@ export interface props {
   onShowModalAddressAdd: (status: boolean) => void;
   onSaveBranchAddress: (
     branchId: number,
-    form: ITBranchAddressForm,
+    form: ITCustomerDetailSubAddressForm,
     customerId: number
   ) => void;
 }
@@ -44,7 +44,7 @@ const BranchAddressAdd: React.FC<props> = ({
   useEffect(() => {
     form.resetFields();
   }, [showModalAddressAdd]);
-  const onFinishBranchAddress = (form: ITBranchAddressForm) => {
+  const onFinishBranchAddress = (form: ITCustomerDetailSubAddressForm) => {
     // const addressTypeName = addressType.findLast(
     //   (type) => (type.value = form.addressTypeId)
     // );

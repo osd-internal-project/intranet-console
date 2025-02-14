@@ -10,6 +10,8 @@ import dayjs, { Dayjs } from "dayjs";
 import { CarBookForm } from "./car-book-form";
 import { checkMaCarBookConfig } from "@/app/utils/validatefield";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 export interface props {
   maCarData: MaCarType[];
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,8 +21,10 @@ export interface props {
 const MaCarBook: React.FC<props> = ({ maCarData, setLoading, dataoptionsProvinces }): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const router = useRouter();
-  const intraAuth = useAxiosIntranet();
-  const macarbookservices = MaCarBookServices(intraAuth);
+  // const intraAuth = useAxiosIntranet();
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const macarbookservices = MaCarBookServices(baseUrIntranet);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [carName, setCarName] = useState<MaCarType[]>([]);
   const [formUser] = Form.useForm();

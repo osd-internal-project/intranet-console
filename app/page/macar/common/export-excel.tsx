@@ -3,6 +3,7 @@ import * as XLSX from "xlsx";
 import { Button } from "antd";
 import { MaCarBookType, dataMaCarbook } from "./index";
 import { ExcelIcon } from "@/components/icon";
+import dayjs from "dayjs";
 
 interface ShareMaCarBookProps {
   data: MaCarBookType[];
@@ -12,20 +13,21 @@ const ShareMaCarBook: React.FC<ShareMaCarBookProps> = ({ data }) => {
   const handleOnExport = () => {
     const transdata = data.map((dataItem) => ({
       ชื่อรถ: dataItem.carName,
+      วันที่เริ่มจอง: `${dayjs(dataItem.carBookStartDate).format("DD/MM/YYYY , HH:mm")} น.`,
+      วันที่สิ้นสุดการจอง: `${dayjs(dataItem.carBookEndDate).format("DD/MM/YYYY , HH:mm")} น.`,
       ชื่อผู้จอง: dataItem.createdByName,
-      วันที่เริ่มจอง: new Date(dataItem.carBookStartDate).toLocaleDateString(),
-      วันที่สิ้นสุดการจอง: new Date(dataItem.carBookEndDate).toLocaleDateString(),
-      เวลาที่เริ่มจอง: new Date(dataItem.carBookStartDate).toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      }),
-      เวลาที่สิ้นสุดการจอง: new Date(dataItem.carBookEndDate).toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      }),
-      สถานะ: dataItem.carBookApprovedStatus,
+      สถานะ:
+        dataItem.carBookApprovedStatus === "Process"
+          ? "กำลังรออนุมัติ"
+          : dataItem.carBookApprovedStatus === "Cancel"
+          ? "ยกเลิก"
+          : dataItem.carBookApprovedStatus === "Approve"
+          ? "อนุมัติแล้ว"
+          : dataItem.carBookApprovedStatus === "DisapProved"
+          ? "ไม่อนุมัติ"
+          : dataItem.carBookApprovedStatus === "Return"
+          ? "แจ้งคืนรถแล้ว"
+          : "Unknown Status",
       ผู้อนุมัติ: dataItem.carBookApprovedByName,
       รายละเอียด: dataItem.detail,
     }));
@@ -34,8 +36,8 @@ const ShareMaCarBook: React.FC<ShareMaCarBookProps> = ({ data }) => {
     const colWidths = [{ wch: 20 }, { wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 20 }, { wch: 30 }];
 
     worksheet["!cols"] = colWidths;
-    XLSX.utils.book_append_sheet(workbook, worksheet, "การจองรถ");
-    XLSX.writeFile(workbook, "การจองรถ.xlsx");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "ข้อมูลการจองรถยนต์");
+    XLSX.writeFile(workbook, `ข้อมูลการจองรถยนต์${dayjs(new Date()).format("DD/MM/YY")}.xlsx`);
   };
 
   return (

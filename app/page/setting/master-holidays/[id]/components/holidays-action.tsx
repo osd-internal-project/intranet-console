@@ -20,20 +20,27 @@ export const HolidayActions: React.FC<Props> = ({ onFinishAction, setManageStatu
         onCancel={() => {
           setManageStatusDay({ statusModal: false }), formAction.resetFields();
         }}
-        footer={false}
-      >
+        footer={false}>
         <Form layout="vertical" form={formAction} autoComplete="off" onFinish={onFinishAction}>
           <Row gutter={[8, 8]}>
             <Form.Item<ICreateMasterHolidayDto> name="holidaysYear" hidden>
               <Input />
             </Form.Item>
             <Col span={24}>
-              <Form.Item<ICreateMasterHolidayDto> className=" mb-0" label="ชื่อวันหยุด:" name="holidaysName" required>
+              <Form.Item<ICreateMasterHolidayDto>
+                className=" mb-0"
+                label="ชื่อวันหยุด:"
+                name="holidaysName"
+                rules={[{ required: true, message: "โปรดกรอกชื่อวันหยุด" }]}>
                 <Input />
               </Form.Item>
             </Col>
             <Col span={24}>
-              <Form.Item<ICreateMasterHolidayDto> className=" mb-0" label="วันที่:" name="holidaysDate" required>
+              <Form.Item<ICreateMasterHolidayDto>
+                className=" mb-0"
+                label="วันที่:"
+                name="holidaysDate"
+                rules={[{ required: true, message: "โปรดกรอกวันที่" }]}>
                 <DatePicker className="w-full" />
               </Form.Item>
             </Col>
@@ -44,8 +51,7 @@ export const HolidayActions: React.FC<Props> = ({ onFinishAction, setManageStatu
               <Button
                 onClick={() => {
                   setManageStatusDay({ statusModal: false }), formAction.resetFields();
-                }}
-              >{`Cancel`}</Button>
+                }}>{`Cancel`}</Button>
               <Button type="primary" htmlType="submit">
                 {`Add`}
               </Button>
@@ -58,8 +64,7 @@ export const HolidayActions: React.FC<Props> = ({ onFinishAction, setManageStatu
           type="primary"
           onClick={() => {
             setManageStatusDay({ statusModal: true, statusAction: "create" });
-          }}
-        >{`Add Holiday`}</Button>
+          }}>{`Add Holiday`}</Button>
       </div>
     </div>
   );

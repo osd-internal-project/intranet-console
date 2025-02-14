@@ -1,16 +1,5 @@
 import React from "react";
-import {
-  Row,
-  Col,
-  Form,
-  Input,
-  Divider,
-  ConfigProvider,
-  Select,
-  InputNumber,
-  DatePicker,
-  FormInstance,
-} from "antd";
+import { Row, Col, Form, Input, Divider, ConfigProvider, Select, InputNumber, DatePicker, FormInstance } from "antd";
 import { MaCarBookType, MaCarType } from "../../common/index";
 import TextArea from "antd/es/input/TextArea";
 import "../../common/style.css";
@@ -21,19 +10,10 @@ interface props {
   statusApprove: any;
 }
 
-export const CarReturnForm: React.FC<props> = ({
-  formBookData,
-  statusApprove,
-}) => {
+export const CarReturnForm: React.FC<props> = ({ formBookData, statusApprove }) => {
   return (
     <>
-      <Form
-        form={formBookData}
-        layout="vertical"
-        initialValues={{ remember: true }}
-        autoComplete="off"
-        size="small"
-      >
+      <Form form={formBookData} layout="vertical" initialValues={{ remember: true }} autoComplete="off" size="small">
         <Divider orientation="left">ข้อมูลผู้จอง</Divider>
         <Row gutter={8}>
           <Col span={6}>
@@ -43,17 +23,14 @@ export const CarReturnForm: React.FC<props> = ({
           </Col>
         </Row>
         <Divider orientation="left">ข้อมูลการจองรถ</Divider>
-        <Row gutter={16}>
+        <Row gutter={[8, 8]}>
           <Col span={6}>
-            <Form.Item name="carName1" label="ชื่อรถ :">
+            <Form.Item name="carName" label="ชื่อรถ :">
               <Input disabled className="read-only-input" />
             </Form.Item>
           </Col>
           <Col span={6}>
-            <Form.Item<MaCarBookType>
-              name="carBookTitle"
-              label="วัตถุประสงค์การใช้งาน :"
-            >
+            <Form.Item<MaCarBookType> name="carBookTitle" label="วัตถุประสงค์การใช้งาน :">
               <Input disabled className="read-only-input" />
             </Form.Item>
           </Col>
@@ -78,9 +55,7 @@ export const CarReturnForm: React.FC<props> = ({
             <Form.Item name="carBookStartDate" label="วันที่เริ่มการจอง :">
               <DatePicker
                 className="read-only-input"
-                format={dateFormatTime(
-                  formBookData.getFieldValue("carBookStartDate")
-                )}
+                format={dateFormatTime(formBookData.getFieldValue("carBookStartDate"))}
                 style={{ width: "100%" }}
               />
             </Form.Item>
@@ -89,9 +64,7 @@ export const CarReturnForm: React.FC<props> = ({
             <Form.Item name="carBookEndDate" label="วันที่สิ้นสุดการจอง :">
               <DatePicker
                 className="read-only-input"
-                format={dateFormatTime(
-                  formBookData.getFieldValue("carBookEndDate")
-                )}
+                format={dateFormatTime(formBookData.getFieldValue("carBookEndDate"))}
                 style={{ width: "100%" }}
               />
             </Form.Item>
@@ -117,10 +90,7 @@ export const CarReturnForm: React.FC<props> = ({
             </Form.Item>
           </Col>
           <Col span={9}>
-            <Form.Item
-              name="remarkApproved"
-              label="หมายเหตุการไม่อนุมัติการจองรถ :"
-            >
+            <Form.Item name="remarkApproved" label="หมายเหตุการไม่อนุมัติการจองรถ :">
               <TextArea disabled rows={1} className="read-only-input" />
             </Form.Item>
           </Col>
@@ -144,25 +114,18 @@ export const CarReturnForm: React.FC<props> = ({
                     components: {
                       Select: { colorBorder: "#fff" },
                     },
-                  }}
-                >
+                  }}>
                   <Form.Item<MaCarType> name="status" label="สถานนะรถ :">
                     <Select className="read-only-input">
                       <Select.Option value={true}>ใช้งานได้ปกติ</Select.Option>
-                      <Select.Option value={false}>
-                        ไม่สามารถใช้งานได้
-                      </Select.Option>
+                      <Select.Option value={false}>ไม่สามารถใช้งานได้</Select.Option>
                     </Select>
                   </Form.Item>
                 </ConfigProvider>
               </Col>
               <Col span={8}>
                 <Form.Item name="carMile" label="เลขไมล์รถ :">
-                  <InputNumber
-                    disabled
-                    style={{ width: "100%" }}
-                    className="read-only-input"
-                  />
+                  <InputNumber disabled style={{ width: "100%" }} className="read-only-input" />
                 </Form.Item>
               </Col>
               <Col span={8}>
@@ -175,8 +138,7 @@ export const CarReturnForm: React.FC<props> = ({
                     components: {
                       Select: { colorBorder: "#fff" },
                     },
-                  }}
-                >
+                  }}>
                   <Form.Item name="carPetrol" label="ระดับนํ้ามันรถ :">
                     <Select className="read-only-input">
                       <Select.Option value="high">มาก</Select.Option>
@@ -192,9 +154,7 @@ export const CarReturnForm: React.FC<props> = ({
                 <Form.Item name="returnNotifAt" label="วันที่แจ้งคืน :">
                   <DatePicker
                     className="read-only-input"
-                    format={dateFormatTime(
-                      formBookData.getFieldValue("returnNotifAt")
-                    )}
+                    format={dateFormatTime(formBookData.getFieldValue("returnNotifAt"))}
                     placeholder="รออนุมัติรับคืนรถ"
                     style={{ width: "100%" }}
                   />
@@ -211,27 +171,14 @@ export const CarReturnForm: React.FC<props> = ({
                     components: {
                       Select: { colorBorder: "#fff" },
                     },
-                  }}
-                >
-                  <Form.Item
-                    name="carBookApprovedStatus"
-                    label="สถานนะการคืนรถ :"
-                  >
-                    <Select
-                      placeholder="รออนุมัติรับคืนรถ"
-                      className="read-only-input"
-                    >
-                      <Select.Option value="Process">
-                        กำลังรออนุมัติ
-                      </Select.Option>
+                  }}>
+                  <Form.Item name="carBookApprovedStatus" label="สถานนะการคืนรถ :">
+                    <Select placeholder="รออนุมัติรับคืนรถ" className="read-only-input">
+                      <Select.Option value="Process">กำลังรออนุมัติ</Select.Option>
                       <Select.Option value="Approve">อนุมัติแล้ว</Select.Option>
                       <Select.Option value="Cancel">ยกเลิกการจอง</Select.Option>
-                      <Select.Option value="Return">
-                        แจ้งคืนรถแล้ว
-                      </Select.Option>
-                      <Select.Option value="Completed">
-                        คืนรถสำเร็จ
-                      </Select.Option>
+                      <Select.Option value="Return">แจ้งคืนรถแล้ว</Select.Option>
+                      <Select.Option value="Completed">คืนรถสำเร็จ</Select.Option>
                     </Select>
                   </Form.Item>
                 </ConfigProvider>
@@ -245,13 +192,7 @@ export const CarReturnForm: React.FC<props> = ({
               </Col>
               <Col span={8}>
                 <Form.Item name="returnAt" label="วันที่รับคืน :">
-                  <DatePicker
-                    className="read-only-input"
-                    format={dateFormatTime(
-                      formBookData.getFieldValue("returnAt")
-                    )}
-                    style={{ width: "100%" }}
-                  />
+                  <DatePicker className="read-only-input" format={dateFormatTime(formBookData.getFieldValue("returnAt"))} style={{ width: "100%" }} />
                 </Form.Item>
               </Col>
             </Row>

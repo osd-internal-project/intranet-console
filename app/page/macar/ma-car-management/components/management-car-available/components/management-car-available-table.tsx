@@ -11,13 +11,15 @@ export interface props {
 }
 
 const ManagementCarAvailableTable: React.FC<props> = ({ dataSource, loading, pagination, changePagination, handleOpenModal }): React.ReactElement => {
+  console.log(dataSource);
+
   const columns: TableProps<MaCarType>["columns"] = [
     {
       title: "ลำดับ",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "carId",
+      key: "carId",
       align: "center",
-      render: (_: any, __: any, index: number) =>
+      render: (id: number, record: any, index: number) =>
         pagination.current && pagination.pageSize ? (pagination.current - 1) * pagination.pageSize + (index + 1) : "",
     },
     {
@@ -83,7 +85,7 @@ const ManagementCarAvailableTable: React.FC<props> = ({ dataSource, loading, pag
         onChange={changePagination}
         size="small"
         scroll={{ x: "max-content" }}
-        rowKey={(e: any) => e.id}
+        rowKey={(e: any) => e.carId}
       />
     </div>
   );

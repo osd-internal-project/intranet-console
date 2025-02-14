@@ -8,6 +8,8 @@ import ManagementCarAvailableTable from "./components/management-car-available-t
 import ManagementCarAvailableManage from "./components/management-car-available-manage";
 import dayjs from "dayjs";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { loadAppConfig } from "@/app/config/app-config";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
 
 export interface props {
   loading: boolean;
@@ -20,8 +22,10 @@ export interface props {
 const ManagementCarAvailable: React.FC<props> = ({ setLoading, loading, maCarData, pagination, changePagination }): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const [form] = useForm();
-  const intraAuth = useAxiosIntranet();
-  const intraAuthService = ManageCarServices(intraAuth);
+  // const intraAuth = useAxiosIntranet();
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const intraAuthService = ManageCarServices(baseUrIntranet);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [checkType, setCheckType] = useState<string>("create");
 

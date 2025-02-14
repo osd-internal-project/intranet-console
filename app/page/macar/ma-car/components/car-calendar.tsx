@@ -100,10 +100,10 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
                     style={{ width: "100%" }}
                   />
                 </Form.Item>
-                <Form.Item label="จังหวัดที่จอดรถ" name="carBookProvince">
+                <Form.Item label="สถานที่ไป" name="carBookPlace">
                   <Input className="read-only-input-calendar" disabled />
                 </Form.Item>
-                <Form.Item label="สถานที่จอดรถ" name="carBookPlace">
+                <Form.Item label="จังหวัด" name="carBookProvince">
                   <Input className="read-only-input-calendar" disabled />
                 </Form.Item>
                 <Form.Item label="จำนวนผู้ใช้รถ" name="carBookUsers">

@@ -115,7 +115,7 @@ const MaDescriptionComponent: React.FC<props> = ({
           >
             <TextArea
               rows={4}
-              placeholder="maxLength is 255"
+              // placeholder="maxLength is 255"
               maxLength={255}
               showCount={true}
             />

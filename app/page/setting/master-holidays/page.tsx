@@ -1,30 +1,21 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  Breadcrumb,
-  Card,
-  Col,
-  Divider,
-  Form,
-  Modal,
-  Row,
-  message,
-} from "antd";
+import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, message } from "antd";
 import { CreateMasterHolidays } from "./components/master-holidays-create";
 import { TableMasterHolidays } from "./components/master-holidays-table";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import MasterHolidaysService from "./services/index.service";
-import {
-  ICreateMasterHolidayYearDto,
-  IFindAllYearDto,
-  IManagePageYear,
-} from "./common";
+import { ICreateMasterHolidayYearDto, IFindAllYearDto, IManagePageYear } from "./common";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import dayjs from "dayjs";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export default function MasterdataHolidays() {
-  const Auth = useAxiosIntranet();
-  const masterholidaysService = MasterHolidaysService(Auth);
+  // const Auth = useAxiosIntranet();
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const masterholidaysService = MasterHolidaysService(baseUrIntranet);
   const [loading, setLoading] = useState<boolean>(true);
   const [manageStatusYear, setManageStatusYear] = useState<IManagePageYear>({
     statusModal: false,
@@ -61,9 +52,7 @@ export default function MasterdataHolidays() {
         },
       },
       onOk: async () => {
-        const result = await masterholidaysService.createMasterHolidaysYear(
-          dataCreate
-        );
+        const result = await masterholidaysService.createMasterHolidaysYear(dataCreate);
         if (result) {
           message.success(`Add success`);
           formCreate.resetFields();
@@ -109,10 +98,7 @@ export default function MasterdataHolidays() {
               manageStatusYear={manageStatusYear}
               formCreate={formCreate}
             />
-            <TableMasterHolidays
-              loading={loading}
-              dataHolidayYear={dataHolidayYear}
-            />
+            <TableMasterHolidays loading={loading} dataHolidayYear={dataHolidayYear} />
           </Card>
         </Col>
       </Row>

@@ -47,6 +47,7 @@ interface Props {
   createForm: FormInstance;
   setSelectUserType: (status: "ldap" | "local") => void;
   selectUserType: "ldap" | "local";
+  getImage: any;
 }
 
 const { RangePicker } = DatePicker;
@@ -62,6 +63,7 @@ export const UserAction: React.FC<Props> = ({
   createForm,
   setSelectUserType,
   selectUserType,
+  getImage,
 }): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || {
     user: null,
@@ -116,11 +118,19 @@ export const UserAction: React.FC<Props> = ({
       }
     } else if (managePage.modalTitle === "update") {
       const updateForm = value as TUpdateUserDto;
-
-      if (updateForm?.userId) {
-        const userId = updateForm?.userId;
+      if (updateForm.userId) {
+        const userId = updateForm.userId;
         const resUpdate = await UsersServices(baseUrlUser).updateUser(userId, updateForm);
         if (resUpdate) {
+          if (resUpdate && imageFiles.length > 0) {
+            console.log(resUpdate && imageFiles.length > 0);
+            imageFiles.forEach(async (file) => {
+              const formData: any = new FormData();
+              formData.append("type", "create-attend");
+              formData.append("files", file.originFileObj);
+              await UsersServices(baseUrlUser).uploadFiles(resUpdate.userId, formData);
+            });
+          }
           message.success("Update Success");
           createForm.resetFields();
           setManagePage({ ...managePage, loading: true, modalStatus: false });
@@ -196,6 +206,11 @@ export const UserAction: React.FC<Props> = ({
   };
 
   const beforeUploadImageFiles = (file: RcFile) => {
+    const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
+    if (file.size > maxSizeInBytes) {
+      message.error(`ไฟล์ ${file.name} มีขนาดใหญ่เกิน 2MB`);
+      return false;
+    }
     if (imageFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return false;
@@ -204,8 +219,26 @@ export const UserAction: React.FC<Props> = ({
   };
 
   const handleChangeImageFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
+    if (newFileList && newFileList.length > 0) {
+      const latestFile = newFileList[newFileList.length - 1];
+      if (latestFile.originFileObj) {
+        const previewUrl = await getBase64(latestFile.originFileObj);
+        setImage(previewUrl);
+      }
+    } else {
+      setImage(null); // Reset preview if no files
+    }
+
     return setImageFiles(newFileList);
   };
+
+  const getBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
 
   const selectOrganize = async (organizeId: string) => {
     setLoadTree(true);
@@ -228,9 +261,7 @@ export const UserAction: React.FC<Props> = ({
     setValueTreeSelect(value);
   };
 
-  const onChangeGroupOwner = async (value: string) => {
-    console.log(value);
-  };
+  const onChangeGroupOwner = async (value: string) => {};
 
   const createTree = (obj: any[], parentId: string | null) => {
     const tree: any[] = [];
@@ -249,6 +280,8 @@ export const UserAction: React.FC<Props> = ({
     });
     return tree;
   };
+
+  // console.log(getImage);
 
   return (
     <>
@@ -292,7 +325,7 @@ export const UserAction: React.FC<Props> = ({
         width={1200}>
         <Form form={createForm} name="create" wrapperCol={{ span: 24 }} onFinish={onFinishSave} autoComplete="off" layout="vertical">
           <div className=" flex justify-center p-1">
-            <Avatar size={128} src={image ? URL.createObjectURL(image) : ""} />
+            <Avatar size={128} src={image && getImage ? image : getImage ? URL.createObjectURL(getImage) : ""} />
           </div>
           <div className=" flex justify-center">
             <Form.Item name="image">

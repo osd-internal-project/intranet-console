@@ -7,18 +7,22 @@ import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import MaServices from "../services/ma.service";
 import { useRouter } from "next/navigation";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export default function MaTaskCreatePage() {
   const { user } = (useContext(UserContext) as UserContectType) || {
     user: null,
   };
   const router = useRouter();
-  const intranetAuth = useAxiosIntranet();
-  const maServices = MaServices(intranetAuth);
+  // const intranetAuth = useAxiosIntranet();
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const maServices = MaServices(baseUrIntranet);
   const [loading, setloading] = useState<boolean>(true);
   const [maTypes, setMaTypes] = useState<ITMaType[]>([]);
   useEffect(() => {
-    if (loading === true) fetchData();
+    if (loading) fetchData();
   }, [loading]);
 
   const fetchData = async () => {
@@ -27,9 +31,7 @@ export default function MaTaskCreatePage() {
   };
 
   async function createMa(data: ITMaCreateForm): Promise<void> {
-    const maTypeSelected = maTypes.findLast(
-      (type) => type.id === data.maTypeId
-    );
+    const maTypeSelected = maTypes.findLast((type) => type.id === data.maTypeId);
     const form = {
       ...data,
       maTypeName: maTypeSelected?.name,
@@ -74,12 +76,7 @@ export default function MaTaskCreatePage() {
         </Col>
         <Col span={24}>
           <div className="grid grid-cols-1 ">
-            <MaTaskCreate
-              maTypes={maTypes}
-              loading={loading}
-              setLoading={(e: boolean) => setloading(e)}
-              createMa={createMa}
-            />
+            <MaTaskCreate maTypes={maTypes} loading={loading} setLoading={(e: boolean) => setloading(e)} createMa={createMa} />
           </div>
         </Col>
       </Row>

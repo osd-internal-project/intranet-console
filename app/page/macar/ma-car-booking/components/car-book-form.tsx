@@ -6,6 +6,8 @@ import { RangePickerProps } from "antd/es/date-picker";
 import dayjs, { Dayjs } from "dayjs";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { MaCarServices } from "../../../../services/ma-car.service";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 interface props {
   formUser: FormInstance<MaCarBookType>;
@@ -28,8 +30,10 @@ export const CarBookForm: React.FC<props> = ({
   setStartDate,
   setEndDate,
 }) => {
-  const intraAuth = useAxiosIntranet();
-  const macarervices = MaCarServices(intraAuth);
+  // const intraAuth = useAxiosIntranet();
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const macarervices = MaCarServices(baseUrIntranet);
   const handleStartDateChange = (date: dayjs.Dayjs | null) => {
     if (date) {
       const startDate = date.startOf("day");
@@ -100,8 +104,8 @@ export const CarBookForm: React.FC<props> = ({
             </Form.Item>
           </Col>
           <Col span={6}>
-            <Form.Item<MaCarBookType> name="idProvinces" label="จังหวัด" rules={[{ required: true, message: "กรุณากรอกจังหวัด" }]}>
-              <Select allowClear placeholder={`กรอกจังหวัด`} options={dataoptionsProvinces} showSearch optionFilterProp="label" />
+            <Form.Item<MaCarBookType> name="idProvinces" label="จังหวัด" rules={[{ required: true, message: "กรุณาเลือกจังหวัด" }]}>
+              <Select allowClear placeholder={`เลือกจังหวัด`} options={dataoptionsProvinces} showSearch optionFilterProp="label" />
             </Form.Item>
           </Col>
         </Row>
@@ -124,20 +128,20 @@ export const CarBookForm: React.FC<props> = ({
             <Form.Item<MaCarBookType>
               name="carBookStartDate"
               label="วันที่เริ่มการจอง"
-              rules={[{ required: true, message: "กรุณาเลือกวันที่เริ่มจอง!" }]}>
+              rules={[{ required: true, message: "กรุณาเลือกวันที่เริ่มการจอง" }]}>
               <DatePicker
                 onChange={handleStartDateChange}
                 disabledDate={disabledDate}
-                placeholder="กรอกวันที่เริ่มการจอง"
+                placeholder="เลือกวันที่เริ่มการจอง"
                 style={{ width: "100%" }}
               />
             </Form.Item>
           </Col>
           <Col span={6}>
-            <Form.Item name="carBookEndDate" label="วันที่สิ้นสุดการจอง" rules={[{ required: true, message: "กรุณาเลือกวันที่สิ้นสุด" }]}>
+            <Form.Item name="carBookEndDate" label="วันที่สิ้นสุดการจอง" rules={[{ required: true, message: "กรุณาเลือกวันที่สิ้นสุดการจอง" }]}>
               <DatePicker
                 onChange={handleEndDateChange}
-                placeholder="กรอกวันที่สิ้นสุดการจอง"
+                placeholder="เลือกวันที่สิ้นสุดการจอง"
                 disabledDate={disabledDate}
                 style={{ width: "100%" }}
               />

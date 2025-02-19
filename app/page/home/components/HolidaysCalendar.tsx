@@ -6,6 +6,8 @@ import dayjs from "dayjs";
 import classNames from "classnames";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import SlideImageService from "../services/index.service";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export interface props {}
 
@@ -120,8 +122,9 @@ interface THoliday {
 }
 
 const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
-  const intraAuth = useAxiosIntranet();
-  const intraAuthService = SlideImageService(intraAuth);
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const intraAuthService = SlideImageService(baseUrIntranet);
   const { styles } = useStyle({ test: true });
   const [selectDate, setSelectDate] = useState<Dayjs>(dayjs());
   const [panelDateDate, setPanelDate] = useState<Dayjs>(dayjs());
@@ -129,7 +132,7 @@ const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
   const [resultHoliday, setResultHoliday] = useState<string[]>([]);
 
   useEffect(() => {
-    featchDataHoliday("2024");
+    featchDataHoliday(dayjs(new Date()).format("YYYY"));
   }, []);
 
   const featchDataHoliday = async (year: string) => {

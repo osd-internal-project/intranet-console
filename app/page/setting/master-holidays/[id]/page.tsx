@@ -10,6 +10,8 @@ import { HolidayActions } from "./components/holidays-action";
 import { useForm } from "antd/es/form/Form";
 import dayjs from "dayjs";
 import { ExclamationCircleFilled } from "@ant-design/icons";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 interface THoliday {
   id: number;
@@ -19,8 +21,10 @@ interface THoliday {
 }
 
 export default function MasterdataHolidaysByYear() {
-  const Auth = useAxiosIntranet();
-  const masterholidaysService = MasterHolidaysService(Auth);
+  // const Auth = useAxiosIntranet();
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const masterholidaysService = MasterHolidaysService(baseUrIntranet);
   const params = useParams();
   const year = params.id as string;
   const [formAction] = useForm();

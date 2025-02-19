@@ -69,8 +69,8 @@ export const CarForm: React.FC<props> = ({
             </Form.Item>
           </Col>
           <Col span={6}>
-            <Form.Item<MaCarBookType> name="carBookProvince" label="จังหวัด :" rules={[{ required: !editState, message: "กรุณากรอกจังหวัด" }]}>
-              <Select placeholder={`กรอกจังหวัด`} options={dataProvinces} allowClear showSearch optionFilterProp="label" />
+            <Form.Item<MaCarBookType> name="carBookProvince" label="จังหวัด :" rules={[{ required: !editState, message: "กรุณาเลือกจังหวัด" }]}>
+              <Select placeholder={`เลือกจังหวัด`} options={dataProvinces} allowClear showSearch optionFilterProp="label" />
             </Form.Item>
           </Col>
           <Col span={6}>
@@ -83,7 +83,7 @@ export const CarForm: React.FC<props> = ({
               <DatePicker
                 disabled={!editState}
                 format={dateFormatTime(form.getFieldValue("carBookStartDate"))}
-                placeholder="กรอกวันที่เริ่มการจอง :"
+                placeholder="เลือกวันที่เริ่มการจอง :"
                 style={{ width: "100%" }}
                 className={editState ? "read-only-input" : ""}
               />

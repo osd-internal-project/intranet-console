@@ -6,6 +6,8 @@ import { FormInstance } from "antd/lib";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import MasterHolidaysService from "../services/index.service";
 import dayjs from "dayjs";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export interface props {
   onFinishCreate: (event: ICreateMasterHolidayYearDto) => void;
@@ -15,8 +17,9 @@ export interface props {
 }
 
 export const CreateMasterHolidays: React.FC<props> = ({ onFinishCreate, setManageStatusYear, manageStatusYear, formCreate }): React.ReactElement => {
-  const Auth = useAxiosIntranet();
-  const masterholidaysService = MasterHolidaysService(Auth);
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const masterholidaysService = MasterHolidaysService(baseUrIntranet);
   const validateName = (name: string): Promise<string | undefined> => masterholidaysService.validateNameYear(name);
   return (
     <div>
@@ -26,8 +29,7 @@ export const CreateMasterHolidays: React.FC<props> = ({ onFinishCreate, setManag
         onCancel={() => {
           setManageStatusYear({ statusModal: false }), formCreate.resetFields();
         }}
-        footer={false}
-      >
+        footer={false}>
         <Form layout="vertical" form={formCreate} autoComplete="off" onFinish={onFinishCreate}>
           <Row gutter={[8, 8]}>
             <Col span={24}>
@@ -48,8 +50,7 @@ export const CreateMasterHolidays: React.FC<props> = ({ onFinishCreate, setManag
                       }
                     },
                   },
-                ]}
-              >
+                ]}>
                 <DatePicker className="w-full" picker="year" />
               </Form.Item>
             </Col>
@@ -59,8 +60,7 @@ export const CreateMasterHolidays: React.FC<props> = ({ onFinishCreate, setManag
               <Button
                 onClick={() => {
                   setManageStatusYear({ statusModal: false }), formCreate.resetFields();
-                }}
-              >{`Cancel`}</Button>
+                }}>{`Cancel`}</Button>
               <Button type="primary" htmlType="submit">
                 {`Add`}
               </Button>
@@ -73,8 +73,7 @@ export const CreateMasterHolidays: React.FC<props> = ({ onFinishCreate, setManag
           type="primary"
           onClick={() => {
             setManageStatusYear({ statusModal: true, statusAction: "create" });
-          }}
-        >{`Add Year`}</Button>
+          }}>{`Add Year`}</Button>
       </div>
     </div>
   );

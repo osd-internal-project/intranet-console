@@ -1,13 +1,8 @@
 "use client";
 import { Breadcrumb, Col, Divider, Form, Row } from "antd";
 import UserTable from "./components/users-table";
-import { useEffect, useState } from "react";
-import {
-  ITypeOption,
-  TManageUserPageDto,
-  TGroupId24,
-  TOrganizeAllDto,
-} from "./common";
+import { useContext, useEffect, useState } from "react";
+import { ITypeOption, TManageUserPageDto, TGroupId24, TOrganizeAllDto } from "./common";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import { UsersServices } from "@/app/services/users.service";
@@ -21,6 +16,7 @@ import OrganizeServices from "@/app/services/organize-chart.service";
 import { CarryOutOutlined } from "@ant-design/icons";
 import { TfindAllOrganizeDto } from "../../setting/organize-chart/common";
 import UserServices from "@/app/services/user.service";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 export type Group = {
   name: string;
@@ -48,15 +44,12 @@ type TabType = {
 export default function UsermanagementPage() {
   const { id24Axios } = useId24();
   const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
-  const baseUrlIntranet = id24Axios(
-    loadAppConfig().REACT_APP_API_BASE_URL_INTRANET
-  );
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [positionOption, setPositionOption] = useState<ITypeOption[]>([]);
+  const [getImage, setImage] = useState<any>();
   const [filterForm] = Form.useForm();
   const [createForm] = Form.useForm();
-  const [selectUserType, setSelectUserType] = useState<"ldap" | "local">(
-    "local"
-  );
+  const [selectUserType, setSelectUserType] = useState<"ldap" | "local">("local");
   const [managePage, setManagePage] = useState<TManageUserPageDto>({
     loading: true,
     pagination: { current: 1, pageSize: 10 },
@@ -85,9 +78,7 @@ export default function UsermanagementPage() {
     },
   });
   const [treeData, setTreeData] = useState<DataNode[]>([]);
-  const [treeListDepartment, setTreeListDepartment] = useState<any[] | null>(
-    null
-  );
+  const [treeListDepartment, setTreeListDepartment] = useState<any[] | null>(null);
 
   useEffect(() => {
     if (managePage.loading) {
@@ -97,21 +88,19 @@ export default function UsermanagementPage() {
   }, [managePage.loading]);
 
   const loaddata = async () => {
-    const resOrganize = await OrganizeServices(
-      baseUrlIntranet
-    ).getOrganizeByType("department");
+    const resOrganize = await OrganizeServices(baseUrlIntranet).getOrganizeByType("department");
     // console.log(resOrganize);
 
     const tree = createTreeDepartMent(resOrganize, null);
     // console.log(tree);
 
     setTreeListDepartment(tree);
+
+    // }
   };
 
   const featchData = async () => {
-    const skip =
-      (Number(managePage.pagination.current) - 1) *
-      Number(managePage.pagination.pageSize);
+    const skip = (Number(managePage.pagination.current) - 1) * Number(managePage.pagination.pageSize);
     const take = Number(managePage.pagination.pageSize);
     const resultUsers = await UsersServices(baseUrlUser).findAllUser({
       ...managePage.search,
@@ -119,12 +108,8 @@ export default function UsermanagementPage() {
       take: take,
     });
 
-    const resultMasterPosition = await MasterPositionServices(
-      baseUrlUser
-    ).findAllPosition();
-    const groupResponse = await UserGroupServices(
-      baseUrlUser
-    ).getUserGroupAll();
+    const resultMasterPosition = await MasterPositionServices(baseUrlUser).findAllPosition();
+    const groupResponse = await UserGroupServices(baseUrlUser).getUserGroupAll();
     const tree = createTree(groupResponse, null) as any;
     setTreeData(tree);
     const resOrganize = await UserGroupServices(baseUrlUser).findAllOrganize();
@@ -132,12 +117,10 @@ export default function UsermanagementPage() {
       value: item.organizedId,
       label: item.organizedName,
     }));
-    const positionOption: ITypeOption[] = resultMasterPosition.map(
-      (d: any) => ({
-        label: d.nameTh,
-        value: d.id,
-      })
-    );
+    const positionOption: ITypeOption[] = resultMasterPosition.map((d: any) => ({
+      label: d.nameTh,
+      value: d.id,
+    }));
     setPositionOption(positionOption);
     setGroupDetailData({
       loading: false,
@@ -146,10 +129,7 @@ export default function UsermanagementPage() {
     setOptionsOrganize([...orgList]);
     setManagePage({ ...managePage, loading: false, dataUsers: resultUsers });
   };
-  const createTreeDepartMent = (
-    obj: TfindAllOrganizeDto[],
-    parentId: string | null
-  ) => {
+  const createTreeDepartMent = (obj: TfindAllOrganizeDto[], parentId: string | null) => {
     const tree: any[] = [];
     obj.forEach((item: TfindAllOrganizeDto) => {
       if (item.parentPositionId === parentId) {
@@ -218,9 +198,11 @@ export default function UsermanagementPage() {
           createForm={createForm}
           setSelectUserType={setSelectUserType}
           selectUserType={selectUserType}
+          getImage={getImage}
         />
         <UserTable
           setManagePage={setManagePage}
+          setImage={setImage}
           managePage={managePage}
           filterForm={filterForm}
           createForm={createForm}

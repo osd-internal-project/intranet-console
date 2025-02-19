@@ -19,11 +19,12 @@ const MaTableComponent: React.FC<props> = ({ dataTable, loading, setLoading, pag
   const maColumns: TableColumnsType<ITMaTask> = [
     {
       key: "id",
-      title: "NO",
+      title: "No.",
       dataIndex: "id",
       width: "100px",
       align: "center",
-      render: (id: number, record: ITMaTask, index: number) => (pagination.current && pagination.pageSize ? (pagination.current - 1) * pagination.pageSize + (index + 1) : ""),
+      render: (id: number, record: ITMaTask, index: number) =>
+        pagination.current && pagination.pageSize ? (pagination.current - 1) * pagination.pageSize + (index + 1) : "",
     },
     { key: "maTypeName", dataIndex: "maTypeName", title: "ประเภท MA", width: "200px" },
     { key: "maName", dataIndex: "maName", title: "ชื่อ MA", width: "200px" },
@@ -55,8 +56,20 @@ const MaTableComponent: React.FC<props> = ({ dataTable, loading, setLoading, pag
         ),
     },
     { key: "contact", dataIndex: "contact", title: "ผู้นัดหมาย", width: "200px" },
-    { key: "createdAt", dataIndex: "createdAt", title: "วันที่สร้าง", width: "200px", render: (data: Date) => (data ? dateToStringThNoTime(data) : "-") },
-    { key: "updatedAt", dataIndex: "updatedAt", title: "วันที่อัพเดท", width: "200px", render: (data: Date) => (data ? dateToStringThNoTime(data) : "-") },
+    {
+      key: "createdAt",
+      dataIndex: "createdAt",
+      title: "วันที่สร้าง",
+      width: "200px",
+      render: (data: Date) => (data ? dateToStringThNoTime(data) : "-"),
+    },
+    {
+      key: "updatedAt",
+      dataIndex: "updatedAt",
+      title: "วันที่อัปเดต",
+      width: "200px",
+      render: (data: Date) => (data ? dateToStringThNoTime(data) : "-"),
+    },
     {
       key: "id",
       dataIndex: "id",
@@ -71,7 +84,14 @@ const MaTableComponent: React.FC<props> = ({ dataTable, loading, setLoading, pag
   ];
   return (
     <>
-      <Table columns={maColumns} pagination={pagination} onChange={changePagination} rowKey={(record: ITMaTask) => record.id} dataSource={dataTable} size="small" />
+      <Table
+        columns={maColumns}
+        pagination={pagination}
+        onChange={changePagination}
+        rowKey={(record: ITMaTask) => record.id}
+        dataSource={dataTable}
+        size="small"
+      />
     </>
   );
 };

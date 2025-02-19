@@ -1,7 +1,7 @@
 "use client";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { Button, Card, DatePicker, Form, FormInstance, Input, Modal, Popover, Select, Table, TablePaginationConfig, Tag, message } from "antd";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Link from "next/link";
 import { deleteIcon, editIcon } from "@/components/icon";
 import { ExclamationCircleFilled, FilterOutlined, PlusCircleOutlined } from "@ant-design/icons";
@@ -13,6 +13,8 @@ import MasterPositionServices from "../services/position.service";
 import { ITypeOption, TManageUserPageDto, TUserAllDto } from "../common";
 import UserServices from "../services/user.service";
 import dayjs from "dayjs";
+import { UsersServices } from "@/app/services/users.service";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 
 export interface Props {
   setManagePage: (event: TManageUserPageDto) => void;
@@ -21,13 +23,26 @@ export interface Props {
   createForm: FormInstance;
   setSelectUserType: (status: "ldap" | "local") => void;
   selectUserType: "ldap" | "local";
+  setImage: (value: any) => void;
 }
 
-const UserTable: React.FC<Props> = ({ setManagePage, managePage, filterForm, createForm, setSelectUserType, selectUserType }): React.ReactElement => {
+const UserTable: React.FC<Props> = ({
+  setManagePage,
+  managePage,
+  filterForm,
+  createForm,
+  setSelectUserType,
+  selectUserType,
+  setImage,
+}): React.ReactElement => {
   const { id24Axios } = useId24();
   // const userAuth = useAxiosUser();
   const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const userServices = UserServices(baseUrlUser);
+
+  const { user } = (useContext(UserContext) as UserContectType) || {
+    user: null,
+  };
   const masterPositionService = MasterPositionServices(baseUrlUser);
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
   const userEditRules = checkRule("um-e");
@@ -120,7 +135,11 @@ const UserTable: React.FC<Props> = ({ setManagePage, managePage, filterForm, cre
     });
   };
 
-  const onClickEdit = (record: TUserAllDto) => {
+  const onClickEdit = async (record: TUserAllDto) => {
+    if (user) {
+      const data = await UsersServices(baseUrlUser).getImage(user.userId);
+      setImage(data);
+    }
     createForm.setFieldsValue({
       ...record,
       masterPositionId: record.masterPosition?.posId,

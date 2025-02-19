@@ -284,7 +284,7 @@ const BookingRoomPage: React.FC = () => {
           <Divider orientation="left">ข้อมูลการจอง</Divider>
           <Row gutter={16}>
             <Col span={8}>
-              <Form.Item<BookingType> label="ชื่อห้อง" name="roomId" rules={[{ required: true, message: "กรุณากเลือกห้องประชุม" }]}>
+              <Form.Item<BookingType> label="ชื่อห้อง" name="roomId" rules={[{ required: true, message: "กรุณาเลือกห้องประชุม" }]}>
                 <Select
                   allowClear
                   placeholder="โปรดเลือกห้องประชุม"
@@ -296,25 +296,25 @@ const BookingRoomPage: React.FC = () => {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<BookingType> label="วันที่เริ่มการจอง" name="startDate" rules={[{ required: true, message: "กรุณากรอกวันที่เริ่มการจอง!" }]}>
-                <DatePicker allowClear placeholder="กรอกวันที่เริ่มการจอง" showTime style={{ width: "100%" }} format={"DD-MM-YYYY HH:mm:ss"} />
+              <Form.Item<BookingType> label="วันที่เริ่มการจอง" name="startDate" rules={[{ required: true, message: "กรุณาเลือกวันที่เริ่มการจอง" }]}>
+                <DatePicker allowClear placeholder="เลือกวันที่เริ่มการจอง" showTime style={{ width: "100%" }} format={"DD-MM-YYYY HH:mm:ss"} />
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item<BookingType>
                 label="วันที่สิ้นสุดการจอง"
                 name="endDate"
-                rules={[{ required: true, message: "กรุณากรอกวันที่สิ้นสุดการจอง!" }]}>
-                <DatePicker allowClear placeholder="กรอกวันที่สิ้นสุดการจอง" showTime style={{ width: "100%" }} format={"DD-MM-YYYY HH:mm:ss"} />
+                rules={[{ required: true, message: "กรุณาเลือกวันที่สิ้นสุดการจอง" }]}>
+                <DatePicker allowClear placeholder="เลือกวันที่สิ้นสุดการจอง" showTime style={{ width: "100%" }} format={"DD-MM-YYYY HH:mm:ss"} />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<BookingType> label="หัวข้อการประชุม" name="title" rules={[{ required: true, message: "กรุณากรอกหัวข้อการประชุม!" }]}>
+              <Form.Item<BookingType> label="หัวข้อการประชุม" name="title" rules={[{ required: true, message: "กรุณากรอกหัวข้อการประชุม" }]}>
                 <Input placeholder="กรอกหัวข้อการประชุม" />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<BookingType> label="ประเภทการจอง" name="roomType" rules={[{ required: true, message: "กรุณาเลือกประภทการประชุม!" }]}>
+              <Form.Item<BookingType> label="ประเภทการจอง" name="roomType" rules={[{ required: true, message: "กรุณาเลือกประภทการประชุม" }]}>
                 <Select
                   allowClear
                   placeholder="โปรดเลือกประภทการประชุม"
@@ -335,7 +335,7 @@ const BookingRoomPage: React.FC = () => {
                   max={100}
                   min={1}
                   onKeyDown={(event) => {
-                    if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
+                    if (!/[1-9]/.test(event.key) && event.key !== "Backspace") {
                       event.preventDefault();
                     }
                   }}
@@ -343,7 +343,7 @@ const BookingRoomPage: React.FC = () => {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<BookingType> label="บุคคลภายนอก" name="outSider" rules={[{ required: true, message: "กรุณาเลือกบุคคลภายนอก!" }]}>
+              <Form.Item<BookingType> label="บุคคลภายนอก" name="outSider" rules={[{ required: true, message: "กรุณาเลือกบุคคลภายนอก" }]}>
                 <Select
                   placeholder="บุคคลภายนอก"
                   style={{ width: "100%" }}

@@ -9,6 +9,8 @@ import { checkApprovedStatus, checkStatusReturn, CheckStatusMaCarBookType, showS
 import { dateFormatTime } from "@/app/utils";
 import { CarReturnForm } from "./car-return-form";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 export interface props {
   maCarBookData: MaCarBookType[];
   loading: boolean;
@@ -17,14 +19,16 @@ export interface props {
 
 const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: any): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const intraAuth = useAxiosIntranet();
+  // const intraAuth = useAxiosIntranet();
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [formBookData] = Form.useForm();
   const [formReturn] = Form.useForm();
   const [currentMaId, setCurrentMaId] = useState<string | null>(null);
   const [currentMaBookId, setCurrentMaBookId] = useState<number | null>(null);
   const [modalEditReturn, setModalEditReturn] = useState(false);
   const [modalEditDetail, setModalEditDetail] = useState(false);
-  const maCarBookServices = MaCarBookServices(intraAuth);
+  const maCarBookServices = MaCarBookServices(baseUrIntranet);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [oldCarMile, setOldCarMile] = useState<number>(0);
   const [statusApprove, setStatusApprove] = useState("");
@@ -196,7 +200,7 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
         <Form form={formReturn} layout="vertical" onFinish={updatedMaCarReturn} autoComplete="off" size="small">
           <Divider orientation="left">ข้อมูลการคืนรถ</Divider>
           <Col span={24}>
-            <Form.Item name="carName" label="ชื่อรถ" rules={[{ required: true, message: "กรุณากรอกชื่อรถ" }]}>
+            <Form.Item name="carName" label="ชื่อรถ">
               <Input disabled placeholder="กรอกชื่อรถ" />
             </Form.Item>
           </Col>
@@ -206,6 +210,8 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
               label="เลขไมล์รถ"
               rules={[
                 {
+                  required: true,
+                  message: "กรุณากรอกเลขไมล์รถ!",
                   validator: (_, value) => {
                     if (value >= oldCarMile) {
                       return Promise.resolve();
@@ -252,7 +258,7 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
         </Form>
       </Modal>
 
-      <Modal title="รายละเอียด" open={modalEditDetail} onCancel={handleModalDetail} footer={null} width={800}>
+      <Modal style={{ top: 10 }} title="รายละเอียด" open={modalEditDetail} onCancel={handleModalDetail} footer={null} width={1200}>
         <CarReturnForm formBookData={formBookData} statusApprove={statusApprove} />
       </Modal>
 

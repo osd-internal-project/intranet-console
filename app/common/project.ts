@@ -93,7 +93,7 @@ export type ITProjectCreateForm = {
   saleId?: string;
   saleName?: string;
   description?: string;
-  productDetails: any[];
+  productDetails?: any[];
 };
 export type ITProject = {
   id: number;

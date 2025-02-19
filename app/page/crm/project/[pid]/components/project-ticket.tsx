@@ -8,12 +8,17 @@ import { dateToStringThNoTime } from "@/app/utils/format";
 import { EditOutlined } from "@ant-design/icons";
 import { UploadFile } from "antd/lib";
 import { ITSelectUsers } from "@/app/common/customer";
-import { ITProjectTicket, ITTicketConfigs, ITProjectTicketCreateForm } from "@/app/common/project";
+import {
+  ITProjectTicket,
+  ITTicketConfigs,
+  ITProjectTicketCreateForm,
+} from "@/app/common/project";
+import { TUserRoles } from "@/app/config/user-roles";
 
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 export interface props {
-  rules: any;
+  roles: TUserRoles | null;
   // loading: boolean;
   // setLoading: (loading: boolean) => void;
   projectId: number;
@@ -40,7 +45,7 @@ const layout = {
 };
 
 const TicketComponent: React.FC<props> = ({
-  rules,
+  roles,
   projectId,
   projectTaskSelectId,
   projectTicketList,
@@ -128,7 +133,7 @@ const TicketComponent: React.FC<props> = ({
   return (
     <>
       <div className=" flex justify-end mb-4">
-        {rules.ruleProjectTaskAdd ? (
+        {roles?.crmProjectEdit ? (
           <Button
             size="small"
             type="primary"

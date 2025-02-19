@@ -27,8 +27,7 @@ export interface TMaServices {
   findProjectDataTable: (
     search: object,
     take: number,
-    skip: number,
-    userId: string
+    skip: number
   ) => Promise<{ data: ITProject[]; count: number }>;
   findCustomerActive: () => Promise<ITCustomerForSelect[]>;
   findCustomerSelectByCustomerGroupId: (
@@ -36,7 +35,7 @@ export interface TMaServices {
   ) => Promise<ITCustomerForSelect[]>;
   findCustomerSubSelectByCustomerId: (
     customerId: number
-  ) => Promise<ITCustomerDetailSubDetail[]>; 
+  ) => Promise<ITCustomerDetailSubDetail[]>;
   findCustomerSubSelectByCustomerSubId: (
     customerDetailSubId: number
   ) => Promise<ITCustomerDetailSubForSelect[]>;
@@ -57,7 +56,10 @@ export interface TMaServices {
     type: string,
     search: any
   ) => Promise<ITProject[]>;
-  createProject: (form: ITProjectCreateForm) => Promise<ITProject>;
+  createProject: (
+    form: ITProjectCreateForm,
+    productDetails: any[]
+  ) => Promise<ITProject>;
   createProjectTask: (
     projectId: number,
     form: ITProjectTaskForm
@@ -93,7 +95,7 @@ export interface TMaServices {
   deleteProjectTicketExpense: (expenseId: number) => Promise<ITTicketExpense>;
 }
 const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
-  const customerUrl = "/customer-detail"; 
+  const customerUrl = "/customer-detail";
   const customerProjectUrl = "/customer-project";
   const customerProductUrl = "/customer-product";
   const customerContactUrl = "/customer-contact";
@@ -136,7 +138,7 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
           console.log(err);
           return [];
         });
-    }, 
+    },
     findCustomerSubSelectByCustomerSubId: async (customerDetailSubId) => {
       return await axiosInstance
         .get(
@@ -150,10 +152,10 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
           return [];
         });
     },
-    findProjectDataTable: async (search, take, skip, userId) => {
+    findProjectDataTable: async (search, take, skip) => {
       return await axiosInstance
         .get(`${customerProjectUrl}/data-table?take=${take}&skip=${skip}`, {
-          params: { ...search, userid: userId },
+          params: { ...search },
         })
         .then((res) => {
           return res.data;
@@ -271,8 +273,11 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
           return;
         });
     },
-    createProject: async (form) => {
-      return await axiosInstance.post(`${customerProjectUrl}/`, form);
+    createProject: async (data, productDetails) => {
+      return await axiosInstance.post(`${customerProjectUrl}/`, {
+        data: data,
+        productDetails: productDetails,
+      });
     },
     createProjectTask: async (projectId, form) => {
       const formData = {

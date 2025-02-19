@@ -27,6 +27,10 @@ export type TUserRoles = {
   crmTicketAdd?: boolean;
   crmTicketEdit?: boolean;
   crmTicketDelete?: boolean;
+  crmTicketSaleRequestFile?: boolean;
+  crmTicketEngieerUpdate?: boolean;
+  crmTicketHold?: boolean;
+  crmTicketComplete?:boolean;
   //HR
   //Intranet
   //Intranet Leave
@@ -93,19 +97,24 @@ export enum UserRoles {
   crmCustomerShow = "crm-c-s",
   crmCustomerAdd = "crm-c-a",
   crmCustomerEdit = "crm-c-e",
-  crmCustomerDelete = "crm-c-d", 
-  crmProductShow = "crm-pd-s", 
-  crmProductAdd = "crm-pd-a", 
-  crmProductEdit = "crm-pd-e", 
-  crmProductDelete = "crm-pd-d", 
-  crmProjectShow = "crm-pj-s", 
-  crmProjectAdd = "crm-pj-a", 
-  crmProjectEdit = "crm-pj-e", 
-  crmProjectDelete = "crm-pj-d", 
-  crmTicketShow = "crm-t-s", 
-  crmTicketAdd = "crm-t-a", 
-  crmTicketEdit = "crm-t-e", 
-  crmTicketDelete = "crm-t-d", 
+  crmCustomerDelete = "crm-c-d",
+  crmProductShow = "crm-pd-s",
+  crmProductAdd = "crm-pd-a",
+  crmProductEdit = "crm-pd-e",
+  crmProductDelete = "crm-pd-d",
+  crmProjectShow = "crm-pj-s",
+  crmProjectAdd = "crm-pj-a",
+  crmProjectEdit = "crm-pj-e",
+  crmProjectDelete = "crm-pj-d",
+  crmTicketShow = "crm-t-s",
+  crmTicketAdd = "crm-t-a",
+  crmTicketEdit = "crm-t-e",
+  crmTicketDelete = "crm-t-d",
+  crmTicketSaleRequestFile = "crm-t-srf",
+  crmTicketEngieerUpdate = "crm-t-eu",
+  crmTicketHold= "crm-t-h",
+  crmTicketComplete='crm-t-cp',
+  crmTicketClose='crm-t-c',
   //HR
   //Intranet
   //Intranet Leave

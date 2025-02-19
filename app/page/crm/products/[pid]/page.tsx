@@ -257,6 +257,7 @@ export default function ProductsAddPage() {
                                   {type === "date" && (
                                     <Input value={"date"} readOnly />
                                   )}
+                                
                                 </Form.Item>
                               </Col>
                               <Col span={7}>

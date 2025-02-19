@@ -45,14 +45,12 @@ export default function MaTaskPage() {
     if (loading === true) fetchData();
   }, [loading]);
 
-  const fetchData = async () => {
-    if (user?.userId) {
+  const fetchData = async () => { 
       const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
       const take: number = Number(pagination.pageSize);
-      const res = await customerProductServices.findProjectDataTable(search, take, skip, user?.userId);
+      const res = await customerProductServices.findProjectDataTable(search, take, skip);
       setDataTable(res.data);
       setPagination({ ...pagination, total: res.count });
-    }
     setloading(false);
   };
   const changePagination = (page: TablePaginationConfig) => {

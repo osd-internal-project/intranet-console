@@ -25,10 +25,11 @@ import {
 import { dateToStringThNoTime } from "@/app/utils/format";
 import ProjectTaskEditComponent from "./project-task-edit";
 import moment from "moment";
+import { TUserRoles } from "@/app/config/user-roles";
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 export interface props {
-  rules: any;
+  roles: TUserRoles | null;
   setLoading: (loading: boolean) => void;
   editTaskForm: FormInstance<ITProjectTaskForm>;
   projectId: number;
@@ -67,7 +68,7 @@ const layout = {
 };
 
 const TaskComponent: React.FC<props> = ({
-  rules,
+  roles,
   loading,
   editTaskForm,
   projectId,
@@ -99,7 +100,7 @@ const TaskComponent: React.FC<props> = ({
         <div>
           <div className=" flex justify-between ">
             <div className=" font-bold pl-2">Task List</div>
-            {rules.ruleProjectTaskAdd ? (
+            {roles?.crmProjectEdit ? (
               <Button
                 size="small"
                 type="primary"
@@ -161,7 +162,7 @@ const TaskComponent: React.FC<props> = ({
                     <div className="  font-bold">
                       {index + 1}.{task.taskTitle}
                     </div>
-                    {rules.ruleProjectTaskEdit ? (
+                    {roles?.crmProjectEdit ? (
                       <Button
                         style={{ zIndex: 2 }}
                         size="small"
@@ -228,7 +229,7 @@ size="small"
           {projectTaskSelectId ? (
             <div>
               <TicketComponent
-                rules={rules}
+                roles={roles}
                 projectId={projectId}
                 projectTaskSelectId={projectTaskSelectId}
                 projectTicketList={projectTicketList}

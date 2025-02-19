@@ -27,15 +27,14 @@ import { useForm } from "antd/es/form/Form";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import Link from "next/link";
 import { ITCustomer, ITCustomerSub } from "@/app/common/customer";
-import { ITProject, ITSelectUsers } from  "@/app/common/project";
+import { ITProject, ITSelectUsers } from "@/app/common/project";
 import { TUserRoles, UserRoles } from "@/app/config/user-roles";
 
 export interface props {
-  dataTable: ITProject[]; 
+  dataTable: ITProject[];
   pagination: TablePaginationConfig;
   changePagination: (page: TablePaginationConfig) => void;
-  roles:TUserRoles |null
- 
+  roles: TUserRoles | null;
 }
 
 const ProjectTableComponent: React.FC<props> = ({
@@ -61,21 +60,23 @@ const ProjectTableComponent: React.FC<props> = ({
       width: "200px",
     },
     {
-      key: "productName",
-      dataIndex: "productName",
+      key: "customerProjectProductMap",
+      dataIndex: ["customerProjectProductMap"],
       title: "Product Name",
       width: "200px",
+      render: (datas: { customerProduct: { name: string } }[]) =>
+        datas ? datas.map((data) => <Tag>{data.customerProduct.name}</Tag>) : "-",
     },
     {
       key: "customerName",
-      dataIndex: ["customerSub", "customerDetail", "customerNameTh"],
+      dataIndex: ["customerDetailSub", "customerDetail", "customerNameTh"],
       title: "Customer Name TH",
       width: "200px",
       render: (data: string) => (data ? data : ""),
     },
     {
       key: "customerName",
-      dataIndex: ["customerSub", "customerDetail"],
+      dataIndex: ["customerDetailSub", "customerDetail", "customerNameTh"],
       title: "Customer Name EN",
       width: "200px",
       render: (record: ITCustomer) =>
@@ -88,8 +89,8 @@ const ProjectTableComponent: React.FC<props> = ({
     //   width: "200px",
     // },
     {
-      key: "branchName",
-      dataIndex: ["customerSub", "branchName"],
+      key: "customerDetailSub",
+      dataIndex: ["customerDetailSub", "name"],
       title: "Sub Customer / CustomerSub",
       width: "200px",
     },

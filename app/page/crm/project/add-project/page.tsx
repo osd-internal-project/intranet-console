@@ -18,31 +18,38 @@ import CreateCustomerForm from "./components/create-form";
 import { CarryOutOutlined } from "@ant-design/icons";
 import { ITCustomerSub } from "../../ticket/common";
 import { ITCustomerProduct } from "@/app/common/product";
-import { ITCustomerDetailSubDetail, ITCustomerGroup } from "@/app/common/customer";
+import {
+  ITCustomerDetailSubDetail,
+  ITCustomerGroup,
+} from "@/app/common/customer";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { loadAppConfig } from "@/app/config/app-config";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { useRouter } from "next/navigation";
 
 export default function AddProjectPage() {
+  const router = useRouter();
   const { user } = (useContext(UserContext) as UserContectType) || {
     user: null,
   };
-   const { id24Axios } = useId24();
-   const userUrlCrm = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
-   const baseUrlCrm = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_CRM);
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlCrm = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_CRM);
   const projectServices = ProjectServices(baseUrlCrm);
   const productsServices = ProductsServices(baseUrlCrm);
   const customerGroupServices = CustomerGroupServices(baseUrlCrm);
-  const userServices = UserServices(userUrlCrm);
-  const userGroupServices = UserGroupServices(userUrlCrm);
+  const userServices = UserServices(baseUrlUser);
+  const userGroupServices = UserGroupServices(baseUrlUser);
   const [loading, setloading] = useState<boolean>(true);
   const [customerGroupList, setCustomerGroupList] = useState<ITCustomerGroup[]>(
     []
   );
   const [customerList, setCustomerList] = useState<ITCustomerForSelect[]>([]);
-  const [customerSubList, setCustomerSubList] = useState<ITCustomerDetailSubDetail[]>([]);
+  const [customerSubList, setCustomerSubList] = useState<
+    ITCustomerDetailSubDetail[]
+  >([]);
   const [engineerList, setEngineerList] = useState<ITSelectUsers[]>([]);
-  const [saleList, setSaleList] = useState<{ uid: string; name: string }[]>([]); 
+  const [saleList, setSaleList] = useState<{ uid: string; name: string }[]>([]);
   const [usersFormGroup, setUsersFormGroup] = useState<ITSelectUsers[]>([]);
   const [cntractCompany, setContractCompany] = useState<ITContractCompany[]>(
     []
@@ -54,10 +61,10 @@ export default function AddProjectPage() {
   const fetchData = async () => {
     const resContractCompany = await projectServices.findContractCompany();
     setContractCompany(resContractCompany);
-  
-      const users = await userServices.findUsersFormEngineerProjectModule();
-      // selectOrganize(user?.userId);
-      setEngineerList(users);
+
+    const users = await userServices.findUsersFormEngineerProjectModule();
+    // selectOrganize(user?.userId);
+    setEngineerList(users);
     const productOptions = await productsServices.findProductOptions();
     setProductOptions(productOptions);
     const data = await customerGroupServices.findMany();
@@ -90,18 +97,16 @@ export default function AddProjectPage() {
 
   async function onFinishAdd(form: ITProjectCreateForm): Promise<void> {
     console.log(form.productDetails);
+
+    const productDetails = form?.productDetails
+      ? form?.productDetails.map((data) => ({
+          customerProductId: data.id,
+          details: data.value,
+        }))
+      : [];
+    delete form["productDetails"];
     let data = {
       ...form,
-      ...(form?.productDetails && {
-        customerProjectProductMap: {
-          createMany: {
-            data: form.productDetails.map((data) => ({
-              customerProductId: data.id,
-              details: data.value,
-            })),
-          },
-        },
-      }),
     };
     if (form.projectManagerId) {
       const user = engineerList.findLast(
@@ -138,12 +143,12 @@ export default function AddProjectPage() {
     // delete data["productDetails"];
     // delete data["customerGroupId"];
     delete data["customerId"];
-    delete data["customerDetailSubId"];
 
     await projectServices
-      .createProject(data)
+      .createProject(data, productDetails)
       .then(() => {
         message.success("สร้าง Project สำเร็จ");
+        router.push('/page/crm/project')
       })
       .catch(() => {
         message.error("ผิดพลาด กรุณาลองใหม่");
@@ -228,7 +233,7 @@ export default function AddProjectPage() {
                 changeCustomerSelect={changeCustomerSelect}
                 changeCustomerSubSelect={changeCustomerSubSelect}
                 engineerList={engineerList}
-                saleList={saleList} 
+                saleList={saleList}
                 onChangeGroupSelect={onChangeGroupSelect}
                 usersFormGroup={usersFormGroup}
                 cntractCompany={cntractCompany}

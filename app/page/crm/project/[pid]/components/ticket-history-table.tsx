@@ -21,7 +21,7 @@ import {
 import { dateToStringTh, dateToStringThNoTime } from "@/app/utils/format";
 
 import Link from "next/link";
-import { ITTicketHistoryLog } from "../../common";
+import { ITTicketHistoryLog } from "@/app/common/project";
 
 export interface props {
   ticketHistoryLogs: ITTicketHistoryLog[];

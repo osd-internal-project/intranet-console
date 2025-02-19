@@ -33,7 +33,7 @@ import { ColumnType } from "antd/es/table";
 import { useForm } from "antd/es/form/Form";
 import { CaretRightOutlined, ExclamationCircleFilled } from "@ant-design/icons";
 import Link from "next/link";
-import BranchDetails from "./branch-details";
+import CustomerSubDetails from "./customer-sub-details";
 import { ITCustomerProduct } from "@/app/common/product";
 import { ITProject } from "@/app/common/project";
 import { TUserRoles } from "@/app/config/user-roles";
@@ -42,10 +42,9 @@ export interface props {
   roles: TUserRoles | null;
   customerDetailSubList: ITCustomerDetailSubDetail[];
   customerId: number;
-  customerProductsByBranch: ITCustomerProduct[];
+  customerProductsByCustomerSub: ITCustomerProduct[];
   projectDatas: ITProject[];
-  onOpenCustomerCreateForm: (state: boolean) => void;
-  getCustomerProductsByBranch: (branchId: number, search: any) => void;
+  getCustomerProductsByCustomerSub: (branchId: number, search: any) => void;
 
   getProjectDataTable: (
     productId: string,
@@ -53,45 +52,46 @@ export interface props {
     type: string,
     search: any
   ) => void;
-  onOpenEditBranch: (branchId: number, customerId: number) => void;
-  onDeleteBranch: (branchId: number, customerId: number) => void;
-  onSaveBranchAddress: (
+  onOpenCustomerSubCreateForm:(customerId: number)=>void;
+  onOpenEditCustomerSub: (branchId: number, customerId: number) => void;
+  onDeleteCustomerSub: (branchId: number, customerId: number) => void;
+  onSaveCustomerSubAddress: (
     branchId: number,
     form: ITCustomerDetailSubAddressForm,
     customerId: number
   ) => void;
-  onDeleteCustomerBranchAddress: (
+  onDeleteCustomerSubAddress: (
     branchId: number,
     addressId: number,
     customerId: number
   ) => void;
-  onSaveBranchContact: (
+  onSaveCustomerSubContact: (
     branchId: number,
     form: ITCustomerDetailSubContactForm,
     customerId: number
   ) => void;
-  onDeleteCustomerBranchContact: (
+  onDeleteCustomerSubContact: (
     branchId: number,
     contactId: number,
     customerId: number
   ) => void;
 }
 
-const CustomerBranchList: React.FC<props> = ({
+const CustomerSubList: React.FC<props> = ({
   roles,
   customerDetailSubList,
   customerId,
-  customerProductsByBranch,
+  customerProductsByCustomerSub,
   projectDatas,
-  onOpenCustomerCreateForm,
-  getCustomerProductsByBranch,
+  onOpenCustomerSubCreateForm,
+  getCustomerProductsByCustomerSub,
   getProjectDataTable,
-  onOpenEditBranch,
-  onDeleteBranch,
-  onSaveBranchAddress,
-  onDeleteCustomerBranchAddress,
-  onSaveBranchContact,
-  onDeleteCustomerBranchContact,
+  onOpenEditCustomerSub,
+  onDeleteCustomerSub,
+  onSaveCustomerSubAddress,
+  onDeleteCustomerSubAddress,
+  onSaveCustomerSubContact,
+  onDeleteCustomerSubContact,
 }): React.ReactElement => {
   const panelStyle: React.CSSProperties = {
     marginBottom: 10,
@@ -129,7 +129,7 @@ const CustomerBranchList: React.FC<props> = ({
               {roles?.crmCustomerEdit && (
                 <Button
                   type="link"
-                  onClick={() => onOpenEditBranch(customerSub.id, customerId)}
+                  onClick={() => onOpenEditCustomerSub(customerSub.id, customerId)}
                 >
                   Edit
                 </Button>
@@ -138,7 +138,7 @@ const CustomerBranchList: React.FC<props> = ({
                 <Button
                   type="link"
                   danger
-                  onClick={() => onDeleteBranch(customerSub.id, customerId)}
+                  onClick={() => onDeleteCustomerSub(customerSub.id, customerId)}
                 >
                   Delete
                 </Button>
@@ -148,18 +148,18 @@ const CustomerBranchList: React.FC<props> = ({
         </div>
       );
       const children = (
-        <BranchDetails
+        <CustomerSubDetails
           roles={roles}
           details={customerSub}
           customerId={customerId}
-          customerProductsByBranch={customerProductsByBranch}
-          getCustomerProductsByBranch={getCustomerProductsByBranch}
+          customerProductsByCustomerSub={customerProductsByCustomerSub}
+          getCustomerProductsByCustomerSub={getCustomerProductsByCustomerSub}
           projectDatas={projectDatas}
           getProjectDataTable={getProjectDataTable}
-          onSaveBranchAddress={onSaveBranchAddress}
-          onDeleteCustomerBranchAddress={onDeleteCustomerBranchAddress}
-          onSaveBranchContact={onSaveBranchContact}
-          onDeleteCustomerBranchContact={onDeleteCustomerBranchContact}
+          onSaveCustomerSubAddress={onSaveCustomerSubAddress}
+          onDeleteCustomerSubAddress={onDeleteCustomerSubAddress}
+          onSaveCustomerSubContact={onSaveCustomerSubContact}
+          onDeleteCustomerSubContact={onDeleteCustomerSubContact}
         />
       );
       return {
@@ -173,13 +173,13 @@ const CustomerBranchList: React.FC<props> = ({
   return (
     <div>
       <div className=" flex justify-between mb-2">
-        <div className=" font-bold text-base">Branch</div>
+        <div className=" font-bold text-base">Sub Customers/Branchs </div>
         <div>
           {roles?.crmCustomerAdd && (
             <Button
               type="primary"
               size="small"
-              onClick={() => onOpenCustomerCreateForm(true)}
+              onClick={() => onOpenCustomerSubCreateForm(customerId)}
             >
               Add Sub Customer /Branch
             </Button>
@@ -229,4 +229,4 @@ const CustomerBranchList: React.FC<props> = ({
   );
 };
 
-export default CustomerBranchList;
+export default CustomerSubList;

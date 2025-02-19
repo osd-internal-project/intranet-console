@@ -6,6 +6,7 @@ import {
   ITCustomerDetailSubContact,
   ITCustomer,
   ITCustomerSub,
+  ITCustomerDetailSubDetail,
 } from "@/app/common/customer";
 import { ITCustomerProduct } from "@/app/common/product";
 import {
@@ -35,12 +36,9 @@ export interface TMaServices {
   ) => Promise<ITCustomerForSelect[]>;
   findCustomerSubSelectByCustomerId: (
     customerId: number
-  ) => Promise<ITCustomerSub[]>;
-  findBranchSelectByCustomerId: (
-    customerId: number
-  ) => Promise<ITCustomerDetailSubForSelect[]>;
-  findBranchSelectByCustomerSubId: (
-    customerSubId: number
+  ) => Promise<ITCustomerDetailSubDetail[]>; 
+  findCustomerSubSelectByCustomerSubId: (
+    customerDetailSubId: number
   ) => Promise<ITCustomerDetailSubForSelect[]>;
   findProjectDetailById: (project: number) => Promise<ITProject>;
   findProjectTaskByProjectId: (project: number) => Promise<ITProjectTask[]>;
@@ -95,8 +93,7 @@ export interface TMaServices {
   deleteProjectTicketExpense: (expenseId: number) => Promise<ITTicketExpense>;
 }
 const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
-  const customerUrl = "/customer-detail";
-  const customerBranchUrl = "/customer-branch";
+  const customerUrl = "/customer-detail"; 
   const customerProjectUrl = "/customer-project";
   const customerProductUrl = "/customer-product";
   const customerContactUrl = "/customer-contact";
@@ -139,22 +136,11 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
           console.log(err);
           return [];
         });
-    },
-    findBranchSelectByCustomerId: async (customerId) => {
-      return await axiosInstance
-        .get(`${customerBranchUrl}/detail-list-by-customer/${customerId}`)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
-    findBranchSelectByCustomerSubId: async (customerSubId) => {
+    }, 
+    findCustomerSubSelectByCustomerSubId: async (customerDetailSubId) => {
       return await axiosInstance
         .get(
-          `${customerBranchUrl}/detail-list-by-customer-sub/${customerSubId}`
+          `${customerSubUrl}/detail-list-by-customer-sub/${customerDetailSubId}`
         )
         .then((res) => {
           return res.data;

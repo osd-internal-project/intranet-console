@@ -26,9 +26,10 @@ import {
 } from "@/app/utils/format";
 
 import Link from "next/link";
-import { ITExpenseType, ITTicketExpense } from "../../common";
+
 import { PlusOutlined } from "@ant-design/icons";
 import { FormInstance } from "antd/lib";
+import { ITTicketExpense, ITExpenseType } from "@/app/common/project";
 
 export interface props {
   editform: FormInstance<ITTicketExpense>;

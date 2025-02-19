@@ -69,7 +69,7 @@ const CustomerGroupSearch: React.FC<props> = ({
                   <Form.Item name={"customerName"} label={"Customer Name"}>
                     <Input />
                   </Form.Item>
-                  <Form.Item name={"name"} label={"Customer Sub Name /Branch Name"}>
+                  <Form.Item name={"name"} label={"Customer Sub Name /CustomerSub Name"}>
                     <Input />
                   </Form.Item>
                   <Form.Item name={"productName"} label={"Product Name"}>

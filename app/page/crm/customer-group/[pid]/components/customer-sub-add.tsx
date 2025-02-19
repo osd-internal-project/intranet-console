@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import type { FormInstance } from "antd";
 import { Button, Card, Form, Input, Modal, Select, Switch } from "antd";
-import { ITCustomerDetailSubForm } from "../../common";
+import { ITCustomerDetailSubForm } from "@/app/common/customer";
 import { CloseOutlined } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
 
@@ -16,37 +16,41 @@ const layout = {
   },
 };
 export interface props {
-  showModalBranchAdd: boolean;
-  onShowModalBranchAdd: (status: boolean) => void;
-  onSaveBranch: (form: ITCustomerDetailSubForm) => void;
+  customerDetailSubActive: {
+    customerDetailSubId: number | undefined;
+    customerId: number | undefined;
+    status?: "create" | "update";
+  };
+  onShowModalCustomerSubAdd: (status: boolean) => void;
+  onCreateCustomerSub: (form: ITCustomerDetailSubForm) => void;
 }
 
-const BranchAddComponent: React.FC<props> = ({
-  showModalBranchAdd,
-  onShowModalBranchAdd,
-  onSaveBranch,
+const CustomerSubAdd: React.FC<props> = ({
+  customerDetailSubActive,
+  onShowModalCustomerSubAdd,
+  onCreateCustomerSub,
 }): React.ReactElement => {
   const [form] = useForm();
   useEffect(() => {
     form.resetFields();
-  }, [showModalBranchAdd]);
+  }, [customerDetailSubActive]);
 
   return (
     <Modal
-      open={showModalBranchAdd}
+      open={customerDetailSubActive.customerId ? true : false}
       title={"Add Sub Customer/Branch"}
       // width={1000}
       footer={[]}
       onCancel={() => {
-        onShowModalBranchAdd(false);
+        onShowModalCustomerSubAdd(false);
       }}
     >
       <Form
-        name="addBranchForm"
+        name="addCustomerSubForm"
         form={form}
         size="small"
         {...layout}
-        onFinish={onSaveBranch}
+        onFinish={onCreateCustomerSub}
         autoComplete="off"
       >
         <Form.Item
@@ -81,7 +85,7 @@ const BranchAddComponent: React.FC<props> = ({
           </Button>
           <Button
             onClick={() => {
-              onShowModalBranchAdd(false);
+              onShowModalCustomerSubAdd(false);
             }}
           >
             Cancel
@@ -92,4 +96,4 @@ const BranchAddComponent: React.FC<props> = ({
   );
 };
 
-export default BranchAddComponent;
+export default CustomerSubAdd;

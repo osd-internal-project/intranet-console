@@ -34,8 +34,8 @@ import ProjectTable from "./project-table";
 import { ITProject } from "@/app/common/project";
 
 export interface props {
-  customerProductsByBranch: ITCustomerProduct[];
-  getCustomerProductsByBranch: (branchId: number, search: any) => void;
+  customerProductsByCustomerSub: ITCustomerProduct[];
+  getCustomerProductsByCustomerSub: (branchId: number, search: any) => void;
   parentId: string;
   projectDatas: ITProject[];
   getProjectDataTable: (
@@ -46,9 +46,9 @@ export interface props {
   ) => void;
 }
 
-const BranchProductList: React.FC<props> = ({
-  customerProductsByBranch,
-  getCustomerProductsByBranch,
+const CustomerSubProductList: React.FC<props> = ({
+  customerProductsByCustomerSub,
+  getCustomerProductsByCustomerSub,
   parentId,
   projectDatas,
   getProjectDataTable,
@@ -62,7 +62,7 @@ const BranchProductList: React.FC<props> = ({
   const dataList: (panelStyle: CSSProperties) => CollapseProps["items"] = (
     panelStyle
   ) =>
-    customerProductsByBranch.map((product) => {
+    customerProductsByCustomerSub.map((product) => {
       const label = (
         <div className="  text-xs text-center grid grid-cols-7">
           <div>
@@ -82,7 +82,7 @@ const BranchProductList: React.FC<props> = ({
           </div>
         </div>
       );
-      // const children = <BranchDetails details={branch} />;
+      // const children = <CustomerSubDetails details={branch} />;
       return {
         key: product.id,
         label: label,
@@ -103,7 +103,7 @@ const BranchProductList: React.FC<props> = ({
     if (values?.productName) {
       search = { ...search, productName: values.productName };
     }
-    getCustomerProductsByBranch(Number(parentId), search);
+    getCustomerProductsByCustomerSub(Number(parentId), search);
   }
 
   return (
@@ -117,7 +117,7 @@ const BranchProductList: React.FC<props> = ({
             style={{ maxHeight: "500px" }}
             className=" bg-slate-100 mt-2  overflow-x-auto"
           >
-            {customerProductsByBranch.length > 0 ? (
+            {customerProductsByCustomerSub.length > 0 ? (
               <Collapse
                 collapsible="icon"
                 accordion
@@ -139,4 +139,4 @@ const BranchProductList: React.FC<props> = ({
   );
 };
 
-export default BranchProductList;
+export default CustomerSubProductList;

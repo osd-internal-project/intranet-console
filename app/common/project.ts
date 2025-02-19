@@ -67,7 +67,7 @@ export type ITCustomerDetailSubContact = { id: number } & ITCustomerDetailSubCon
 //   deliveryAddressText?: string;
 //   notiAddressText?: string;
 //   contactId?: string;
-//   customerBranch: { customerDetail: ITCustomerForSelect } & ITCustomerDetailSubForSelect;
+//   customerSub: { customerDetail: ITCustomerForSelect } & ITCustomerDetailSubForSelect;
 // };
 
 export type ITProjectCreateForm = {
@@ -77,7 +77,7 @@ export type ITProjectCreateForm = {
   startDate: Date;
   endDate: Date;
   duration: number;
-  customerBranchId: number;
+  customerSubId: number;
   taxAddressId?: number;
   customerDetailSubId?: number;
   taxAddressText?: string;

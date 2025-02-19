@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import type { FormInstance } from "antd";
 import { Button, Card, Form, Input, Modal, Select } from "antd";
-import { ITCustomerDetailSubAddressForm } from "../../common";
+
 import { CloseOutlined } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
+import { ITCustomerDetailSubAddressForm } from "@/app/common/customer";
 
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -18,15 +19,21 @@ const layout = {
 export interface props {
   branchId: number;
   showModalAddressAdd: boolean;
+  customerId: number;
   onShowModalAddressAdd: (status: boolean) => void;
-  onSaveBranchAddress: (branchId: number, form: ITCustomerDetailSubAddressForm) => void;
+  onSaveCustomerSubAddress: (
+    branchId: number,
+    form: ITCustomerDetailSubAddressForm,
+    customerId: number
+  ) => void;
 }
 
-const BranchAddressAddComponent: React.FC<props> = ({
+const CustomerSubAddressAdd: React.FC<props> = ({
   branchId,
   showModalAddressAdd,
+  customerId,
   onShowModalAddressAdd,
-  onSaveBranchAddress,
+  onSaveCustomerSubAddress,
 }): React.ReactElement => {
   const [form] = useForm();
   // const addressType = [
@@ -37,14 +44,19 @@ const BranchAddressAddComponent: React.FC<props> = ({
   useEffect(() => {
     form.resetFields();
   }, [showModalAddressAdd]);
-  const onFinishBranchAddress = (form: ITCustomerDetailSubAddressForm) => {
+  const onFinishCustomerSubAddress = (form: ITCustomerDetailSubAddressForm) => {
     // const addressTypeName = addressType.findLast(
     //   (type) => (type.value = form.addressTypeId)
     // );
-    onSaveBranchAddress(branchId, {
-      ...form,
-      // addressTypeName: addressTypeName?.label ? addressTypeName.label : "",
-    });
+    onSaveCustomerSubAddress(
+      branchId,
+      {
+        ...form,
+
+        // addressTypeName: addressTypeName?.label ? addressTypeName.label : "",
+      },
+      customerId
+    );
   };
   return (
     <Card
@@ -57,11 +69,11 @@ const BranchAddressAddComponent: React.FC<props> = ({
       // }}
     >
       <Form
-        name="addBranchForm"
+        name="addCustomerSubForm"
         form={form}
         size="small"
         {...layout}
-        onFinish={onFinishBranchAddress}
+        onFinish={onFinishCustomerSubAddress}
         autoComplete="off"
         initialValues={{
           address: [
@@ -152,4 +164,4 @@ const BranchAddressAddComponent: React.FC<props> = ({
   );
 };
 
-export default BranchAddressAddComponent;
+export default CustomerSubAddressAdd;

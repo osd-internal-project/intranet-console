@@ -7,39 +7,42 @@ import {
   ITProjectCreateForm,
   ITSelectUsers,
   ITContractCompany,
-} from "../common";
+} from "@/app/common/project";
 import { useAxiosCrm, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
-import ProjectServices from "../services/index.service";
+import ProjectServices from "@/app/services/customer-project.service";
 import ProductsServices from "@/app/services/customer-product.service";
 import CustomerGroupServices from "@/app/services/customer-group.service";
-import UserServices from "../services/user.service";
+import UserServices from "@/app/services/user.service";
+import UserGroupServices from "@/app/services/usergroup.service";
 import CreateCustomerForm from "./components/create-form";
 import { CarryOutOutlined } from "@ant-design/icons";
 import { ITCustomerSub } from "../../ticket/common";
 import { ITCustomerProduct } from "@/app/common/product";
-import { ITCustomerGroup } from "@/app/common/customer";
+import { ITCustomerDetailSubDetail, ITCustomerGroup } from "@/app/common/customer";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { loadAppConfig } from "@/app/config/app-config";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
 
 export default function AddProjectPage() {
   const { user } = (useContext(UserContext) as UserContectType) || {
     user: null,
   };
-  const crmAuth = useAxiosCrm();
-  const userAuth = useAxiosUser();
-  const projectServices = ProjectServices(crmAuth);
-  const productsServices = ProductsServices(crmAuth);
-  const customerGroupServices = CustomerGroupServices(crmAuth);
-  const userServices = UserServices(userAuth);
+   const { id24Axios } = useId24();
+   const userUrlCrm = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+   const baseUrlCrm = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_CRM);
+  const projectServices = ProjectServices(baseUrlCrm);
+  const productsServices = ProductsServices(baseUrlCrm);
+  const customerGroupServices = CustomerGroupServices(baseUrlCrm);
+  const userServices = UserServices(userUrlCrm);
+  const userGroupServices = UserGroupServices(userUrlCrm);
   const [loading, setloading] = useState<boolean>(true);
   const [customerGroupList, setCustomerGroupList] = useState<ITCustomerGroup[]>(
     []
   );
   const [customerList, setCustomerList] = useState<ITCustomerForSelect[]>([]);
-  const [branchList, setBranchList] = useState<ITCustomerDetailSubForSelect[]>([]);
-  const [customerSubList, setCustomerSubList] = useState<ITCustomerSub[]>([]);
-  const [userList, setUserList] = useState<ITSelectUsers[]>([]);
-  const [saleList, setSaleList] = useState<{ uid: string; name: string }[]>([]);
-  const [groupOption, setGroupOption] = useState<SelectProps["options"]>([]);
+  const [customerSubList, setCustomerSubList] = useState<ITCustomerDetailSubDetail[]>([]);
+  const [engineerList, setEngineerList] = useState<ITSelectUsers[]>([]);
+  const [saleList, setSaleList] = useState<{ uid: string; name: string }[]>([]); 
   const [usersFormGroup, setUsersFormGroup] = useState<ITSelectUsers[]>([]);
   const [cntractCompany, setContractCompany] = useState<ITContractCompany[]>(
     []
@@ -51,40 +54,39 @@ export default function AddProjectPage() {
   const fetchData = async () => {
     const resContractCompany = await projectServices.findContractCompany();
     setContractCompany(resContractCompany);
-    if (user?.userId) {
-      const users = await userServices.findOrganizeUserByUserId(user?.userId);
-      selectOrganize(user?.userId);
-      setUserList(users);
-    }
+  
+      const users = await userServices.findUsersFormEngineerProjectModule();
+      // selectOrganize(user?.userId);
+      setEngineerList(users);
     const productOptions = await productsServices.findProductOptions();
     setProductOptions(productOptions);
     const data = await customerGroupServices.findMany();
     setCustomerGroupList(data);
     setloading(false);
   };
-  const selectOrganize = async (userId: string) => {
-    const groups = await userServices.getUserGroupFormOrganizedByUserId(userId);
-    const tree = createTree(groups.organizeMapGroup, null);
-    setGroupOption(tree);
-  };
-  const createTree = (obj: any[], parentId: string | null) => {
-    const tree: any[] = [];
-    obj.forEach((item) => {
-      if (item.group.parentGroupId === parentId) {
-        const children = createTree(obj, item.group.groupId);
-        if (children.length > 0) {
-          (item.group.icon = <CarryOutOutlined />),
-            (item.group.children = children);
-        }
-        tree.push({
-          value: item.group.groupId,
-          title: item.group.groupName,
-          children: item.group.children,
-        });
-      }
-    });
-    return tree;
-  };
+  // const selectOrganize = async (userId: string) => {
+  //   const groups = await userGroupServices.getUserGroupFormOrganizedByUserId(userId);
+  //   const tree = createTree(groups.organizeMapGroup, null);
+  //   setGroupOption(tree);
+  // };
+  // const createTree = (obj: any[], parentId: string | null) => {
+  //   const tree: any[] = [];
+  //   obj.forEach((item) => {
+  //     if (item.group.parentGroupId === parentId) {
+  //       const children = createTree(obj, item.group.groupId);
+  //       if (children.length > 0) {
+  //         (item.group.icon = <CarryOutOutlined />),
+  //           (item.group.children = children);
+  //       }
+  //       tree.push({
+  //         value: item.group.groupId,
+  //         title: item.group.groupName,
+  //         children: item.group.children,
+  //       });
+  //     }
+  //   });
+  //   return tree;
+  // };
 
   async function onFinishAdd(form: ITProjectCreateForm): Promise<void> {
     console.log(form.productDetails);
@@ -102,7 +104,7 @@ export default function AddProjectPage() {
       }),
     };
     if (form.projectManagerId) {
-      const user = userList.findLast(
+      const user = engineerList.findLast(
         (user) => user.userId === form.projectManagerId
       );
 
@@ -114,7 +116,7 @@ export default function AddProjectPage() {
       }
     }
     if (form.saleManagerId) {
-      const user = userList.findLast(
+      const user = engineerList.findLast(
         (user) => user.userId === form.saleManagerId
       );
       if (user) {
@@ -125,16 +127,16 @@ export default function AddProjectPage() {
       }
     }
     if (form.saleId) {
-      const user = userList.findLast((user) => user.userId === form.saleId);
+      const user = saleList.findLast((user) => user.uid === form.saleId);
       if (user) {
         data = {
           ...data,
-          saleName: `${user.firstNameTh} ${user.lastNameTh}`,
+          saleName: `${user.name}`,
         };
       }
     }
-    delete data["productDetails"];
-    delete data["customerGroupId"];
+    // delete data["productDetails"];
+    // delete data["customerGroupId"];
     delete data["customerId"];
     delete data["customerDetailSubId"];
 
@@ -154,18 +156,18 @@ export default function AddProjectPage() {
         id
       );
       setCustomerList(data);
-      const customer = customerList.findLast((customer) => customer.id === id);
-      if (customer?.responsible) {
-        setSaleList(customer.responsible);
-      }
+      // const customer = customerList.findLast((customer) => customer.id === id);
+      // if (customer?.responsible) {
+      //   setSaleList(customer.responsible);
+      // }
     } else {
       setCustomerSubList([]);
     }
   }
   async function changeCustomerSelect(id: number): Promise<void> {
     if (id) {
-      const data = await projectServices.findBranchSelectByCustomerId(id);
-      setBranchList(data);
+      const data = await projectServices.findCustomerSubSelectByCustomerId(id);
+      setCustomerSubList(data);
       const customer = customerList.findLast((customer) => customer.id === id);
       if (customer?.responsible) {
         setSaleList(customer.responsible);
@@ -175,15 +177,15 @@ export default function AddProjectPage() {
     }
   }
   async function changeCustomerSubSelect(id: number): Promise<void> {
-    if (id) {
-      const data = await projectServices.findBranchSelectByCustomerSubId(id);
-      setBranchList(data);
-    } else {
-      setBranchList([]);
-    }
+    // if (id) {
+    //   const data = await projectServices.findCustomerSubSelectByCustomerSubId(id);
+    //   setCustomerSubList(data);
+    // } else {
+    //   setCustomerSubList([]);
+    // }
   }
   async function onChangeGroupSelect(value: string[]): Promise<void> {
-    const data = await userServices.findUsersLowerByOwnerGroup(value);
+    const data = await userGroupServices.findUsersLowerByOwnerGroup(value);
     setUsersFormGroup(data);
   }
 
@@ -221,14 +223,12 @@ export default function AddProjectPage() {
                 customerGroupList={customerGroupList}
                 customerList={customerList}
                 customerSubList={customerSubList}
-                branchList={branchList}
                 onFinishAdd={onFinishAdd}
                 changeCustomerGroupSelect={changeCustomerGroupSelect}
                 changeCustomerSelect={changeCustomerSelect}
                 changeCustomerSubSelect={changeCustomerSubSelect}
-                userList={userList}
-                saleList={saleList}
-                groupOption={groupOption}
+                engineerList={engineerList}
+                saleList={saleList} 
                 onChangeGroupSelect={onChangeGroupSelect}
                 usersFormGroup={usersFormGroup}
                 cntractCompany={cntractCompany}

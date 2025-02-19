@@ -21,7 +21,7 @@ import {
   ITProjectTicketCreateForm,
   ITSelectUsers,
   ITTicketConfigs,
-} from "../../common";
+} from "@/app/common/project";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import ProjectTaskEditComponent from "./project-task-edit";
 import moment from "moment";

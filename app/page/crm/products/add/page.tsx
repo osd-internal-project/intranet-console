@@ -1,20 +1,23 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Breadcrumb, Button, Card, Col, DatePicker, Dropdown, Form, Input, InputNumber, message, Row, Select, Space, Spin, Switch } from "antd";
-import { useAxiosCrm } from "@/app/lib/axios/hooks/userAxiosAuth";
 import Link from "next/link";
 import CrmServices from "@/app/services/customer-product.service";
 import { useRouter } from "next/navigation";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 const { useForm } = Form;
 export default function ProductsAddPage() {
+  const { id24Axios } = useId24();
+  const baseUrlCrm = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_CRM);
   const { TextArea } = Input;
   const router = useRouter();
   const [form] = useForm();
-  const crmAuth = useAxiosCrm();
-  const crmServices = CrmServices(crmAuth);
+  const crmServices = CrmServices(baseUrlCrm);
   const [loading, setloading] = useState<boolean>(true);
 
   useEffect(() => {
+
     if (loading === true) fetchData();
   }, [loading]);
 

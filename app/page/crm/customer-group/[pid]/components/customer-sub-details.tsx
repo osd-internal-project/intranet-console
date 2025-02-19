@@ -29,19 +29,19 @@ import {
   ITCustomerDetailSubDetail,
   ITCustomer,
 } from "@/app/common/customer";
-import BranchProductList from "./branch-product-list";
+import CustomerSubProductList from "./customer-sub-product-list";
 import { ITCustomerProduct } from "@/app/common/product";
 import { ITProject } from "@/app/common/project";
-import BranchContact from "./branch-contact";
-import BranchAddress from "./branch-address";
+import CustomerSubContact from "./customer-sub-contact";
+import CustomerSubAddress from "./customer-sub-address";
 import { TUserRoles } from "@/app/config/user-roles";
 const { RangePicker } = DatePicker;
 export interface props {
   roles: TUserRoles | null;
   details: ITCustomerDetailSubDetail;
-  customerProductsByBranch: ITCustomerProduct[];
+  customerProductsByCustomerSub: ITCustomerProduct[];
   projectDatas: ITProject[];
-  getCustomerProductsByBranch: (branchId: number, search: any) => void;
+  getCustomerProductsByCustomerSub: (branchId: number, search: any) => void;
   getProjectDataTable: (
     productId: string,
     parentId: string,
@@ -49,42 +49,42 @@ export interface props {
     search: any
   ) => void;
   customerId: number;
-  onSaveBranchAddress: (
+  onSaveCustomerSubAddress: (
     branchId: number,
     form: ITCustomerDetailSubAddressForm,
     customerId: number
   ) => void;
-  onDeleteCustomerBranchAddress: (
+  onDeleteCustomerSubAddress: (
     branchId: number,
     addressId: number,
     customerId: number
   ) => void;
-  onSaveBranchContact: (
+  onSaveCustomerSubContact: (
     branchId: number,
     form: ITCustomerDetailSubContactForm,
     customerId: number
   ) => void;
-  onDeleteCustomerBranchContact: (
+  onDeleteCustomerSubContact: (
     branchId: number,
     contactId: number,
     customerId: number
   ) => void;
 }
 
-const BranchDetails: React.FC<props> = ({
+const CustomerSubDetails: React.FC<props> = ({
   roles,
   details,
-  customerProductsByBranch,
+  customerProductsByCustomerSub,
   projectDatas,
   customerId,
-  getCustomerProductsByBranch,
+  getCustomerProductsByCustomerSub,
   getProjectDataTable,
-  onSaveBranchAddress,
-  onDeleteCustomerBranchAddress,
-  onSaveBranchContact,
-  onDeleteCustomerBranchContact,
+  onSaveCustomerSubAddress,
+  onDeleteCustomerSubAddress,
+  onSaveCustomerSubContact,
+  onDeleteCustomerSubContact,
 }): React.ReactElement => {
-  const [branchTabsKey, setBranchTabsKey] = useState<string>("products");
+  const [branchTabsKey, setCustomerSubTabsKey] = useState<string>("products");
   useEffect(() => {
     if (details.id) {
       fetchData(details.id, branchTabsKey);
@@ -92,11 +92,11 @@ const BranchDetails: React.FC<props> = ({
   }, [details.id, branchTabsKey]);
   const fetchData = async (branchId: number, tabKey: string) => {
     if (branchTabsKey === "products") {
-      getCustomerProductsByBranch(branchId, {});
+      getCustomerProductsByCustomerSub(branchId, {});
     }
   };
   const onChangeTabs = (key: React.SetStateAction<string>) => {
-    setBranchTabsKey(key);
+    setCustomerSubTabsKey(key);
   };
   const columns: TableColumnsType<any> = [
     {
@@ -149,18 +149,14 @@ const BranchDetails: React.FC<props> = ({
       align: "center",
       render: (id: number) => (
         <div className="space-x-1">
-          {roles?.crmCustomerEdit ? (
-          <Button type="link">Edit</Button>
+          {roles?.crmCustomerEdit ? <Button type="link">Edit</Button> : <></>}
+          {roles?.crmCustomerDelete ? (
+            <Button type="link" danger>
+              Delete
+            </Button>
           ) : (
             <></>
-          )} 
-          {roles?.crmCustomerDelete ? (
-          <Button type="link" danger>
-            Delete
-          </Button>
-        ) : (
-            <></>
-          )} 
+          )}
         </div>
       ),
     },
@@ -174,14 +170,16 @@ const BranchDetails: React.FC<props> = ({
         items={[
           {
             key: "products",
-            label: `Branch Products`,
+            label: `CustomerSub Products`,
             children: (
-              <BranchProductList
-                customerProductsByBranch={customerProductsByBranch}
+              <CustomerSubProductList
+                customerProductsByCustomerSub={customerProductsByCustomerSub}
                 parentId={String(details.id)}
                 projectDatas={projectDatas}
                 getProjectDataTable={getProjectDataTable}
-                getCustomerProductsByBranch={getCustomerProductsByBranch}
+                getCustomerProductsByCustomerSub={
+                  getCustomerProductsByCustomerSub
+                }
               />
             ),
           },
@@ -189,12 +187,14 @@ const BranchDetails: React.FC<props> = ({
             key: "address",
             label: `Address`,
             children: (
-              <BranchAddress
-                rules={roles}
+              <CustomerSubAddress
+                roles={roles}
                 customerId={customerId}
                 branchDetail={details}
-                onSaveBranchAddress={onSaveBranchAddress}
-                onDeleteCustomerBranchAddress={onDeleteCustomerBranchAddress}
+                onSaveCustomerSubAddress={onSaveCustomerSubAddress}
+                onDeleteCustomerSubAddress={
+                  onDeleteCustomerSubAddress
+                }
               />
             ),
             // icon: <Icon />,
@@ -203,12 +203,14 @@ const BranchDetails: React.FC<props> = ({
             key: "contact",
             label: `Contact`,
             children: (
-              <BranchContact
-                rules={roles}
+              <CustomerSubContact
+                roles={roles}
                 customerId={customerId}
                 branchDetail={details}
-                onSaveBranchContact={onSaveBranchContact}
-                onDeleteCustomerBranchContact={onDeleteCustomerBranchContact}
+                onSaveCustomerSubContact={onSaveCustomerSubContact}
+                onDeleteCustomerSubContact={
+                  onDeleteCustomerSubContact
+                }
               />
             ),
             // icon: <Icon />,
@@ -219,4 +221,4 @@ const BranchDetails: React.FC<props> = ({
   );
 };
 
-export default BranchDetails;
+export default CustomerSubDetails;

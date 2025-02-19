@@ -24,39 +24,40 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
-import BranchAdressAddComponent from "../components/branch-address-add";
+import CustomerSubAdressAddComponent from "../components/customer-sub-address-add";
 import { deleteIcon } from "@/components/icon";
+import { TUserRoles } from "@/app/config/user-roles";
 // const { RangePicker } = DatePicker;
 
 export interface props {
-  rules: any;
+  roles: TUserRoles | null;
   customerId: number;
   branchDetail?: ITCustomerDetailSubDetail;
-  onSaveBranchAddress: (
+  onSaveCustomerSubAddress: (
     branchId: number,
     form: ITCustomerDetailSubAddressForm,
     customerId: number
   ) => void;
-  onDeleteCustomerBranchAddress: (
+  onDeleteCustomerSubAddress: (
     branchId: number,
     addressId: number,
     customerId: number
   ) => void;
 }
 
-const BranchAddress: React.FC<props> = ({
-  rules,
+const CustomerSubAddress: React.FC<props> = ({
+  roles,
   customerId,
   branchDetail,
-  onSaveBranchAddress,
-  onDeleteCustomerBranchAddress,
+  onSaveCustomerSubAddress,
+  onDeleteCustomerSubAddress,
 }): React.ReactElement => {
   const [showModalAddressAdd, setShowModalAddressAdd] = useState(false);
   useEffect(() => {
     setShowModalAddressAdd(false);
   }, [branchDetail?.customerAddress]);
 
-  const showModalBranchAddressDelete = (id: number) => {
+  const showModalCustomerSubAddressDelete = (id: number) => {
     if (branchDetail?.id) {
       Modal.confirm({
         title: "Delete this Address",
@@ -66,7 +67,7 @@ const BranchAddress: React.FC<props> = ({
         okButtonProps: { type: "primary", danger: true },
         cancelText: "Cancel",
         onOk: async () => {
-          onDeleteCustomerBranchAddress(branchDetail.id, id, customerId);
+          onDeleteCustomerSubAddress(branchDetail.id, id, customerId);
         },
       });
     }
@@ -167,10 +168,10 @@ const BranchAddress: React.FC<props> = ({
           {/* <Button type="link" onClick={() => showModalEdit(record)}>
             {editIcon}
           </Button> */}
-          {rules?.ruleCustomerAddressDelete ? (
+          {roles?.crmCustomerEdit ? (
             <Button
               type="link"
-              onClick={() => showModalBranchAddressDelete(id)}
+              onClick={() => showModalCustomerSubAddressDelete(id)}
               danger
             >
               {deleteIcon}
@@ -186,7 +187,7 @@ const BranchAddress: React.FC<props> = ({
   return (
     <div className=" grid gap-2">
       <div className=" flex justify-end">
-        {rules?.ruleCustomerAddressAdd ? (
+        {roles?.crmCustomerEdit ? (
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -202,14 +203,14 @@ const BranchAddress: React.FC<props> = ({
         )}
       </div>
       {showModalAddressAdd && branchDetail?.id ? (
-        <BranchAdressAddComponent
+        <CustomerSubAdressAddComponent
           branchId={branchDetail?.id}
           showModalAddressAdd={showModalAddressAdd}
           onShowModalAddressAdd={function (status: boolean): void {
             setShowModalAddressAdd(status);
           }}
           customerId={customerId}
-          onSaveBranchAddress={onSaveBranchAddress}
+          onSaveCustomerSubAddress={onSaveCustomerSubAddress}
         />
       ) : (
         ""
@@ -225,4 +226,4 @@ const BranchAddress: React.FC<props> = ({
   );
 };
 
-export default BranchAddress;
+export default CustomerSubAddress;

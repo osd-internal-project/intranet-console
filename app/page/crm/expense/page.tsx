@@ -5,20 +5,26 @@ import { useAxiosCrm } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { checkRule } from "@/app/utils/rules";
 import ExpenseTableComponent from "./components/expense-table";
 import { ITExpenseType, ITTicketExpense } from "./common";
-import CrmServices from "./services/index.service";
+ 
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import ExpenseFilterComponent from "./components/expense-filter";
 import ExpenseDetailComponent from "./components/expense-detail";
 import { UserContectType, UserContext } from "@/app/config/userContext";
-
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
+import CustomerProjectServices from "@/app/services/customer-project.service";
 export default function MaTaskPage() {
+  const { id24Axios } = useId24();
+  const baseUrlCrm = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_CRM);
+
+
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const rules = {
     ruleExpenseShow: checkRule("crm-ex"),
     ruleExpenseApprove: checkRule("crm-ex-approve"),
   };
-  const crmAuth = useAxiosCrm();
-  const crmServices = CrmServices(crmAuth);
+
+  const crmServices = CustomerProjectServices(baseUrlCrm);
   const [loading, setloading] = useState<boolean>(true);
   const [expenseType, setExpenseType] = useState<ITExpenseType[]>([]);
   const [dataTable, setDataTable] = useState<ITTicketExpense[]>([]);
@@ -38,9 +44,9 @@ export default function MaTaskPage() {
     if (user?.userId) {
       const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
       const take: number = Number(pagination.pageSize);
-      const res = await crmServices.findByUserId(user?.userId, search, take, skip);
-      setDataTable(res.data);
-      setPagination({ ...pagination, total: res.count });
+      // const res = await crmServices.f(user?.userId, search, take, skip);
+      setDataTable([]);
+      setPagination({ ...pagination, total: 0});
     }
     setloading(false);
   };

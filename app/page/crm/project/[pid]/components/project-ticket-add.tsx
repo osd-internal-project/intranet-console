@@ -19,7 +19,7 @@ import {
   ITProjectTicketCreateForm,
   ITSelectUsers,
   ITTicketConfigs,
-} from "../../common";
+} from "@/app/common/project";
 import { UploadOutlined } from "@ant-design/icons";
 
 import { RcFile } from "antd/es/upload";

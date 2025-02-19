@@ -1,9 +1,10 @@
-import { HomeOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { FieldTimeOutlined, HomeOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { Icon } from "@iconify/react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
 import React from "react";
 import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, organizeChart, contactListIcon, macarIcon, hrIcon } from "@/components/icon";
+import { UserRoles } from "./user-roles";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -129,27 +130,27 @@ export const MenuSider: MenuItem[] = [
     key: "crm",
     icon: contactListIcon,
     label: `CRM`,
-    rule: "crm-s",
+    rule: UserRoles.crmShow,
     children: [
       {
         key: `crm/customer-group`,
         label: `ข้อมูลลูกค้า`,
-        rule: "crm-c-s",
+        rule: UserRoles.crmCustomerShow,
       },
       {
         key: `crm/project`,
         label: `Project`,
-        rule: "crm-p-s",
+        rule: UserRoles.crmProductShow,
       },
       {
         key: `crm/ticket`,
         label: `Ticket`,
-        rule: "crm-t-s",
+        rule: UserRoles.crmTicketShow,
       },
       {
         key: `crm/products`,
         label: `Products`,
-        rule: "crm-ex",
+        rule: UserRoles.crmProductShow
       },
       {
         key: `crm/expense`,
@@ -201,7 +202,7 @@ export const MenuSider: MenuItem[] = [
   },
   {
     key: `overtime`,
-    icon: <Icon icon="uil:setting" width="15" height="15" />,
+    icon: <FieldTimeOutlined />,
     label: `Overtime`,
     rule: "mac-s",
     children: [
@@ -219,42 +220,42 @@ export const MenuSider: MenuItem[] = [
     key: `users-management`,
     icon: gridIcon,
     label: `User Management`,
-    // rule: "um-s",
+    rule: "um-s",
     children: [
       {
         key: `users-management/users`,
         label: `Users`,
-        // rule: "um-s",
+        rule: "um-s",
       },
       {
         key: `users-management/user-organization`,
         label: `Organizations`,
-        // rule: "user-organize-show",
+        rule: "user-organize-show",
       },
       {
         key: `users-management/user-group`,
         label: `Groups`,
-        // rule: "um-ug-s",
+        rule: "um-ug-s",
       },
       {
         key: `users-management/user-role`,
         label: `Roles`,
-        // rule: "um-ro-s",
+        rule: "um-ro-s",
       },
       {
         key: `users-management/user-rule`,
         label: `Rules`,
-        // rule: "um-ru-s",
+        rule: "um-ru-s",
       },
       {
         key: `users-management/user-module`,
         label: `Module`,
-        // rule: "um-ru-s",
+        rule: "um-ru-s",
       },
       {
         key: `users-management/user-group-permission`,
         label: `Group Permission`,
-        // rule: "um-up-s",
+        rule: "um-up-s",
       },
     ],
   },

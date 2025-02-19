@@ -1,8 +1,8 @@
 import { AxiosInstance } from "axios";
 import { ITSelectUsers } from "@/app/common/customer";
 export interface TUserServices {
-  findOrganizeUserByUserId: (userId: string) => Promise<ITSelectUsers[]>;
-  findUsersFormSaleProjectModuleByUserId: (userId: string) => Promise<ITSelectUsers[]>;
+  findUsersFormEngineerProjectModule: () => Promise<ITSelectUsers[]>;
+  findUsersFormSaleProjectModule: () => Promise<ITSelectUsers[]>;
   findHeaderUserByUserId: (userId: string) => Promise<ITUser[]>;
   findUsersByOwnerGroupIds: (userGroupId: string[]) => Promise<any>;
 }
@@ -10,9 +10,9 @@ const UserServices = (axiosInstance: AxiosInstance): TUserServices => {
   //User Service
   const userUrl = "/user";
   return {
-    findOrganizeUserByUserId: async (userId) => {
+    findUsersFormEngineerProjectModule: async () => {
       return await axiosInstance
-        .get(`${userUrl}/find-organize-user-by-userid/${userId}`)
+        .get(`${userUrl}/find-users-form-engineerproject-module/`)
         .then((res) => {
           return res.data;
         })
@@ -21,9 +21,9 @@ const UserServices = (axiosInstance: AxiosInstance): TUserServices => {
           return;
         });
     },
-    findUsersFormSaleProjectModuleByUserId: async (userId) => {
+    findUsersFormSaleProjectModule: async () => {
       return await axiosInstance
-        .get(`${userUrl}/find-users-form-saleproject-module-by-userid/${userId}`)
+        .get(`${userUrl}/find-users-form-saleproject-module/`)
         .then((res) => {
           return res.data;
         })

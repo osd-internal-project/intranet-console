@@ -15,7 +15,7 @@ export interface TServices {
     customerId: number,
     search: any
   ) => Promise<ITCustomerProduct[]>;
-  findManyByBranch: (id: number, search: any) => Promise<ITCustomerProduct[]>;
+  findManyByCustomerSub: (id: number, search: any) => Promise<ITCustomerProduct[]>;
   findProductOptions: () => Promise<ITCustomerProduct[]>;
   create: (form: ITCustomerProductForm) => Promise<ITCustomerProduct>;
   update: (
@@ -77,9 +77,9 @@ const CrmServices = (axiosInstance: AxiosInstance): TServices => {
           return [];
         });
     },
-    findManyByBranch: async (branchId, search) => {
+    findManyByCustomerSub: async (branchId, search) => {
       return await axiosInstance
-        .get(`${baseUrl}/find-by-branch/${branchId}`, {
+        .get(`${baseUrl}/find-by-customer-sub/${branchId}`, {
           params: { search: search },
         })
         .then((res) => {

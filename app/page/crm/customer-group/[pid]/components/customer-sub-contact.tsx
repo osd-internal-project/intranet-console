@@ -18,39 +18,50 @@ import {
   ITCustomerDetailSubContactForm,
   ITCustomerDetailSubDetail,
   ITCustomerDetailSubForm,
-} from "../../common";
+} from "@/app/common/customer";
 import {
   CloseOutlined,
   ExclamationCircleFilled,
   PlusOutlined,
 } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
-import BranchContactAddComponent from "../components/branch-contact-add";
+import CustomerSubContactAddComponent from "../components/customer-sub-contact-add";
 import { deleteIcon } from "@/components/icon";
 import { dateTimeFormatNoTime } from "@/app/utils";
 import { dateToStringThNoTime } from "@/app/utils/format";
+import { TUserRoles } from "@/app/config/user-roles";
 // const { RangePicker } = DatePicker;
 
 export interface props {
-  rules: any;
-  customerDetailSubDetail?: ITCustomerDetailSubDetail;
-  onSaveBranchContact: (branchId: number, form: ITCustomerDetailSubContactForm) => void;
-  onDeleteCustomerBranchContact: (branchId: number, contactId: number) => void;
+  roles: TUserRoles | null;
+  customerId: number;
+  branchDetail?: ITCustomerDetailSubDetail;
+  onSaveCustomerSubContact: (
+    branchId: number,
+    form: ITCustomerDetailSubContactForm,
+    customerId: number
+  ) => void;
+  onDeleteCustomerSubContact: (
+    branchId: number,
+    contactId: number,
+    customerId: number
+  ) => void;
 }
 
-const BranchContactComponent: React.FC<props> = ({
-  rules,
-  customerDetailSubDetail,
-  onSaveBranchContact,
-  onDeleteCustomerBranchContact,
+const CustomerSubContact: React.FC<props> = ({
+  roles,
+  customerId,
+  branchDetail,
+  onSaveCustomerSubContact,
+  onDeleteCustomerSubContact,
 }): React.ReactElement => {
   const [showModalContactAdd, setShowModalContactAdd] = useState(false);
   useEffect(() => {
     setShowModalContactAdd(false);
-  }, [customerDetailSubDetail?.customerContact]);
+  }, [branchDetail?.customerContact]);
 
-  const showModalBranchContactDelete = (id: number) => {
-    if (customerDetailSubDetail?.id) {
+  const showModalCustomerSubContactDelete = (id: number) => {
+    if (branchDetail?.id) {
       Modal.confirm({
         title: "Delete this Contact",
         icon: <ExclamationCircleFilled />,
@@ -59,7 +70,7 @@ const BranchContactComponent: React.FC<props> = ({
         okButtonProps: { type: "primary", danger: true },
         cancelText: "Cancel",
         onOk: async () => {
-          onDeleteCustomerBranchContact(customerDetailSubDetail.id, id);
+          onDeleteCustomerSubContact(branchDetail.id, id, customerId);
         },
       });
     }
@@ -71,7 +82,8 @@ const BranchContactComponent: React.FC<props> = ({
       dataIndex: "id",
       title: "No",
       width: "80px",
-      render: (id: number, record: ITCustomerDetailSubContact, index: number) => index + 1,
+      render: (id: number, record: ITCustomerDetailSubContact, index: number) =>
+        index + 1,
     },
     {
       key: "name",
@@ -143,10 +155,10 @@ const BranchContactComponent: React.FC<props> = ({
           {/* <Button type="link" onClick={() => showModalEdit(record)}>
             {editIcon}
           </Button> */}
-          {rules.ruleCustomerContactDelete ? (
+          {roles?.crmCustomerEdit ? (
             <Button
               type="link"
-              onClick={() => showModalBranchContactDelete(id)}
+              onClick={() => showModalCustomerSubContactDelete(id)}
               danger
             >
               {deleteIcon}
@@ -162,7 +174,7 @@ const BranchContactComponent: React.FC<props> = ({
   return (
     <div className=" grid gap-2">
       <div className=" flex justify-end">
-        {rules.ruleCustomerContactDelete ? (
+        {roles?.crmCustomerEdit ? (
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -177,14 +189,15 @@ const BranchContactComponent: React.FC<props> = ({
           <></>
         )}
       </div>
-      {showModalContactAdd && customerDetailSubDetail?.id ? (
-        <BranchContactAddComponent
-          branchId={customerDetailSubDetail?.id}
+      {showModalContactAdd && branchDetail?.id ? (
+        <CustomerSubContactAddComponent
+          customerId={customerId}
+          branchId={branchDetail?.id}
           showModalContactAdd={showModalContactAdd}
           onShowModalContactAdd={function (status: boolean): void {
             setShowModalContactAdd(status);
           }}
-          onSaveBranchContact={onSaveBranchContact}
+          onSaveCustomerSubContact={onSaveCustomerSubContact}
         />
       ) : (
         ""
@@ -193,11 +206,11 @@ const BranchContactComponent: React.FC<props> = ({
         size="small"
         columns={columns}
         dataSource={
-          customerDetailSubDetail?.customerContact ? customerDetailSubDetail.customerContact : []
+          branchDetail?.customerContact ? branchDetail.customerContact : []
         }
       />
     </div>
   );
 };
 
-export default BranchContactComponent;
+export default CustomerSubContact;

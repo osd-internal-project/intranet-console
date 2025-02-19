@@ -1,16 +1,27 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Button, Card, Col, Row, Spin, TablePaginationConfig } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Card,
+  Col,
+  Row,
+  Spin,
+  TablePaginationConfig,
+} from "antd";
 import { useAxiosCrm } from "@/app/lib/axios/hooks/userAxiosAuth";
 import Link from "next/link";
 import CustomerProductServices from "@/app/services/customer-product.service";
 import { ITCustomerProduct } from "@/app/common/product";
 import ProductTableComponent from "./components/product-table";
 import ProductFilterComponent from "./components/product-filter";
+import { loadAppConfig } from "@/app/config/app-config";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
 
 export default function ProductsPage() {
-  const crmAuth = useAxiosCrm();
-  const customerProductServices = CustomerProductServices(crmAuth);
+  const { id24Axios } = useId24();
+  const baseUrlCrm = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_CRM);
+  const customerProductServices = CustomerProductServices(baseUrlCrm);
   const [loading, setloading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -24,7 +35,8 @@ export default function ProductsPage() {
   }, [loading]);
 
   const fetchData = async () => {
-    const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
+    const skip: number =
+      (Number(pagination.current) - 1) * Number(pagination.pageSize);
     const take: number = Number(pagination.pageSize);
     const res = await customerProductServices.findDatatable(search, take, skip);
     setDataTable(res.data);
@@ -76,7 +88,11 @@ export default function ProductsPage() {
                 <ProductFilterComponent onSearch={handdleSearch} />
               </div>
               <div>
-                <ProductTableComponent dataTable={dataTable} pagination={pagination} changePagination={changePagination} />
+                <ProductTableComponent
+                  dataTable={dataTable}
+                  pagination={pagination}
+                  changePagination={changePagination}
+                />
               </div>
             </Card>
           </div>

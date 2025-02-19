@@ -25,7 +25,7 @@ const CrmServices = (axiosInstance: AxiosInstance): TServices => {
     findCustomerListByCustomerGroup: async (customerGroupId, search) => {
       return await axiosInstance
         .get(`${baseUrl}/data-table`, {
-          params: { search: search, customerGroupId: customerGroupId },
+          params: { search: { ...search, customerGroupId: customerGroupId } },
         })
         .then((res) => {
           return res.data;

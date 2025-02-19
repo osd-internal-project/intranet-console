@@ -28,7 +28,6 @@ import {
 } from "antd";
 import type { Dayjs } from "dayjs";
 import {
-  ITCustomerDetailSubAddress,
   ITCustomerDetailSubContact,
   ITCustomerDetailSubForSelect,
   ITContractCompany,
@@ -36,7 +35,7 @@ import {
   ITProject,
   ITProjectCreateForm,
   ITSelectUsers,
-} from "../../common";
+} from "@/app/common/project";
 import { ColumnType } from "antd/es/table";
 import { dateToStringThNoTime, numberWithCommas } from "@/app/utils/format";
 import { CloseOutlined, FilterOutlined } from "@ant-design/icons";
@@ -44,17 +43,15 @@ import TextArea from "antd/es/input/TextArea";
 import "../../style.css";
 import { useForm } from "antd/es/form/Form";
 import moment from "moment";
-import { ITCustomerSub, ITCustomerSubForm } from "../../../customer/common";
+import { ITCustomerDetailSubAddress, ITCustomerDetailSubDetail, ITCustomerSub, ITCustomerSubForm } from "@/app/common/customer";
 import { ITCustomerProduct } from "@/app/common/product";
 import { ITCustomerGroup } from "@/app/common/customer";
 const { RangePicker } = DatePicker;
 export interface props {
   customerList: ITCustomerForSelect[];
   customerGroupList: ITCustomerGroup[];
-  customerSubList: ITCustomerSubForm[];
-  branchList: ITCustomerDetailSubForSelect[];
-  userList: ITSelectUsers[];
-  groupOption: SelectProps["options"];
+  customerSubList: ITCustomerDetailSubDetail[];
+  engineerList: ITSelectUsers[];
   saleList: { uid: string; name: string }[];
   usersFormGroup: ITSelectUsers[];
   onFinishAdd: (form: ITProjectCreateForm) => void;
@@ -79,10 +76,10 @@ const CreateProjectForm: React.FC<props> = ({
   customerList,
   customerGroupList,
   customerSubList,
-  branchList,
-  groupOption,
+
+
   saleList,
-  userList,
+  engineerList,
   usersFormGroup,
   onFinishAdd,
   changeCustomerGroupSelect,
@@ -126,28 +123,26 @@ const CreateProjectForm: React.FC<props> = ({
     }
   };
 
-  async function onChangeBranchSelect(value: number) {
-    const branch = branchList.findLast((branch) => value === branch.id);
-    if (branch) {
-      setAddressSelect(branch.customerAddress);
-      setContactSelect(branch.customerContact);
+  async function onChangeCustomerSubSelect(value: number) {
+    const customerSub = customerSubList.findLast((branch) => value === branch.id);
+    if (customerSub) {
+      setAddressSelect(customerSub.customerAddress);
+      setContactSelect(customerSub.customerContact);
     }
   }
   const onChangeCustomerGroupSelect = (id: number) => {
-    form.setFieldValue("customerId", undefined);
-    form.setFieldValue("customerBranchId", undefined);
+    form.setFieldValue("customerId", undefined); 
     form.setFieldValue("customerDetaulSubId", undefined);
     changeCustomerGroupSelect(id);
   };
 
-  const onChangeCustomerSelect = (id: number) => {
-    form.setFieldValue("customerBranchId", undefined);
+  const onChangeCustomerSelect = (id: number) => { 
     form.setFieldValue("customerDetaulSubId", undefined);
     changeCustomerSelect(id);
   };
 
   const onChangeSubCustomerSelect = (id: number) => {
-    form.setFieldValue("customerBranchId", undefined);
+    form.setFieldValue("customerDetailSubId", undefined);
     changeCustomerSubSelect(id);
   };
   function selectProducts(fieldIndex: number, value: any): void {
@@ -369,25 +364,25 @@ const CreateProjectForm: React.FC<props> = ({
           />
         </Form.Item>
         <Form.Item
-          label="Sub Customer / Branch"
-          name={"customerBranchId"}
+          label="Sub Customer / CustomerSub"
+          name={"customerDetailSubId"}
           rules={[
             {
               required: true,
-              message: "กรุณาเลือก BrancSub Customer / Branch",
+              message: "กรุณาเลือก BrancSub Customer / CustomerSub",
             },
           ]}
         >
           <Select
             showSearch
-            placeholder="Please select Branch"
+            placeholder="Please select CustomerSub"
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
-            disabled={branchList.length > 0 ? false : true}
+            disabled={customerSubList.length > 0 ? false : true}
             allowClear
-            onChange={onChangeBranchSelect}
-            options={branchList.map((branch) => ({
+            onChange={onChangeCustomerSubSelect}
+            options={customerSubList.map((branch) => ({
               value: branch.id,
               label: branch.name,
             }))}
@@ -400,7 +395,7 @@ const CreateProjectForm: React.FC<props> = ({
           <Form.Item label="ที่อยู่ใบกำกับภาษี" name={"taxAddressId"}>
             <Select
               allowClear
-              disabled={branchList.length > 0 ? false : true}
+              disabled={customerSubList.length > 0 ? false : true}
               onSelect={(value, option) => {
                 form.setFieldValue("taxAddressText", option.label);
               }}
@@ -432,7 +427,7 @@ const CreateProjectForm: React.FC<props> = ({
           <Form.Item label="ที่อยู่การจัดส่งบริการ" name={"deliveryAddressId"}>
             <Select
               allowClear
-              disabled={branchList.length > 0 ? false : true}
+              disabled={customerSubList.length > 0 ? false : true}
               onSelect={(value, option) => {
                 form.setFieldValue("deliveryAddressText", option.label);
               }}
@@ -464,7 +459,7 @@ const CreateProjectForm: React.FC<props> = ({
           <Form.Item label="ที่อยู่จัดส่งใบแจ้งบริการ" name={"notiAddressId"}>
             <Select
               allowClear
-              disabled={branchList.length > 0 ? false : true}
+              disabled={customerSubList.length > 0 ? false : true}
               onSelect={(value, option) => {
                 form.setFieldValue("notiAddressText", option.label);
               }}
@@ -493,7 +488,7 @@ const CreateProjectForm: React.FC<props> = ({
           <Form.Item label="ผู้ติดต่อ" name={"contactId"}>
             <Select
               allowClear
-              disabled={branchList.length > 0 ? false : true}
+              disabled={customerSubList.length > 0 ? false : true}
               options={contactSelect.map((contact) => ({
                 value: contact.id,
                 label: contact.name,
@@ -524,7 +519,7 @@ const CreateProjectForm: React.FC<props> = ({
             allowClear
             showSearch
             optionFilterProp="label"
-            options={userList.map((user) => ({
+            options={engineerList.map((user) => ({
               value: user.userId,
               label: `${user.firstNameTh} ${user.lastNameTh}`,
             }))}
@@ -539,7 +534,7 @@ const CreateProjectForm: React.FC<props> = ({
             allowClear
             showSearch
             optionFilterProp="label"
-            options={userList.map((user) => ({
+            options={engineerList.map((user) => ({
               value: user.userId,
               label: `${user.firstNameTh} ${user.lastNameTh}`,
             }))}

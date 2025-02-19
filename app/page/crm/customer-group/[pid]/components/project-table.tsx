@@ -84,7 +84,7 @@ const ProjectTable: React.FC<props> = ({
     {
       key: "name",
       dataIndex: ["customerDetailSub", "name"],
-      title: "Branch",
+      title: "CustomerSub",
       width: "200px",
     },
     {

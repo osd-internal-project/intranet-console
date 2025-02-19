@@ -45,12 +45,12 @@ export interface props {
   customerDetailSubList: ITCustomerDetailSubDetail[];
   roles: TUserRoles | null;
   customerProductsByCustomer: ITCustomerProduct[];
-  customerProductsByBranch: ITCustomerProduct[];
+  customerProductsByCustomerSub: ITCustomerProduct[];
   projectDatas: ITProject[];
   onOpenCustomerCreateForm: (state: boolean) => void;
   getCustomerProductsByCustomer: (customerId: number, search: any) => void;
   getCustomerBrachList: (customerId: number) => void;
-  getCustomerProductsByBranch: (branch: number, search: any) => void;
+  getCustomerProductsByCustomerSub: (branch: number, search: any) => void;
   getProjectDataTable: (
     productId: string,
     parentId: string,
@@ -59,28 +59,29 @@ export interface props {
   ) => void;
   onDeleteCustomer: (customerId: number) => void;
   onOpenCustomerDescription: (customerId: number) => void;
-  onOpenEditBranch: (branchId: number, customerId: number) => void;
-  onDeleteBranch: (branchId: number, customerId: number) => void;
-  onSaveBranchAddress: (
+  onOpenEditCustomerSub: (branchId: number, customerId: number) => void;
+  onDeleteCustomerSub: (branchId: number, customerId: number) => void;
+  onSaveCustomerSubAddress: (
     branchId: number,
     form: ITCustomerDetailSubAddressForm,
     customerId: number
   ) => void;
-  onDeleteCustomerBranchAddress: (
+  onDeleteCustomerSubAddress: (
     branchId: number,
     addressId: number,
     customerId: number
   ) => void;
-  onSaveBranchContact: (
+  onSaveCustomerSubContact: (
     branchId: number,
     form: ITCustomerDetailSubContactForm,
     customerId: number
   ) => void;
-  onDeleteCustomerBranchContact: (
+  onDeleteCustomerSubContact: (
     branchId: number,
     contactId: number,
     customerId: number
   ) => void;
+  onOpenCustomerSubCreateForm:(customerId:number)=>void
 }
 
 const CustomerGroupCustomerList: React.FC<props> = ({
@@ -88,21 +89,22 @@ const CustomerGroupCustomerList: React.FC<props> = ({
   customerDetailSubList,
   roles,
   customerProductsByCustomer,
-  customerProductsByBranch,
+  customerProductsByCustomerSub,
   projectDatas,
   onOpenCustomerCreateForm,
   getCustomerProductsByCustomer,
   getCustomerBrachList,
-  getCustomerProductsByBranch,
+  getCustomerProductsByCustomerSub,
   getProjectDataTable,
   onDeleteCustomer,
   onOpenCustomerDescription,
-  onOpenEditBranch,
-  onDeleteBranch,
-  onSaveBranchAddress,
-  onDeleteCustomerBranchAddress,
-  onSaveBranchContact,
-  onDeleteCustomerBranchContact,
+  onOpenEditCustomerSub,
+  onDeleteCustomerSub,
+  onSaveCustomerSubAddress,
+  onDeleteCustomerSubAddress,
+  onSaveCustomerSubContact,
+  onDeleteCustomerSubContact,
+  onOpenCustomerSubCreateForm,
 }): React.ReactElement => {
   const panelStyle: React.CSSProperties = {
     marginBottom: 10,
@@ -185,16 +187,21 @@ const CustomerGroupCustomerList: React.FC<props> = ({
           getCustomerProductsByCustomer={getCustomerProductsByCustomer}
           customerProductsByCustomer={customerProductsByCustomer}
           getCustomerBrachList={getCustomerBrachList}
-          customerProductsByBranch={customerProductsByBranch}
-          getCustomerProductsByBranch={getCustomerProductsByBranch}
+          customerProductsByCustomerSub={customerProductsByCustomerSub}
+          getCustomerProductsByCustomerSub={getCustomerProductsByCustomerSub}
           projectDatas={projectDatas}
           getProjectDataTable={getProjectDataTable}
-          onOpenEditBranch={onOpenEditBranch}
-          onDeleteBranch={onDeleteBranch}
-          onSaveBranchAddress={onSaveBranchAddress}
-          onDeleteCustomerBranchAddress={onDeleteCustomerBranchAddress}
-          onSaveBranchContact={onSaveBranchContact}
-          onDeleteCustomerBranchContact={onDeleteCustomerBranchContact}
+          onOpenEditCustomerSub={onOpenEditCustomerSub}
+          onDeleteCustomerSub={onDeleteCustomerSub}
+          onSaveCustomerSubAddress={onSaveCustomerSubAddress}
+          onDeleteCustomerSubAddress={
+            onDeleteCustomerSubAddress
+          }
+          onSaveCustomerSubContact={onSaveCustomerSubContact}
+          onDeleteCustomerSubContact={
+            onDeleteCustomerSubContact
+          }
+          onOpenCustomerSubCreateForm={onOpenCustomerSubCreateForm}
         />
       );
       return {

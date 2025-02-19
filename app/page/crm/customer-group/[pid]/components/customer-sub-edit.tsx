@@ -12,22 +12,22 @@ const layout = {
   },
 };
 export interface props {
-  openBranchUpdateId: number;
+  openCustomerSubUpdateId: number;
   onCloseUpdate: () => void;
-  onSaveBranchEdit: (form: ITCustomerDetailSubForm) => void;
+  onUpdateCustomerSub: (form: ITCustomerDetailSubForm) => void;
   customerBrahEditForm: FormInstance;
 }
 
-const BranchEdit: React.FC<props> = ({
-  openBranchUpdateId,
+const CustomerSubEdit: React.FC<props> = ({
+  openCustomerSubUpdateId,
   onCloseUpdate,
-  onSaveBranchEdit,
+  onUpdateCustomerSub,
   customerBrahEditForm,
 }): React.ReactElement => {
   return (
     <Modal
-      open={openBranchUpdateId ? true : false}
-      title={"Edit Sub Customer/Branch"}
+      open={openCustomerSubUpdateId ? true : false}
+      title={"Edit Sub Customer/CustomerSub"}
       footer={[]}
       onCancel={() => {
         onCloseUpdate();
@@ -36,10 +36,10 @@ const BranchEdit: React.FC<props> = ({
     >
       <Form
         form={customerBrahEditForm}
-        name="addBranchForm"
+        name="addCustomerSubForm"
         size="small"
         {...layout}
-        onFinish={onSaveBranchEdit}
+        onFinish={onUpdateCustomerSub}
         autoComplete="off"
       >
         <Form.Item label={"id"} name={"id"} hidden>
@@ -86,4 +86,4 @@ const BranchEdit: React.FC<props> = ({
   );
 };
 
-export default BranchEdit;
+export default CustomerSubEdit;

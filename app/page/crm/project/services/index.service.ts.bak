@@ -35,10 +35,10 @@ export interface TMaServices {
   findCustomerSubSelectByCustomerId: (
     customerId: number
   ) => Promise<ITCustomerSub[]>;
-  findBranchSelectByCustomerId: (
+  findCustomerSubSelectByCustomerId: (
     customerId: number
   ) => Promise<ITCustomerDetailSubForSelect[]>;
-  findBranchSelectByCustomerSubId: (
+  findCustomerSubSelectByCustomerSubId: (
     customerSubId: number
   ) => Promise<ITCustomerDetailSubForSelect[]>;
   findProjectDetailById: (project: number) => Promise<ITProject>;
@@ -89,7 +89,7 @@ export interface TMaServices {
 }
 const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
   const customerUrl = "/customer-detail";
-  const customerBranchUrl = "/customer-branch";
+  const customerSubUrl = "/customer-detail";
   const customerProjectUrl = "/customer-project";
   const customerProductUrl = "/customer-product";
   const customerContactUrl = "/customer-contact";
@@ -133,9 +133,9 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
           return [];
         });
     },
-    findBranchSelectByCustomerId: async (customerId) => {
+    findCustomerSubSelectByCustomerId: async (customerId) => {
       return await axiosInstance
-        .get(`${customerBranchUrl}/detail-list-by-customer/${customerId}`)
+        .get(`${customerSubUrl}/detail-list-by-customer/${customerId}`)
         .then((res) => {
           return res.data;
         })
@@ -144,10 +144,10 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
           return [];
         });
     },
-    findBranchSelectByCustomerSubId: async (customerSubId) => {
+    findCustomerSubSelectByCustomerSubId: async (customerSubId) => {
       return await axiosInstance
         .get(
-          `${customerBranchUrl}/detail-list-by-customer-sub/${customerSubId}`
+          `${customerSubUrl}/detail-list-by-customer-sub/${customerSubId}`
         )
         .then((res) => {
           return res.data;

@@ -2,32 +2,20 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Breadcrumb, Card, Col, message, Row, UploadFile, Tabs, Modal, Form, InputNumber } from "antd";
 import DescriptionCustomerComponent from "./components/description-form";
-import {
-  ITCustomerDetailSubContact,
-  ITExpenseType,
-  ITProject,
-  ITProjectTask,
-  ITProjectTaskForm,
-  ITProjectTicket,
-  ITProjectTicketCreateForm,
-  ITProjectTicketEditForm,
-  ITSelectUsers,
-  ITTicketConfigs,
-  ITTicketExpense,
-  ITTicketHistoryLogForm,
-} from "../common";
+
 import { useAxiosCrm, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
-import CrmServices from "../services/index.service";
+import ProjectServices from '@/app/services/customer-project.service'
+import UserServices from '@/app/services/user.service'
 import { useParams } from "next/navigation";
 import { useForm } from "antd/es/form/Form";
 import TicketComponent from "./components/project-ticket";
 import TaskComponent from "./components/project-task";
 import ProjectTicketDetailComponent from "./components/project-ticket-detail";
 import { ExclamationCircleFilled } from "@ant-design/icons";
-import TextArea from "antd/es/input/TextArea";
-import UserServices from "../services/user.service";
+import TextArea from "antd/es/input/TextArea"; 
 import { checkRule } from "@/app/utils/rules";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { ITCustomerDetailSubContact, ITExpenseType, ITProject, ITProjectTask, ITProjectTaskForm, ITProjectTicket, ITProjectTicketCreateForm, ITProjectTicketEditForm, ITSelectUsers, ITTicketConfigs, ITTicketExpense, ITTicketHistoryLogForm } from "@/app/common/project";
 
 export default function CustomerDetailPage() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
@@ -44,7 +32,7 @@ export default function CustomerDetailPage() {
     ruleTicketComplete: checkRule("crm-t-c"),
   };
   const crmAuth = useAxiosCrm();
-  const crmServices = CrmServices(crmAuth);
+  const crmServices = ProjectServices(crmAuth);
   const userAuth = useAxiosUser();
   const userServices = UserServices(userAuth);
   const params = useParams<{ pid: string }>();
@@ -117,7 +105,7 @@ export default function CustomerDetailPage() {
 
   const fetchUserList = async () => {
     if (user?.userId) {
-      const usersList = await userServices.findOrganizeUserByUserId(user?.userId);
+      const usersList = await userServices.findUsersFormEngineerProjectModule();
       setUsersList(usersList);
     }
 

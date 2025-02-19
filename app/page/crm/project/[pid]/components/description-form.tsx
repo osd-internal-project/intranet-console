@@ -10,7 +10,7 @@ import {
   Select,
   Switch,
 } from "antd";
-import { ITCustomerDetailSubContact, ITProject } from "../../common";
+import { ITCustomerDetailSubContact, ITProject } from "@/app/common/project";
 
 import "../../style.css";
 import { dateToStringThNoTime } from "@/app/utils/format";
@@ -105,22 +105,22 @@ const DescriptionCustomerForm: React.FC<props> = ({
                     </div>
                     <div className=" col-span-2 md:col-span-1 text-slate-500">
                       {projectDescription.customerDetailSub.customerDetail
-                        .customerNameTh
-                        ? projectDescription.customerDetailSub.customerDetail
-                            .customerNameTh
+                        .details
+                        ?projectDescription.customerDetailSub.customerDetail
+                        .details.customerNameTh
                         : ""}
                     </div>
                     <div className=" font-bold pl-3 pr-3 text-right">
                       Customer :
                     </div>
                     <div className=" col-span-2 md:col-span-1 text-slate-500">
-                      {projectDescription?.customerDetailSub?.customerDetail
+                      {projectDescription?.customerDetailSub?.customerDetail.details
                         ?.customerNameTh
-                        ? `${projectDescription.customerDetailSub.customerDetail.customerNameTh}`
+                        ? `${projectDescription.customerDetailSub.customerDetail.details.customerNameTh}`
                         : "-"}
                     </div>
                     <div className=" font-bold pl-3 pr-3 text-right">
-                      Sub Customer / Branch :
+                      Sub Customer / CustomerSub :
                     </div>
                     <div className=" col-span-2 md:col-span-1 text-slate-500">
                       {projectDescription.customerDetailSub.name

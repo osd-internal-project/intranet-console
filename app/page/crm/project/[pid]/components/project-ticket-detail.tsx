@@ -26,7 +26,7 @@ import {
   ITSelectUsers,
   ITTicketExpense,
   ITTicketHistoryLog,
-} from "../../common";
+} from "@/app/common/project";
 import "../../style.css";
 import {
   CloseOutlined,

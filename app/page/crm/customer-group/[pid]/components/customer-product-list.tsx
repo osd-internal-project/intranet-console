@@ -82,7 +82,7 @@ const CustomerProductList: React.FC<props> = ({
           </div>
         </div>
       );
-      // const children = <BranchDetails details={branch} />;
+      // const children = <CustomerSubDetails details={branch} />;
       return {
         key: product.id,
         label: label,

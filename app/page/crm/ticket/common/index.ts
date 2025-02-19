@@ -59,7 +59,7 @@ export type ITCustomerDetailSubContact = { id: number } & ITCustomerDetailSubCon
 //   deliveryAddressText?: string;
 //   notiAddressText?: string;
 //   contactId?: string;
-//   customerBranch: { customerDetail: ITCustomerForSelect } & ITCustomerDetailSubForSelect;
+//   customerSub: { customerDetail: ITCustomerForSelect } & ITCustomerDetailSubForSelect;
 // };
 
 export type ITProjectCreateForm = {
@@ -68,7 +68,7 @@ export type ITProjectCreateForm = {
   startDate: Date;
   endDate: Date;
   duration: number;
-  customerBranchId: number;
+  customerDetailSubId: number;
   taxAddressId?: number;
   taxAddressText?: string;
   deliveryAddressId?: number;
@@ -85,7 +85,7 @@ export type ITProjectCreateForm = {
 };
 export type ITProject = {
   id: number;
-  customerBranch: {
+  customerSub: {
     customerDetail: ITCustomerForSelect;
     customerDetailSub: ITCustomerSub;
   } & ITCustomerDetailSubForSelect;

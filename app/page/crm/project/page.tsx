@@ -6,11 +6,16 @@ import ProjectTableComponent from "./components/project-table";
 import { useAxiosCrm } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { checkRule } from "@/app/utils/rules";
 import Link from "next/link";
-import CrmServices from "./services/index.service";
+import CustomerProductServices from "@/app/services/customer-project.service";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export default function MaTaskPage() {
-  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
+  const { user ,roles} = (useContext(UserContext) as UserContectType) || { user: null };
+  const { id24Axios } = useId24();
+  const baseUrlCrm = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_CRM);
+  const customerProductServices = CustomerProductServices(baseUrlCrm);
   const rules = {
     ruleProjectShow: checkRule("crm-p-s"),
     ruleProjectAdd: checkRule("crm-p-a"),
@@ -26,8 +31,6 @@ export default function MaTaskPage() {
     ruleTicketHold: checkRule("crm-t-h"),
     ruleTicketComplete: checkRule("crm-t-c"),
   };
-  const crmAuth = useAxiosCrm();
-  const crmServices = CrmServices(crmAuth);
 
   const [loading, setloading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -46,7 +49,7 @@ export default function MaTaskPage() {
     if (user?.userId) {
       const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
       const take: number = Number(pagination.pageSize);
-      const res = await crmServices.findProjectDataTable(search, take, skip, user?.userId);
+      const res = await customerProductServices.findProjectDataTable(search, take, skip, user?.userId);
       setDataTable(res.data);
       setPagination({ ...pagination, total: res.count });
     }
@@ -88,11 +91,11 @@ export default function MaTaskPage() {
 
         <Col span={24}>
           <div className="grid grid-cols-1 ">
-            {rules.ruleProjectShow ? (
+            {roles?.crmProjectShow ? (
               <Card>
                 <div className=" grid grid-col-1 space-y-2">
                   <div className=" flex justify-end">
-                    {rules.ruleProjectAdd ? (
+                    {roles.crmProductAdd ? (
                       <Link href="/page/crm/project/add-project">
                         <Button size="small" type="primary">
                           Add Project
@@ -111,7 +114,7 @@ export default function MaTaskPage() {
                       }}
                     />
                   </div>
-                  <ProjectTableComponent dataTable={dataTable} changePagination={changePagination} pagination={pagination} />
+                  <ProjectTableComponent roles={roles} dataTable={dataTable} changePagination={changePagination} pagination={pagination} />
                 </div>
               </Card>
             ) : (

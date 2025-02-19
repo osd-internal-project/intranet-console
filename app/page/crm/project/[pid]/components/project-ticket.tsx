@@ -2,17 +2,13 @@ import React from "react";
 import type { FormInstance, TableColumnsType } from "antd";
 import { Button, Input, Table, Tag } from "antd";
 import ProjectTicketAddComponent from "./project-ticket-add";
-import {
-  ITProjectTaskForm,
-  ITProjectTicket,
-  ITProjectTicketCreateForm,
-  ITSelectUsers,
-  ITTicketConfigs,
-} from "../../common";
+
 import Link from "next/link";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { EditOutlined } from "@ant-design/icons";
 import { UploadFile } from "antd/lib";
+import { ITSelectUsers } from "@/app/common/customer";
+import { ITProjectTicket, ITTicketConfigs, ITProjectTicketCreateForm } from "@/app/common/project";
 
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;

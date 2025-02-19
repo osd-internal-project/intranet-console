@@ -11,13 +11,13 @@ import {
   Spin,
   Tabs,
 } from "antd";
-import { useAxiosCrm, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth"; 
+import { useAxiosCrm, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import Link from "next/link";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import CustomerGroupServices from "@/app/services/customer-group.service";
 
 import CustomerServices from "@/app/services/customer.service";
-import CustomerBranchServices from "@/app/services/customer-detail-sub.service";
+import CustomerSubServices from "@/app/services/customer-detail-sub.service";
 import CustomerProductServices from "@/app/services/customer-product.service";
 import CustomerProjectServices from "@/app/services/customer-project.service";
 import UserServices from "@/app/services/user.service";
@@ -42,26 +42,27 @@ import CustomerCreateForm from "./components/customer-create-form";
 import { ITCustomerProduct } from "@/app/common/product";
 import { ITProject } from "@/app/common/project";
 import CusomterEditForm from "./components/customer-edit-form";
-import BranchEdit from "./components/branch-edit";
+import CustomerSubEdit from "./components/customer-sub-edit";
 import CustomerGroupSearch from "./components/customer-group-search";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { loadAppConfig } from "@/app/config/app-config";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import CustomerSubAdd from "./components/customer-sub-add";
 const { useForm } = Form;
 export default function CustomerGroupDetailPage() {
   const { user, roles } = (useContext(UserContext) as UserContectType) || {
     user: null,
     roles: null,
-  };    
-  const { id24Axios } = useId24();  
+  };
+  const { id24Axios } = useId24();
   const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const baseUrlCrm = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_CRM);
-  const { pid } = useParams(); 
-  
+  const { pid } = useParams();
+
   const userServices = UserServices(baseUrlUser);
   const customerGroupServices = CustomerGroupServices(baseUrlCrm);
   const customerServices = CustomerServices(baseUrlCrm);
-  const customerBranchServices = CustomerBranchServices(baseUrlCrm);
+  const customerSubServices = CustomerSubServices(baseUrlCrm);
   const customerProductServices = CustomerProductServices(baseUrlCrm);
   const customerProjectServices = CustomerProjectServices(baseUrlCrm);
   const customerGroupId = String(pid);
@@ -75,21 +76,25 @@ export default function CustomerGroupDetailPage() {
   const [openCustomerUpdateId, setOpenCustomerUpdateId] = useState<
     number | undefined
   >(undefined);
-  const [openBranchUpdateId, setOpenBranchUpdateId] = useState<{
-    branchId: number | undefined;
+  const [openCustomerSubCreate, setOpenCustomerSubCreate] =
+    useState<boolean>(false);
+  const [customerDetailSubActive, setCustomerDetailSubActive] = useState<{
+    customerDetailSubId: number | undefined;
     customerId: number | undefined;
-  }>({ branchId: undefined, customerId: undefined });
+    status?: "create" | "update";
+  }>({ customerDetailSubId: undefined, customerId: undefined });
 
   const [customerList, setCustomerList] = useState<ITCustomer[]>([]);
-  const [customerDetailSubList, setCustomerDetailSubList] = useState<ITCustomerDetailSubDetail[]>([]);
+  const [customerDetailSubList, setCustomerDetailSubList] = useState<
+    ITCustomerDetailSubDetail[]
+  >([]);
   const [customerProductsByCustomerGroup, setCustomerProductsByCustomerGroup] =
     useState<ITCustomerProduct[]>([]);
   const [customerProductsByCustomer, setCustomerProductsByCustomer] = useState<
     ITCustomerProduct[]
   >([]);
-  const [customerProductsByBranch, setCustomerProductsByBranch] = useState<
-    ITCustomerProduct[]
-  >([]);
+  const [customerProductsByCustomerSub, setCustomerProductsByCustomerSub] =
+    useState<ITCustomerProduct[]>([]);
   const [projectDatas, setProjectDatas] = useState<ITProject[]>([]);
   const [customerTypeGroup, setCustomerTypeGroup] = useState<ITConfigData[]>(
     []
@@ -135,12 +140,10 @@ export default function CustomerGroupDetailPage() {
   };
   const fetchConfigs = async () => {
     const group = await customerServices.findConfigCustomerTypeGroup();
-    setCustomerTypeGroup(group); 
+    setCustomerTypeGroup(group);
     if (user?.userId) {
-    
-      const responsibles = await userServices.findUsersFormSaleProjectModuleByUserId(
-        user?.userId
-      );
+      const responsibles =
+        await userServices.findUsersFormSaleProjectModule();
       if (responsibles && responsibles.length > 0) {
         setCustomerResponsibles(responsibles);
       }
@@ -194,27 +197,28 @@ export default function CustomerGroupDetailPage() {
       setCustomerProductsByCustomer([]);
     }
   };
-  const getCustomerProductsByBranch = async (
-    bracnchId: number,
+  const getCustomerProductsByCustomerSub = async (
+    customerDetailSubId: number,
     search: any
   ) => {
-    const products = await customerProductServices.findManyByBranch(
-      bracnchId,
+    const products = await customerProductServices.findManyByCustomerSub(
+      customerDetailSubId,
       allSearch
     );
 
     if (products) {
-      setCustomerProductsByBranch(products);
+      setCustomerProductsByCustomerSub(products);
     } else {
-      setCustomerProductsByBranch([]);
+      setCustomerProductsByCustomerSub([]);
     }
   };
   const getCustomerBrachList = async (customerId: number) => {
     setloading(true);
-    const customerDetailSubs = await customerBranchServices.findManyByCustomerId(
-      customerId,
-      allSearch
-    );
+    const customerDetailSubs =
+      await customerSubServices.findManyByCustomerId(
+        customerId,
+        allSearch
+      );
     setCustomerDetailSubList(customerDetailSubs);
     setloading(false);
   };
@@ -399,16 +403,16 @@ export default function CustomerGroupDetailPage() {
       });
   }
 
-  function onDeleteBranch(branchId: number, customerId: number): void {
+  function onDeleteCustomerSub(id: number, customerId: number): void {
     Modal.confirm({
-      title: "Delete this Branch",
+      title: "Delete this CustomerSub",
       icon: <ExclamationCircleFilled />,
       content: "Are you sure you want to delete this ?",
       okText: "Confirm",
       okButtonProps: { type: "primary", danger: true },
       cancelText: "Cancel",
       onOk: async () => {
-        await customerBranchServices.delete(branchId).then((data) => {
+        await customerSubServices.delete(id).then((data) => {
           message.success("ลบสำเร็จ");
         });
 
@@ -417,19 +421,29 @@ export default function CustomerGroupDetailPage() {
     });
   }
 
-  function onOpenEditBranch(branchId: number, customerId: number): void {
-    const branchSelected = customerDetailSubList.find((branch) => branch.id === branchId);
+  function onOpenEditCustomerSub(id: number, customerId: number): void {
+    const customerSubSelected = customerDetailSubList.find(
+      (customerSub) => customerSub.id === id
+    );
     customerBrahEditForm.setFieldsValue({
-      ...branchSelected,
+      ...customerSubSelected,
       customerId: customerId,
     });
-    setOpenBranchUpdateId({ branchId: branchId, customerId: customerId });
+    setCustomerDetailSubActive({
+      customerDetailSubId: id,
+      customerId: customerId,
+    });
   }
-  function onCloseUpdateBranch(): void {
-    setOpenBranchUpdateId({ branchId: undefined, customerId: undefined });
+  function onCloseUpdateCustomerSub(): void {
+    setCustomerDetailSubActive({
+      customerDetailSubId: undefined,
+      customerId: undefined,
+    });
     customerBrahEditForm.resetFields();
   }
-  async function onSaveBranchEdit(form: ITCustomerDetailSubForm): Promise<void> {
+  async function onUpdateCustomerSub(
+    form: ITCustomerDetailSubForm
+  ): Promise<void> {
     const base = {
       ...form,
       updatedBy: `${user?.firstNameTh} ${user?.lastNameTh}`,
@@ -437,14 +451,17 @@ export default function CustomerGroupDetailPage() {
       updatedAt: dayjs(),
     };
 
-    await customerBranchServices
+    await customerSubServices
       .update(+form.id, base)
       .then(async (res) => {
-        await onCloseUpdateBranch();
-        if (openBranchUpdateId?.customerId) {
-          getCustomerBrachList(openBranchUpdateId.customerId);
+        await onCloseUpdateCustomerSub();
+        if (customerDetailSubActive?.customerId) {
+          getCustomerBrachList(customerDetailSubActive.customerId);
         }
-        setOpenBranchUpdateId({ branchId: undefined, customerId: undefined });
+        setCustomerDetailSubActive({
+          customerDetailSubId: undefined,
+          customerId: undefined,
+        });
         customerBrahEditForm.resetFields();
       })
       .catch(() => {
@@ -453,13 +470,38 @@ export default function CustomerGroupDetailPage() {
       });
     setloading(true);
   }
+  async function onCreateCustomerSub(form: ITCustomerDetailSubForm) {
+    const formData = {
+      ...form,
+      createdBy: `${user?.firstNameTh} ${user?.lastNameTh}`, 
+    };
 
-  async function onSaveBranchAddress(
+    if (customerDetailSubActive.customerId) {
+      await customerSubServices
+        .create(customerDetailSubActive.customerId, formData)
+        .then(async (res) => {
+          if (customerDetailSubActive?.customerId) {
+            getCustomerBrachList(customerDetailSubActive.customerId);
+          }
+          setCustomerDetailSubActive({
+            customerDetailSubId: undefined,
+            customerId: undefined,
+          });
+          customerBrahEditForm.resetFields();
+        })
+        .catch(() => {
+          message.error("ผิดพลาด กรุณาลองใหม่");
+          setloading(false);
+        });
+      setloading(true);
+    }
+  }
+  async function onSaveCustomerSubAddress(
     branchId: number,
     form: ITCustomerDetailSubAddressForm,
     customerId: number
   ): Promise<void> {
-    await customerBranchServices
+    await customerSubServices
       .createCustomerDetailSubAddress(branchId, form)
       .then((res) => {
         message.success("สร้างผู้ติดต่อสำเร็จ");
@@ -470,12 +512,12 @@ export default function CustomerGroupDetailPage() {
       });
   }
 
-  async function onDeleteCustomerBranchAddress(
+  async function onDeleteCustomerSubAddress(
     branchId: number,
     addressId: number,
     customerId: number
   ): Promise<void> {
-    await customerBranchServices
+    await customerSubServices
       .deleteCustomerDetailSubAddress(addressId)
       .then((res) => {
         message.success("สร้างผู้ติดต่อสำเร็จ");
@@ -486,12 +528,12 @@ export default function CustomerGroupDetailPage() {
       });
   }
 
-  async function onSaveBranchContact(
+  async function onSaveCustomerSubContact(
     branchId: number,
     form: ITCustomerDetailSubContactForm,
     customerId: number
   ): Promise<void> {
-    await customerBranchServices
+    await customerSubServices
       .createCustomerDetailSubContact(branchId, form)
       .then((res) => {
         message.success("สร้างผู้ติดต่อสำเร็จ");
@@ -502,12 +544,12 @@ export default function CustomerGroupDetailPage() {
       });
   }
 
-  async function onDeleteCustomerBranchContact(
+  async function onDeleteCustomerSubContact(
     branchId: number,
     contactId: number,
     customerId: number
   ): Promise<void> {
-    await customerBranchServices
+    await customerSubServices
       .deleteCustomerDetailSubContact(contactId)
       .then((res) => {
         message.success("สร้างผู้ติดต่อสำเร็จ");
@@ -517,9 +559,16 @@ export default function CustomerGroupDetailPage() {
         message.error("ผิดพลาด กรุณาลองใหม่");
       });
   }
-
+  const onOpenCustomerSubCreateForm = (customerId: number) => {
+    console.log(customerDetailSubActive);
+    setCustomerDetailSubActive({
+      customerId: customerId,
+      customerDetailSubId: undefined,
+      status: "create",
+    });
+  };
   return (
-    <Spin spinning={loading}> 
+    <Spin spinning={loading}>
       <Row gutter={[8, 8]}>
         <Col span={24}>
           <Breadcrumb
@@ -598,24 +647,29 @@ export default function CustomerGroupDetailPage() {
                         getCustomerProductsByCustomer
                       }
                       customerDetailSubList={customerDetailSubList}
-                      customerProductsByBranch={customerProductsByBranch}
+                      customerProductsByCustomerSub={
+                        customerProductsByCustomerSub
+                      }
                       onOpenCustomerCreateForm={onOpenCustomerCreateForm}
                       getCustomerBrachList={getCustomerBrachList}
-                      getCustomerProductsByBranch={getCustomerProductsByBranch}
+                      getCustomerProductsByCustomerSub={
+                        getCustomerProductsByCustomerSub
+                      }
                       projectDatas={projectDatas}
                       getProjectDataTable={getProjectDataTable}
                       onDeleteCustomer={onDeleteCustomer}
                       onOpenCustomerDescription={onOpenCustomerDescription}
-                      onOpenEditBranch={onOpenEditBranch}
-                      onDeleteBranch={onDeleteBranch}
-                      onSaveBranchAddress={onSaveBranchAddress}
-                      onDeleteCustomerBranchAddress={
-                        onDeleteCustomerBranchAddress
+                      onOpenEditCustomerSub={onOpenEditCustomerSub}
+                      onDeleteCustomerSub={onDeleteCustomerSub}
+                      onSaveCustomerSubAddress={onSaveCustomerSubAddress}
+                      onDeleteCustomerSubAddress={
+                        onDeleteCustomerSubAddress
                       }
-                      onSaveBranchContact={onSaveBranchContact}
-                      onDeleteCustomerBranchContact={
-                        onDeleteCustomerBranchContact
+                      onSaveCustomerSubContact={onSaveCustomerSubContact}
+                      onDeleteCustomerSubContact={
+                        onDeleteCustomerSubContact
                       }
+                      onOpenCustomerSubCreateForm={onOpenCustomerSubCreateForm}
                     />
                   ) : (
                     <Card>{`ไม่พบข้อมูล`}</Card>
@@ -648,15 +702,28 @@ export default function CustomerGroupDetailPage() {
           onFinishEdit={updateCustomer}
         />
       )}
-      {openBranchUpdateId.branchId && (
-        <BranchEdit
-          openBranchUpdateId={openBranchUpdateId.branchId}
+      {/* {customerDetailSubActive.status ==='update'  && (
+        <CustomerSubEdit
+          openCustomerSubUpdateId={openCustomerSubUpdateId.branchId}
           customerBrahEditForm={customerBrahEditForm}
-          onCloseUpdate={onCloseUpdateBranch}
-          onSaveBranchEdit={onSaveBranchEdit}
+          onCloseUpdate={onCloseUpdateCustomerSub}
+          onUpdateCustomerSub={onUpdateCustomerSub}
+        />
+      )} */}
+      {customerDetailSubActive.status === "create" && (
+        <CustomerSubAdd
+        customerDetailSubActive={customerDetailSubActive}
+          onShowModalCustomerSubAdd={function (active: boolean): void {
+            if (!active) {
+              setCustomerDetailSubActive({
+                customerDetailSubId: undefined,
+                customerId: undefined,
+              });
+            }
+          }}
+          onCreateCustomerSub={onCreateCustomerSub}
         />
       )}
     </Spin>
   );
 }
- 

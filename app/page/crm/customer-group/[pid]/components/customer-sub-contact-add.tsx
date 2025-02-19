@@ -29,27 +29,27 @@ export interface props {
   customerId: number;
   showModalContactAdd: boolean;
   onShowModalContactAdd: (status: boolean) => void;
-  onSaveBranchContact: (
+  onSaveCustomerSubContact: (
     branchId: number,
     form: ITCustomerDetailSubContactForm,
     customerId: number
   ) => void;
 }
 
-const BranchContactAddComponent: React.FC<props> = ({
+const CustomerSubContactAddComponent: React.FC<props> = ({
   branchId,
   customerId,
   showModalContactAdd,
   onShowModalContactAdd,
-  onSaveBranchContact,
+  onSaveCustomerSubContact,
 }): React.ReactElement => {
   const [form] = useForm();
 
   useEffect(() => {
     form.resetFields();
   }, [showModalContactAdd]);
-  const onFinishBranchContact = (form: ITCustomerDetailSubContactForm) => {
-    onSaveBranchContact(
+  const onFinishCustomerSubContact = (form: ITCustomerDetailSubContactForm) => {
+    onSaveCustomerSubContact(
       branchId,
       {
         ...form,
@@ -68,11 +68,11 @@ const BranchContactAddComponent: React.FC<props> = ({
       // }}
     >
       <Form
-        name="addBranchForm"
+        name="addCustomerSubForm"
         form={form}
         size="small"
         {...layout}
-        onFinish={onFinishBranchContact}
+        onFinish={onFinishCustomerSubContact}
         autoComplete="off"
         initialValues={{
           address: [
@@ -152,4 +152,4 @@ const BranchContactAddComponent: React.FC<props> = ({
   );
 };
 
-export default BranchContactAddComponent;
+export default CustomerSubContactAddComponent;

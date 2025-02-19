@@ -16,7 +16,7 @@ import {
   ITProjectTask,
   ITProjectTaskForm,
   ITTicketConfigs,
-} from "../../common";
+} from "@/app/common/project";
 import { CloseOutlined } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
 

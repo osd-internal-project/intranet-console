@@ -111,6 +111,8 @@ export type ITCustomerDetailSubContact = {
 } & ITCustomerDetailSubContactForm;
 export type ITCustomerDetailSubDetail = {
   id: number;
+  code: string;
+  name: string;
   customerAddress: ITCustomerDetailSubAddress[];
   customerContact: ITCustomerDetailSubContact[];
 } & ITCustomerDetailSubForm;
@@ -123,7 +125,7 @@ export type ITCustomerSubForm = {
 export type ITCustomerSub = { id: number } & ITCustomerSubForm;
 export type ITCustomerSubDetail = {
   id: number;
-  customerCustomerDetailSub?: ITCustomerDetailSub[];
+  customerDetailSub?: ITCustomerDetailSub[];
 } & ITCustomerDetailSubForm;
 export type ITConfigData = { id: number; name: string; customerTypeId: string };
 export type ITSelectUsers = {

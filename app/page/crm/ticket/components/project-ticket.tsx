@@ -11,7 +11,7 @@ import {
   ITProjectTicket,
   ITProjectTicketCreateForm,
   ITTicketConfigs,
-} from "./../common";
+} from "@/app/common/ticket";
 import Link from "next/link";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { EditOutlined } from "@ant-design/icons";

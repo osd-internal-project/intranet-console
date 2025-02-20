@@ -16,7 +16,7 @@ import UserServices from "@/app/services/user.service";
 import UserGroupServices from "@/app/services/usergroup.service";
 import CreateCustomerForm from "./components/create-form";
 import { CarryOutOutlined } from "@ant-design/icons";
-import { ITCustomerSub } from "../../ticket/common";
+import { ITCustomerSub } from "@/app/common/ticket";
 import { ITCustomerProduct } from "@/app/common/product";
 import {
   ITCustomerDetailSubDetail,

@@ -13,7 +13,7 @@ import {
   ITTicketHistoryLogForm,
   ITExpenseType,
   ITTicketExpense,
-} from "../common";
+} from "@/app/common/ticket";
 import { ITMaTaskFiles } from "@/app/page/maintenance-management/common";
 export interface TMaServices {
   findContactlById: (contactId: number) => Promise<ITCustomerDetailSubContact>;
@@ -39,8 +39,12 @@ export interface TMaServices {
   uploadFiles: (id: number, form: any) => Promise<any>;
   downloadFile: (id: number) => Promise<Blob>;
   deleteTicketFile: (id: number) => Promise<ITMaTaskFiles>;
+  findOwnerProjectTicketTableByUserId: (
+    search: object,
+    skip: number,
+    take: number
+  ) => Promise<{ data: ITProjectTicket[]; total: number }>;
   findProjectTicketTableByUserId: (
-    userId: string,
     search: object,
     skip: number,
     take: number
@@ -183,9 +187,22 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
     deleteTicketFile: async (id: number) => {
       return await axiosInstance.delete(`${filesUrl}/${id}`);
     },
-    findProjectTicketTableByUserId: async (userId, search, skip, take) => {
+    findOwnerProjectTicketTableByUserId: async (search, skip, take) => {
       return await axiosInstance
-        .get(`${projectTicketUrl}/data-table/${userId}`, {
+        .get(`${projectTicketUrl}/owner-data-table`, {
+          params: { query: search, skip: skip, take: take },
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return;
+        });
+    },
+    findProjectTicketTableByUserId: async (search, skip, take) => {
+      return await axiosInstance
+        .get(`${projectTicketUrl}/data-table`, {
           params: { query: search, skip: skip, take: take },
         })
         .then((res) => {

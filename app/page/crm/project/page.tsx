@@ -16,21 +16,7 @@ export default function MaTaskPage() {
   const { id24Axios } = useId24();
   const baseUrlCrm = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_CRM);
   const customerProductServices = CustomerProductServices(baseUrlCrm);
-  const rules = {
-    ruleProjectShow: checkRule("crm-p-s"),
-    ruleProjectAdd: checkRule("crm-p-a"),
-    ruleProjectEdit: checkRule("crm-p-e"),
-    ruleProjectDelete: checkRule("crm-p-d"),
-    ruleProjectTaskAdd: checkRule("crm-pt-a"),
-    ruleProjectTaskEdit: checkRule("crm-pt-e"),
-    ruleProjectTaskDelete: checkRule("crm-pt-d"),
-    ruleTicketAdd: checkRule("crm-t-a"),
-    ruleTicketEdit: checkRule("crm-t-e"),
-    ruleTicketRequestFilesEdit: checkRule("crm-trf-e"),
-    ruleTicketUpdateStatus: checkRule("crm-t-u"),
-    ruleTicketHold: checkRule("crm-t-h"),
-    ruleTicketComplete: checkRule("crm-t-c"),
-  };
+ 
 
   const [loading, setloading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<TablePaginationConfig>({

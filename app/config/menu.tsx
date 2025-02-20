@@ -148,6 +148,11 @@ export const MenuSider: MenuItem[] = [
         rule: UserRoles.crmTicketShow,
       },
       {
+        key: `crm/ticket-manage`,
+        label: `Manage Ticket `,
+        rule: UserRoles.crmTicketManageShow,
+      },
+      {
         key: `crm/products`,
         label: `Products`,
         rule: UserRoles.crmProductShow

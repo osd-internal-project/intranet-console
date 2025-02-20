@@ -25,7 +25,7 @@ import {
   ITProjectTicketEditForm,
   ITTicketExpense,
   ITTicketHistoryLog,
-} from "./../common";
+} from "@/app/common/ticket";
 import "./../style.css";
 import {
   CloseOutlined,
@@ -39,6 +39,7 @@ import TicketHistoryTableComponent from "./ticket-history-table";
 import { RcFile } from "antd/es/upload";
 import { deleteIcon } from "@/components/icon";
 import TicketExpense from "./ticket-expense";
+import { TUserRoles } from "@/app/config/user-roles";
 // const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 const layout = {
@@ -50,7 +51,7 @@ const layout = {
   // },
 };
 export interface props {
-  rules: any;
+  roles: TUserRoles | null;
   expenseType: ITExpenseType[];
   ticketSelectedDetail: ITProjectTicket;
   onShowModalProjectTicketDetail: (id: number | undefined) => void;
@@ -73,7 +74,7 @@ export interface props {
 }
 
 const ProjectTicketDetailComponent: React.FC<props> = ({
-  rules,
+  roles,
   expenseType,
   ticketSelectedDetail,
   onShowModalProjectTicketDetail,
@@ -271,33 +272,35 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                     </div>
 
                     <div className=" col-span-2 md:col-span-5">
-                      {rules.ruleTicketRequestFilesEdit ? (
-                        <div className="flex space-x-2 ">
-                          <Upload
-                            fileList={requestFiles}
-                            onChange={handleChangeRequestFiles}
-                            beforeUpload={beforeUploadRequestFiles}
-                            multiple={true}
-                            maxCount={10}
-                            accept="*/*"
-                          >
-                            <Button icon={<UploadOutlined />}>
-                              Click to upload
-                            </Button>
-                          </Upload>
-                          {requestFiles.length > 0 ? (
-                            <>
-                              <Button
-                                type="primary"
-                                onClick={() => onSaveRequestTicketFile()}
-                              >
-                                Save
-                              </Button>
-                            </>
-                          ) : (
-                            <></>
-                          )}
-                        </div>
+                      {
+                      roles?.crmTicketSaleRequestFile ? (
+                        <></>
+                        // <div className="flex space-x-2 ">
+                        //   <Upload
+                        //     fileList={requestFiles}
+                        //     onChange={handleChangeRequestFiles}
+                        //     beforeUpload={beforeUploadRequestFiles}
+                        //     multiple={true}
+                        //     maxCount={10}
+                        //     accept="*/*"
+                        //   >
+                        //     <Button icon={<UploadOutlined />}>
+                        //       Click to upload
+                        //     </Button>
+                        //   </Upload>
+                        //   {requestFiles.length > 0 ? (
+                        //     <>
+                        //       <Button
+                        //         type="primary"
+                        //         onClick={() => onSaveRequestTicketFile()}
+                        //       >
+                        //         Save
+                        //       </Button>
+                        //     </>
+                        //   ) : (
+                        //     <></>
+                        //   )}
+                        // </div>
                       ) : (
                         <></>
                       )}
@@ -313,7 +316,7 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                               {file.fileName}
                             </Space>
                           </Button>
-                          {rules.ruleTicketRequestFilesEdit ? (
+                          {/* {roles?.crmTicketSaleRequestFile ? (
                             <Button
                               type="link"
                               onClick={() =>
@@ -329,7 +332,7 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                             </Button>
                           ) : (
                             <></>
-                          )}
+                          )} */}
                         </div>
                       ))}
                     </div>
@@ -586,7 +589,7 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                   </div>
                   <div className=" flex justify-end space-x-2 mt-5">
                     {ticketSelectedDetail.status === "new" ? (
-                      rules.ruleTicketUpdateStatus ? (
+                      roles?.crmTicketEngieerUpdate ? (
                         <Button
                           type="primary"
                           onClick={() =>
@@ -603,22 +606,23 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                         <></>
                       )
                     ) : ticketSelectedDetail.status === "hold" ? (
-                      rules.ruleTicketHold ? (
-                        <Button
-                          type="primary"
-                          onClick={() =>
-                            updateTicketStatus(
-                              ticketSelectedDetail.id,
-                              "inprogress",
-                              "resume"
-                            )
-                          }
-                        >
-                          Resume
-                        </Button>
-                      ) : (
-                        <></>
-                      )
+                      <></>
+                      // roles?.crmTicketHold ? (
+                      //   <Button
+                      //     type="primary"
+                      //     onClick={() =>
+                      //       updateTicketStatus(
+                      //         ticketSelectedDetail.id,
+                      //         "inprogress",
+                      //         "resume"
+                      //       )
+                      //     }
+                      //   >
+                      //     Resume
+                      //   </Button>
+                      // ) : (
+                      //   <></>
+                      // )
                     ) : ticketSelectedDetail.status === "inprogress" ? (
                       editTicketStatus ? (
                         <>
@@ -639,7 +643,7 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                         </>
                       ) : (
                         <>
-                          {rules.ruleTicketEdit ? (
+                          {roles?.crmTicketEngieerUpdate ? (
                             <Button
                               ghost
                               type="primary"
@@ -650,7 +654,7 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                           ) : (
                             <></>
                           )}
-                          {rules.ruleTicketHold ? (
+                          {/* {roles?.crmTicketHold ? (
                             <Button
                               type="primary"
                               onClick={() =>
@@ -665,8 +669,8 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                             </Button>
                           ) : (
                             <></>
-                          )}
-                          {rules.ruleTicketUpdateStatus ? (
+                          )} */}
+                          {roles?.crmTicketEngieerUpdate ? (
                             <Button
                               type="primary"
                               onClick={() =>
@@ -681,8 +685,8 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                             </Button>
                           ) : (
                             <></>
-                          )}{" "}
-                          {rules.ruleTicketUpdateStatus ? (
+                          )}
+                          {roles?.crmTicketEngieerUpdate ? (
                             <Button
                               type="primary"
                               danger
@@ -703,36 +707,37 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
                       )
                     ) : ticketSelectedDetail.status === "finish" ||
                       ticketSelectedDetail.status === "cancel" ? (
-                      rules.ruleTicketComplete ? (
-                        <div>
-                          <Button
-                            type="primary"
-                            onClick={() =>
-                              updateTicketStatus(
-                                ticketSelectedDetail.id,
-                                "inprogress",
-                                "rollback"
-                              )
-                            }
-                          >
-                            Rollback
-                          </Button>{" "}
-                          <Button
-                            type="primary"
-                            onClick={() =>
-                              updateTicketStatus(
-                                ticketSelectedDetail.id,
-                                "complete",
-                                "complete"
-                              )
-                            }
-                          >
-                            Complete Ticket
-                          </Button>
-                        </div>
-                      ) : (
                         <></>
-                      )
+                      // roles?.crmTicketComplete ? (
+                      //   <div>
+                      //     <Button
+                      //       type="primary"
+                      //       onClick={() =>
+                      //         updateTicketStatus(
+                      //           ticketSelectedDetail.id,
+                      //           "inprogress",
+                      //           "rollback"
+                      //         )
+                      //       }
+                      //     >
+                      //       Rollback
+                      //     </Button>
+                      //     <Button
+                      //       type="primary"
+                      //       onClick={() =>
+                      //         updateTicketStatus(
+                      //           ticketSelectedDetail.id,
+                      //           "complete",
+                      //           "complete"
+                      //         )
+                      //       }
+                      //     >
+                      //       Complete Ticket
+                      //     </Button>
+                      //   </div>
+                      // ) : (
+                      //   <></>
+                      // )
                     ) : (
                       <></>
                     )}
@@ -749,20 +754,20 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
               </>
             ),
           },
-          {
-            key: "expenseTicket",
-            label: "รายการขอเบิก",
-            children: (
-              <TicketExpense
-                ticketExpense={ticketSelectedDetail.ticketExpense}
-                ticketId={ticketSelectedDetail.id}
-                expenseType={expenseType}
-                handleAddTicketExpense={handleAddTicketExpense}
-                handleEditTicketExpense={handleEditTicketExpense}
-                handleDeleteTicketExpense={handleDeleteTicketExpense}
-              />
-            ),
-          },
+          // {
+          //   key: "expenseTicket",
+          //   label: "รายการขอเบิก",
+          //   children: (
+          //     <TicketExpense
+          //       ticketExpense={ticketSelectedDetail.ticketExpense}
+          //       ticketId={ticketSelectedDetail.id}
+          //       expenseType={expenseType}
+          //       handleAddTicketExpense={handleAddTicketExpense}
+          //       handleEditTicketExpense={handleEditTicketExpense}
+          //       handleDeleteTicketExpense={handleDeleteTicketExpense}
+          //     />
+          //   ),
+          // },
           {
             key: "histoeryLogs",
             label: "History Logs",

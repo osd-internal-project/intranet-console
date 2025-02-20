@@ -26,7 +26,7 @@ import {
 } from "@/app/utils/format";
 
 import Link from "next/link";
-import { ITExpenseType, ITTicketExpense } from "./../common";
+import { ITExpenseType, ITTicketExpense } from "@/app/common/ticket";
 import { PlusOutlined } from "@ant-design/icons";
 import TicketExpenseAdd from "./ticket-expense-add";
 import { useForm } from "antd/es/form/Form";

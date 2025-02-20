@@ -751,20 +751,20 @@ const ProjectTicketDetailComponent: React.FC<props> = ({
               </>
             ),
           },
-          {
-            key: "expenseTicket",
-            label: "รายการขอเบิก",
-            children: (
-              <TicketExpense
-                ticketExpense={ticketSelectedDetail.ticketExpense}
-                ticketId={ticketSelectedDetail.id}
-                expenseType={expenseType}
-                handleAddTicketExpense={handleAddTicketExpense}
-                handleEditTicketExpense={handleEditTicketExpense}
-                handleDeleteTicketExpense={handleDeleteTicketExpense}
-              />
-            ),
-          },
+          // {
+          //   key: "expenseTicket",
+          //   label: "รายการขอเบิก",
+          //   children: (
+          //     <TicketExpense
+          //       ticketExpense={ticketSelectedDetail.ticketExpense}
+          //       ticketId={ticketSelectedDetail.id}
+          //       expenseType={expenseType}
+          //       handleAddTicketExpense={handleAddTicketExpense}
+          //       handleEditTicketExpense={handleEditTicketExpense}
+          //       handleDeleteTicketExpense={handleDeleteTicketExpense}
+          //     />
+          //   ),
+          // },
           {
             key: "histoeryLogs",
             label: "History Logs",

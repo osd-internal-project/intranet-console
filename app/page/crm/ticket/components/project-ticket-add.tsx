@@ -17,7 +17,7 @@ import {
   ITCustomerDetailSubContactForm,
   ITProjectTicketCreateForm,
   ITTicketConfigs,
-} from "./../common";
+} from "@/app/common/ticket";
 import { CloseOutlined, UploadOutlined } from "@ant-design/icons";
 
 import { RcFile } from "antd/es/upload";

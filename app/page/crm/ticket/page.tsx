@@ -10,32 +10,27 @@ import {
   ITTicketConfigs,
   ITTicketExpense,
   ITTicketHistoryLogForm,
-} from "./common";
+} from "@/app/common/ticket";
 import { useAxiosCrm, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
-import CrmServices from "./services/index.service";
+import TicketServices from "@/app/services/ticket.service";
 import { useForm } from "antd/es/form/Form";
 import TicketComponent from "./components/project-ticket";
 import ProjectTicketDetailComponent from "./components/project-ticket-detail";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import ProjectTicketFilterComponent from "./components/project-ticket-filter";
-import UserServices from "./services/user.service";
+// import UserServices from "@/app/services/user.service";
 import { checkRule } from "@/app/utils/rules";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { loadAppConfig } from "@/app/config/app-config";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
 
 export default function CustomerDetailPage() {
-  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const rules = {
-    ruleTicketShow: checkRule("crm-t-s"),
-    ruleTicketAdd: checkRule("crm-t-a"),
-    ruleTicketEdit: checkRule("crm-t-e"),
-    ruleTicketRequestFilesEdit: checkRule("crm-trf-e"),
-    ruleTicketUpdateStatus: checkRule("crm-t-u"),
-    ruleTicketHold: checkRule("crm-t-h"),
-    ruleTicketComplete: checkRule("crm-t-c"),
-  };
-  const crmAuth = useAxiosCrm();
-  const crmServices = CrmServices(crmAuth);
+  const { user ,roles} = (useContext(UserContext) as UserContectType) || { user: null };
+
+    const { id24Axios } = useId24();
+  const baseUrlCrm = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_CRM);
+  const ticketServices = TicketServices(baseUrlCrm);
   const [finishForm] = useForm();
   const [summaryForm] = useForm();
   const [search, setSearch] = useState<object>({});
@@ -82,29 +77,26 @@ export default function CustomerDetailPage() {
     setloading(false);
   };
   async function fetchConfigs() {
-    const expenseTyoe = await crmServices.findExpenseType();
+    const expenseTyoe = await ticketServices.findExpenseType();
     setExpenseType(expenseTyoe);
   }
   const fetchDataTable = async () => {
     const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
     const take: number = Number(pagination.pageSize);
-
-    if (user?.userId) {
-      const tickets = await crmServices.findProjectTicketTableByUserId(user?.userId, search, skip, take);
+      const tickets = await ticketServices.findOwnerProjectTicketTableByUserId( search, skip, take);
       if (tickets) {
         setProjecTicketList(tickets.data);
         setPagination({ ...pagination, total: tickets.total });
       }
-    }
     setIsEdit(false);
   };
   const fetchProjectTicket = async (id: number) => {
-    const tickets = await crmServices.findProjectTicketByTaskId(id);
+    const tickets = await ticketServices.findProjectTicketByTaskId(id);
     setProjecTicketList(tickets);
   };
   // const fetchProjectTicketUnTask = async (taskId: number) => {
   //   setShowModalTicketAdd(false);
-  //   const tickets = await crmServices.findProjectTicketByProjectId(+params.pid);
+  //   const tickets = await ticketServices.findProjectTicketByProjectId(+params.pid);
   //   setProjecTicketList(tickets);
   // };
 
@@ -164,7 +156,7 @@ export default function CustomerDetailPage() {
     if (taskId) {
       form = { ...form, customerProjectTaskId: taskId };
     }
-    await crmServices
+    await ticketServices
       .createProjectTicket(form)
       .then(async (data) => {
         if (data.id && attendFiles.length > 0) {
@@ -172,7 +164,7 @@ export default function CustomerDetailPage() {
             const formData: any = new FormData();
             formData.append("type", "create-attend");
             formData.append("files", file.originFileObj);
-            await crmServices.uploadFiles(data.id, formData);
+            await ticketServices.uploadFiles(data.id, formData);
           });
         }
         setShowModalTicketAdd(false);
@@ -187,14 +179,14 @@ export default function CustomerDetailPage() {
 
   async function onShowModalProjectTicketDetail(ticketId: number | undefined): Promise<void> {
     if (ticketId) {
-      const detail = await crmServices.findProjectTicketDetailById(ticketId);
+      const detail = await ticketServices.findProjectTicketDetailById(ticketId);
       setProjectTicketDetail(detail);
     } else {
       setProjectTicketDetail(undefined);
     }
   }
   async function onEditProjectTicket(ticketId: number, form: ITProjectTicketEditForm, attendFiles: UploadFile[]) {
-    await crmServices
+    await ticketServices
       .updateProjectTicket(+ticketId, form)
       .then(async (data) => {
         if (data.id && attendFiles.length > 0) {
@@ -202,7 +194,7 @@ export default function CustomerDetailPage() {
             const formData: any = new FormData();
             formData.append("type", "update-attend");
             formData.append("files", file.originFileObj);
-            await crmServices.uploadFiles(data.id, formData);
+            await ticketServices.uploadFiles(data.id, formData);
           });
         }
         message.success("อัพเดท Ticket สำเร็จ");
@@ -221,7 +213,7 @@ export default function CustomerDetailPage() {
         const formData: any = new FormData();
         formData.append("type", "create-attend");
         formData.append("files", file.originFileObj);
-        await crmServices.uploadFiles(ticketId, formData);
+        await ticketServices.uploadFiles(ticketId, formData);
       });
     }
     setShowModalTicketAdd(false);
@@ -305,7 +297,7 @@ export default function CustomerDetailPage() {
           finishForm.submit();
           form = { ...form, ...finish };
         }
-        await crmServices
+        await ticketServices
           .updateStatusProjectTicket(+ticketId, status, form)
           .then(async () => {
             setShowModalTicketAdd(false);
@@ -373,12 +365,12 @@ export default function CustomerDetailPage() {
       updatedByName: user?.firstNameTh ? `${user?.firstNameTh} ${user?.lastNameTh} ` : "",
       detail: detail,
     };
-    await crmServices.createTicketHistoryLogs(form);
+    await ticketServices.createTicketHistoryLogs(form);
   };
 
   async function downloadFile(id: number, name: string): Promise<void> {
     if (id) {
-      const response = await crmServices.downloadFile(id);
+      const response = await ticketServices.downloadFile(id);
       const url = URL.createObjectURL(response);
       const a = document.createElement("a");
       a.href = url;
@@ -390,7 +382,7 @@ export default function CustomerDetailPage() {
   }
 
   async function onDeleteTicketFile(fileId: number, ticketId: number) {
-    await crmServices
+    await ticketServices
       .deleteTicketFile(fileId)
       .then(async () => {
         await onSaveHistoryLogs(ticketId, "deleteFile");
@@ -413,7 +405,7 @@ export default function CustomerDetailPage() {
   async function handleAddTicketExpense(value: ITTicketExpense) {
     if (projectTicketDetail?.id) {
       const ticketId = projectTicketDetail.id;
-      await crmServices
+      await ticketServices
         .updateProjectTicket(ticketId, {
           ticketExpense: {
             create: {
@@ -438,7 +430,7 @@ export default function CustomerDetailPage() {
   async function handleEditTicketExpense(expenseId: number, value: ITTicketExpense) {
     if (projectTicketDetail?.id) {
       const ticketId = projectTicketDetail.id;
-      await crmServices
+      await ticketServices
         .updateProjectTicketExpense(expenseId, value)
         .then(async (data) => {
           message.success("สำเร็จ");
@@ -462,7 +454,7 @@ export default function CustomerDetailPage() {
         okButtonProps: { type: "primary", danger: true },
         cancelText: "Cancel",
         onOk: async () => {
-          const dataResult = await crmServices.deleteProjectTicketExpense(expenseId);
+          const dataResult = await ticketServices.deleteProjectTicketExpense(expenseId);
           if (dataResult) {
             message.success("สำเร็จ");
             await onSaveHistoryLogs(ticketId, "delete-expense");
@@ -497,7 +489,7 @@ export default function CustomerDetailPage() {
         </Col>
 
         <Col span={24}>
-          {rules.ruleTicketShow ? (
+          {roles?.crmTicketShow ? (
             <Card>
               <div className=" space-y-2">
                 <ProjectTicketFilterComponent onSearch={onSearch} />
@@ -523,7 +515,7 @@ export default function CustomerDetailPage() {
           {projectTicketDetail ? (
             <div>
               <ProjectTicketDetailComponent
-                rules={rules}
+                roles={roles}
                 ticketSelectedDetail={projectTicketDetail}
                 onShowModalProjectTicketDetail={onShowModalProjectTicketDetail}
                 updateTicketStatus={updateTicketStatus}
@@ -545,3 +537,4 @@ export default function CustomerDetailPage() {
     </div>
   );
 }
+

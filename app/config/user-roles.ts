@@ -24,6 +24,7 @@ export type TUserRoles = {
   crmProjectEdit?: boolean;
   crmProjectDelete?: boolean;
   crmTicketShow?: boolean;
+  crmTicketManageShow?: boolean;
   crmTicketAdd?: boolean;
   crmTicketEdit?: boolean;
   crmTicketDelete?: boolean;
@@ -107,6 +108,7 @@ export enum UserRoles {
   crmProjectEdit = "crm-pj-e",
   crmProjectDelete = "crm-pj-d",
   crmTicketShow = "crm-t-s",
+  crmTicketManageShow = "crm-tm-s",
   crmTicketAdd = "crm-t-a",
   crmTicketEdit = "crm-t-e",
   crmTicketDelete = "crm-t-d",

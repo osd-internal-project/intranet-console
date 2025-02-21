@@ -51,14 +51,14 @@ const CustomerGroupSearch: React.FC<props> = ({
 
   return (
     <Collapse
-      collapsible="icon"
+      // collapsible="icon"
       destroyInactivePanel
       className="bg-white"
       bordered={false}
       items={[
         {
           key: "1",
-          label: <b>ค้นหา</b>,
+          label: <b className=" text-lg text-default">ค้นหา</b>,
           children: (
             <div className=" w-full">
               <Form layout="vertical" size="small" onFinish={sendFormSearch}>

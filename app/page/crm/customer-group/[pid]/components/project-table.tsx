@@ -65,7 +65,7 @@ const ProjectTable: React.FC<props> = ({
       key: "id",
       dataIndex: "No.",
       title: "No.",
-      width: "200px",
+      width: "100px",
       align: "center",
       render: (data: Date, record: ITProject, index: number) => index + 1,
     },
@@ -113,7 +113,7 @@ const ProjectTable: React.FC<props> = ({
       key: "id",
       dataIndex: "id",
       title: "ตรวจสอบ",
-      width: "200px",
+      width: "100px",
       align: "center",
       render: (id: number, record: ITProject, index: number) => (
         <div className="space-x-1">
@@ -138,6 +138,7 @@ const ProjectTable: React.FC<props> = ({
         columns={columns}
         dataSource={projectDatas}
         size="small"
+        style={{ minWidth: "100%" }}
         scroll={{ x: "max-content" }}
         rowKey={"id"}
       />

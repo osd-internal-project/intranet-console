@@ -10,6 +10,7 @@ export type ITCustomerGroup = {
 } & ITCustomerGroupForm;
 
 export type ITCustomerForm = {
+  customerGroupId: number;
   activeStatus: boolean;
   companyRegisNumber?: string;
   customerCode?: string;

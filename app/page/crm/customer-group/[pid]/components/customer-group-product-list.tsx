@@ -113,11 +113,13 @@ const CustomerGroupProductList: React.FC<props> = ({
           >
             <Collapse
               collapsible="icon"
-              accordion
+              // accordion
               destroyInactivePanel={true}
               bordered={false}
               expandIcon={({ isActive }) => (
-                <CaretRightOutlined rotate={isActive ? 90 : 0} />
+                <CaretRightOutlined
+                  rotate={isActive ? 90 : 0}
+                />
               )}
               style={{ background: " #f1f5f9" }}
               items={dataList(panelStyle)}

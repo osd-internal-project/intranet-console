@@ -38,14 +38,14 @@ const CustomerGroupDetails: React.FC<props> = ({
 }): React.ReactElement => {
   return (
     <Collapse
-      collapsible="icon"
+      // collapsible="icon"
       destroyInactivePanel
       className="bg-white"
       bordered={false}
       items={[
         {
           key: "1",
-          label: <b>รายละเอียด</b>,
+          label: <b className=" text-lg text-default">รายละเอียด</b>,
           children: (
             <div className="grid md:grid-cols-4">
               <div>

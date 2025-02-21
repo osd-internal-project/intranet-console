@@ -142,8 +142,7 @@ export default function CustomerGroupDetailPage() {
     const group = await customerServices.findConfigCustomerTypeGroup();
     setCustomerTypeGroup(group);
     if (user?.userId) {
-      const responsibles =
-        await userServices.findUsersFormSaleProjectModule();
+      const responsibles = await userServices.findUsersFormSaleProjectModule();
       if (responsibles && responsibles.length > 0) {
         setCustomerResponsibles(responsibles);
       }
@@ -214,11 +213,10 @@ export default function CustomerGroupDetailPage() {
   };
   const getCustomerBrachList = async (customerId: number) => {
     setloading(true);
-    const customerDetailSubs =
-      await customerSubServices.findManyByCustomerId(
-        customerId,
-        allSearch
-      );
+    const customerDetailSubs = await customerSubServices.findManyByCustomerId(
+      customerId,
+      allSearch
+    );
     setCustomerDetailSubList(customerDetailSubs);
     setloading(false);
   };
@@ -285,13 +283,15 @@ export default function CustomerGroupDetailPage() {
           customerNameEn: customerNameEn,
           responsibleId: form.responsibleId,
           responsible: responsibleIded,
+          customerGroupId: Number(customerGroupId) 
         };
       }
     }
     customerServices
       .create(createForm)
-      .then((res) => {
-        message.success("สร้าง customer สำเร็จ");
+      .then(async (res) => {
+        message.success("สร้าง customer สำเร็จ"); 
+        await onOpenCustomerCreateForm(false);
         fetchDataCustomers();
       })
       .catch(() => {
@@ -473,7 +473,7 @@ export default function CustomerGroupDetailPage() {
   async function onCreateCustomerSub(form: ITCustomerDetailSubForm) {
     const formData = {
       ...form,
-      createdBy: `${user?.firstNameTh} ${user?.lastNameTh}`, 
+      createdBy: `${user?.firstNameTh} ${user?.lastNameTh}`,
     };
 
     if (customerDetailSubActive.customerId) {
@@ -662,13 +662,9 @@ export default function CustomerGroupDetailPage() {
                       onOpenEditCustomerSub={onOpenEditCustomerSub}
                       onDeleteCustomerSub={onDeleteCustomerSub}
                       onSaveCustomerSubAddress={onSaveCustomerSubAddress}
-                      onDeleteCustomerSubAddress={
-                        onDeleteCustomerSubAddress
-                      }
+                      onDeleteCustomerSubAddress={onDeleteCustomerSubAddress}
                       onSaveCustomerSubContact={onSaveCustomerSubContact}
-                      onDeleteCustomerSubContact={
-                        onDeleteCustomerSubContact
-                      }
+                      onDeleteCustomerSubContact={onDeleteCustomerSubContact}
                       onOpenCustomerSubCreateForm={onOpenCustomerSubCreateForm}
                     />
                   ) : (
@@ -712,7 +708,7 @@ export default function CustomerGroupDetailPage() {
       )} */}
       {customerDetailSubActive.status === "create" && (
         <CustomerSubAdd
-        customerDetailSubActive={customerDetailSubActive}
+          customerDetailSubActive={customerDetailSubActive}
           onShowModalCustomerSubAdd={function (active: boolean): void {
             if (!active) {
               setCustomerDetailSubActive({

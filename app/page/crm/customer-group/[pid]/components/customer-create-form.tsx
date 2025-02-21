@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type {
   BadgeProps,
   CalendarProps,
@@ -64,6 +64,10 @@ const CustomerCreateForm: React.FC<props> = ({
   const [customerType, setCustomerType] = useState<string | undefined>(
     undefined
   );
+  useEffect(() => {
+   form.resetFields()
+  }, [])
+  
   return (
     <Modal
       width={"2000px"}

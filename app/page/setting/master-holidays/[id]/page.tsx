@@ -52,37 +52,19 @@ export default function MasterdataHolidaysByYear() {
     setLoading(false);
   };
 
-  const onFinishAction = (event: ICreateMasterHolidayDto) => {
+  const onFinishAction = async (event: ICreateMasterHolidayDto) => {
     const dataCreate = {
       holidaysName: event.holidaysName,
       holidaysDate: dayjs(event.holidaysDate).format("YYYY-MM-DD"),
       holidaysYear: holidayDay.id,
     };
-    Modal.confirm({
-      title: "Add ",
-      icon: <ExclamationCircleFilled />,
-      content: "Are you sure you want to add this ?",
-      okText: "Confirm",
-      cancelText: "Cancel",
-      okButtonProps: {
-        style: {
-          backgroundColor: "#00a1df",
-          borderColor: "#00a1df",
-        },
-      },
-      onOk: async () => {
-        const result = await masterholidaysService.createMasterHolidays(dataCreate);
-        if (result) {
-          message.success(`Add success`);
-          formAction.resetFields();
-          setLoading(true);
-          setManageStatusDay({ statusModal: false });
-        }
-      },
-      onCancel() {
-        setManageStatusDay({ statusModal: false });
-      },
-    });
+    const result = await masterholidaysService.createMasterHolidays(dataCreate);
+    if (result) {
+      message.success(`Add success`);
+      formAction.resetFields();
+      setLoading(true);
+      setManageStatusDay({ statusModal: false });
+    }
   };
 
   const onDelete = (value: number) => {

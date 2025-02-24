@@ -1,4 +1,3 @@
-
 import React, { useContext, useMemo, useEffect } from "react";
 import { Table, Button, message, Space, Popconfirm, Tooltip, Form, Input, Col } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -96,7 +95,7 @@ export const TableSlideImage: React.FC<propss> = ({ slideImage, handleDeleteSlid
       (item) =>
         item.fileName?.toLowerCase().includes(value.toLowerCase()) ||
         item.createdByName?.toLowerCase().includes(value.toLowerCase()) ||
-        item.fileType?.toLowerCase().includes(value.toLowerCase())
+        item.fileType?.toLowerCase().includes(value.toLowerCase()),
     );
     setDataSource(filteredData);
   };
@@ -109,7 +108,7 @@ export const TableSlideImage: React.FC<propss> = ({ slideImage, handleDeleteSlid
       title: "สร้างเมื่อ",
       key: "createdAt",
       dataIndex: "createdAt",
-      render: (text: string) => dayjs(text).format("DD-MM-YYYY, HH:mm"),
+      render: (text: string) => dayjs(text).format("DD/MM/YYYY  HH:mm น."),
     },
     {
       title: "สร้างโดย",

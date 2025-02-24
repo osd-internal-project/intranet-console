@@ -767,7 +767,7 @@ const WrapupCar: React.FC = () => {
             <Input.TextArea rows={4} showCount maxLength={150} />
           </Form.Item>
           <Form.Item name="dateStart" label="วันที่ตรวจสภาพ" rules={[{ required: true, message: "กรุณาเลือกวันที่ตรวจสภาพ" }]}>
-            <DatePicker style={{ width: "100%" }} />
+            <DatePicker style={{ width: "100%" }} format={"DD/MM/YYYY"} />
           </Form.Item>
           <Form.Item
             name="dateEnd"
@@ -778,7 +778,7 @@ const WrapupCar: React.FC = () => {
                 message: "กรุณาเลือกวันที่่ตรวจสภาพครั้งถัดไป",
               },
             ]}>
-            <DatePicker style={{ width: "100%" }} />
+            <DatePicker style={{ width: "100%" }} format={"DD/MM/YYYY"} />
           </Form.Item>
           <Form.Item name="remark" label="หมายเหตุ">
             <Input.TextArea rows={2} showCount maxLength={150} />

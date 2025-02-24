@@ -88,6 +88,7 @@ const MaCar: React.FC = () => {
           maCarData={maCarData}
           maCarBookById={maCarBookById}
           dataProvinces={dataProvinces}
+          maFetchCalendar={maFetchCalendar}
         />
       ),
     },

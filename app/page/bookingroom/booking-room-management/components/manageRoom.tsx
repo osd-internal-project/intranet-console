@@ -532,11 +532,11 @@ const ManageRoom: React.FC = () => {
       </Modal>
       <Modal
         width={400}
-        title={bookingStatus === "Approve" ? "ยกเลิกอนุมัติจองห้อง" : "อนุมัติการจองห้องประชุม"}
+        title={bookingStatus === "Approve" ? "ยกเลิกอนุมัติจองห้องประชุม" : "อนุมัติการจองห้องประชุม"}
         open={modalApproveBooking}
         onCancel={handleApproveBookingCancel}
         footer={null}>
-        <p>{bookingStatus === "Approve" ? "ยืนยันยกเลิกอนุมัติจองห้อง" : "ยืนยันอนุมัติการจองห้องประชุม"}</p>
+        <p>{bookingStatus === "Approve" ? "ยกเลิกอนุมัติจองห้องประชุม" : "ยืนยันอนุมัติการจองห้องประชุม"}</p>
         <Form form={form} layout="vertical" name="edit_booking" initialValues={{ remember: true }} autoComplete="off">
           <Row justify="end">
             {bookingStatus === "Approve" ? (

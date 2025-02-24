@@ -7,11 +7,15 @@ import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import MaServices from "../services/ma.service";
 import { useParams } from "next/navigation";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export default function MaTaskPage() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const intranetAuth = useAxiosIntranet();
-  const maServices = MaServices(intranetAuth);
+  // const intranetAuth = useAxiosIntranet();
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const maServices = MaServices(baseUrIntranet);
   const params = useParams<{ maId: string }>();
   const [loading, setloading] = useState<boolean>(true);
   const [data, setData] = useState<ITMaTask>();
@@ -25,7 +29,6 @@ export default function MaTaskPage() {
     setMaTypes(maTypes);
     const res = await maServices.findMaTaskById(Number(params.maId));
     setData(res);
-    console.log(res);
     setloading(false);
   };
 
@@ -69,7 +72,6 @@ export default function MaTaskPage() {
             await maServices.uploadFiles(response.id, formData);
           });
         }
-
         message.success("อัพเดท MA สำเร็จ");
       })
       .catch(() => {

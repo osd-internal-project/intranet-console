@@ -95,12 +95,12 @@ export const CarBookForm: React.FC<props> = ({
               name="carBookTitle"
               label="วัตถุประสงค์การใช้งาน"
               rules={[{ required: true, message: "กรุณากรอกวัตถุประสงค์การใช้งาน" }]}>
-              <Input placeholder="กรอกวัตถุประสงค์การใช้งาน" />
+              <Input placeholder="กรอกวัตถุประสงค์การใช้งาน" showCount maxLength={50} />
             </Form.Item>
           </Col>
           <Col span={6}>
             <Form.Item<MaCarBookType> name="carBookPlace" label="สถานที่ไป" rules={[{ required: true, message: "กรุณากรอกสถานที่ไป" }]}>
-              <Input placeholder="กรอกสถานที่ไป" />
+              <Input.TextArea placeholder="กรอกสถานที่ไป" showCount maxLength={250} />
             </Form.Item>
           </Col>
           <Col span={6}>

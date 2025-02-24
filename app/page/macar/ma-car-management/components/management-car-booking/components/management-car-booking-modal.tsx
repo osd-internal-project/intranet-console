@@ -48,7 +48,7 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
             </Col>
             <Col span={6}>
               <Form.Item<MaCarBookType> name="carBookPlace" label="สถานที่ไป : ">
-                <Input placeholder="กรอกสถานที่ไป" disabled />
+                <Input.TextArea placeholder="กรอกสถานที่ไป" disabled />
               </Form.Item>
             </Col>
             <Col span={6}>

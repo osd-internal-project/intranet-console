@@ -41,8 +41,8 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
     setOldCarMile(record.maCar.carMile);
     formReturn.setFieldsValue({
       carName: record.maCar.carName,
-      carMile: record.maCar.carMile,
-      carPetrol: record.maCar.carPetrol,
+      // carMile: record.maCar.carMile,
+      // carPetrol: record.maCar.carPetrol,
       status: record.maCar.status,
     });
     record.carBookApprovedStatus === "Approve" ? setModalEditReturn(true) : null;

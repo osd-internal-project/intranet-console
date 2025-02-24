@@ -36,7 +36,7 @@ export const CarReturnForm: React.FC<props> = ({ formBookData, statusApprove }) 
           </Col>
           <Col span={6}>
             <Form.Item<MaCarBookType> name="carBookPlace" label="สถานที่ไป :">
-              <Input disabled className="read-only-input" />
+              <Input.TextArea  disabled className="read-only-input" />
             </Form.Item>
           </Col>
           <Col span={6}>

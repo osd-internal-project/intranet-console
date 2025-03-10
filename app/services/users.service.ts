@@ -14,6 +14,7 @@ export interface TUsersService {
   getImage: (userId: string) => Promise<any>;
   findAssignGroup: (userId: string, organizeId: string) => Promise<any>;
   findOwnerGroupByOrganizeId: (userId: string, organizeId: string) => Promise<any>;
+  processAfterLoginAuth: () => Promise<any>;
 }
 
 export const UsersServices = (axiosInstance: AxiosInstance): TUsersService => {
@@ -88,7 +89,7 @@ export const UsersServices = (axiosInstance: AxiosInstance): TUsersService => {
       }
     },
     findByToken: async () => {
-      return await axiosInstance.get(`${baseUrl}/findByToken`).then((result) => result.data);
+      return await axiosInstance.get(`${baseUrl}/findbytoken`).then((result) => result.data);
     },
     findAssignGroup: async (userId, organizeId) => {
       return await axiosInstance
@@ -101,6 +102,9 @@ export const UsersServices = (axiosInstance: AxiosInstance): TUsersService => {
         .get(`${baseUrl}/assign-owner-groups/${userId}/${organizeId}`)
         .then((result) => result.data)
         .catch((err) => err);
+    },
+    processAfterLoginAuth: async () => {
+      return await axiosInstance.get(`${baseUrl}/process-after-login-auth`).then((result) => result.data);
     },
   };
 };

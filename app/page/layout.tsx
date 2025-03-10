@@ -46,7 +46,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
   const fetchData = async () => {
     try {
-      const profileUser = await UsersServices(baseUrlUser).findByToken();
+      const profileUser = await UsersServices(baseUrlUser).processAfterLoginAuth();
       if (profileUser) {
         setProfileDetail(profileUser);
         saveUser(profileUser);

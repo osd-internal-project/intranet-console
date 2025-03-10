@@ -20,6 +20,7 @@ interface props {
   maCarData: MaCarType[];
   maCarBookById: MaCarBookType[];
   dataProvinces: ProvincesType[];
+  maFetchCalendar: MaCarBookType[];
 }
 
 const MaCarBookTable: React.FC<props> = ({
@@ -31,6 +32,7 @@ const MaCarBookTable: React.FC<props> = ({
   maCarData,
   maCarBookById,
   dataProvinces,
+  maFetchCalendar,
 }: any): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const [form] = Form.useForm();
@@ -258,7 +260,7 @@ const MaCarBookTable: React.FC<props> = ({
       <Row gutter={[8, 8]} className="flex justify-between">
         <Col style={{ justifyContent: "start", display: "flex", alignItems: "center" }}>{showStatus()}</Col>
         <Col>
-          <ShareMaCarBook data={maCarBookById} />
+          <ShareMaCarBook data={maFetchCalendar} total={maFetchCalendar.length} pagination={pagination} />
         </Col>
       </Row>
       <div>

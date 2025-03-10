@@ -60,12 +60,18 @@ export const CarForm: React.FC<props> = ({
                   message: "กรุณากรอกวัตถุประสงค์การใช้งาน",
                 },
               ]}>
-              <Input placeholder="กรอกวัตถุประสงค์การใช้งาน" />
+              <Input placeholder="กรอกวัตถุประสงค์การใช้งาน" showCount maxLength={50} />
             </Form.Item>
           </Col>
           <Col span={6}>
             <Form.Item<MaCarBookType> name="carBookPlace" label="สถานที่ไป :" rules={[{ required: !editState, message: "กรุณากรอกสถานที่ไป" }]}>
-              <Input placeholder="กรอกสถานที่ไป" disabled={isSelectDisabled(carBookApprovedStatus)} className={editState ? "read-only-input" : ""} />
+              <Input.TextArea
+                placeholder="กรอกสถานที่ไป"
+                disabled={isSelectDisabled(carBookApprovedStatus)}
+                className={editState ? "read-only-input" : ""}
+                showCount
+                maxLength={250}
+              />
             </Form.Item>
           </Col>
           <Col span={6}>

@@ -158,7 +158,7 @@ const ManageRoom: React.FC = () => {
               <a>ลบ</a>
             </Popconfirm>
             {record.bookingStatus === "process" && <a onClick={() => showModalApproveBooking(record)}>อนุมัติ</a>}
-            {record.bookingStatus === "Approve" && <a onClick={() => showModalApproveBooking(record)}>ยกเลิกอนุมัติ</a>}
+            {/* {record.bookingStatus === "Approve" && <a onClick={() => showModalApproveBooking(record)}>ยกเลิกอนุมัติ</a>} */}
             <a type="link" onClick={() => showModalBookingDetails(record)}>
               รายละเอียด
             </a>
@@ -235,7 +235,6 @@ const ManageRoom: React.FC = () => {
 
   const updatedBooking: FormProps<BookingType>["onFinish"] = async (values) => {
     setSubmitLoading(true);
-
     if (currentBookingId === null) {
       message.error("No booking selected for update");
       return;
@@ -533,11 +532,11 @@ const ManageRoom: React.FC = () => {
       </Modal>
       <Modal
         width={400}
-        title={bookingStatus === "Approve" ? "ยกเลิกอนุมัติจองห้อง" : "อนุมัติการจองห้องประชุม"}
+        title={bookingStatus === "Approve" ? "ยกเลิกอนุมัติจองห้องประชุม" : "อนุมัติการจองห้องประชุม"}
         open={modalApproveBooking}
         onCancel={handleApproveBookingCancel}
         footer={null}>
-        <p>{bookingStatus === "Approve" ? "ยืนยันยกเลิกอนุมัติจองห้อง" : "ยืนยันอนุมัติการจองห้องประชุม"}</p>
+        <p>{bookingStatus === "Approve" ? "ยกเลิกอนุมัติจองห้องประชุม" : "ยืนยันอนุมัติการจองห้องประชุม"}</p>
         <Form form={form} layout="vertical" name="edit_booking" initialValues={{ remember: true }} autoComplete="off">
           <Row justify="end">
             {bookingStatus === "Approve" ? (

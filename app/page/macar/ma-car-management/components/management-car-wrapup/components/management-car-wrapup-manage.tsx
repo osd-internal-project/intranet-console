@@ -122,6 +122,7 @@ const ManagementCarWrapupManage: React.FC<props> = ({
               style={{ width: "100%" }}
               disabledDate={(current) => current && current < moment().startOf("day")}
               disabled={checkType !== "create" && checkType !== "edit" ? true : false}
+              format={"DD/MM/YYYY"}
             />
           </Form.Item>
           <Form.Item name="dateEnd" label="วันที่่ตรวจสภาพครั้งถัดไป">
@@ -129,6 +130,7 @@ const ManagementCarWrapupManage: React.FC<props> = ({
               style={{ width: "100%" }}
               disabledDate={(current) => current && current < moment().startOf("day")}
               disabled={checkType !== "create" && checkType !== "edit" ? true : false}
+              format={"DD/MM/YYYY"}
             />
           </Form.Item>
           <Form.Item name="remark" label="หมายเหตุ">

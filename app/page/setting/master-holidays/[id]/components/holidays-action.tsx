@@ -40,12 +40,11 @@ export const HolidayActions: React.FC<Props> = ({ onFinishAction, setManageStatu
                 className=" mb-0"
                 label="วันที่:"
                 name="holidaysDate"
-                rules={[{ required: true, message: "โปรดกรอกวันที่" }]}>
+                rules={[{ required: true, message: "โปรดเลือกวันที่" }]}>
                 <DatePicker className="w-full" />
               </Form.Item>
             </Col>
           </Row>
-
           <Form.Item>
             <div className=" flex justify-end space-x-4 mt-2">
               <Button

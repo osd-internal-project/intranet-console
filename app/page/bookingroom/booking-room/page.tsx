@@ -101,15 +101,6 @@ const BookingRoomPage: React.FC = () => {
       label: "แสดงข้อมูลแบบตาราง",
       children: <TableComponent bookingFetchData={bookingFetchData} pagination={pagination} changePagination={changePagination} />,
     },
-    // ...(loading === false
-    //   ? [
-    //       {
-    //         key: "3",
-    //         label: "แสดงข้อมูลแบบตาราง (admin)",
-    //         children: <TableComponent bookingFetchData={bookingFetchData} pagination={pagination} changePagination={changePagination} />,
-    //       },
-    //     ]
-    //   : []),
     {
       key: "4",
       label: "สถานะห้องประชุม",
@@ -130,18 +121,6 @@ const BookingRoomPage: React.FC = () => {
     form.resetFields();
     setIsModalBooking(false);
   };
-
-  // const checkBookingConflict = async (roomName: string, startDate: string, endDate: string) => {
-  //   const existingBookings = await BookingRoomServices(baseUrIntranet).getBookingRoomQuery();
-  //   return existingBookings.some((booking: any) => {
-  //     return (
-  //       booking.roomName === roomName &&
-  //       ((new Date(startDate) >= new Date(booking.startDate) && new Date(startDate) < new Date(booking.endDate)) ||
-  //         (new Date(endDate) > new Date(booking.startDate) && new Date(endDate) <= new Date(booking.endDate)) ||
-  //         (new Date(startDate) <= new Date(booking.startDate) && new Date(endDate) >= new Date(booking.endDate)))
-  //     );
-  //   });
-  // };
 
   const createBooking: FormProps<BookingType>["onFinish"] = async (values) => {
     setSubmitLoading(true);
@@ -195,13 +174,6 @@ const BookingRoomPage: React.FC = () => {
     };
 
     try {
-      // const conflict = await checkBookingConflict(roomName, startDate, endDate);
-      // if (conflict) {
-      //   message.error("ห้องนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่.");
-      //   setSubmitLoading(false);
-      //   return;
-      // }
-
       const response = await BookingRoomServices(baseUrIntranet).createBookingRoom(data);
 
       if (response) {
@@ -236,8 +208,8 @@ const BookingRoomPage: React.FC = () => {
       const bookings = await BookingRoomServices(baseUrIntranet).findBookingRoom(skip, take);
       setBookingFetchData(bookings.data);
       setRefreshmentData(refreshment);
-
-      setBookingFetchCalendar(bookingCalendar);
+      const dataFilterCalendar = bookingCalendar.filter((events: any) => events.bookingStatus !== "Reject");
+      setBookingFetchCalendar(dataFilterCalendar);
       setPagination({ ...pagination, total: bookings.count });
       const department = await MasterDepartmentServices(baseUrIntranet).findAllDepartment();
       setDepartment(department);

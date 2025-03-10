@@ -46,6 +46,8 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar }) => {
   };
 
   const renderStatusTag = (status: string) => {
+    console.log(status);
+
     switch (status) {
       case "Approve":
         return <Tag color="green">อนุมัติสำเร็จ</Tag>;
@@ -97,10 +99,7 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar }) => {
       <Modal title="รายละเอียดการจอง" open={statusModalDetail} width={750} onCancel={onCancelModalDetail} footer={null}>
         {selectedBooking && (
           <Form form={formUpdate} labelCol={{ span: 4 }}>
-            <Collapse
-              bordered={false}
-              defaultActiveKey={["1"]}
-              expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
+            <Collapse bordered={false} defaultActiveKey={["1"]} expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
               <Collapse.Panel header="ข้อมูลการจอง" key="1">
                 <Form.Item label="หัวข้อการประชุม" name="title">
                   <Input className="read-only-input" disabled />

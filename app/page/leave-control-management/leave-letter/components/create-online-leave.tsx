@@ -47,7 +47,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
         position: getUser?.masterPosition?.nameEn,
         firstNameTh: getUser?.firstNameTh,
         lastNameTh: getUser?.lastNameTh,
-        groupName: getUser?.ownerGroup.groupName,
+        groupName: getUser?.ownerGroup?.groupName,
         ownerName: getHeader ? getHeader.map((user: any) => `คุณ ${user.firstNameTh} ${user.lastNameTh}`).join(" , ") : "",
       });
     };

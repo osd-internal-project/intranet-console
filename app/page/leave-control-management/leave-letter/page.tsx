@@ -20,7 +20,6 @@ import dayjs from "dayjs";
 export default function Page() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const { id24Axios } = useId24();
-  // const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const router = useRouter();
   const [getTypeLeaveOption, setTypeLeaveOption] = useState<ISelect[]>([]);

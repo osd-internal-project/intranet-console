@@ -112,76 +112,19 @@ export const MenuSider: MenuItem[] = [
       },
     ],
   },
-  {
-    key: "maintenance",
-    icon: maintenanceIcon,
-    label: "Maintenance",
-    rule: "ma-s",
-    children: [
-      {
-        key: `maintenance-management`,
-        label: `Maintenance Management`,
-        rule: "ma-m-s",
-      },
-    ],
-  },
-
-  {
-    key: "crm",
-    icon: contactListIcon,
-    label: `CRM`,
-    rule: UserRoles.crmShow,
-    children: [
-      {
-        key: `crm/customer-group`,
-        label: `ข้อมูลลูกค้า`,
-        rule: UserRoles.crmCustomerShow,
-      },
-      {
-        key: `crm/project`,
-        label: `Project`,
-        rule: UserRoles.crmProductShow,
-      },
-      {
-        key: `crm/ticket`,
-        label: `Ticket`,
-        rule: UserRoles.crmTicketShow,
-      },
-      {
-        key: `crm/ticket-manage`,
-        label: `Manage Ticket `,
-        rule: UserRoles.crmTicketManageShow,
-      },
-      {
-        key: `crm/products`,
-        label: `Products`,
-        rule: UserRoles.crmProductShow
-      },
-      {
-        key: `crm/expense`,
-        label: `ข้อมูลการเบิก`,
-        rule: "crm-ex",
-      },
-    ],
-  },
-  {
-    key: "vender",
-    icon: <ShoppingCartOutlined />,
-    label: `Vender`,
-    rule: "mac-s",
-    children: [
-      {
-        key: `vender/venders`,
-        label: `ข้อมูลผู้ขาย`,
-        rule: "h-s",
-      },
-      {
-        key: `vender/master-product-category`,
-        label: `Product Category`,
-        rule: "mac-b-s",
-      },
-    ],
-  },
+  // {
+  //   key: "maintenance",
+  //   icon: maintenanceIcon,
+  //   label: "Maintenance",
+  //   rule: "ma-s",
+  //   children: [
+  //     {
+  //       key: `maintenance-management`,
+  //       label: `Maintenance Management`,
+  //       rule: "ma-m-s",
+  //     },
+  //   ],
+  // },
   {
     key: "macar",
     icon: macarIcon,
@@ -300,11 +243,11 @@ export const MenuSider: MenuItem[] = [
         label: `Manage Home`,
         rule: "ma-h-s",
       },
-      {
-        key: `setting/email-template`,
-        label: `Email Template`,
-        rule: "st-et-s",
-      },
+      // {
+      //   key: `setting/email-template`,
+      //   label: `Email Template`,
+      //   rule: "st-et-s",
+      // },
       {
         key: `setting/master-overtime-config`,
         label: `Master Overtime Config`,

@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import moment from "moment";
 import { DownloadOutlined } from "@ant-design/icons";
 import { Button, Input, Table, TableProps, message } from "antd";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManagehandbookFileServices } from "../service/handbook.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
@@ -48,11 +47,9 @@ const HandBookList: React.FC = () => {
       const fileUrl = `${baseImageUrl}/public/handbook-file/${record.fileId}?fileName=${encodeURIComponent(String(record.fileName))}`;
       try {
         const response = await fetch(fileUrl);
-
         if (response.ok) {
           const blob = await response.blob();
           const link = document.createElement("a");
-
           link.href = window.URL.createObjectURL(blob);
           link.download = String(record.fileName);
           link.click();
@@ -178,7 +175,7 @@ const HandBookList: React.FC = () => {
         size="small"
         columns={columns}
         scroll={{ x: "max-content" }}
-        rowKey="id"
+        rowKey="key"
         bordered
         pagination={{ pageSize: 10 }}
       />

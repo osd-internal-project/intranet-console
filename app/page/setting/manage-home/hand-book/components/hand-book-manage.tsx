@@ -11,6 +11,8 @@ import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManagehandbookFileServices } from "../service/handbook.service";
 import { useForm } from "antd/es/form/Form";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 export interface handbookFile {
   [x: string]: any;
   handbookid?: Number | null;
@@ -30,10 +32,11 @@ export interface handbooktype {
 }
 const HandBookManage: React.FC = () => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const intraAuth = useAxiosIntranet();
+  const { id24Axios } = useId24();
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const managehandbookFileServices = ManagehandbookFileServices(baseUrlIntranet);
   const [handbooktype, sethandbooktype] = useState<handbooktype[]>([]);
   const [handbookFile, sethandbookFile] = useState<handbookFile[]>([]);
-  const managehandbookFileServices = ManagehandbookFileServices(intraAuth);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [formupload] = useForm();
   const [showmodalupdate, setshowmodalupdate] = useState(false);
@@ -463,7 +466,7 @@ const HandBookManage: React.FC = () => {
         columns={columns}
         size="small"
         scroll={{ x: "max-content" }}
-        rowKey="id"
+        rowKey="key"
         bordered
         pagination={{ pageSize: 10 }}
       />

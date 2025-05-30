@@ -8,6 +8,8 @@ import { Table, Space, Button, Modal, Form, Input, Tag, message, Popconfirm, Too
 import moment from "moment";
 import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 export interface handbooktype {
   idhandtype: Number;
   nameType: String;
@@ -41,11 +43,12 @@ export interface handbook {
 
 const HandBookOption: React.FC = () => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const intraAuth = useAxiosIntranet();
+  const { id24Axios } = useId24();
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const managehandbookFileServices = ManagehandbookFileServices(baseUrlIntranet);
   const [handbooktype, sethandbooktype] = useState<handbooktype[]>([]);
   const [handbook, sethandbook] = useState<handbook[]>([]);
   const [handbookFile, sethandbookFile] = useState<handbookFile[]>([]);
-  const managehandbookFileServices = ManagehandbookFileServices(intraAuth);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [IsmodlaOpencreate, setIsmodlaOpencreate] = useState(false);
   const [modalEditnewType, setModalEditnewType] = useState(false);
@@ -354,7 +357,7 @@ const HandBookOption: React.FC = () => {
         dataSource={dataWithKey}
         columns={columns}
         scroll={{ x: "max-content" }}
-        rowKey="id"
+        rowKey="key"
         bordered
         pagination={{ pageSize: 10 }}
       />

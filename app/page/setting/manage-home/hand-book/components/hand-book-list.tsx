@@ -5,6 +5,8 @@ import { DownloadOutlined } from "@ant-design/icons";
 import { Button, Input, Table, TableProps, message } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManagehandbookFileServices } from "../service/handbook.service";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export interface handbookFile {
   [x: string]: any;
@@ -18,12 +20,13 @@ export interface handbookFile {
   status?: boolean;
 }
 const HandBookList: React.FC = () => {
-  const intraAuth = useAxiosIntranet();
+  const { id24Axios } = useId24();
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const managehandbookFileServices = ManagehandbookFileServices(baseUrlIntranet);
   const [handbookFile, sethandbookFile] = useState<handbookFile[]>([]);
-  const managehandbookFileServices = ManagehandbookFileServices(intraAuth);
   const [searchFileName, setSearchFileName] = useState("");
   const [searchFileType, setSearchFileType] = useState("");
-  const baseImageUrl = process.env.BACKEND_INTRANET_URL;
+  const baseImageUrl = process.env.REACT_APP_API_BASE_URL_INTRANET;
   useEffect(() => {
     fetchDataHandbookfile();
   }, []);
@@ -79,7 +82,7 @@ const HandBookList: React.FC = () => {
     .filter(
       (handbookFile) =>
         handbookFile.fileName.toLowerCase().includes(searchFileName.toLowerCase()) &&
-        handbookFile.filetype.toLowerCase().includes(searchFileType.toLowerCase())
+        handbookFile.filetype.toLowerCase().includes(searchFileType.toLowerCase()),
     );
 
   const dataWithKey = filteredData.map((item, index) => ({
@@ -142,8 +145,7 @@ const HandBookList: React.FC = () => {
           justifyContent: "space-between",
           alignItems: "center",
           fontSize: "16px",
-        }}
-      >
+        }}>
         <div>
           <div>
             ค้นหาชื่อเอกสาร :

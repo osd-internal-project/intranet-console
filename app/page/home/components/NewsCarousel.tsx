@@ -11,7 +11,7 @@ export interface Props {
 const NewsCarouselComponent: React.FC<Props> = ({ informationNews }): React.ReactElement => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedNews, setSelectedNews] = useState<InformationNewsType | null>(null);
-  const baseImageUrl = process.env.BACKEND_INTRANET_URL;
+  const baseImageUrl = process.env.REACT_APP_API_BASE_URL_INTRANET;
   const carouselRef = useRef<any>(null);
   const { Paragraph } = Typography;
 

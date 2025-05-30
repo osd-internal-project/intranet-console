@@ -31,7 +31,7 @@ const NewsShow: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const intraAuth = useAxiosIntranet();
   const manageInformationNewsServices = ManageinformationNewsServices(intraAuth);
-  const baseImageUrl = process.env.BACKEND_INTRANET_URL;
+  const baseImageUrl = process.env.REACT_APP_API_BASE_URL_INTRANET;
   useEffect(() => {
     fetchDatainformationNews();
   }, []);
@@ -79,8 +79,7 @@ const NewsShow: React.FC = () => {
         style={{
           textAlign: "center",
           fontSize: "36px",
-        }}
-      >
+        }}>
         ข่าวสารและกิจกรรมต่าง ๆ
       </div>
 
@@ -120,8 +119,7 @@ const NewsShow: React.FC = () => {
                         }}
                       />
                     ) : null
-                  }
-                >
+                  }>
                   <p style={{ fontSize: "20px" }}>{item.newsName}</p>
                   <p>ผู้เขียน : {item.author}</p>
                   <p>
@@ -157,8 +155,7 @@ const NewsShow: React.FC = () => {
                 textAlign: "center",
                 fontSize: "24px ",
                 fontWeight: "bold",
-              }}
-            >
+              }}>
               <strong></strong> {selectedNews.newsName}
             </p>
             <Carousel arrows infinite={true} autoplay autoplaySpeed={1500} style={{ width: "600px", margin: "0 auto" }}>
@@ -170,8 +167,7 @@ const NewsShow: React.FC = () => {
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
-                      }}
-                    >
+                      }}>
                       <Image
                         preview={false}
                         crossOrigin="anonymous"

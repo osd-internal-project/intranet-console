@@ -4,20 +4,20 @@ import { Breadcrumb, Col, Divider, Row } from "antd";
 import { useEffect, useState } from "react";
 import { AddMasterdataPosition } from "./components/AddMasterdataPosition";
 import { TableMasterdataPosition } from "./components/TableMasterdataPosition";
-import {
-  useAxiosIntranet,
-  useAxiosUser,
-} from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { PositionServices } from "./services/position.service";
 import { ITypeGetdataAll } from "./common";
 import DepartmentServices from "../department/services/department.service";
 import { TdepartmentFindMany } from "../department/common";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export default function MasterDataPositionPage() {
-  const userAuth = useAxiosUser();
-  const intranetAuth = useAxiosIntranet();
-  const positionServices = PositionServices(userAuth);
-  const departmentServices = DepartmentServices(intranetAuth);
+  const { id24Axios, tokenAccess } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const positionServices = PositionServices(baseUrlIntranet);
+  const departmentServices = DepartmentServices(baseUrlIntranet);
   const [getloading, setLoading] = useState<boolean>(true);
   const [getdataAll, setdataAll] = useState<ITypeGetdataAll[]>([]);
   const [departMent, setDepartMent] = useState<TdepartmentFindMany[]>([]);
@@ -89,22 +89,19 @@ export default function MasterDataPositionPage() {
       </Row>
       <Col span={24}>
         <div className="title-page-font">
-          <AddMasterdataPosition
-            departMent={departMent}
-            setLoading={(e: boolean) => setLoading(e)}
-          />
+          <AddMasterdataPosition departMent={departMent} setLoading={(e: boolean) => setLoading(e)} />
         </div>
       </Col>
       <Col span={24}>
         <div className="grid grid-cols-1 ">
-          <TableMasterdataPosition
+          {/* <TableMasterdataPosition
             getloading={getloading}
             getdataAll={getdataAll}
             setLoading={(e: boolean) => setLoading(e)}
             handleOpenFilter={(e: boolean) => handleOpenFilter(e)}
             openFilter={openFilter}
             onFilter={(e: any) => onFilter(e)}
-          />
+          /> */}
         </div>
       </Col>
     </>

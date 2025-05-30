@@ -8,6 +8,8 @@ import { TCreatePositionDto } from "../common";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { checkRule } from "@/app/utils/rules";
 import { TdepartmentFindMany } from "../../department/common";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export interface props {
   departMent: TdepartmentFindMany[];
@@ -15,9 +17,10 @@ export interface props {
 }
 
 export const AddMasterdataPosition: React.FC<props> = ({ departMent, setLoading }) => {
-  const userAuth = useAxiosUser();
-  const addRule = checkRule("st-p-a");
-  const positionServices = PositionServices(userAuth);
+  const { id24Axios, tokenAccess } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const positionServices = PositionServices(baseUrlIntranet);
   const [FORM] = Form.useForm();
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
 

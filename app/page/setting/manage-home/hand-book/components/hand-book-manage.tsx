@@ -43,7 +43,7 @@ const HandBookManage: React.FC = () => {
   const [form] = useForm();
   const [searchFileName, setSearchFileName] = useState("");
   const [searchFileType, setSearchFileType] = useState("");
-  const baseImageUrl = process.env.BACKEND_INTRANET_URL;
+  const baseImageUrl = process.env.REACT_APP_API_BASE_URL_INTRANET;
   const [handbooktypeOptions, sethandbooktypeOptions] = useState<
     {
       value: number;

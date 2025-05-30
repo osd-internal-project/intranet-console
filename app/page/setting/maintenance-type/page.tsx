@@ -5,12 +5,10 @@ import MaTypeCreateComponent from "./components/MaTypeCreate";
 import MaTypeTableComponent from "./components/MaTypeTable";
 import { ITMaType, ITMaTypeForm, ITPagination } from "./common";
 import MaintenanceTypeServices from "../../../services/maintenance-type.service";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
 export default function Page() {
-  // const intranetAuth = useAxiosIntranet();
   const { id24Axios } = useId24();
   const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const maintenancetypeservices = MaintenanceTypeServices(baseUrIntranet);

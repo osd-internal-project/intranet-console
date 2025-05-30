@@ -1,11 +1,6 @@
-import React, { useState } from "react";
-import type { BadgeProps, CalendarProps, TableColumnsType, TableColumnType } from "antd";
-import { Badge, Button, Calendar, Form, Input, Modal, Select, Switch, Table, Tag } from "antd";
-import type { Dayjs } from "dayjs";
-import { ITMaType, ITMaTypeForm, ITPagination } from "../common";
-import { ColumnType } from "antd/es/table";
-import { dateToStringThNoTime } from "@/app/utils/format";
-
+import React from "react";
+import { Button, Form, Input, Switch } from "antd";
+import { ITMaTypeForm } from "../common";
 export interface props {
   createMaType: (form: ITMaTypeForm) => void;
 }

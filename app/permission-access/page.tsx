@@ -1,14 +1,10 @@
 "use client";
+import React from "react";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { Button, Result } from "antd";
-import React, { useContext } from "react";
-import { UserContectType, UserContext } from "../config/userContext";
-
 export default function NoProfileUserPage() {
-  const { tokenAccess, authenticated, login, logout, id24Axios } = useId24();
-  // const { user } = (useContext(UserContext) as UserContectType) || {
-  //   user: null,
-  // };
+  const { login, logout } = useId24();
+
   const onFinish = async () => {
     const defaultPath = `${window.location.origin}/page/home`;
     logout().then(() => login(defaultPath, false));

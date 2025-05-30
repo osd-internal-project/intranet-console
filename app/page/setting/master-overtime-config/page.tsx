@@ -23,10 +23,8 @@ export default function MasterOvertimeConfig() {
 
   const fectData = async () => {
     const resData = await MasterOvertimeConfigService(baseUrlIntranet).findMasterOvertimeConfig();
-    if (resData.length > 0) {
-      setDataSource(resData);
-      setLoading(false);
-    }
+    setDataSource(resData);
+    setLoading(false);
   };
 
   const OpenModal = (events: any) => {

@@ -10,7 +10,7 @@ export interface props {
 const TableMasterOvertimeConfig: React.FC<props> = ({ dataSource, OpenModal }) => {
   const DataSource: any = Object.values(dataSource[0].partTimeCondition);
   const columns = [
-    { key: "index", title: "Index", dataIndex: "index" },
+    { key: "index", title: "Index", dataIndex: "index", render: (value: string, events: any, index: number) => index + 1 },
     {
       key: "name",
       title: "วัน",

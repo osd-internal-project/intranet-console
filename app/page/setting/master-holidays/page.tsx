@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, message } from "antd";
 import { CreateMasterHolidays } from "./components/master-holidays-create";
 import { TableMasterHolidays } from "./components/master-holidays-table";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import MasterHolidaysService from "./services/index.service";
 import { ICreateMasterHolidayYearDto, IFindAllYearDto, IManagePageYear } from "./common";
 import { ExclamationCircleFilled } from "@ant-design/icons";
@@ -12,7 +11,6 @@ import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
 export default function MasterdataHolidays() {
-  // const Auth = useAxiosIntranet();
   const { id24Axios } = useId24();
   const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const masterholidaysService = MasterHolidaysService(baseUrIntranet);

@@ -1,5 +1,4 @@
 "use client";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import MasterHolidaysService from "../services/index.service";
@@ -21,7 +20,6 @@ interface THoliday {
 }
 
 export default function MasterdataHolidaysByYear() {
-  // const Auth = useAxiosIntranet();
   const { id24Axios } = useId24();
   const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const masterholidaysService = MasterHolidaysService(baseUrIntranet);

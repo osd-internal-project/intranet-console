@@ -1,94 +1,12 @@
 "use client";
 
-import { axiosUser, axiosReport, axiosStock, axiosIntranet, axiosCrm, axiosVender } from "../axios";
+import { axiosUser, axiosIntranet } from "../axios";
 import { useSession, signOut } from "next-auth/react";
 import { useEffect } from "react";
 // import { useRefreshToken } from "./useRefreshToken";
 import { message } from "antd";
 import config from "@/app/config";
 import { Session } from "next-auth";
-
-export const useAxiosStock = () => {
-  // let checkTokentime = "active";
-  // const { data: session } = useSession();
-  // useEffect(() => {
-  //   const requestIntercept = axiosStock.interceptors.request.use(
-  //     (config) => {
-  //       if (!config.headers["Authorization"]) {
-  //         config.headers["Authorization"] = `Bearer ${session?.accessToken}`;
-  //       }
-  //       return config;
-  //     },
-  //     (error) => {
-  //       Promise.reject(error);
-  //     }
-  //   );
-
-  //   const responseIntercept = axiosStock.interceptors.response.use(
-  //     (response) => response,
-  //     async (error) => {
-  //       const prevRequest = error.config;
-  //       if (error.response.status === 403 && !prevRequest.sent) {
-  //         prevRequest.sent = true;
-  //         prevRequest.headers[
-  //           "Authorization"
-  //         ] = `Bearer ${session?.accessToken}`;
-  //         message.error("หมดอายุการใช้งาน กรุณาเข้าสู่ระบบ");
-  //         signOut();
-  //         return axiosStock(prevRequest);
-  //       }
-
-  //       Promise.reject(error);
-  //     }
-  //   );
-  //   return () => {
-  //     axiosStock.interceptors.request.eject(requestIntercept);
-  //     axiosStock.interceptors.response.eject(responseIntercept);
-  //   };
-  // }, [session]);
-
-  return axiosStock;
-};
-
-export const useAxiosReport = () => {
-  // const { data: session } = useSession();
-  // useEffect(() => {
-  //   const requestIntercept = axiosReport.interceptors.request.use(
-  //     (config) => {
-  //       if (!config.headers["Authorization"]) {
-  //         config.headers["Authorization"] = `Bearer ${session?.accessToken}`;
-  //       }
-  //       return config;
-  //     },
-  //     (error) => {
-  //       Promise.reject(error);
-  //     }
-  //   );
-  //   const responseIntercept = axiosReport.interceptors.response.use(
-  //     (response) => response,
-  //     async (error) => {
-  //       const prevRequest = error.config;
-  //       if (error.response.status === 403 && !prevRequest.sent) {
-  //         prevRequest.sent = true;
-  //         prevRequest.headers[
-  //           "Authorization"
-  //         ] = `Bearer ${session?.accessToken}`;
-  //         message.error("หมดอายุการใช้งาน กรุณาเข้าสู่ระบบ");
-  //         signOut();
-  //         return axiosReport(prevRequest);
-  //       }
-
-  //       Promise.reject(error);
-  //     }
-  //   );
-  //   return () => {
-  //     axiosReport.interceptors.request.eject(requestIntercept);
-  //     axiosReport.interceptors.response.eject(responseIntercept);
-  //   };
-  // }, [session]);
-
-  return axiosReport;
-};
 
 export const useAxiosUser = () => {
   // const { data: session } = useSession();
@@ -187,49 +105,4 @@ export const useAxiosIntranet = () => {
   // }, [session]);
 
   return axiosIntranet;
-};
-
-export const useAxiosCrm = () => {
-  // let checkTokentime = "active";
-  // const { data: session } = useSession();
-  // useEffect(() => {
-  //   const requestIntercept = axiosCrm.interceptors.request.use(
-  //     (config) => {
-  //       if (!config.headers["Authorization"]) {
-  //         config.headers["Authorization"] = `Bearer ${session?.accessToken}`;
-  //       }
-  //       return config;
-  //     },
-  //     (error) => {
-  //       Promise.reject(error);
-  //     }
-  //   );
-
-  //   const responseIntercept = axiosCrm.interceptors.response.use(
-  //     (response) => response,
-  //     async (error) => {
-  //       const prevRequest = error.config;
-  //       if (error.response.status === 403 && !prevRequest.sent) {
-  //         prevRequest.sent = true;
-  //         prevRequest.headers[
-  //           "Authorization"
-  //         ] = `Bearer ${session?.accessToken}`;
-  //         message.error("หมดอายุการใช้งาน กรุณาเข้าสู่ระบบ");
-  //         signOut();
-  //         return axiosCrm(prevRequest);
-  //       }
-
-  //       Promise.reject(error);
-  //     }
-  //   );
-  //   return () => {
-  //     axiosCrm.interceptors.request.eject(requestIntercept);
-  //     axiosCrm.interceptors.response.eject(responseIntercept);
-  //   };
-  // }, [session]);
-
-  return axiosCrm;
-};
-export const useAxiosVender = () => {
-  return axiosVender;
 };

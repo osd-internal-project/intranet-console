@@ -6,7 +6,6 @@ import MaFilterComponent from "./components/MaFilter";
 import MaTableComponent from "./components/MaTable";
 import { ITMaTask, ITMaType } from "./common";
 import Link from "next/link";
-import { useAxiosIntranet, useAxiosReport } from "@/app/lib/axios/hooks/userAxiosAuth";
 import MaServices from "./services/ma.service";
 import dayjs from "dayjs";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";

@@ -2,7 +2,6 @@
 import { Button, Card, DatePicker, Form, message, Rate, Row, Select, Space, Table } from "antd";
 import React, { useState } from "react";
 import { useForm } from "antd/es/form/Form";
-import { useAxiosReport, useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
 import dayjs from "dayjs";
 import { HouseKeeperStockServices } from "../services/housekeeper.service";
 
@@ -26,8 +25,6 @@ interface ResultItem extends TReport {
 const { RangePicker } = DatePicker;
 
 export default function ReportComponent() {
-  const reportAuth = useAxiosReport();
-  const houseKeeperStockServices = HouseKeeperStockServices(reportAuth);
   const [form] = useForm();
   const [dataReport, setDataeport] = useState<ResultItem[]>([]);
   const columns = [
@@ -54,16 +51,16 @@ export default function ReportComponent() {
 
   const submitForm = async () => {
     const value = form.getFieldsValue();
-    if (value.export) {
-      const response = await houseKeeperStockServices.exportReport(value);
-      const blob = new Blob([response], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-      const link = document.createElement("a");
-      link.href = window.URL.createObjectURL(blob);
-      link.download = `คะแนนการทำงานแม่บ้าน- ${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`;
-      link.click();
-      return message.success("สำเร็จ");
-    }
-    const resReport = await houseKeeperStockServices.getReport(value);
+    // if (value.export) {
+    //   const response = await houseKeeperStockServices.exportReport(value);
+    //   const blob = new Blob([response], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    //   const link = document.createElement("a");
+    //   link.href = window.URL.createObjectURL(blob);
+    //   link.download = `คะแนนการทำงานแม่บ้าน- ${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`;
+    //   link.click();
+    //   return message.success("สำเร็จ");
+    // }
+    // const resReport = await houseKeeperStockServices.getReport(value);
     const processData = (data: TReport[]): ResultItem[] => {
       const resultMap: { [date: string]: number } = {};
       data.forEach((item, index) => {
@@ -82,7 +79,7 @@ export default function ReportComponent() {
 
       return result;
     };
-    setDataeport(processData(resReport));
+    // setDataeport(processData(resReport));
   };
 
   return (

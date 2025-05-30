@@ -23,7 +23,7 @@ import {
 } from "antd";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
-import { useAxiosIntranet, useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useForm } from "antd/es/form/Form";
 import { HouseKeeperStockServices } from "../services/housekeeper.service";
 import data from "@iconify/icons-icon-park-outline/setting-two";
@@ -103,7 +103,7 @@ const CalendarComponent: React.FC = () => {
                 wrapupDate: string;
                 remark: string;
               },
-              index
+              index,
             ) => {
               return (
                 <div key={index} className="flex justify-start">
@@ -118,8 +118,7 @@ const CalendarComponent: React.FC = () => {
                           <Rate allowHalf defaultValue={item.result} disabled />
                         </div>
                       </>
-                    }
-                  >
+                    }>
                     <Button size="small" type="link" onClick={() => onClickEdit(item)}>
                       <Text ellipsis={true}>
                         {`[${item.floors.floorName}-${item.duration === "morning" ? "เช้า" : "บ่าย"}]` + item.houseKeepers.houseKeepName}
@@ -128,7 +127,7 @@ const CalendarComponent: React.FC = () => {
                   </Popover>
                 </div>
               );
-            }
+            },
           )}
       </ul>
     );
@@ -141,7 +140,7 @@ const CalendarComponent: React.FC = () => {
 
   const onSelect = (date: Dayjs, info: { source: "year" | "month" | "date" | "customize" }) => {
     const checkDate = listEventDate.filter(
-      (filter: any) => dayjs(filter.wrapupDate).date() === date.date() && dayjs(filter.wrapupDate).month() === date.month()
+      (filter: any) => dayjs(filter.wrapupDate).date() === date.date() && dayjs(filter.wrapupDate).month() === date.month(),
     );
     if (checkDate.length >= 8) return message.warning("ขออภัยไม่สามารถลงเวรเพิ่มได้ เนื่องจากมีการลงเวรครบตามกำหนดแล้ว !!");
     if (info.source === "date") {
@@ -242,8 +241,7 @@ const CalendarComponent: React.FC = () => {
           <ConfigProvider
             theme={{
               components: {},
-            }}
-          >
+            }}>
             <Calendar
               validRange={validRange}
               mode="month"
@@ -263,7 +261,7 @@ const CalendarComponent: React.FC = () => {
                   monthOptions.push(
                     <Select.Option key={i} value={i} className="month-item">
                       {months[i]}
-                    </Select.Option>
+                    </Select.Option>,
                   );
                 }
                 const year = value.year();
@@ -273,7 +271,7 @@ const CalendarComponent: React.FC = () => {
                   options.push(
                     <Select.Option key={i} value={i} className="year-item">
                       {i}
-                    </Select.Option>
+                    </Select.Option>,
                   );
                 }
                 return (
@@ -286,8 +284,7 @@ const CalendarComponent: React.FC = () => {
                           onChange={(newMonth) => {
                             const now = value.clone().month(newMonth);
                             onChange(now);
-                          }}
-                        >
+                          }}>
                           {monthOptions}
                         </Select>
                       </div>
@@ -298,8 +295,7 @@ const CalendarComponent: React.FC = () => {
                           onChange={(newYear) => {
                             const now = value.clone().year(newYear);
                             onChange(now);
-                          }}
-                        >
+                          }}>
                           {options}
                         </Select>
                       </div>
@@ -325,16 +321,14 @@ const CalendarComponent: React.FC = () => {
               wrapperCol={{ span: 20 }}
               onFinish={onFinishCreate}
               //   onFinishFailed={onFinishFailed}
-              autoComplete="off"
-            >
+              autoComplete="off">
               <Form.Item<FieldTypeCreate> name="wrapupDate" hidden>
                 <Input />
               </Form.Item>
               <Form.Item<FieldTypeCreate>
                 label="ชื่อแม่บ้าน"
                 name="housekeeper"
-                rules={[{ required: true, message: "กรุณากรอกข้อมูล ชื่อแม่บ้าน!" }]}
-              >
+                rules={[{ required: true, message: "กรุณากรอกข้อมูล ชื่อแม่บ้าน!" }]}>
                 <Select
                   options={housekeeper.map((item: { houseKeeperId: number; houseKeepName: string }) => {
                     return {
@@ -398,8 +392,7 @@ const CalendarComponent: React.FC = () => {
               wrapperCol={{ span: 20 }}
               onFinish={onFinishEdit}
               //   onFinishFailed={onFinishFailed}
-              autoComplete="off"
-            >
+              autoComplete="off">
               <Form.Item<FieldTypeUpdate> name="id" hidden>
                 <Input />
               </Form.Item>
@@ -409,8 +402,7 @@ const CalendarComponent: React.FC = () => {
               <Form.Item<FieldTypeUpdate>
                 label="ชื่อแม่บ้าน"
                 name="housekeeper"
-                rules={[{ required: true, message: "กรุณากรอกข้อมูล ชื่อแม่บ้าน!" }]}
-              >
+                rules={[{ required: true, message: "กรุณากรอกข้อมูล ชื่อแม่บ้าน!" }]}>
                 <Select
                   options={housekeeper.map((item: { houseKeeperId: number; houseKeepName: string }) => {
                     return {

@@ -1,6 +1,4 @@
 import { AxiosInstance } from "axios";
-import { ITypeOption } from "../page/inventory/common";
-
 export interface TMasterDepartmentService {
   findAllDepartment: () => Promise<[]>;
 }

@@ -1,9 +1,8 @@
 import { AxiosInstance } from "axios";
-import { ITypeOption } from "../page/inventory/common";
 
 export interface TMasterPositionService {
-  findAllPosition: () => Promise<ITypeOption[]>;
-  findAllDepartment: () => Promise<ITypeOption[]>;
+  findAllPosition: () => Promise<any[]>;
+  findAllDepartment: () => Promise<any[]>;
 }
 
 export const MasterPositionServices = (axiosInstance: AxiosInstance): TMasterPositionService => {

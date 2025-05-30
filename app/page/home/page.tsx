@@ -23,10 +23,7 @@ export default function HomePage() {
   const [masterBookingRoom, setMasterBookingRoom] = useState<MasterRoomType[]>([]);
   const [handbookFile, setHandbookFile] = useState<HandbookFileType[]>([]);
   const [informationNews, setInformationNews] = useState<InformationNewsType[]>([]);
-  useEffect(() => {
-    //  if(tokenAccess?.userAccess.roles){
-    //  }
-  }, [tokenAccess?.userAccess]);
+  useEffect(() => {}, [tokenAccess?.userAccess]);
 
   const fetchData = async () => {
     const dataSlideImage = await SlideImageService(baseUrlIntranet).getSlideImageByOrder();

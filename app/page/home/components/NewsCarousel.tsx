@@ -29,12 +29,7 @@ const NewsCarouselComponent: React.FC<Props> = ({ informationNews }): React.Reac
   return (
     <>
       <div style={{ position: "relative" }}>
-        <Carousel
-          ref={carouselRef}
-          // autoplay
-          dots={false}
-          // infinite
-          arrows={false}>
+        <Carousel ref={carouselRef} dots={false} arrows={false}>
           {chunkedNews?.map((chunk, index) => (
             <div key={index} style={{ display: "flex" }}>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 ">
@@ -42,10 +37,8 @@ const NewsCarouselComponent: React.FC<Props> = ({ informationNews }): React.Reac
                   <Card
                     key={fileIndex}
                     onClick={() => showModal(file)}
-                    // className=" mr-1"
                     style={{
                       backgroundColor: "#F0F8FF",
-                      // width: "300px",
                       height: "350px",
                       borderRadius: "8px",
                       overflow: "hidden",

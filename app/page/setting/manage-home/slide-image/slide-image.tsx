@@ -1,9 +1,8 @@
 "use client";
-import { Card, Col, message, Row } from "antd";
 import React, { useContext, useEffect, useState } from "react";
+import { Card, Col, message, Row } from "antd";
 import { CreateSlideImage } from "./components/create-slide-image";
 import { TableSlideImage } from "./components/table-slide-image";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { SlideImageType } from "./common";
 import ManageHomeService from "./services/index.service";
 import { useForm } from "antd/es/form/Form";
@@ -14,8 +13,7 @@ import { loadAppConfig } from "@/app/config/app-config";
 
 export default function SlideImageSetting() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const { id24Axios, tokenAccess } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const { id24Axios } = useId24();
   const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const intraAuthService = ManageHomeService(baseUrlIntranet);
   const [slideImage, setSlideImage] = useState<SlideImageType[]>([]);

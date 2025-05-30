@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect, useContext } from "react";
 import type { TableProps, FormProps } from "antd";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useForm } from "antd/es/form/Form";
 import type { UploadFile, UploadProps } from "antd";
 import { DeleteOutlined, FormOutlined, UploadOutlined } from "@ant-design/icons";
@@ -50,9 +49,9 @@ const InfoTableNews: React.FC = () => {
   // const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [informationNews, setinformationNews] = useState<informationNews[]>([]);
-  const [newsimage, setnewsimage] = useState<newsImage[]>([]);
+  // const [newsimage, setnewsimage] = useState<newsImage[]>([]);
   const manageinformationNewsServices = ManageinformationNewsServices(baseUrlIntranet);
-  const [submitLoading, setSubmitLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState<boolean>(true);
   const [form] = useForm();
   const [formdetail] = useForm();
   const [Ismodladetail, setIsmodladetail] = useState(false);
@@ -62,7 +61,7 @@ const InfoTableNews: React.FC = () => {
   const [existingFiles, setExistingFiles] = useState<UploadFile[]>([]);
   const [searchFileName, setSearchFileName] = useState("");
   const [searchFileType, setSearchFileType] = useState("");
-  const [selectedNews, setSelectedNews] = useState<informationNews | null>(null);
+  // const [selectedNews, setSelectedNews] = useState<informationNews | null>(null);
   const [newsTypeOptions, setnewsTypeOptions] = useState<
     {
       value: number;
@@ -71,11 +70,11 @@ const InfoTableNews: React.FC = () => {
   >([]);
 
   useEffect(() => {
-    fetchDatainformationNews();
     fetchDataType();
-    setAttendFiles([]);
-    fetchDatanewimage();
-  }, []);
+    if (submitLoading) {
+      fetchDatainformationNews();
+    }
+  }, [submitLoading]);
 
   const fetchDatainformationNews = async () => {
     try {
@@ -84,8 +83,9 @@ const InfoTableNews: React.FC = () => {
         ...item,
         images: item.newsImage,
       }));
-
       setinformationNews(newsData);
+      // fetchDatanewimage();
+      setSubmitLoading(false);
     } catch (error) {
       message.error("Failed to fetch news data");
     }
@@ -101,27 +101,24 @@ const InfoTableNews: React.FC = () => {
 
   const handleChangeAttendFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
     const totalFilesCount = existingFiles.length + newFileList.length;
-
     if (totalFilesCount > 3) {
       message.warning("คุณไม่สามารถอัปโหลดรูปภาพเกิน 3 รูปได้");
       return;
     }
-
     setAttendFiles(newFileList);
   };
-  const fetchDatanewimage = async () => {
-    try {
-      const maresponse = await manageinformationNewsServices.getnewsImageQuery();
-      const newsImage: newsImage[] = maresponse.map((item: any, index: number) => ({
-        ...item,
-        key: index.toString(),
-      }));
-      setnewsimage(newsImage);
-      setSubmitLoading(false);
-    } catch (error) {
-      message.error("Failed to fetch car data");
-    }
-  };
+  // const fetchDatanewimage = async () => {
+  //   try {
+  //     const maresponse = await manageinformationNewsServices.getnewsImageQuery();
+  //     const newsImage: newsImage[] = maresponse.map((item: any, index: number) => ({
+  //       ...item,
+  //       key: index.toString(),
+  //     }));
+  //     setnewsimage(newsImage);
+  //   } catch (error) {
+  //     message.error("Failed to fetch car data");
+  //   }
+  // };
   const beforeUploadAttendFiles = (file: RcFile) => {
     const totalFilesCount = existingFiles.length + attendFiles.length + 1;
     if (totalFilesCount > 3) {
@@ -136,7 +133,6 @@ const InfoTableNews: React.FC = () => {
   };
 
   const informationNewsUpdate: FormProps<informationNews & newsImage>["onFinish"] = async (values) => {
-    setSubmitLoading(true);
     const informationNewsUpdateData = {
       newsId: values?.newsId,
       newsName: values.newsName,
@@ -166,31 +162,25 @@ const InfoTableNews: React.FC = () => {
       } else {
         message.error("อัปเดตข่าวสารไม่สำเร็จ");
       }
-      setSubmitLoading(false);
+      setSubmitLoading(true);
       fetchDatainformationNews();
-      fetchDatanewimage();
+      // fetchDatanewimage();
       setIsmodlaupdatedata(false);
     } catch (error) {
       message.error("อัปเดตข่าวสารไม่สำเร็จ");
-      setSubmitLoading(false);
+      setSubmitLoading(true);
     }
   };
 
   const handleDeleteNews = async (record: informationNews) => {
     try {
-      setSubmitLoading(true);
-
       const deleteImagePromises = record.newsImage.map((image: { imageId: number }) => manageinformationNewsServices.deletenewsImage(image.imageId));
-
       const responsefile = await Promise.all(deleteImagePromises);
-
       if (responsefile.every((res) => res)) {
         const response = await manageinformationNewsServices.deleteinformationNews(record.newsId);
-
         if (response) {
           message.success("ลบข่าวสารสำเร็จ");
-          fetchDatainformationNews();
-          fetchDatanewimage();
+          setSubmitLoading(true);
         } else {
           message.error("ลบข่าวสารไม่สำเร็จ");
         }
@@ -200,7 +190,7 @@ const InfoTableNews: React.FC = () => {
     } catch (error) {
       message.error("ลบข่าวสารไม่สำเร็จ");
     } finally {
-      setSubmitLoading(false);
+      setSubmitLoading(true);
     }
   };
 
@@ -233,7 +223,6 @@ const InfoTableNews: React.FC = () => {
       url: `${process.env.REACT_APP_API_BASE_URL_INTRANET}/public/news-image/${image.fileName}`,
     }));
     setExistingFiles(existingFilesList);
-    setSelectedNews(record);
     setIsmodlaupdatedata(true);
   };
 
@@ -247,8 +236,7 @@ const InfoTableNews: React.FC = () => {
         const updatedFiles = existingFiles.filter((existingFile) => existingFile.uid !== imageId);
         setExistingFiles(updatedFiles);
         message.success("ลบข้อมูลภาพสำเร็จ");
-        fetchDatanewimage();
-        fetchDatainformationNews();
+        setSubmitLoading(true);
       } else {
         message.error("ลบข้อมูลภาพไม่สำเร็จ");
       }
@@ -270,7 +258,6 @@ const InfoTableNews: React.FC = () => {
   );
 
   const handledetail = () => {
-    setSelectedNews(null);
     setIsmodladetail(false);
   };
 

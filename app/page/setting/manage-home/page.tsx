@@ -1,9 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import { Breadcrumb, Card, Col, Divider, Row, Tabs, TabsProps, message } from "antd";
+import { Breadcrumb, Card, Col, Divider, Row, Tabs, TabsProps } from "antd";
 import SlideImageSetting from "./slide-image/slide-image";
 import InfomationManagement from "./information-management/page";
-import InfomationResult from "./infomation-data/page";
 import HandBook from "./hand-book/page";
 
 export default function TypeLeave() {
@@ -18,11 +17,7 @@ export default function TypeLeave() {
     {
       key: "2",
       label: "ตั้งค่า กิจกรรมและข่าวสาร",
-      children: (
-        <>
-          <InfomationManagement />,
-        </>
-      ),
+      children: <InfomationManagement />,
     },
     {
       key: "3",

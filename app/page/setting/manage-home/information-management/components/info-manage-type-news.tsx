@@ -8,6 +8,8 @@ import { Table, Space, Button, Modal, Form, Input, Tag, message, Popconfirm, Too
 import moment from "moment";
 import { ManageinformationNewsServices } from "../services/information.service";
 import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 export interface newType {
   idType: Number;
   nameType: string;
@@ -18,19 +20,20 @@ export interface newType {
 }
 
 const InfoTypeNews: React.FC = () => {
-  const intraAuth = useAxiosIntranet();
-  const [newType, setnewType] = useState<newType[]>([]);
-  const manageinformationNewsServices = ManageinformationNewsServices(intraAuth);
-  const [submitLoading, setSubmitLoading] = useState(false);
-  const [IsmodlaOpencreate, setIsmodlaOpencreate] = useState(false);
-  const [modalEditnewType, setModalEditnewType] = useState(false);
   const [form] = useForm();
   const [formEdit] = useForm();
-  const [searchTerm, setSearchTerm] = useState("");
+  const { id24Axios } = useId24();
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const manageinformationNewsServices = ManageinformationNewsServices(baseUrlIntranet);
+  const [newType, setnewType] = useState<newType[]>([]);
+  const [submitLoading, setSubmitLoading] = useState<boolean>(true);
+  const [IsmodlaOpencreate, setIsmodlaOpencreate] = useState<boolean>(false);
+  const [modalEditnewType, setModalEditnewType] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   useEffect(() => {
-    fetchDatanewType();
-  }, []);
+    if (submitLoading) fetchDatanewType();
+  }, [submitLoading]);
 
   const fetchDatanewType = async () => {
     try {
@@ -47,8 +50,6 @@ const InfoTypeNews: React.FC = () => {
   };
 
   const newsTypeCreateDatacreate: FormProps<newType>["onFinish"] = async (values) => {
-    setSubmitLoading(true);
-
     const informationNewsCreateData = {
       data: {
         nameType: values.nameType,
@@ -67,17 +68,14 @@ const InfoTypeNews: React.FC = () => {
       } else {
         message.error("เพิ่มประเภทข่าวสารไม่สำเร็จ");
       }
-      setSubmitLoading(false);
-      fetchDatanewType();
+      setSubmitLoading(true);
     } catch (error) {
       message.error("เพิ่มประเภทข่าวสารไม่สำเร็จ");
-      setSubmitLoading(false);
+      setSubmitLoading(true);
     }
   };
 
   const updatednewType: FormProps<newType>["onFinish"] = async (values) => {
-    setSubmitLoading(true);
-
     try {
       const updatenewType = {
         idType: values?.idType,
@@ -88,11 +86,10 @@ const InfoTypeNews: React.FC = () => {
       };
       await manageinformationNewsServices.updatenewsType(updatenewType);
       message.success("แก้ไขประเภทข่าวสารสำเร็จ");
-      fetchDatanewType();
-      setSubmitLoading(false);
+      setSubmitLoading(true);
       setModalEditnewType(false);
     } catch (error) {
-      fetchDatanewType();
+      setSubmitLoading(true);
       message.error("แก้ไขประเภทข่าวสารไม่สำเร็จ");
     }
   };
@@ -102,7 +99,7 @@ const InfoTypeNews: React.FC = () => {
       await manageinformationNewsServices.deletenewsType(idType);
       setnewType(newType.filter((item) => item.idType !== idType));
       message.success("ลบประเภทข่าวสารสำเร็จ");
-      fetchDatanewType();
+      setSubmitLoading(true);
     } catch (error) {
       message.error("ลบประเภทไม่ข่าวสารสำเร็จ");
     }
@@ -195,8 +192,7 @@ const InfoTypeNews: React.FC = () => {
             title="คุณแน่ใจหรือไม่ว่าต้องการลบประเภทข่าวสารนี้ ? "
             onConfirm={() => handleDeletenewType(row.idType)}
             okText="ใช่"
-            cancelText="ไม่"
-          >
+            cancelText="ไม่">
             <Tooltip title="ลบ">
               <Button size="small" type="link">
                 <DeleteOutlined style={{ color: "red" }} />
@@ -215,13 +211,11 @@ const InfoTypeNews: React.FC = () => {
           justifyContent: "space-between",
           alignItems: "center",
           fontSize: "16px",
-        }}
-      >
+        }}>
         <div
           style={{
             margin: "10px 10px 10px 20px",
-          }}
-        >
+          }}>
           ค้นหาประเภทข่าวสาร :
           <Input
             type="text"
@@ -244,16 +238,14 @@ const InfoTypeNews: React.FC = () => {
             name="nameType"
             label="ชื่อประเภทข่าวสาร :"
             rules={[{ required: true, message: "กรุณากรอกชื่อประเภทข่าวสาร" }]}
-            style={{ width: "460px" }}
-          >
+            style={{ width: "460px" }}>
             <Input placeholder="ชื่อประเภทข่าวสาร" showCount maxLength={50} />
           </Form.Item>
           <Form.Item
             name="deteil"
             label="รายละเอียดข่าวสาร :"
             rules={[{ required: true, message: "กรุณากรอกรายละเอียดข่าวสาร" }]}
-            style={{ width: "460px" }}
-          >
+            style={{ width: "460px" }}>
             <Input.TextArea rows={12} placeholder="รายละเอียดข่าวสาร" showCount maxLength={200} />
           </Form.Item>
           <Form.Item name="status" label="สถานะการมอง :" style={{ width: "460px" }}>
@@ -283,24 +275,21 @@ const InfoTypeNews: React.FC = () => {
               width: "450px",
               visibility: "hidden",
               margin: "0 0 -60px 0",
-            }}
-          >
+            }}>
             <Input disabled />
           </Form.Item>
           <Form.Item
             name="nameType"
             label="ชื่อประเภทข่าวสาร :"
             rules={[{ required: true, message: "กรุณากรอกชื่อประเภทข่าวสาร" }]}
-            style={{ width: "460px" }}
-          >
+            style={{ width: "460px" }}>
             <Input placeholder="ชื่อประเภทข่าวสาร" showCount maxLength={50} />
           </Form.Item>
           <Form.Item
             name="deteil"
             label="รายละเอียดข่าวสาร :"
             rules={[{ required: true, message: "กรุณากรอกรายละเอียดข่าวสาร" }]}
-            style={{ width: "460px" }}
-          >
+            style={{ width: "460px" }}>
             <Input.TextArea rows={12} placeholder="รายละเอียดข่าวสาร" showCount maxLength={200} />
           </Form.Item>
           <Form.Item name="status" label="สถานะการมอง :" style={{ width: "460px" }}>

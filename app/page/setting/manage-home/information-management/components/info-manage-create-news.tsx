@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect, useContext } from "react";
 import type { FormProps } from "antd";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useForm } from "antd/es/form/Form";
 import { UploadOutlined } from "@ant-design/icons";
 import type { UploadFile, UploadProps } from "antd";
@@ -41,8 +40,7 @@ export interface newsType {
 
 const InfoCreateNews: React.FC<newsImage> = ({}) => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const { id24Axios, tokenAccess } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const { id24Axios} = useId24();
   const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [submitLoading, setSubmitLoading] = useState(true);
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);

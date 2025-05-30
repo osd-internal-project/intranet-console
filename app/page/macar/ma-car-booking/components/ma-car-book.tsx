@@ -21,7 +21,6 @@ export interface props {
 const MaCarBook: React.FC<props> = ({ maCarData, setLoading, dataoptionsProvinces }): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const router = useRouter();
-  // const intraAuth = useAxiosIntranet();
   const { id24Axios } = useId24();
   const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const macarbookservices = MaCarBookServices(baseUrIntranet);

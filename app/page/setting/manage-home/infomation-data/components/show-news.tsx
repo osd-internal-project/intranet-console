@@ -1,8 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { Button, Row, Col, Card, Pagination, Modal, message, Input, Image, Carousel } from "antd";
+import { Row, Col, Card, Pagination, Modal, message, Input, Image, Carousel } from "antd";
 import { ManageinformationNewsServices } from "../services/information.service";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 export interface informationNews {
   newsId: Number;
   newsName: String;
@@ -24,13 +25,14 @@ export interface newsImage {
   fileName: string;
 }
 const NewsShow: React.FC = () => {
+  const { id24Axios } = useId24();
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [informationNews, setInformationNews] = useState<informationNews[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedNews, setSelectedNews] = useState<informationNews | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const intraAuth = useAxiosIntranet();
-  const manageInformationNewsServices = ManageinformationNewsServices(intraAuth);
+  const manageInformationNewsServices = ManageinformationNewsServices(baseUrlIntranet);
   const baseImageUrl = process.env.REACT_APP_API_BASE_URL_INTRANET;
   useEffect(() => {
     fetchDatainformationNews();

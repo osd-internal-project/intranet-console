@@ -30,7 +30,6 @@ export const CarBookForm: React.FC<props> = ({
   setStartDate,
   setEndDate,
 }) => {
-  // const intraAuth = useAxiosIntranet();
   const { id24Axios } = useId24();
   const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const macarervices = MaCarServices(baseUrIntranet);

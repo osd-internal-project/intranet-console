@@ -5,6 +5,8 @@ import { TEmailTemplate } from "../common";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageemailTemplateServices } from "../service/email-template.service";
 import { useRouter } from "next/navigation";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 interface props {
   dataSource: TEmailTemplate[];
@@ -14,8 +16,9 @@ interface props {
 
 export const EmailTemplateActive: React.FC<props> = ({ dataSource, setLoading, formusetemplate }): React.ReactElement => {
   const router = useRouter();
-  const intraAuth = useAxiosIntranet();
-  const manageemailtemplateservices = ManageemailTemplateServices(intraAuth);
+  const { id24Axios } = useId24();
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const manageemailtemplateservices = ManageemailTemplateServices(baseUrlIntranet);
   const [selectTemplate, setSelectTemplate] = useState<any[]>([]);
 
   useEffect(() => {

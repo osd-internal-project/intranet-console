@@ -10,6 +10,8 @@ import { checkStatus, CheckStatusMaCarBookType, isSelectDisabled, showStatus } f
 import { dateFormatTime } from "@/app/utils";
 import { CarForm } from "./car-form";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 interface props {
   loading: boolean;
@@ -37,8 +39,10 @@ const MaCarBookTable: React.FC<props> = ({
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const [form] = Form.useForm();
   const [formCancel] = Form.useForm();
-  const intraAuth = useAxiosIntranet();
-  const intraAuthService = MaCarServices(intraAuth);
+  const { id24Axios, tokenAccess } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const intraAuthService = MaCarServices(baseUrlIntranet);
   const [modalEditMaCarBook, setModalEditMa] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [modalCancel, setModalCancel] = useState(false);

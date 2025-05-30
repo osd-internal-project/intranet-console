@@ -1,14 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Card, Breadcrumb, Divider, Button, Form } from "antd";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageemailTemplateServices } from "./service/email-template.service";
 import Link from "next/link";
 import { EmailTemplateTab } from "./components/email-template-tab";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 const emailTemplatePage: React.FC = (): React.ReactElement => {
-  const intraAuth = useAxiosIntranet();
-  const manageemailtemplateservices = ManageemailTemplateServices(intraAuth);
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const manageemailtemplateservices = ManageemailTemplateServices(baseUrIntranet);
   const [formusetemplate] = Form.useForm();
   const [dataSource, setDataSource] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);

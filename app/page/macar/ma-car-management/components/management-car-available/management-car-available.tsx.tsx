@@ -22,7 +22,6 @@ export interface props {
 const ManagementCarAvailable: React.FC<props> = ({ setLoading, loading, maCarData, pagination, changePagination }): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const [form] = useForm();
-  // const intraAuth = useAxiosIntranet();
   const { id24Axios } = useId24();
   const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const intraAuthService = ManageCarServices(baseUrIntranet);

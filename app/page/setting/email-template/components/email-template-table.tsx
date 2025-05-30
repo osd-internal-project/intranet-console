@@ -8,7 +8,8 @@ import { ManageemailTemplateServices } from "../service/email-template.service";
 const { confirm } = Modal;
 
 import { ExclamationCircleFilled } from "@ant-design/icons";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
 });
@@ -20,8 +21,9 @@ interface props {
 }
 
 const EmailTemplateTable: React.FC<props> = ({ dataSource, loading, setLoading }): React.ReactElement => {
-  const intraAuth = useAxiosIntranet();
-  const manageemailtemplateservices = ManageemailTemplateServices(intraAuth);
+  const { id24Axios } = useId24();
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const manageemailtemplateservices = ManageemailTemplateServices(baseUrlIntranet);
   const [openModal, setopenModal] = useState<boolean>(false);
   const [dataDetailTemplate, setDataDetailTemplate] = useState<string>("");
   const [setavtiveKey, setActiveKey] = useState<number>(0);

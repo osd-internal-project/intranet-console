@@ -17,7 +17,6 @@ const MaCar: React.FC = () => {
   const { user } = (useContext(UserContext) as UserContectType) || {
     user: null,
   };
-  // const intraAuth = useAxiosIntranet();
   const { id24Axios } = useId24();
   const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const intraAuthService = MaCarServices(baseUrIntranet);

@@ -6,6 +6,8 @@ import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageemailTemplateServices } from "../service/email-template.service";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
@@ -14,8 +16,9 @@ const ReactQuill = dynamic(() => import("react-quill"), {
 export default function addEmailTemplatePage() {
   const [FormCreateTemplate] = Form.useForm();
   const router = useRouter();
-  const intraAuth = useAxiosIntranet();
-  const manageemailtemplateservices = ManageemailTemplateServices(intraAuth);
+  const { id24Axios } = useId24();
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const manageemailtemplateservices = ManageemailTemplateServices(baseUrlIntranet);
   const [optionsType, setoptionsType] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [emailTemplateFields, setEmailTemplateFields] = useState<any[]>([]);

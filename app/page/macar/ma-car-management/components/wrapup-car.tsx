@@ -34,6 +34,8 @@ import { EyeOutlined, UploadOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/es/upload";
 import { UploadFileStatus } from "antd/es/upload/interface";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 export interface MaCarType {
   id: number;
   typeName: string;
@@ -96,8 +98,9 @@ const WrapupCar: React.FC = () => {
   const [form] = useForm();
   const [formchange] = useForm();
   const [formdetail] = useForm();
-  const intraAuth = useAxiosIntranet();
-  const manageCarServices = ManageCarServices(intraAuth);
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const manageCarServices = ManageCarServices(baseUrIntranet);
   const [maData, setMaData] = useState<MaCar[]>([]);
   const [maDataType, setMaDataType] = useState<MaCarType[]>([]);
   const [maDataOptions, setMaDataOptions] = useState<

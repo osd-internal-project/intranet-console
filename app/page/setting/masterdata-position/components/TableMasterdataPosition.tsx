@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { Button, Card, Col, DatePicker, Form, Input, Modal, Popover, Row, Spin, Switch, Table, Tag, message } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import { ExclamationCircleFilled, FilterOutlined } from "@ant-design/icons";
-import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { PositionServices } from "../services/position.service";
 import { FieldTypeUnit } from "../common";
 import { editIcon, deleteIcon } from "@/components/icon";
@@ -29,8 +28,8 @@ export const TableMasterdataPosition: React.FC<props> = ({
   onFilter,
 }): React.ReactElement => {
   const { id24Axios, tokenAccess } = useId24();
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
-  const positionServices = PositionServices(baseUrlIntranet);
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const positionServices = PositionServices(baseUrlUser);
 
   const { RangePicker } = DatePicker;
   const [form] = Form.useForm();

@@ -4,7 +4,6 @@ import { Breadcrumb, Col, Divider, Row } from "antd";
 import { useEffect, useState } from "react";
 import { AddMasterdataPosition } from "./components/AddMasterdataPosition";
 import { TableMasterdataPosition } from "./components/TableMasterdataPosition";
-import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { PositionServices } from "./services/position.service";
 import { ITypeGetdataAll } from "./common";
 import DepartmentServices from "../department/services/department.service";
@@ -16,7 +15,7 @@ export default function MasterDataPositionPage() {
   const { id24Axios, tokenAccess } = useId24();
   const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
-  const positionServices = PositionServices(baseUrlIntranet);
+  const positionServices = PositionServices(baseUrlUser);
   const departmentServices = DepartmentServices(baseUrlIntranet);
   const [getloading, setLoading] = useState<boolean>(true);
   const [getdataAll, setdataAll] = useState<ITypeGetdataAll[]>([]);
@@ -94,14 +93,14 @@ export default function MasterDataPositionPage() {
       </Col>
       <Col span={24}>
         <div className="grid grid-cols-1 ">
-          {/* <TableMasterdataPosition
+          <TableMasterdataPosition
             getloading={getloading}
             getdataAll={getdataAll}
             setLoading={(e: boolean) => setLoading(e)}
             handleOpenFilter={(e: boolean) => handleOpenFilter(e)}
             openFilter={openFilter}
             onFilter={(e: any) => onFilter(e)}
-          /> */}
+          />
         </div>
       </Col>
     </>

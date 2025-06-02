@@ -1,7 +1,7 @@
 "use client";
 import { Breadcrumb, Col, Divider, Form, Row } from "antd";
 import UserTable from "./components/users-table";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ITypeOption, TManageUserPageDto, TGroupId24, TOrganizeAllDto } from "./common";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
@@ -10,13 +10,10 @@ import { MasterPositionServices } from "@/app/services/master-position.service";
 import { UserAction } from "./components/user-action";
 import dayjs from "dayjs";
 import { DataNode } from "antd/es/tree";
-import { groupWithSubGroupsToGroupTree } from "./components/group-tree-mapper";
 import UserGroupServices from "../../../services/usergroup.service";
 import OrganizeServices from "@/app/services/organize-chart.service";
 import { CarryOutOutlined } from "@ant-design/icons";
 import { TfindAllOrganizeDto } from "../../setting/organize-chart/common";
-import UserServices from "@/app/services/user.service";
-import { UserContectType, UserContext } from "@/app/config/userContext";
 
 export type Group = {
   name: string;
@@ -89,11 +86,7 @@ export default function UsermanagementPage() {
 
   const loaddata = async () => {
     const resOrganize = await OrganizeServices(baseUrlIntranet).getOrganizeByType("department");
-    // console.log(resOrganize);
-
     const tree = createTreeDepartMent(resOrganize, null);
-    // console.log(tree);
-
     setTreeListDepartment(tree);
 
     // }

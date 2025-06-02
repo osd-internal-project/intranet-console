@@ -152,15 +152,17 @@ export const MenuSider: MenuItem[] = [
     key: `overtime`,
     icon: <FieldTimeOutlined />,
     label: `Overtime`,
-    rule: "mac-s",
+    rule: "ot-s",
     children: [
       {
         key: `overtime/overtime-calendar`,
         label: `ตารางการเบิก OT`,
+        rule: "ot-d",
       },
       {
         key: `overtime/overtime-form`,
         label: `แบบฟอร์มขอเบิกค่าทำงานล่วงเวลา`,
+         rule: "ot-m",
       },
     ],
   },

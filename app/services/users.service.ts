@@ -79,8 +79,6 @@ export const UsersServices = (axiosInstance: AxiosInstance): TUsersService => {
         return await axiosInstance
           .get(`${userurl}/upload-image/${userId}`, { responseType: "blob" })
           .then((result) => {
-            console.log(result);
-
             return result.data;
           })
           .catch((err) => err);

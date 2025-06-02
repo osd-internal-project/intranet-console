@@ -95,17 +95,17 @@ export default function HomePage() {
             <NewsCarouselComponent informationNews={informationNews} />
           </Card>
           <div className="my-4"></div>
-          <Card title="เอกสาร" bordered={false} className="text-center" style={{ height: "520px" }}>
+          <Card title="เอกสาร" bordered={false} className="text-center" style={{ minHeight: "550px" }}>
             <DocumentComponent handbookFile={handbookFile} downloadFile={(id: number, filename: string) => downloadFile(id, filename)} />
           </Card>
         </div>
 
         <div className="lg:col-span-1">
-          <Card title="ห้องประชุม" className="text-center" style={{ height: "500px" }}>
+          <Card title="ห้องประชุม" className="text-center ">
             <MeetingRoomTableComponent pagination={false} masterBookingRoom={masterBookingRoom} />
           </Card>
           <div className="my-4"></div>
-          <Card title="วันหยุดประจำปี" className="text-center" style={{ height: "520px" }}>
+          <Card title="วันหยุดประจำปี" className="text-center">
             <HolidaysCalendarComponent />
           </Card>
         </div>

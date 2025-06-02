@@ -59,12 +59,14 @@ const UserTable: React.FC<Props> = ({
       title: "USERNAME",
       dataIndex: "username",
       key: "username",
-      render: (value: string, record: TUserAllDto) => (
-        <>
-          <b>{value}</b>
-          <br /> <p className=" text-gray-400 m-0">{record.email}</p>
-        </>
-      ),
+      render: (value: string, record: TUserAllDto) => {
+        return (
+          <>
+            <b>{value}</b>
+            <br /> <p className=" text-gray-400 m-0">{record.email}</p>
+          </>
+        );
+      },
     },
     {
       title: "FULL NAME",
@@ -100,7 +102,7 @@ const UserTable: React.FC<Props> = ({
       key: "userId",
       dataIndex: "userId",
       fixed: "right" as "right",
-      width: 200,
+      width: 30,
       align: "center",
       render: (value: string, record: TUserAllDto, index: number) => (
         <div className=" space-x-2">
@@ -112,28 +114,28 @@ const UserTable: React.FC<Props> = ({
     },
   ];
 
-  const onfinishDel = (d: string) => {
-    setbuttonLoading(true);
-    Modal.confirm({
-      title: "Delete this user",
-      icon: <ExclamationCircleFilled />,
-      content: "Are you sure you want to delete this ?",
-      okText: "Confirm",
-      okButtonProps: { type: "primary", danger: true },
-      cancelText: "Cancel",
-      onOk: async () => {
-        const dataResult = await userServices.remove(d);
-        if (dataResult) {
-          message.success(`Success`);
-          setManagePage({ ...managePage, loading: true });
-          setbuttonLoading(false);
-        }
-      },
-      onCancel() {
-        setbuttonLoading(false);
-      },
-    });
-  };
+  // const onfinishDel = (d: string) => {
+  //   setbuttonLoading(true);
+  //   Modal.confirm({
+  //     title: "Delete this user",
+  //     icon: <ExclamationCircleFilled />,
+  //     content: "Are you sure you want to delete this ?",
+  //     okText: "Confirm",
+  //     okButtonProps: { type: "primary", danger: true },
+  //     cancelText: "Cancel",
+  //     onOk: async () => {
+  //       const dataResult = await userServices.remove(d);
+  //       if (dataResult) {
+  //         message.success(`Success`);
+  //         setManagePage({ ...managePage, loading: true });
+  //         setbuttonLoading(false);
+  //       }
+  //     },
+  //     onCancel() {
+  //       setbuttonLoading(false);
+  //     },
+  //   });
+  // };
 
   const onClickEdit = async (record: TUserAllDto) => {
     if (user) {
@@ -156,26 +158,6 @@ const UserTable: React.FC<Props> = ({
       pagination: { current: current || 1, pageSize: pageSize || 10 },
     });
   };
-
-  // const loadingData = async () => {
-  //   const data = await userServices.getUsersAll(search);
-  //   if (data) {
-  //     let datamap: TUserAllDto[] = data.map((d: any, index: number) => ({
-  //       no: index + 1,
-  //       userId: d.userId,
-  //       username: d.username,
-  //       position: d.masterPosition?.nameTh,
-  //       phoneNumber: d.phoneNumber,
-  //       email: d.email,
-  //       status: d.activeStatus ? "Active" : "Inactive",
-  //       fullname: `${d.firstNameTh} ${d.lastNameTh}`,
-  //       created: d.createdAt,
-  //       createdDate: d.createdAt,
-  //     }));
-  //     setDataTable(datamap);
-  //   }
-  //   propLoading(false, search);
-  // };
 
   return (
     <>

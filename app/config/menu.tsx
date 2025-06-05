@@ -12,34 +12,35 @@ export const MenuSider: MenuItem[] = [
   {
     key: "home",
     label: "หน้าหลัก",
-    rule: "h-s",
+    rule: "user",
     icon: <HomeOutlined />,
   },
-  {
-    key: "internal-info",
-    icon: organizeChart,
-    label: `ข้อมูลภายใน`,
-    rule: "ii-s",
-    children: [
-      {
-        key: `internal-info/organization-chart`,
-        label: "แผนผังองค์กร",
-      },
-      {
-        key: `internal-info/organization-chart-team`,
-        label: `แผนผังทีม`,
-      },
-    ],
-  },
+  // {
+  //   key: "internal-info",
+  //   icon: organizeChart,
+  //   label: `ข้อมูลภายใน`,
+  //   rule: "user",
+  //   children: [
+  //     {
+  //       key: `internal-info/organization-chart`,
+  //       label: "แผนผังองค์กร",
+  //     },
+  //     {
+  //       key: `internal-info/organization-chart-team`,
+  //       label: `แผนผังทีม`,
+  //     },
+  //   ],
+  // },
   {
     key: "hr-management",
     label: "ระบบบริหารงานบุคคล",
-    rule: "iss-s",
+    rule: "hr",
     icon: hrIcon,
     children: [
       {
         key: `hr-management/employee-profile`,
         label: "ข้อมูลพนักงาน",
+        rule: "hr",
       },
     ],
   },
@@ -47,17 +48,17 @@ export const MenuSider: MenuItem[] = [
     key: "housekeeper",
     icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
     label: "งานแม่บ้าน",
-    rule: "hk-s",
+    rule: "ma-user",
     children: [
       {
         key: `housekeeper/housekeepers`,
         label: `ข้อมูลการการทำงานของแม่บ้าน`,
-        rule: "hk-h",
+        rule: "ma-user",
       },
       {
         key: `housekeeper/housekeeper-management`,
         label: `จัดการข้อมูลแม่บ้าน`,
-        rule: "hk-m",
+        rule: "ma-user",
       },
     ],
   },
@@ -65,27 +66,27 @@ export const MenuSider: MenuItem[] = [
     key: "leave-control-management",
     icon: IconDataLeave,
     label: `ข้อมูลการลา`,
-    rule: "dl-s",
+    rule: ["user", "admin"],
     children: [
       {
         key: `leave-control-management/leave-letter`,
         label: `ใบลาออนไลน์`,
-        rule: "dl-a",
+        rule: "user",
       },
       {
         key: `leave-control-management/leave-history`,
         label: `ประวัติการลา`,
-        rule: "dl-dt-u",
+        rule: "user",
       },
       {
         key: `leave-control-management/leave-history-admin`,
         label: `ประวัติการลา (แอดมิน)`,
-        rule: "dl-dt-a",
+        rule: "admin",
       },
       {
         key: `leave-control-management/leave-disabled-management`,
         label: `จัดการสิทธิ์การลา`,
-        rule: "dl-dis",
+        rule: "admin",
       },
     ],
   },
@@ -93,22 +94,22 @@ export const MenuSider: MenuItem[] = [
     key: "bookingroom",
     icon: bookingIcon,
     label: "ห้องประชุม",
-    rule: "br-s",
+    rule: ["user", "admin"],
     children: [
       {
         key: `bookingroom/booking-room`,
         label: `จองห้องประชุม`,
-        rule: "br-s-dt",
+        rule: "user",
       },
       {
         key: `bookingroom/booking-room-management`,
         label: `จัดการข้อมูลห้องประชุม`,
-        rule: "br-m",
+        rule: "admin",
       },
       {
         key: `bookingroom/booking-room-refreshment`,
         label: `จัดการอาหารว่าง`,
-        rule: "br-rf",
+        rule: "admin",
       },
     ],
   },
@@ -116,11 +117,12 @@ export const MenuSider: MenuItem[] = [
     key: "maintenance",
     icon: maintenanceIcon,
     label: "Maintenance",
-    rule: "ma-s",
+    rule: "ma-user",
     children: [
       {
         key: `maintenance-management`,
         label: `Maintenance Management`,
+        rule: "ma-user",
       },
     ],
   },
@@ -128,22 +130,22 @@ export const MenuSider: MenuItem[] = [
     key: "macar",
     icon: macarIcon,
     label: `ข้อมูลการจองรถยนต์`,
-    rule: "mac-s",
+    rule: ["user", "admin"],
     children: [
       {
         key: `macar/ma-car`,
         label: `ข้อมูลการจองรถยนต์`,
-        rule: "mac-c-s",
+        rule: "user",
       },
       {
         key: `macar/ma-car-booking`,
         label: `Ma car Booking`,
-        rule: "mac-b-s",
+        rule: "user",
       },
       {
         key: `macar/ma-car-management`,
         label: `ข้อมูลการจองรถยนต์ (แอดมิน)`,
-        rule: "mac-m-s",
+        rule: "admin",
       },
     ],
   },
@@ -151,17 +153,17 @@ export const MenuSider: MenuItem[] = [
     key: `overtime`,
     icon: <FieldTimeOutlined />,
     label: `Overtime`,
-    rule: "ot-s",
+    rule: ["user", "admin"],
     children: [
       {
         key: `overtime/overtime-calendar`,
         label: `ตารางการเบิก OT`,
-        rule: "ot-d",
+        rule: "user",
       },
       {
         key: `overtime/overtime-form`,
         label: `แบบฟอร์มขอเบิกค่าทำงานล่วงเวลา`,
-        rule: "ot-m",
+        rule: "user",
       },
     ],
   },
@@ -169,42 +171,42 @@ export const MenuSider: MenuItem[] = [
     key: `users-management`,
     icon: gridIcon,
     label: `User Management`,
-    rule: "um-s",
+    rule: "admin",
     children: [
       {
         key: `users-management/users`,
         label: `Users`,
-        rule: "um-s",
+        rule: "admin",
       },
       {
         key: `users-management/user-organization`,
         label: `Organizations`,
-        rule: "user-organize-show",
+        rule: "admin",
       },
       {
         key: `users-management/user-group`,
         label: `Groups`,
-        rule: "um-ug-s",
+        rule: "admin",
       },
       {
         key: `users-management/user-role`,
         label: `Roles`,
-        rule: "um-ro-s",
+        rule: "admin",
       },
       {
         key: `users-management/user-rule`,
         label: `Rules`,
-        rule: "um-ru-s",
+        rule: "admin",
       },
       {
         key: `users-management/user-module`,
         label: `Module`,
-        rule: "um-ru-s",
+        rule: "admin",
       },
       {
         key: `users-management/user-group-permission`,
         label: `Group Permission`,
-        rule: "um-up-s",
+        rule: "admin",
       },
     ],
   },
@@ -212,37 +214,37 @@ export const MenuSider: MenuItem[] = [
     key: `setting`,
     icon: <Icon icon="uil:setting" width="15" height="15" />,
     label: `ตั้งค่า`,
-    rule: "st-s",
+    rule: "admin",
     children: [
       {
         key: `setting/maintenance-type`,
         label: `การบำรุงรักษา`,
-        rule: "ma-t-s",
+        rule: "admin",
       },
       {
         key: `setting/organize-chart`,
         label: `Organize Chart`,
-        rule: "st-oc-s",
+        rule: "admin",
       },
       {
         key: `setting/typeleave`,
         label: `Type Leave`,
-        rule: "st-tl-s",
+        rule: "admin",
       },
       {
         key: `setting/master-holidays`,
         label: `Master Holidays`,
-        rule: "st-mth-s",
+        rule: "admin",
       },
       {
         key: `setting/masterdata-position`,
         label: `Master Position`,
-        rule: "st-p-s",
+        rule: "admin",
       },
       {
         key: `setting/manage-home`,
         label: `Manage Home`,
-        rule: "ma-h-s",
+        rule: "admin",
       },
       // {
       //   key: `setting/email-template`,
@@ -252,7 +254,7 @@ export const MenuSider: MenuItem[] = [
       {
         key: `setting/master-overtime-config`,
         label: `Master Overtime Config`,
-        rule: "st-moc-s",
+        rule: "admin",
       },
     ],
   },
@@ -276,7 +278,12 @@ export const MenuSiderWithModule = (modules: string[]) => {
       children: menu?.children
         ? menu.children
             .filter((item: any) => {
-              return !item.rule || modules.includes(item.rule);
+              const rule = item.rule;
+              // return !item.rule || modules.includes(item.rule);
+              if (Array.isArray(rule)) {
+                return rule.some((r) => modules.includes(r));
+              }
+              return modules.includes(rule);
             })
             .map((item: any) => {
               return {
@@ -292,8 +299,20 @@ export const MenuSiderWithModule = (modules: string[]) => {
             })
         : null,
     }));
+
+    // original code
+    //  const menu = menuFilterChildren.filter((item: any) => {
+    //   console.log(item.rule);
+
+    //   return !item.rule || modules.includes(item.rule);
+    // });
+
     const menu = menuFilterChildren.filter((item: any) => {
-      return !item.rule || modules.includes(item.rule);
+      const rule = item.rule;
+      if (Array.isArray(rule)) {
+        return rule.some((r) => modules.includes(r));
+      }
+      return modules.includes(rule);
     });
 
     return menu;

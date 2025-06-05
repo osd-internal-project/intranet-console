@@ -2,6 +2,7 @@ import { AxiosInstance } from "axios";
 import { TCreateUserDto, TUserAllDto } from "../page/users-management/users/common";
 
 export interface TUsersService {
+  findAll: () => Promise<any>;
   findAllUser: (search: {}) => Promise<{ data: TUserAllDto[]; total: number }>;
   validateUsername: (username: string, selectUserType: string) => Promise<any>;
   validateEmail: (email: string, type: string) => Promise<any>;
@@ -22,6 +23,10 @@ export const UsersServices = (axiosInstance: AxiosInstance): TUsersService => {
   const userurl = "/user";
 
   return {
+    findAll: async () => {
+      const result = await axiosInstance.get(`${userurl}`);
+      return result?.data || [];
+    },
     findAllUser: async (search) => {
       const result = await axiosInstance.get(`${baseUrl}`, { params: search });
       return result?.data || [];

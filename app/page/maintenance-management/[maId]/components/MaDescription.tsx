@@ -1,26 +1,6 @@
 import React, { useState } from "react";
-import type {
-  BadgeProps,
-  CalendarProps,
-  TableColumnsType,
-  TableColumnType,
-  UploadFile,
-} from "antd";
-import {
-  Badge,
-  Button,
-  Calendar,
-  Card,
-  DatePicker,
-  Divider,
-  Form,
-  Input,
-  Modal,
-  Select,
-  Switch,
-  Table,
-  Tag,
-} from "antd";
+import type { BadgeProps, CalendarProps, TableColumnsType, TableColumnType, UploadFile } from "antd";
+import { Badge, Button, Calendar, Card, DatePicker, Divider, Form, Input, Modal, Select, Switch, Table, Tag } from "antd";
 import type { Dayjs } from "dayjs";
 import { ColumnType } from "antd/es/table";
 import { dateToStringTh, dateToStringThNoTime } from "@/app/utils/format";
@@ -34,11 +14,7 @@ export interface props {
   data: ITMaTask;
   loading: boolean;
   setLoading: (loading: boolean) => void;
-  updateMa: (
-    data: ITMaUpdateForm,
-    attendFiles: UploadFile[],
-    imageFiles: UploadFile[]
-  ) => void;
+  updateMa: (data: ITMaUpdateForm, attendFiles: UploadFile[], imageFiles: UploadFile[]) => void;
   maTypes: ITMaType[];
   downloadFile: (id: number, name: string) => void;
   getImageBlob: (id: number, name: string) => Promise<Blob | undefined>;
@@ -101,17 +77,19 @@ const MaDescriptionComponent: React.FC<props> = ({
         </div>
         <div className="grid grid-cols-3 mb-2">
           <div className=" col-span-1 font-bold">ประเภท MA :</div>
+          <div className=" col-span-2">{data.maCategory}</div>
+        </div>
+        <div className="grid grid-cols-3 mb-2">
+          <div className=" col-span-1 font-bold">เรื่อง MA :</div>
           <div className=" col-span-2">{data.maTypeName}</div>
         </div>
         <div className="grid  grid-cols-3 mb-2 ">
-          <div className=" col-span-1 font-bold">ชื่อ MA :</div>
+          <div className=" col-span-1 font-bold">หัวข้อ MA :</div>
           <div className=" col-span-2">{data.maName}</div>
         </div>
         <div className="grid  grid-cols-3  mb-2">
           <div className=" col-span-1 font-bold">วันนัดหมาย :</div>
-          <div className=" col-span-2">
-            {data.maDate ? dateToStringTh(data.maDate) : ""}
-          </div>
+          <div className=" col-span-2">{data.maDate ? dateToStringTh(data.maDate) : ""}</div>
         </div>
         <div className="grid  grid-cols-3 mb-2 ">
           <div className=" col-span-1 font-bold">ผู้นัดหมาย :</div>
@@ -119,13 +97,15 @@ const MaDescriptionComponent: React.FC<props> = ({
         </div>
         <div className="grid  grid-cols-3  mb-2">
           <div className=" col-span-1 font-bold">วันที่สร้าง :</div>
-          <div className=" col-span-2">
-            {data.createdAt ? dateToStringThNoTime(data.createdAt) : ""}
-          </div>
+          <div className=" col-span-2">{data.createdAt ? dateToStringThNoTime(data.createdAt) : ""}</div>
         </div>
         <div className="grid  grid-cols-3  mb-2">
           <div className=" col-span-1 font-bold">ผู้สร้าง :</div>
           <div className=" col-span-2">{data.createdByName}</div>
+        </div>
+        <div className="grid  grid-cols-3  mb-2">
+          <div className=" col-span-1 font-bold">มอบหมายให้ :</div>
+          <div className=" col-span-2">{data.assignUsername}</div>
         </div>
       </div>
       <div>
@@ -137,11 +117,7 @@ const MaDescriptionComponent: React.FC<props> = ({
       {data.maStatus === "process" ? (
         <MaSubmitForm updateMa={updateMa} maTypes={maTypes} />
       ) : (
-        <MaSolution
-          data={data}
-          downloadFile={downloadFile}
-          getImageBlob={getImageBlob}
-        />
+        <MaSolution data={data} downloadFile={downloadFile} getImageBlob={getImageBlob} />
       )}
     </Card>
   );

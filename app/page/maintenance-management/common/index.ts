@@ -37,6 +37,9 @@ export interface ITMaTask {
   nextTask?: ITMaTask;
   imageList: ITMaTaskFiles[];
   fileList: ITMaTaskFiles[];
+  assignUserId?: string;
+  assignUsername?: string;
+  maCategory?: string;
 }
 export interface ITMaTaskFiles {
   id: number;
@@ -53,6 +56,7 @@ export type ITMaCreateForm = {
   maStatus?: string;
   createdById?: string;
   createdByName?: string;
+  assignUserId?: string;
 };
 export type ITPagination = {
   current: number;

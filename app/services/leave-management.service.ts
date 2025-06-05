@@ -225,7 +225,7 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
       };
       return await axiosInstance
         .post(`${baseUrlDataLeave}`, {
-          condition: condition,
+          condition,
         })
         .then((res) => {
           return res.data;

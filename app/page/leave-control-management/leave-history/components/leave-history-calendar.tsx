@@ -76,8 +76,8 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, download
         events={dataSource.map((dataLeaveCalendar: ITypeDataLeave) => ({
           id: dataLeaveCalendar.id,
           title: dataLeaveCalendar.firstName,
-          start: new Date(dataLeaveCalendar.startDate),
-          end: new Date(dataLeaveCalendar.endDate),
+          start: dataLeaveCalendar.startDate ? new Date(dataLeaveCalendar.startDate) : null,
+          end: dataLeaveCalendar.endDate ? new Date(dataLeaveCalendar.endDate) : dataLeaveCalendar.endDate,
           status: dataLeaveCalendar.status,
           description: dataLeaveCalendar?.description || "",
           userName: dataLeaveCalendar.typeName,

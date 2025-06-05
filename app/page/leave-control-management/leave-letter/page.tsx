@@ -93,6 +93,7 @@ export default function Page() {
       const datadisabledLeave = await LeaveManagementServices(baseUrlIntranet).getdataTypeLeaveMap(user.id, dataMasterType.typeId);
       // คำนวนจำนวนเวลาของการลา
       const sumDataLeave = await validateSumTotalLeave(values, dataHolidayDay);
+
       // เช็คว่ามีการลาประเภทนั้นๆไปทั้งหมดกี่วันแล้ว
       const dataLeaveUserById = await LeaveManagementServices(baseUrlIntranet).getdataLeaveUserById({ userId: user?.userId, typeId: values.type_id });
       // เช็คว่าเหลือวันลาเท่าไหร่
@@ -107,6 +108,7 @@ export default function Page() {
         values.endTime,
       );
       const total = remainingLeave - sumDataLeave;
+
       if (datadisabledLeave.length > 0) {
         message.error(`ท่านไม่มีสิทธ์${dataMasterType.typeName}`);
         return false;
@@ -121,7 +123,10 @@ export default function Page() {
         return false;
       }
       let base = {
-        ...values,
+        detail: values.detail,
+        phoneNumber: values.phoneNumber,
+        ownerName: values.ownerName,
+        userId: values.userId,
         firstName: values.firstNameTh,
         lastName: values.lastNameTh,
         positionId: values.posId,

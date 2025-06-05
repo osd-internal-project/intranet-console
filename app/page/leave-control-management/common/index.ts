@@ -141,9 +141,9 @@ export interface ITypeDataLeave {
   departName?: string;
   typeId?: number;
   typeName?: string;
-  startDate: Date;
+  startDate?: Date;
   startTime?: string;
-  endDate: Date;
+  endDate?: Date;
   endTime?: string;
   leaveHour?: number;
   detail?: string;

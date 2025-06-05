@@ -12,6 +12,7 @@ export interface props {
   typeLeaveTableAll: any;
   rowClassName: any;
   createdataleaveFormValues: any;
+  dataHolidayDay: any;
 }
 
 export const TableOnlineDetailLeave: React.FC<props> = ({
@@ -19,6 +20,7 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
   createdataleaveForm,
   rowClassName,
   createdataleaveFormValues,
+  dataHolidayDay,
 }): React.ReactElement => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -44,13 +46,13 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       key: "id",
       dataIndex: "id",
       title: "ลาครั้งนี้",
-      render: (value: string, row: ITypetypeleave) => validateCheckNumberLeave(row, createdataleaveFormValues),
+      render: (value: string, row: ITypetypeleave) => validateCheckNumberLeave(row, createdataleaveFormValues, dataHolidayDay),
     },
     {
       key: "haveLeave",
       dataIndex: "haveLeave",
       title: "รวม",
-      render: (value: number, row: ITypetypeleave) => validateSgowAllHourLeave(value, row, createdataleaveFormValues, rowClassName),
+      render: (value: number, row: ITypetypeleave) => validateSgowAllHourLeave(value, row, createdataleaveFormValues, rowClassName, dataHolidayDay),
     },
   ];
 

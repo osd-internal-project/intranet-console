@@ -229,6 +229,7 @@ export default function Page() {
               typeLeaveTableAll={typeLeaveTableAll}
               rowClassName={rowClassName}
               createdataleaveFormValues={createdataleaveFormValues}
+              dataHolidayDay={dataHolidayDay}
             />
           </Col>
         </Row>

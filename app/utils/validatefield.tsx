@@ -414,7 +414,7 @@ export const showDataLeave = (value: number) => {
   );
 };
 
-export const validateCheckNumberLeave = (row: ITypetypeleave, createdataleaveForm: any) => {
+export const validateCheckNumberLeave = (row: ITypetypeleave, createdataleaveForm: any, dataHolidayDay: any) => {
   const isSelected = row.typeId === createdataleaveForm.type_id;
   const startDate = dayjs(createdataleaveForm.startDate).startOf("day");
   const endDate = dayjs(createdataleaveForm.endDate).startOf("day");
@@ -427,6 +427,7 @@ export const validateCheckNumberLeave = (row: ITypetypeleave, createdataleaveFor
   const breakEnd = dayjs("13:00", "HH:mm");
   const isSameDay = startDate.isSame(endDate, "day");
   const diffDays = endDate.diff(startDate, "day") + 1;
+
   let days = 0;
   let hours = 0;
   if (isSelected) {
@@ -441,7 +442,21 @@ export const validateCheckNumberLeave = (row: ITypetypeleave, createdataleaveFor
         hours = totalHours > 0 ? parseFloat(totalHours.toFixed(2)) : 0;
       }
     } else {
-      days = diffDays;
+      // หาวันหยุดกับวันเสาร์อาทิตย์
+      const dateStart = new Date(dayjs(createdataleaveForm.startDate).format("YYYY-MM-DD")).getTime();
+      const dateEnd = new Date(dayjs(createdataleaveForm.endDate).format("YYYY-MM-DD")).getTime();
+      const holidayDates = new Set(dataHolidayDay.map((e: any) => new Date(e.holidaysDate).toDateString()));
+      const dayOffSet = new Set<string>();
+      for (let currentDate = new Date(dateStart); currentDate <= new Date(dateEnd); currentDate.setDate(currentDate.getDate() + 1)) {
+        const dateStr = currentDate.toDateString();
+        const dayOfWeek = currentDate.getDay();
+        if (dayOfWeek === 0 || dayOfWeek === 6 || holidayDates.has(dateStr)) {
+          dayOffSet.add(dateStr);
+        }
+      }
+      // คำนวณจำนวนวันทั้งหมด และวันทำงาน
+      const dayOffCount = dayOffSet.size;
+      days = diffDays - dayOffCount;
     }
   }
   if (hours >= 8) {
@@ -458,7 +473,7 @@ export const validateCheckNumberLeave = (row: ITypetypeleave, createdataleaveFor
   );
 };
 
-export const validateSgowAllHourLeave = (value: number, row: any, createdataleaveForm: any, rowClassName: any) => {
+export const validateSgowAllHourLeave = (value: number, row: any, createdataleaveForm: any, rowClassName: any, dataHolidayDay: any) => {
   const breakStart = dayjs("12:00", "HH:mm");
   const breakEnd = dayjs("13:00", "HH:mm");
   const {
@@ -490,7 +505,21 @@ export const validateSgowAllHourLeave = (value: number, row: any, createdataleav
         hours = total > 0 ? Math.floor(total) : 0;
       }
     } else {
-      days = timeCheck ? diffDays : diffDays;
+      // หาวันหยุดกับวันเสาร์อาทิตย์
+      const dateStart = new Date(dayjs(createdataleaveForm.startDate).format("YYYY-MM-DD")).getTime();
+      const dateEnd = new Date(dayjs(createdataleaveForm.endDate).format("YYYY-MM-DD")).getTime();
+      const holidayDates = new Set(dataHolidayDay.map((e: any) => new Date(e.holidaysDate).toDateString()));
+      const dayOffSet = new Set<string>();
+      for (let currentDate = new Date(dateStart); currentDate <= new Date(dateEnd); currentDate.setDate(currentDate.getDate() + 1)) {
+        const dateStr = currentDate.toDateString();
+        const dayOfWeek = currentDate.getDay();
+        if (dayOfWeek === 0 || dayOfWeek === 6 || holidayDates.has(dateStr)) {
+          dayOffSet.add(dateStr);
+        }
+      }
+      // คำนวณจำนวนวันทั้งหมด และวันทำงาน
+      const dayOffCount = dayOffSet.size;
+      days = timeCheck ? diffDays - dayOffCount : diffDays - dayOffCount;
     }
   }
   const safeValue = Number(value) || 0;

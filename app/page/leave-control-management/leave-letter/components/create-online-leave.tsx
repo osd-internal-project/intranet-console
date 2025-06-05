@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
 import { Card, UploadFile } from "antd";
-import { Dayjs } from "dayjs";
 import { IDataUser, ISelect, ITypeDataLeaveCreate } from "../../common";
 import { RcFile } from "antd/es/upload";
 import { FormInstance } from "antd/lib";
@@ -22,6 +21,7 @@ export interface props {
   handleChangeAttendFiles: (e: any) => void;
   attendFiles: UploadFile[];
   getHeader: any;
+  onChangeFormCreate: (values: any) => void;
 }
 export const CreateOnlineLeave: React.FC<props> = ({
   getUser,
@@ -38,6 +38,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
   handleChangeAttendFiles,
   attendFiles,
   getHeader,
+  onChangeFormCreate,
 }: any): React.ReactElement => {
   useEffect(() => {
     const getdatauser = () => {
@@ -61,7 +62,6 @@ export const CreateOnlineLeave: React.FC<props> = ({
           createdataleaveForm={createdataleaveForm}
           onfinishCreate={onfinishCreate}
           getTypeLeaveOption={getTypeLeaveOption}
-          // onChangeParams={onChangeParams}
           setStartDate={setStartDate}
           setEndDate={setEndDate}
           getStartDate={getStartDate}
@@ -71,6 +71,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
           checkSwitch={checkSwitch}
           handleChangeAttendFiles={handleChangeAttendFiles}
           beforeUploadAttendFiles={beforeUploadAttendFiles}
+          onChangeFormCreate={onChangeFormCreate}
         />
       </Card>
     </div>

@@ -1,17 +1,25 @@
 import { Card, Modal, Space, Table, TableColumnsType, Tag, Tooltip, Typography } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { ITypetypeleave } from "../../common";
 import "../../styles/style.css";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { showDataLeave, validateCheckNumberLeave, validateSgowAllHourLeave } from "@/app/utils/validatefield";
+import { FormInstance } from "antd/lib";
 export interface props {
   typeLeaveTable: ITypetypeleave[];
-  params: any;
+  createdataleaveForm: FormInstance;
   typeLeaveTableAll: any;
   rowClassName: any;
+  createdataleaveFormValues: any;
 }
 
-export const TableOnlineDetailLeave: React.FC<props> = ({ typeLeaveTable, params, rowClassName }): React.ReactElement => {
+export const TableOnlineDetailLeave: React.FC<props> = ({
+  typeLeaveTable,
+  createdataleaveForm,
+  rowClassName,
+  createdataleaveFormValues,
+}): React.ReactElement => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const columns: TableColumnsType<ITypetypeleave> = [
@@ -21,140 +29,28 @@ export const TableOnlineDetailLeave: React.FC<props> = ({ typeLeaveTable, params
       title: "ประเภทการลา",
     },
     {
-      key: "haveLeft",
-      dataIndex: "haveLeft",
+      key: "haveLeave",
+      dataIndex: "haveLeave",
       title: "ลามาแล้ว",
-      render: (value: number, row: ITypetypeleave) => {
-        const rowClass = rowClassName(row);
-        let color: string | undefined;
-        const wholeDays = Math.floor(value);
-        const totalHoursDecimal = parseFloat((value % 1).toFixed(2));
-        const totalHours = Math.floor(totalHoursDecimal * 10);
-        const totalMinutesRaw = (totalHoursDecimal * 10) % 1;
-        let totalMinutes = Math.round(totalMinutesRaw * 10);
-        let timeDisplay = `${totalHours} ชม.`;
-        if (totalMinutes > 0) {
-          timeDisplay = `${totalHours}.${totalMinutes} ชม.`;
-        }
-        if (rowClass === "disabled-row") {
-          color = "#e0e0e0";
-        }
-        return (
-          <div className="flex justify-center">
-            <Tag className="w-full flex justify-center" color={color}>
-              {`${wholeDays} วัน (${timeDisplay})`}
-            </Tag>
-          </div>
-        );
-      },
+      render: (value: number, row: ITypetypeleave) => showDataLeave(value),
     },
     {
       key: "limitLeaveLastResult",
       dataIndex: "limitLeaveLastResult",
       title: "คงเหลือ",
-      render: (value: number, row: ITypetypeleave) => {
-        const rowClass = rowClassName(row);
-        let color: string | undefined;
-        let wholeDays = Math.floor(value);
-        const totalHoursDecimal = Number((value % 1).toFixed(2));
-        let totalHours = Math.floor(totalHoursDecimal * 10);
-        const totalMinutesRaw = totalHoursDecimal * 10;
-        const totalMinutes = Math.round((totalMinutesRaw * 10) % 10);
-        if (totalHours === 8) {
-          wholeDays += 1;
-          totalHours = 0;
-        }
-        let timeDisplay = `${totalHours} ชม.`;
-        if (totalMinutes > 0) {
-          timeDisplay = `${totalHours}.${totalMinutes} ชม.`;
-        }
-        if (rowClass === "disabled-row") {
-          color = "#e0e0e0";
-        }
-        return (
-          <div className="flex justify-center">
-            <Tag className="w-full flex justify-center" color={color}>
-              {`${wholeDays} วัน (${timeDisplay})`}{" "}
-            </Tag>
-          </div>
-        );
-      },
+      render: (value: number, row: ITypetypeleave) => showDataLeave(value),
     },
     {
       key: "id",
       dataIndex: "id",
       title: "ลาครั้งนี้",
-      render: (value: string, row: ITypetypeleave) => {
-        const isSelected = row.typeId === params.typeId;
-        const rowClass = rowClassName(row);
-        let days = isSelected ? (params.lengthDate ? params.lengthDate : 0) : 0;
-        let hours = isSelected ? (params.lengthTime ? params.lengthTime : 0) : 0;
-        let color: string | undefined;
-        days = days < 0 ? 1 : days;
-        hours = hours < 0 ? 1 : hours;
-        if (rowClass === "disabled-row") {
-          color = "#e0e0e0";
-        }
-        return (
-          <div className="flex justify-center">
-            <Tag className="w-full flex justify-center" color={color}>
-              {`${days} วัน (${hours} ชม.)`}
-            </Tag>
-          </div>
-        );
-      },
+      render: (value: string, row: ITypetypeleave) => validateCheckNumberLeave(row, createdataleaveFormValues),
     },
     {
-      key: "total",
-      dataIndex: "haveLeft",
+      key: "haveLeave",
+      dataIndex: "haveLeave",
       title: "รวม",
-      render: (value: number, row: ITypetypeleave) => {
-        const isSelected = row.typeId === params.typeId;
-        const totalHoursDecimal = parseFloat((value % 1).toFixed(2));
-        let totalDays = Math.floor(value + (isSelected ? params.lengthDate : 0));
-        let totalHours = Math.floor(totalHoursDecimal * 10);
-        let lengthTime = params.lengthTime;
-        let totalMinutesRaw = (totalHoursDecimal * 10) % 1;
-        let totalMinutes = Math.round(totalMinutesRaw * 10);
-        if (isSelected) {
-          const lengthTimeHours = Math.floor(lengthTime);
-          const lengthTimeMinutes = Math.round((lengthTime % 1) * 10);
-          totalHours += lengthTimeHours;
-          totalMinutes += lengthTimeMinutes;
-        }
-        if (totalMinutes >= 8 && totalMinutes <= 10) {
-          totalHours += Math.floor(totalMinutes / 10);
-          totalMinutes = totalMinutes % 10;
-        }
-        if (totalHours >= 8) {
-          totalDays += Math.floor(totalHours / 8);
-          totalHours = totalHours % 8;
-        }
-        const isOverLimit = totalDays > row.limitLeaveLastResult;
-        const hasDateRange = params.startDate && params.endDate;
-        const rowClass = rowClassName(row);
-        let color: string | undefined;
-        if (rowClass === "disabled-row") {
-          color = "#e0e0e0";
-        } else if (isSelected) {
-          if (isOverLimit) {
-            color = "orange-inverse";
-          } else if (hasDateRange) {
-            color = "green-inverse";
-          }
-        }
-        let timeDisplay = `${totalHours} ชม.`;
-        if (totalMinutes > 0) {
-          timeDisplay = `${totalHours}.${totalMinutes} ชม.`;
-        }
-        return (
-          <div className="flex justify-center">
-            <Tag className="w-full flex justify-center" color={color}>
-              {`${totalDays} วัน (${timeDisplay})`}
-            </Tag>
-          </div>
-        );
-      },
+      render: (value: number, row: ITypetypeleave) => validateSgowAllHourLeave(value, row, createdataleaveFormValues, rowClassName),
     },
   ];
 
@@ -215,43 +111,34 @@ export const TableOnlineDetailLeave: React.FC<props> = ({ typeLeaveTable, params
           pagination={{ pageSize: 13, position: ["none"] }}
           scroll={{ x: "max-content" }}
           rowClassName={rowClassName}
-          // footer={() => (
-          //   <>
-          //     <div className="flex justify-center w-full">
-          //       <Button type="primary" ghost onClick={() => setIsModalOpen(true)}>
-          //         <div style={{ display: "flex", alignItems: "center" }}>
-          //           <span style={{ fontSize: "16px" }}>{`เงื่อนไขในการลาตามแต่ละประเภท`}</span>
-          //         </div>
-          //       </Button>
-          //     </div>
-          //   </>
-          // )}
         />
       </Card>
-      <Modal
-        title="ระยะเวลาในการลาแต่ละประเภท"
-        open={isModalOpen}
-        onOk={() => setIsModalOpen(true)}
-        onCancel={() => setIsModalOpen(false)}
-        footer={false}
-        width={700}>
-        <Table
-          size="small"
-          columns={columnsDetail}
-          dataSource={typeLeaveTable}
-          rowKey={(e: ITypetypeleave) => e.id}
-          pagination={{ pageSize: 13, position: ["none"] }}
-          summary={() => (
-            <Table.Summary.Row>
-              <Table.Summary.Cell index={0} colSpan={columnsDetail.length}>
-                <div style={{ textAlign: "left", fontWeight: "bold" }}>
-                  หมายเหตุ : <span style={{ color: "red" }}>*</span> ประเภทการลาที่รวมวันหยุด !
-                </div>
-              </Table.Summary.Cell>
-            </Table.Summary.Row>
-          )}
-        />
-      </Modal>
+      {isModalOpen ? (
+        <Modal
+          title="ระยะเวลาในการลาแต่ละประเภท"
+          open={isModalOpen}
+          onOk={() => setIsModalOpen(true)}
+          onCancel={() => setIsModalOpen(false)}
+          footer={false}
+          width={700}>
+          <Table
+            size="small"
+            columns={columnsDetail}
+            dataSource={typeLeaveTable}
+            rowKey={(e: ITypetypeleave) => e.id}
+            pagination={{ pageSize: 13, position: ["none"] }}
+            summary={() => (
+              <Table.Summary.Row>
+                <Table.Summary.Cell index={0} colSpan={columnsDetail.length}>
+                  <div style={{ textAlign: "left", fontWeight: "bold" }}>
+                    หมายเหตุ : <span style={{ color: "red" }}>*</span> ประเภทการลาที่รวมวันหยุด !
+                  </div>
+                </Table.Summary.Cell>
+              </Table.Summary.Row>
+            )}
+          />
+        </Modal>
+      ) : null}
     </>
   );
 };

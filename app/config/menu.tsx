@@ -112,19 +112,18 @@ export const MenuSider: MenuItem[] = [
       },
     ],
   },
-  // {
-  //   key: "maintenance",
-  //   icon: maintenanceIcon,
-  //   label: "Maintenance",
-  //   rule: "ma-s",
-  //   children: [
-  //     {
-  //       key: `maintenance-management`,
-  //       label: `Maintenance Management`,
-  //       rule: "ma-m-s",
-  //     },
-  //   ],
-  // },
+  {
+    key: "maintenance",
+    icon: maintenanceIcon,
+    label: "Maintenance",
+    rule: "ma-s",
+    children: [
+      {
+        key: `maintenance-management`,
+        label: `Maintenance Management`,
+      },
+    ],
+  },
   {
     key: "macar",
     icon: macarIcon,
@@ -162,7 +161,7 @@ export const MenuSider: MenuItem[] = [
       {
         key: `overtime/overtime-form`,
         label: `แบบฟอร์มขอเบิกค่าทำงานล่วงเวลา`,
-         rule: "ot-m",
+        rule: "ot-m",
       },
     ],
   },

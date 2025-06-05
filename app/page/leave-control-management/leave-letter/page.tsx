@@ -18,10 +18,11 @@ import { loadAppConfig } from "@/app/config/app-config";
 import dayjs from "dayjs";
 
 export default function Page() {
+  const [createdataleaveForm] = Form.useForm();
+  const router = useRouter();
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const { id24Axios } = useId24();
   const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
-  const router = useRouter();
   const [getTypeLeaveOption, setTypeLeaveOption] = useState<ISelect[]>([]);
   const [typeLeaveTable, setTypeLeaveTable] = useState<ITypetypeleave[]>([]);
   const [getHeader, setHeader] = useState<any>();
@@ -30,24 +31,13 @@ export default function Page() {
   const [checkSwitch, setCheckSwitch] = useState<boolean>(false);
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [createdataleaveForm] = Form.useForm();
   const [typeLeaveTableAll, setTypeLeaveTableAll] = useState<ITypetypeleave[]>([]);
   const [dataHolidayDay, setDataHolidayDay] = useState<IFindAllDayDto[]>([]);
-  const [masterdataTypeLeave, setMasterDataTypeLeave] = useState<ITypetypeleave[]>([]);
-  const [params, setParams] = useState<any>({
-    typeId: null,
-    startDate: null,
-    endDate: null,
-    startTime: null,
-    endTime: null,
-    lengthDate: 0,
-    lengthTime: 0,
-  });
-
+  const [createdataleaveFormValues, setCreatedataleaveFormValues] = useState<any>({});
   useEffect(() => {
     fecthDataHoliday();
     if (loading) loadDataTypeLeave();
-  }, [loading, params, user]);
+  }, [loading, user]);
 
   const loadDataTypeLeave = async () => {
     if (user) {
@@ -69,9 +59,9 @@ export default function Page() {
   const fecthDataHoliday = async () => {
     const yearNow = dayjs(new Date()).format("YYYY");
     const dataResult = await MasterHolidaysService(baseUrlIntranet).getHolidayByYear(yearNow);
-    const masterTypeLeave = await MasterTypeLeaveService(baseUrlIntranet).getdataAll({});
+    // const masterTypeLeave = await MasterTypeLeaveService(baseUrlIntranet).getdataAll({});
     setDataHolidayDay(dataResult);
-    setMasterDataTypeLeave(masterTypeLeave);
+    // setMasterDataTypeLeave(masterTypeLeave);
   };
 
   const beforeUploadAttendFiles = (file: RcFile) => {
@@ -91,24 +81,23 @@ export default function Page() {
   };
 
   const onfinishCreate = async (values: ITypeDataLeaveCreate) => {
-    let base: ITypeDataLeave;
-    let total: number = 0;
-    let remainingLeave: number = 0;
-    let baseFilters = {};
-    let sumDataLeave = await validateSumTotalLeave(values, dataHolidayDay);
+    // เช็ควันลา ว่าสามารถลาในช่วงเวลานั้นได้ไหม
+    const checkStatusLeave = await checkStatusTypeLeave(values);
+    if (checkStatusLeave.status === 500) {
+      return false;
+    }
     if (user?.userId && user?.startWork) {
+      // เช็คว่าเลือกประเภทลาอะไร เพื่อนำข้อมูลของประเภทการลานั้นๆไปเช็คอย่างอื่น
       const dataMasterType = await LeaveManagementServices(baseUrlIntranet).getdataMasterTypeLeaveByTypeId(values.type_id);
+      // เช็คว่ามีการจัดการสิทธ์การลาว่าไม่ให้ลาอะไรบ้าง
       const datadisabledLeave = await LeaveManagementServices(baseUrlIntranet).getdataTypeLeaveMap(user.id, dataMasterType.typeId);
-      if (datadisabledLeave.length > 0) {
-        message.error(`ท่านไม่มีสิทธ์${dataMasterType.typeName}`);
-        return false;
-      }
-
-      const checkStatusLeave = await checkStatusTypeLeave(values, masterdataTypeLeave);
-      if (checkStatusLeave.status === 500) {
-        return false;
-      }
-
+      // คำนวนจำนวนเวลาของการลา
+      const sumDataLeave = await validateSumTotalLeave(values, dataHolidayDay);
+      // เช็คว่ามีการลาประเภทนั้นๆไปทั้งหมดกี่วันแล้ว
+      const dataLeaveUserById = await LeaveManagementServices(baseUrlIntranet).getdataLeaveUserById({ userId: user?.userId, typeId: values.type_id });
+      // เช็คว่าเหลือวันลาเท่าไหร่
+      const remainingLeave = await validateCheckLeaveDay(dataLeaveUserById, dataMasterType, user.startWork);
+      // เช็คว่าลาวันดังกล่าวไปยัง
       const count = await LeaveManagementServices(baseUrlIntranet).countDataLeaveRange(
         user.userId,
         values.type_id,
@@ -117,77 +106,75 @@ export default function Page() {
         values.startTime,
         values.endTime,
       );
-      if (count.length > 0) {
-        message.error("ห้องนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่.");
+      const total = remainingLeave - sumDataLeave;
+      if (datadisabledLeave.length > 0) {
+        message.error(`ท่านไม่มีสิทธ์${dataMasterType.typeName}`);
         return false;
       }
-      if (user?.userId) baseFilters = { ...baseFilters, userId: user?.userId };
-      if (values.type_id) baseFilters = { ...baseFilters, typeId: values.type_id };
-      const dataLeaveUserById = await LeaveManagementServices(baseUrlIntranet).getdataLeaveUserById(baseFilters);
-      remainingLeave = await validateCheckLeaveDay(dataLeaveUserById, dataMasterType, user.startWork);
-      total = remainingLeave - sumDataLeave;
-      if (total <= 0) {
+      if (count.status === 200) {
+        message.error("ช่วงเวลาที่คุณเลือกมีการการลาแล้ว กรุณาเลือกช่วงเวลาใหม่.");
+        return false;
+      }
+
+      if (total < 0) {
         message.error(`ไม่สามารถทำการลาได้เนื่องจากวันลาที่เหลืออยู่ หมด หรือไม่เพียงพอ`);
         return false;
       }
-      base = {
-        userId: values.userId,
+      let base = {
+        ...values,
         firstName: values.firstNameTh,
         lastName: values.lastNameTh,
         positionId: values.posId,
-        position: values.position,
         typeId: values.type_id,
         typeName: dataMasterType ? dataMasterType.typeName : undefined,
-        startDate: values.startDate,
-        endDate: values.endDate,
-        detail: values.detail,
-        phoneNumber: values.phoneNumber,
         status: "waitting",
-        ownerId: values.ownerId,
-        ownerName: values.ownerName,
         attrachFile: attendFiles[0]?.name,
         leaveHour: sumDataLeave,
         groupId: user?.ownerGroupId,
       };
-    }
-    Modal.confirm({
-      title: "Add ",
-      icon: <ExclamationCircleFilled />,
-      content: "Are you sure you want to add this ?",
-      okText: "Confirm",
-      cancelText: "Cancel",
-      okButtonProps: {
-        style: {
-          backgroundColor: "#00a1df",
-          borderColor: "#00a1df",
+      Modal.confirm({
+        title: "Add ",
+        icon: <ExclamationCircleFilled />,
+        content: "Are you sure you want to add this ?",
+        okText: "Confirm",
+        cancelText: "Cancel",
+        okButtonProps: {
+          style: {
+            backgroundColor: "#00a1df",
+            borderColor: "#00a1df",
+          },
         },
-      },
-      onOk: async () => {
-        const result = await LeaveManagementServices(baseUrlIntranet).createDataLeave(base);
-        console.log(result);
-        if (result) {
-          if (attendFiles.length > 0) {
-            attendFiles.forEach(async (file) => {
-              const formData: any = new FormData();
-              formData.append("type", "attend");
-              formData.append("files", file.originFileObj);
-              await LeaveManagementServices(baseUrlIntranet).uploadFiles(result.id, formData);
-            });
+        onOk: async () => {
+          const result = await LeaveManagementServices(baseUrlIntranet).createDataLeave(base);
+          console.log(result);
+          if (result) {
+            if (attendFiles.length > 0) {
+              attendFiles.forEach(async (file) => {
+                const formData: any = new FormData();
+                formData.append("type", "attend");
+                formData.append("files", file.originFileObj);
+                await LeaveManagementServices(baseUrlIntranet).uploadFiles(result.id, formData);
+              });
+            }
+            message.success(`Add success`);
+            setStartDate(undefined);
+            setEndDate(undefined);
+            setCheckSwitch(false);
+            createdataleaveForm.resetFields();
+            setLoading(true);
+            router.push("/page/leave-control-management/leave-history");
           }
-          message.success(`Add success`);
-          setStartDate(undefined);
-          setEndDate(undefined);
-          setCheckSwitch(false);
-          createdataleaveForm.resetFields();
-          setLoading(true);
-          router.push("/page/leave-control-management/leave-history");
-        }
-      },
-      onCancel() {
-        setLoading(false);
-      },
-    });
+        },
+        onCancel() {
+          setLoading(false);
+        },
+      });
+    }
   };
+
+  function onChangeFormCreate(values: any): void {
+    setCreatedataleaveFormValues({ ...createdataleaveFormValues, ...values });
+  }
 
   return (
     <div>
@@ -227,14 +214,16 @@ export default function Page() {
               handleChangeAttendFiles={(e: any) => handleChangeAttendFiles(e)}
               attendFiles={attendFiles}
               getHeader={getHeader}
+              onChangeFormCreate={onChangeFormCreate}
             />
           </Col>
           <Col span={12}>
             <TableOnlineDetailLeave
               typeLeaveTable={typeLeaveTable}
-              params={params}
+              createdataleaveForm={createdataleaveForm}
               typeLeaveTableAll={typeLeaveTableAll}
               rowClassName={rowClassName}
+              createdataleaveFormValues={createdataleaveFormValues}
             />
           </Col>
         </Row>

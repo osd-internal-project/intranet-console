@@ -19,6 +19,7 @@ interface props {
   checkSwitch: boolean | undefined;
   handleChangeAttendFiles: (e: any) => void;
   beforeUploadAttendFiles: (e: any) => void;
+  onChangeFormCreate: (values: any) => void;
 }
 
 export const CreateLeaveForm: React.FC<props> = ({
@@ -34,20 +35,23 @@ export const CreateLeaveForm: React.FC<props> = ({
   checkSwitch,
   handleChangeAttendFiles,
   beforeUploadAttendFiles,
+  onChangeFormCreate,
 }) => {
   return (
     <div>
-      <Form size="small" form={createdataleaveForm} className=" grid grid-cols-1" layout="vertical" autoComplete="off" onFinish={onfinishCreate}>
+      <Form
+        size="small"
+        onValuesChange={onChangeFormCreate}
+        form={createdataleaveForm}
+        className=" grid grid-cols-1"
+        layout="vertical"
+        autoComplete="off"
+        onFinish={onfinishCreate}>
         <div className="col-span-1 md:col-span-1 ml-5 justify-end flex">
           <Form.Item label={`วันที่ `} name={`createdAt`} layout="horizontal">
             <Typography.Text>{dayjs(new Date()).format("DD-MM-YYYY")}</Typography.Text>
           </Form.Item>
         </div>
-        {/* <div className=" col-span-3 md:col-span-1 ml-5" hidden>
-          <Form.Item label={`เรียนถึง :`} name={`ownerId`}>
-            <Input disabled />
-          </Form.Item>
-        </div> */}
         <div className=" col-span-3 md:col-span-1 ml-5">
           <Form.Item label={`เรียนถึง :`} name={`ownerName`}>
             <Input disabled />
@@ -105,7 +109,7 @@ export const CreateLeaveForm: React.FC<props> = ({
                   },
                 }),
               ]}>
-              <DatePicker allowClear className="w-full" onChange={(e: any) => setStartDate(e)} format={'DD/MM/YYYY'} />
+              <DatePicker allowClear className="w-full" onChange={(e: any) => setStartDate(e)} format={"DD-MM-YYYY"} />
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
@@ -122,12 +126,12 @@ export const CreateLeaveForm: React.FC<props> = ({
                   },
                 }),
               ]}>
-              <DatePicker allowClear className="w-full" onChange={(e: any) => setEndDate(e)}format={'DD/MM/YYYY'} />
+              <DatePicker allowClear className="w-full" onChange={(e: any) => setEndDate(e)} format={"DD-MM-YYYY"} />
             </Form.Item>
           </div>
         </div>
         <>
-          {dayjs(getStartDate).format("YYYY-MM-DD") === dayjs(getEndDate).format("YYYY-MM-DD") && getEndDate ? (
+          {/* {dayjs(getStartDate).format("YYYY-MM-DD") === dayjs(getEndDate).format("YYYY-MM-DD") && getEndDate ? (
             <div className="w-full grid grid-cols-4 gap-y-0.5 mt-0.5">
               <div className="col-span-3 md:col-span-1 ml-5 mt-4">
                 <Form.Item label="ลา 1 วัน" name="time_start_check">
@@ -182,7 +186,54 @@ export const CreateLeaveForm: React.FC<props> = ({
                 </>
               )}
             </div>
-          ) : null}
+          ) : null} */}
+          {dayjs(getStartDate).isSame(getEndDate, "day") && getEndDate && (
+            <div className="w-full grid grid-cols-4 gap-y-0.5 mt-0.5">
+              {/* ✅ สวิตช์สำหรับ "ลา 1 วันเต็ม" */}
+              <div className="col-span-3 md:col-span-1 ml-5 mt-4">
+                <Form.Item label="ลา 1 วัน" name="time_start_check" valuePropName="checked">
+                  <Switch unCheckedChildren="ไม่" checkedChildren="ใช่" onChange={setCheckSwitch} />
+                </Form.Item>
+              </div>
+
+              {/* ✅ เงื่อนไขแสดงช่วงเวลา */}
+              {!checkSwitch && (
+                <>
+                  <div className="col-span-3 md:col-span-1 ml-5 mt-4">
+                    <Form.Item label="เวลาเริ่มต้น :" name="startTime" rules={[{ required: true, message: "กรุณาเลือกเวลาที่เริ่มลา" }]}>
+                      <Select
+                        showSearch={false}
+                        virtual
+                        allowClear
+                        className="w-full"
+                        placeholder="เลือกช่วงเวลา"
+                        options={timeOptions.map((time) => ({
+                          value: time,
+                          label: time,
+                        }))}
+                      />
+                    </Form.Item>
+                  </div>
+
+                  <div className="col-span-3 md:col-span-1 ml-5 mt-4">
+                    <Form.Item label="เวลาสิ้นสุด :" name="endTime" rules={[{ required: true, message: "กรุณาเลือกเวลาที่สิ้นสุดการลา" }]}>
+                      <Select
+                        showSearch={false}
+                        virtual
+                        allowClear
+                        className="w-full"
+                        placeholder="เลือกช่วงเวลา"
+                        options={timeOptions.map((time) => ({
+                          value: time,
+                          label: time,
+                        }))}
+                      />
+                    </Form.Item>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
         </>
         <div className=" col-span-3 md:col-span-1 ml-5">
           <Form.Item label={`วัตถุประสงค์การลา :`} name={`detail`} rules={[{ required: true, message: "กรุณากรอกวัตถุประสงค์การลา" }]}>

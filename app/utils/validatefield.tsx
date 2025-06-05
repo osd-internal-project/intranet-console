@@ -4,6 +4,7 @@ import { MaCarBookType } from "../page/macar/common";
 import dayjs from "dayjs";
 import { ITypeDataLeaveCreate, ITypetypeleave } from "../page/leave-control-management/common";
 import { IFindAllDayDto } from "../page/setting/master-holidays/common";
+import { FormInstance } from "antd/lib";
 
 export const validatesUploadfileImage = (rule: any, value: string, callback: any) => {
   if (rule.length === 0) {
@@ -51,26 +52,23 @@ export const validateCheckLeaveDay = (leavedata: ITypeDataLeaveCreate[], dataMas
   leavedata.forEach((e: ITypeDataLeaveCreate) => {
     totalLeaveHours += e.leaveHour;
   });
-  const startwork = dayjs(startWork);
   const dateNow = dayjs(new Date());
+  const startwork = dayjs(startWork);
   const yearOfWork = dateNow.diff(startwork, "years");
   if (yearOfWork <= 1) {
     defaultcanLeave += Number(dataMasterType.limitLeaveFour) * 8;
   } else if (yearOfWork < 3) {
     defaultcanLeave += Number(dataMasterType.limitLeaveOne) * 8;
   } else if (yearOfWork < 5) {
-    defaultcanLeave += Number(dataMasterType.limitLeaveThree) * 8;
-  } else {
     defaultcanLeave += Number(dataMasterType.limitLeaveTwo) * 8;
+  } else {
+    defaultcanLeave += Number(dataMasterType.limitLeaveThree) * 8;
   }
-
   return defaultcanLeave - totalLeaveHours;
 };
 
 export const validateSumTotalLeave = (values: ITypeDataLeaveCreate, holidays: IFindAllDayDto[]) => {
   let SumTime: number = 1;
-  const dayOffs = [];
-  const SumDate = 24 * 60 * 60 * 1000;
   const dateStart = new Date(dayjs(values.startDate).format("YYYY-MM-DD")).getTime();
   const dateEnd = new Date(dayjs(values.endDate).format("YYYY-MM-DD")).getTime();
   if (dayjs(values.endDate).format("YYYY-MM-DD") === dayjs(values.startDate).format("YYYY-MM-DD")) {
@@ -80,19 +78,21 @@ export const validateSumTotalLeave = (values: ITypeDataLeaveCreate, holidays: IF
       SumTime = calculateTime(values.startTime, values.endTime);
     }
   } else {
+    // หาวันหยุดกับวันเสาร์อาทิตย์
+    const holidayDates = new Set(holidays.map((e) => new Date(e.holidaysDate).toDateString()));
+    const dayOffSet = new Set<string>();
     for (let currentDate = new Date(dateStart); currentDate <= new Date(dateEnd); currentDate.setDate(currentDate.getDate() + 1)) {
+      const dateStr = currentDate.toDateString();
       const dayOfWeek = currentDate.getDay();
-      if (dayOfWeek === 0 || dayOfWeek === 6) {
-        dayOffs.push(new Date(currentDate));
-      }
-      const holidayDates = new Set(holidays.map((e) => new Date(e.holidaysDate).toDateString()));
-      if (holidayDates.has(currentDate.toDateString())) {
-        dayOffs.push(new Date(currentDate));
+      if (dayOfWeek === 0 || dayOfWeek === 6 || holidayDates.has(dateStr)) {
+        dayOffSet.add(dateStr);
       }
     }
-    const dayOffCount: number = dayOffs.length;
-    const totalDays = Math.floor((dateEnd - dateStart) / SumDate + 1);
-    SumTime = (totalDays - dayOffCount) * 8;
+    // คำนวณจำนวนวันทั้งหมด และวันทำงาน
+    const dayOffCount = dayOffSet.size;
+    const totalDays = Math.floor((new Date(dateEnd).getTime() - new Date(dateStart).getTime()) / 86400000) + 1;
+    const workingDays = totalDays - dayOffCount;
+    SumTime = workingDays * 8;
   }
   return SumTime;
 };
@@ -104,16 +104,13 @@ export const calculateTime = (valueStartTime: string, valueEndTime: string) => {
   const breakEnd = dayjs("13:00", "HH:mm");
   let totalHours = startTime && endTime ? endTime.diff(startTime, "hour", true) : 0;
   if (startTime.isBefore(breakEnd) && endTime.isAfter(breakStart)) {
-    const overlapStart = startTime.isBefore(breakStart) ? breakStart : startTime;
-    const overlapEnd = endTime.isAfter(breakEnd) ? breakEnd : endTime;
-    const breakDuration = overlapEnd.diff(overlapStart, "hour", true);
-    totalHours -= breakDuration;
+    totalHours -= 1;
   }
   totalHours = totalHours > 0 ? parseFloat(totalHours.toFixed(1)) : 0;
   return totalHours;
 };
 
-export const checkStatusTypeLeave = async (values: ITypeDataLeaveCreate, masterdataTypeLeave: ITypetypeleave[]) => {
+export const checkStatusTypeLeave = async (values: ITypeDataLeaveCreate) => {
   const { type_id, startDate } = values;
   let meassage;
   const SumDate = 24 * 60 * 60 * 1000;
@@ -385,7 +382,6 @@ export const CheckStatusLeaveType = (status: string) => {
       icon = <MinusCircleOutlined />;
       break;
   }
-
   return (
     <Tag color={color} icon={icon}>
       {text}
@@ -398,5 +394,122 @@ export const checkMaCarBookConfig = async (record: any, carBookStartDate: Date, 
     (new Date(carBookStartDate) >= new Date(record.carBookStartDate) && new Date(carBookStartDate) < new Date(record.carBookEndDate)) ||
     (new Date(carBookEndDate) > new Date(record.carBookStartDate) && new Date(carBookEndDate) <= new Date(record.carBookEndDate)) ||
     (new Date(carBookStartDate) <= new Date(record.carBookStartDate) && new Date(carBookEndDate) >= new Date(record.carBookEndDate))
+  );
+};
+
+export const showDataLeave = (value: number) => {
+  const wholeDays = value ? Math.floor(value) : 0;
+  const totalHoursDecimal = value ? parseFloat((value % 1).toFixed(2)) : 0;
+  const totalHours = Math.floor(totalHoursDecimal * 10);
+  const totalMinutesRaw = (totalHoursDecimal * 10) % 1;
+  let totalMinutes = Math.round(totalMinutesRaw * 10);
+  let timeDisplay = `${totalHours} ชม.`;
+  if (totalMinutes > 0) {
+    timeDisplay = `${totalHours}.${totalMinutes} ชม.`;
+  }
+  return (
+    <div className="flex justify-center">
+      <Tag className="w-full flex justify-center">{`${wholeDays} วัน (${timeDisplay})`}</Tag>
+    </div>
+  );
+};
+
+export const validateCheckNumberLeave = (row: ITypetypeleave, createdataleaveForm: any) => {
+  const isSelected = row.typeId === createdataleaveForm.type_id;
+  const startDate = dayjs(createdataleaveForm.startDate).startOf("day");
+  const endDate = dayjs(createdataleaveForm.endDate).startOf("day");
+  const timeCheck = createdataleaveForm.time_start_check;
+  const startTimeValue = createdataleaveForm.startTime ?? "00:00";
+  const endTimeValue = createdataleaveForm.endTime ?? "00:00";
+  const startTime = dayjs(startTimeValue, "HH:mm");
+  const endTime = dayjs(endTimeValue, "HH:mm");
+  const breakStart = dayjs("12:00", "HH:mm");
+  const breakEnd = dayjs("13:00", "HH:mm");
+  const isSameDay = startDate.isSame(endDate, "day");
+  const diffDays = endDate.diff(startDate, "day") + 1;
+  let days = 0;
+  let hours = 0;
+  if (isSelected) {
+    if (isSameDay) {
+      if (timeCheck) {
+        days = 1;
+      } else if (startTime.isValid() && endTime.isValid() && endTime.isAfter(startTime)) {
+        const leaveDuration = endTime.diff(startTime, "minute") / 60;
+        const isCrossLunchBreak =
+          (startTime.isBefore(breakStart) || startTime.isSame(breakStart)) && (endTime.isAfter(breakEnd) || endTime.isSame(breakEnd));
+        const totalHours = isCrossLunchBreak ? leaveDuration - 1 : leaveDuration;
+        hours = totalHours > 0 ? parseFloat(totalHours.toFixed(2)) : 0;
+      }
+    } else {
+      days = diffDays;
+    }
+  }
+  if (hours >= 8) {
+    days += 1;
+    hours = 0;
+  }
+  const timeText = `${days} วัน (${hours} ชม.)`;
+  return (
+    <div className="flex justify-center ">
+      <Tag className={`w-full flex justify-center `} color={isSelected ? "success" : "default"}>
+        {timeText}
+      </Tag>
+    </div>
+  );
+};
+
+export const validateSgowAllHourLeave = (value: number, row: any, createdataleaveForm: any, rowClassName: any) => {
+  const breakStart = dayjs("12:00", "HH:mm");
+  const breakEnd = dayjs("13:00", "HH:mm");
+  const {
+    type_id,
+    startDate: rawStartDate,
+    endDate: rawEndDate,
+    startTime: startTimeValue = "00:00",
+    endTime: endTimeValue = "00:00",
+    time_start_check: timeCheck,
+  } = createdataleaveForm;
+  const isSelected = row.typeId === type_id;
+  const hasDateRange = !!rawStartDate && !!rawEndDate;
+  const startDate = dayjs(rawStartDate).startOf("day");
+  const endDate = dayjs(rawEndDate).startOf("day");
+  const isSameDay = startDate.isSame(endDate, "day");
+  const startTime = dayjs(startTimeValue, "HH:mm");
+  const endTime = dayjs(endTimeValue, "HH:mm");
+  const diffDays = endDate.diff(startDate, "day") + 1;
+  let days = 0;
+  let hours = 0;
+  if (isSelected) {
+    if (isSameDay) {
+      if (timeCheck) {
+        days = 1;
+      } else if (startTime.isValid() && endTime.isValid() && endTime.isAfter(startTime)) {
+        const duration = endTime.diff(startTime, "minute") / 60;
+        const isCrossLunch = startTime.isBefore(breakEnd) && endTime.isAfter(breakStart);
+        const total = isCrossLunch ? duration - 1 : duration;
+        hours = total > 0 ? Math.floor(total) : 0;
+      }
+    } else {
+      days = timeCheck ? diffDays : diffDays;
+    }
+  }
+  const safeValue = Number(value) || 0;
+  const baseDays = Math.floor(safeValue);
+  const decimalHours = +(safeValue % 1).toFixed(2) || 0;
+  let totalHours = Math.floor(decimalHours * 10) + hours;
+  const extraDays = Math.floor(totalHours / 8);
+  totalHours = totalHours % 8;
+  const totalDays = baseDays + days + extraDays;
+
+  const isOverLimit = totalDays > row.limitLeaveLastResult;
+  const rowClass = rowClassName(row);
+  const color = rowClass === "disabled-row" ? "default" : isSelected && hasDateRange ? (isOverLimit ? "orange-inverse" : "success") : undefined;
+  const displayTime = totalHours > 0 ? `${totalHours} ชม.` : "0 ชม.";
+  return (
+    <div className="flex justify-center">
+      <Tag className="w-full flex justify-center" color={color}>
+        {`${totalDays} วัน (${displayTime})`}
+      </Tag>
+    </div>
   );
 };

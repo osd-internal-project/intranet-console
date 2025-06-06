@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Badge, BadgeProps, Calendar, CalendarProps, Tag } from "antd";
+import { Calendar, CalendarProps, Tag } from "antd";
 import dayjs from "dayjs";
 import type { Dayjs } from "dayjs";
 
@@ -39,7 +39,7 @@ const CalendarPage: React.FC<props> = ({ holiday, featchDataHoliday }): React.Re
                 textAlign: "center",
                 height: "100%",
               }}>
-              <Tag color="error" className="font-bold">
+              <Tag color="warning" className="font-bold">
                 {item.holidaysName}
               </Tag>
             </div>
@@ -49,9 +49,12 @@ const CalendarPage: React.FC<props> = ({ holiday, featchDataHoliday }): React.Re
     );
   };
 
+  const disabledDate = (currentDate: any) => {
+    return holiday.some((item: any) => currentDate.isSame(item.holidaysDate, "day"));
+  };
+
   const cellRender: CalendarProps<Dayjs>["cellRender"] = (current, info) => {
     if (info.type === "date") return dateCellRender(current);
-    // if (info.type === "month") return monthCellRender(current);
     return info.originNode;
   };
 
@@ -71,7 +74,7 @@ const CalendarPage: React.FC<props> = ({ holiday, featchDataHoliday }): React.Re
   };
   return (
     <div>
-      <Calendar cellRender={cellRender} onPanelChange={onPanelChange} onSelect={onDateChange} />
+      <Calendar cellRender={cellRender} onPanelChange={onPanelChange} onSelect={onDateChange} disabledDate={disabledDate} />
     </div>
   );
 };

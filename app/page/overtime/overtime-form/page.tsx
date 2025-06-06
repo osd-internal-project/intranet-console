@@ -5,7 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
-import UserServices from "@/app/services/user.service";
+import LeaveManagementServices from "../../../services/leave-management.service";
+// import UserServices from "@/app/services/user.service";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
@@ -24,6 +25,7 @@ export default function OverTimePage() {
   const { id24Axios } = useId24();
   const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const date = searchParams.get("date") as string;
   const [getHeader, setHeader] = useState<any[]>([]);
@@ -35,9 +37,9 @@ export default function OverTimePage() {
   const [getMasterOt, setMasterOt] = useState<number>(0);
 
   useEffect(() => {
-    if (date !== undefined && user) {
+    if (user && loading) {
       createForm.setFieldsValue({
-        startDate: dayjs(date),
+        startDate: date ? dayjs(date) : dayjs(new Date()),
         startTime: "18:00",
         endTime: "19:00",
         fullname: `${user.firstNameTh} ${user.lastNameTh}`,
@@ -45,19 +47,28 @@ export default function OverTimePage() {
         positionName: user.masterPosition.nameEn,
       });
     }
-    if (user && user.userId) {
+    if (user && user.userId && loading) {
       fetchData();
     }
-  }, [user]);
+  }, [user, loading]);
+
+  useEffect(() => {
+    if (getHeader.length > 0) {
+      createForm.setFieldsValue({
+        ownerGroupId: getHeader.map((user: any) => `คุณ ${user.firstNameTh} ${user.lastNameTh}`).join(" , "),
+      });
+    }
+  }, [getHeader]);
 
   const fetchData = async () => {
     if (!user) return;
-    const headers = await UserServices(baseUrlUser).findHeaderUserByUserId(user.userId);
+    const HeaderGroup = await LeaveManagementServices(baseUrlIntranet).getHeaderByUserId();
     const masterConfigTime = await OverTimeServices(baseUrlIntranet).findMasterOt(date);
-    setMasterOt(masterConfigTime);
     const resCar: any = await MaCarServices(baseUrlIntranet).getMaCarQuery();
+    setMasterOt(masterConfigTime);
     setCar(resCar);
-    setHeader(headers);
+    setHeader(HeaderGroup);
+    setLoading(false);
   };
 
   const handleStartTime = (value: string) => {
@@ -76,8 +87,6 @@ export default function OverTimePage() {
   };
 
   const onFinish = async (values: any) => {
-    console.log(values.startDate);
-
     const res = {
       dateStart: values.startDate,
       startTime: values.startTime,
@@ -92,9 +101,10 @@ export default function OverTimePage() {
       checkOvernight: values.extension ? values.extension.includes("checkOvernight") : null,
       checkTravelByCompanyCar: values.extension ? values.extension.includes("checkTravelByCompanyCar") : null,
       checkDistance: values.extension ? values.extension.includes("checkDistance") : null,
-      ...(values.extension.includes("checkTravelByCompanyCar") ? { carId: values.carName } : null),
-      ...(values.extension.includes("checkTravelByCompanyCar") ? { carName: getcarName } : null),
+      ...(Array.isArray(values.extension) && values.extension.includes("checkTravelByCompanyCar") ? { carId: values?.carName } : null),
+      ...(Array.isArray(values.extension) && values.extension.includes("checkTravelByCompanyCar") ? { carName: getcarName } : null),
     };
+
     Modal.confirm({
       title: "Do you want to delete these items?",
       icon: <ExclamationCircleFilled />,
@@ -108,7 +118,7 @@ export default function OverTimePage() {
           setEndTime(19);
           setCarName("");
           setSelectCar(false);
-          // navigate.push(`${window.location.origin}/page/overtime/overtime-calendar`);
+          navigate.push(`${window.location.origin}/page/overtime/overtime-calendar`);
         }
       },
       onCancel() {
@@ -166,7 +176,10 @@ export default function OverTimePage() {
                   </Form.Item>
                 </div>
                 <div className="md:col-span-4 ">
-                  <Form.Item label={"เรียน"} name={`ownerGroupId`} initialValue={{ ownerGroupId: getHeader }}>
+                  <Form.Item
+                    label={"เรียน"}
+                    name={`ownerGroupId`}
+                    initialValue={getHeader.map((user: any) => `คุณ ${user.firstNameTh} ${user.lastNameTh}`).join(" , ")}>
                     <Input disabled multiple />
                   </Form.Item>
                 </div>

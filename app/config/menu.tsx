@@ -66,7 +66,7 @@ export const MenuSider: MenuItem[] = [
     key: "leave-control-management",
     icon: IconDataLeave,
     label: `ข้อมูลการลา`,
-    rule: ["user", "admin"],
+    rule: ["user", "admin", "header"],
     children: [
       {
         key: `leave-control-management/leave-letter`,
@@ -80,8 +80,8 @@ export const MenuSider: MenuItem[] = [
       },
       {
         key: `leave-control-management/leave-history-admin`,
-        label: `ประวัติการลา (แอดมิน)`,
-        rule: "admin",
+        label: `จัดการการลา`,
+        rule: ["admin", "header"],
       },
       {
         key: `leave-control-management/leave-disabled-management`,

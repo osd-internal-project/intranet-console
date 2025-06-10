@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Avatar, Badge, Button, Drawer, Dropdown, Menu, MenuProps, Space } from "antd";
 import { Header } from "antd/es/layout/layout";
-import { ItemType } from "antd/es/menu/interface";
 import {
   ArrowLeftOutlined,
   ArrowRightOutlined,
@@ -14,6 +13,7 @@ import {
   MenuUnfoldOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+import Image from "next/image";
 
 interface Prop {
   collapsed: boolean;
@@ -21,17 +21,15 @@ interface Prop {
   setCollapsed: (setCollapsed: boolean) => void;
   currentPath: string;
   menulist: MenuProps["items"];
-  countNoti: number;
-  avatar: any;
   logOut: () => void;
 }
 
-const Navigation: React.FC<Prop> = ({ profileDetail, collapsed, setCollapsed, currentPath, menulist, avatar, logOut }) => {
+const Navigation: React.FC<Prop> = ({ profileDetail, collapsed, setCollapsed, currentPath, menulist, logOut }) => {
   const [open, setOpen] = useState(false);
-  const [notiDetails, setNotiDetils] = useState<{
-    count: number;
-    list: ItemType[];
-  }>({ count: 0, list: [] });
+  // const [notiDetails, setNotiDetils] = useState<{
+  //   count: number;
+  //   list: ItemType[];
+  // }>({ count: 0, list: [] });
   const navigate = useRouter();
   const MenuNav: MenuProps["items"] = [
     {
@@ -91,7 +89,7 @@ const Navigation: React.FC<Prop> = ({ profileDetail, collapsed, setCollapsed, cu
           </div>
         </div>
         <div className="pr-8 space-x-4">
-          <Dropdown menu={{ items: notiDetails.list }} className="text-black hover:text-zinc-300">
+          {/* <Dropdown menu={{ items: notiDetails.list }} className="text-black hover:text-zinc-300">
             <a onClick={(e) => e.preventDefault()}>
               <Space className=" text-base">
                 <Badge count={notiDetails.count} size="small">
@@ -99,16 +97,18 @@ const Navigation: React.FC<Prop> = ({ profileDetail, collapsed, setCollapsed, cu
                 </Badge>
               </Space>
             </a>
-          </Dropdown>
+          </Dropdown> */}
           <Dropdown menu={{ items: MenuNav }} className="text-black hover:text-zinc-300">
             <a onClick={(e) => e.preventDefault()}>
               <Space className="text-base">
-                {profileDetail?.firstNameTh ?`คุณ ${profileDetail?.firstNameTh} ${profileDetail?.lastNameTh &&profileDetail.lastNameTh}`:profileDetail?.username}
-                {avatar && avatar instanceof Blob ? (
+                {profileDetail?.firstNameTh
+                  ? `คุณ ${profileDetail?.firstNameTh} ${profileDetail?.lastNameTh && profileDetail.lastNameTh}`
+                  : profileDetail?.username}
+                {/* {avatar && avatar instanceof Blob ? (
                   <Avatar size={40} src={avatar instanceof Blob ? URL.createObjectURL(avatar) : ""} />
-                ) : (
-                  <Avatar icon={<UserOutlined />} />
-                )}
+                ) : ( */}
+                <Avatar icon={<UserOutlined />} />
+                {/* )} */}
               </Space>
             </a>
           </Dropdown>
@@ -117,7 +117,7 @@ const Navigation: React.FC<Prop> = ({ profileDetail, collapsed, setCollapsed, cu
       <Drawer
         title={
           <div className="flex justify-center bg-white ">
-            <img src="/images/logo-osd-mini-v2.png" alt="logo-page" className={`w-20 h-auto`} />
+            <Image src="/images/logo-osd-mini-v2.png" alt="logo-page" className={`w-20 h-auto`} />
           </div>
         }
         placement="left"

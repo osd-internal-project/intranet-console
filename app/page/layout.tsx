@@ -2,21 +2,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Navigation from "@/components/Navigation";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Button, FloatButton, Layout, Menu, message, Spin } from "antd";
+import { useRouter } from "next/navigation";
+import { Button, Layout, Menu, Spin } from "antd";
 import { MenuSiderWithModule } from "@/app/config/menu";
-import { pageWithoutMenu } from "@/app/config/data";
 import { Footer } from "antd/es/layout/layout";
-import { useAxiosIntranet, useAxiosUser } from "../lib/axios/hooks/userAxiosAuth";
-import IndexServices from "./services/index.service";
-import NotiLogsServices from "../services/noti-logs.service";
-import { PhoneOutlined } from "@ant-design/icons";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
-import { ITNotiLogsMessage } from "../common/noti-logs";
 import { loadAppConfig } from "../config/app-config";
-import UserServices from "../services/user.service";
 import { UsersServices } from "../services/users.service";
 import { UserContectType, UserContext } from "../config/userContext";
+import Image from "next/image";
 
 const { Content, Sider } = Layout;
 
@@ -24,13 +18,9 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const navigate = useRouter();
   const { tokenAccess, authenticated, login, logout, id24Axios } = useId24();
   const { saveUser, saveRoles } = useContext(UserContext) as UserContectType;
-  // const baseUrlIntra = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const [loading, setLoading] = useState<boolean>(true);
   const [collapsed, setCollapsed] = useState(false);
-  // const [notiLogMessages, setNotiLogMessages] = useState<ITNotiLogsMessage[]>([]);
-  const [countNoti, setCountNoti] = useState<any>();
-  const [avatar, setAvatar] = useState<any>();
   const [profileDetail, setProfileDetail] = useState<any>();
 
   const [userRequestedLogout, setUserRequestedLogout] = useState(false);
@@ -47,6 +37,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const fetchData = async () => {
     try {
       const profileUser = await UsersServices(baseUrlUser).processAfterLoginAuth();
+      console.time(profileUser);
       if (profileUser) {
         setProfileDetail(profileUser);
         saveUser(profileUser);
@@ -81,14 +72,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     return <Button onClick={() => login(defaultPath, false)}>Login</Button>;
   }
 
-  // if (authenticated) {
-  //   console.log(profileDetail);
-  //   if (profileDetail === undefined) {
-  //     const pathLocation = `${window.location.origin}/permission-access`;
-  //     navigate.push(pathLocation);
-  //   }
-  // }
-
   const logOut = async () => {
     setUserRequestedLogout(true);
     logout().then(() => login(defaultPath, false));
@@ -114,10 +97,10 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <div className="flex justify-center py-4 ">
             {!collapsed ? (
               <>
-                <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : " w-40"}`} />
+                <Image src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : " w-40"}`} />
               </>
             ) : (
-              <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
+              <Image src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
             )}
           </div>
           <Menu
@@ -132,12 +115,10 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             <Navigation
               logOut={logOut}
               profileDetail={profileDetail}
-              countNoti={countNoti}
               collapsed={collapsed}
               setCollapsed={setCollapsed}
               currentPath={currentPath}
               menulist={menulist}
-              avatar={avatar}
             />
           </div>
 
@@ -155,6 +136,4 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       </Layout>
     </Spin>
   );
-
-  // }
 }

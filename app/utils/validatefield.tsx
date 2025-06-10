@@ -361,7 +361,7 @@ export const CheckStatusLeaveType = (status: string) => {
   let text = "";
   let icon = null;
   switch (status) {
-    case "waitting":
+    case "waiting":
       color = "DodgerBlue";
       text = "รอการอนุมัติ";
       icon = <SyncOutlined spin />;
@@ -399,8 +399,14 @@ export const checkMaCarBookConfig = async (record: any, carBookStartDate: Date, 
 
 export const showDataLeave = (value: number) => {
   const wholeDays = value ? Math.floor(value) : 0;
+  // console.log(value);
+
   const totalHoursDecimal = value ? parseFloat((value % 1).toFixed(2)) : 0;
+  // console.log(totalHoursDecimal);
+
   const totalHours = Math.floor(totalHoursDecimal * 10);
+  // console.log(totalHours);
+
   const totalMinutesRaw = (totalHoursDecimal * 10) % 1;
   let totalMinutes = Math.round(totalMinutesRaw * 10);
   let timeDisplay = `${totalHours} ชม.`;

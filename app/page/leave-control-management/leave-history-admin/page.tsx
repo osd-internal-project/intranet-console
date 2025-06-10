@@ -114,8 +114,6 @@ export default function Page() {
     }
   }
 
-  console.log(dataLeaveUser);
-
   return (
     <>
       <Row>

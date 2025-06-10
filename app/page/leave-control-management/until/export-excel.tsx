@@ -17,7 +17,7 @@ const ExportDataLeaveAll: React.FC<ExportDataLeaveProps> = ({ data }) => {
       typeName: dataItem.typeName,
       rangeDate: `${dayjs(dataItem.startDate).format("DD/MM/YYYY")} ถึง ${dayjs(dataItem.endDate).format("DD/MM/YYYY")}`,
       status:
-        dataItem.status === "waitting"
+        dataItem.status === "waiting"
           ? "รอการอนุมัติ"
           : dataItem.status === "cancel"
           ? "ยกเลิก"

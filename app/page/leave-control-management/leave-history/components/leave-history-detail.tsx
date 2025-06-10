@@ -133,7 +133,7 @@ export const LeaveHistoryDetail: React.FC<props> = ({
                 onClick={() => {
                   onFinishUpdate("cancel", dataById ? dataById : 0);
                 }}
-                disabled={statusById !== "waitting"}
+                disabled={statusById !== "waiting"}
                 danger>
                 <Space>
                   {`ยกเลิกวันลา`}

@@ -132,7 +132,7 @@ export default function Page() {
         positionId: values.posId,
         typeId: values.type_id,
         typeName: dataMasterType ? dataMasterType.typeName : undefined,
-        status: "waitting",
+        status: "waiting",
         attrachFile: attendFiles[0]?.name,
         leaveHour: sumDataLeave,
         groupId: user?.ownerGroupId,
@@ -151,7 +151,6 @@ export default function Page() {
         },
         onOk: async () => {
           const result = await LeaveManagementServices(baseUrlIntranet).createDataLeave(base);
-          console.log(result);
           if (result) {
             if (attendFiles.length > 0) {
               attendFiles.forEach(async (file) => {

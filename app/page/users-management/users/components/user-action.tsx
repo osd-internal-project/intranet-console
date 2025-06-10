@@ -410,7 +410,7 @@ export const UserAction: React.FC<Props> = ({
             </div>
             <div className=" col-span-1">
               <Form.Item<TCreateUserDto> label="ตำแหน่ง" name="masterPositionId" rules={[{ required: true }]}>
-                <Select placeholder="กรุณาเลือก ตำแหน่ง" options={positionOption} />
+                <Select placeholder="กรุณาเลือก ตำแหน่ง" options={positionOption} allowClear showSearch optionFilterProp="label" />
               </Form.Item>
             </div>
             <div className=" col-span-1">

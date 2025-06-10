@@ -1,12 +1,10 @@
 "use client";
-import { Form, Checkbox, Button, Input, Alert, Card, Spin, message } from "antd";
+import { Form, Checkbox, Button, Input, Alert, Card, Spin, message, Image } from "antd";
 import { redirect, useRouter } from "next/navigation";
 import { useForm } from "antd/es/form/Form";
 import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { createCookieLocal, getCookieLocal } from "../utils/cookies";
-import config from "@/app/config";
-import Image from "next/image";
 
 type Props = {
   searchParams: Record<"callbackUrl" | "error", string>;
@@ -56,7 +54,7 @@ export default function Login(props: Props) {
       <div className="grid grid-cols-1 md:grid-cols-2 " style={{ backgroundColor: "#f5f5f5" }}>
         <div className=" justify-center  items-center h-screen w-full hidden  md:flex">
           <div className="flex justify-center m-4">
-            <Image src="/images/osd-logo.png" alt="logo-page" className={` w-96 md:w-96 h-auto`} />
+            <Image preview={false} src="/images/osd-logo.png" alt="logo-page" className={` w-96 md:w-96 h-auto`} />
           </div>
         </div>
         <div className="grid grid-cols-6 gap-4 grid-rows-4 h-screen">

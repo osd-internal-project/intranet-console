@@ -3,14 +3,13 @@ import React, { useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Navigation from "@/components/Navigation";
 import { useRouter } from "next/navigation";
-import { Button, Layout, Menu, Spin } from "antd";
+import { Button, Image, Layout, Menu, Spin } from "antd";
 import { MenuSiderWithModule } from "@/app/config/menu";
 import { Footer } from "antd/es/layout/layout";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "../config/app-config";
 import { UsersServices } from "../services/users.service";
 import { UserContectType, UserContext } from "../config/userContext";
-import Image from "next/image";
 
 const { Content, Sider } = Layout;
 
@@ -97,10 +96,10 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <div className="flex justify-center py-4 ">
             {!collapsed ? (
               <>
-                <Image src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : " w-40"}`} />
+                <Image preview={false} src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : " w-40"}`} />
               </>
             ) : (
-              <Image src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
+              <Image preview={false} src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
             )}
           </div>
           <Menu

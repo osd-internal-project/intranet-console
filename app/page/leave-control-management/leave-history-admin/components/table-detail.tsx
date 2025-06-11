@@ -5,10 +5,10 @@ import { dateToStringThNoTime } from "@/app/utils/format";
 import { deleteIcon, CancelIcon, CheckIcon } from "@/components/icon";
 import ExportDataLeaveAll from "../../until/export-excel";
 import { ITypeDataLeave } from "../../common";
-import DataLeaveService from "../../../../services/leave-management.service";
 import { CheckStatusLeaveType, showStatusLeave } from "@/app/utils/validatefield";
-import { dateFormatTime } from "@/app/utils";
+import { dateFormatTimeNoTIme } from "@/app/utils";
 import { LeaveDetailForm } from "./leave-detail-form";
+import { intersection } from "lodash";
 
 export interface props {
   dataLeaveUser: ITypeDataLeave[];
@@ -18,6 +18,7 @@ export interface props {
   onFinishUpdate: (type: string, id: number) => void;
   onFinishDelete: (type: string, id: number) => void;
   downloadFile: (id: number, filename: string) => void;
+  sideMenuGroups: string[];
 }
 
 export const TableDetail: React.FC<props> = ({
@@ -28,6 +29,7 @@ export const TableDetail: React.FC<props> = ({
   onFinishUpdate,
   onFinishDelete,
   downloadFile,
+  sideMenuGroups,
 }): React.ReactElement => {
   const { Search } = Input;
   const [statusById, setStatusById] = useState<any | null>(null);
@@ -54,20 +56,14 @@ export const TableDetail: React.FC<props> = ({
   const fecthDataDetail = async (record: ITypeDataLeave) => {
     try {
       const base = {
-        id: record.id,
+        ...record,
         name: `${record.firstName} ${record.lastName}`,
         createAt: record.createdAt ? dateToStringThNoTime(record.createdAt) : "-",
-        detail: record.detail,
         leaveHour: record.leaveHour ? (record.leaveHour % 8 === 0 ? `${record.leaveHour / 8} วัน` : `${record.leaveHour} ชม.`) : "ไม่มีข้อมูล",
         startDate: record?.startDate ? dateToStringThNoTime(record?.startDate) : "-",
         endDate: record?.endDate ? dateToStringThNoTime(record?.endDate) : "-",
-        phoneNumber: record.phoneNumber,
         typeLeave: record.typeName,
         approvedDate: record.approvedDate ? dateToStringThNoTime(record?.approvedDate) : "-",
-        userApproved: record.userApproved,
-        dataLeaveFiles: record.dataLeaveFiles,
-        ownerId: record.ownerId,
-        ownerName: record.ownerName,
       };
       setStatusById(record.status);
       setDataById(record.id);
@@ -96,13 +92,7 @@ export const TableDetail: React.FC<props> = ({
         return row?.startDate && row?.endDate ? `${dateToStringThNoTime(row?.startDate)} ถึง ${dateToStringThNoTime(row?.endDate)}` : "-";
       },
     },
-    {
-      key: "status",
-      dataIndex: "status",
-      title: "สถานะ",
-      align: "center",
-      render: (status: string) => CheckStatusLeaveType(status),
-    },
+
     {
       key: "userApproved",
       dataIndex: "userApproved",
@@ -113,7 +103,14 @@ export const TableDetail: React.FC<props> = ({
       key: "approvedDate",
       dataIndex: "approvedDate",
       title: "วันที่อนุมัติ",
-      render: (value: any) => dateFormatTime(value),
+      render: (value: any) => dateFormatTimeNoTIme(value),
+    },
+    {
+      key: "status",
+      dataIndex: "status",
+      title: "สถานะ",
+      align: "center",
+      render: (status: string) => CheckStatusLeaveType(status),
     },
     {
       key: "id",
@@ -123,7 +120,7 @@ export const TableDetail: React.FC<props> = ({
       render: (e: string, row: ITypeDataLeave, index: number) => {
         return (
           <>
-            <Button type="primary" ghost onClick={() => fecthDataDetail(row)}>
+            <Button size="small" type="primary" ghost onClick={() => fecthDataDetail(row)}>
               {`รายละเอียด`}
             </Button>
           </>
@@ -171,18 +168,20 @@ export const TableDetail: React.FC<props> = ({
               </Tooltip>
             </Col>
             <Col>
-              <Tooltip title={`Delete`}>
-                <Button
-                  size="small"
-                  type="primary"
-                  style={{ width: "60px", height: "30px" }}
-                  onClick={() => {
-                    onFinishDelete("delete", dataById ? dataById : 0);
-                  }}
-                  danger>
-                  {deleteIcon}
-                </Button>
-              </Tooltip>
+              {intersection(sideMenuGroups, ["admin"]).length ? (
+                <Tooltip title={`Delete`}>
+                  <Button
+                    size="small"
+                    type="primary"
+                    style={{ width: "60px", height: "30px" }}
+                    onClick={() => {
+                      onFinishDelete("delete", dataById ? dataById : 0);
+                    }}
+                    danger>
+                    {deleteIcon}
+                  </Button>
+                </Tooltip>
+              ) : null}
             </Col>
           </Row>
         </Modal>

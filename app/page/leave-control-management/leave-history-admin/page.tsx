@@ -10,9 +10,10 @@ import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
 export default function Page() {
+  const { id24Axios, tokenAccess } = useId24();
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const sideMenuGroups =
+    tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
   const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [loading, setLoading] = useState<boolean>(true);
   const [dataLeaveUser, setDataLeaveUser] = useState<ITypeDataLeave[]>([]);
@@ -21,7 +22,7 @@ export default function Page() {
 
   useEffect(() => {
     if (loading) loadData();
-  }, [loading]);
+  }, [loading, user]);
 
   const loadData = async () => {
     if (user?.userId) {
@@ -133,7 +134,6 @@ export default function Page() {
         <Divider orientation="left" orientationMargin="0">
           <div className="title-page-font">{`จัดการการลา`}</div>
         </Divider>
-
         <div className="w-full">
           <Card>
             <TableDetail
@@ -144,6 +144,7 @@ export default function Page() {
               onFinishUpdate={(type: string, id: number) => onFinishUpdate(type, id)}
               onFinishDelete={(type: string, id: number) => onFinishDelete(type, id)}
               downloadFile={(id: number, filename: string) => downloadFile(id, filename)}
+              sideMenuGroups={sideMenuGroups}
             />
           </Card>
         </div>

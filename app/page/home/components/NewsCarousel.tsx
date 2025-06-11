@@ -20,20 +20,20 @@ const NewsCarouselComponent: React.FC<Props> = ({ informationNews }): React.Reac
     setIsModalVisible(true);
   };
 
-  const chunkedNews = [];
+  const ImageNews = [];
   if (informationNews)
     for (let i = 0; i < informationNews.length; i += 3) {
-      chunkedNews.push(informationNews.slice(i, i + 3));
+      ImageNews.push(informationNews.slice(i, i + 3));
     }
 
   return (
     <>
       <div style={{ position: "relative" }}>
         <Carousel ref={carouselRef} dots={false} arrows={false}>
-          {chunkedNews?.map((chunk, index) => (
+          {ImageNews?.map((data, index) => (
             <div key={index} style={{ display: "flex" }}>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 ">
-                {chunk?.map((file, fileIndex) => (
+                {data?.map((file, fileIndex) => (
                   <Card
                     key={fileIndex}
                     onClick={() => showModal(file)}

@@ -8,7 +8,6 @@ import BigCarouselComponent from "./components/BigCarousel";
 import DocumentComponent from "./components/Document";
 import "antd/dist/reset.css";
 import { CarFilled, FileFilled, TeamOutlined } from "@ant-design/icons";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import SlideImageService from "./services/index.service";
 import { MasterRoomType, HandbookFileType, InformationNewsType } from "./common";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
@@ -16,7 +15,6 @@ import { loadAppConfig } from "@/app/config/app-config";
 
 export default function HomePage() {
   const { id24Axios, tokenAccess } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [loading, setLoading] = useState<boolean>(true);
   const [slideImage, setSlideImage] = useState<any[]>([]);
@@ -26,15 +24,19 @@ export default function HomePage() {
   useEffect(() => {}, [tokenAccess?.userAccess]);
 
   const fetchData = async () => {
-    const dataSlideImage = await SlideImageService(baseUrlIntranet).getSlideImageByOrder();
-    const MasterBookingresponse = await SlideImageService(baseUrlIntranet).getMasterRoomQuery();
-    const dataHandbookFileQuery = await SlideImageService(baseUrlIntranet).getHandbookFileQuery();
-    const dataInformationNews = await SlideImageService(baseUrlIntranet).getinformationNewsQuery();
-    setInformationNews(dataInformationNews);
-    setHandbookFile(dataHandbookFileQuery);
-    setMasterBookingRoom(MasterBookingresponse);
-    setSlideImage(dataSlideImage);
-    setLoading(false);
+    try {
+      const dataSlideImage = await SlideImageService(baseUrlIntranet).getSlideImageByOrder();
+      const MasterBookingresponse = await SlideImageService(baseUrlIntranet).getMasterRoomQuery();
+      const dataHandbookFileQuery = await SlideImageService(baseUrlIntranet).getHandbookFileQuery();
+      const dataInformationNews = await SlideImageService(baseUrlIntranet).getinformationNewsQuery();
+      setInformationNews(dataInformationNews);
+      setHandbookFile(dataHandbookFileQuery);
+      setMasterBookingRoom(MasterBookingresponse);
+      setSlideImage(dataSlideImage);
+      setLoading(false);
+    } catch (e) {
+      console.log(`message error bcs ${e}`);
+    }
   };
 
   useEffect(() => {
@@ -58,7 +60,7 @@ export default function HomePage() {
 
   return (
     <>
-      <BigCarouselComponent slideImage={slideImage} />
+      {slideImage.length > 0 ? <BigCarouselComponent slideImage={slideImage} /> : null}
       <div className="my-2" />
       <div className="grid md:grid-cols-3">
         <div className="px-2 mb-4">
@@ -99,7 +101,6 @@ export default function HomePage() {
             <DocumentComponent handbookFile={handbookFile} downloadFile={(id: number, filename: string) => downloadFile(id, filename)} />
           </Card>
         </div>
-
         <div className="lg:col-span-1">
           <Card title="ห้องประชุม" className="text-center ">
             <MeetingRoomTableComponent pagination={false} masterBookingRoom={masterBookingRoom} />

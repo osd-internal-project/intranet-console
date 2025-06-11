@@ -1,7 +1,7 @@
 import { PaperClipOutlined } from "@ant-design/icons";
 import { Button, Card, Tooltip } from "antd";
 import React from "react";
-import { HandbookFileType, HandbookType } from "../common";
+import { HandbookFileType } from "../common";
 import { downloadLoopIcon } from "@/components/icon";
 
 export interface props {
@@ -9,10 +9,7 @@ export interface props {
   downloadFile: (id: number, filename: string) => void;
 }
 
-const DocumentComponent: React.FC<props> = ({
-  handbookFile,
-  downloadFile,
-}): React.ReactElement => {
+const DocumentComponent: React.FC<props> = ({ handbookFile, downloadFile }): React.ReactElement => {
   if (!handbookFile || handbookFile.length === 0) {
     return <div>No Data...</div>;
   }
@@ -25,8 +22,7 @@ const DocumentComponent: React.FC<props> = ({
         background: "#f0f2f5",
         height: "370px",
         overflowY: "auto",
-      }}
-    >
+      }}>
       {handbookFile.map((file, index) => (
         <Card
           key={file.fileId}
@@ -39,8 +35,7 @@ const DocumentComponent: React.FC<props> = ({
             backgroundColor: "#fff",
           }}
           size="small"
-          type="inner"
-        >
+          type="inner">
           <div style={{ marginBottom: "8px" }}>
             <h2
               style={{
@@ -52,8 +47,7 @@ const DocumentComponent: React.FC<props> = ({
                 lineHeight: "1.2",
                 fontWeight: "bold",
                 marginLeft: "10px",
-              }}
-            >
+              }}>
               {file.fileName || "Not fileName"}
             </h2>
             <div
@@ -62,19 +56,14 @@ const DocumentComponent: React.FC<props> = ({
                 justifyContent: "space-between",
                 alignItems: "center",
                 marginLeft: "10px",
-              }}
-            >
+              }}>
               <div>
                 <p />
                 <h5 style={{ fontSize: "14px", margin: 0, color: "#595959" }}>
-                  <strong>ประเภทเอกสาร : </strong>{" "}
-                  {file.filetype || "Not specified"}
+                  <strong>ประเภทเอกสาร : </strong> {file.filetype || "Not specified"}
                 </h5>
                 <h5 style={{ fontSize: "14px", margin: 0, color: "#595959" }}>
-                  <strong>วันที่อัปโหลด : </strong>{" "}
-                  {file.createdAt
-                    ? new Date(file.createdAt).toLocaleDateString()
-                    : "Date not available"}
+                  <strong>วันที่อัปโหลด : </strong> {file.createdAt ? new Date(file.createdAt).toLocaleDateString() : "Date not available"}
                 </h5>
               </div>
 
@@ -89,15 +78,12 @@ const DocumentComponent: React.FC<props> = ({
                   fontSize: "16px",
                   lineHeight: "1.2",
                   flexBasis: "50%",
-                }}
-              >
+                }}>
                 <strong style={{ marginRight: "5px" }}>ไฟล์ : </strong>
                 <Tooltip title="ดาวน์โหลด">
                   <Button
                     type="link"
-                    onClick={() =>
-                      downloadFile(file.handbookid, file.fileName)
-                    }
+                    onClick={() => downloadFile(file.handbookid, file.fileName)}
                     style={{
                       overflow: "hidden",
                       whiteSpace: "nowrap",
@@ -105,8 +91,7 @@ const DocumentComponent: React.FC<props> = ({
                       padding: 0,
                       display: "inline-flex",
                       alignItems: "center",
-                    }}
-                  >
+                    }}>
                     <PaperClipOutlined style={{ marginRight: "5px" }} />
                     <span
                       style={{
@@ -115,12 +100,9 @@ const DocumentComponent: React.FC<props> = ({
                         textOverflow: "ellipsis",
                         display: "inline-block",
                         maxWidth: "180px",
-                      }}
-                    >
+                      }}>
                       <div style={{ display: "flex", alignItems: "center" }}>
-                        <span style={{ marginRight: "8px" }}>
-                          {file.fileName}
-                        </span>
+                        <span style={{ marginRight: "8px" }}>{file.fileName}</span>
                         {downloadLoopIcon}
                       </div>
                     </span>

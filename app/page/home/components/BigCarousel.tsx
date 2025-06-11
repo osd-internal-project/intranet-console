@@ -10,11 +10,11 @@ export const BigCarouselComponent: React.FC<Props> = ({ slideImage }) => {
     <Card styles={{ body: { padding: 0 } }}>
       {slideImage?.length > 0 ? (
         <ConfigProvider theme={{ components: { Carousel: { arrowSize: 35 } } }}>
-          <Carousel autoplay={true} adaptiveHeight={true} arrows infinite effect="fade" lazyLoad="progressive">
+          <Carousel autoplay={true} adaptiveHeight={true} arrows infinite effect="fade" lazyLoad="ondemand">
             {slideImage.map((image) => {
               return (
                 <div key={image.id}>
-                  <Image
+                  {/* <Image
                     src={`${process.env.REACT_APP_API_BASE_URL_INTRANET}/slide-image/get-file/${image.fileId}`}
                     crossOrigin="anonymous"
                     style={{
@@ -23,7 +23,16 @@ export const BigCarouselComponent: React.FC<Props> = ({ slideImage }) => {
                     }}
                     preview={false}
                     width={"100%"}
-                    // height={300}
+                  /> */}
+                  <img
+                    src={`${process.env.REACT_APP_API_BASE_URL_INTRANET}/slide-image/get-file/${image.fileId}`}
+                    loading="lazy"
+                    style={{
+                      objectFit: "cover",
+                      aspectRatio: "21/9",
+                      width: "100%",
+                    }}
+                    crossOrigin="anonymous"
                   />
                 </div>
               );

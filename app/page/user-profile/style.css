@@ -16,6 +16,7 @@ font-weight: 400!important;
     color : #555!important;
     border: 0!important;
     font-weight: bold!important;
+    padding: 0 !important;
   }
   .read-only-input2 {
     background-color : #eee!important;

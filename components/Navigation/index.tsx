@@ -26,10 +26,6 @@ interface Prop {
 
 const Navigation: React.FC<Prop> = ({ profileDetail, collapsed, setCollapsed, currentPath, menulist, logOut }) => {
   const [open, setOpen] = useState(false);
-  // const [notiDetails, setNotiDetils] = useState<{
-  //   count: number;
-  //   list: ItemType[];
-  // }>({ count: 0, list: [] });
   const navigate = useRouter();
   const MenuNav: MenuProps["items"] = [
     {
@@ -68,36 +64,8 @@ const Navigation: React.FC<Prop> = ({ profileDetail, collapsed, setCollapsed, cu
               }}
             />
           </div>
-          <div>
-            <Button
-              type="text"
-              disabled={!currentPath ? true : false}
-              icon={<ArrowLeftOutlined />}
-              onClick={() => navigate.back()}
-              style={{
-                fontSize: "16px",
-              }}
-            />
-            <Button
-              type="text"
-              icon={<ArrowRightOutlined />}
-              onClick={() => navigate.forward()}
-              style={{
-                fontSize: "16px",
-              }}
-            />
-          </div>
         </div>
         <div className="pr-8 space-x-4">
-          {/* <Dropdown menu={{ items: notiDetails.list }} className="text-black hover:text-zinc-300">
-            <a onClick={(e) => e.preventDefault()}>
-              <Space className=" text-base">
-                <Badge count={notiDetails.count} size="small">
-                  <BellTwoTone className=" text-lg" />
-                </Badge>
-              </Space>
-            </a>
-          </Dropdown> */}
           <Dropdown menu={{ items: MenuNav }} className="text-black hover:text-zinc-300">
             <a onClick={(e) => e.preventDefault()}>
               <Space className="text-base">

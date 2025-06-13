@@ -1,16 +1,18 @@
 "use client";
-import { Button, Card, Checkbox, Form, Input, Modal, Select, Spin, Switch, message } from "antd";
-import { useParams } from "next/navigation";
+import "../style.css";
+import { Button, Card, Form, Input, Modal, Select, Switch, message } from "antd";
 import React, { useState, useEffect } from "react";
-import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import UserServices from "../services/index.service";
 import { useForm } from "antd/es/form/Form";
-import { Icon } from "@iconify/react";
-import { useRouter } from "next/navigation";
-import "../style.css";
-import { dateToStringTh } from "@/app/utils/format";
+import { dateToStringTh, dateToStringThNoTime } from "@/app/utils/format";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
 export interface props {
   userid: string;
 }
@@ -27,24 +29,23 @@ type detailType = {
   createdAt: Date | null;
   updatedAt: Date | null;
   masterPosition: any | null;
+  empId: string | null;
+  startWork: Date | null;
 };
 type option = {
   label: number;
   value: string;
 };
 const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement => {
-  const router = useRouter();
-  // const userAuth = useAxiosUser();
   const { id24Axios } = useId24();
   const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const userServices = UserServices(baseUrlUser);
   const [detailForm] = useForm();
   const [repasswordForm] = Form.useForm();
   const [loading, setLoading] = useState(true);
-  const [disabledEdit, setDisabledEdit] = useState(false);
   const [openChangePassword, setOpenChangePassword] = useState(false);
   const [checkedActiveStatus, setCheckedActiveStatus] = useState<boolean>(false);
+  const [dateWork, setDateWork] = useState<string>("");
   const [positionOption, setPositionOption] = useState<option[]>([]);
   useEffect(() => {
     if (loading) {
@@ -54,15 +55,24 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
   const loadingDetail = async () => {
     if (userid) {
       const data = (await userServices.getUsersByUserId(userid)) as detailType;
+      const start = dayjs(data.startWork);
+      const end = dayjs();
+      const years = end.diff(start, "year");
+      const months = end.diff(start.add(years, "year"), "month");
+      const days = end.diff(start.add(years, "year").add(months, "month"), "day");
+      const formattedDuration = `${years} ปี ${months} เดือน ${days} วัน`;
+      setDateWork(formattedDuration);
       const formdata = {
+        empId: data.empId,
+        startWork: data.startWork ? dateToStringThNoTime(data.startWork) : "",
         userId: data.userId,
         username: data.username,
         firstNameTh: data.firstNameTh,
         lastNameTh: data.lastNameTh,
         email: data.email,
         phoneNumber: data.phoneNumber,
-        createdAt: data.createdAt ? dateToStringTh(data.createdAt) : "",
-        updatedAt: data.updatedAt ? dateToStringTh(data.updatedAt) : "",
+        createdAt: data.createdAt ? dateToStringThNoTime(data.createdAt) : "",
+        updatedAt: data.updatedAt ? dateToStringThNoTime(data.updatedAt) : "",
         masterPositionId: data.masterPosition.posId,
       };
       setCheckedActiveStatus(data.activeStatus);
@@ -139,18 +149,14 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
   return (
     <>
       <Card>
-        <Form
-          form={detailForm}
-          name="basic"
-          // labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
-          // style={{ maxWidth: 600 }}
-          // onFinishFailed={}
-          autoComplete="off"
-          layout="vertical">
+        <div className="flex justify-end ">
+          <div className="text-red-500">*</div>
+          <div className="text-lg font-bold">{`อายุงาน ${dateWork}`}</div>
+        </div>
+        <Form form={detailForm} name="basic" wrapperCol={{ span: 16 }} autoComplete="off" layout="vertical">
           <div className="grid grid-cols-1 md:grid-cols-3 space-y-0">
             <div>
-              <Form.Item label="User Id" name="userId" style={{ marginBottom: "2px" }}>
+              <Form.Item label="User Id :" name="userId" style={{ marginBottom: "2px" }}>
                 <Input disabled className="read-only-input" />
               </Form.Item>
             </div>
@@ -164,12 +170,12 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
               </Form.Item>
             </div>
             <div>
-              <Form.Item label="Email" name="email" rules={[{ required: true, message: "กรุณากรอก Email" }]} style={{ marginBottom: "2px" }}>
+              <Form.Item label="Email :" name="email" rules={[{ required: true, message: "กรุณากรอก Email" }]} style={{ marginBottom: "2px" }}>
                 <Input disabled className="read-only-input" />
               </Form.Item>
             </div>
             <div>
-              <Form.Item label="Status" name="activeStatus" style={{ marginBottom: "2px" }}>
+              <Form.Item label="Status :" name="activeStatus" style={{ marginBottom: "2px" }}>
                 <Switch
                   disabled={true}
                   checkedChildren="Active"
@@ -180,7 +186,7 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                 />
               </Form.Item>
             </div>
-            <Form.Item label="Change Password">
+            <Form.Item label="Change Password :">
               <div className=" flex w-full space-x-2">
                 <div className=" w-2/3">
                   <Input.Password disabled value={"1234"} className="read-only-input2" />
@@ -199,40 +205,50 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
             <div></div>
 
             <div className=" col-span-3">
-              <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-200" />
+              <hr className="h-px my-3 bg-gray-200 border-0 dark:bg-gray-200" />
             </div>
+
             <div>
-              <Form.Item label="First Name" name="firstNameTh" rules={[{ required: true, message: "กรุณากรอก  Username" }]}>
+              <Form.Item label="First Name :" name="firstNameTh" rules={[{ required: true, message: "กรุณากรอก  Username" }]}>
                 <Input disabled className="read-only-input" />
               </Form.Item>
             </div>
             <div>
               <Form.Item
-                label="Last Name"
+                label="Last Name :"
                 name="lastNameTh"
                 rules={[{ required: true, message: "กรุณากรอก Last Name" }]}
                 style={{ marginBottom: "2px" }}>
                 <Input disabled className="read-only-input" />
               </Form.Item>
             </div>
-
             <div>
-              <Form.Item label="Phone Number" name="phoneNumber" rules={[{ validator: validateOnlyNumbers }]} style={{ marginBottom: "2px" }}>
+              <Form.Item label="EMP ID :" name="empId" style={{ marginBottom: "2px" }}>
                 <Input disabled className="read-only-input" />
               </Form.Item>
             </div>
             <div>
-              <Form.Item label="Position" name="masterPositionId" style={{ marginBottom: "2px" }}>
+              <Form.Item label="Phone Number :" name="phoneNumber" rules={[{ validator: validateOnlyNumbers }]} style={{ marginBottom: "2px" }}>
+                <Input disabled className="read-only-input" />
+              </Form.Item>
+            </div>
+            <div>
+              <Form.Item label="Position :" name="masterPositionId" style={{ marginBottom: "2px" }}>
                 <Select options={positionOption} disabled className="read-only-input" />
               </Form.Item>
             </div>
             <div>
-              <Form.Item label="Created Date" name="createdAt" style={{ marginBottom: "2px" }}>
+              <Form.Item label="Created Date :" name="createdAt" style={{ marginBottom: "2px" }}>
                 <Input disabled className="read-only-input" />
               </Form.Item>
             </div>
             <div>
-              <Form.Item label="Updated Date" name="updatedAt">
+              <Form.Item label="Updated Date :" name="updatedAt">
+                <Input disabled className="read-only-input" />
+              </Form.Item>
+            </div>
+            <div>
+              <Form.Item label="Start Date :" name="startWork">
                 <Input disabled className="read-only-input" />
               </Form.Item>
             </div>

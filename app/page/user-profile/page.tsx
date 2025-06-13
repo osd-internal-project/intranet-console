@@ -17,13 +17,13 @@ export default function UserDetailPage() {
               },
 
               {
-                title: <span>Profile</span>,
+                title: <span>ข้อมูลส่วนตัว</span>,
               },
             ]}
           />
         </Col>
         <Col span={24}>
-          <div className="title-page-font">{`PROFILE`}</div>
+          <div className="title-page-font">{`ข้อมูลส่วนตัว`}</div>
         </Col>
         <Col span={24}>
           <div className=" grid-span-1 space-y-2">

@@ -96,10 +96,10 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <div className="flex justify-center py-4 ">
             {!collapsed ? (
               <>
-                <Image preview={false} src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : " w-40"}`} />
+                <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : " w-32"}`} />
               </>
             ) : (
-              <Image preview={false} src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
+              <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
             )}
           </div>
           <Menu
@@ -120,7 +120,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
               menulist={menulist}
             />
           </div>
-
           <Content
             className=" mb-10"
             style={{

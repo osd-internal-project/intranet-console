@@ -74,7 +74,7 @@ export const CreateLeaveForm: React.FC<props> = ({
             </Form.Item>
           </div>
         </div>
-        <div className=" col-span-3 md:col-span-1 ml-5">
+        <div className=" col-span-3 md:col-span-1 ml-5" hidden>
           <Form.Item label={`แผนก :`} name={`groupName`}>
             <Input disabled />
           </Form.Item>

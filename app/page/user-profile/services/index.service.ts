@@ -88,7 +88,8 @@ const ProfileServices = (axiosInstance: AxiosInstance) => {
           clientId: true,
           createdAt: true,
           updatedAt: true,
-          // masterPositionId: true,
+          startWork: true,
+          empId: true,
           masterPosition: true,
         },
       };

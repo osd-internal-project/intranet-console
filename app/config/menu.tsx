@@ -1,10 +1,9 @@
-import { FieldTimeOutlined, HomeOutlined, ShoppingCartOutlined } from "@ant-design/icons";
-import { Icon } from "@iconify/react";
+import React from "react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
-import React from "react";
-import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, organizeChart, contactListIcon, macarIcon, hrIcon } from "@/components/icon";
-import { UserRoles } from "./user-roles";
+import { Icon } from "@iconify/react";
+import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, macarIcon, hrIcon } from "@/components/icon";
+import { FieldTimeOutlined, HomeOutlined } from "@ant-design/icons";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -12,7 +11,7 @@ export const MenuSider: MenuItem[] = [
   {
     key: "home",
     label: "หน้าหลัก",
-    rule: "user",
+    rule: ["user", "admin"],
     icon: <HomeOutlined />,
   },
   // {
@@ -34,13 +33,13 @@ export const MenuSider: MenuItem[] = [
   {
     key: "hr-management",
     label: "ระบบบริหารงานบุคคล",
-    rule: "hr",
+    rule: ["hr", "admin"],
     icon: hrIcon,
     children: [
       {
         key: `hr-management/employee-profile`,
         label: "ข้อมูลพนักงาน",
-        rule: "hr",
+        rule: ["hr", "admin"],
       },
     ],
   },
@@ -48,17 +47,17 @@ export const MenuSider: MenuItem[] = [
     key: "housekeeper",
     icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
     label: "งานแม่บ้าน",
-    rule: "ma-user",
+    rule: ["ma-user", "admin"],
     children: [
       {
         key: `housekeeper/housekeepers`,
         label: `ข้อมูลการการทำงานของแม่บ้าน`,
-        rule: "ma-user",
+        rule: ["ma-user", "admin"],
       },
       {
         key: `housekeeper/housekeeper-management`,
         label: `จัดการข้อมูลแม่บ้าน`,
-        rule: "ma-user",
+        rule: ["ma-user", "admin"],
       },
     ],
   },
@@ -71,12 +70,12 @@ export const MenuSider: MenuItem[] = [
       {
         key: `leave-control-management/leave-letter`,
         label: `ใบลาออนไลน์`,
-        rule: "user",
+        rule: ["user", "admin"],
       },
       {
         key: `leave-control-management/leave-history`,
         label: `ประวัติการลา`,
-        rule: "user",
+        rule: ["user", "admin"],
       },
       {
         key: `leave-control-management/leave-history-admin`,
@@ -109,7 +108,7 @@ export const MenuSider: MenuItem[] = [
       {
         key: `bookingroom/booking-room-refreshment`,
         label: `จัดการอาหารว่าง`,
-        rule: "admin",
+        rule: ["admin", "hr"],
       },
     ],
   },
@@ -117,12 +116,12 @@ export const MenuSider: MenuItem[] = [
     key: "maintenance",
     icon: maintenanceIcon,
     label: "Maintenance",
-    rule: "ma-user",
+    rule: ["ma-user", "admin"],
     children: [
       {
         key: `maintenance-management`,
         label: `Maintenance Management`,
-        rule: "ma-user",
+        rule: ["ma-user", "admin"],
       },
     ],
   },
@@ -135,17 +134,17 @@ export const MenuSider: MenuItem[] = [
       {
         key: `macar/ma-car`,
         label: `ข้อมูลการจองรถยนต์`,
-        rule: "user",
+        rule: ["user", "admin"],
       },
       {
         key: `macar/ma-car-booking`,
         label: `Ma car Booking`,
-        rule: "user",
+        rule: ["user", "admin"],
       },
       {
         key: `macar/ma-car-management`,
         label: `ข้อมูลการจองรถยนต์ (แอดมิน)`,
-        rule: "admin",
+        rule: ["user", "admin"],
       },
     ],
   },
@@ -158,12 +157,12 @@ export const MenuSider: MenuItem[] = [
       {
         key: `overtime/overtime-calendar`,
         label: `ตารางการเบิก OT`,
-        rule: "user",
+        rule: ["user", "admin"],
       },
       {
         key: `overtime/overtime-form`,
         label: `แบบฟอร์มขอเบิกค่าทำงานล่วงเวลา`,
-        rule: "user",
+        rule: ["user", "admin"],
       },
     ],
   },
@@ -171,12 +170,12 @@ export const MenuSider: MenuItem[] = [
     key: `users-management`,
     icon: gridIcon,
     label: `User Management`,
-    rule: "admin",
+    rule: ["admin", "hr"],
     children: [
       {
         key: `users-management/users`,
         label: `Users`,
-        rule: "admin",
+        rule: ["admin", "hr"],
       },
       {
         key: `users-management/user-organization`,
@@ -214,12 +213,12 @@ export const MenuSider: MenuItem[] = [
     key: `setting`,
     icon: <Icon icon="uil:setting" width="15" height="15" />,
     label: `ตั้งค่า`,
-    rule: "admin",
+    rule: ["admin", "hr", "ma-user"],
     children: [
       {
         key: `setting/maintenance-type`,
         label: `การบำรุงรักษา`,
-        rule: "admin",
+        rule: ["admin", "ma-user"],
       },
       {
         key: `setting/organize-chart`,
@@ -234,23 +233,18 @@ export const MenuSider: MenuItem[] = [
       {
         key: `setting/master-holidays`,
         label: `Master Holidays`,
-        rule: "admin",
+        rule: ["admin", "hr"],
       },
       {
         key: `setting/masterdata-position`,
         label: `Master Position`,
-        rule: "admin",
+        rule: ["admin", "hr"],
       },
       {
         key: `setting/manage-home`,
         label: `Manage Home`,
-        rule: "admin",
+        rule: ["admin", "hr"],
       },
-      // {
-      //   key: `setting/email-template`,
-      //   label: `Email Template`,
-      //   rule: "st-et-s",
-      // },
       {
         key: `setting/master-overtime-config`,
         label: `Master Overtime Config`,

@@ -31,3 +31,11 @@ jobs:
             docker build --platform linux/amd64 -t osd-intranet-fe:v1.1.1 .
             docker tag osd-intranet-fe:v1.1.1 ${{ secrets.DOCKER_USERNAME }}/osd-intranet-fe:v1.1.1
             docker push ${{ secrets.DOCKER_USERNAME }}/osd-intranet-fe:v1.1.1
+
+        - name: Deploy on Server
+          run: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/osd-intranet-fe:v1.1.1
+            docker stop osd-intranet-fe || true
+            docker rm osd-intranet-fe || true
+            docker rmi -f ${{ secrets.DOCKER_USERNAME }}/osd-intranet-fe:v1.1.1|| true
+            docker run -d --restart=always -p 8800:80 --name osd-intranet-fe ${{ secrets.DOCKER_USERNAME }}/osd-intranet-fe:v1.1.1

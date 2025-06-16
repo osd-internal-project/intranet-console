@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect, useContext } from "react";
-import moment from "moment";
 import {
   Table,
   Input,
@@ -478,14 +477,14 @@ const WrapupCar: React.FC = () => {
       dataIndex: "dateStart",
       key: "dateStart",
       align: "center",
-      render: (createdAt: Date) => moment(createdAt).format("DD/MM/YYYY"),
+      render: (createdAt: Date) => dayjs(createdAt).format("DD/MM/YYYY"),
     },
     {
       title: "วันตรวจสภาพครั้งถัดไป",
       dataIndex: "dateEnd",
       key: "dateEnd",
       align: "center",
-      render: (updateAT: Date | null) => (updateAT ? moment(updateAT).format("DD/MM/YYYY") : "-"),
+      render: (updateAT: Date | null) => (updateAT ? dayjs(updateAT).format("DD/MM/YYYY") : "-"),
     },
     {
       title: "หมายเหตุ",
@@ -653,10 +652,10 @@ const WrapupCar: React.FC = () => {
             <Input.TextArea placeholder="รายละเอียดการตรวจสภาพ" rows={4} showCount maxLength={150} />
           </Form.Item>
           <Form.Item name="dateStart" label="วันที่ตรวจสภาพ" rules={[{ required: true, message: "กรุณาเลือกเวลาเริ่มต้น" }]}>
-            <DatePicker style={{ width: "100%" }} disabledDate={(current) => current && current < moment().startOf("day")} />
+            <DatePicker style={{ width: "100%" }} disabledDate={(current) => current && current < dayjs().startOf("day")} />
           </Form.Item>
           <Form.Item name="dateEnd" label="วันที่่ตรวจสภาพครั้งถัดไป ( ** สามารถแก้ไขย้อนหลังได้ )">
-            <DatePicker style={{ width: "100%" }} disabledDate={(current) => current && current < moment().startOf("day")} />
+            <DatePicker style={{ width: "100%" }} disabledDate={(current) => current && current < dayjs().startOf("day")} />
           </Form.Item>
           <Form.Item name="remark" label="หมายเหตุ">
             <Input.TextArea rows={2} showCount maxLength={150} />

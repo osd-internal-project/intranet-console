@@ -3,7 +3,7 @@ import { Button, DatePicker, Form, Input, InputNumber, message, Modal, Select, S
 import { FormInstance } from "antd/lib";
 import TextArea from "antd/lib/input/TextArea";
 import { RcFile } from "antd/lib/upload";
-import moment from "moment";
+import dayjs from "dayjs";
 import React from "react";
 
 export interface props {
@@ -120,15 +120,15 @@ const ManagementCarWrapupManage: React.FC<props> = ({
           <Form.Item name="dateStart" label="วันที่ตรวจสภาพ" rules={[{ required: true, message: "กรุณาเลือกเวลาเริ่มต้น" }]}>
             <DatePicker
               style={{ width: "100%" }}
-              disabledDate={(current) => current && current < moment().startOf("day")}
-              disabled={checkType !== "create" && checkType !== "edit" ? true : false}
+              disabledDate={(current) => current && current < dayjs().startOf("day")}
+              disabled={checkType !== "create" && checkType !== "edit"}
               format={"DD/MM/YYYY"}
             />
           </Form.Item>
           <Form.Item name="dateEnd" label="วันที่่ตรวจสภาพครั้งถัดไป">
             <DatePicker
               style={{ width: "100%" }}
-              disabledDate={(current) => current && current < moment().startOf("day")}
+              disabledDate={(current) => current && current < dayjs().startOf("day")}
               disabled={checkType !== "create" && checkType !== "edit" ? true : false}
               format={"DD/MM/YYYY"}
             />

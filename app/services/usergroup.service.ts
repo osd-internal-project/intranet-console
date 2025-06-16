@@ -86,20 +86,20 @@ const UserGroupServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getUserGroupMapPermission: async (condition: any) => {
-      const req = {
-        condition: condition,
-      };
-      return await axiosInstance
-        .get(`/user-group-map-permission/`)
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
-    },
+    // getUserGroupMapPermission: async (condition: any) => {
+    //   const req = {
+    //     condition: condition,
+    //   };
+    //   return await axiosInstance
+    //     .get(`/user-group-map-permission/`)
+    //     .then((res) => {
+    //       return res.data;
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //       return [];
+    //     });
+    // },
     getPermissionGroupByGroupIdAndModuleId: async (condition: {
       groupid: string;
       modulecode: string;

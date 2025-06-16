@@ -36,22 +36,23 @@ const GroupTree: React.FC<props> = ({ propDataTree, loading, selectOrganize }): 
   useEffect(() => {
     if (loading) {
       featchDataTree(tabsKey);
+      featchData();
     }
   }, [loading]);
 
-  // const featchData = async () => {
-  //   const resOrganize = await UserGroupServices(baseUrlUser).findAllOrganize();
-  //   const orgList = resOrganize.map((item: TOrganizeDto) => ({
-  //     key: item.organizedId,
-  //     label: item.organizedName,
-  //   }));
-  //   setTabList([...orgList]);
-  //   propDataTree({
-  //     selectOrganize: selectOrganize,
-  //     groupSelect: null,
-  //     loading: false,
-  //   });
-  // };
+  const featchData = async () => {
+    const resOrganize = await UserGroupServices(baseUrlUser).findAllOrganize();
+    const orgList = resOrganize.map((item: TOrganizeDto) => ({
+      key: item.organizedId,
+      label: item.organizedName,
+    }));
+    setTabList([...orgList]);
+    propDataTree({
+      selectOrganize: selectOrganize,
+      groupSelect: null,
+      loading: false,
+    });
+  };
 
   const featchDataTree = async (organize: string) => {
     const groups = await UserGroupServices(baseUrlUser).getUserGroupAll();
@@ -83,6 +84,7 @@ const GroupTree: React.FC<props> = ({ propDataTree, loading, selectOrganize }): 
   };
 
   const onChangTapOrganize = async (organize: any) => {
+    console.log(organize);
     setTabsKey(organize);
     featchDataTree(organize);
   };
@@ -99,25 +101,22 @@ const GroupTree: React.FC<props> = ({ propDataTree, loading, selectOrganize }): 
     <Card className="mx-2 my-2 md:my-0" style={{ minHeight: " 500px" }}>
       <div className=" grid-cols-1 gap-0 ">
         <div className="flex flex-row">
-          {/* <Tabs
-            tabPosition="left"
-            activeKey={tabsKey}
-            items={tabList}
-            onChange={onChangTapOrganize}
-          /> */}
-          <div className="basis-5/5">
-            {treeList ? (
-              <Tree
-                showIcon={true}
-                treeData={treeList}
-                defaultExpandAll={true}
-                onSelect={onSelectTree}
-                rootStyle={{ fontSize: 14 }}
-                blockNode
-                showLine
-              />
-            ) : null}
-          </div>
+          <Tabs tabPosition="left" activeKey={tabsKey} items={tabList} onChange={onChangTapOrganize} />
+          {selectOrganize ? (
+            <div className="basis-5/5">
+              {treeList ? (
+                <Tree
+                  showIcon={true}
+                  treeData={treeList}
+                  defaultExpandAll={true}
+                  onSelect={onSelectTree}
+                  rootStyle={{ fontSize: 14 }}
+                  blockNode
+                  showLine
+                />
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </div>
     </Card>

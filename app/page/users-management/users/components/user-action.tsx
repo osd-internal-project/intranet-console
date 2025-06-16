@@ -400,11 +400,7 @@ export const UserAction: React.FC<Props> = ({
           </div>
           <div className="grid grid-cols-4 gap-2">
             <div className=" col-span-1">
-              <Form.Item<TCreateUserDto>
-                label="เบอร์โทรติดต่อ"
-                name="phoneNumber"
-                rules={[{ required: true }, { validator: validateNumber }]}
-                style={{ marginBottom: "2px" }}>
+              <Form.Item<TCreateUserDto> label="เบอร์โทรติดต่อ" name="phoneNumber" style={{ marginBottom: "2px" }}>
                 <Input />
               </Form.Item>
             </div>

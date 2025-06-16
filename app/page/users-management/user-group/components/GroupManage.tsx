@@ -49,14 +49,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
   const [groupOption, setGroupOption] = useState<SelectProps["options"]>([]);
   const [userSelect, setUserSelect] = useState<SelectProps["options"]>([]);
   const [userInGroupSelect, setUserInGroupSelect] = useState<SelectProps["options"]>([]);
-  // const [saleUsersFormGroup, setSaleUsersFormGroup] = useState<ITSelectUsers[]>([]);
-  // const [engineerUsersFormGroup, setEngineerUsersFormGroup] = useState<ITSelectUsers[]>([]);
-  // const [headerUsersFormGroup, setHeaderUsersFormGroup] = useState<
-  //   {
-  //     type: string;
-  //     users: ITSelectUsers[];
-  //   }[]
-  // >([]);
+
   const [userGroupIds, setUserGroupIds] = useState<string[]>([]);
 
   useEffect(() => {
@@ -82,14 +75,14 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
         label: `${user.firstNameTh} ${user.lastNameTh}`,
       }));
       setUserInGroupSelect(userInGroupSelect);
-      const userGroupMapPermission = await UserGroupServices(baseUrlUser).getUserGroupMapPermission({});
-      setUserGroupIds(userGroupMapPermission.map((item: any) => item.userGroupId));
-      const usersAll: any = await UserGroupServices(baseUrlUser).getdataUserAll();
-      const userSelect = usersAll.map((user: any) => ({
-        value: user.userId,
-        label: `${user.firstNameTh} ${user.lastNameTh}`,
-      }));
-      setUserSelect(userSelect);
+      // const userGroupMapPermission = await UserGroupServices(baseUrlUser).getUserGroupMapPermission({});
+      // setUserGroupIds(userGroupMapPermission.map((item: any) => item.userGroupId));
+      // const usersAll: any = await UserGroupServices(baseUrlUser).getdataUserAll();
+      // const userSelect = usersAll.map((user: any) => ({
+      //   value: user.userId,
+      //   label: `${user.firstNameTh} ${user.lastNameTh}`,
+      // }));
+      // setUserSelect(userSelect);
     }
   };
   const createTree = (obj: any[], parentId: string | null) => {
@@ -258,44 +251,35 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
             </Col>
             <Col span={14} style={{ justifyContent: "end", display: "flex" }}>
               <div className=" inline-block space-x-2 ">
-                {roles?.usersGroupAdd ? (
-                  <Button
-                    type="primary"
-                    onClick={() => {
-                      setOpenAddModel(true);
-                    }}
-                    icon={<PlusOutlined />}>
-                    Add Sub Group
-                  </Button>
-                ) : (
-                  <></>
-                )}
+                <Button
+                  size="small"
+                  type="primary"
+                  onClick={() => {
+                    setOpenAddModel(true);
+                  }}>
+                  Add Sub Group
+                </Button>
+
                 {!editState ? (
                   <>
-                    {roles?.usersGroupEdit ? (
-                      <Button type="primary" onClick={onClickEdit} loading={buttonLoading}>
-                        Edit
-                      </Button>
-                    ) : (
-                      <></>
-                    )}
-                    {roles?.usersGroupDelete ? (
-                      <Button
-                        type="primary"
-                        danger
-                        onClick={handleDelete}
-                        disabled={!groupDetail.parentGroupId ? true : false}
-                        loading={buttonLoading}>
-                        Delete
-                      </Button>
-                    ) : (
-                      <></>
-                    )}
+                    <Button size="small" type="primary" onClick={onClickEdit} loading={buttonLoading}>
+                      Edit
+                    </Button>
+
+                    <Button
+                      size="small"
+                      type="primary"
+                      danger
+                      onClick={handleDelete}
+                      disabled={!groupDetail.parentGroupId ? true : false}
+                      loading={buttonLoading}>
+                      Delete
+                    </Button>
                   </>
-                ) : (
-                  ``
-                )}
-                <Button onClick={onCloseDetail}>Close</Button>
+                ) : null}
+                <Button size="small" onClick={onCloseDetail}>
+                  Close
+                </Button>
               </div>
             </Col>
           </Row>
@@ -385,15 +369,11 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
               </Button>
             </Col>
             <Col>
-              {roles?.usersGroupAdd ? (
-                <Form.Item>
-                  <Button key="submit" htmlType="submit" type="primary" loading={buttonLoading}>
-                    Add
-                  </Button>
-                </Form.Item>
-              ) : (
-                <></>
-              )}
+              <Form.Item>
+                <Button key="submit" htmlType="submit" type="primary" loading={buttonLoading}>
+                  Add
+                </Button>
+              </Form.Item>
             </Col>
           </Row>
         </Form>

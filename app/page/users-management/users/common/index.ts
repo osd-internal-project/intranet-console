@@ -19,6 +19,7 @@ export type TCreateUserDto = {
   ldapQuery?: string;
   ownerGroupId?: string;
   startWork?: Date;
+  empId?: string;
 };
 export type TUpdateUserDto = {
   id: number;

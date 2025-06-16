@@ -67,7 +67,6 @@ export const UserAction: React.FC<Props> = ({
   const [imageFiles, setImageFiles] = useState<UploadFile[]>([]);
   const [image, setImage] = useState<any>();
 
-  console.log(createForm.getFieldsValue());
 
   const handleOpenFilter = (state: boolean) => {
     setOpenFilter(state);
@@ -412,6 +411,11 @@ export const UserAction: React.FC<Props> = ({
             <div className=" col-span-1">
               <Form.Item<TCreateUserDto> label="วันที่เริ่มงาน" name="startWork" rules={[{ required: true }]}>
                 <DatePicker className="w-full" />
+              </Form.Item>
+            </div>
+             <div className=" col-span-1">
+              <Form.Item<TCreateUserDto> label="รหัสพนักงาน" name="empId" rules={[{ required: true }]}>
+                <Input  />
               </Form.Item>
             </div>
           </div>

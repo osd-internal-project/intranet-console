@@ -1,80 +1,71 @@
 "use client";
-
-import React, { useState, useEffect } from "react";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import {
-  Breadcrumb,
-  Card,
-  Col,
-  Row,
-  TabsProps,
-  Tabs,
-  Button,
-  Divider,
-  TablePaginationConfig,
-} from "antd";
-
-import { MaCarIcon } from "../../../../components/icon";
-import CalendarComponent from "./components/CarCalendar";
-// import CarComponent from "./components/car";
-import TableComponent from "./components/CarTable";
-import CarStatusComponent from "./components/CarStatus";
-import { MaCarServices } from "./services/ma-car.service";
-import { useForm } from "antd/es/form/Form";
-import { useSession } from "next-auth/react";
+import axios from "axios";
 import Link from "next/link";
-
-type MaCarType = {
-  id: string; // รหัส
-  carId: string; // รหัสรถ
-  carName: string; // ชื่อรถ
-  carPetrol: string; // ระดับน้ำมัน
-  detail: string; // รายละเอียด
-  status: string; // สถานะ
-  createdAt: Date; // วันที่สร้าง
-  createdById: string; // รหัสผู้สร้าง
-  createdByName: string; // ชื่อผู้สร้าง
-  updatedAt: Date; // วันที่แก้ไขล่าสุด
-  updatedById: string; // รหัสผู้แก้ไข
-  updatedByName: string; // ชื่อผู้แก้ไข
-  carBookProvince: string; // จังหวัดที่จองรถ
-  carBookPlace: string; // สถานที่จองรถ
-  carBookUsers: number; // จำนวนผู้ใช้ที่จองรถ
-  carBookStartDate: Date; // วันที่เริ่มการจองรถ
-  carBookEndDate: Date; // วันที่สิ้นสุดการจองรถ
-  // carBookStartDate: string; // วันที่เริ่มการจองรถ   71,91
-  // carBookEndDate: string; // วันที่สิ้นสุดการจองรถ
-  approveDate: string;
-  carBookApprovedDate?: Date; // วันที่อนุมัติการจองรถ (อาจจะไม่มีในกรณีที่ยังไม่ได้อนุมัติ)
-  carBookApprovedById?: string; // รหัสผู้อนุมัติการจองรถ (อาจจะไม่มีในกรณีที่ยังไม่ได้อนุมัติ)
-  carBookApprovedByName?: string; // ชื่อผู้อนุมัติการจองรถ (อาจจะไม่มีในกรณีที่ยังไม่ได้อนุมัติ)
-};
-
-type MasterCarType = {
-  carName: String;
-  carBookApprovedStatus: boolean;
-  carBookApprovedById: string;
-};
+import React, { useState, useEffect, useContext } from "react";
+import { Breadcrumb, Card, Col, Row, TabsProps, Tabs, Button, Divider, TablePaginationConfig } from "antd";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { MaCarServices } from "../../../services/ma-car.service";
+import { MaCarType, MaCarBookType, dataMaCarbook, ProvincesType } from "../common/index";
+import CalendarComponent from "./components/car-calendar";
+import MaCarTable from "./components/car-table";
+import CarStatus from "./components/car-status";
+import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 const MaCar: React.FC = () => {
-  const { data: session } = useSession();
-  const intraAuth = useAxiosIntranet();
-  const maCarServices = MaCarServices(intraAuth);
-  const [submitLoading, setSubmitLoading] = useState(false);
-  const [masterCarData, setMasterCarQuery] = useState<MasterCarType[]>([]);
-  const [maFetchData, setMaFetchData] = useState([]);
+  const { user } = (useContext(UserContext) as UserContectType) || {
+    user: null,
+  };
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const intraAuthService = MaCarServices(baseUrIntranet);
+  const [maCarBookData, setMaCarBookData] = useState<dataMaCarbook[]>([]);
   const [maFetchCalendar, setMaFetchCalendar] = useState([]);
-  const [department, setDepartment] = useState<MaCarType[]>([]);
-  const [form] = useForm();
-  const [loading, setloading] = useState<boolean>(true);
+  const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
+  const [maCarBookById, setMaCarBookById] = useState<MaCarBookType[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [dataProvinces, setDataProvinces] = useState<ProvincesType[]>([]);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
     total: 0,
   });
+
+  useEffect(() => {
+    if (loading) fetchData();
+  }, [loading, user]);
+
+  const fetchData = async () => {
+    const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
+    const take: number = Number(pagination.pageSize);
+    try {
+      if (user) {
+        const maCar = await intraAuthService.getMaCarQuery();
+        const maCarBook = await intraAuthService.findMaCarBook(skip, take);
+        const maCalender = await intraAuthService.getMaCarBookQuery();
+        const maCarBookById = await intraAuthService.findMaCarBookById(user.userId);
+
+        const response = await axios.get("https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json");
+        const provincesData = response.data;
+        const optionsProvinces = provincesData.map((event: ProvincesType) => ({
+          value: event.id,
+          label: event.name_th,
+        }));
+        setDataProvinces(optionsProvinces);
+        setMaCarBookById(maCarBookById);
+        setMaCarData(maCar);
+        setMaCarBookData(maCarBook);
+        setMaFetchCalendar(maCalender);
+        setPagination({ ...pagination, total: maCarBook.count });
+        setLoading(false);
+      }
+    } catch (error) {}
+  };
+
   const changePagination = (page: TablePaginationConfig) => {
     setPagination({ ...page });
-    setloading(true);
+    setLoading(true);
   };
 
   const items: TabsProps["items"] = [
@@ -87,50 +78,25 @@ const MaCar: React.FC = () => {
       key: "2",
       label: "แสดงข้อมูลแบบตาราง",
       children: (
-        <TableComponent
-          maFetchData={maFetchData}
+        <MaCarTable
+          maCarBookData={maCarBookData}
           pagination={pagination}
           changePagination={changePagination}
+          loading={loading}
+          setLoading={setLoading}
+          maCarData={maCarData}
+          maCarBookById={maCarBookById}
+          dataProvinces={dataProvinces}
+          maFetchCalendar={maFetchCalendar}
         />
       ),
     },
     {
       key: "3",
       label: "สถานะรถ",
-      children: <CarStatusComponent />,
+      children: <CarStatus maCarData={maCarData} />,
     },
   ];
-
-  const fetchData = async () => {
-    const skip: number =
-      (Number(pagination.current) - 1) * Number(pagination.pageSize);
-    const take: number = Number(pagination.pageSize);
-    try {
-      const maCar = await maCarServices.getMasterCarQuery();
-      const masterCarActive = maCar.filter(
-        (room: any) => room.roomsStatus === true
-      );
-      setMasterCarQuery(masterCarActive);
-      const maCalender = await maCarServices.getMaCarQuery();
-      console.log(maCalender);
-      const ma = await maCarServices.findMaCar(skip, take);
-      setMaFetchData(ma);
-      setMaFetchCalendar(maCalender);
-      setPagination({ ...pagination, total: ma.count });
-      const organizeChart = await maCarServices.getOrganizeChartQuery();
-      const department = organizeChart.filter(
-        (organize: any) => organize.type === "department"
-      );
-      setDepartment(department);
-      setloading(false);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (loading === true) fetchData();
-  }, [loading]);
 
   return (
     <>
@@ -139,49 +105,43 @@ const MaCar: React.FC = () => {
           <Breadcrumb
             items={[
               {
-                href: "/page",
-                title: <span>Home</span>,
+                href: "/page/home",
+                title: <span>หน้าหลัก</span>,
               },
               {
-                title: <span>Ma Car Details</span>,
+                title: <span>ข้อมูลการจองรถยนต์</span>,
               },
             ]}
           />
         </Col>
-        <Divider
-          orientation="left"
-          orientationMargin="0"
-          // style={{ backgroundColor: "#6CB4EE", color: "#EEEEEE" }}
-        >
-          {/* <div
-            className="title-page-font"
-            style={{ display: "flex", alignItems: "center" }}
-          >
-            {MaCarIcon}
-            <span style={{ marginLeft: "8px" }}>จองรถออนไลน์</span>
-          </div> */}
-          <div
-            className="title-page-font"
-            style={{ display: "flex", alignItems: "left" }}
-          >
-            <span style={{ marginRight: "8px" }}>Ma Car Details</span>
-            {/* {MaCarIcon} */}
+        <Divider orientation="left" orientationMargin="0">
+          <div className="title-page-font" style={{ display: "flex", alignItems: "left" }}>
+            <span style={{ marginRight: "8px" }}>ข้อมูลการจองรถยนต์</span>
           </div>
         </Divider>
         <Col span={24}>
           <div className="grid-span-1 space-y-2">
-            <Card>
-              <div className="flex justify-end">
-                <Link href="/page/macar/ma-car-booking">
-                  <Button type="primary"> ทำการจองรถ</Button>
-                </Link>
-                {/* <a href="/page/macar/ma-car-management">
-                  <Button type="primary"> ทำการจองรถ</Button>
-                </a> */}
+            <Card styles={{ body: { padding: "0px 10px 10px 10px" } }}>
+              <div className=" mt-2">
+                <Tabs
+                  defaultActiveKey="1"
+                  items={items}
+                  tabBarExtraContent={
+                    <div className="flex justify-end space-x-1">
+                      <Link href="/page/macar/ma-car-booking?action=1">
+                        <Button type="primary" size="middle">
+                          {`ทำการจองรถ`}
+                        </Button>
+                      </Link>
+                      <Link href="/page/macar/ma-car-booking?action=2">
+                        <Button type="primary" size="middle" danger>
+                          {`คืนรถ`}
+                        </Button>
+                      </Link>
+                    </div>
+                  }
+                />
               </div>
-              {/* <Tabs defaultActiveKey1="1" items1={items1} /> */}
-
-              <Tabs defaultActiveKey="1" items={items} />
             </Card>
           </div>
         </Col>

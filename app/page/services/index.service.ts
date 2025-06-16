@@ -14,7 +14,7 @@ const IndexServices = (axiosInstance: AxiosInstance) => {
     },
     getImage: async (userId: string) => {
       return await axiosInstance
-        .get(`${userurl}/upload-image/${userId}`, { responseType: "blob" })
+        .get(`${userurl}/upload-image/${userId}`)
         .then((res) => {
           return res.data;
         })

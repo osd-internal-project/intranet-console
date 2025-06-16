@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Card, DatePicker, Form, Input, Modal, Popover, Select, SelectProps, Space, Spin, Table, Tag, Tree, message } from "antd";
+import { Button, DatePicker, Form, Input, Modal, Popover, Select, SelectProps, Space, Spin, Table, Tag, message } from "antd";
 import ProfileServices from "../services/profile.service";
 import RulesServices from "../services/rule.service";
 import { useForm } from "antd/lib/form/Form";
@@ -9,6 +9,8 @@ import { ExclamationCircleFilled, FilterOutlined, PlusCircleOutlined } from "@an
 import { deleteIcon, editIcon } from "@/components/icon";
 import { checkRule } from "@/app/utils/rules";
 import { dateToEndofDay, dateToStartofDay, dateToStringTh } from "@/app/utils/format";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 type profileType = {
   profileId: string;
@@ -20,9 +22,11 @@ type profileType = {
 };
 const { RangePicker } = DatePicker;
 const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
-  const userAuth = useAxiosUser();
-  const profileRuleServices = ProfileServices(userAuth);
-  const rulesServices = RulesServices(userAuth);
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  // const userAuth = useAxiosUser();
+  // const profileRuleServices = ProfileServices(baseUrlUser);
+  // const rulesServices = RulesServices(baseUrlUser);
   const addRule = checkRule("um-ru-g-d");
   const editRule = checkRule("um-ru-g-e");
   const deleteRule = checkRule("um-ru-g-d");
@@ -52,17 +56,17 @@ const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
     getDefaultData();
   }, []);
   const loadingDetail = async () => {
-    const data = await profileRuleServices.getProfileRuleByFilter(search);
+    const data = await ProfileServices(baseUrlUser).getProfileRuleByFilter(search);
     setDataTable(data);
   };
 
   const getDefaultData = async () => {
-    const rules = await rulesServices.getMasterRuleAll();
+    const rules = await RulesServices(baseUrlUser).getMasterRuleAll();
     setRuleOptions(
       rules.map((x: any) => ({
         label: x.ruleName,
         value: x.ruleCode,
-      }))
+      })),
     );
   };
 
@@ -157,7 +161,7 @@ const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
     if (values.rules) {
       rules = values.rules;
     }
-    await profileRuleServices
+    await ProfileServices(baseUrlUser)
       .addProfileRule(profile, rules)
       .then(() => {
         message.success(`Add success`);
@@ -174,7 +178,7 @@ const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
     const filter = {
       profileId: profileId,
     };
-    const data = await profileRuleServices.getProfileRuleOne(filter);
+    const data = await ProfileServices(baseUrlUser).getProfileRuleOne(filter);
     if (data) {
       const formvalue = {
         profileId: data.profileId,
@@ -192,7 +196,7 @@ const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
       profileName: values.profileName,
       description: values.description,
     };
-    await profileRuleServices
+    await ProfileServices(baseUrlUser)
       .updateProfileRule(values.profileId, profile, values.rules)
       .then(() => {
         message.success(`Edit success`);
@@ -215,13 +219,15 @@ const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
       async onOk() {
         setbuttonLoading(true);
         if (profileId) {
-          await profileRuleServices.deleteProfileRule(profileId).then(() => {
-            message.success("Delete success");
-            setLoading(true);
-            setDeleteId(null);
-            setOpenDeleteProfileModel(false);
-            setbuttonLoading(false);
-          });
+          await ProfileServices(baseUrlUser)
+            .deleteProfileRule(profileId)
+            .then(() => {
+              message.success("Delete success");
+              setLoading(true);
+              setDeleteId(null);
+              setOpenDeleteProfileModel(false);
+              setbuttonLoading(false);
+            });
         } else {
           message.error(`ผิดพลาด กรุณาลองใหม่`);
           setDeleteId(null);
@@ -299,8 +305,7 @@ const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
               placement="bottomLeft"
               title="Search"
               trigger="click"
-              overlayStyle={{ width: "calc(100% - 240px)" }}
-            >
+              overlayStyle={{ width: "calc(100% - 240px)" }}>
               <Button type="primary" icon={<FilterOutlined />} className="button-blue">
                 Filters
               </Button>
@@ -336,15 +341,13 @@ const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
             onCancel={() => {
               setOpenAddProfileModel(false), setbuttonLoading(false);
             }}
-            footer={[]}
-          >
+            footer={[]}>
             <Form
               form={addform}
               onFinish={onFinishAdd}
               onFinishFailed={onFinishFailed}
               labelCol={{ span: 6 }}
-              style={{ marginBottom: "-20px", marginTop: "20px" }}
-            >
+              style={{ marginBottom: "-20px", marginTop: "20px" }}>
               <Form.Item label="Group Name" name="profileName" rules={[{ required: true, message: "Please enter group name" }]}>
                 <Input />
               </Form.Item>
@@ -360,8 +363,7 @@ const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
                     key="cancel"
                     onClick={() => {
                       setOpenAddProfileModel(false), setbuttonLoading(false);
-                    }}
-                  >
+                    }}>
                     Cancel
                   </Button>
                   <Button key="submit" htmlType="submit" type="primary" className="button-blue" loading={buttonConfirm}>
@@ -380,8 +382,7 @@ const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
               onFinish={onFinishEdit}
               onFinishFailed={onFinishFailed}
               labelCol={{ span: 6 }}
-              style={{ marginBottom: "-30px", marginTop: "20px" }}
-            >
+              style={{ marginBottom: "-30px", marginTop: "20px" }}>
               <Form.Item label="Profile Id" name="profileId" hidden>
                 <Input />
               </Form.Item>

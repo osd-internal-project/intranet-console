@@ -9,6 +9,8 @@ import { ExclamationCircleFilled, FilterOutlined, PlusCircleOutlined } from "@an
 import { deleteIcon, editIcon } from "@/components/icon";
 import { checkRule } from "@/app/utils/rules";
 import { dateToEndofDay, dateToStartofDay, dateToStringTh } from "@/app/utils/format";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 const { confirm } = Modal;
 
@@ -18,12 +20,11 @@ type ProfileList = {
 };
 const { RangePicker } = DatePicker;
 const RoleComponent: React.FC = (): React.ReactElement => {
-  const userAuth = useAxiosUser();
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const addRule = checkRule("um-ro-a");
   const editRule = checkRule("um-ro-e");
   const deleteRule = checkRule("um-ro-d");
-  const userRolesServices = RolesServices(userAuth);
-  const profileRuleServices = ProfileRuleServices(userAuth);
 
   const [addform] = Form.useForm();
   const [editform] = useForm();
@@ -48,13 +49,13 @@ const RoleComponent: React.FC = (): React.ReactElement => {
 
   const loadingDetail = async () => {
     setCurrentPage(1);
-    const data = await userRolesServices.getUserRoleByFilter(search);
+    const data = await RolesServices(baseUrlUser).getUserRoleByFilter(search);
     setDataTable(data);
 
     setLoading(false);
   };
   const getDefaultData = async () => {
-    const profileList = await profileRuleServices.getProfileRuleByFilter({});
+    const profileList = await ProfileRuleServices(baseUrlUser).getProfileRuleByFilter({});
     setProfileList(profileList);
   };
   const columns: any = [
@@ -146,7 +147,7 @@ const RoleComponent: React.FC = (): React.ReactElement => {
       profiles = values.profiles;
     }
 
-    await userRolesServices
+    await RolesServices(baseUrlUser)
       .addUserRole(role, profiles)
       .then(() => {
         message.success(`Add success`);
@@ -176,7 +177,7 @@ const RoleComponent: React.FC = (): React.ReactElement => {
       roleName: values.roleName,
       description: values.description,
     };
-    await userRolesServices
+    await RolesServices(baseUrlUser)
       .updateUserRole(values.roleId, userRole, values.profiles)
       .then(() => {
         message.success(`Edit success`);
@@ -197,11 +198,13 @@ const RoleComponent: React.FC = (): React.ReactElement => {
       okText: "Confirm",
       async onOk() {
         if (profileId) {
-          await userRolesServices.deleteUserRole(profileId).then(() => {
-            message.success("Delete success");
-            setLoading(true);
-            setbuttonLoading(false);
-          });
+          await RolesServices(baseUrlUser)
+            .deleteUserRole(profileId)
+            .then(() => {
+              message.success("Delete success");
+              setLoading(true);
+              setbuttonLoading(false);
+            });
         } else {
           message.error(`Error , Please try again`);
           setbuttonLoading(false);
@@ -290,8 +293,7 @@ const RoleComponent: React.FC = (): React.ReactElement => {
               placement="bottomLeft"
               title="Search"
               trigger="click"
-              overlayStyle={{ width: "calc(100% - 240px)" }}
-            >
+              overlayStyle={{ width: "calc(100% - 240px)" }}>
               <Button type="primary" icon={<FilterOutlined />} className="button-blue">
                 Filters
               </Button>
@@ -304,8 +306,7 @@ const RoleComponent: React.FC = (): React.ReactElement => {
                   setOpenAddProfileModel(true);
                 }}
                 type="primary"
-                className="button-blue"
-              >
+                className="button-blue">
                 Add User Role
               </Button>
             ) : (
@@ -370,8 +371,7 @@ const RoleComponent: React.FC = (): React.ReactElement => {
             // initialValues={{ parentName: groupDetail.groupName }}
             onFinish={onFinishEdit}
             labelCol={{ span: 6 }}
-            style={{ marginBottom: "-30px" }}
-          >
+            style={{ marginBottom: "-30px" }}>
             <Form.Item label="Role Id" name="roleId" hidden>
               <Input />
             </Form.Item>

@@ -24,8 +24,8 @@ const ManageBookingRoom = () => {
           <Breadcrumb
             items={[
               {
-                href: "/page",
-                title: <span>Home</span>,
+                href: "/page/home",
+                title: <span>หน้าหลัก</span>,
               },
 
               {

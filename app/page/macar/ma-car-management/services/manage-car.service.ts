@@ -3,6 +3,9 @@ import { AxiosInstance } from "axios";
 export const ManageCarServices = (axiosInstance: AxiosInstance) => {
   const baseUrlApiMaCarBook = "/ma-car-book";
   const baseUrlApiMaCar = "/ma-car";
+  const baseUrlApiMaCarTpye = "/ma-car-type";
+  const baseUrlApiMaCarwarpup = "/ma-car-wrapup";
+  const baseUrlApiMaCarwarpupimage = "/ma-car-wrapup-image";
 
   return {
     getMaCarBookQuery: async () => {
@@ -16,9 +19,10 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    findMaCarBook: async (skip: number, take: number) => {
+
+    findMaCarBookForApprove: async (skip: number, take: number) => {
       return await axiosInstance
-        .get(`${baseUrlApiMaCarBook}?take=${take}&skip=${skip}`)
+        .get(`${baseUrlApiMaCarBook}/approve/${skip}/${take}`)
         .then((res) => {
           return res.data;
         })
@@ -27,6 +31,29 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    findMaCarBook: async (skip: number, take: number) => {
+      return await axiosInstance
+        .get(`${baseUrlApiMaCarBook}/${skip}/${take}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    findOneMaCarBook: async (body: any) => {
+      return await axiosInstance
+        .get(`${baseUrlApiMaCarBook}/${body}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+
     createMaCarBook: async (body: any) => {
       return await axiosInstance
         .post(`${baseUrlApiMaCarBook}`, body)
@@ -40,7 +67,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
     },
 
     updateMaCarBook: async (body: any) => {
-      console.log(body);
       return await axiosInstance
         .patch(`${baseUrlApiMaCarBook}/${body.id}`, body)
         .then((res) => {
@@ -52,8 +78,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         });
     },
     deleteMaCarBook: async (carId: any) => {
-      console.log(carId);
-
       return await axiosInstance
         .delete(`${baseUrlApiMaCarBook}/${carId}`)
         .then((res) => {
@@ -75,9 +99,20 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    updateMaCar: async (body: any) => {
+    getMaCarQueryByCarId: async (carId: string) => {
       return await axiosInstance
-        .patch(`${baseUrlApiMaCar}/${body.carId}`, body)
+        .get(`${baseUrlApiMaCar}/${carId}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    updateMaCar: async (carId: string, body: any) => {
+      return await axiosInstance
+        .patch(`${baseUrlApiMaCar}/${carId}`, body)
         .then((res) => {
           return res.data;
         })
@@ -97,10 +132,162 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    deleteMaCar: async (carId: any) => {
-      console.log(`${baseUrlApiMaCar}/${carId}`);
+    deleteMaCar: async (carId: string) => {
       return await axiosInstance
         .delete(`${baseUrlApiMaCar}/${carId}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    // ma car type
+    getMaCarQueryType: async () => {
+      return await axiosInstance
+        .get(`${baseUrlApiMaCarTpye}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    getImages: async (carWrapupID: string) => {
+      return await axiosInstance
+        .get(`${baseUrlApiMaCarwarpupimage}/get-file/${carWrapupID}`, {
+          responseType: "blob",
+        })
+        .then((result) => result.data)
+        .catch((err) => console.log(err));
+    },
+    updateMaCarType: async (id: string, body: any) => {
+      return await axiosInstance
+        .patch(`${baseUrlApiMaCarTpye}/${id}`, body)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    createMaCarType: async (body: any) => {
+      return await axiosInstance
+        .post(`${baseUrlApiMaCarTpye}`, body)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    deleteMaCarType: async (carId: any) => {
+      console.log(`${baseUrlApiMaCarTpye}/${carId}`);
+      return await axiosInstance
+        .delete(`${baseUrlApiMaCarTpye}/${carId}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    getMaCarQueryWarpup: async () => {
+      return await axiosInstance
+        .get(`${baseUrlApiMaCarwarpup}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    updateMaCarWarpup: async (carWrapupId: string, body: any) => {
+      return await axiosInstance
+        .patch(`${baseUrlApiMaCarwarpup}/${carWrapupId}`, body)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    createMaCarWarpup: async (body: any) => {
+      return await axiosInstance
+        .post(`${baseUrlApiMaCarwarpup}`, body)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    deleteMaCarWarpup: async (carId: any) => {
+      console.log(`${baseUrlApiMaCarTpye}/${carId}`);
+      return await axiosInstance
+        .delete(`${baseUrlApiMaCarwarpup}/${carId}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+
+    getMaCarQueryWarpupimage: async () => {
+      return await axiosInstance
+        .get(`${baseUrlApiMaCarwarpupimage}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    updateMaCarWarpupimage: async (carWrapupId: string, body: any) => {
+      return await axiosInstance
+        .patch(`${baseUrlApiMaCarwarpupimage}/${carWrapupId}`, body)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    uploadFiles: async (carWrapupId: string, formData: FormData) => {
+      return axiosInstance.post(`${baseUrlApiMaCarwarpupimage}/${carWrapupId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    },
+
+    createMaCarWarpupimage: async (body: any) => {
+      return await axiosInstance
+        .post(`${baseUrlApiMaCarwarpupimage}`, body)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    deleteMaCarWarpupimage: async (idwarpupImage: any) => {
+      console.log(`${baseUrlApiMaCarTpye}/${idwarpupImage}`);
+      return await axiosInstance
+        .delete(`${baseUrlApiMaCarwarpupimage}/${idwarpupImage}`)
         .then((res) => {
           return res.data;
         })

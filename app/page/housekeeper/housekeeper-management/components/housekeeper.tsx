@@ -1,32 +1,11 @@
 "use client";
-import {
-  Breadcrumb,
-  Button,
-  Card,
-  Checkbox,
-  Col,
-  DatePicker,
-  Form,
-  Input,
-  message,
-  Modal,
-  Popover,
-  Row,
-  Space,
-  Switch,
-  Table,
-  Tabs,
-  TabsProps,
-  Tag,
-} from "antd";
-import { useParams } from "next/navigation";
+import { Button, DatePicker, Form, Input, message, Modal, Popover, Row, Space, Switch, Table, Tag } from "antd";
 import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
-import { useAxiosIntranet, useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { render } from "react-dom";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useForm } from "antd/es/form/Form";
 import { FilterOutlined } from "@ant-design/icons";
 import { HouseKeeperStockServices } from "../../housekeepers/services/housekeeper.service";
+import dayjs from "dayjs";
 
 type FieldType = {
   type: string;
@@ -78,6 +57,7 @@ export default function Housekeeper() {
       dataIndex: "createdAt",
       key: "createdAt",
       width: "20%",
+      render:(text:string)=>dayjs(text).format("DD-MM-YYYY , HH:mm")
     },
     {
       title: "อัปเดท",
@@ -183,8 +163,7 @@ export default function Housekeeper() {
               content={searchContent}
               title="Search"
               trigger="click"
-              overlayStyle={{ width: "calc(100% - 240px)" }}
-            >
+              overlayStyle={{ width: "calc(100% - 240px)" }}>
               <Button icon={<FilterOutlined />}>Filters</Button>
             </Popover>
             <Button type="primary" onClick={onClickCreate}>
@@ -201,8 +180,7 @@ export default function Housekeeper() {
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 20 }}
             onFinish={onFinish}
-            autoComplete="off"
-          >
+            autoComplete="off">
             <Form.Item<FieldType> name="houseKeeperId" hidden>
               <Input />
             </Form.Item>

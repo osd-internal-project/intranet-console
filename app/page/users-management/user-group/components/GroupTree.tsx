@@ -1,11 +1,12 @@
 "use client";
+import "../style.css";
 import React, { useEffect, useState } from "react";
-import UserGroupServices from "../services/usergroup.service";
+import UserGroupServices from "../../../../services/usergroup.service";
 import { Card, Tabs, Tree } from "antd";
 
-import "../style.css";
-import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { CarryOutOutlined } from "@ant-design/icons";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 type TabType = {
   label: string;
@@ -26,46 +27,56 @@ export interface props {
   selectOrganize: string | null;
 }
 const GroupTree: React.FC<props> = ({ propDataTree, loading, selectOrganize }): React.ReactElement => {
-  const userAuth = useAxiosUser();
-  const userGroupServices = UserGroupServices(userAuth);
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const [treeList, setTreeList] = useState<any[] | null>(null);
   const [tabList, setTabList] = useState<TabType[]>([]);
   const [tabsKey, setTabsKey] = useState<string>("0");
 
   useEffect(() => {
     if (loading) {
-      featchData();
       featchDataTree(tabsKey);
+      featchData();
     }
   }, [loading]);
 
   const featchData = async () => {
-    const resOrganize = await userGroupServices.findAllOrganize();
-    const orgList = resOrganize.map((item: TOrganizeDto) => ({ key: item.organizedId, label: item.organizedName }));
+    const resOrganize = await UserGroupServices(baseUrlUser).findAllOrganize();
+    const orgList = resOrganize.map((item: TOrganizeDto) => ({
+      key: item.organizedId,
+      label: item.organizedName,
+    }));
     setTabList([...orgList]);
-    propDataTree({ selectOrganize: selectOrganize, groupSelect: null, loading: false });
+    propDataTree({
+      selectOrganize: selectOrganize,
+      groupSelect: null,
+      loading: false,
+    });
   };
 
   const featchDataTree = async (organize: string) => {
-    if (organize === "0") return;
-    const group = await userGroupServices.getUserGroupByOrganizedGroupId(organize);
-    const tree = createTree(group.organizeMapGroup, null);
+    const groups = await UserGroupServices(baseUrlUser).getUserGroupAll();
+    const tree = createTree(groups, null);
     setTreeList(tree);
-    propDataTree({ selectOrganize: organize, groupSelect: null, loading: false });
+    propDataTree({
+      selectOrganize: organize,
+      groupSelect: null,
+      loading: false,
+    });
   };
 
   const createTree = (obj: any[], parentId: string | null) => {
     const tree: any[] = [];
     obj.forEach((item) => {
-      if (item.group.parentGroupId === parentId) {
-        const children = createTree(obj, item.group.groupId);
+      if (item.parentGroupId === parentId) {
+        const children = createTree(obj, item.groupId);
         if (children.length > 0) {
-          (item.group.icon = <CarryOutOutlined />), (item.group.children = children);
+          (item.icon = <CarryOutOutlined />), (item.children = children);
         }
         tree.push({
-          key: item.group.groupId,
-          title: item.group.groupName,
-          children: item.group.children,
+          key: item.groupId,
+          title: item.groupName,
+          children: item.children,
         });
       }
     });
@@ -73,12 +84,17 @@ const GroupTree: React.FC<props> = ({ propDataTree, loading, selectOrganize }): 
   };
 
   const onChangTapOrganize = async (organize: any) => {
+    console.log(organize);
     setTabsKey(organize);
     featchDataTree(organize);
   };
 
   const onSelectTree = (value: any) => {
-    propDataTree({ selectOrganize: selectOrganize, groupSelect: value[0], loading: false });
+    propDataTree({
+      selectOrganize: selectOrganize,
+      groupSelect: value[0],
+      loading: false,
+    });
   };
 
   return (
@@ -86,21 +102,21 @@ const GroupTree: React.FC<props> = ({ propDataTree, loading, selectOrganize }): 
       <div className=" grid-cols-1 gap-0 ">
         <div className="flex flex-row">
           <Tabs tabPosition="left" activeKey={tabsKey} items={tabList} onChange={onChangTapOrganize} />
-          <div className="basis-5/5">
-            {treeList ? (
-              <Tree
-                showIcon={true}
-                treeData={treeList}
-                defaultExpandAll={true}
-                onSelect={onSelectTree}
-                rootStyle={{ fontSize: 14 }}
-                blockNode
-                showLine
-              />
-            ) : (
-              ``
-            )}
-          </div>
+          {selectOrganize ? (
+            <div className="basis-5/5">
+              {treeList ? (
+                <Tree
+                  showIcon={true}
+                  treeData={treeList}
+                  defaultExpandAll={true}
+                  onSelect={onSelectTree}
+                  rootStyle={{ fontSize: 14 }}
+                  blockNode
+                  showLine
+                />
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </div>
     </Card>

@@ -1,21 +1,23 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, Divider, Row, Spin } from "antd";
+import { Breadcrumb, Card, Col, Divider, message, Row, Spin } from "antd";
 import MaTypeCreateComponent from "./components/MaTypeCreate";
 import MaTypeTableComponent from "./components/MaTypeTable";
 import { ITMaType, ITMaTypeForm, ITPagination } from "./common";
-import MaTypeServices from "./services/index.service";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { checkRule } from "@/app/utils/rules";
+import MaintenanceTypeServices from "../../../services/maintenance-type.service";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
-export default function MaTaskPage() {
-  const intranetAuth = useAxiosIntranet();
-  const maTypeServices = MaTypeServices(intranetAuth);
-  const addRule = checkRule("ma-type-add");
-  const showRule = checkRule("ma-type-show");
+export default function Page() {
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const maintenancetypeservices = MaintenanceTypeServices(baseUrIntranet);
 
   const [loading, setloading] = useState<boolean>(true);
-  const [pagination, setPagination] = useState<ITPagination>({ current: 1, pageSize: 10 });
+  const [pagination, setPagination] = useState<ITPagination>({
+    current: 1,
+    pageSize: 10,
+  });
   const [dataTable, setDataTable] = useState<ITMaType[]>([]);
 
   useEffect(() => {
@@ -23,7 +25,7 @@ export default function MaTaskPage() {
   }, [loading]);
 
   const fetchData = async () => {
-    const data = await maTypeServices.findMaTypeAll();
+    const data = await maintenancetypeservices.findMaTypeAll();
     setDataTable(data);
     setloading(false);
   };
@@ -33,17 +35,18 @@ export default function MaTaskPage() {
   };
 
   async function createMaType(form: ITMaTypeForm): Promise<void> {
-    await maTypeServices.create(form);
+    await maintenancetypeservices.create(form);
+    message.success("Create Success");
     setloading(true);
   }
 
   async function editMaType(id: number, data: ITMaTypeForm): Promise<void> {
-    await maTypeServices.update(id, data);
+    await maintenancetypeservices.update(id, data);
     setloading(true);
   }
 
   async function deleteMaType(id: number): Promise<void> {
-    await maTypeServices.delete(id);
+    await maintenancetypeservices.delete(id);
     setloading(true);
   }
 
@@ -55,19 +58,19 @@ export default function MaTaskPage() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
-                title: <span>Setting</span>,
+                title: <span>ตั้งค่า</span>,
               },
               {
-                title: <span>Set Maintenance Type</span>,
+                title: <span>จัดการการบำรุงรักษา</span>,
               },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
-          <div className="title-page-font">{`Set Maintenance Type`}</div>
+          <div className="title-page-font">{`จัดการการบำรุงรักษา`}</div>
         </Divider>
         <Col span={24}>
           <div className="grid grid-cols-1 ">

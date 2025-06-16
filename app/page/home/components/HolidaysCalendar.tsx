@@ -1,111 +1,213 @@
 import React, { useState, useEffect } from "react";
-import { Alert, Calendar } from "antd";
-import axios from "axios";
+import { createStyles } from "antd-style";
+import { Alert, Calendar, CalendarProps } from "antd";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
-//import './HolidaysCalendar.css';
+import classNames from "classnames";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
+import SlideImageService from "../services/index.service";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export interface props {}
 
+const useStyle = createStyles(({ token, css, cx }) => {
+  const lunar = css`
+    color: #fff;
+    font-size: ${token.fontSizeSM}px;
+  `;
+  const weekend = css`
+    color: #ddd;
+    &.gray {
+      opacity: 0.4;
+    }
+  `;
+  const holiday = css`
+    border-radius: 5px;
+    max-width: 40px;
+    max-height: 40px;
+    background: red;
+    margin: auto;
+    color: #fff;
+    opacity: 0.7;
+  `;
+  return {
+    wrapper: css`
+      width: 450px;
+      border: 1px solid ${token.colorBorderSecondary};
+      border-radius: ${token.borderRadiusOuter};
+      padding: 5px;
+    `,
+    dateCell: css`
+      position: relative;
+      &:before {
+        content: "";
+        position: absolute;
+        inset-inline-start: 0;
+        inset-inline-end: 0;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+        max-width: 40px;
+        max-height: 40px;
+        background: transparent;
+        transition: background-color 300ms;
+        border-radius: ${token.borderRadiusOuter}px;
+        border: 1px solid transparent;
+        box-sizing: border-box;
+      }
+      &:hover:before {
+        background: rgba(0, 0, 0, 0.04);
+      }
+    `,
+    today: css`
+      &:before {
+        border: 1px solid ${token.colorPrimary};
+      }
+    `,
+    text: css`
+      position: relative;
+      z-index: 1;
+    `,
+    lunar,
+    current: css`
+      color: ${token.colorTextLightSolid};
+      &:before {
+        background: ${token.colorPrimary};
+      }
+      &:hover:before {
+        background: ${token.colorPrimary};
+        opacity: 0.8;
+      }
+      .${cx(lunar)} {
+        color: ${token.colorTextLightSolid};
+        opacity: 0.9;
+      }
+      .${cx(weekend)} {
+        color: ${token.colorTextLightSolid};
+      }
+      .${cx(holiday)} {
+        color: ${token.colorTextLightSolid};
+      }
+    `,
+    monthCell: css`
+      width: 120px;
+      color: ${token.colorTextBase};
+      border-radius: ${token.borderRadiusOuter}px;
+      padding: 5px 0;
+      &:hover {
+        background: rgba(0, 0, 0, 0.04);
+      }
+    `,
+    monthCellCurrent: css`
+      color: ${token.colorTextLightSolid};
+      background: ${token.colorPrimary};
+      &:hover {
+        background: ${token.colorPrimary};
+        opacity: 0.8;
+      }
+    `,
+    weekend,
+    holiday,
+  };
+});
+
+interface THoliday {
+  id: number;
+  holidaysName: string;
+  masterHolidaysYearId: number;
+  holidaysDate: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
-  const [value, setValue] = useState(() => dayjs());
-  const [selectedValue, setSelectedValue] = useState(() => dayjs());
-  const [holidays, setHolidays] = useState<{ date: Dayjs; name: string }[]>([]);
-  const [isHolidaySelected, setIsHolidaySelected] = useState(false);
-  const [holidayName, setHolidayName] = useState<string | null>(null);
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const intraAuthService = SlideImageService(baseUrIntranet);
+  const { styles } = useStyle({ test: true });
+  const [selectDate, setSelectDate] = useState<Dayjs>(dayjs());
+  const [panelDateDate, setPanelDate] = useState<Dayjs>(dayjs());
+  const [holiday, setHoliday] = useState<THoliday[]>([]);
+  const [resultHoliday, setResultHoliday] = useState<string[]>([]);
 
   useEffect(() => {
-    const fetchHolidays = async () => {
-      try {
-        const response = await axios.get(
-          `https://calendarific.com/api/v2/holidays?&api_key=LLiN3LnZeoqxhqoioo89X6u1e5Vbf2Bv&country=TH&year=2024`
-        );
-        const holidaysData = response.data.response.holidays.map(
-          (holiday: any) => ({
-            date: dayjs(holiday.date.iso),
-            name: holiday.name,
-          })
-        );
-        setHolidays(holidaysData);
-      } catch (error) {
-        console.error("Error fetching holidays", error);
-      }
-    };
-    fetchHolidays();
+    featchDataHoliday(dayjs(new Date()).format("YYYY"));
   }, []);
 
-  const getHolidayName = (date: Dayjs) => {
-    const holiday = holidays.find((holiday) =>
-      holiday.date.isSame(date, "day")
-    );
-    return holiday ? holiday.name : null;
+  const featchDataHoliday = async (year: string) => {
+    const holiday = await intraAuthService.getHoliday(year);
+    setHoliday(holiday);
   };
 
-  const dateFullCellRender = (current: Dayjs) => {
-    const holidayName = getHolidayName(current);
-    return (
-      <div
-        className="ant-picker-cell-inner"
-        style={{
-          height: "25px",
-          width: "25px",
-          display: "flex",
-          borderRadius: "50%",
-          justifyContent: "center",
-          alignItems: "center",
-          margin: '15px',
-        }}
-      >
-        {holidayName ? (
+  const onPanelChange = (value: Dayjs, mode: CalendarProps<Dayjs>["mode"]) => {
+    setPanelDate(value);
+  };
+
+  const onDateChange: CalendarProps<Dayjs>["onSelect"] = (value, selectInfo) => {
+    if (selectInfo.source === "date") {
+      const holidaySelect = holiday
+        .filter((item: THoliday) => dayjs(new Date(item.holidaysDate)).format("YYYY-MM-DD") === dayjs(value).format("YYYY-MM-DD"))
+        .map((item: THoliday) => item.holidaysName);
+      setResultHoliday(holidaySelect && holidaySelect);
+      setSelectDate(value);
+    } else {
+      const year = dayjs(value).format("YYYY");
+      featchDataHoliday(year);
+    }
+  };
+
+  const cellRender: CalendarProps<Dayjs>["fullCellRender"] = (date, info) => {
+    const isWeekend = date.day() === 6 || date.day() === 0;
+    const isHoliday =
+      holiday && holiday.find((event) => dayjs(new Date(event.holidaysDate)).format("YYYY-MM-DD") === dayjs(date).format("YYYY-MM-DD"))
+        ? true
+        : false;
+
+    if (info.type === "date") {
+      return React.cloneElement(info.originNode, {
+        ...info.originNode.props,
+        className: classNames(styles.dateCell, {
+          [styles.current]: selectDate.isSame(date, "date"),
+          [styles.today]: date.isSame(dayjs(), "date"),
+        }),
+        children: (
           <div
-            style={{
-              backgroundColor: "#ff4d4f",
-              height: "25px",
-              width: "25px",
-              color: "#fff",
-              borderRadius: "50%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {current.date()}
+            className={classNames({
+              [styles.text]: true,
+              [styles.holiday]: isHoliday,
+            })}>
+            <span
+              className={classNames({
+                [styles.weekend]: isWeekend,
+                // [styles.holiday]: isHoliday,
+                gray: !panelDateDate.isSame(date, "month"),
+              })}>
+              {date.get("date")}
+            </span>
+            {info.type === "date" && <div className={styles.lunar}>-</div>}
           </div>
-        ) : (
-          current.date()
-        )}
-      </div>
-    );
+        ),
+      });
+    }
+    if (info.type === "month") {
+      return (
+        <div
+          className={classNames(styles.monthCell, {
+            [styles.monthCellCurrent]: selectDate.isSame(date, "month"),
+          })}>
+          {dayjs(date).format("MMM")}
+        </div>
+      );
+    }
   };
-
-  const onSelect = (newValue: Dayjs) => {
-    setValue(newValue);
-    setSelectedValue(newValue);
-    const holidayName = getHolidayName(newValue);
-    setIsHolidaySelected(!!holidayName);
-    setHolidayName(holidayName);
-  };
-
-  const onPanelChange = (newValue: Dayjs) => {
-    setValue(newValue);
-  };
-
   return (
-    <div>
-      <Calendar
-        value={value}
-        onSelect={onSelect}
-        onPanelChange={onPanelChange}
-        fullCellRender={dateFullCellRender}
-      />
-      {isHolidaySelected && (
-        <Alert
-          style={{ backgroundColor: "#ff4d4f", color:"#fff", marginTop: "16px" }}
-          message={`${selectedValue?.format("YYYY-MM-DD")} (${holidayName})`}
-          type="error"
-        />
-      )}
-    </div>
+    <>
+      <div className={` max-w-full ${styles.wrapper}`}>
+        <Calendar fullCellRender={cellRender} fullscreen={false} onPanelChange={onPanelChange} onSelect={onDateChange} />
+        {resultHoliday[0] ? <Alert type="warning" message={`${resultHoliday.map((item: string) => `${item}`)}`} /> : <></>}
+      </div>
+    </>
   );
 };
 

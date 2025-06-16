@@ -1,204 +1,179 @@
-import { RightOutlined } from "@ant-design/icons";
-import { Carousel, Row, Col, Card, Modal } from "antd";
-import React, { useState, useEffect } from "react";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { Carousel, Card, Modal, Image, Input, Typography } from "antd";
+import React, { useState, useRef } from "react";
+import { InformationNewsType } from "../common";
+import dayjs from "dayjs";
 
-export interface props {}
+export interface Props {
+  informationNews: InformationNewsType[];
+}
 
-const NewsCarouselComponent: React.FC<props> = (): React.ReactElement => {
+const NewsCarouselComponent: React.FC<Props> = ({ informationNews }): React.ReactElement => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedNews, setSelectedNews] = useState<any>(null);
-  const [numCols, setNumCols] = useState(3);
+  const [selectedNews, setSelectedNews] = useState<InformationNewsType | null>(null);
+  const baseImageUrl = process.env.REACT_APP_API_BASE_URL_INTRANET;
+  const carouselRef = useRef<any>(null);
+  const { Paragraph } = Typography;
 
-  const newsData = [
-    {
-      title: "Science Career and Internship Festival (SCI Festival)",
-      date: "04-March-2024",
-      imgSrc: "/images/homeImg/test.png",
-      link: "#",
-      description: `
-        พบกับพี่ๆ จาก OSD กับงาน Science Career and Internship Festival (SCI Festival)
-        ณ อาคารศูนย์ปาฐกถา ประดิษฐ เชยจิตร (ตึกฟักทอง) คณะวิทยาศาสตร์ มหาวิทยาลัยสงขลานครินทร์วิทยาเขตหาดใหญ่
-        ตั้งแต่ 09.00 - 15.00 น. ร่วมสนุกรับของรางวัลกันได้นะคะ <br><br>
-        สอบถามตำแหน่งงานว่าง และสมัครงาน <br>
-        คุณรัชพร (ฝ่ายบุคคล) <br>
-        T. 020801111 #5100 <br>
-        T. 0852279575 <br>
-        M. hr@osd.co.th`,
-    },
-    {
-      title: "OSD 20th YEARS ANIVERSARY",
-      date: "16-October-2023",
-      imgSrc: "/images/homeImg/test2.png",
-      link: "#",
-      description: `O S D #20thanniversary FROM LEARNING TO RUNNING #OSD #OSDCOMPANY`,
-    },
-    {
-      title:
-        "โอ เอส ดี ร่วมพันธมิตรธุรกิจดิจิตอล เสริมพลังธุรกิจ ติดอาวุธเทคโนโลยีการสื่อสารรอบด้าน ในงาน O S D econnect 2023",
-      date: "18-july-2023",
-      imgSrc: "/images/homeImg/test3.png",
-      link: "#",
-      description: `📣 โอ เอส ดี ร่วมพันธมิตรธุรกิจดิจิตอล เสริมพลังธุรกิจ ติดอาวุธเทคโนโลยีการสื่อสารรอบด้าน ในงาน O S D econnect 2023 <br>
-        นับเป็นอีกหนึ่งความสำเร็จจากความร่วมมือของเหล่าพันธมิตรฝีมือดี นำทีมโดย คุณอรสา ขาวงาม (ประธาน กรรมการบริหาร บริษัท โอ เอส ดี จำกัด) ที่นำเอาเทคโนโลยีเพื่อธุรกิจ (Ecosystem Tech for Business) นำเสนอผลงานนวัตกรรมสร้างสรรค์ที่ทรงพลังในงาน OSD e-connect 2023 ภายใต้หัวข้อ <br>
-        “EMPOWERING TECH ALLIANCE FOR BUSINESS GROWTH” <br>
-        ที่ได้บริษัทเทคฯ ชั้นนำร่วมเป็น Partner มากมาก ได้แก่ AVAYA, HUAWEI, NICE, DIGITAL DIALOGUE, BIZCUIT, SUNLINE THAILAND และ SUNDAE ทั้งนี้ภายในงานมีจุดเด่นที่น่าสนใจ เช่น <br>
-        • การพูดสร้างแรงบันดาลใจ โดยนายแพทย์เก่งพงศ์ ตั้งอรุณสันติ ผู้ก่อตั้งและผู้อำนวยการ Chersery Home โรงพยาบาลผู้สูงอายุและศูนย์เวชศาสตร์ฟื้นฟู <br>
-        • เวทีแลกเปลี่ยนความคิดเห็นโดยผู้บริหารชั้นนำของประเทศ เรื่องอนาคตธุรกิจกับการเปลี่ยนผ่านเข้าสู่เทคโนโลยี Digital Transformation และการ Synchronization โดยให้ความสำคัญในประเด็นต่างๆ ที่ เกี่ยวข้องกัน ทั้งด้าน Human โดย คุณใจพร ศรีสกุล จาก AIS 
-          ด้าน Infrastructure โดย คุณสุรศักดิ์ วนิชเวทย์พิบูล จาก Huawei ด้าน Data Transformation โดยคุณปริญญา แพทยานันท์ จาก NICE ด้าน Technology โดย Mr. Bhadresh R. Veeraiah จาก AVAYA International และด้าน Security โดย ดร. มนประอร ศุขรุ่งเรือง จาก Bangkok Airways <br>
-        • การนำเสนอวิสัยทัศน์ทางด้าน Digital Solution และ Innovation ที่ช่วยเสริมความแข็งแกร่งให้คู่ค้าธุรกิจ ในด้านต่างๆ อาทิเช่น Digital Workplace, Innovation for Senior Care Business, Innovation without disruption AXP เป็นต้น 
-          ซึ่งในงานนี้ O S D ได้จับมือร่วมกับ AVAYA อัพเดทเทคโนโลยีและบริการ ที่ตอบโจทย์ต่อกลุ่มธุรกิจ ที่ต้องการเพิ่มประสิทธิภาพให้เกิดบริการใหม่สร้างประสบการณ์ที่ดีให้กับลูกค้า (end user) <br>
-        • โอกาสในการเชื่อมต่อเครือข่ายกับผู้มีวิสัยทัศน์ เพื่อสร้างความร่วมมือและแลกเปลี่ยนความคิดเห็นที่มีค่า ซึ่งกันและกัน <br><br>
-        📍 งานนี้จัดขึ้นเมื่อวันพุธที่ 5 กรกฎาคม 2566 ที่ผ่านมา ณ ห้อง Grand Ballroom Carlton Sukhumvit Hotel`,
-      images: [
-        "/images/homeImg/test3_1.png",
-        "/images/homeImg/test3_2.png",
-        "/images/homeImg/test3_3.png",
-        "/images/homeImg/test3_4.png",
-        "/images/homeImg/test3_5.png",
-      ],
-    },
-    {
-      title: "Example4",
-      date: "01-April-2020",
-      imgSrc: "https://example.com/image4.jpg",
-      link: "#",
-      description: "This is a detailed description of Example4.",
-    },
-    {
-      title: "Example5",
-      date: "01-April-2020",
-      imgSrc: "https://example.com/image5.jpg",
-      link: "#",
-      description: "This is a detailed description of Example5.",
-    },
-    {
-      title: "Example6",
-      date: "01-April-2020",
-      imgSrc: "https://example.com/image6.jpg",
-      link: "#",
-      description: "This is a detailed description of Example6.",
-    },
-  ];
-
-  const chunkArray = (array: any[], size: number) => {
-    const chunkedArray = [];
-    for (let i = 0; i < array.length; i += size) {
-      chunkedArray.push(array.slice(i, i + size));
-    }
-    return chunkedArray;
-  };
-
-  const updateNumCols = () => {
-    if (window.innerWidth < 768) {
-      setNumCols(1);
-    } else if (window.innerWidth < 1024) {
-      setNumCols(2);
-    } else {
-      setNumCols(3);
-    }
-  };
-
-  useEffect(() => {
-    updateNumCols();
-    window.addEventListener("resize", updateNumCols);
-    return () => window.removeEventListener("resize", updateNumCols);
-  }, []);
-  const newsChunks = chunkArray(newsData, numCols);
-
-  const showModal = (news: any) => {
+  const showModal = (news: InformationNewsType) => {
     setSelectedNews(news);
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
-    setSelectedNews(null);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-    setSelectedNews(null);
-  };
+  const ImageNews = [];
+  if (informationNews)
+    for (let i = 0; i < informationNews.length; i += 3) {
+      ImageNews.push(informationNews.slice(i, i + 3));
+    }
 
   return (
     <>
-      <Carousel autoplay arrows infinite>
-        {newsChunks.map((newsChunk, index) => (
-          <div key={index}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {newsChunk.map((news, idx) => (
-                <Card
-                  key={idx}
-                  hoverable
-                  cover={
-                    <img
-                      src={news.imgSrc}
-                      style={{ height: "200px", objectFit: "cover" }}
+      <div style={{ position: "relative" }}>
+        <Carousel ref={carouselRef} dots={false} arrows={false}>
+          {ImageNews?.map((data, index) => (
+            <div key={index} style={{ display: "flex" }}>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 ">
+                {data?.map((file, fileIndex) => (
+                  <Card
+                    key={fileIndex}
+                    onClick={() => showModal(file)}
+                    style={{
+                      backgroundColor: "#F0F8FF",
+                      height: "350px",
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                    hoverable>
+                    <div className=" h-40">
+                      {file.newsImage.length > 0 && file.newsImage[0]?.fileName ? (
+                        <Image
+                          alt="news"
+                          preview={false}
+                          crossOrigin="anonymous"
+                          src={`${baseImageUrl}/news-image/${file.newsImage[0].fileimagePath}`}
+                          style={{
+                            width: "100%",
+                            height: "150px",
+                            objectFit: "cover",
+                          }}
+                        />
+                      ) : null}
+                    </div>
+                    <div className=" mt-14"></div>
+                    <Card.Meta
+                      title={file.newsName || "Untitled"}
+                      description={
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            marginTop: "20px",
+                          }}>
+                          <p style={{ margin: 0 }} className=" text-sm">
+                            ผู้เขียน : {file.author}
+                          </p>
+                          <p style={{ margin: 0 }} className=" text-sm">
+                            วันที่ : {dayjs(file.updatedAt).format("DD-MM-YYYY , HH:mm")}
+                          </p>
+                        </div>
+                      }
                     />
-                  }
-                >
-                  <Card.Meta
-                    title={news.title}
-                    description={
-                      <>
-                        <p>{news.date}</p>
-                        <a onClick={() => showModal(news)}>
-                          read more <RightOutlined />
-                        </a>
-                      </>
-                    }
-                  />
-                </Card>
-              ))}
+                  </Card>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
-      </Carousel>
+          ))}
+        </Carousel>
+        <LeftOutlined
+          onClick={() => carouselRef.current.prev()}
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "0",
+            transform: "translateY(-50%)",
+            zIndex: 2,
+            cursor: "pointer",
+            fontSize: "24px",
+            color: "#4E31AA",
+          }}
+        />
+        <RightOutlined
+          onClick={() => carouselRef.current.next()}
+          style={{
+            position: "absolute",
+            top: "50%",
+            right: "0",
+            transform: "translateY(-50%)",
+            zIndex: 2,
+            cursor: "pointer",
+            fontSize: "24px",
+            color: "#4E31AA",
+          }}
+        />
+      </div>
 
-      <Modal
-        title={selectedNews?.title}
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        width={700}
-      >
+      <Modal open={isModalVisible} onCancel={() => setIsModalVisible(false)} width={700} footer={null}>
         {selectedNews && (
           <div>
-            <p>{selectedNews.date}</p>
-            <img
-              src={selectedNews.imgSrc}
-              style={{ width: "100%", marginBottom: "15px" }}
-            />
-            <div
-              dangerouslySetInnerHTML={{ __html: selectedNews.description }}
-            />
-            <a
-              href={selectedNews.link}
-              target="_blank"
-              rel="noopener noreferrer"
-            ></a>
-          </div>
-        )}
-        <br />
-        {selectedNews?.images && (
-          <Carousel autoplay arrows infinite>
-            {selectedNews.images.map((image: string, index: number) => (
-              <div key={index}>
-                <div
+            <h3
+              style={{
+                textAlign: "center",
+                margin: "10px 10px",
+              }}>
+              <strong>{selectedNews.newsName}</strong>
+            </h3>
+            <Carousel arrows infinite={true} autoplay={true} autoplaySpeed={1500} effect="fade">
+              {selectedNews?.newsImage.map((image, index) => (
+                <Image
+                  key={index}
+                  preview={false}
+                  src={`${baseImageUrl}/news-image/${image.fileimagePath}`}
+                  crossOrigin="anonymous"
+                  style={{ width: "calc(100% - 5px)", marginBottom: "5px" }}
+                />
+              ))}
+            </Carousel>
+
+            <div>
+              <Paragraph
+                style={{
+                  fontSize: "14px",
+                  padding: "10px",
+                  minHeight: "150px",
+                  maxHeight: "350px",
+                  overflowY: "auto",
+                }}>
+                <Input.TextArea
                   style={{
-                    backgroundImage: `url(${image})`,
-                    height: "300px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    margin: "0 10px",
+                    fontSize: "14px",
+                    border: "none",
+                    outline: "none",
+                    resize: "none",
+                    boxShadow: "none",
+                    minHeight: "150px",
+                    maxHeight: "350px",
+                    overflowY: "auto",
+                    padding: "10px",
                   }}
-                ></div>
-              </div>
-            ))}
-          </Carousel>
+                  value={selectedNews?.content || ""}
+                  readOnly
+                  autoSize={{ minRows: 5, maxRows: 10 }}
+                />
+              </Paragraph>
+            </div>
+
+            <p />
+            <h5>
+              <strong>ผู้เขียน:</strong> {selectedNews.author}
+            </h5>
+            {selectedNews.updatedAt && (
+              <h5>
+                <strong>วันที่อัปเดต:</strong> {dayjs(selectedNews.updatedAt).format("DD-MM-YYYY , HH:mm")}
+              </h5>
+            )}
+          </div>
         )}
       </Modal>
     </>

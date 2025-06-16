@@ -1,14 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import UserServices from "../../services/user.service";
-import { Button, Card, Col, Form, Row, Select, SelectProps, Spin, Tabs, Tree, TreeSelect, message } from "antd";
-import type { DataNode, TreeProps } from "antd/es/tree";
-import Title from "antd/es/skeleton/Title";
+import { Button, Card, Col, Form, Row, Select, TreeSelect, message } from "antd";
+import type { DataNode } from "antd/es/tree";
 import { useForm } from "antd/es/form/Form";
-import UserGroupServices from "../../../user-group/services/usergroup.service";
+import UserGroupServices from "../../../../../services/usergroup.service";
 import { CarryOutOutlined } from "@ant-design/icons";
 import Loading from "@/components/Loading";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export interface props {
   userid: string;
@@ -29,21 +29,20 @@ type TabType = {
 };
 
 const EditAssignGroupComponent: React.FC<props> = ({ userid }): React.ReactElement => {
-  const userAuth = useAxiosUser();
-  const userGroupServices = UserGroupServices(userAuth);
-  const userServices = UserServices(userAuth);
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const [assignGroupForm] = useForm();
   const [optionsOrganize, setOptionsOrganize] = useState<TabType[]>([]);
   const [loadTree, setLoadTree] = useState<boolean>(false);
   const [valueTreeSelect, setValueTreeSelect] = useState<string>();
-  const [groupOption, setGroupOption] = useState<SelectProps["options"]>([]);
+  const [groupOption, setGroupOption] = useState<DataNode[]>([]);
 
   useEffect(() => {
     featchData();
   }, []);
 
   const featchData = async () => {
-    const resOrganize = await userGroupServices.findAllOrganize();
+    const resOrganize = await UserGroupServices(baseUrlUser).findAllOrganize();
     const orgList = resOrganize.map((item: TOrganizeDto) => ({ value: item.organizedId, label: item.organizedName }));
     setOptionsOrganize([...orgList]);
   };
@@ -68,11 +67,11 @@ const EditAssignGroupComponent: React.FC<props> = ({ userid }): React.ReactEleme
 
   const selectOrganize = async (organizeId: string) => {
     setLoadTree(true);
-    const groups = await userGroupServices.getUserGroupByOrganizedGroupId(organizeId);
+    const groups = await UserGroupServices(baseUrlUser).getUserGroupByOrganizedGroupId(organizeId);
     const tree = createTree(groups.organizeMapGroup, null);
     assignGroupForm.setFieldsValue({ groupList: undefined });
-    const assignGroup = await userServices.findAssignGroup(userid, organizeId);
-    const assignOwnerGroup = await userServices.findOwnerGroupByOrganizeId(userid, organizeId);
+    const assignGroup = await UserServices(baseUrlUser).findAssignGroup(userid, organizeId);
+    const assignOwnerGroup = await UserServices(baseUrlUser).findOwnerGroupByOrganizeId(userid, organizeId);
     if (assignGroup.length > 0) {
       const groupActiveIds = assignGroup.map((item: { id: number; usersId: string; organizedId: string; groupId: string }) => item.groupId);
       assignGroupForm.setFieldsValue({ groupList: groupActiveIds });
@@ -93,8 +92,8 @@ const EditAssignGroupComponent: React.FC<props> = ({ userid }): React.ReactEleme
   };
 
   const saveAssignGroup = async (value: { organizeId: string; groupList: string[]; groupOwnerId: string }) => {
-    const resAssign = await userServices.assignGroups(userid, value.organizeId, value.groupList);
-    const resAssignOwnerGroup = await userServices.assignOwnerGroups(userid, value.organizeId, value.groupOwnerId);
+    const resAssign = await UserServices(baseUrlUser).assignGroups(userid, value.organizeId, value.groupList);
+    const resAssignOwnerGroup = await UserServices(baseUrlUser).assignOwnerGroups(userid, value.organizeId, value.groupOwnerId);
     if (resAssign || resAssignOwnerGroup) {
       setLoadTree(true);
       message.success("สำเร็จ").then(() => setLoadTree(false));

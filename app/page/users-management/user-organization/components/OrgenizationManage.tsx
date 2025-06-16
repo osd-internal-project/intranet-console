@@ -5,6 +5,8 @@ import type { DataNode } from "antd/es/tree";
 import Title from "antd/es/skeleton/Title";
 import OrganizedServices from "../services/organized.service";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 export interface props {
   propDataManage: (res: { loading: boolean }) => void;
   manageStatus: {
@@ -21,8 +23,8 @@ type organizedForm = {
   description: string;
 };
 const OrgenizationManage: React.FC<props> = ({ propDataManage, manageStatus }): React.ReactElement => {
-  const userAuth = useAxiosUser();
-  const organizedServices = OrganizedServices(userAuth);
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const [titel, setTitel] = useState<string>("");
   const [content, setContent] = useState<React.JSX.Element>(<></>);
   const [open, setOpen] = useState<boolean>(false);
@@ -55,7 +57,7 @@ const OrgenizationManage: React.FC<props> = ({ propDataManage, manageStatus }): 
               </Button>
             </div>
           </Form.Item>
-        </Form>
+        </Form>,
       );
       setOpen(true);
     } else if (manageStatus.status === "edit" && manageStatus.organizedId) {
@@ -80,7 +82,7 @@ const OrgenizationManage: React.FC<props> = ({ propDataManage, manageStatus }): 
               </Button>
             </div>
           </Form.Item>
-        </Form>
+        </Form>,
       );
 
       setOpen(true);
@@ -89,7 +91,12 @@ const OrgenizationManage: React.FC<props> = ({ propDataManage, manageStatus }): 
       setContent(
         <div className=" col-span-1">
           <div>
-            ยืนยันการลบ <span className="bg-gray-100 text-gray-800 text-base font-medium mr-2 px-2.5 py-0.5 rounded  border border-gray-500"> {manageStatus.organizedName}</span> ?
+            ยืนยันการลบ{" "}
+            <span className="bg-gray-100 text-gray-800 text-base font-medium mr-2 px-2.5 py-0.5 rounded  border border-gray-500">
+              {" "}
+              {manageStatus.organizedName}
+            </span>{" "}
+            ?
           </div>
           <div className=" flex justify-end space-x-4">
             <Button onClick={cancelModal}>Cancel</Button>
@@ -97,19 +104,19 @@ const OrgenizationManage: React.FC<props> = ({ propDataManage, manageStatus }): 
               Delete
             </Button>
           </div>
-        </div>
+        </div>,
       );
       setOpen(true);
     }
   };
   const finishAdd = async (values: organizedForm) => {
-    await organizedServices
+    await OrganizedServices(baseUrlUser)
       .addOrganized(values)
       .then((res) =>
         messageApi.open({
           type: "success",
           content: "สำเร็จ",
-        })
+        }),
       )
       .catch((err) => {
         messageApi.open({
@@ -121,13 +128,13 @@ const OrgenizationManage: React.FC<props> = ({ propDataManage, manageStatus }): 
   };
   const finishEdit = async (values: organizedForm) => {
     if (manageStatus.organizedId) {
-      await organizedServices
+      await OrganizedServices(baseUrlUser)
         .updateOrganized(manageStatus.organizedId, values)
         .then((res) =>
           messageApi.open({
             type: "success",
             content: "สำเร็จ",
-          })
+          }),
         )
         .catch((err) => {
           messageApi.open({
@@ -140,7 +147,7 @@ const OrgenizationManage: React.FC<props> = ({ propDataManage, manageStatus }): 
   };
   const finishDelete = async () => {
     if (manageStatus.organizedId) {
-      await organizedServices
+      await OrganizedServices(baseUrlUser)
         .deleteOrganized(manageStatus.organizedId)
         .then((res) => {
           if (res.data.status === 401) {
@@ -160,7 +167,7 @@ const OrgenizationManage: React.FC<props> = ({ propDataManage, manageStatus }): 
           messageApi.open({
             type: "error",
             content: err,
-          })
+          }),
         );
       setOpen(false);
     }

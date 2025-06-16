@@ -1,6 +1,6 @@
 import { Avatar, Card, Tag } from "antd";
 import { useEffect, useState } from "react";
-import OrganizeServices from "@/app/page/setting/organize-chart/services/organize-chart.service";
+import OrganizeServices from "@/app/services/organize-chart.service";
 import { useAxiosIntranet, useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { CarryOutOutlined } from "@ant-design/icons";
 import { TreeNode, Tree } from "react-organizational-chart";

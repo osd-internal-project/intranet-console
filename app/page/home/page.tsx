@@ -1,8 +1,6 @@
 "use client";
-
-//import "./globals.css";
-import React from "react";
-import { Card } from "antd";
+import React, { useEffect, useState } from "react";
+import { Card, message } from "antd";
 import MeetingRoomTableComponent from "./components/MeetingRoomTable";
 import NewsCarouselComponent from "./components/NewsCarousel";
 import HolidaysCalendarComponent from "./components/HolidaysCalendar";
@@ -10,16 +8,92 @@ import BigCarouselComponent from "./components/BigCarousel";
 import DocumentComponent from "./components/Document";
 import "antd/dist/reset.css";
 import { CarFilled, FileFilled, TeamOutlined } from "@ant-design/icons";
+import SlideImageService from "./services/index.service";
+import { MasterRoomType, HandbookFileType, InformationNewsType } from "./common";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
+
+const baseImageUrl = process.env.REACT_APP_API_BASE_URL_INTRANET;
 
 export default function HomePage() {
+  const { id24Axios, tokenAccess } = useId24();
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [slideImage, setSlideImage] = useState<any[]>([]);
+  const [masterBookingRoom, setMasterBookingRoom] = useState<MasterRoomType[]>([]);
+  const [handbookFile, setHandbookFile] = useState<HandbookFileType[]>([]);
+  const [informationNews, setInformationNews] = useState<InformationNewsType[]>([]);
+  useEffect(() => {}, [tokenAccess?.userAccess]);
+
+  const fetchData = async () => {
+    try {
+      const dataSlideImage = await SlideImageService(baseUrlIntranet).getSlideImageByOrder();
+      const MasterBookingresponse = await SlideImageService(baseUrlIntranet).getMasterRoomQuery();
+      const dataHandbookFileQuery = await SlideImageService(baseUrlIntranet).getHandbookFileQuery();
+      const dataInformationNews = await SlideImageService(baseUrlIntranet).getinformationNewsQuery();
+      setInformationNews(dataInformationNews);
+      setHandbookFile(dataHandbookFileQuery);
+      setMasterBookingRoom(MasterBookingresponse);
+      setSlideImage(dataSlideImage);
+      setLoading(false);
+    } catch (e) {
+      console.log(`message error bcs ${e}`);
+    }
+  };
+
+  useEffect(() => {
+    if (loading) fetchData();
+  }, [loading]);
+
+  async function downloadFile(id: string, name: string): Promise<void> {
+    console.log(id);
+    console.log(name);
+
+    if (id && name) {
+      const fileUrl = `${baseImageUrl}/public/handbook-file/${id}?fileName=${encodeURIComponent(name)}`;
+      try {
+        const response = await fetch(fileUrl);
+
+        if (response.ok) {
+          const blob = await response.blob();
+          const link = document.createElement("a");
+
+          link.href = window.URL.createObjectURL(blob);
+          link.download = `${name}`;
+          link.click();
+
+          window.URL.revokeObjectURL(link.href);
+        } else {
+          message.error("ไม่มีไฟล์ให้ดาวน์โหลด");
+        }
+      } catch (error) {
+        message.error("เกิดข้อผิดพลาดในการดาวน์โหลดไฟล์");
+      }
+    } else {
+      message.error("ไม่มีไฟล์ให้ดาวน์โหลด");
+    }
+    // if (id) {
+    //   const response = await SlideImageService(baseUrlIntranet).downloadFile(id);
+    //   if (response) {
+    //     const url = URL.createObjectURL(response);
+    //     const a = document.createElement("a");
+    //     a.href = url;
+    //     a.download = name;
+    //     document.body.appendChild(a);
+    //     a.click();
+    //     document.body.removeChild(a);
+    //   }
+    // }
+  }
+
   return (
     <>
-      <BigCarouselComponent />
+      {slideImage.length > 0 ? <BigCarouselComponent slideImage={slideImage} /> : null}
       <div className="my-2" />
       <div className="grid md:grid-cols-3">
         <div className="px-2 mb-4">
           <Card className="text-center">
-            <a href="/page/data-leave/online-leave">
+            <a href="/page/leave-control-management/leave-history">
               <FileFilled className="text-5xl text-blue-500" />
               <br />
               ใบลาออนไลน์
@@ -45,34 +119,26 @@ export default function HomePage() {
           </Card>
         </div>
       </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h">
         <div className="lg:col-span-2">
-          <Card
-            title="ข่าวเเละกิจกรรมล่าสุด"
-            bordered={false}
-            className="text-center"
-          >
-            <NewsCarouselComponent />
+          <Card title="กิจกรรมและข่าวสาร" bordered={false} className="text-center" style={{ height: "500px" }}>
+            <NewsCarouselComponent informationNews={informationNews} />
           </Card>
           <div className="my-4"></div>
-          <Card title="เอกสาร" bordered={false} className="text-center">
-            <DocumentComponent />
+          <Card title="เอกสาร" bordered={false} className="text-center" style={{ minHeight: "550px" }}>
+            <DocumentComponent handbookFile={handbookFile} downloadFile={(id: string, filename: string) => downloadFile(id, filename)} />
           </Card>
         </div>
-
         <div className="lg:col-span-1">
-          <Card title="หอประชุม">
-            <MeetingRoomTableComponent pagination={false} />
+          <Card title="ห้องประชุม" className="text-center ">
+            <MeetingRoomTableComponent pagination={false} masterBookingRoom={masterBookingRoom} />
           </Card>
           <div className="my-4"></div>
-          <Card title="วันหยุดประจำปี">
+          <Card title="วันหยุดประจำปี" className="text-center">
             <HolidaysCalendarComponent />
           </Card>
         </div>
       </div>
-
-      <div className="my-6"></div>
     </>
   );
 }

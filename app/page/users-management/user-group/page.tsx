@@ -28,7 +28,7 @@ export default function UsergroupPage() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 title: <span>Users Management</span>,
@@ -48,20 +48,12 @@ export default function UsergroupPage() {
           <div className="grid grid-cols-1 md:grid-cols-2">
             <div>
               <Spin spinning={loading}>
-                <GroupTree
-                  propDataTree={propDataTree}
-                  loading={loading}
-                  selectOrganize={selectedOrganize}
-                />
+                <GroupTree propDataTree={propDataTree} loading={loading} selectOrganize={selectedOrganize} />
               </Spin>
             </div>
             {groupSelect ? (
               <div>
-                <GroupManage
-                  propDataManage={propDataManage}
-                  groupSelect={groupSelect}
-                  selectOrganize={selectedOrganize}
-                />
+                <GroupManage propDataManage={propDataManage} groupSelect={groupSelect} selectOrganize={selectedOrganize} />
               </div>
             ) : (
               <></>

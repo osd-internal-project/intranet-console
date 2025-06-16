@@ -1,68 +1,44 @@
-import { HomeFilled } from "@ant-design/icons";
-import { Table } from "antd";
+import { Table, TableProps, Tag } from "antd";
 import React from "react";
+import { MasterRoomType } from "../common";
+
 export interface props {
   pagination: any;
+  masterBookingRoom: MasterRoomType[];
 }
-const MeetingRoomTableComponent: React.FC<props> = (): React.ReactElement => {
-  const columns = [
+const MeetingRoomTableComponent: React.FC<props> = ({ masterBookingRoom }): React.ReactElement => {
+  const columns: TableProps<MasterRoomType>["columns"] = [
     {
-      title: "",
-      dataIndex: "no",
-      key: "no",
+      title: "ชื่อห้องประชุม",
+      dataIndex: "roomName",
+      key: "roomName",
     },
     {
-      title: "ชื่อห้อง",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "สถานะการจอง",
-      dataIndex: "status",
-      key: "status",
-    },
-  ];
-
-  const data = [
-    {
-      key: "1",
-      no: <HomeFilled />,
-      name: "Alpha (ชั้น 4 ห้องใหญ่)",
-      status: "ว่าง",
-    },
-    {
-      key: "2",
-      no: <HomeFilled />,
-      name: "Bravo (ชั้น 4)",
-      status: "ว่าง",
-    },
-    {
-      key: "3",
-      no: <HomeFilled />,
-      name: "Chalie (ชั้น 3)",
-      status: "ไม่ว่าง",
-    },
-    {
-      key: "4",
-      no: <HomeFilled />,
-      name: "Delta (ชั้น 1 ห้องฟ้า)",
-      status: "ว่าง",
-    },
-    {
-      key: "5",
-      no: <HomeFilled />,
-      name: "Echo (ชั้น 1 กลางน้ำ)",
-      status: "ว่าง",
-    },
-    {
-      key: "6",
-      no: <HomeFilled />,
-      name: "Delight (ห้องรับรอง ชั้น 1)",
-      status: "ว่าง",
+      title: "สถานะห้องประชุม",
+      dataIndex: "roomsStatus",
+      align: "center",
+      render: (value: string, row: any) => {
+        const now = new Date();
+        const roomStatus = row?.roomsStatus;
+        const isRoomBooked = row.bookingRoom?.some((booking: any) => {
+          const startDate = new Date(booking.startDate);
+          const endDate = new Date(booking.endDate);
+          return now >= startDate && now <= endDate;
+        });
+        if (roomStatus) {
+          if (isRoomBooked) {
+            return <Tag color="red">ไม่ว่างใช้งาน</Tag>;
+          } else {
+            return <Tag color="green">ว่าง</Tag>;
+          }
+        } else {
+          return <Tag color="red">ไม่พร้อมใช้งาน</Tag>;
+        }
+      },
     },
   ];
 
-  return <Table columns={columns} dataSource={data} pagination={false} />;
+  return <Table columns={columns} dataSource={masterBookingRoom} pagination={false} rowKey="id" />;
 };
 
 export default MeetingRoomTableComponent;

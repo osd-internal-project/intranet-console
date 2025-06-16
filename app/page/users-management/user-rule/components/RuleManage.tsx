@@ -1,10 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Card, Form, Input, Modal, Tree, message } from "antd";
-import type { DataNode } from "antd/es/tree";
-import Title from "antd/es/skeleton/Title";
+import { Button, Form, Input, Modal, message } from "antd";
 import RuleServices from "../services/rule.service";
-import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 export interface props {
   propDataManage: (res: { loading: boolean }) => void;
   manageStatus: {
@@ -21,8 +20,8 @@ type ruleForm = {
   description: string;
 };
 const GroupManage: React.FC<props> = ({ propDataManage, manageStatus }): React.ReactElement => {
-  const userAuth = useAxiosUser();
-  const ruleServices = RuleServices(userAuth);
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const [titel, setTitel] = useState<string>("");
   const [content, setContent] = useState<React.JSX.Element>(<></>);
   const [open, setOpen] = useState<boolean>(false);
@@ -41,7 +40,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, manageStatus }): React.R
       });
       setContent(
         <Form form={form} labelCol={{ span: 8 }} onFinish={finishAdd}>
-          <Form.Item label="Name" name="ruleName">
+          <Form.Item label="Name" name="ruleName" rules={[{ required: true, message: "Plese Select" }]}>
             <Input />
           </Form.Item>
           <Form.Item label="Description" name="description">
@@ -66,7 +65,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, manageStatus }): React.R
       });
       setContent(
         <Form labelCol={{ span: 8 }} form={form} onFinish={finishEdit}>
-          <Form.Item label="Name" name="ruleName">
+          <Form.Item label="Name" name="ruleName" rules={[{ required: true, message: "Plese Select" }]}>
             <Input />
           </Form.Item>
           <Form.Item label="Description" name="description">
@@ -107,7 +106,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, manageStatus }): React.R
     }
   };
   const finishAdd = async (values: ruleForm) => {
-    await ruleServices
+    await RuleServices(baseUrlUser)
       .addMasterRule(values)
       .then((res) => message.success(`สำเร็จ`))
       .catch((err) => {
@@ -117,7 +116,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, manageStatus }): React.R
   };
   const finishEdit = async (values: ruleForm) => {
     if (manageStatus.ruleCode) {
-      await ruleServices
+      await RuleServices(baseUrlUser)
         .updateMasterRule(manageStatus.ruleCode, values)
         .then((res) => message.success(`สำเร็จ`))
         .catch((err) => {
@@ -128,7 +127,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, manageStatus }): React.R
   };
   const finishDelete = async () => {
     if (manageStatus.ruleCode) {
-      await ruleServices
+      await RuleServices(baseUrlUser)
         .deleteMasterRule(manageStatus.ruleCode)
         .then((res) => {
           if (res.data.status === 401) {

@@ -1,41 +1,51 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, message, Row } from "antd";
+import React, { useContext, useEffect, useState } from "react";
+import { Breadcrumb, Col, message, Row } from "antd";
 import MaTaskCreate from "./components/MaTaskCreate";
-import { ITMaCreateForm, ITMaDetail, ITMaType, ITPagination } from "../common";
+import { ITMaCreateForm, ITMaType } from "../common";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import MaServices from "../services/ma.service";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
+import { UsersServices } from "@/app/services/users.service";
 
 export default function MaTaskCreatePage() {
+  const { user } = (useContext(UserContext) as UserContectType) || {
+    user: null,
+  };
   const router = useRouter();
-  const { data: session } = useSession();
-
-  const intranetAuth = useAxiosIntranet();
-  const maServices = MaServices(intranetAuth);
+  // const intranetAuth = useAxiosIntranet();
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const maServices = MaServices(baseUrIntranet);
+  const userservices = UsersServices(baseUrUser);
   const [loading, setloading] = useState<boolean>(true);
   const [maTypes, setMaTypes] = useState<ITMaType[]>([]);
+  const [userAll, setUserAll] = useState<any[]>([]);
   useEffect(() => {
-    if (loading === true) fetchData();
+    if (loading) fetchData();
   }, [loading]);
 
   const fetchData = async () => {
+    const userAll = await userservices.findAll();
     const maTypes = await maServices.findActiveType();
+    setUserAll(userAll);
     setMaTypes(maTypes);
-  };
-  const changePagination = (page: ITPagination) => {
-    console.log(page);
   };
 
   async function createMa(data: ITMaCreateForm): Promise<void> {
     const maTypeSelected = maTypes.findLast((type) => type.id === data.maTypeId);
+    const userNameSelect = userAll.find((type) => type.userId === data.assignUserId);
     const form = {
       ...data,
       maTypeName: maTypeSelected?.name,
       maStatus: "process",
-      createdById: session?.user.userId,
-      createdByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}`,
+      createdById: user?.userId,
+      assignUsername: `${userNameSelect.firstNameTh} ${userNameSelect.lastNameTh}`,
+      createdByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
     };
     await maServices
       .create(form)
@@ -57,7 +67,7 @@ export default function MaTaskCreatePage() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 href: "/page/maintenance-management",
@@ -70,11 +80,11 @@ export default function MaTaskCreatePage() {
           />
         </Col>
         <Col span={24}>
-          <div className="title-page-font">{`CREATE MAINTENANCE TASK`}</div>
+          <div className="title-page-font">{`Create Maintenance Task`}</div>
         </Col>
         <Col span={24}>
           <div className="grid grid-cols-1 ">
-            <MaTaskCreate maTypes={maTypes} loading={loading} setLoading={(e: boolean) => setloading(e)} createMa={createMa} />
+            <MaTaskCreate maTypes={maTypes} loading={loading} setLoading={(e: boolean) => setloading(e)} createMa={createMa} userAll={userAll} />
           </div>
         </Col>
       </Row>

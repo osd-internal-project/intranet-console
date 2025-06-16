@@ -2,12 +2,15 @@
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { Breadcrumb, Card, Col, Divider, Row, Tabs, Typography } from "antd";
 import React, { useEffect, useState } from "react";
-import OrganizeServices from "../../setting/organize-chart/services/organize-chart.service";
+import OrganizeServices from "../../../services/organize-chart.service";
 import dynamic from "next/dynamic";
 
-const OrganizationalTeam = dynamic(() => import("./components/organizational-team"), {
-  ssr: false,
-});
+const OrganizationalTeam = dynamic(
+  () => import("./components/organizational-team"),
+  {
+    ssr: false,
+  }
+);
 
 export type TOrganizeDto = {
   id: number;
@@ -36,7 +39,10 @@ export default function Page() {
       resOrganize.map((item: TOrganizeDto) => ({
         key: item.positionId,
         label: (
-          <Text style={true ? { width: 200 } : undefined} ellipsis={true ? { tooltip: item.positionName } : false}>
+          <Text
+            style={true ? { width: 200 } : undefined}
+            ellipsis={true ? { tooltip: item.positionName } : false}
+          >
             {item.positionName}
           </Text>
         ),
@@ -52,7 +58,7 @@ export default function Page() {
           items={[
             {
               href: "/page",
-              title: <span>Home</span>,
+              title: <span>หน้าหลัก</span>,
             },
 
             {
@@ -67,7 +73,13 @@ export default function Page() {
       <Col span={24}>
         <div className=" grid-span-1 space-y-2">
           <Card>
-            <Tabs size="small" type="card" className="w-full overflow-x-auto" tabPosition="top" items={tabOrganize} />
+            <Tabs
+              size="small"
+              type="card"
+              className="w-full overflow-x-auto"
+              tabPosition="top"
+              items={tabOrganize}
+            />
           </Card>
         </div>
       </Col>

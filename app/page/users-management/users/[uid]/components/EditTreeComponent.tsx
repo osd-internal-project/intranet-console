@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
-import UserGroupServices from "../../services/usergroup.service";
 import UserServices from "../../services/user.service";
 import { Button, Card, Form, Select, Spin, Tree, TreeSelect, message } from "antd";
 import type { DataNode, TreeProps } from "antd/es/tree";
@@ -9,6 +8,9 @@ import Title from "antd/es/skeleton/Title";
 
 import "../../style.css";
 import { useForm } from "antd/es/form/Form";
+import UserGroupServices from "../../../../../services/usergroup.service";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 export interface props {
   userid: string;
 }
@@ -18,9 +20,12 @@ type optionType = {
   value: string;
 };
 const EditTreeComponent: React.FC<props> = ({ userid }): React.ReactElement => {
-  const userAuth = useAxiosUser();
-  const userGroupServices = UserGroupServices(userAuth);
-  const userServices = UserServices(userAuth);
+  // const userAuth = useAxiosUser();
+
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const userGroupServices = UserGroupServices(baseUrlUser);
+  const userServices = UserServices(baseUrlUser);
   const [treeform] = useForm();
   const [treeList, setTreeList] = useState<any[]>([]);
   const [loadTree, setLoadTree] = useState<boolean>(false);
@@ -47,8 +52,8 @@ const EditTreeComponent: React.FC<props> = ({ userid }): React.ReactElement => {
 
     setLoadTree(true);
     treeform.setFieldsValue({ grouplist: undefined });
-    const groups = await userGroupServices.getUserGroupAll();
-    const userGroup = await userGroupServices.getUserGroupIdByUserId(userid);
+    // const groups = await userGroupServices.getUserGroupAll();
+    // const userGroup = await userGroupServices.getUserGroupIdByUserId(userid);
     const ownerCondition = {
       where: { userId: userid },
       select: {
@@ -59,12 +64,12 @@ const EditTreeComponent: React.FC<props> = ({ userid }): React.ReactElement => {
     if (ownnerDetail.ownerGroup) {
       treeform.setFieldsValue({ ownerGroup: ownnerDetail.ownerGroup.groupid });
     }
-    if (userGroup.data.length > 0) {
-      const groupActiveIds = userGroup.data.map((item: any) => item.userGroupId);
-      treeform.setFieldsValue({ grouplist: groupActiveIds });
-    }
-    const tree = createTree(groups, null);
-    setTreeList(tree);
+    // if (userGroup.data.length > 0) {
+    //   const groupActiveIds = userGroup.data.map((item: any) => item.userGroupId);
+    //   treeform.setFieldsValue({ grouplist: groupActiveIds });
+    // }
+    // const tree = createTree(groups, null);
+    // setTreeList(tree);
     setLoadTree(false);
   };
 

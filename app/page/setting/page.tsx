@@ -56,7 +56,7 @@ export default function Setting() {
       },
       {
         name_header: "Set Category & Group ",
-        name_path: "setting/cetagory-group-type",
+        name_path: "setting/category-group-type",
         icon: circleSqureIcon,
         rule: "sm-c-s",
       },
@@ -107,7 +107,7 @@ export default function Setting() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 title: <span>Setting</span>,

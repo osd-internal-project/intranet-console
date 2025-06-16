@@ -1,16 +1,21 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Breadcrumb, Card, Col, message, Row, UploadFile } from "antd";
 import MaDescriptionComponent from "./components/MaDescription";
 import { ITMaTask, ITMaType, ITMaUpdateForm, ITPagination } from "../common";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import MaServices from "../services/ma.service";
 import { useParams } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
+
 export default function MaTaskPage() {
-  const { data: session } = useSession();
-  const intranetAuth = useAxiosIntranet();
-  const maServices = MaServices(intranetAuth);
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
+  // const intranetAuth = useAxiosIntranet();
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const maServices = MaServices(baseUrIntranet);
   const params = useParams<{ maId: string }>();
   const [loading, setloading] = useState<boolean>(true);
   const [data, setData] = useState<ITMaTask>();
@@ -24,30 +29,29 @@ export default function MaTaskPage() {
     setMaTypes(maTypes);
     const res = await maServices.findMaTaskById(Number(params.maId));
     setData(res);
-    console.log(res);
     setloading(false);
   };
-  // const data: ITMaDetail = {
-  //   id: 2,
-  //   maName: "task 2",
-  //   maStatus: "success",
-  //   maTypeId: 2,
-  //   maTypeName: "ตรวจสภาพ",
-  //   maDate: new Date(),
-  //   detail: "ทดสอบ",
-  //   contact: "บริษัท",
-  //   remake: "สำเร็จ",
-  //   updatedDate: new Date(),
-  //   createdDate: new Date(),
-  // };
 
   async function updateMa(data: ITMaUpdateForm, attendFiles: UploadFile[], imageFiles: UploadFile[]): Promise<void> {
-    let form = { ...data, updatedById: session?.user.userId, updatedByName: `${session?.user.firstNameTh} ${session?.user.lastNameTh}` };
+    let form = {
+      ...data,
+      updatedById: user?.userId,
+      updatedByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
+    };
 
     if (data.nextTask) {
       const typeSelected = maTypes.findLast((type) => type.id === data.nextTask?.maTypeId);
       const submaStatus = "process";
-      form = { ...form, nextTask: { create: { ...data.nextTask, maTypeName: typeSelected?.name, maStatus: submaStatus } } } as any;
+      form = {
+        ...form,
+        nextTask: {
+          create: {
+            ...data.nextTask,
+            maTypeName: typeSelected?.name,
+            maStatus: submaStatus,
+          },
+        },
+      } as any;
     }
     await maServices
       .update(Number(params.maId), form)
@@ -68,7 +72,6 @@ export default function MaTaskPage() {
             await maServices.uploadFiles(response.id, formData);
           });
         }
-
         message.success("อัพเดท MA สำเร็จ");
       })
       .catch(() => {
@@ -106,7 +109,7 @@ export default function MaTaskPage() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 href: "/page/maintenance-management",

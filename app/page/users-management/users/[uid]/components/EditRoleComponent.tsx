@@ -9,6 +9,8 @@ import TextArea from "antd/es/input/TextArea";
 import UserServices from "../../services/user.service";
 import { useForm } from "antd/es/form/Form";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 export interface props {
   userid: string;
 }
@@ -18,9 +20,12 @@ type optionType = {
   value: string;
 };
 const EditRoleComponent: React.FC<props> = ({ userid }): React.ReactElement => {
-  const useAuth = useAxiosUser();
-  const rolesServices = RolesServices(useAuth);
-  const userServices = UserServices(useAuth);
+  // const useAuth = useAxiosUser();
+
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const rolesServices = RolesServices(baseUrlUser);
+  const userServices = UserServices(baseUrlUser);
   const [roleForm] = useForm();
   const [optionList, setOptionList] = useState<optionType[]>([]);
   const [ruleShowList, setRuleShowList] = useState<any>(null);

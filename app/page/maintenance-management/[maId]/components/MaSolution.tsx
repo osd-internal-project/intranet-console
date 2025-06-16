@@ -25,7 +25,7 @@ const MaDescriptionComponent: React.FC<props> = ({ data, downloadFile, getImageB
       data.imageList.map(async (image) => {
         const fileData = await getImageBlob(image.id, image.fileName);
         return { ...image, fileData: fileData };
-      })
+      }),
     );
     setImagePreview(preview);
   }
@@ -39,11 +39,11 @@ const MaDescriptionComponent: React.FC<props> = ({ data, downloadFile, getImageB
           <div className=" col-span-2"> {data.actionDate ? dateToStringThNoTime(data.actionDate) : ""}</div>
         </div>
         <div className="grid  grid-cols-3 mb-2">
-          <div className=" col-span-1 font-bold">วันที่อัพเดท :</div>
+          <div className=" col-span-1 font-bold">วันที่อัปเดต :</div>
           <div className=" col-span-2"> {data.updatedAt ? dateToStringThNoTime(data.updatedAt) : ""}</div>
         </div>
         <div className="grid  grid-cols-3 mb-2">
-          <div className=" col-span-1 font-bold">ผู้อัพเดท :</div>
+          <div className=" col-span-1 font-bold">ผู้อัปเดท :</div>
           <div className=" col-span-2"> {data.updatedByName}</div>
         </div>
         <div>
@@ -51,31 +51,35 @@ const MaDescriptionComponent: React.FC<props> = ({ data, downloadFile, getImageB
           <div className=" col-span-2">{data.solution}</div>
         </div>
       </div>
-      <div>
-        <div className="font-bold">Images :</div>
-        <div className=" flex gap-2">
-          {imagePreview.map((image, index) => (
-            <div key={index} className=" m-1">
-              <Image height={50} preview={true} src={image.fileData ? URL.createObjectURL(image.fileData) : ""} />
-            </div>
-          ))}
+      {imagePreview.length > 0 ? (
+        <div className="mt-2">
+          <div className="font-bold">Images :</div>
+          <div className=" flex gap-2">
+            {imagePreview.map((image, index) => (
+              <div key={index} className=" m-1">
+                <Image height={50} preview={true} src={image.fileData ? URL.createObjectURL(image.fileData) : ""} />
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-      <div>
-        <div className=" font-extrabold">Files :</div>
-        <div className="  ">
-          {data.fileList.map((file, index) => (
-            <div key={index}>
-              <Button type="link" onClick={() => downloadFile(file.id, file.fileName)}>
-                <Space>
-                  <PaperClipOutlined />
-                  {file.fileName}
-                </Space>
-              </Button>
-            </div>
-          ))}
+      ) : null}
+      {data.fileList.length > 0 ? (
+        <div className="mt-2">
+          <div className="font-extrabold">Files :</div>
+          <div className="  ">
+            {data.fileList.map((file, index) => (
+              <div key={index}>
+                <Button type="link" onClick={() => downloadFile(file.id, file.fileName)}>
+                  <Space>
+                    <PaperClipOutlined />
+                    {file.fileName}
+                  </Space>
+                </Button>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      ) : null}
     </>
   );
 };

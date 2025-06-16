@@ -6,6 +6,9 @@ import OrganizedServices from "./services/organized.service";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { editIcon } from "@/components/icon";
+import dayjs from "dayjs";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 const { RangePicker } = DatePicker;
 const dateFormat = "DD/MM/YYYY";
@@ -18,8 +21,9 @@ interface TypeTable {
   updatedAt: string;
 }
 export default function Organization() {
-  const userAuth = useAxiosUser();
-  const organizedServices = OrganizedServices(userAuth);
+  const { id24Axios } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const organizedServices = OrganizedServices(baseUrlUser);
   const [dataSource, setDataSource] = useState<TypeTable[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [search, setSearch] = useState<object>({});
@@ -85,7 +89,7 @@ export default function Organization() {
       dataIndex: "createdAt",
       key: "createdAt",
       width: "20%",
-      // render: (text: string, record: any, index: number) => index + 1,
+      render: (text: string, record: any, index: number) => dayjs(text).format("DD-MM-YYYY , HH:mm"),
     },
     {
       title: "Active",
@@ -104,8 +108,7 @@ export default function Organization() {
                   organizedName: record.organizedName,
                   description: record.description,
                 })
-              }
-            >
+              }>
               {editIcon}
             </Button>
           </div>
@@ -170,7 +173,7 @@ export default function Organization() {
           items={[
             {
               href: "/page",
-              title: <span>Home</span>,
+              title: <span>หน้าหลัก</span>,
             },
             {
               title: <span>Users Management</span>,
@@ -216,8 +219,7 @@ export default function Organization() {
                     organizedName: null,
                     description: null,
                   })
-                }
-              >
+                }>
                 Add Organization
               </Button>
             </div>

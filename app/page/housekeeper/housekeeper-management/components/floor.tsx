@@ -1,5 +1,5 @@
 "use client";
-import { useAxiosIntranet, useAxiosStock } from "@/app/lib/axios/hooks/userAxiosAuth";
+import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import {
   Breadcrumb,
   Button,
@@ -25,6 +25,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "antd/es/form/Form";
 import { FilterOutlined } from "@ant-design/icons";
 import { HouseKeeperStockServices } from "../../housekeepers/services/housekeeper.service";
+import dayjs from "dayjs";
 
 type FieldType = {
   type: string;
@@ -74,6 +75,7 @@ export default function Floor() {
       dataIndex: "createdAt",
       key: "createdAt",
       width: "20%",
+      render: (text: string) => dayjs(text).format("DD-MM-YYYY , HH:mm"),
     },
     {
       title: "อัปเดท",
@@ -180,8 +182,7 @@ export default function Floor() {
               content={searchContent}
               title="Search"
               trigger="click"
-              overlayStyle={{ width: "calc(100% - 240px)" }}
-            >
+              overlayStyle={{ width: "calc(100% - 240px)" }}>
               <Button icon={<FilterOutlined />}>Filters</Button>
             </Popover>
             <Button type="primary" onClick={onClickCreate}>
@@ -199,8 +200,7 @@ export default function Floor() {
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 18 }}
             onFinish={onFinish}
-            autoComplete="off"
-          >
+            autoComplete="off">
             <Form.Item<FieldType> name="type" hidden>
               <Input />
             </Form.Item>

@@ -1,0 +1,221 @@
+export interface ITypetypeleave {
+  haveLeftHours: number;
+  limitLeaveHours: number;
+  limitLeaveLastResult: number;
+  haveLeft: any;
+  createdAt: Date;
+  descriptionLeave: string;
+  forwardLeave: string;
+  id: number;
+  limitLeaveFour: string;
+  limitLeaveOne: string;
+  limitLeaveThree: string;
+  limitLeaveTwo: string;
+  typeEveryDay: boolean;
+  typeId: number;
+  typeName: string;
+  typeNameEn: string;
+  typeNameTh: string;
+  updatedAt: Date;
+}
+
+export interface ITypetypeleaveUpadte {
+  where: {
+    id: number;
+  };
+  data: {
+    descriptionLeave: string;
+    forwardLeave: string;
+    limitLeaveFour: string;
+    limitLeaveOne: string;
+    limitLeaveThree: string;
+    limitLeaveTwo: string;
+    typeEveryDay: boolean;
+    typeId: number;
+    typeName: string;
+    typeNameEn: string;
+    typeNameTh: string;
+    updatedAt: Date;
+  };
+}
+export interface Filtertypeleave {
+  createdAt?: Date[];
+  typeName?: string;
+}
+
+export interface IDataUser {
+  email?: string;
+  exp?: number;
+  firstNameEn?: string;
+  firstNameTh?: string;
+  iat?: number;
+  lastNameEn?: string;
+  lastNameTh?: string;
+  ownerGroup?: {};
+  phoneNumber?: string;
+  position?: {
+    id?: number;
+    posId?: number;
+    nameTh?: string;
+    nameEn?: string;
+    createdAt?: string;
+  };
+  userId?: string;
+  username?: string;
+  userMapOrganizeChart?: any;
+  typeLeaveDisabledMap?: {};
+}
+
+export interface ISelect {
+  value: string | number;
+  label: string;
+}
+export interface ISelectDepartment {
+  value: string | number;
+  label: string;
+}
+
+export interface IDepartMent {
+  id: number;
+  departId: number;
+  departName: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface ITypetypeleave {
+  createdAt: Date;
+  descriptionLeave: string;
+  forwardLeave: string;
+  id: number;
+  limitLeaveFour: string;
+  limitLeaveOne: string;
+  limitLeaveThree: string;
+  limitLeaveTwo: string;
+  typeEveryDay: boolean;
+  typeId: number;
+  typeName: string;
+  typeNameEn: string;
+  typeNameTh: string;
+  updatedAt: Date;
+}
+
+export interface ITpyeUser {
+  activeStatus: boolean;
+  clientId: string;
+  createdAt: Date;
+  email: string;
+  firstNameEn: string;
+  firstNameTh: string;
+  id: number;
+  lastNameEn: string;
+  lastNameTh: string;
+  organizedGroupId: number;
+  ownerGroupId: number;
+  password: string;
+  phoneNumber: string;
+  positionId: number;
+  departId: number;
+  refreshToken: string;
+  startWork: Date;
+  updatedAt: Date;
+  userId: string;
+  username: string;
+  typeid: number;
+  user: users;
+}
+export interface users {
+  firstNameTh: string;
+  lastNameTh: string;
+}
+
+export interface ITypeDataLeave {
+  dataLeaveFiles?: [];
+  id?: number;
+  userId?: string;
+  firstName: string;
+  lastName?: string;
+  positionId?: number;
+  position?: string;
+  departId?: number;
+  departName?: string;
+  typeId?: number;
+  typeName?: string;
+  startDate?: Date;
+  startTime?: string;
+  endDate?: Date;
+  endTime?: string;
+  leaveHour?: number;
+  detail?: string;
+  phoneNumber?: string;
+  status: string;
+  approvedDate?: Date;
+  userApproved?: string;
+  attrachFile?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  ownerId?: string;
+  ownerName?: string;
+  description?: string;
+  groupId?: string;
+}
+
+export interface ITypeDataLeaveCreate {
+  id: number;
+  userId: string;
+  firstNameTh: string;
+  lastNameTh: string;
+  posId: number;
+  position: string;
+  departName: string;
+  type_id: number;
+  typeName: string;
+  startDate: Date;
+  startTime: string;
+  endDate: Date;
+  endTime: string;
+  leaveHour: number;
+  detail: string;
+  phoneNumber: string;
+  status: string;
+  approvedDate: Date;
+  userApproved: string;
+  attrachFile: string;
+  createdAt: Date;
+  updatedAt: Date;
+  time_start_check: boolean;
+  ownerId?: string;
+  ownerName?: string;
+  groupName: string;
+}
+
+export interface ITypeDataleaveMap {
+  id: number;
+  userId: number;
+  masterTypeleaveId: number;
+}
+
+export interface UserGroupType {
+  id: number;
+  groupId: string;
+  groupName: string;
+  description: string;
+}
+
+export interface MasterTypeleaveType {
+  id: number;
+  typeId?: number | null;
+  typeName?: string | null;
+  forwardLeave?: string | null;
+  limitLeaveOne?: string | null;
+  limitLeaveTwo?: string | null;
+  limitLeaveThree?: string | null;
+  limitLeaveFour?: string | null;
+  descriptionLeave?: string | null;
+  typeEveryDay?: boolean | null;
+  typeNameEn?: string | null;
+  typeNameTh?: string | null;
+  createdAt?: Date | null;
+  updatedAt?: Date | null;
+  // typeLeaveDisabledMap?: TypeLeaveDisabledMapType[];
+}

@@ -1,92 +1,90 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { signOut, useSession } from "next-auth/react";
+import React, { useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Navigation from "@/components/Navigation";
-import { FloatButton, Layout, Menu, message, Spin } from "antd";
+import { useRouter } from "next/navigation";
+import { Button, Image, Layout, Menu, Spin } from "antd";
 import { MenuSiderWithModule } from "@/app/config/menu";
-import { pageWithoutMenu } from "@/app/config/data";
 import { Footer } from "antd/es/layout/layout";
-import { useAxiosStock, useAxiosUser } from "../lib/axios/hooks/userAxiosAuth";
-import IndexServices from "./services/index.service";
-import { PhoneOutlined } from "@ant-design/icons";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "../config/app-config";
+import { UsersServices } from "../services/users.service";
+import { UserContectType, UserContext } from "../config/userContext";
 
-export default function MainLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const stockAuth = useAxiosStock();
-  const userAuth = useAxiosUser();
-  const indexServices = IndexServices(stockAuth);
-  const userServices = IndexServices(userAuth);
+const { Content, Sider } = Layout;
+
+export default function MainLayout({ children }: { children: React.ReactNode }) {
+  const navigate = useRouter();
+  const { tokenAccess, authenticated, login, logout, id24Axios } = useId24();
+  const { saveUser, saveRoles } = useContext(UserContext) as UserContectType;
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const [loading, setLoading] = useState<boolean>(true);
   const [collapsed, setCollapsed] = useState(false);
-  const [countNoti, setCountNoti] = useState(0);
-  const [avatar, setAvatar] = useState<any>();
+  const [profileDetail, setProfileDetail] = useState<any>();
+
+  const [userRequestedLogout, setUserRequestedLogout] = useState(false);
   const pathname = usePathname();
-  const { data: session, status } = useSession({
-    required: true,
-  });
+  const defaultPath = `${window.location.origin}/page/home`;
 
   useEffect(() => {
-    if (session?.error === "RefreshAccessTokenError") {
-      message.error("หมดอายุการใช้งาน กรุณาเข้าสู่ระบบ");
-      signOut();
-    } else {
-      fatchData();
+    const sideMenuGroups =
+      tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
+
+    saveRoles(sideMenuGroups);
+  }, [tokenAccess?.userAccess]);
+
+  const fetchData = async () => {
+    try {
+      const profileUser = await UsersServices(baseUrlUser).processAfterLoginAuth();
+      console.time(profileUser);
+      if (profileUser) {
+        setProfileDetail(profileUser);
+        saveUser(profileUser);
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    } finally {
+      setLoading(false);
     }
-  }, [session]);
-
-  async function fatchData() {
-    if (session) {
-      // const count = await indexServices.countLotBeforeExpiredByLocation(
-      //   session.grouplist
-      // );
-
-      // if (count === undefined || count === null || !count) {
-      //   setCountNoti(0);
-      // } else {
-      //   setCountNoti(count);
-      // }
-      const image = await userServices.getImage(session.user.userId);
-      setAvatar(image);
-    }
-  }
-
-  if (status === "loading") {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Spin />
-      </div>
-    );
-  }
-
-  const LoseToken = () => {
-    message.error("ไม่มีสิทธิ์เข้าถึง");
-    signOut();
   };
+  useEffect(() => {
+    if (authenticated && loading) {
+      fetchData();
+    }
+  }, [authenticated, loading]);
 
-  if (!session) {
-    LoseToken();
-  } else {
-    const { Content, Sider } = Layout;
-    const menulist = MenuSiderWithModule(session?.rulelist);
-    const currentPath = pathname.split("/")[2];
-    const currentPathSub = pathname.split("/")[3];
-
-    if (currentPath) {
-      // console.log(currentPath, `${currentPath}/${currentPathSub}`)
-      if (!pageWithoutMenu.includes(currentPath)) {
-        const checkAuth = MenuSiderWithModule(session?.rulelist).some(
-          (menu: any) => menu.key === currentPath
-        );
-        if (!checkAuth) {
-          // redirect("/404");
-        }
+  useEffect(() => {
+    if (authenticated && !loading) {
+      if (profileDetail === undefined) {
+        const pathLocation = `${window.location.origin}/permission-access`;
+        navigate.push(pathLocation);
       }
     }
+  }, [authenticated, loading, profileDetail, navigate]);
 
-    return (
+  if (!authenticated) {
+    if (userRequestedLogout) {
+      login(defaultPath, false);
+    } else {
+      login(defaultPath, false);
+    }
+    return <Button onClick={() => login(defaultPath, false)}>Login</Button>;
+  }
+
+  const logOut = async () => {
+    setUserRequestedLogout(true);
+    logout().then(() => login(defaultPath, false));
+  };
+
+  const sideMenuGroups =
+    tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
+
+  const menulist = MenuSiderWithModule(sideMenuGroups);
+  const currentPath = pathname.split("/")[2];
+  const currentPathSub = pathname.split("/")[3];
+
+  return (
+    <Spin percent={"auto"} size="large" spinning={loading}>
       <Layout className=" min-h-screen  overflow-auto ">
         <Sider
           width={200}
@@ -94,69 +92,46 @@ export default function MainLayout({
           collapsible
           collapsed={collapsed}
           style={{ backgroundColor: "#ffff" }}
-          className=" min-h-screen  hidden  md:block bg "
-        >
+          className=" min-h-screen  hidden  md:block bg ">
           <div className="flex justify-center py-4 ">
             {!collapsed ? (
               <>
-                <img
-                  src="/images/osd-logo.png"
-                  alt="logo-page"
-                  className={`${collapsed ? "w-14 " : " w-40"}`}
-                />
+                <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : " w-32"}`} />
               </>
             ) : (
-              <img
-                src="/images/osd-logo.png"
-                alt="logo-page"
-                className={`${collapsed ? "w-14 " : "w-28 "}`}
-              />
+              <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
             )}
           </div>
           <Menu
             mode="inline"
             selectedKeys={[currentPath, `${currentPath}/${currentPathSub}`]}
-            defaultSelectedKeys={[
-              currentPath,
-              `${currentPath}/${currentPathSub}`,
-            ]}
+            defaultSelectedKeys={[currentPath, `${currentPath}/${currentPathSub}`]}
             items={menulist}
           />
         </Sider>
         <Layout>
           <div className="w-full">
             <Navigation
-              session={session}
-              countNoti={countNoti}
+              logOut={logOut}
+              profileDetail={profileDetail}
               collapsed={collapsed}
               setCollapsed={setCollapsed}
               currentPath={currentPath}
               menulist={menulist}
-              avatar={avatar}
             />
           </div>
-
           <Content
             className=" mb-10"
             style={{
               padding: 20,
               margin: 0,
               marginBottom: 20,
-            }}
-          >
+            }}>
             {children}
-            <FloatButton
-              shape="circle"
-              type="primary"
-              style={{ right: 10, bottom: 10 }}
-              icon={<PhoneOutlined />}
-            />
           </Content>
-          <Footer style={{ textAlign: "center" }}>
-            Intranet ©{new Date().getFullYear()} Created by OSD
-          </Footer>
+          <Footer style={{ textAlign: "center" }}>Intranet ©{new Date().getFullYear()} Created by OSD</Footer>
         </Layout>
       </Layout>
-    );
-  }
+    </Spin>
+  );
 }

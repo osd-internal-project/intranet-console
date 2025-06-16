@@ -3,12 +3,12 @@ import React, { useEffect, useState } from "react";
 import { Button, Card, Col, DatePicker, Form, Input, Modal, Popover, Row, Spin, Switch, Table, Tag, message } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import { ExclamationCircleFilled, FilterOutlined } from "@ant-design/icons";
-import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { PositionServices } from "../services/position.service";
 import { FieldTypeUnit } from "../common";
 import { editIcon, deleteIcon } from "@/components/icon";
-import { checkRule } from "@/app/utils/rules";
 import { dateToStringTh } from "@/app/utils/format";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export interface props {
   getloading: boolean;
@@ -27,11 +27,9 @@ export const TableMasterdataPosition: React.FC<props> = ({
   openFilter,
   onFilter,
 }): React.ReactElement => {
-  const userAuth = useAxiosUser();
-
-  // const editRule = checkRule("st-p-e");
-  // const deleteRule = checkRule("st-p-d");
-  const positionServices = PositionServices(userAuth);
+  const { id24Axios, tokenAccess } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const positionServices = PositionServices(baseUrlUser);
 
   const { RangePicker } = DatePicker;
   const [form] = Form.useForm();
@@ -184,8 +182,7 @@ export const TableMasterdataPosition: React.FC<props> = ({
               placement="bottomLeft"
               title="Search"
               trigger="click"
-              overlayStyle={{ width: "calc(100% - 240px)" }}
-            >
+              overlayStyle={{ width: "calc(100% - 240px)" }}>
               <div className="flex justify-end">
                 <Button className="button-blue" type="primary" icon={<FilterOutlined />}>
                   Filters
@@ -212,8 +209,7 @@ export const TableMasterdataPosition: React.FC<props> = ({
             autoComplete="off"
             layout="inline"
             form={form}
-            onFinish={onfinishEdit}
-          >
+            onFinish={onfinishEdit}>
             <Form.Item<FieldTypeUnit> name={`id`} hidden />
             <Col span={12}>
               <Form.Item<FieldTypeUnit> name={`nameTh`} label={`Name TH :`} rules={[{ required: true, message: "Please enter name TH" }]}>
@@ -231,8 +227,7 @@ export const TableMasterdataPosition: React.FC<props> = ({
                 onClick={() => {
                   setOpenEdit(false);
                   form.resetFields();
-                }}
-              >{`Cancel`}</Button>
+                }}>{`Cancel`}</Button>
 
               <Button htmlType="submit" type="default" className="button-blue" loading={buttonLoading}>{`Save Change`}</Button>
             </Col>

@@ -79,79 +79,83 @@ const GroupPermissionComponent: React.FC<props> = ({
       sm: { span: 20, offset: 4 },
     },
   };
-  return (
-    <Modal
-      open={showModalPermission}
-      title={"CRM Permission"}
-      onCancel={() => onShowModalPermission(false)}
-      footer={[]}
-      // width={1000}
-    >
-      <Form form={permissionform} layout="vertical" onFinish={onSetPermission}>
-        <Form.Item
-          name={"exceptionalSatatus"}
-          label={<b>Exceptional Status</b>}
-          valuePropName="checked"
-        >
-          <Switch />
-        </Form.Item>
-        <Form.Item name={"saleUserGroupId"} label={<b>Sale Group</b>}>
-          <TreeSelect
-            multiple
-            allowClear
-            showSearch={false}
-            style={{ width: "100%" }}
-            treeDefaultExpandAll
-            placeholder="Please select"
-            treeData={groupOption}
-            onChange={onChangeSaleGroupSelect}
-          />
-        </Form.Item>
-        <Form.Item name={"saleUsersId"} label={<b>Sale</b>}>
-          <Select
-            allowClear
-            mode="multiple"
-            showSearch={true}
-            options={saleUsersFormGroup.map((user) => ({
-              label: `${user.firstNameTh} ${user.lastNameTh}`,
-              value: user.userId,
-            }))}
-          />
-        </Form.Item>
-        <Form.Item name={"engineerUserGroupId"} label={<b>Engineer Group</b>}>
-          <TreeSelect
-            multiple
-            allowClear
-            showSearch={false}
-            style={{ width: "100%" }}
-            treeDefaultExpandAll
-            placeholder="Please select"
-            treeData={groupOption}
-            onChange={onChangeEngineerGroupSelect}
-          />
-        </Form.Item>
-        <Form.Item name={"engineerUsersId"} label={<b>Engineer</b>}>
-          <Select
-            allowClear
-            mode="multiple"
-            showSearch={true}
-            options={engineerUsersFormGroup.map((user) => ({
-              label: `${user.firstNameTh} ${user.lastNameTh}`,
-              value: user.userId,
-            }))}
-          />
-        </Form.Item>
-        <Form.Item>
-          <div className=" text-right space-x-4 mt-5">
-            <Button onClick={() => onShowModalPermission(false)}>Cancel</Button>
-            <Button type="primary" htmlType="submit">
-              Save
-            </Button>
-          </div>
-        </Form.Item>
-      </Form>
-    </Modal>
-  );
+  return <></>;
+  // return (
+  //   <Modal
+  //     open={showModalPermission}
+  //     title={"CRM Permission"}
+  //     onCancel={() => onShowModalPermission(false)}
+  //     footer={[]}
+  //     maskClosable={false}
+  //     // width={1000}
+  //   >
+  //     <Form form={permissionform} layout="vertical" onFinish={onSetPermission}>
+  //       <Form.Item
+  //         name={"exceptionalSatatus"}
+  //         label={<b>Exceptional Status</b>}
+  //         valuePropName="checked"
+  //       >
+  //         <Switch />
+  //       </Form.Item>
+  //       <Form.Item name={"saleUserGroupId"} label={<b>Sale Group</b>}>
+  //         <TreeSelect
+  //           multiple
+  //           allowClear
+  //           showSearch={false}
+  //           style={{ width: "100%" }}
+  //           treeDefaultExpandAll
+  //           placeholder="Please select"
+  //           treeData={groupOption}
+  //           onChange={onChangeSaleGroupSelect}
+  //         />
+  //       </Form.Item>
+  //       <Form.Item name={"saleUsersId"} label={<b>Sale</b>}>
+  //         <Select
+  //           allowClear
+  //           placeholder="Please select"
+  //           mode="multiple"
+  //           showSearch={true}
+  //           options={saleUsersFormGroup.map((user) => ({
+  //             label: `${user.firstNameTh} ${user.lastNameTh}`,
+  //             value: user.userId,
+  //           }))}
+  //         />
+  //       </Form.Item>
+  //       <Form.Item name={"engineerUserGroupId"} label={<b>Engineer Group</b>}>
+  //         <TreeSelect
+  //           multiple
+  //           allowClear
+  //           showSearch={false}
+  //           style={{ width: "100%" }}
+  //           treeDefaultExpandAll
+  //           placeholder="Please select"
+  //           treeData={groupOption}
+  //           onChange={onChangeEngineerGroupSelect}
+  //         />
+  //       </Form.Item>
+  //       <Form.Item name={"engineerUsersId"} label={<b>Engineer</b>}>
+  //         <Select
+  //           allowClear
+  //           mode="multiple"
+  //           placeholder="Please select"
+  //           showSearch={true}
+  //           options={engineerUsersFormGroup.map((user) => ({
+  //             label: `${user.firstNameTh} ${user.lastNameTh}`,
+  //             value: user.userId,
+  //           }))}
+  //         />
+  //       </Form.Item>
+  //       <Form.Item>
+  //         <div className=" text-right space-x-4 mt-5">
+  //           <Button onClick={() => onShowModalPermission(false)}>Cancel</Button>
+  //           <Button type="primary" htmlType="submit">
+  //             Save
+  //           </Button>
+  //         </div>
+  //       </Form.Item>
+  //     </Form>
+  //   </Modal>
+  // );
 };
 
 export default GroupPermissionComponent;

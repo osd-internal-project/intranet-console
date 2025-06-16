@@ -1,196 +1,114 @@
-import { LogoutOutlined, UserOutlined, HomeOutlined } from "@ant-design/icons";
-import { Icon } from "@iconify/react";
+import React from "react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
-import React from "react";
-import { signOut } from "next-auth/react";
-import {
-  gridIcon,
-  IconDataLeave,
-  bookingIcon,
-  maintenanceIcon,
-  organizeChart,
-  stockIcon,
-  contactListIcon,
-  macarIcon,
-  chevronIcon,
-} from "@/components/icon";
-import { icons } from "antd/es/image/PreviewGroup";
+import { Icon } from "@iconify/react";
+import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, macarIcon, hrIcon } from "@/components/icon";
+import { FieldTimeOutlined, HomeOutlined } from "@ant-design/icons";
 
 type MenuItem = Required<MenuProps>["items"][number];
-const MenuNav: MenuProps["items"] = [
-  {
-    key: "1",
-    label: <Link href={`/page/user-profile`}>Profile</Link>,
-    icon: <UserOutlined />,
-  },
-  {
-    key: "2",
-    label: (
-      <Link
-        href={"#"}
-        onClick={async () => {
-          signOut();
-        }}
-      >
-        Sign Out
-      </Link>
-    ),
-    icon: <LogoutOutlined />,
-  },
-];
-
-export default MenuNav;
 
 export const MenuSider: MenuItem[] = [
   {
     key: "home",
-    label: "Home",
+    label: "หน้าหลัก",
+    rule: ["user", "admin"],
     icon: <HomeOutlined />,
   },
+  // {
+  //   key: "internal-info",
+  //   icon: organizeChart,
+  //   label: `ข้อมูลภายใน`,
+  //   rule: "user",
+  //   children: [
+  //     {
+  //       key: `internal-info/organization-chart`,
+  //       label: "แผนผังองค์กร",
+  //     },
+  //     {
+  //       key: `internal-info/organization-chart-team`,
+  //       label: `แผนผังทีม`,
+  //     },
+  //   ],
+  // },
   {
-    key: "internal-info",
-    icon: organizeChart,
-    label: `Internal Info`,
-    rule: "m-s",
+    key: "hr-management",
+    label: "ระบบบริหารงานบุคคล",
+    rule: ["hr", "admin"],
+    icon: hrIcon,
     children: [
       {
-        key: `internal-info/organization-chart`,
-        label: "Organization Chart",
-      },
-      {
-        key: `internal-info/organization-chart-team`,
-        label: `Team Chart `,
-      },
-    ],
-  },
-  {
-    key: "stock",
-    icon: stockIcon,
-    label: "Stock",
-    rule: "s-s",
-    children: [
-      {
-        key: `order-management`,
-        // icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
-        label: `Order Management`,
-        rule: "sm-order-s",
-      },
-      {
-        key: `inventory`,
-        // icon: <Icon icon="ep:office-building" width="25" height="25" />,
-        label: `Inventory`,
-        rule: "sm-inventory-s",
-      },
-
-      {
-        key: `product-list`,
-        // icon: <Icon icon="humbleicons:box" width="25" height="25" />,
-        label: `Product List`,
-        rule: "sm-productlist-s",
-      },
-      // {
-      //   key: `suppliers`,
-      //   icon: <Icon icon="lucide:truck" width="25" height="25" />,
-      //   label: `Suppliers`,
-      // },
-      // {
-      //   key: `report`,
-      //   label: `REPORT`,
-      //   disabled: true,
-      // },
-      // {
-      //   key: `dashboard`,
-      //   icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
-      //   label: `Dashboard`,
-      //   // rule: "dashboard",
-      // },
-      {
-        key: `report-withdraw-ranking`,
-        // icon: persentationChartLoneIcon,
-        label: `10 อันดับการเบิกจ่ายที่มากที่สุด`,
-        rule: "sm-re-wr-h",
-      },
-      {
-        key: `report-transaction`,
-        // icon: <Icon icon="bx:file" width="25" height="25" />,
-        label: `การรับเข้าเบิกจ่าย`,
-        rule: "sm-re-tr-h",
-      },
-      {
-        key: `report-expired`,
-        // icon: <Icon icon="bx:bell" width="25" height="25" />,
-        label: `รายงานการหมดอายุ`,
-        rule: "sm-re-ex-h",
-      },
-      {
-        key: `stock-management`,
-        // icon: <Icon icon="tabler:clipboard-list" width="25" height="25" />,
-        label: `Stock Management`,
-        rule: "sm-s",
+        key: `hr-management/employee-profile`,
+        label: "ข้อมูลพนักงาน",
+        rule: ["hr", "admin"],
       },
     ],
   },
   {
     key: "housekeeper",
     icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
-    label: "Housekeeper",
-    rule: "hk-s",
+    label: "งานแม่บ้าน",
+    rule: ["ma-user", "admin"],
     children: [
       {
         key: `housekeeper/housekeepers`,
-        label: `Housekeeper`,
-        rule: "hk-h",
+        label: `ข้อมูลการการทำงานของแม่บ้าน`,
+        rule: ["ma-user", "admin"],
       },
       {
         key: `housekeeper/housekeeper-management`,
-        label: `Housekeeper Management`,
-        rule: "hk-m",
+        label: `จัดการข้อมูลแม่บ้าน`,
+        rule: ["ma-user", "admin"],
       },
     ],
   },
   {
-    key: "data-leave",
+    key: "leave-control-management",
     icon: IconDataLeave,
-    label: `Data Leave`,
-    rule: "dl-s",
+    label: `ข้อมูลการลา`,
+    rule: ["user", "admin", "header"],
     children: [
       {
-        key: `data-leave/online-leave`,
-        label: `Create Data Leave`,
-        rule: "dl-a",
+        key: `leave-control-management/leave-letter`,
+        label: `ใบลาออนไลน์`,
+        rule: ["user", "admin"],
       },
       {
-        key: `data-leave/detail-online-leave`,
-        label: `Detail Data Leave User`,
-        rule: "dl-dt-u",
+        key: `leave-control-management/leave-history`,
+        label: `ประวัติการลา`,
+        rule: ["user", "admin"],
       },
       {
-        key: `data-leave/detail-online-leave-admin`,
-        label: `Detail Data Leave Admin`,
-        rule: "dl-dt-a",
+        key: `leave-control-management/leave-history-admin`,
+        label: `จัดการการลา`,
+        rule: ["admin", "header"],
       },
       {
-        key: `data-leave/leave-management`,
-        label: `Leave Management`,
-        rule: "dl-dis",
+        key: `leave-control-management/leave-disabled-management`,
+        label: `จัดการสิทธิ์การลา`,
+        rule: "admin",
       },
     ],
   },
   {
-    key: "3",
+    key: "bookingroom",
     icon: bookingIcon,
-    label: "Booking Room",
+    label: "ห้องประชุม",
+    rule: ["user", "admin"],
     children: [
       {
         key: `bookingroom/booking-room`,
-        // icon: <Icon icon="mdi:book-sync-outline" width="20" height="20" />,
-        label: `Booking room`,
+        label: `จองห้องประชุม`,
+        rule: "user",
       },
       {
         key: `bookingroom/booking-room-management`,
-        // icon: <Icon icon="mdi:book-plus-outline" width="20" height="20" />,
-        label: `Booking room Management`,
+        label: `จัดการข้อมูลห้องประชุม`,
+        rule: "admin",
+      },
+      {
+        key: `bookingroom/booking-room-refreshment`,
+        label: `จัดการอาหารว่าง`,
+        rule: ["admin", "hr"],
       },
     ],
   },
@@ -198,57 +116,53 @@ export const MenuSider: MenuItem[] = [
     key: "maintenance",
     icon: maintenanceIcon,
     label: "Maintenance",
-    rule: "ma-s",
+    rule: ["ma-user", "admin"],
     children: [
       {
         key: `maintenance-management`,
-        // icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
         label: `Maintenance Management`,
-        rule: "ma-m-s",
+        rule: ["ma-user", "admin"],
       },
     ],
   },
-  // { key: `admin`, label: `Admin`, disabled: true },
   {
-    key: `setting`,
-    icon: <Icon icon="uil:setting" width="15" height="15" />,
-    label: `Setting`,
-    rule: "st-s",
+    key: "macar",
+    icon: macarIcon,
+    label: `ข้อมูลการจองรถยนต์`,
+    rule: ["user", "admin"],
     children: [
       {
-        key: `setting/maintenance-type`,
-        // icon: colorSwatchIcon,
-        label: `MA Type`,
-        rule: "ma-t-s",
+        key: `macar/ma-car`,
+        label: `ข้อมูลการจองรถยนต์`,
+        rule: ["user", "admin"],
       },
       {
-        key: `setting/organize-chart`,
-        // icon: organizeChart,
-        label: `Organize Chart`,
-        // rule: "st-p-s",
-      },
-      // {
-      //   key: `setting/location`,
-      //   // icon: buldingIcon,
-      //   label: `Location`,
-      // },
-      {
-        key: `setting/typeleave`,
-        // icon: IconTypeLeave,
-        label: `Type Leave`,
-        rule: "st-tl-s",
+        key: `macar/ma-car-booking`,
+        label: `Ma car Booking`,
+        rule: ["user", "admin"],
       },
       {
-        key: `setting/master-holidays`,
-        // icon: IconHolidays,
-        label: `Master Holidays`,
-        rule: "st-mth-s",
+        key: `macar/ma-car-management`,
+        label: `ข้อมูลการจองรถยนต์ (แอดมิน)`,
+        rule: ["user", "admin"],
+      },
+    ],
+  },
+  {
+    key: `overtime`,
+    icon: <FieldTimeOutlined />,
+    label: `Overtime`,
+    rule: ["user", "admin"],
+    children: [
+      {
+        key: `overtime/overtime-calendar`,
+        label: `ตารางการเบิก OT`,
+        rule: ["user", "admin"],
       },
       {
-        key: `setting/masterdata-position`,
-        // icon: IconPosition,
-        label: `Master Position`,
-        rule: "st-p-s",
+        key: `overtime/overtime-form`,
+        label: `แบบฟอร์มขอเบิกค่าทำงานล่วงเวลา`,
+        rule: ["user", "admin"],
       },
     ],
   },
@@ -256,174 +170,89 @@ export const MenuSider: MenuItem[] = [
     key: `users-management`,
     icon: gridIcon,
     label: `User Management`,
-    rule: "um-s",
+    rule: ["admin", "hr"],
     children: [
       {
         key: `users-management/users`,
-        // icon: groupLineIcon,
         label: `Users`,
-        // rule: "um-s",
+        rule: ["admin", "hr"],
       },
       {
         key: `users-management/user-organization`,
-        // icon: shieldExclamationIcon,
         label: `Organizations`,
-        // rule: "user-organize-show",
+        rule: "admin",
       },
       {
         key: `users-management/user-group`,
-        // icon: userGroupIcon,
         label: `Groups`,
-        // rule: "um-ug-s",
+        rule: "admin",
       },
       {
         key: `users-management/user-role`,
-        // icon: mindMappingIcon,
         label: `Roles`,
-        rule: "um-ro-s",
+        rule: "admin",
       },
       {
         key: `users-management/user-rule`,
-        // icon: shieldExclamationIcon,
         label: `Rules`,
-        rule: "um-ru-s",
+        rule: "admin",
+      },
+      {
+        key: `users-management/user-module`,
+        label: `Module`,
+        rule: "admin",
+      },
+      {
+        key: `users-management/user-group-permission`,
+        label: `Group Permission`,
+        rule: "admin",
       },
     ],
   },
   {
-    key: "crm",
-    icon: contactListIcon,
-    label: `CRM`,
-    // rule: "crm-s",
+    key: `setting`,
+    icon: <Icon icon="uil:setting" width="15" height="15" />,
+    label: `ตั้งค่า`,
+    rule: ["admin", "hr", "ma-user"],
     children: [
       {
-        key: `crm/customer`,
-        label: `Customer`,
-        // rule: "crm-c-s",
+        key: `setting/maintenance-type`,
+        label: `การบำรุงรักษา`,
+        rule: ["admin", "ma-user"],
       },
       {
-        key: `crm/project`,
-        label: `Project `,
-        // rule: "crm-p-s",
+        key: `setting/organize-chart`,
+        label: `Organize Chart`,
+        rule: "admin",
+      },
+      {
+        key: `setting/typeleave`,
+        label: `Type Leave`,
+        rule: "admin",
+      },
+      {
+        key: `setting/master-holidays`,
+        label: `Master Holidays`,
+        rule: ["admin", "hr"],
+      },
+      {
+        key: `setting/masterdata-position`,
+        label: `Master Position`,
+        rule: ["admin", "hr"],
+      },
+      {
+        key: `setting/manage-home`,
+        label: `Manage Home`,
+        rule: ["admin", "hr"],
+      },
+      {
+        key: `setting/master-overtime-config`,
+        label: `Master Overtime Config`,
+        rule: "admin",
       },
     ],
   },
-  {
-    key: "ma-cars",
-    icon: macarIcon,
-    label: `Ma Car`,
-    children: [
-      {
-        key: `macar/ma-car`,
-        // icon: chevronIcon,
-        label: `Ma car`,
-      },
-      {
-        key: `macar/ma-car-booking`,
-        // icon: chevronIcon,
-        label: `Ma car Booking`,
-      },
-      {
-        key: `macar/ma-car-management`,
-        // icon: chevronIcon,
-        label: `Ma car Management`,
-      },
-      {
-        key: `crm/ticket`,
-        label: `Ticket `,
-        rule: "crm-t-s",
-      },
-    ],
-  },
-  {
-    key: "carre-serve",
-    icon: contactListIcon,
-    label: `CarReserve`,
-    // rule: "carreserve",
-  },
-
-  // {
-  //   key: `stock-management`,
-  //   icon: stockSetting,
-  //   label: `Stock Management`,
-  //   // rule: "st-s",
-  //   children: [
-  //     {
-  //       key: `stock-management/location`,
-  //       // icon: buldingIcon,
-  //       label: `Location`,
-  //       rule: "sm-location-s",
-  //     },
-  //     {
-  //       key: `stock-management/inventory`,
-  //       // icon: cubeIcon,
-  //       label: `Inventory`,
-  //       rule: "inventory-show",
-  //     },
-  //     {
-  //       key: `stock-management/objective`,
-  //       // icon: colorSwatchIcon,
-  //       label: `Objective`,
-  //       rule: "objective-show",
-  //     },
-  //     {
-  //       key: `stock-management/master-product-management`,
-  //       // icon: cubeIcon,
-  //       label: `Master Product Management`,
-  //       rule: "sm-mp-s",
-  //     },
-  //     {
-  //       key: `stock-management/cetagory-group-type`,
-  //       // icon: circleSqureIcon,
-  //       label: `Set Category & Group`,
-  //       rule: "sm-c-s",
-  //     },
-  //     {
-  //       key: `stock-management/unit`,
-  //       // icon: gridIcon,
-  //       label: `Set Unit`,
-  //       rule: "sm-unit-s",
-  //     },
-  //     {
-  //       key: `stock-management/master-hazard-type`,
-  //       // icon: colorSwatchIcon,
-  //       label: `Set Hazard Type`,
-  //       rule: "sm-hz-h",
-  //     },
-  //     {
-  //       key: `stock-management/ghs`,
-  //       // icon: warningIcon,
-  //       label: `Set GHS`,
-  //       rule: "sm-ghs-s",
-  //     },
-  //     {
-  //       key: `stock-management/vender`,
-  //       // icon: truckIcon,
-  //       label: `Vender`,
-  //       rule: "vender-show",
-  //     },
-  //     {
-  //       key: `stock-management/brand`,
-  //       // icon: starIcon,
-  //       label: `Set Brand`,
-  //       rule: "sm-brand-s",
-  //     },
-  //   ],
-  // },
 ].map((item) => {
-  // if (item?.children) {
-  //   return {
-  //     ...item,
-  //     children: item.children.map((itemChild) => ({
-  //       ...itemChild,
-  //       label: (
-  //         <>
-  //           <Link href={`/page/${itemChild.key}`}>{itemChild.label}</Link>
-  //         </>
-  //       ),
-  //     })),
-  //   };
-  // }
   return {
     ...item,
     label: !item.children ? (
@@ -443,22 +272,41 @@ export const MenuSiderWithModule = (modules: string[]) => {
       children: menu?.children
         ? menu.children
             .filter((item: any) => {
-              return !item.rule || modules.includes(item.rule);
+              const rule = item.rule;
+              // return !item.rule || modules.includes(item.rule);
+              if (Array.isArray(rule)) {
+                return rule.some((r) => modules.includes(r));
+              }
+              return modules.includes(rule);
             })
-            .map((item: any) => ({
-              ...item,
-              label: (
-                <Tooltip placement="right" title={item.label}>
-                  <div style={{ width: 140 }}>
-                    <Link href={`/page/${item.key}`}>{item.label}</Link>
-                  </div>
-                </Tooltip>
-              ),
-            }))
+            .map((item: any) => {
+              return {
+                ...item,
+                label: (
+                  <Tooltip placement="right" title={item.label}>
+                    <div style={{ width: 140 }}>
+                      <Link href={`/page/${item.key}`}>{item.label}</Link>
+                    </div>
+                  </Tooltip>
+                ),
+              };
+            })
         : null,
     }));
+
+    // original code
+    //  const menu = menuFilterChildren.filter((item: any) => {
+    //   console.log(item.rule);
+
+    //   return !item.rule || modules.includes(item.rule);
+    // });
+
     const menu = menuFilterChildren.filter((item: any) => {
-      return !item.rule || modules.includes(item.rule);
+      const rule = item.rule;
+      if (Array.isArray(rule)) {
+        return rule.some((r) => modules.includes(r));
+      }
+      return modules.includes(rule);
     });
 
     return menu;

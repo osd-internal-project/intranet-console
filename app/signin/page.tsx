@@ -1,20 +1,10 @@
 "use client";
-import {
-  Form,
-  Checkbox,
-  Button,
-  Input,
-  Alert,
-  Card,
-  Spin,
-  message,
-} from "antd";
+import { Form, Checkbox, Button, Input, Alert, Card, Spin, message, Image } from "antd";
 import { redirect, useRouter } from "next/navigation";
 import { useForm } from "antd/es/form/Form";
 import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { createCookieLocal, getCookieLocal } from "../utils/cookies";
-import config from "@/app/config";
 
 type Props = {
   searchParams: Record<"callbackUrl" | "error", string>;
@@ -29,7 +19,7 @@ export default function Login(props: Props) {
   const router = useRouter();
   const [form] = useForm();
   const [loading, setLoading] = useState<boolean>(true);
-
+  // console.log(props.searchParams.error);
   const onFinish = () => {
     setLoading(true);
     form.validateFields().then(async (values) => {
@@ -48,7 +38,7 @@ export default function Login(props: Props) {
         if (values.remember) {
           createCookieLocal("osd-user-remember", values.username);
         }
-        router.push("/page/");
+        router.push("/page/home");
       } else {
         setLoading(false);
         message.error(`Invalid Login : username or password is incorrect`);
@@ -61,28 +51,15 @@ export default function Login(props: Props) {
   const rememberMe = getCookieLocal("osd-user-remember");
   return (
     <Spin spinning={loading}>
-      <div
-        className="grid grid-cols-1 md:grid-cols-2 "
-        style={{ backgroundColor: "#f5f5f5" }}
-      >
+      <div className="grid grid-cols-1 md:grid-cols-2 " style={{ backgroundColor: "#f5f5f5" }}>
         <div className=" justify-center  items-center h-screen w-full hidden  md:flex">
           <div className="flex justify-center m-4">
-            <img
-              src="/images/osd-logo.png"
-              alt="logo-page"
-              className={` w-96 md:w-96 h-auto`}
-            />
+            <Image preview={false} src="/images/osd-logo.png" alt="logo-page" className={` w-96 md:w-96 h-auto`} />
           </div>
         </div>
         <div className="grid grid-cols-6 gap-4 grid-rows-4 h-screen">
           <div className="col-start-2 col-span-4 row-start-2 row-span-2">
-            <Form
-              form={form}
-              initialValues={{ remember: false }}
-              onFinish={onFinish}
-              autoComplete="off"
-              layout="vertical"
-            >
+            <Form form={form} initialValues={{ remember: false }} onFinish={onFinish} autoComplete="off" layout="vertical">
               <div className="columns-1 m-4">
                 <div className="flex justify-center text-3xl font-extrabold mb-3 ">
                   <p className=" text-3xl tracking-wide bg-gradient-to-r from-blue-800 via-cyan-500 to-cyan-300 text-transparent bg-clip-text">
@@ -94,16 +71,11 @@ export default function Login(props: Props) {
                 label="Username"
                 name="username"
                 initialValue={rememberMe}
-                rules={[{ required: true, message: "กรุณากรอก Username" }]}
-              >
+                rules={[{ required: true, message: "กรุณากรอก Username" }]}>
                 <Input className="w-full" />
               </Form.Item>
 
-              <Form.Item<FieldType>
-                label="Password"
-                name="password"
-                rules={[{ required: true, message: "กรุณากรอก Password!" }]}
-              >
+              <Form.Item<FieldType> label="Password" name="password" rules={[{ required: true, message: "กรุณากรอก Password!" }]}>
                 <Input.Password />
               </Form.Item>
               <div className="flex justify-between ">

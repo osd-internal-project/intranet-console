@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Breadcrumb, Card, Col, Row, Spin } from "antd";
 import { useParams } from "next/navigation";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import OrganizeServices from "../services/organize-chart.service";
+import OrganizeServices from "../../../../services/organize-chart.service";
 import OrganizeTeamTree from "./components/organize-team-tree";
 import OrganizeTeamManage from "./components/organize-team-manage";
 
@@ -38,7 +38,7 @@ export default function Page() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 href: "/page/setting",
@@ -61,12 +61,19 @@ export default function Page() {
           <div className="grid grid-cols-1 md:grid-cols-2">
             <div>
               <Spin spinning={loading}>
-                <OrganizeTeamTree propDataTree={propDataTree} loading={loading} positionId={positionId} />
+                <OrganizeTeamTree
+                  propDataTree={propDataTree}
+                  loading={loading}
+                  positionId={positionId}
+                />
               </Spin>
             </div>
             {organizeSelect ? (
               <div>
-                <OrganizeTeamManage propDataManage={propDataManage} organizeSelect={organizeSelect} />
+                <OrganizeTeamManage
+                  propDataManage={propDataManage}
+                  organizeSelect={organizeSelect}
+                />
               </div>
             ) : (
               <></>

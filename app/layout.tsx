@@ -1,45 +1,33 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import {
-  Roboto,
-  Noto_Sans_Thai,
-  Kanit,
-  Prompt,
-  Kodchasan,
-  Sriracha,
-} from "next/font/google";
-const kodchasan = Kodchasan({ weight: "400", subsets: ["latin"] });
-const notoSanThai = Noto_Sans_Thai({ subsets: ["latin"] });
-const kanit = Kanit({ weight: "400", subsets: ["latin"] });
-const sriracha = Sriracha({ weight: "400", subsets: ["latin"] });
-import AuthProvider from "@/app/provider/AuthProvider";
+import { Sarabun } from "next/font/google";
+
+const sarabun = Sarabun({ weight: "400", subsets: ["thai"] });
 import { ConfigProvider } from "antd";
-import { signIn, useSession } from "next-auth/react";
+import AuthProviderId24 from "./provider/AuthProvider";
+import TodoProvider from "./config/userContext";
 export const metadata: Metadata = {
   title: "Intranet",
   description: "Intranet",
 };
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${notoSanThai.className} m-0 `}>
-        <AuthProvider>
-          <ConfigProvider
-            theme={{
-              token: {
-                fontSize: 14,
-                colorPrimary: "#00a1df",
-                fontFamily: `${notoSanThai}`,
-              },
-            }}
-          >
-            {children}
-          </ConfigProvider>
-        </AuthProvider>
+      <body className={` m-0 `}>
+        <AuthProviderId24>
+          <TodoProvider>
+            <ConfigProvider
+              theme={{
+                token: {
+                  fontSize: 14,
+                  colorPrimary: "#00a1df",
+                  fontFamily: sarabun.style.fontFamily,
+                },
+              }}>
+              {children}
+            </ConfigProvider>
+          </TodoProvider>
+        </AuthProviderId24>
       </body>
     </html>
   );

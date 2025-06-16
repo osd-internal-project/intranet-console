@@ -1,8 +1,6 @@
-import config from "@/app/config";
 import CredentialsProvider from "next-auth/providers/credentials";
-import axios from "@/app/lib/axios/axios";
+import { axiosUser } from "@/app/lib/axios/axios";
 import jwt from "jsonwebtoken";
-import { error } from "console";
 export const authOptions = {
   providers: [
     CredentialsProvider({
@@ -18,16 +16,14 @@ export const authOptions = {
         if (!credentials?.username || !credentials?.password) {
           return null;
         }
-        // console.log("authorize");
-        // console.log(`${process.env.AUTH_BACKEND_URL}`);
         try {
-          const response = await axios
+          const response = await axiosUser
             .post(`${process.env.AUTH_BACKEND_URL}/auth/login`, {
               username: credentials?.username,
               password: credentials?.password,
               type: credentials?.type,
             })
-            .catch((e) => {
+            .catch(() => {
               // console.log(e);
               return null;
             });
@@ -58,12 +54,12 @@ export const authOptions = {
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
       session.user = { ...profile };
-      const permission = await axios
+      const permission = await axiosUser
         .get(`${process.env.AUTH_BACKEND_URL}/auth/permission/${profile.userId}`)
-        .then((res) => {
+        .then((res: any) => {
           return res.data;
         })
-        .catch((e) => {
+        .catch(() => {
           // console.log(" error permission");
           return null;
         });

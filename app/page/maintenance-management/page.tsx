@@ -1,33 +1,20 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  Breadcrumb,
-  Button,
-  Card,
-  Col,
-  Divider,
-  message,
-  Row,
-  Spin,
-  TablePaginationConfig,
-  Tabs,
-} from "antd";
+import { Breadcrumb, Button, Card, Col, Divider, message, Row, Spin, TablePaginationConfig, Tabs } from "antd";
 import MaCalendarComponent from "./components/MaCalendar";
 import MaFilterComponent from "./components/MaFilter";
 import MaTableComponent from "./components/MaTable";
 import { ITMaTask, ITMaType } from "./common";
 import Link from "next/link";
-import {
-  useAxiosIntranet,
-  useAxiosReport,
-} from "@/app/lib/axios/hooks/userAxiosAuth";
 import MaServices from "./services/ma.service";
 import dayjs from "dayjs";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 export default function MaTaskPage() {
-  const intranetAuth = useAxiosIntranet();
-  const reportAuth = useAxiosReport();
-  const maServices = MaServices(intranetAuth);
-  const reportServices = MaServices(reportAuth);
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const maServices = MaServices(baseUrIntranet);
+  const reportServices = MaServices(baseUrIntranet);
   const [search, setSearch] = useState<object>({});
   const [loading, setloading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -60,16 +47,12 @@ export default function MaTaskPage() {
   };
   const getEventData = async () => {
     if (rangeCalendar?.start && rangeCalendar?.end) {
-      const event = await maServices.findMaTaskByRange(
-        rangeCalendar.start,
-        rangeCalendar.end
-      );
+      const event = await maServices.findMaTaskByRange(rangeCalendar.start, rangeCalendar.end);
       setCalendarEvents(event);
     }
   };
   const fetchData = async () => {
-    const skip: number =
-      (Number(pagination.current) - 1) * Number(pagination.pageSize);
+    const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
     const take: number = Number(pagination.pageSize);
     const res = await maServices.findMaDataTable({
       take: take,
@@ -103,9 +86,7 @@ export default function MaTaskPage() {
     });
     const link = document.createElement("a");
     link.href = window.URL.createObjectURL(blob);
-    link.download = `รายงานการดำเนินการMA-${dayjs(new Date()).format(
-      "YYYYMMDDHHmmss"
-    )}.xlsx`;
+    link.download = `รายงานการดำเนินการMA-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`;
     link.click();
     message.success("สำเร็จ");
   }
@@ -125,7 +106,7 @@ export default function MaTaskPage() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 title: <span>Maintenance Mangement</span>,
@@ -145,6 +126,7 @@ export default function MaTaskPage() {
                 </Link>
               }
               defaultActiveKey="1"
+              destroyInactiveTabPane
               // type="card"
               size={"small"}
               items={[
@@ -153,10 +135,7 @@ export default function MaTaskPage() {
                   key: "1",
                   children: (
                     <div>
-                      <MaCalendarComponent
-                        calendarEvents={calendarEvents}
-                        handleCalendarChange={handleCalendarChange}
-                      />
+                      <MaCalendarComponent calendarEvents={calendarEvents} handleCalendarChange={handleCalendarChange} />
                     </div>
                   ),
                 },
@@ -174,10 +153,7 @@ export default function MaTaskPage() {
                           key: String(type.id),
                           children: (
                             <div className=" space-y-3">
-                              <MaFilterComponent
-                                exportMa={exportMa}
-                                searchMa={searchMa}
-                              />
+                              <MaFilterComponent exportMa={exportMa} searchMa={searchMa} />
                               <MaTableComponent
                                 dataTable={dataTable}
                                 loading={loading}

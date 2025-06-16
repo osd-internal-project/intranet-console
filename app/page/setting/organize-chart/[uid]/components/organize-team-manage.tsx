@@ -24,7 +24,7 @@ import { OrganizeManageSkeleton } from "./Skeleton";
 import Link from "next/link";
 import { editIcon } from "@/components/icon";
 import { TcreateOrganizeDto, TfindAllOrganizeDto, TupdateOrganizeDto } from "../../common";
-import OrganizeServices from "../../services/organize-chart.service";
+import OrganizeServices from "../../../../../services/organize-chart.service";
 import UserServices from "@/app/page/users-management/users/services/user.service";
 import { render } from "react-dom";
 

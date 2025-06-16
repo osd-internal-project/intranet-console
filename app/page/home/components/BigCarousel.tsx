@@ -1,55 +1,48 @@
-import { Carousel } from "antd";
+import { Card, Carousel, ConfigProvider, Image } from "antd";
 import React from "react";
+import { SlideImageType } from "../common";
+export interface Props {
+  slideImage: SlideImageType[];
+}
 
-export interface props {}
-const BigCarouselComponent: React.FC<props> = (): React.ReactElement => {
-  const contentStyle1: React.CSSProperties = {
-    height: "450px",
-    color: "#fff",
-    lineHeight: "150px",
-    textAlign: "center",
-    background: "url('/images/homeImg/cover1.png') center center / cover no-repeat",
-  };
-
-  const contentStyle2: React.CSSProperties = {
-    height: "450px",
-    color: "#fff",
-    lineHeight: "150px",
-    textAlign: "center",
-    background: "url('/images/homeImg/cover2.png') center center / cover no-repeat",
-  };
-
-  const contentStyle3: React.CSSProperties = {
-    height: "450px",
-    color: "#fff",
-    lineHeight: "150px",
-    textAlign: "center",
-    background: "url('/images/homeImg/cover3.png') center center / cover no-repeat",
-  };
-
-  const contentStyle4: React.CSSProperties = {
-    height: "450px",
-    color: "#fff",
-    lineHeight: "150px",
-    textAlign: "center",
-    background: "url('/images/homeImg/cover7.png') center center / cover no-repeat",
-  };
-
+export const BigCarouselComponent: React.FC<Props> = ({ slideImage }) => {
   return (
-    <Carousel autoplay arrows infinite>
-      <div>
-        <h3 style={contentStyle1}></h3>
-      </div>
-      <div>
-        <h3 style={contentStyle2}></h3>
-      </div>
-      <div>
-        <h3 style={contentStyle3}></h3>
-      </div>
-      <div>
-        <h3 style={contentStyle4}></h3>
-      </div>
-    </Carousel>
+    <Card styles={{ body: { padding: 0 } }}>
+      {slideImage?.length > 0 ? (
+        <ConfigProvider theme={{ components: { Carousel: { arrowSize: 35 } } }}>
+          <Carousel autoplay={true} adaptiveHeight={true} arrows infinite effect="fade" lazyLoad="ondemand">
+            {slideImage.map((image) => {
+              return (
+                <div key={image.id}>
+                  {/* <Image
+                    src={`${process.env.REACT_APP_API_BASE_URL_INTRANET}/slide-image/get-file/${image.fileId}`}
+                    crossOrigin="anonymous"
+                    style={{
+                      objectFit: "cover",
+                      aspectRatio: "21/9",
+                    }}
+                    preview={false}
+                    width={"100%"}
+                  /> */}
+                  <img
+                    src={`${process.env.REACT_APP_API_BASE_URL_INTRANET}/slide-image/get-file/${image.fileId}`}
+                    loading="lazy"
+                    style={{
+                      objectFit: "cover",
+                      aspectRatio: "21/9",
+                      width: "100%",
+                    }}
+                    crossOrigin="anonymous"
+                  />
+                </div>
+              );
+            })}
+          </Carousel>
+        </ConfigProvider>
+      ) : (
+        <div style={{ padding: "450px", color: "#888" }}>No images available</div>
+      )}
+    </Card>
   );
 };
 

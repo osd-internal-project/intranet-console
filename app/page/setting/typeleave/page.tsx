@@ -3,15 +3,18 @@ import React, { useEffect, useState } from "react";
 import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, message } from "antd";
 import { CreateTypeLeave } from "./components/create-type-leave";
 import { TableTypeLeave } from "./components/table-type-leave";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import MasterTypeLeaveService from "./services/index.service";
 import { Filtertypeleave, ITypetypeleave } from "./common";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { dateToEndofDay, dateToStartofDay } from "@/app/utils/format";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
 
 export default function TypeLeave() {
-  const Auth = useAxiosIntranet();
-  const mastertypeleaveService = MasterTypeLeaveService(Auth);
+  const { id24Axios, tokenAccess } = useId24();
+  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const mastertypeleaveService = MasterTypeLeaveService(baseUrlIntranet);
   const [loading, setLoading] = useState<boolean>(true);
   const [getswitch, setSwitch] = useState<boolean>(false);
   const [openFilter, setOpenFilter] = useState<boolean>(false);
@@ -111,7 +114,7 @@ export default function TypeLeave() {
 
   const onFinishDel = (event: number) => {
     Modal.confirm({
-      title: "Delete this unit",
+      title: "Delete ",
       icon: <ExclamationCircleFilled />,
       content: "Are you sure you want to delete this ?",
       okText: "Confirm",
@@ -157,7 +160,7 @@ export default function TypeLeave() {
             items={[
               {
                 href: "/page",
-                title: <span>Home</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 title: <span>Setting</span>,

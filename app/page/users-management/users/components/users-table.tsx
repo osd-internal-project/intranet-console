@@ -1,21 +1,14 @@
 "use client";
-import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { Button, Card, DatePicker, Form, FormInstance, Input, Modal, Popover, Select, Table, TablePaginationConfig, Tag, message } from "antd";
-import { useContext, useState } from "react";
-import Link from "next/link";
-import { deleteIcon, editIcon } from "@/components/icon";
-import { ExclamationCircleFilled, FilterOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { checkRule } from "@/app/utils/rules";
+import { Button, Card, FormInstance, Table, TablePaginationConfig, Tag } from "antd";
+import { useContext } from "react";
+import { editIcon } from "@/components/icon";
 import { dateToStringTh } from "@/app/utils/format";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
-import MasterPositionServices from "../services/position.service";
-import { ITypeOption, TManageUserPageDto, TUserAllDto } from "../common";
-import UserServices from "../services/user.service";
-import dayjs from "dayjs";
+import { TManageUserPageDto, TUserAllDto } from "../common";
 import { UsersServices } from "@/app/services/users.service";
 import { UserContectType, UserContext } from "@/app/config/userContext";
-
+import dayjs from "dayjs";
 export interface Props {
   setManagePage: (event: TManageUserPageDto) => void;
   managePage: TManageUserPageDto;
@@ -26,28 +19,12 @@ export interface Props {
   setImage: (value: any) => void;
 }
 
-const UserTable: React.FC<Props> = ({
-  setManagePage,
-  managePage,
-  filterForm,
-  createForm,
-  setSelectUserType,
-  selectUserType,
-  setImage,
-}): React.ReactElement => {
+const UserTable: React.FC<Props> = ({ setManagePage, managePage, createForm, setImage }): React.ReactElement => {
   const { id24Axios } = useId24();
-  // const userAuth = useAxiosUser();
   const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
-  const userServices = UserServices(baseUrlUser);
-
   const { user } = (useContext(UserContext) as UserContectType) || {
     user: null,
   };
-  const masterPositionService = MasterPositionServices(baseUrlUser);
-  const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
-  const userEditRules = checkRule("um-e");
-  const userDeleteRules = checkRule("um-d");
-
   const columns: any = [
     {
       title: "NO.",
@@ -78,7 +55,7 @@ const UserTable: React.FC<Props> = ({
       title: "POSITION",
       dataIndex: "position",
       key: "position",
-      render: (value: string, record: TUserAllDto) => <>{record.masterPosition?.nameEn}</>,
+      render: (value: string, record: TUserAllDto) => record.masterPosition?.nameEn,
     },
     {
       title: "PHONE NUMBER",
@@ -113,29 +90,6 @@ const UserTable: React.FC<Props> = ({
       ),
     },
   ];
-
-  // const onfinishDel = (d: string) => {
-  //   setbuttonLoading(true);
-  //   Modal.confirm({
-  //     title: "Delete this user",
-  //     icon: <ExclamationCircleFilled />,
-  //     content: "Are you sure you want to delete this ?",
-  //     okText: "Confirm",
-  //     okButtonProps: { type: "primary", danger: true },
-  //     cancelText: "Cancel",
-  //     onOk: async () => {
-  //       const dataResult = await userServices.remove(d);
-  //       if (dataResult) {
-  //         message.success(`Success`);
-  //         setManagePage({ ...managePage, loading: true });
-  //         setbuttonLoading(false);
-  //       }
-  //     },
-  //     onCancel() {
-  //       setbuttonLoading(false);
-  //     },
-  //   });
-  // };
 
   const onClickEdit = async (record: TUserAllDto) => {
     if (user) {

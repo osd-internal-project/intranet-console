@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card } from "antd";
+import { Card, message } from "antd";
 import MeetingRoomTableComponent from "./components/MeetingRoomTable";
 import NewsCarouselComponent from "./components/NewsCarousel";
 import HolidaysCalendarComponent from "./components/HolidaysCalendar";
@@ -12,6 +12,8 @@ import SlideImageService from "./services/index.service";
 import { MasterRoomType, HandbookFileType, InformationNewsType } from "./common";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+
+const baseImageUrl = process.env.REACT_APP_API_BASE_URL_INTRANET;
 
 export default function HomePage() {
   const { id24Axios, tokenAccess } = useId24();
@@ -43,19 +45,45 @@ export default function HomePage() {
     if (loading) fetchData();
   }, [loading]);
 
-  async function downloadFile(id: number, name: string): Promise<void> {
-    if (id) {
-      const response = await SlideImageService(baseUrlIntranet).downloadFile(id);
-      if (response) {
-        const url = URL.createObjectURL(response);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = name;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+  async function downloadFile(id: string, name: string): Promise<void> {
+    console.log(id);
+    console.log(name);
+
+    if (id && name) {
+      const fileUrl = `${baseImageUrl}/public/handbook-file/${id}?fileName=${encodeURIComponent(name)}`;
+      try {
+        const response = await fetch(fileUrl);
+
+        if (response.ok) {
+          const blob = await response.blob();
+          const link = document.createElement("a");
+
+          link.href = window.URL.createObjectURL(blob);
+          link.download = `${name}`;
+          link.click();
+
+          window.URL.revokeObjectURL(link.href);
+        } else {
+          message.error("ไม่มีไฟล์ให้ดาวน์โหลด");
+        }
+      } catch (error) {
+        message.error("เกิดข้อผิดพลาดในการดาวน์โหลดไฟล์");
       }
+    } else {
+      message.error("ไม่มีไฟล์ให้ดาวน์โหลด");
     }
+    // if (id) {
+    //   const response = await SlideImageService(baseUrlIntranet).downloadFile(id);
+    //   if (response) {
+    //     const url = URL.createObjectURL(response);
+    //     const a = document.createElement("a");
+    //     a.href = url;
+    //     a.download = name;
+    //     document.body.appendChild(a);
+    //     a.click();
+    //     document.body.removeChild(a);
+    //   }
+    // }
   }
 
   return (
@@ -98,7 +126,7 @@ export default function HomePage() {
           </Card>
           <div className="my-4"></div>
           <Card title="เอกสาร" bordered={false} className="text-center" style={{ minHeight: "550px" }}>
-            <DocumentComponent handbookFile={handbookFile} downloadFile={(id: number, filename: string) => downloadFile(id, filename)} />
+            <DocumentComponent handbookFile={handbookFile} downloadFile={(id: string, filename: string) => downloadFile(id, filename)} />
           </Card>
         </div>
         <div className="lg:col-span-1">

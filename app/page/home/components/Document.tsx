@@ -6,7 +6,7 @@ import { downloadLoopIcon } from "@/components/icon";
 
 export interface props {
   handbookFile: HandbookFileType[];
-  downloadFile: (id: number, filename: string) => void;
+  downloadFile: (id: string, filename: string) => void;
 }
 
 const DocumentComponent: React.FC<props> = ({ handbookFile, downloadFile }): React.ReactElement => {
@@ -83,7 +83,7 @@ const DocumentComponent: React.FC<props> = ({ handbookFile, downloadFile }): Rea
                 <Tooltip title="ดาวน์โหลด">
                   <Button
                     type="link"
-                    onClick={() => downloadFile(file.handbookid, file.fileName)}
+                    onClick={() => downloadFile(file.fileId, file.fileName)}
                     style={{
                       overflow: "hidden",
                       whiteSpace: "nowrap",

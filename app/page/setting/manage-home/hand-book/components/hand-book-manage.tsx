@@ -194,6 +194,7 @@ const HandBookManage: React.FC = () => {
   };
 
   const handleDownload = async (record: handbookFile) => {
+
     if (record && record.fileId) {
       const fileUrl = `${baseImageUrl}/public/handbook-file/${record.fileId}?fileName=${encodeURIComponent(String(record.fileName))}`;
       try {

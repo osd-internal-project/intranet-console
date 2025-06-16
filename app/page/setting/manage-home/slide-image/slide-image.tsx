@@ -29,7 +29,6 @@ export default function SlideImageSetting() {
 
   const loadData = async () => {
     const dataSlideImage = await ManageHomeService(baseUrlIntranet).getSlideImageByOrder();
-    console.log(dataSlideImage);
     setSlideImage(dataSlideImage);
     setLoading(false);
   };

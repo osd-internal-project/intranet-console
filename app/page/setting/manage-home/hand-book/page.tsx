@@ -6,17 +6,17 @@ import HandBookOption from "./components/hand-book-option";
 import { Col, Card, Tabs, TabsProps, Breadcrumb, Divider } from "antd";
 
 const HandBook: React.FC = () => {
-  const [activeKey, setActiveKey] = useState<string>("1");
+  const [activeKey, setActiveKey] = useState<string>("2");
 
   const handleTabChange = (key: string) => {
     setActiveKey(key);
   };
   const items: TabsProps["items"] = [
-    {
-      key: "1",
-      label: "รายการ เอกสาร",
-      children: activeKey === "1" ? <HandBookList /> : null,
-    },
+    // {
+    //   key: "1",
+    //   label: "รายการ เอกสาร",
+    //   children: activeKey === "1" ? <HandBookList /> : null,
+    // },
     {
       key: "2",
       label: "อัปโหลด เอกสาร",

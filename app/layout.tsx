@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={sarabun.className}>
       <body className={` m-0 `}>
         <AuthProviderId24>
           <TodoProvider>

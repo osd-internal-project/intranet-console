@@ -19,6 +19,8 @@ export interface props {
   onFinishDelete: (type: string, id: number) => void;
   downloadFile: (id: number, filename: string) => void;
   sideMenuGroups: string[];
+  setSubmitAction: (value: "approved" | "cancel") => void;
+  submitAction: string;
 }
 
 export const TableDetail: React.FC<props> = ({
@@ -30,10 +32,11 @@ export const TableDetail: React.FC<props> = ({
   onFinishDelete,
   downloadFile,
   sideMenuGroups,
+  setSubmitAction,
+  submitAction,
 }): React.ReactElement => {
   const { Search } = Input;
   const [statusById, setStatusById] = useState<any | null>(null);
-  const [dataById, setDataById] = useState<number | undefined>(undefined);
   const [dataSource, setDataSource] = React.useState<any[]>([]);
 
   useEffect(() => {
@@ -66,7 +69,6 @@ export const TableDetail: React.FC<props> = ({
         approvedDate: record.approvedDate ? dateToStringThNoTime(record?.approvedDate) : "-",
       };
       setStatusById(record.status);
-      setDataById(record.id);
       formdetail.setFieldsValue(base);
       setOpenModalDetail(true);
     } catch (err) {
@@ -133,57 +135,16 @@ export const TableDetail: React.FC<props> = ({
     <div>
       <>
         <Modal forceRender open={openModalDetail} footer={false} onCancel={() => setOpenModalDetail(false)} width={600}>
-          <LeaveDetailForm formdetail={formdetail} downloadFile={(id: number, filename: string) => downloadFile(id, filename)} />
-          <Row gutter={[12, 12]} className="flex justify-center">
-            <Col>
-              <Tooltip title={`Approved`}>
-                <Button
-                  size="small"
-                  type="primary"
-                  onClick={() => {
-                    onFinishUpdate("approved", dataById ? dataById : 0);
-                  }}
-                  style={{ width: "60px", height: "30px" }}
-                  disabled={statusById === "cancel" || statusById === "approved"}>
-                  {CheckIcon}
-                </Button>
-              </Tooltip>
-            </Col>
-            <Col>
-              <Tooltip title={`Cancel`}>
-                <Button
-                  size="small"
-                  type="primary"
-                  style={{
-                    width: "60px",
-                    height: "30px",
-                  }}
-                  onClick={() => {
-                    onFinishUpdate("cancel", dataById ? dataById : 0);
-                  }}
-                  disabled={statusById === "cancel"}
-                  danger>
-                  {CancelIcon}
-                </Button>
-              </Tooltip>
-            </Col>
-            <Col>
-              {intersection(sideMenuGroups, ["admin"]).length ? (
-                <Tooltip title={`Delete`}>
-                  <Button
-                    size="small"
-                    type="primary"
-                    style={{ width: "60px", height: "30px" }}
-                    onClick={() => {
-                      onFinishDelete("delete", dataById ? dataById : 0);
-                    }}
-                    danger>
-                    {deleteIcon}
-                  </Button>
-                </Tooltip>
-              ) : null}
-            </Col>
-          </Row>
+          <LeaveDetailForm
+            formdetail={formdetail}
+            downloadFile={(id: number, filename: string) => downloadFile(id, filename)}
+            statusById={statusById}
+            sideMenuGroups={sideMenuGroups}
+            onFinishUpdate={onFinishUpdate}
+            onFinishDelete={onFinishDelete}
+            setSubmitAction={setSubmitAction}
+            submitAction={submitAction}
+          />
         </Modal>
       </>
 

@@ -18,6 +18,7 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(true);
   const [dataLeaveUser, setDataLeaveUser] = useState<ITypeDataLeave[]>([]);
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
+  const [submitAction, setSubmitAction] = useState<"approved" | "cancel">("approved");
   const [formdetail] = Form.useForm();
 
   useEffect(() => {
@@ -58,6 +59,7 @@ export default function Page() {
         const res = await DataLeaveService(baseUrlIntranet).approvedDataLeave(type, id, user);
         if (res) {
           type === "cancel" ? message.error("cancel success") : message.success("approved success");
+          setSubmitAction("approved");
           setLoading(true);
           setOpenModalDetail(false);
         }
@@ -145,6 +147,8 @@ export default function Page() {
               onFinishDelete={(type: string, id: number) => onFinishDelete(type, id)}
               downloadFile={(id: number, filename: string) => downloadFile(id, filename)}
               sideMenuGroups={sideMenuGroups}
+              setSubmitAction={setSubmitAction}
+              submitAction={submitAction}
             />
           </Card>
         </div>

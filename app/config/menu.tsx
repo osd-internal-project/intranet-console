@@ -85,7 +85,7 @@ export const MenuSider: MenuItem[] = [
       {
         key: `leave-control-management/leave-disabled-management`,
         label: `จัดการสิทธิ์การลา`,
-        rule: "admin",
+        rule: ["admin", "header"],
       },
     ],
   },

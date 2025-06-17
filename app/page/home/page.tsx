@@ -93,7 +93,7 @@ export default function HomePage() {
       <div className="grid md:grid-cols-3">
         <div className="px-2 mb-4">
           <Card className="text-center">
-            <a href="/page/leave-control-management/leave-history">
+            <a href="/page/leave-control-management/leave-letter">
               <FileFilled className="text-5xl text-blue-500" />
               <br />
               ใบลาออนไลน์

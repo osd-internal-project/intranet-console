@@ -77,7 +77,7 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, download
           id: dataLeaveCalendar.id,
           title: dataLeaveCalendar.firstName,
           start: dataLeaveCalendar.startDate ? new Date(dataLeaveCalendar.startDate) : null,
-          end: dataLeaveCalendar.endDate ? new Date(dataLeaveCalendar.endDate) : dataLeaveCalendar.endDate,
+          end: dataLeaveCalendar.endDate ? new Date(dataLeaveCalendar.endDate) : null,
           status: dataLeaveCalendar.status,
           description: dataLeaveCalendar?.description || "",
           userName: dataLeaveCalendar.typeName,

@@ -54,7 +54,7 @@ export const validateCheckLeaveDay = (leavedata: ITypeDataLeaveCreate[], dataMas
   });
   const dateNow = dayjs(new Date());
   const startwork = dayjs(startWork);
-  const yearOfWork = dateNow.diff(startwork, "years");
+  const yearOfWork = dateNow.diff(startwork, "years", true);
   if (yearOfWork <= 1) {
     defaultcanLeave += Number(dataMasterType.limitLeaveFour) * 8;
   } else if (yearOfWork < 3) {

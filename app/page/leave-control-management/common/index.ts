@@ -158,7 +158,7 @@ export interface ITypeDataLeave {
   ownerName?: string;
   description?: string;
   groupId?: string;
-  detailApproved: string;
+  detailApproved?: string;
 }
 
 export interface ITypeDataLeaveCreate {

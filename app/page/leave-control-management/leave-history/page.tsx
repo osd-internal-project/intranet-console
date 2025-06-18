@@ -44,7 +44,7 @@ export default function Page() {
       okButtonProps: { type: "primary", danger: true },
       cancelText: "Cancel",
       onOk: async () => {
-        const res = await DataLeaveService(baseUrlIntranet).approvedDataLeave(type, id, user);
+        const res = await DataLeaveService(baseUrlIntranet).approvedDataLeave("", type, id, user);
         if (res) {
           type === "cancel" ? message.error("cancel success") : message.success("approved success");
           setLoading(true);
@@ -88,7 +88,7 @@ export default function Page() {
           setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
           openModalDetail={openModalDetail}
           formdetail={formdetail}
-          onFinishUpdate={(type: string, id: number) => onFinishUpdate(type, id)}
+          onFinishUpdate={onFinishUpdate}
           downloadFile={(id: number, filename: string) => downloadFile(id, filename)}
         />
       ),

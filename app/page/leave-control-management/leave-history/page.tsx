@@ -71,12 +71,12 @@ export default function Page() {
   const items: TabsProps["items"] = [
     {
       key: "1",
-      label: "ปฏิธินการลา",
+      label: "ปฏิทินการลา",
       children: <DepartmentCalendarDetail dataSource={dataSource} downloadFile={(id: number, filename: string) => downloadFile(id, filename)} />,
     },
     {
       key: "2",
-      label: "ปฏิธินการลาทีม",
+      label: "ปฏิทินการลาทีม",
       children: <DepartmentCalendarDetail dataSource={dataLeaveGroup} downloadFile={(id: number, filename: string) => downloadFile(id, filename)} />,
     },
     {

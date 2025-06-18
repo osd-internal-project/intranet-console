@@ -9,7 +9,7 @@ interface props {
   downloadFile: (id: number, filename: string) => void;
   statusById: string;
   sideMenuGroups: any;
-  onFinishUpdate: (type: string, Id: number) => void;
+  onFinishUpdate: (values: any, type: string, Id: number) => void;
   onFinishDelete: (type: string, Id: number) => void;
   setSubmitAction: (value: "approved" | "cancel") => void;
   submitAction: string;
@@ -31,7 +31,7 @@ export const LeaveDetailForm: React.FC<props> = ({
       <Form
         autoComplete="off"
         form={formdetail}
-        onFinish={() => onFinishUpdate(submitAction, formdetail.getFieldValue("id") ? formdetail.getFieldValue("id") : 0)}>
+        onFinish={(e) => onFinishUpdate(e, submitAction, formdetail.getFieldValue("id") ? formdetail.getFieldValue("id") : 0)}>
         <div style={{ paddingLeft: "380px", margin: "10px  " }}>
           <div className=" col-span-3 md:col-span-1 ml-1">
             <Form.Item label={`วันที่ :`} name={`createAt`} style={{ marginBottom: 0 }}>
@@ -118,7 +118,7 @@ export const LeaveDetailForm: React.FC<props> = ({
         ) : null}
         <div className=" col-span-3 md:col-span-1 ml-5">
           <Form.Item label={`เหตุผล`} name={`detailApproved`}>
-            <Input disabled={formdetail.getFieldValue("detailApproved") ? true : false} />
+            <Input />
           </Form.Item>
         </div>
         <Form.Item hidden name={`id`}>

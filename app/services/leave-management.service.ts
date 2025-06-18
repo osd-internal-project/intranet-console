@@ -246,7 +246,7 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
         .catch((err) => err);
     },
 
-    approvedDataLeave: async (event: string, id: number, data: any) => {
+    approvedDataLeave: async (detailApproved: string, event: string, id: number, data: any) => {
       const condition = {
         where: {
           id: id,
@@ -255,6 +255,7 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           status: event,
           userApproved: `${data.firstNameTh} ${data.lastNameTh}`,
           approvedDate: new Date(),
+          detailApproved,
         },
       };
       return await axiosInstance

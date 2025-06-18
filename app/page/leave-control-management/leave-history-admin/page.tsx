@@ -33,7 +33,7 @@ export default function Page() {
     }
   };
 
-  const onFinishUpdate = (type: string, id: number) => {
+  const onFinishUpdate = (values: any, type: string, id: number) => {
     Modal.confirm({
       title: <>{type === "cancel" ? "Cancel " : "Approved"}</>,
       icon: <ExclamationCircleFilled />,
@@ -56,7 +56,7 @@ export default function Page() {
         },
       },
       onOk: async () => {
-        const res = await DataLeaveService(baseUrlIntranet).approvedDataLeave(type, id, user);
+        const res = await DataLeaveService(baseUrlIntranet).approvedDataLeave(values.detailApproved, type, id, user);
         if (res) {
           type === "cancel" ? message.error("cancel success") : message.success("approved success");
           setSubmitAction("approved");
@@ -143,9 +143,9 @@ export default function Page() {
               setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
               openModalDetail={openModalDetail}
               formdetail={formdetail}
-              onFinishUpdate={(type: string, id: number) => onFinishUpdate(type, id)}
-              onFinishDelete={(type: string, id: number) => onFinishDelete(type, id)}
-              downloadFile={(id: number, filename: string) => downloadFile(id, filename)}
+              onFinishUpdate={onFinishUpdate}
+              onFinishDelete={onFinishDelete}
+              downloadFile={downloadFile}
               sideMenuGroups={sideMenuGroups}
               setSubmitAction={setSubmitAction}
               submitAction={submitAction}

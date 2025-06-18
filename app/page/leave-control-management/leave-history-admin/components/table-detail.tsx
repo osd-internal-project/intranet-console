@@ -15,7 +15,7 @@ export interface props {
   setOpenModalDetail: (e: boolean) => void;
   openModalDetail: boolean;
   formdetail: any;
-  onFinishUpdate: (type: string, id: number) => void;
+  onFinishUpdate: (values: any, type: string, id: number) => void;
   onFinishDelete: (type: string, id: number) => void;
   downloadFile: (id: number, filename: string) => void;
   sideMenuGroups: string[];

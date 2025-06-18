@@ -135,6 +135,7 @@ export default function Page() {
         firstName: values.firstNameTh,
         lastName: values.lastNameTh,
         positionId: values.posId,
+        position: user?.masterPosition.nameEn,
         typeId: values.type_id,
         typeName: dataMasterType ? dataMasterType.typeName : undefined,
         status: "waiting",

@@ -2,6 +2,8 @@ import { AxiosInstance } from "axios";
 
 export interface TServices {
   findAll: () => Promise<any[]>;
+  findById: (skip: number, take: number) => Promise<any[]>;
+
   findMasterOt: (date: any) => Promise<number>;
   create: (condition: any) => Promise<any[]>;
 }
@@ -13,6 +15,17 @@ const OverTimeServices = (axiosInstance: AxiosInstance): TServices => {
     findAll: async () => {
       return await axiosInstance
         .get(`${baseUrl}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    findById: async (skip, take) => {
+      return await axiosInstance
+        .get(`${baseUrl}/by-id?take=${take}&skip=${skip}`)
         .then((res) => {
           return res.data;
         })

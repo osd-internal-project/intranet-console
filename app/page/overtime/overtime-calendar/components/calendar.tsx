@@ -4,8 +4,8 @@ import dayjs from "dayjs";
 import type { Dayjs } from "dayjs";
 
 export interface props {
-  holiday: any;
-  featchDataHoliday: (value: string) => void;
+  holiday: THoliday[];
+  fetchDataHoliday: (value: string) => void;
 }
 
 interface THoliday {
@@ -17,7 +17,7 @@ interface THoliday {
   updatedAt: string;
 }
 
-const CalendarPage: React.FC<props> = ({ holiday, featchDataHoliday }): React.ReactElement => {
+const CalendarPage: React.FC<props> = ({ holiday, fetchDataHoliday }): React.ReactElement => {
   const [selectDate, setSelectDate] = useState<string>("");
   const [panelDateDate, setPanelDate] = useState<Dayjs>(dayjs());
   const [resultHoliday, setResultHoliday] = useState<string[]>([]);
@@ -25,21 +25,22 @@ const CalendarPage: React.FC<props> = ({ holiday, featchDataHoliday }): React.Re
   const onPanelChange = (value: Dayjs, mode: CalendarProps<Dayjs>["mode"]) => {
     setPanelDate(value);
   };
+
   const dateCellRender = (value: Dayjs) => {
     const currentDayHolidays = holiday.filter((item: any) => {
       return dayjs(item.holidaysDate).isSame(value, "day");
     });
     return (
       <>
-        {currentDayHolidays.map((item: any) => {
+        {currentDayHolidays.map((item: any, index: number) => {
           return (
             <div
-              key={item.holidaysName}
+              key={index}
               style={{
                 textAlign: "center",
                 height: "100%",
               }}>
-              <Tag color="warning" className="font-bold">
+              <Tag key={index} color={item.type ? "blue" : "warning"} className="font-bold">
                 {item.holidaysName}
               </Tag>
             </div>
@@ -67,14 +68,19 @@ const CalendarPage: React.FC<props> = ({ holiday, featchDataHoliday }): React.Re
       setResultHoliday(holidaySelect && holidaySelect);
     } else {
       const year = dayjs(value).format("YYYY");
-      featchDataHoliday(year as any);
+      fetchDataHoliday(year as any);
     }
     setSelectDate(dayjs(value).format("YYYY-MM-DD"));
     window.location.href = `${window.location.origin}/page/overtime/overtime-form?date=${dayjs(value).format("YYYY-MM-DD")}`;
   };
   return (
     <div>
-      <Calendar cellRender={cellRender} onPanelChange={onPanelChange} onSelect={onDateChange} disabledDate={disabledDate} />
+      <Calendar
+        cellRender={cellRender}
+        onPanelChange={onPanelChange}
+        onSelect={onDateChange}
+        //  disabledDate={disabledDate}
+      />
     </div>
   );
 };

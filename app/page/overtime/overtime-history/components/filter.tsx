@@ -1,0 +1,59 @@
+import { FilterOutlined } from "@ant-design/icons";
+import { Button, Form, Input, DatePicker, Popover, FormInstance, Select } from "antd";
+import React from "react";
+
+export interface props {
+  handleOpenFilter: (value: boolean) => void;
+  openFilter: boolean;
+  filterForm: FormInstance;
+  onSearch: (value: object) => void;
+}
+
+export const FilterOverTimeHistory: React.FC<props> = ({ handleOpenFilter, openFilter, filterForm, onSearch }): React.ReactElement => {
+  const { RangePicker } = DatePicker;
+  const searchContent = (
+    <Form layout="vertical" form={filterForm} onFinish={onSearch} autoComplete="off">
+      <div className="grid grid-cols-1 md:gap-4 ">
+        <Form.Item label="ชื่อ" name="fullname">
+          <Input placeholder="Search Text" />
+        </Form.Item>
+        <Form.Item label="วันที่ทำ OT (ประเภท)" name="typeDate">
+          <Select
+            allowClear
+            className="w-full"
+            showSearch
+            optionFilterProp="label"
+            placeholder="Select Value"
+            options={[
+              { value: "normall", label: "วันปกติ" },
+              { value: "dayoff", label: "วันหยุด" },
+            ]}
+          />
+        </Form.Item>
+        <Form.Item label="วันที่ทำ OT" name="dateStart">
+          <RangePicker className="w-full" />
+        </Form.Item>
+        <div className="md:col-span-4 text-right">
+          <Button type="primary" htmlType="submit">
+            Search
+          </Button>
+        </div>
+      </div>
+    </Form>
+  );
+  return (
+    <div>
+      <Popover
+        onOpenChange={handleOpenFilter}
+        open={openFilter}
+        content={<div style={{ width: "auto", minWidth: 0 }}>{searchContent}</div>}
+        placement="bottomLeft"
+        title="Search"
+        trigger="click">
+        <Button type="primary" icon={<FilterOutlined />}>
+          Filters
+        </Button>
+      </Popover>
+    </div>
+  );
+};

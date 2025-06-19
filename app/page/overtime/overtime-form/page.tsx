@@ -62,6 +62,7 @@ export default function OverTimePage() {
 
   const fetchData = async () => {
     if (!user) return;
+    if (!date) return;
     const HeaderGroup = await LeaveManagementServices(baseUrlIntranet).getHeaderByUserId();
     const masterConfigTime = await OverTimeServices(baseUrlIntranet).findMasterOt(date);
     const resCar: any = await MaCarServices(baseUrlIntranet).getMaCarQuery();

@@ -164,6 +164,11 @@ export const MenuSider: MenuItem[] = [
         label: `แบบฟอร์มขอเบิกค่าทำงานล่วงเวลา`,
         rule: ["user", "admin"],
       },
+      {
+        key: `overtime/overtime-history`,
+        label: `ตารางรายละเอียดการทำงานล่วงเวลา`,
+        rule: ["header", "admin", "hr"],
+      },
     ],
   },
   {

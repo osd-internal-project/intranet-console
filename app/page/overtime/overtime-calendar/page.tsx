@@ -6,7 +6,7 @@ import { loadAppConfig } from "@/app/config/app-config";
 import SlideImageService from "../../home/services/index.service";
 import Calendar from "./components/calendar";
 import OverTimeServices from "@/app/services/overtime.service";
-import { Card, TablePaginationConfig, Tabs, TabsProps } from "antd";
+import { Breadcrumb, Card, TablePaginationConfig, Tabs, TabsProps } from "antd";
 import { TableOvertime } from "./components/table";
 export interface THoliday {
   id: number;
@@ -59,12 +59,12 @@ export default function OverTimeCalendatPage() {
   const items: TabsProps["items"] = [
     {
       key: "1",
-      label: "Calendar",
+      label: "ปฏิทินทำงานล่วงเวลา",
       children: <Calendar holiday={holiday} fetchDataHoliday={fetchDataHoliday} />,
     },
     {
       key: "2",
-      label: "Table",
+      label: "ตารางรายละเอียดการทำงานล่วงเวลา",
       children: <TableOvertime holiday={holiday} changePagination={changePagination} pagination={pagination} />,
     },
   ];
@@ -78,6 +78,22 @@ export default function OverTimeCalendatPage() {
 
   return (
     <div>
+      <div className="mb-4">
+        <Breadcrumb
+          items={[
+            {
+              href: "/page",
+              title: <span>หน้าหลัก</span>,
+            },
+            {
+              title: <span>Over Time</span>,
+            },
+            {
+              title: <span>รายละเอียดการทำงานล่วงเวลา</span>,
+            },
+          ]}
+        />
+      </div>
       <Card styles={{ body: { padding: "10px" } }} className="w-full h-full">
         <Tabs activeKey={activekey} items={items} onChange={onChange} destroyInactiveTabPane={false} type="card" />
       </Card>

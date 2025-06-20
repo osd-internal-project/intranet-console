@@ -67,7 +67,6 @@ export const UserAction: React.FC<Props> = ({
   const [imageFiles, setImageFiles] = useState<UploadFile[]>([]);
   const [image, setImage] = useState<any>();
 
-
   const handleOpenFilter = (state: boolean) => {
     setOpenFilter(state);
   };
@@ -92,7 +91,8 @@ export const UserAction: React.FC<Props> = ({
           });
         }
       }
-      const resCreate = await UsersServices(baseUrlUser).addUser(value);
+      const validateUsername = { ...value, username: value.username.toLowerCase(), password: "P@ssw0rd" } as TCreateUserDto;
+      const resCreate = await UsersServices(baseUrlUser).addUser(validateUsername);
       if (resCreate) {
         message.success("Add Success");
         setManagePage({ ...managePage, loading: true, modalStatus: false });
@@ -363,13 +363,12 @@ export const UserAction: React.FC<Props> = ({
                     </Form.Item>
                   </div>
                 </>
-              ) : (
-                <div className=" col-span-2">
-                  <Form.Item<TCreateUserDto> name={"ldapQuery"} label="LDAP Query" rules={[{ required: true }]}>
-                    <Input placeholder="CN=John Smith,OU=User,DC=example" />
-                  </Form.Item>
-                </div>
-              )
+              ) : // <div className=" col-span-2">
+              //   <Form.Item<TCreateUserDto> name={"ldapQuery"} label="LDAP Query" rules={[{ required: true }]}>
+              //     <Input placeholder="CN=John Smith,OU=User,DC=example" />
+              //   </Form.Item>
+              // </div>
+              null
             ) : (
               <></>
             )}
@@ -413,9 +412,9 @@ export const UserAction: React.FC<Props> = ({
                 <DatePicker className="w-full" />
               </Form.Item>
             </div>
-             <div className=" col-span-1">
+            <div className=" col-span-1">
               <Form.Item<TCreateUserDto> label="รหัสพนักงาน" name="empId" rules={[{ required: true }]}>
-                <Input  />
+                <Input />
               </Form.Item>
             </div>
           </div>

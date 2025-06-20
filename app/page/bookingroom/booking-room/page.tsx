@@ -208,7 +208,7 @@ const BookingRoomPage: React.FC = () => {
       const bookings = await BookingRoomServices(baseUrIntranet).findBookingRoom(skip, take);
       setBookingFetchData(bookings.data);
       setRefreshmentData(refreshment);
-      const dataFilterCalendar = bookingCalendar.filter((events: any) => events.bookingStatus !== "Reject");
+      const dataFilterCalendar = bookingCalendar.data.filter((events: any) => events.bookingStatus !== "Reject");
       setBookingFetchCalendar(dataFilterCalendar);
       setPagination({ ...pagination, total: bookings.count });
       const department = await MasterDepartmentServices(baseUrIntranet).findAllDepartment();

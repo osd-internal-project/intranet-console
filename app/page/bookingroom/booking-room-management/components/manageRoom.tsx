@@ -63,8 +63,8 @@ const ManageRoom: React.FC = () => {
     try {
       const masterRoom = await ManageRoomServices(baseUrIntranet).getMasterRoomQuery();
       const masterRoomActive = masterRoom.filter((room: any) => room.roomsStatus === true);
-      setMasterRoomData(masterRoomActive);
       const bookings = await ManageRoomServices(baseUrIntranet).findBookingRoom(skip, take);
+          setMasterRoomData(masterRoomActive);
       setPagination({ ...pagination, total: bookings.count });
       setBookingData(
         bookings.data.map((item: any, index: number) => ({

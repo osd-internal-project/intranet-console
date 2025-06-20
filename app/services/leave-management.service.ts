@@ -87,6 +87,16 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+     getdataLeaveHrfindBygroup: async (userId: string) => {
+      return await axiosInstance
+        .get(`${baseUrlDataLeave}/findGroup-hr/${userId}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
     getdataUserByTypeLeaveId: async (search: { typeid: string }) => {
       const condition = {
         where: {

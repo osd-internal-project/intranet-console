@@ -8,6 +8,7 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import { intersection } from "lodash";
 
 export default function Page() {
   const { id24Axios, tokenAccess } = useId24();
@@ -27,7 +28,10 @@ export default function Page() {
 
   const loadData = async () => {
     if (user?.userId) {
-      const res = await DataLeaveService(baseUrlIntranet).getdataLeavefindBygroup(user.userId);
+      const isHr = intersection(sideMenuGroups, ["hr"]).length > 0;
+      const res = isHr
+        ? await DataLeaveService(baseUrlIntranet).getdataLeaveHrfindBygroup(user.userId)
+        : await DataLeaveService(baseUrlIntranet).getdataLeavefindBygroup(user.userId);
       setDataLeaveUser(res);
       setLoading(false);
     }

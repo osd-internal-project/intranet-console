@@ -20,9 +20,11 @@ const MeetingRoomTableComponent: React.FC<props> = ({ masterBookingRoom }): Reac
       render: (value: string, row: any) => {
         const now = new Date();
         const isRoomBooked = row.bookingRoom?.some((booking: any) => {
+          console.log(booking);
+          
           const startDate = new Date(booking.startDate);
           const endDate = new Date(booking.endDate);
-          return now >= startDate && now <= endDate && booking.status === "Approve";
+          return now >= startDate && now <= endDate && booking.bookingStatus === "Approve";
         });
         if (value) {
           if (isRoomBooked) {

@@ -9,6 +9,7 @@ import { IOverTimeForm } from "@/app/common/overtime";
 import TableOvertimeHistory from "./components/table";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { intersection } from "lodash";
 
 const OvertimeHistory = () => {
   const { id24Axios, tokenAccess } = useId24();
@@ -34,17 +35,31 @@ const OvertimeHistory = () => {
   }, [params, loading]);
 
   const fecthData = async () => {
-    const skip = (Number(pagination.current) - 1) * Number(pagination.pageSize);
-    const take = Number(pagination.pageSize);
-    const overtime = await OverTimeServices(baseUrlIntra).findMany(skip, take, params);
-    setDataResource({ data: overtime.data, total: overtime.total });
-    setLoading(false);
+    try {
+      const skip = (Number(pagination.current) - 1) * Number(pagination.pageSize);
+      const take = Number(pagination.pageSize);
+      const isHr = intersection(sideMenuGroups, ["hr"]).length > 0;
+      const overtime = isHr
+        ? await OverTimeServices(baseUrlIntra).findManyHr(skip, take, params)
+        : await OverTimeServices(baseUrlIntra).findMany(skip, take, params);
+      setDataResource({ data: overtime.data, total: overtime.total });
+      setPagination({
+        current: 1,
+        pageSize: 10,
+      });
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching overtime data:", error);
+      message.error("Failed to fetch overtime data. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const onSearch = async (value: object) => {
     setParams({ ...value });
     setLoading(true);
-    setPagination({ pageSize: 10, current: 1 });
+    // setPagination({ pageSize: 10, current: 1 });
     setOpenFilter(false);
   };
 
@@ -140,6 +155,7 @@ const OvertimeHistory = () => {
             changePagination={changePagination}
             onFinishUpdate={onFinishUpdate}
             onFinishDelete={onFinishDelete}
+            sideMenuGroups={sideMenuGroups}
           />
         </Card>
       </div>

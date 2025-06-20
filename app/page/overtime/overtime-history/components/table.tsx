@@ -1,6 +1,7 @@
 import { IOverTimeForm } from "@/app/common/overtime";
 import { dateFormatTimeNoTIme } from "@/app/utils";
 import { Button, Table, TablePaginationConfig, TableProps, Tag } from "antd";
+import { intersection } from "lodash";
 import React from "react";
 
 export interface Props {
@@ -9,6 +10,7 @@ export interface Props {
   changePagination: (page: TablePaginationConfig) => void;
   onFinishUpdate: (values: IOverTimeForm, type: string) => void;
   onFinishDelete: (id: string) => void;
+  sideMenuGroups: any;
 }
 
 const TableOvertimeHistory: React.FC<Props> = ({
@@ -17,6 +19,7 @@ const TableOvertimeHistory: React.FC<Props> = ({
   changePagination,
   onFinishUpdate,
   onFinishDelete,
+  sideMenuGroups,
 }): React.ReactElement => {
   const columns: TableProps<IOverTimeForm>["columns"] = [
     {
@@ -106,25 +109,29 @@ const TableOvertimeHistory: React.FC<Props> = ({
       key: "id",
       title: "...",
       dataIndex: "id",
-      render: (_, record) => (
-        <div className="flex justify-center gap-2">
-          <div>
-            <Button size="small" type="link" onClick={() => onFinishUpdate(record, "approved")}>
-              อนุมัติ
-            </Button>
+      render: (_, record) => {
+        return (
+          <div className="flex justify-center gap-2">
+            <div>
+              <Button size="small" type="link" onClick={() => onFinishUpdate(record, "approved")}>
+                อนุมัติ
+              </Button>
+            </div>
+            <div>
+              <Button size="small" type="link" danger onClick={() => onFinishUpdate(record, "cancel")}>
+                ไม่อนุมัติ
+              </Button>
+            </div>
+            {intersection(sideMenuGroups, ["hr"]).length ? (
+              <div>
+                <Button size="small" type="link" danger onClick={() => onFinishDelete(record.overTimeID ? record.overTimeID : "")}>
+                  ลบ
+                </Button>
+              </div>
+            ) : null}
           </div>
-          <div>
-            <Button size="small" type="link" danger onClick={() => onFinishUpdate(record, "cancel")}>
-              ไม่อนุมัติ
-            </Button>
-          </div>
-          <div>
-            <Button size="small" type="link" danger onClick={() => onFinishDelete(record.overTimeID ? record.overTimeID : "")}>
-              ลบ
-            </Button>
-          </div>
-        </div>
-      ),
+        );
+      },
       width: 150,
       align: "center",
     },

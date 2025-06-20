@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 export interface TServices {
   findAll: () => Promise<IOverTimeForm[]>;
   findMany: (skip: number, take: number, params: any) => Promise<{ data: IOverTimeForm[]; total: number }>;
+  findManyHr: (skip: number, take: number, params: any) => Promise<{ data: IOverTimeForm[]; total: number }>;
   findById: (skip: number, take: number) => Promise<any[]>;
   findMasterOt: (date: any) => Promise<number>;
   create: (condition: any) => Promise<any[]>;
@@ -29,6 +30,17 @@ const OverTimeServices = (axiosInstance: AxiosInstance): TServices => {
     findMany: async (skip, take, params) => {
       return await axiosInstance
         .get(`${baseUrl}/find-many`, { params: { take, skip, params } })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    findManyHr: async (skip, take, params) => {
+      return await axiosInstance
+        .get(`${baseUrl}/find-many-hr`, { params: { take, skip, params } })
         .then((res) => {
           return res.data;
         })

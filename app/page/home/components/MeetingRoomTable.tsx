@@ -19,13 +19,12 @@ const MeetingRoomTableComponent: React.FC<props> = ({ masterBookingRoom }): Reac
       align: "center",
       render: (value: string, row: any) => {
         const now = new Date();
-        const roomStatus = row?.roomsStatus;
         const isRoomBooked = row.bookingRoom?.some((booking: any) => {
           const startDate = new Date(booking.startDate);
           const endDate = new Date(booking.endDate);
-          return now >= startDate && now <= endDate;
+          return now >= startDate && now <= endDate && booking.status === "Approve";
         });
-        if (roomStatus) {
+        if (value) {
           if (isRoomBooked) {
             return <Tag color="red">ไม่ว่างใช้งาน</Tag>;
           } else {

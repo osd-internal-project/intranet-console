@@ -1,4 +1,5 @@
 import { AxiosInstance } from "axios";
+import { Dayjs } from "dayjs";
 
 export const BookingRoomServices = (axiosInstance: AxiosInstance) => {
   const baseUrlApiBookingRoom = "/booking-room";
@@ -51,7 +52,7 @@ export const BookingRoomServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    countBookingRoomCountByRoomAndRange: async (roomId: string, startDate: string, endDate: string) => {
+    countBookingRoomCountByRoomAndRange: async (roomId: string, startDate: string | Date | Dayjs, endDate: string | Date | Dayjs) => {
       return await axiosInstance
         .get(`${baseUrlApiBookingRoom}/count-by-room-and-range`, {
           params: { roomId, startDate, endDate },

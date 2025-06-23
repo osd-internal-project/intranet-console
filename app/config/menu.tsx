@@ -30,19 +30,19 @@ export const MenuSider: MenuItem[] = [
   //     },
   //   ],
   // },
-  {
-    key: "hr-management",
-    label: "ระบบบริหารงานบุคคล",
-    rule: ["hr", "admin"],
-    icon: hrIcon,
-    children: [
-      {
-        key: `hr-management/employee-profile`,
-        label: "ข้อมูลพนักงาน",
-        rule: ["hr", "admin"],
-      },
-    ],
-  },
+  // {
+  //   key: "hr-management",
+  //   label: "ระบบบริหารงานบุคคล",
+  //   rule: ["hr", "admin"],
+  //   icon: hrIcon,
+  //   children: [
+  //     {
+  //       key: `hr-management/employee-profile`,
+  //       label: "ข้อมูลพนักงาน",
+  //       rule: ["hr", "admin"],
+  //     },
+  //   ],
+  // },
   {
     key: "housekeeper",
     icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
@@ -85,7 +85,7 @@ export const MenuSider: MenuItem[] = [
       {
         key: `leave-control-management/leave-disabled-management`,
         label: `จัดการสิทธิ์การลา`,
-        rule: "admin",
+        rule: ["admin", "hr"],
       },
     ],
   },
@@ -103,7 +103,7 @@ export const MenuSider: MenuItem[] = [
       {
         key: `bookingroom/booking-room-management`,
         label: `จัดการข้อมูลห้องประชุม`,
-        rule: "admin",
+        rule: ["admin", "hr"],
       },
       {
         key: `bookingroom/booking-room-refreshment`,
@@ -143,8 +143,8 @@ export const MenuSider: MenuItem[] = [
       },
       {
         key: `macar/ma-car-management`,
-        label: `ข้อมูลการจองรถยนต์ (แอดมิน)`,
-        rule: ["user", "admin"],
+        label: `ข้อมูลการจองรถยนต์`,
+        rule: ["user", "admin", "ma-user"],
       },
     ],
   },
@@ -152,7 +152,7 @@ export const MenuSider: MenuItem[] = [
     key: `overtime`,
     icon: <FieldTimeOutlined />,
     label: `Overtime`,
-    rule: ["user", "admin"],
+    rule: ["user", "admin", "hr"],
     children: [
       {
         key: `overtime/overtime-calendar`,
@@ -163,6 +163,11 @@ export const MenuSider: MenuItem[] = [
         key: `overtime/overtime-form`,
         label: `แบบฟอร์มขอเบิกค่าทำงานล่วงเวลา`,
         rule: ["user", "admin"],
+      },
+      {
+        key: `overtime/overtime-history`,
+        label: `ตารางรายละเอียดการทำงานล่วงเวลา`,
+        rule: ["header", "admin", "hr"],
       },
     ],
   },
@@ -228,7 +233,7 @@ export const MenuSider: MenuItem[] = [
       {
         key: `setting/typeleave`,
         label: `Type Leave`,
-        rule: "admin",
+        rule: ["admin", "hr"],
       },
       {
         key: `setting/master-holidays`,

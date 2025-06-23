@@ -30,26 +30,27 @@ import { UserContectType, UserContext } from "@/app/config/userContext";
 import { loadAppConfig } from "@/app/config/app-config";
 import { MasterDepartmentServices } from "@/app/services/department.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import dayjs, { Dayjs } from "dayjs";
 
 type BookingType = {
   roomId: string;
-  roomName: String;
-  roomType: String;
-  bookerName: String;
-  bookerPhone: String;
-  bookerDepartment: String;
-  positionName: String;
-  bookingStatus: String;
-  startDate: String;
-  endDate: String;
+  roomName: string;
+  roomType: string;
+  bookerName: string;
+  bookerPhone: string;
+  bookerDepartment: string;
+  positionName: string;
+  bookingStatus: string;
+  startDate: string | Date | Dayjs;
+  endDate: string | Date | Dayjs;
   approveDate: string;
-  title: String;
-  member: String;
+  title: string;
+  member: string;
   approver: string;
-  outSider: String;
-  note: String;
-  guestname: String;
-  guestlevel: String;
+  outSider: string;
+  note: string;
+  guestname: string;
+  guestlevel: string;
   guest?: any[];
   officer?: any[];
 };
@@ -112,7 +113,7 @@ const BookingRoomPage: React.FC = () => {
     form.setFieldsValue({
       bookerName: `${user?.firstNameTh}`,
       bookerPhone: user?.phoneNumber,
-      bookerDepartment: user?.departmentId,
+      bookerDepartment: user?.masterPosition?.nameEn,
     });
     setIsModalBooking(true);
   };
@@ -125,18 +126,20 @@ const BookingRoomPage: React.FC = () => {
   const createBooking: FormProps<BookingType>["onFinish"] = async (values) => {
     setSubmitLoading(true);
     const roomName = values.roomName as string;
-    const startDate = values.startDate as string;
-    const endDate = values.endDate as string;
+    const startDate = values.startDate;
+    const endDate = values.endDate;
     const selectedOption = masterRoomData.find((option) => option.value === values.roomId);
 
-    const today = new Date();
-    if (new Date(startDate) < today) {
+    const today = dayjs();
+    console.log(today);
+
+    if (startDate < today) {
       message.error("ไม่สามารถจองในเวลาที่ผ่านมาแล้วได้");
       setSubmitLoading(false);
       return;
     }
 
-    if (new Date(endDate) < new Date(startDate)) {
+    if (endDate < startDate) {
       message.error("วันที่สิ้นสุดการจองต้องหลังวันที่เริ่มการจอง");
       setSubmitLoading(false);
       return;
@@ -172,10 +175,10 @@ const BookingRoomPage: React.FC = () => {
       guest: values.guest ? guestData : undefined,
       officer: values.officer,
     };
+    console.log(data);
 
     try {
       const response = await BookingRoomServices(baseUrIntranet).createBookingRoom(data);
-
       if (response) {
         message.success("จองห้องสำเร็จ");
         form.resetFields();
@@ -208,7 +211,7 @@ const BookingRoomPage: React.FC = () => {
       const bookings = await BookingRoomServices(baseUrIntranet).findBookingRoom(skip, take);
       setBookingFetchData(bookings.data);
       setRefreshmentData(refreshment);
-      const dataFilterCalendar = bookingCalendar.filter((events: any) => events.bookingStatus !== "Reject");
+      const dataFilterCalendar = bookingCalendar.data.filter((events: any) => events.bookingStatus !== "Reject");
       setBookingFetchCalendar(dataFilterCalendar);
       setPagination({ ...pagination, total: bookings.count });
       const department = await MasterDepartmentServices(baseUrIntranet).findAllDepartment();
@@ -241,15 +244,7 @@ const BookingRoomPage: React.FC = () => {
             </Col>
             <Col span={8}>
               <Form.Item<BookingType> label="ชื่อแผนก" name="bookerDepartment">
-                <Select placeholder="โปรดเลือกชื่อแผนก" style={{ width: "100%" }} disabled>
-                  {department.map((records, index) => {
-                    return (
-                      <Select.Option key={index} value={records.departId}>
-                        {records.departName}
-                      </Select.Option>
-                    );
-                  })}
-                </Select>
+                <Input disabled />
               </Form.Item>
             </Col>
           </Row>
@@ -269,7 +264,7 @@ const BookingRoomPage: React.FC = () => {
             </Col>
             <Col span={8}>
               <Form.Item<BookingType> label="วันที่เริ่มการจอง" name="startDate" rules={[{ required: true, message: "กรุณาเลือกวันที่เริ่มการจอง" }]}>
-                <DatePicker allowClear placeholder="เลือกวันที่เริ่มการจอง" showTime style={{ width: "100%" }} format={"DD-MM-YYYY HH:mm:ss"} />
+                <DatePicker allowClear placeholder="เลือกวันที่เริ่มการจอง" showTime style={{ width: "100%" }} format={"DD-MM-YYYY HH:mm"} />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -277,7 +272,7 @@ const BookingRoomPage: React.FC = () => {
                 label="วันที่สิ้นสุดการจอง"
                 name="endDate"
                 rules={[{ required: true, message: "กรุณาเลือกวันที่สิ้นสุดการจอง" }]}>
-                <DatePicker allowClear placeholder="เลือกวันที่สิ้นสุดการจอง" showTime style={{ width: "100%" }} format={"DD-MM-YYYY HH:mm:ss"} />
+                <DatePicker allowClear placeholder="เลือกวันที่สิ้นสุดการจอง" showTime style={{ width: "100%" }} format={"DD-MM-YYYY HH:mm"} />
               </Form.Item>
             </Col>
             <Col span={8}>

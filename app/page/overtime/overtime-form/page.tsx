@@ -23,7 +23,7 @@ export default function OverTimePage() {
   const searchParams = useSearchParams();
   const { user } = useContext(UserContext) as UserContectType;
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  // const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -62,6 +62,7 @@ export default function OverTimePage() {
 
   const fetchData = async () => {
     if (!user) return;
+    if (!date) return;
     const HeaderGroup = await LeaveManagementServices(baseUrlIntranet).getHeaderByUserId();
     const masterConfigTime = await OverTimeServices(baseUrlIntranet).findMasterOt(date);
     const resCar: any = await MaCarServices(baseUrlIntranet).getMaCarQuery();

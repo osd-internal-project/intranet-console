@@ -8,6 +8,7 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import { intersection } from "lodash";
 
 export default function Page() {
   const { id24Axios, tokenAccess } = useId24();
@@ -18,6 +19,7 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(true);
   const [dataLeaveUser, setDataLeaveUser] = useState<ITypeDataLeave[]>([]);
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
+  const [submitAction, setSubmitAction] = useState<"approved" | "cancel">("approved");
   const [formdetail] = Form.useForm();
 
   useEffect(() => {
@@ -26,13 +28,16 @@ export default function Page() {
 
   const loadData = async () => {
     if (user?.userId) {
-      const res = await DataLeaveService(baseUrlIntranet).getdataLeavefindBygroup(user.userId);
+      const isHr = intersection(sideMenuGroups, ["hr"]).length > 0;
+      const res = isHr
+        ? await DataLeaveService(baseUrlIntranet).getdataLeaveHrfindBygroup(user.userId)
+        : await DataLeaveService(baseUrlIntranet).getdataLeavefindBygroup(user.userId);
       setDataLeaveUser(res);
       setLoading(false);
     }
   };
 
-  const onFinishUpdate = (type: string, id: number) => {
+  const onFinishUpdate = (values: any, type: string, id: number) => {
     Modal.confirm({
       title: <>{type === "cancel" ? "Cancel " : "Approved"}</>,
       icon: <ExclamationCircleFilled />,
@@ -55,9 +60,10 @@ export default function Page() {
         },
       },
       onOk: async () => {
-        const res = await DataLeaveService(baseUrlIntranet).approvedDataLeave(type, id, user);
+        const res = await DataLeaveService(baseUrlIntranet).approvedDataLeave(values.detailApproved, type, id, user);
         if (res) {
           type === "cancel" ? message.error("cancel success") : message.success("approved success");
+          setSubmitAction("approved");
           setLoading(true);
           setOpenModalDetail(false);
         }
@@ -141,10 +147,12 @@ export default function Page() {
               setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
               openModalDetail={openModalDetail}
               formdetail={formdetail}
-              onFinishUpdate={(type: string, id: number) => onFinishUpdate(type, id)}
-              onFinishDelete={(type: string, id: number) => onFinishDelete(type, id)}
-              downloadFile={(id: number, filename: string) => downloadFile(id, filename)}
+              onFinishUpdate={onFinishUpdate}
+              onFinishDelete={onFinishDelete}
+              downloadFile={downloadFile}
               sideMenuGroups={sideMenuGroups}
+              setSubmitAction={setSubmitAction}
+              submitAction={submitAction}
             />
           </Card>
         </div>

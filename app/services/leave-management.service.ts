@@ -87,6 +87,16 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+     getdataLeaveHrfindBygroup: async (userId: string) => {
+      return await axiosInstance
+        .get(`${baseUrlDataLeave}/findGroup-hr/${userId}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
     getdataUserByTypeLeaveId: async (search: { typeid: string }) => {
       const condition = {
         where: {
@@ -246,7 +256,7 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
         .catch((err) => err);
     },
 
-    approvedDataLeave: async (event: string, id: number, data: any) => {
+    approvedDataLeave: async (detailApproved: string, event: string, id: number, data: any) => {
       const condition = {
         where: {
           id: id,
@@ -255,6 +265,7 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           status: event,
           userApproved: `${data.firstNameTh} ${data.lastNameTh}`,
           approvedDate: new Date(),
+          detailApproved,
         },
       };
       return await axiosInstance

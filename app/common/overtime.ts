@@ -1,0 +1,29 @@
+export interface IOverTimeForm {
+  id?: number;
+  overTimeID?: string;
+  fullname: string;
+  userId: string;
+  dateStart?: Date | string;
+  partTimeType?: string | null;
+  startTime?: string | null;
+  endTime?: string | null;
+  breakTime?: string | null;
+  workingTime?: string | null;
+  totalTime?: string | null;
+  detailWork?: string | null;
+  typeDate?: string | null;
+  customerName?: string | null;
+  checkTravelUpCountry?: boolean | null;
+  checkOvernight?: boolean | null;
+  checkTravelByCompanyCar?: boolean | null;
+  carName?: string | null;
+  carId?: string | null;
+  checkDistance?: boolean | null;
+  other?: string | null;
+  phoneNumber?: string | null;
+  status?: string | null;
+  approvedDate?: Date | string | null;
+  approvedUser?: string | null;
+  approvedDetail?: string | null;
+  calculate?: string | null;
+}

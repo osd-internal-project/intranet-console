@@ -63,8 +63,8 @@ const ManageRoom: React.FC = () => {
     try {
       const masterRoom = await ManageRoomServices(baseUrIntranet).getMasterRoomQuery();
       const masterRoomActive = masterRoom.filter((room: any) => room.roomsStatus === true);
-      setMasterRoomData(masterRoomActive);
       const bookings = await ManageRoomServices(baseUrIntranet).findBookingRoom(skip, take);
+      setMasterRoomData(masterRoomActive);
       setPagination({ ...pagination, total: bookings.count });
       setBookingData(
         bookings.data.map((item: any, index: number) => ({
@@ -242,17 +242,17 @@ const ManageRoom: React.FC = () => {
 
     try {
       const { startDate, endDate, roomName, ...restValues } = values;
-      const updatedStartDate = startDate.toISOString();
-      const updatedEndDate = endDate.toISOString();
+      const updatedStartDate = dayjs(startDate);
+      const updatedEndDate = dayjs(endDate);
 
-      const today = new Date();
-      if (new Date(updatedStartDate) < today) {
+      const today = dayjs();
+      if (updatedStartDate < today) {
         message.error("ไม่สามารถจองในวันที่ผ่านมาได้");
         setSubmitLoading(false);
         return;
       }
 
-      if (new Date(updatedEndDate) < new Date(updatedStartDate)) {
+      if (updatedEndDate < updatedStartDate) {
         message.error("วันที่สิ้นสุดการจองต้องหลังวันที่เริ่มการจอง");
         setSubmitLoading(false);
         return;
@@ -346,15 +346,7 @@ const ManageRoom: React.FC = () => {
             </Col>
             <Col span={8}>
               <Form.Item<BookingType> label="ชื่อแผนก" name="bookerDepartment" rules={[{ required: true, message: "กรุณากรอกกรอกชื่อแผนก!" }]}>
-                <Select
-                  placeholder="โปรดเลือกเเผนกผู้จอง"
-                  options={[
-                    { value: "HR", label: "HR" },
-                    { value: "IT", label: "IT" },
-                    { value: "Marketing", label: "Marketing" },
-                    { value: "Finance", label: "Finance" },
-                  ]}
-                />
+                <Input />
               </Form.Item>
             </Col>
           </Row>
@@ -373,7 +365,7 @@ const ManageRoom: React.FC = () => {
             </Col>
             <Col span={8}>
               <Form.Item<BookingType> label="วันที่เริ่มการจอง" name="startDate" rules={[{ required: true, message: "กรุณากรอกวันที่เริ่มการจอง!" }]}>
-                <DatePicker showTime style={{ width: "100%" }} />
+                <DatePicker showTime style={{ width: "100%" }} format={"DD-MM-YYYY HH:mm"} />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -381,7 +373,7 @@ const ManageRoom: React.FC = () => {
                 label="วันที่สิ้นสุดการจอง"
                 name="endDate"
                 rules={[{ required: true, message: "กรุณากรอกวันที่สิ้นสุดการจอง!" }]}>
-                <DatePicker showTime style={{ width: "100%" }} />
+                <DatePicker showTime style={{ width: "100%" }} format={"DD-MM-YYYY HH:mm"} />
               </Form.Item>
             </Col>
             <Col span={8}>

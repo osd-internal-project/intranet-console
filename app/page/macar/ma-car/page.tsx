@@ -3,7 +3,6 @@ import axios from "axios";
 import Link from "next/link";
 import React, { useState, useEffect, useContext } from "react";
 import { Breadcrumb, Card, Col, Row, TabsProps, Tabs, Button, Divider, TablePaginationConfig } from "antd";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { MaCarServices } from "../../../services/ma-car.service";
 import { MaCarType, MaCarBookType, dataMaCarbook, ProvincesType } from "../common/index";
 import CalendarComponent from "./components/car-calendar";
@@ -67,7 +66,6 @@ const MaCar: React.FC = () => {
     setPagination({ ...page });
     setLoading(true);
   };
-
   const items: TabsProps["items"] = [
     {
       key: "1",

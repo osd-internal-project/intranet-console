@@ -1,14 +1,11 @@
-import "../../styles/style.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from "moment";
-// import "moment/locale/TH";
 import React, { useState } from "react";
 import { Form } from "antd";
 import { Calendar, momentLocalizer, Event as RbcEvent } from "react-big-calendar";
 import { ITypeDataLeave } from "../../common";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { LeaveHistoryCalendarDetail } from "./leave-history-calendar-detail";
-// moment.locale("TH");
 
 interface CustomEvent extends RbcEvent {
   id: number | undefined;

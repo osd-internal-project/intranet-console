@@ -3,7 +3,6 @@ import React from "react";
 import { Button, Empty, Skeleton, Table } from "antd";
 import { ITpyeUser } from "../../common";
 import { deleteIcon } from "@/components/icon";
-import "../../styles/style.css";
 
 export interface props {
   getdataUserByTypeId: ITpyeUser[];

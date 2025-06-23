@@ -2,7 +2,6 @@ import { Card, Modal, Space, Table, TableColumnsType, Tag, Tooltip, Typography }
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { ITypetypeleave } from "../../common";
-import "../../styles/style.css";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { showDataLeave, validateCheckNumberLeave, validateSgowAllHourLeave } from "@/app/utils/validatefield";
 import { FormInstance } from "antd/lib";

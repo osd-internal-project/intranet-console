@@ -4,13 +4,12 @@ import { Breadcrumb, Col, Divider, Row, UploadFile, message, Form, Modal } from 
 import { useRouter } from "next/navigation";
 import LeaveManagementServices from "../../../services/leave-management.service";
 import { RcFile, UploadProps } from "antd/es/upload";
-import { ISelect, ITypetypeleave, ITypeDataLeaveCreate, UserGroupType, ITypeDataLeave } from "../common";
+import { ISelect, ITypetypeleave, ITypeDataLeaveCreate } from "../common";
 import { CreateOnlineLeave } from "./components/create-online-leave";
 import { TableOnlineDetailLeave } from "./components/table-online-detail-leave";
 import { checkStatusTypeLeave, validateCheckLeaveDay, validateSumTotalLeave } from "@/app/utils/validatefield";
 import MasterHolidaysService from "../../setting/master-holidays/services/index.service";
 import { IFindAllDayDto } from "../../setting/master-holidays/common";
-import MasterTypeLeaveService from "../../setting/typeleave/services/index.service";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";

@@ -224,6 +224,7 @@ export default function Page() {
               attendFiles={attendFiles}
               getHeader={getHeader}
               onChangeFormCreate={onChangeFormCreate}
+              dataHolidayDay={dataHolidayDay}
             />
           </Col>
           <Col span={12}>

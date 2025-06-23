@@ -5,6 +5,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import { ISelect, ITypeDataLeaveCreate } from "../../common";
 import { timeOptions } from "../../until/function-data-leave";
 import { validateCheckEndDate } from "@/app/utils/validatefield";
+import { IFindAllDayDto } from "@/app/page/setting/master-holidays/common";
 
 interface props {
   createdataleaveForm: FormInstance<ITypeDataLeaveCreate>;
@@ -20,6 +21,7 @@ interface props {
   handleChangeAttendFiles: (e: any) => void;
   beforeUploadAttendFiles: (e: any) => void;
   onChangeFormCreate: (values: any) => void;
+  dataHolidayDay: IFindAllDayDto[];
 }
 
 export const CreateLeaveForm: React.FC<props> = ({
@@ -36,7 +38,10 @@ export const CreateLeaveForm: React.FC<props> = ({
   handleChangeAttendFiles,
   beforeUploadAttendFiles,
   onChangeFormCreate,
+  dataHolidayDay,
 }) => {
+  console.log(dataHolidayDay);
+
   return (
     <div>
       <Form
@@ -105,7 +110,7 @@ export const CreateLeaveForm: React.FC<props> = ({
                   validator(_, value) {
                     const startDate = getFieldValue("startDate");
                     const type_id = getFieldValue("type_id");
-                    return validateCheckEndDate(startDate, value, type_id);
+                    return validateCheckEndDate(startDate, value, type_id, dataHolidayDay);
                   },
                 }),
               ]}>
@@ -122,7 +127,7 @@ export const CreateLeaveForm: React.FC<props> = ({
                   validator(_, value) {
                     const startDate = getFieldValue("startDate");
                     const type_id = getFieldValue("type_id");
-                    return validateCheckEndDate(startDate, value, type_id);
+                    return validateCheckEndDate(startDate, value, type_id, dataHolidayDay);
                   },
                 }),
               ]}>

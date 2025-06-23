@@ -5,6 +5,7 @@ import { IDataUser, ISelect, ITypeDataLeaveCreate } from "../../common";
 import { RcFile } from "antd/es/upload";
 import { FormInstance } from "antd/lib";
 import { CreateLeaveForm } from "./create-online-leave-form";
+import { IFindAllDayDto } from "@/app/page/setting/master-holidays/common";
 
 export interface props {
   getUser?: IDataUser | null;
@@ -22,6 +23,7 @@ export interface props {
   attendFiles: UploadFile[];
   getHeader: any;
   onChangeFormCreate: (values: any) => void;
+  dataHolidayDay: IFindAllDayDto[];
 }
 export const CreateOnlineLeave: React.FC<props> = ({
   getUser,
@@ -39,6 +41,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
   attendFiles,
   getHeader,
   onChangeFormCreate,
+  dataHolidayDay,
 }: any): React.ReactElement => {
   useEffect(() => {
     const getdatauser = () => {
@@ -72,6 +75,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
           handleChangeAttendFiles={handleChangeAttendFiles}
           beforeUploadAttendFiles={beforeUploadAttendFiles}
           onChangeFormCreate={onChangeFormCreate}
+          dataHolidayDay={dataHolidayDay}
         />
       </Card>
     </div>

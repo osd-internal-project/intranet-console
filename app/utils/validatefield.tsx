@@ -32,9 +32,17 @@ export const validateCheckStartDate = (endDate: any, startDate: any, TypeLeave: 
   return Promise.reject(new Error("กรุณาเลือกวันที่เริ่มลา"));
 };
 
-export const validateCheckEndDate = (startDate: any, endDate: any, TypeLeave: number) => {
+export const validateCheckEndDate = (startDate: any, endDate: any, TypeLeave: number, holidays: IFindAllDayDto[]) => {
+  const findHolidays = Object.values(holidays).some(
+    (holiday) =>
+      dayjs(holiday.holidaysDate).format("DD-MM-YYYY") === dayjs(startDate).format("DD-MM-YYYY") ||
+      dayjs(holiday.holidaysDate).format("DD-MM-YYYY") === dayjs(endDate).format("DD-MM-YYYY"),
+  );
   if (!TypeLeave) {
     return Promise.reject(new Error("โปรดเลือกประเภทการลาก่อนเสมอ"));
+  }
+  if (findHolidays) {
+    return Promise.reject(new Error("โปรตรวจสอบว่าวันลาของท่านตรงกับวันหยุดไหม"));
   }
   if (!endDate) {
     return Promise.reject(new Error("กรุณาเลือกวันที่สิ้นสุดการลา"));

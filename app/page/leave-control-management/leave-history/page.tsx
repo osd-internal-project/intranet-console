@@ -9,6 +9,9 @@ import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import { TableDetail } from "./components/table-detail";
+import { IFindAllDayDto } from "../../setting/master-holidays/common";
+import dayjs from "dayjs";
+import MasterHolidaysService from "../../setting/master-holidays/services/index.service";
 
 export default function Page() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
@@ -26,11 +29,43 @@ export default function Page() {
   }, [loading, user]);
 
   const loadData = async () => {
-    if (user) {
-      const result = await DataLeaveService(baseUrlIntranet).getdataLeaveUserById({ userId: user?.userId });
-      const resDataLeaveByGrouptId = await DataLeaveService(baseUrlIntranet).getdataLeavefindBygroup(user?.userId);
-      setDataLeaveGroup(resDataLeaveByGrouptId);
-      setDataSource(result);
+    if (!user) return;
+
+    try {
+      const yearNow = dayjs().format("YYYY");
+      const holidayService = MasterHolidaysService(baseUrlIntranet);
+      const leaveService = DataLeaveService(baseUrlIntranet);
+
+      // Run calls in parallel
+      const [holidayData, userLeave, groupLeave] = await Promise.all([
+        holidayService.getHolidayByYear(yearNow),
+        leaveService.getdataLeaveUserById({ userId: user.userId }),
+        leaveService.getdataLeavefindBygroup(user.userId),
+      ]);
+
+      // Map holidays into leave event format
+      const holidayMappedData = holidayData.map((item: IFindAllDayDto) => ({
+        id: item.id,
+        firstName: item.holidaysName,
+        lastName: "",
+        startDate: item.holidaysDate,
+        endDate: item.holidaysDate,
+        description: "",
+        typeName: "วันหยุด",
+        status: "holiday",
+      }));
+
+      // Merge data
+      const mergedUserData = [...userLeave, ...holidayMappedData];
+      const mergedGroupData = [...groupLeave, ...holidayMappedData];
+
+      // Set state
+      setDataLeaveGroup(mergedGroupData);
+      setDataSource(mergedUserData);
+    } catch (error) {
+      console.error("Failed to load calendar data:", error);
+      // Optionally set error state or show user feedback
+    } finally {
       setLoading(false);
     }
   };

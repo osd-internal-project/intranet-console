@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { Calendar, momentLocalizer, Event, View } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import "../style.css";
+// import "../style.css";
 import { useRouter } from "next/navigation";
 import { ITMaTask } from "../common";
 import { title } from "process";

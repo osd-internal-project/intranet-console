@@ -1,5 +1,5 @@
 "use client";
-import "../style.css";
+// import "../style.css";
 import { Button, Card, Form, Input, Modal, Select, Switch, message } from "antd";
 import React, { useState, useEffect } from "react";
 import UserServices from "../services/index.service";

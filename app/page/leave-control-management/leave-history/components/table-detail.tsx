@@ -115,7 +115,13 @@ export const TableDetail: React.FC<props> = ({
   return (
     <div>
       {ShowStatusLeaves}
-      <Table dataSource={dataSource} columns={columns} size="small" scroll={{ x: "max-content" }} rowKey={(e: any) => e.id} />
+      <Table
+        dataSource={dataSource.filter((e) => e.status !== "holiday")}
+        columns={columns}
+        size="small"
+        scroll={{ x: "max-content" }}
+        rowKey={(e: any) => e.id}
+      />
       {openModalDetail ? (
         <LeaveHistoryDetail
           openModalDetail={openModalDetail}

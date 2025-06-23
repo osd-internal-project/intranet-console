@@ -1,5 +1,5 @@
 "use client";
-import "../style.css";
+// import "../style.css";
 import React, { useEffect, useState } from "react";
 import UserGroupServices from "../../../../services/usergroup.service";
 import { Card, Tabs, Tree } from "antd";

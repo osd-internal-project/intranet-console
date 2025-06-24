@@ -166,7 +166,7 @@ const page = () => {
             ]}
           />
         </Col>
-        <Divider orientation="left" orientationMargin="0">
+        <Divider orientation="left" orientationMargin="0" style={{ padding: "0px 0px 0px 0px", marginBottom: "0px", marginTop: "0px" }}>
           <div className="title-page-font">{`จัดการสิทธ์การลา`}</div>
         </Divider>
         <div className="w-full">

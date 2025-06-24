@@ -28,6 +28,7 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, download
   const [formDetail] = Form.useForm();
   const localizer = momentLocalizer(moment);
   const [modalDataLeaveDetail, setModalDataLeaveDetail] = useState(false);
+  // const holidayDates = new Set();
 
   const onCancelModalDetail = () => {
     setModalDataLeaveDetail(false);
@@ -88,6 +89,17 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, download
     return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
   };
 
+  const dayPropGetter = (date: any) => {
+    const day = date.getDay();
+    // const isHolidayFromEvents = holidayDates.has(moment(date).format("YYYY-MM-DD"));
+    if (day === 0 || day === 6) {
+      return {
+        className: "weekend-day",
+      };
+    }
+    return {};
+  };
+
   return (
     <div>
       {modalDataLeaveDetail ? (
@@ -100,16 +112,22 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, download
       ) : null}
       <Calendar<CustomEvent>
         localizer={localizer}
-        events={dataSource.map((dataLeaveCalendar: ITypeDataLeave) => ({
-          id: dataLeaveCalendar.id,
-          title: `${dataLeaveCalendar.firstName} ${dataLeaveCalendar.lastName} (${dataLeaveCalendar.typeName}) `,
-          start: dataLeaveCalendar.startDate ? new Date(dataLeaveCalendar.startDate) : null,
-          end: dataLeaveCalendar.endDate ? new Date(dataLeaveCalendar.endDate) : null,
-          status: dataLeaveCalendar.status,
-          description: dataLeaveCalendar?.description || "",
-          userName: dataLeaveCalendar.typeName,
-          typeId: dataLeaveCalendar.typeId,
-        }))}
+        events={dataSource.map((dataLeaveCalendar: ITypeDataLeave) => {
+          // if (dataLeaveCalendar.status === "holiday") {
+          //   // Use moment to format the date to YYYY-MM-DD for consistent key in the Set
+          //   holidayDates.add(moment(dataLeaveCalendar.startDate).format("YYYY-MM-DD"));
+          // }
+          return {
+            id: dataLeaveCalendar.id,
+            title: `${dataLeaveCalendar.firstName} ${dataLeaveCalendar.lastName} (${dataLeaveCalendar.typeName}) `,
+            start: dataLeaveCalendar.startDate ? new Date(dataLeaveCalendar.startDate) : null,
+            end: dataLeaveCalendar.endDate ? new Date(dataLeaveCalendar.endDate) : null,
+            status: dataLeaveCalendar.status,
+            description: dataLeaveCalendar?.description || "",
+            userName: dataLeaveCalendar.typeName,
+            typeId: dataLeaveCalendar.typeId,
+          };
+        })}
         messages={{
           next: ">",
           previous: "<",
@@ -119,9 +137,14 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, download
         components={{
           event: CustomEventComponent,
         }}
+        startAccessor="start"
+        endAccessor="end"
+        popup
+        defaultView="month"
+        views={["month"]}
+        dayPropGetter={dayPropGetter}
         eventPropGetter={(event: CustomEvent) => {
-          let backgroundColor = "orange";
-
+          let backgroundColor = "#FFA500";
           if (event.status === "approved") {
             backgroundColor = getColorByUserId(event.typeId?.toString());
           } else if (event.status === "cancel") {

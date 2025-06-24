@@ -1,5 +1,5 @@
 "use client";
-import "../../style.css";
+// import "../../style.css";
 import React, { useState, useEffect } from "react";
 import { Button, Card, Image, Form, Input, Modal, Select, Switch, message, Avatar, Upload, UploadFile, SelectProps } from "antd";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";

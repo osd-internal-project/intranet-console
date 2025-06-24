@@ -4,7 +4,7 @@ import RolesServices from "../../services/role.service";
 import { Button, Card, Form, Select, Tag, Tree, message } from "antd";
 import type { DataNode } from "antd/es/tree";
 
-import "../../style.css";
+// import "../../style.css";
 import TextArea from "antd/es/input/TextArea";
 import UserServices from "../../services/user.service";
 import { useForm } from "antd/es/form/Form";

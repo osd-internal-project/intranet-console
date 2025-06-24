@@ -2,7 +2,7 @@ import React from "react";
 import { Row, Col, Form, Input, Divider, ConfigProvider, Select, InputNumber, DatePicker, FormInstance } from "antd";
 import { MaCarBookType, MaCarType } from "../../common/index";
 import TextArea from "antd/es/input/TextArea";
-import "../../common/style.css";
+// import "../../common/style.css";
 import { dateFormatTime } from "@/app/utils";
 
 interface props {

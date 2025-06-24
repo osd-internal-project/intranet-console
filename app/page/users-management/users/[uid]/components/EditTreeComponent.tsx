@@ -6,7 +6,7 @@ import { Button, Card, Form, Select, Spin, Tree, TreeSelect, message } from "ant
 import type { DataNode, TreeProps } from "antd/es/tree";
 import Title from "antd/es/skeleton/Title";
 
-import "../../style.css";
+// import "../../style.css";
 import { useForm } from "antd/es/form/Form";
 import UserGroupServices from "../../../../../services/usergroup.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";

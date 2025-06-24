@@ -123,7 +123,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <Content
             className=" mb-10"
             style={{
-              padding: 20,
+              padding: 10,
               margin: 0,
               marginBottom: 20,
             }}>

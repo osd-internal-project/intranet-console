@@ -1,6 +1,6 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, message, Row, UploadFile } from "antd";
+import { Breadcrumb, Card, Col, Divider, message, Row, UploadFile } from "antd";
 import MaDescriptionComponent from "./components/MaDescription";
 import { ITMaTask, ITMaType, ITMaUpdateForm, ITPagination } from "../common";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -118,9 +118,9 @@ export default function MaTaskPage() {
             ]}
           />
         </Col>
-        <Col span={24}>
+        <Divider orientation="left" orientationMargin="0" style={{ padding: "0px 0px 0px 0px", marginBottom: "0px", marginTop: "0px" }}>
           <div className="title-page-font">{`MAINTENANCE DESCRIPTION`}</div>
-        </Col>
+        </Divider>
         <Col span={24}>
           <div className="grid grid-cols-1 ">
             <MaDescriptionComponent

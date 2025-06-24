@@ -93,7 +93,7 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
 
   return (
     <>
-      <Card className="w-full grid grid-cols-1 gap-2" styles={{ body: { padding:  5 } }}>
+      <Card className="w-full grid grid-cols-1 gap-2" styles={{ body: { padding: 5 } }}>
         <div className="flex justify-center w-full mb-2">
           <Space>
             {`ประวัติการลาปี ${dayjs(new Date()).format("YYYY")}`}

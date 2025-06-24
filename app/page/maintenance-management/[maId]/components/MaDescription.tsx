@@ -29,11 +29,8 @@ const MaDescriptionComponent: React.FC<props> = ({
   downloadFile,
   getImageBlob,
 }): React.ReactElement => {
-  console.log(data);
-  const [checkNextTask, setCheckNextTask] = useState<boolean>(false);
-
   return (
-    <Card>
+    <Card styles={{ body: { padding: "10px" } }}>
       <div className="grid grid-cols-1 md:grid-cols-3">
         <div className="  grid  grid-cols-3 mb-2">
           <div className=" col-span-1 font-bold">สถานะ :</div>

@@ -660,6 +660,7 @@ const ManageRoom: React.FC = () => {
         columns={columns}
         dataSource={bookingData}
         rowKey="id"
+        size="small"
         pagination={pagination}
         onChange={changePagination}
         scroll={{ x: "max-content" }}

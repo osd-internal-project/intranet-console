@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useContext } from "react";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import {
   Breadcrumb,
   Card,
@@ -31,6 +30,7 @@ import { loadAppConfig } from "@/app/config/app-config";
 import { MasterDepartmentServices } from "@/app/services/department.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import dayjs, { Dayjs } from "dayjs";
+import MasterHolidaysService from "../../setting/master-holidays/services/index.service";
 
 type BookingType = {
   roomId: string;
@@ -78,7 +78,7 @@ const BookingRoomPage: React.FC = () => {
   const [bookingFetchData, setBookingFetchData] = useState([]);
   const [refreshmentData, setRefreshmentData] = useState([]);
   const [bookingFetchCalendar, setBookingFetchCalendar] = useState([]);
-  const [department, setDepartment] = useState<{ createdAt: string; departId: number; departName: string; id: number; updatedAt: string }[]>([]);
+  // const [department, setDepartment] = useState<{ createdAt: string; departId: number; departName: string; id: number; updatedAt: string }[]>([]);
   const [loading, setloading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -125,33 +125,27 @@ const BookingRoomPage: React.FC = () => {
 
   const createBooking: FormProps<BookingType>["onFinish"] = async (values) => {
     setSubmitLoading(true);
-    const roomName = values.roomName as string;
+    // const roomName = values.roomName as string;
     const startDate = values.startDate;
     const endDate = values.endDate;
     const selectedOption = masterRoomData.find((option) => option.value === values.roomId);
-
     const today = dayjs();
-    console.log(today);
-
     if (startDate < today) {
       message.error("ไม่สามารถจองในเวลาที่ผ่านมาแล้วได้");
       setSubmitLoading(false);
       return;
     }
-
     if (endDate < startDate) {
       message.error("วันที่สิ้นสุดการจองต้องหลังวันที่เริ่มการจอง");
       setSubmitLoading(false);
       return;
     }
-
     const count = await BookingRoomServices(baseUrIntranet).countBookingRoomCountByRoomAndRange(values.roomId, startDate, endDate);
     if (count > 0) {
       message.error("ห้องนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่.");
       setSubmitLoading(false);
       return;
     }
-
     const guestData = values.guest ? JSON.stringify(values.guest) : "";
 
     const data = {
@@ -175,8 +169,6 @@ const BookingRoomPage: React.FC = () => {
       guest: values.guest ? guestData : undefined,
       officer: values.officer,
     };
-    console.log(data);
-
     try {
       const response = await BookingRoomServices(baseUrIntranet).createBookingRoom(data);
       if (response) {
@@ -199,6 +191,19 @@ const BookingRoomPage: React.FC = () => {
     const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
     const take: number = Number(pagination.pageSize);
     try {
+      const yearNow = dayjs().format("YYYY");
+      const holidayService = MasterHolidaysService(baseUrIntranet);
+      const holidayData = await holidayService.getHolidayByYear(yearNow);
+      const holidayMappedData: any = holidayData.map((item: any) => ({
+        id: item.id,
+        roomName: item.holidaysName,
+        lastName: "",
+        startDate: item.holidaysDate,
+        endDate: item.holidaysDate,
+        description: "",
+        bookerName: "วันหยุด",
+        bookingStatus: "holiday",
+      }));
       const bookingRoom = await BookingRoomServices(baseUrIntranet).getMasterRoomQuery();
       const options = bookingRoom
         .filter((filtersroom: any) => filtersroom.roomsStatus === true)
@@ -212,10 +217,11 @@ const BookingRoomPage: React.FC = () => {
       setBookingFetchData(bookings.data);
       setRefreshmentData(refreshment);
       const dataFilterCalendar = bookingCalendar.data.filter((events: any) => events.bookingStatus !== "Reject");
-      setBookingFetchCalendar(dataFilterCalendar);
+      const mapCalendar: any = [...dataFilterCalendar, ...holidayMappedData];
+      setBookingFetchCalendar(mapCalendar);
       setPagination({ ...pagination, total: bookings.count });
-      const department = await MasterDepartmentServices(baseUrIntranet).findAllDepartment();
-      setDepartment(department);
+      // const department = await MasterDepartmentServices(baseUrIntranet).findAllDepartment();
+      // setDepartment(department);
       setloading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -454,18 +460,18 @@ const BookingRoomPage: React.FC = () => {
             ]}
           />
         </Col>
-        <Divider orientation="left" orientationMargin="0">
+        <Divider orientation="left" orientationMargin="0" style={{ padding: "0px 0px 0px 0px", marginBottom: "0px", marginTop: "0px" }}>
           <div className="title-page-font">{`Booking Room Details`}</div>
         </Divider>
         <Col span={24}>
           <div className="grid-span-1 space-y-2">
-            <Card>
+            <Card styles={{ body: { padding: "10px" } }}>
               <div className="flex justify-end">
                 <Button type="primary" onClick={showModal}>
                   จองห้องประชุม
                 </Button>
               </div>
-              <Tabs defaultActiveKey="1" items={items} />
+              <Tabs defaultActiveKey="1" items={items} type="card" />
             </Card>
           </div>
         </Col>

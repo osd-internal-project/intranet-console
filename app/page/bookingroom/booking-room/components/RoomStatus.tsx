@@ -60,7 +60,7 @@ const RoomStatus = () => {
     setBookingData(BookingRoom);
   };
 
-  return <Table columns={columns} dataSource={bookingData} />;
+  return <Table columns={columns} dataSource={bookingData} size="small" scroll={{ x: "max-content" }} />;
 };
 
 export default RoomStatus;

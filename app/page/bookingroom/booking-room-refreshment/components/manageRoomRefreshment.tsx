@@ -154,6 +154,7 @@ const Refreshment: React.FC<any> = ({
         </Form>
       </Modal>
       <Table
+        size="small"
         columns={columns}
         dataSource={refreshmentData}
         rowKey="id"

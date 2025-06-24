@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Tag, Form, Input, DatePicker, Collapse } from "antd";
+import { Modal, Tag, Form, Input, DatePicker, Collapse, message } from "antd";
 import moment from "moment";
 import { Calendar, momentLocalizer, Event as RbcEvent } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -46,8 +46,6 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar }) => {
   };
 
   const renderStatusTag = (status: string) => {
-    console.log(status);
-
     switch (status) {
       case "Approve":
         return <Tag color="green">อนุมัติสำเร็จ</Tag>;
@@ -61,6 +59,10 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar }) => {
   };
 
   const onSelectEventCalendar = (event: CustomEvent) => {
+    if (event.status === "holiday") {
+      message.info(event.title);
+      return false;
+    }
     const booking = bookingFetchCalendar.find((b) => b.id === event.id);
     if (booking) {
       setSelectedBooking(booking);
@@ -74,10 +76,24 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar }) => {
     }
   };
 
+  const dayPropGetter = (date: any) => {
+    const day = date.getDay();
+    if (day === 0 || day === 6) {
+      return {
+        className: "weekend-day",
+      };
+    }
+    return {};
+  };
+
   return (
     <>
       <Calendar<CustomEvent>
         localizer={localizer}
+        messages={{
+          next: ">",
+          previous: "<",
+        }}
         events={bookingFetchCalendar.map((booking: BookingType) => ({
           id: booking.id,
           title: booking.roomName,
@@ -87,10 +103,17 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar }) => {
           description: booking.description,
           userName: booking.bookerName,
         }))}
+        popup
+        startAccessor="start"
+        endAccessor="end"
+        defaultView="month"
+        views={["month"]}
+        dayPropGetter={dayPropGetter}
         style={{ height: 500 }}
         onSelectEvent={onSelectEventCalendar}
         eventPropGetter={(event: CustomEvent) => {
-          const backgroundColor = event.status === "Approve" ? "#4CAF50" : event.status === "cancel" ? "#D24545" : "#2196F3";
+          let backgroundColor = "#FFA500";
+          backgroundColor = event.status === "Approve" ? "#4CAF50" : event.status === "cancel" ? "#D24545" : "#FFA500";
           return {
             style: { backgroundColor, color: "#fff", fontSize: 10 },
           };

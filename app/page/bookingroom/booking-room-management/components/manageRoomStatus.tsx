@@ -153,7 +153,7 @@ const RoomStatus = () => {
           </Form.Item>
         </Form>
       </Modal>
-      <Table columns={columns} dataSource={bookingData} />
+      <Table columns={columns} dataSource={bookingData} size="small" scroll={{ x: "max-content" }} />
     </>
   );
 };

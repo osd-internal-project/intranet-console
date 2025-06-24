@@ -1,10 +1,9 @@
-import { CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, MinusCircleOutlined, SyncOutlined } from "@ant-design/icons";
 import { Flex, message, Tag } from "antd";
+import { CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, MinusCircleOutlined, SyncOutlined } from "@ant-design/icons";
 import { MaCarBookType } from "../page/macar/common";
-import dayjs from "dayjs";
 import { ITypeDataLeaveCreate, ITypetypeleave } from "../page/leave-control-management/common";
 import { IFindAllDayDto } from "../page/setting/master-holidays/common";
-import { FormInstance } from "antd/lib";
+import dayjs from "dayjs";
 
 export const validatesUploadfileImage = (rule: any, value: string, callback: any) => {
   if (rule.length === 0) {
@@ -41,15 +40,15 @@ export const validateCheckEndDate = (startDate: any, endDate: any, TypeLeave: nu
   if (!TypeLeave) {
     return Promise.reject(new Error("โปรดเลือกประเภทการลาก่อนเสมอ"));
   }
-  if (findHolidays) {
-    return Promise.reject(new Error("โปรตรวจสอบว่าวันลาของท่านตรงกับวันหยุดไหม"));
-  }
   if (!endDate) {
     return Promise.reject(new Error("กรุณาเลือกวันที่สิ้นสุดการลา"));
   } else if (!startDate) {
     return Promise.reject(new Error("กรุณาเลือกวันที่เริ่มลาก่อน"));
   } else if (!endDate || !startDate || endDate.isAfter(startDate) || endDate.isSame(startDate, "day")) {
     return Promise.resolve();
+  }
+  if (findHolidays) {
+    return Promise.reject(new Error("โปรตรวจสอบว่าวันลาของท่านตรงกับวันหยุดไหม"));
   }
   return Promise.reject(new Error("วันที่สิ้นสุดต้องเท่ากับหรือหลังจากวันที่เริ่ม"));
 };

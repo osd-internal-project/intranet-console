@@ -121,12 +121,11 @@ export default function Page() {
         message.error(`ไม่สามารถทำการลาได้เนื่องจากวันลาที่เหลืออยู่ หมด หรือไม่เพียงพอ`);
         return false;
       }
-      // ownerName userId startDate endDate detail phoneNumber startTime endTime firstName lastName positionId typeId typeName status leaveHour groupId
       let base = {
         startDate: values.startDate,
         endDate: values.endDate,
-        startTime: values.startTime ? values.startTime : dayjs(new Date()).startOf("date").format("HH:mm"),
-        endTime: values.endTime ? values.endTime : dayjs(new Date()).endOf("date").format("HH:mm"),
+        startTime: values.startTime ? values.startTime : undefined,
+        endTime: values.endTime ? values.endTime : undefined,
         detail: values.detail,
         phoneNumber: values.phoneNumber,
         ownerName: values.ownerName,

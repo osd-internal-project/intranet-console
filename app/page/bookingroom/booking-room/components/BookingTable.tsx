@@ -263,6 +263,7 @@ const BookingTable: React.FC<props> = ({ bookingFetchData, pagination, changePag
         )}
       </Modal>
       <Table
+        size="small"
         columns={columns}
         dataSource={bookingFetchData}
         rowKey="id"

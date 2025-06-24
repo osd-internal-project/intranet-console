@@ -2,7 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @import "~antd/dist/antd.css"; */
+.no-label-padding .ant-form-item-label {
+  padding: 0px 0px 5px 0px !important;
+}
+
+.no-label-padding .ant-form-item:not(.ant-form-item-with-help):not(.ant-form-item-has-label) {
+  margin-bottom: 10px !important;
+  padding: 1 !important;
+}
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -227,13 +234,12 @@ thead[class*="ant-table-thead"] th {
 }
 
 .ant-tree-title {
-/* font-family:"-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'" !important; */
-font-weight: 400!important;
+  /* font-family:"-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'" !important; */
+  font-weight: 400 !important;
 }
-.ant-tree-node-selected  {
-    background-color: rgb(59 130 246 / 0.3)!important;
+.ant-tree-node-selected {
+  background-color: rgb(59 130 246 / 0.3) !important;
 }
-.ant-tree-node-selected>.ant-tree-title  {
-  
-    font-weight: 500!important;
+.ant-tree-node-selected > .ant-tree-title {
+  font-weight: 500 !important;
 }

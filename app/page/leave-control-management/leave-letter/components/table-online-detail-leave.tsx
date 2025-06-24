@@ -22,39 +22,43 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
   dataHolidayDay,
 }): React.ReactElement => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const columns: TableColumnsType<ITypetypeleave> = [
     {
       key: "typeName",
       dataIndex: "typeName",
       title: "ประเภทการลา",
+      align: "center",
+      className: "font-bold ",
     },
     {
       key: "haveLeave",
       dataIndex: "haveLeave",
       title: "ลามาแล้ว",
+      align: "center",
       render: (value: number, row: ITypetypeleave) => showDataLeave(value),
     },
     {
       key: "limitLeaveLastResult",
       dataIndex: "limitLeaveLastResult",
       title: "คงเหลือ",
+      align: "center",
       render: (value: number, row: ITypetypeleave) => showDataLeave(value),
     },
     {
       key: "id",
       dataIndex: "id",
       title: "ลาครั้งนี้",
+      align: "center",
       render: (value: string, row: ITypetypeleave) => validateCheckNumberLeave(row, createdataleaveFormValues, dataHolidayDay),
     },
     {
       key: "haveLeave",
       dataIndex: "haveLeave",
       title: "รวม",
+      align: "center",
       render: (value: number, row: ITypetypeleave) => validateSgowAllHourLeave(value, row, createdataleaveFormValues, rowClassName, dataHolidayDay),
     },
   ];
-
   const columnsDetail: TableColumnsType<ITypetypeleave> = [
     {
       key: "id",
@@ -89,23 +93,21 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
 
   return (
     <>
-      <Card
-        className="w-full grid grid-cols-1 gap-y-2 mt-2"
-        title={
-          <div className="flex justify-center w-full">
-            <Space>
-              {`ประวัติการลาปี ${dayjs(new Date()).format("YYYY")}`}
-              <Tooltip title={`เงื่อนไขในการลาตามแต่ละประเภท`}>
-                <a onClick={() => setIsModalOpen(true)} style={{ color: "red" }}>
-                  <ExclamationCircleOutlined />
-                </a>
-              </Tooltip>
-            </Space>
-          </div>
-        }
-        styles={{ body: { padding: 10 } }}>
+      <Card className="w-full grid grid-cols-1 gap-2" styles={{ body: { padding:  5 } }}>
+        <div className="flex justify-center w-full mb-2">
+          <Space>
+            {`ประวัติการลาปี ${dayjs(new Date()).format("YYYY")}`}
+            <Tooltip title={`เงื่อนไขในการลาตามแต่ละประเภท`}>
+              <a onClick={() => setIsModalOpen(true)} style={{ color: "red" }}>
+                <ExclamationCircleOutlined />
+              </a>
+            </Tooltip>
+          </Space>
+        </div>
         <Table
           size="small"
+          sticky
+          bordered
           columns={columns}
           dataSource={typeLeaveTable}
           rowKey={(e: ITypetypeleave) => e.id}

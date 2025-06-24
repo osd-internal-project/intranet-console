@@ -201,7 +201,7 @@ export default function Page() {
             ]}
           />
         </Col>
-        <Divider orientation="left" orientationMargin="0">
+        <Divider orientation="left" orientationMargin="0" style={{ padding: "0px 0px 0px 0px", marginBottom: "0px", marginTop: "0px" }}>
           <div className="title-page-font">{`ใบลาออนไลน์`}</div>
         </Divider>
       </Row>

@@ -4,13 +4,15 @@ import Link from "next/link";
 import React, { useState, useEffect, useContext } from "react";
 import { Breadcrumb, Card, Col, Row, TabsProps, Tabs, Button, Divider, TablePaginationConfig } from "antd";
 import { MaCarServices } from "../../../services/ma-car.service";
-import { MaCarType, MaCarBookType, dataMaCarbook, ProvincesType } from "../common/index";
+import { MaCarType, MaCarBookType, dataMaCarbook, ProvincesType, MaCarBookCalendarType } from "../common/index";
 import CalendarComponent from "./components/car-calendar";
 import MaCarTable from "./components/car-table";
 import CarStatus from "./components/car-status";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import MasterHolidaysService from "../../setting/master-holidays/services/index.service";
+import dayjs from "dayjs";
 
 const MaCar: React.FC = () => {
   const { user } = (useContext(UserContext) as UserContectType) || {
@@ -19,8 +21,9 @@ const MaCar: React.FC = () => {
   const { id24Axios } = useId24();
   const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const intraAuthService = MaCarServices(baseUrIntranet);
+  const holidayService = MasterHolidaysService(baseUrIntranet);
   const [maCarBookData, setMaCarBookData] = useState<dataMaCarbook[]>([]);
-  const [maFetchCalendar, setMaFetchCalendar] = useState([]);
+  const [maFetchCalendar, setMaFetchCalendar] = useState<MaCarBookCalendarType[]>([]);
   const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
   const [maCarBookById, setMaCarBookById] = useState<MaCarBookType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -40,22 +43,36 @@ const MaCar: React.FC = () => {
     const take: number = Number(pagination.pageSize);
     try {
       if (user) {
+        const yearNow = dayjs().format("YYYY");
+        const holidayData = await holidayService.getHolidayByYear(yearNow);
+        const mapHoliday: MaCarBookCalendarType[] = holidayData.map((events: any) => {
+          const mapData = {
+            id: events.id,
+            carName: events.holidaysName,
+            carBookStartDate: events.holidaysDate,
+            carBookEndDate: events.holidaysDate,
+            carBookApprovedStatus: "holiday",
+            description: "",
+            userName: "",
+          };
+          return mapData;
+        });
         const maCar = await intraAuthService.getMaCarQuery();
         const maCarBook = await intraAuthService.findMaCarBook(skip, take);
         const maCalender = await intraAuthService.getMaCarBookQuery();
         const maCarBookById = await intraAuthService.findMaCarBookById(user.userId);
-
         const response = await axios.get("https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json");
         const provincesData = response.data;
         const optionsProvinces = provincesData.map((event: ProvincesType) => ({
           value: event.id,
           label: event.name_th,
         }));
+        const mergeCalendar: MaCarBookCalendarType[] = [...maCalender, ...mapHoliday];
         setDataProvinces(optionsProvinces);
         setMaCarBookById(maCarBookById);
         setMaCarData(maCar);
         setMaCarBookData(maCarBook);
-        setMaFetchCalendar(maCalender);
+        setMaFetchCalendar(mergeCalendar);
         setPagination({ ...pagination, total: maCarBook.count });
         setLoading(false);
       }

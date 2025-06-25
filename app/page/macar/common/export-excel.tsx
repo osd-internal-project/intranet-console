@@ -12,31 +12,30 @@ interface ShareMaCarBookProps {
 }
 
 const ShareMaCarBook: React.FC<ShareMaCarBookProps> = ({ data, pagination, total }) => {
-  console.log(total);
-  console.log(data);
-
   const handleOnExport = () => {
-    const transdata = data.map((dataItem, index) => ({
-      ลำดับ: total - index,
-      ชื่อรถ: dataItem.carName,
-      วันที่เริ่มจอง: `${dayjs(dataItem.carBookStartDate).format("DD/MM/YYYY , HH:mm")} น.`,
-      วันที่สิ้นสุดการจอง: `${dayjs(dataItem.carBookEndDate).format("DD/MM/YYYY , HH:mm")} น.`,
-      ชื่อผู้จอง: dataItem.createdByName,
-      สถานะ:
-        dataItem.carBookApprovedStatus === "Process"
-          ? "กำลังรออนุมัติ"
-          : dataItem.carBookApprovedStatus === "Cancel"
-          ? "ยกเลิก"
-          : dataItem.carBookApprovedStatus === "Approve"
-          ? "อนุมัติแล้ว"
-          : dataItem.carBookApprovedStatus === "DisapProved"
-          ? "ไม่อนุมัติ"
-          : dataItem.carBookApprovedStatus === "Return"
-          ? "แจ้งคืนรถแล้ว"
-          : "Unknown Status",
-      ผู้อนุมัติ: dataItem.carBookApprovedByName,
-      รายละเอียด: dataItem.detail,
-    }));
+    const transdata = data
+      .filter((e) => e.carBookApprovedStatus !== "holiday")
+      .map((dataItem, index) => ({
+        ลำดับ: total - index,
+        ชื่อรถ: dataItem.carName,
+        วันที่เริ่มจอง: `${dayjs(dataItem.carBookStartDate).format("DD/MM/YYYY , HH:mm")} น.`,
+        วันที่สิ้นสุดการจอง: `${dayjs(dataItem.carBookEndDate).format("DD/MM/YYYY , HH:mm")} น.`,
+        ชื่อผู้จอง: dataItem.createdByName,
+        สถานะ:
+          dataItem.carBookApprovedStatus === "Process"
+            ? "กำลังรออนุมัติ"
+            : dataItem.carBookApprovedStatus === "Cancel"
+            ? "ยกเลิก"
+            : dataItem.carBookApprovedStatus === "Approve"
+            ? "อนุมัติแล้ว"
+            : dataItem.carBookApprovedStatus === "DisapProved"
+            ? "ไม่อนุมัติ"
+            : dataItem.carBookApprovedStatus === "Return"
+            ? "แจ้งคืนรถแล้ว"
+            : "Unknown Status",
+        ผู้อนุมัติ: dataItem.carBookApprovedByName,
+        รายละเอียด: dataItem.detail,
+      }));
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.json_to_sheet(transdata);
     const colWidths = [{ wch: 10 }, { wch: 25 }, { wch: 25 }, { wch: 25 }, { wch: 25 }, { wch: 15 }, { wch: 25 }, { wch: 40 }];

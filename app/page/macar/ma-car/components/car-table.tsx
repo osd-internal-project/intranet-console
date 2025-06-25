@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import ShareMaCarBook from "../../common/export-excel";
 import { MaCarServices } from "../../../../services/ma-car.service";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { MaCarBookType, MaCarType, dataMaCarbook, ProvincesType } from "../../common/index";
+import { MaCarBookType, MaCarType, dataMaCarbook, ProvincesType, MaCarBookCalendarType } from "../../common/index";
 import { checkStatus, CheckStatusMaCarBookType, isSelectDisabled, showStatus } from "@/app/utils/validatefield";
 import { dateFormatTime } from "@/app/utils";
 import { CarForm } from "./car-form";
@@ -22,7 +22,7 @@ interface props {
   maCarData: MaCarType[];
   maCarBookById: MaCarBookType[];
   dataProvinces: ProvincesType[];
-  maFetchCalendar: MaCarBookType[];
+  maFetchCalendar: MaCarBookCalendarType[];
 }
 
 const MaCarBookTable: React.FC<props> = ({

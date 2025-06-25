@@ -109,7 +109,7 @@ export const TableOvertime: React.FC<props> = ({ holiday, changePagination, pagi
       <Table
         columns={columns}
         size="small"
-        dataSource={holiday.filter((e) => e.type)}
+        dataSource={holiday.filter((e) => e.type !== "holiday")}
         rowKey="id"
         onChange={changePagination}
         pagination={pagination}

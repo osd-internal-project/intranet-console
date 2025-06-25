@@ -6,7 +6,7 @@ import { loadAppConfig } from "@/app/config/app-config";
 import SlideImageService from "../../home/services/index.service";
 import Calendar from "./components/calendar";
 import OverTimeServices from "@/app/services/overtime.service";
-import { Breadcrumb, Card, TablePaginationConfig, Tabs, TabsProps } from "antd";
+import { Breadcrumb, Card, Divider, TablePaginationConfig, Tabs, TabsProps } from "antd";
 import { TableOvertime } from "./components/table";
 export interface THoliday {
   id: number;
@@ -51,7 +51,14 @@ export default function OverTimeCalendatPage() {
         type: "ot",
       };
     });
-    const merged = [...holiday, ...mapdataOT];
+    const mapHoliday = holiday.map((e: any) => {
+      const mapData = {
+        ...e,
+        type: "holiday",
+      };
+      return mapData;
+    });
+    const merged = [...mapdataOT, ...mapHoliday];
     setHoliday(merged);
     setloading(false);
   };
@@ -93,6 +100,9 @@ export default function OverTimeCalendatPage() {
             },
           ]}
         />
+        <Divider orientation="left" orientationMargin="0" style={{ padding: "0px 0px 0px 0px", marginBottom: "0px", marginTop: "0px" }}>
+          <div className="title-page-font">{`Overtime`}</div>
+        </Divider>
       </div>
       <Card styles={{ body: { padding: "10px" } }} className="w-full h-full">
         <Tabs activeKey={activekey} items={items} onChange={onChange} destroyInactiveTabPane={false} type="card" />

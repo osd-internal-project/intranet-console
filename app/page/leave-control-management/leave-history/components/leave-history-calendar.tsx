@@ -19,6 +19,22 @@ interface CustomEvent extends RbcEvent {
   typeId: string | undefined;
 }
 
+const colorOfType = [
+  { bgcolor: "#A8D5BA", id: 1, text: "#000000" },
+  { bgcolor: "#B0AFAF", id: 2, text: "#000000" },
+  { bgcolor: "#AEDFF7", id: 3, text: "#000000" },
+  { bgcolor: "#FF5E5E", id: 4, text: "#FFFFFF" },
+  { bgcolor: "#4A90E2", id: 5, text: "#FFFFFF" },
+  { bgcolor: "#F7C8E0", id: 6, text: "#000000" },
+  { bgcolor: "#FAD6A5", id: 7, text: "#000000" },
+  { bgcolor: "#5A5A5A", id: 8, text: "#FFFFFF" },
+  { bgcolor: "#F4A261", id: 9, text: "#000000" },
+  { bgcolor: "#DDB892", id: 10, text: "#000000" },
+  { bgcolor: "#007A3D", id: 11, text: "#FFFFFF" },
+  { bgcolor: "#4B5320", id: 12, text: "#FFFFFF" },
+  { bgcolor: "#9D7CBF", id: 13, text: "#FFFFFF" },
+];
+
 export interface Props {
   dataSource: ITypeDataLeave[];
   downloadFile: (id: number, filename: string) => void;
@@ -73,20 +89,13 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, download
     );
   };
 
-  const getColorByUserId = (userObj: any) => {
-    // แปลง object เป็น string เพื่อใช้สร้าง hash
-    const idString = JSON.stringify(userObj);
-
-    let hash = 0;
-    for (let i = 0; i < idString.length; i++) {
-      hash = idString.charCodeAt(i) + ((hash << 5) - hash);
-    }
-
-    const hue = Math.abs(hash) % 360; // ค่าสี H (0-360)
-    const saturation = 65; // ความเข้มสี (%)
-    const lightness = 50; // ความสว่าง (%)
-
-    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  const getBgColorByTypeId = (TypeId: any) => {
+    const matchedColor = colorOfType.find((item) => item.id === Number(TypeId));
+    return matchedColor ? matchedColor.bgcolor : "#FFA500"; // Default color if no match found
+  };
+  const getColorByTypeId = (TypeId: any) => {
+    const matchedColor = colorOfType.find((item) => item.id === Number(TypeId));
+    return matchedColor ? matchedColor.text : "#ffff"; // Default color if no match found
   };
 
   const dayPropGetter = (date: any) => {
@@ -111,12 +120,14 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, download
         />
       ) : null}
       <Calendar<CustomEvent>
+        style={{ height: 500 }}
         localizer={localizer}
+        popup
+        startAccessor="start"
+        endAccessor="end"
+        defaultView="month"
+        views={["month"]}
         events={dataSource.map((dataLeaveCalendar: ITypeDataLeave) => {
-          // if (dataLeaveCalendar.status === "holiday") {
-          //   // Use moment to format the date to YYYY-MM-DD for consistent key in the Set
-          //   holidayDates.add(moment(dataLeaveCalendar.startDate).format("YYYY-MM-DD"));
-          // }
           return {
             id: dataLeaveCalendar.id,
             title: `${dataLeaveCalendar.firstName} ${dataLeaveCalendar.lastName} (${dataLeaveCalendar.typeName}) `,
@@ -132,28 +143,25 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, download
           next: ">",
           previous: "<",
         }}
-        style={{ height: 500 }}
         onSelectEvent={onSelectEventCalendar}
         components={{
           event: CustomEventComponent,
         }}
-        startAccessor="start"
-        endAccessor="end"
-        popup
-        defaultView="month"
-        views={["month"]}
         dayPropGetter={dayPropGetter}
         eventPropGetter={(event: CustomEvent) => {
           let backgroundColor = "#FFA500";
+          let color = "#ffff";
           if (event.status === "approved") {
-            backgroundColor = getColorByUserId(event.typeId?.toString());
+            backgroundColor = getBgColorByTypeId(event.typeId?.toString());
+            color = getColorByTypeId(event.typeId?.toString());
           } else if (event.status === "cancel") {
             backgroundColor = "silver";
+            color = "#000000";
           }
           return {
             style: {
               backgroundColor,
-              color: "#fff",
+              color,
               fontSize: 10,
             },
           };

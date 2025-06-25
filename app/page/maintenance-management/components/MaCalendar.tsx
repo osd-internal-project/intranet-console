@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { ITMaTask } from "../common";
 import { title } from "process";
 import { message } from "antd";
-import { checkIcon } from "@/components/icon";
+import { checkIcon, loadingIcon } from "@/components/icon";
 const localizer = momentLocalizer(moment);
 export interface props {
   calendarEvents: ITMaTask[];
@@ -36,8 +36,8 @@ const MaCalendarComponent: React.FC<props> = ({ calendarEvents, handleCalendarCh
 
   const CustomEventComponent = ({ event }: { event: any }) => {
     return (
-      <span>
-        {event.status === "success" && <span style={{ color: "gold" }}>{checkIcon}</span>} {event.title}
+      <span className="flex justify-start items-center gap-1">
+        {event.status === "success" ? checkIcon : event.status === "holiday" ? "" : loadingIcon} {event.title}
       </span>
     );
   };

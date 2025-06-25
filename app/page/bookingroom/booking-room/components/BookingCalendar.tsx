@@ -5,7 +5,7 @@ import { Calendar, momentLocalizer, Event as RbcEvent } from "react-big-calendar
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useForm } from "antd/es/form/Form";
 import { CaretRightOutlined } from "@ant-design/icons";
-import { checkIcon } from "@/components/icon";
+import { checkIcon, loadingIcon } from "@/components/icon";
 
 const localizer = momentLocalizer(moment);
 const { TextArea } = Input;
@@ -61,8 +61,8 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar }) => {
 
   const CustomEventComponent = ({ event }: { event: CustomEvent }) => {
     return (
-      <span>
-        {event.status === "Approve" && <span style={{ color: "gold" }}>{checkIcon}</span>} {event.title}
+      <span className="flex justify-start items-center gap-1">
+        {event.status === "Approve" ? checkIcon : event.status === "holiday" ? "" : loadingIcon} {event.title}
       </span>
     );
   };

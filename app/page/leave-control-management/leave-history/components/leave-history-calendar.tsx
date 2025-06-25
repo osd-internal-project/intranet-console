@@ -6,7 +6,7 @@ import { Calendar, momentLocalizer, Event as RbcEvent } from "react-big-calendar
 import { ITypeDataLeave } from "../../common";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { LeaveHistoryCalendarDetail } from "./leave-history-calendar-detail";
-import { checkIcon } from "@/components/icon";
+import { checkIcon, loadingIcon } from "@/components/icon";
 
 interface CustomEvent extends RbcEvent {
   id: number | undefined;
@@ -82,8 +82,8 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, download
 
   const CustomEventComponent = ({ event }: { event: CustomEvent }) => {
     return (
-      <span>
-        {event.status === "approved" && <span style={{ color: "gold" }}>{checkIcon}</span>} {event.title}
+      <span className="flex justify-start items-center gap-1">
+        {event.status === "approved" ? checkIcon : event.status === "holiday" ? "" : loadingIcon} {event.title}
       </span>
     );
   };

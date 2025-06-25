@@ -44,7 +44,6 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, download
   const [formDetail] = Form.useForm();
   const localizer = momentLocalizer(moment);
   const [modalDataLeaveDetail, setModalDataLeaveDetail] = useState(false);
-  // const holidayDates = new Set();
 
   const onCancelModalDetail = () => {
     setModalDataLeaveDetail(false);
@@ -91,16 +90,15 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, download
 
   const getBgColorByTypeId = (TypeId: any) => {
     const matchedColor = colorOfType.find((item) => item.id === Number(TypeId));
-    return matchedColor ? matchedColor.bgcolor : "#FFA500"; // Default color if no match found
+    return matchedColor ? matchedColor.bgcolor : "#FFA500";
   };
   const getColorByTypeId = (TypeId: any) => {
     const matchedColor = colorOfType.find((item) => item.id === Number(TypeId));
-    return matchedColor ? matchedColor.text : "#ffff"; // Default color if no match found
+    return matchedColor ? matchedColor.text : "#ffff";
   };
 
   const dayPropGetter = (date: any) => {
     const day = date.getDay();
-    // const isHolidayFromEvents = holidayDates.has(moment(date).format("YYYY-MM-DD"));
     if (day === 0 || day === 6) {
       return {
         className: "weekend-day",

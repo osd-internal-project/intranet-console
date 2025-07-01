@@ -120,10 +120,9 @@ export const calculateTime = (valueStartTime: string, valueEndTime: string) => {
 export const checkStatusTypeLeave = async (values: ITypeDataLeaveCreate) => {
   const { type_id, startDate } = values;
   let meassage;
-  const SumDate = 24 * 60 * 60 * 1000;
-  const dateStart = new Date(dayjs(startDate).format("YYYY-MM-DD")).getTime();
-  const DateNow = new Date(dayjs().format("YYYY-MM-DD")).getTime();
-  const totalDays = Math.floor((dateStart - DateNow) / SumDate + 1);
+  const dateStart = new Date(dayjs(startDate).format("YYYY-MM-DD"));
+  const dateNow = new Date(dayjs().format("YYYY-MM-DD"));
+  const totalDays = countBusinessDays(dateNow, dateStart);
   if (type_id === 3 || type_id === 6 || type_id === 10) {
     //ลาล่วงหน้า 5
     meassage = totalDays < 5 ? message.warning(`อย่างน้อยต้องลาล่วงหน้า 5 วัน`) : false;
@@ -139,6 +138,21 @@ export const checkStatusTypeLeave = async (values: ITypeDataLeaveCreate) => {
   }
   return { status: !meassage ? 201 : 500 };
 };
+
+function countBusinessDays(start: Date, end: Date) {
+  let count = 0;
+  const current = new Date(start);
+  while (current <= end) {
+    const day = current.getDay();
+    if (day !== 0 && day !== 6) {
+      // 0 = Sunday, 6 = Saturday
+      count++;
+    }
+    current.setDate(current.getDate() + 1);
+  }
+
+  return count;
+}
 
 export const CheckStatusMaCarBookType = (status: string) => {
   let color = "";

@@ -89,6 +89,7 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, download
   };
 
   const getBgColorByTypeId = (TypeId: any) => {
+    console.log(TypeId);
     const matchedColor = colorOfType.find((item) => item.id === Number(TypeId));
     return matchedColor ? matchedColor.bgcolor : "#FFA500";
   };
@@ -152,9 +153,9 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, download
           if (event.status === "approved") {
             backgroundColor = getBgColorByTypeId(event.typeId?.toString());
             color = getColorByTypeId(event.typeId?.toString());
-          } else if (event.status === "cancel") {
-            backgroundColor = "silver";
-            color = "#000000";
+          } else {
+            backgroundColor = getBgColorByTypeId(event.typeId?.toString());
+            color = getColorByTypeId(event.typeId?.toString());
           }
           return {
             style: {

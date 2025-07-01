@@ -145,7 +145,6 @@ function countBusinessDays(start: Date, end: Date) {
   while (current <= end) {
     const day = current.getDay();
     if (day !== 0 && day !== 6) {
-      // 0 = Sunday, 6 = Saturday
       count++;
     }
     current.setDate(current.getDate() + 1);

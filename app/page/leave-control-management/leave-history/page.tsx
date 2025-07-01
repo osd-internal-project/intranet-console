@@ -40,7 +40,7 @@ export default function Page() {
       const [holidayData, userLeave, groupLeave] = await Promise.all([
         holidayService.getHolidayByYear(yearNow),
         leaveService.getdataLeaveUserById({ userId: user.userId }),
-        leaveService.getdataLeavefindBygroup(user.userId),
+        leaveService.getdataLeavefindBygroup(user.userId, {}),
       ]);
 
       // Map holidays into leave event format

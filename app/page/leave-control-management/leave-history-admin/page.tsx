@@ -20,6 +20,7 @@ export default function Page() {
   const [dataLeaveUser, setDataLeaveUser] = useState<ITypeDataLeave[]>([]);
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
   const [submitAction, setSubmitAction] = useState<"approved" | "cancel">("approved");
+  const [params, setParams] = useState<{ type: string; value: string }>({ type: "", value: "" });
   const [formdetail] = Form.useForm();
 
   useEffect(() => {
@@ -30,8 +31,8 @@ export default function Page() {
     if (user?.userId) {
       const isHr = intersection(sideMenuGroups, ["hr"]).length > 0;
       const res = isHr
-        ? await DataLeaveService(baseUrlIntranet).getdataLeaveHrfindBygroup(user.userId)
-        : await DataLeaveService(baseUrlIntranet).getdataLeavefindBygroup(user.userId);
+        ? await DataLeaveService(baseUrlIntranet).getdataLeaveHrfindBygroup(user.userId, params)
+        : await DataLeaveService(baseUrlIntranet).getdataLeavefindBygroup(user.userId, params);
       setDataLeaveUser(res);
       setLoading(false);
     }
@@ -153,6 +154,8 @@ export default function Page() {
               sideMenuGroups={sideMenuGroups}
               setSubmitAction={setSubmitAction}
               submitAction={submitAction}
+              setParams={setParams}
+              setLoading={setLoading}
             />
           </Card>
         </div>

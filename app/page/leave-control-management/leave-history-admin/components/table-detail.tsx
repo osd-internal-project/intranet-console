@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Col, Form, Input, Modal, Row, Table, Tooltip } from "antd";
+import { Button, Col, Form, Input, Modal, Row, Select, Table, Tooltip } from "antd";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { deleteIcon, CancelIcon, CheckIcon } from "@/components/icon";
 import ExportDataLeaveAll from "../../until/export-excel";
@@ -21,6 +21,8 @@ export interface props {
   sideMenuGroups: string[];
   setSubmitAction: (value: "approved" | "cancel") => void;
   submitAction: string;
+  setParams: (type: any) => void;
+  setLoading: (value: boolean) => void;
 }
 
 export const TableDetail: React.FC<props> = ({
@@ -34,26 +36,15 @@ export const TableDetail: React.FC<props> = ({
   sideMenuGroups,
   setSubmitAction,
   submitAction,
+  setParams,
+  setLoading,
 }): React.ReactElement => {
-  const { Search } = Input;
+  const [form] = Form.useForm();
   const [statusById, setStatusById] = useState<any | null>(null);
-  const [dataSource, setDataSource] = React.useState<any[]>([]);
 
-  useEffect(() => {
-    if (dataLeaveUser) {
-      setDataSource(dataLeaveUser);
-    }
-  }, [dataLeaveUser]);
-
-  const dataLeaveSearch = (value: string) => {
-    const filteredData = dataSource.filter(
-      (item) =>
-        item.firstName?.toLowerCase().includes(value.toLowerCase()) ||
-        item.lastName?.toLowerCase().includes(value.toLowerCase()) ||
-        item.userApproved?.toLowerCase().includes(value.toLowerCase()) ||
-        item.typeName?.toLowerCase().includes(value.toLowerCase()),
-    );
-    setDataSource(filteredData);
+  const dataLeaveSearch = (value: any) => {
+    setParams(value);
+    setLoading(true);
   };
 
   const fecthDataDetail = async (record: ITypeDataLeave) => {
@@ -152,9 +143,48 @@ export const TableDetail: React.FC<props> = ({
         <div style={{ justifyContent: "start", display: "flex", alignItems: "center" }}>{showStatusLeave()}</div>
         <div style={{ display: "flex", justifyContent: "end", alignItems: "center" }}>
           <div>
-            <Form layout="inline">
+            <Form layout="inline" onFinish={dataLeaveSearch} form={form}>
+              <Form.Item label={`Type`} name={`type`} rules={[{ required: true }]}>
+                <Select
+                  allowClear
+                  placeholder={`Select`}
+                  options={[
+                    { value: "fullname", label: "ชื่อ - สกุล" },
+                    { value: "status", label: "สถานะ" },
+                    { value: "type_name", label: "ประเภทการลา" },
+                  ]}
+                />
+              </Form.Item>
+              <Form.Item shouldUpdate>
+                {() => {
+                  const type = form.getFieldValue("type");
+                  if (type === "status") {
+                    return (
+                      <Form.Item name="value" noStyle>
+                        <Select
+                          placeholder="เลือกสถานะ"
+                          options={[
+                            { value: "approved", label: `อนุมัติ` },
+                            { value: "waiting", label: `รอการอนุมัติ` },
+                            { value: "cancel", label: `ไม่อนุมัติ` },
+                          ]}
+                          allowClear
+                        />
+                      </Form.Item>
+                    );
+                  } else {
+                    return (
+                      <Form.Item name="value" noStyle>
+                        <Input placeholder="ค้นหา" />
+                      </Form.Item>
+                    );
+                  }
+                }}
+              </Form.Item>
               <Form.Item>
-                <Search placeholder="ค้นหา" onSearch={dataLeaveSearch} enterButton />
+                <Button type="primary" htmlType="submit">
+                  Search
+                </Button>
               </Form.Item>
             </Form>
           </div>

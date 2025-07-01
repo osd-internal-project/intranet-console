@@ -77,9 +77,9 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getdataLeavefindBygroup: async (userId: string) => {
+    getdataLeavefindBygroup: async (userId: string, params: any) => {
       return await axiosInstance
-        .get(`${baseUrlDataLeave}/findGroup/${userId}`)
+        .get(`${baseUrlDataLeave}/findGroup/${userId}`, { params: params })
         .then((res) => {
           return res.data;
         })
@@ -87,9 +87,9 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-     getdataLeaveHrfindBygroup: async (userId: string) => {
+    getdataLeaveHrfindBygroup: async (userId: string, params: any) => {
       return await axiosInstance
-        .get(`${baseUrlDataLeave}/findGroup-hr/${userId}`)
+        .get(`${baseUrlDataLeave}/findGroup-hr/${userId}`, { params: params })
         .then((res) => {
           return res.data;
         })

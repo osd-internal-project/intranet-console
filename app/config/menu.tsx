@@ -192,21 +192,21 @@ export const MenuSider: MenuItem[] = [
         label: `Groups`,
         rule: "admin",
       },
-      {
-        key: `users-management/user-role`,
-        label: `Roles`,
-        rule: "admin",
-      },
-      {
-        key: `users-management/user-rule`,
-        label: `Rules`,
-        rule: "admin",
-      },
-      {
-        key: `users-management/user-module`,
-        label: `Module`,
-        rule: "admin",
-      },
+      // {
+      //   key: `users-management/user-role`,
+      //   label: `Roles`,
+      //   rule: "admin",
+      // },
+      // {
+      //   key: `users-management/user-rule`,
+      //   label: `Rules`,
+      //   rule: "admin",
+      // },
+      // {
+      //   key: `users-management/user-module`,
+      //   label: `Module`,
+      //   rule: "admin",
+      // },
       {
         key: `users-management/user-group-permission`,
         label: `Group Permission`,

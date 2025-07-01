@@ -58,9 +58,7 @@ export default function Page() {
   const fecthDataHoliday = async () => {
     const yearNow = dayjs(new Date()).format("YYYY");
     const dataResult = await MasterHolidaysService(baseUrlIntranet).getHolidayByYear(yearNow);
-    // const masterTypeLeave = await MasterTypeLeaveService(baseUrlIntranet).getdataAll({});
     setDataHolidayDay(dataResult);
-    // setMasterDataTypeLeave(masterTypeLeave);
   };
 
   const beforeUploadAttendFiles = (file: RcFile) => {

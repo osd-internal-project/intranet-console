@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { ITypetypeleave } from "../../common";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import { showDataLeave, validateCheckNumberLeave, validateSgowAllHourLeave } from "@/app/utils/validatefield";
+import { showDataHaveLeave, showDataLeave, validateCheckNumberLeave, validateSgowAllHourLeave } from "@/app/utils/validatefield";
 import { FormInstance } from "antd/lib";
 export interface props {
   typeLeaveTable: ITypetypeleave[];
@@ -16,7 +16,6 @@ export interface props {
 
 export const TableOnlineDetailLeave: React.FC<props> = ({
   typeLeaveTable,
-  createdataleaveForm,
   rowClassName,
   createdataleaveFormValues,
   dataHolidayDay,
@@ -31,18 +30,18 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       className: "font-bold ",
     },
     {
-      key: "haveLeave",
-      dataIndex: "haveLeave",
+      key: "haveLeaveDays",
+      dataIndex: "haveLeaveDays",
       title: "ลามาแล้ว",
       align: "center",
-      render: (value: number, row: ITypetypeleave) => showDataLeave(value),
+      render: (value: number, row: ITypetypeleave) => showDataLeave(row),
     },
     {
       key: "limitLeaveLastResult",
       dataIndex: "limitLeaveLastResult",
       title: "คงเหลือ",
       align: "center",
-      render: (value: number, row: ITypetypeleave) => showDataLeave(value),
+      render: (value: number, row: ITypetypeleave) => showDataHaveLeave(row),
     },
     {
       key: "id",
@@ -52,11 +51,11 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       render: (value: string, row: ITypetypeleave) => validateCheckNumberLeave(row, createdataleaveFormValues, dataHolidayDay),
     },
     {
-      key: "haveLeave",
-      dataIndex: "haveLeave",
+      key: "haveLeaveDays",
+      dataIndex: "haveLeaveDays",
       title: "รวม",
       align: "center",
-      render: (value: number, row: ITypetypeleave) => validateSgowAllHourLeave(value, row, createdataleaveFormValues, rowClassName, dataHolidayDay),
+      render: (value: number, row: ITypetypeleave) => validateSgowAllHourLeave(row, createdataleaveFormValues, rowClassName, dataHolidayDay),
     },
   ];
   const columnsDetail: TableColumnsType<ITypetypeleave> = [

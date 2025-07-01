@@ -47,6 +47,9 @@ export const CreateOnlineLeave: React.FC<props> = ({
   dataHolidayDay,
 }: any): React.ReactElement => {
   useEffect(() => {
+    if (checkSwitch) {
+      createdataleaveForm.resetFields(["startTime", "endTime"]);
+    }
     const getdatauser = () => {
       createdataleaveForm.setFieldsValue({
         userId: getUser?.userId,

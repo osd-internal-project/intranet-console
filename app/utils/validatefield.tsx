@@ -404,25 +404,25 @@ export const checkMaCarBookConfig = async (record: any, carBookStartDate: Date, 
   );
 };
 
-export const showDataLeave = (value: number) => {
-  const wholeDays = value ? Math.floor(value) : 0;
-  // console.log(value);
-
-  const totalHoursDecimal = value ? parseFloat((value % 1).toFixed(2)) : 0;
-  // console.log(totalHoursDecimal);
-
-  const totalHours = Math.floor(totalHoursDecimal * 10);
-  // console.log(totalHours);
-
-  const totalMinutesRaw = (totalHoursDecimal * 10) % 1;
-  let totalMinutes = Math.round(totalMinutesRaw * 10);
-  let timeDisplay = `${totalHours} ชม.`;
-  if (totalMinutes > 0) {
-    timeDisplay = `${totalHours}.${totalMinutes} ชม.`;
-  }
+export const showDataLeave = (values: ITypetypeleave) => {
   return (
     <div className="flex justify-center">
-      <Tag className="w-full flex justify-center">{`${wholeDays} วัน (${timeDisplay})`}</Tag>
+      <Tag className="w-full flex justify-center">{`${values.haveLeaveDays ? values.haveLeaveDays : 0} วัน (${
+        values.haveLeaveHours ? values.haveLeaveHours : 0
+      } ชม.)`}</Tag>
+    </div>
+  );
+};
+
+export const showDataHaveLeave = (values: ITypetypeleave) => {
+  const fullDays = Math.floor(values.limitLeaveLastResult / 8);
+  const remaining = values.limitLeaveLastResult % 8;
+  const hourRemain = Math.floor(remaining);
+  const minuteRemain = Math.round((remaining % 1) * 60) === 30 ? 0.5 : 0;
+  const count = hourRemain + minuteRemain;
+  return (
+    <div className="flex justify-center">
+      <Tag className="w-full flex justify-center">{`${fullDays ? fullDays : 0} วัน (${count ? count : 0} ชม.)`}</Tag>
     </div>
   );
 };
@@ -467,7 +467,6 @@ export const validateCheckNumberLeave = (row: ITypetypeleave, createdataleaveFor
           dayOffSet.add(dateStr);
         }
       }
-      // คำนวณจำนวนวันทั้งหมด และวันทำงาน
       const dayOffCount = dayOffSet.size;
       days = diffDays - dayOffCount;
     }
@@ -486,7 +485,7 @@ export const validateCheckNumberLeave = (row: ITypetypeleave, createdataleaveFor
   );
 };
 
-export const validateSgowAllHourLeave = (value: number, row: any, createdataleaveForm: any, rowClassName: any, dataHolidayDay: any) => {
+export const validateSgowAllHourLeave = (row: ITypetypeleave, createdataleaveForm: any, rowClassName: any, dataHolidayDay: any) => {
   const breakStart = dayjs("12:00", "HH:mm");
   const breakEnd = dayjs("13:00", "HH:mm");
   const {
@@ -512,10 +511,10 @@ export const validateSgowAllHourLeave = (value: number, row: any, createdataleav
       if (timeCheck) {
         days = 1;
       } else if (startTime.isValid() && endTime.isValid() && endTime.isAfter(startTime)) {
-        const duration = endTime.diff(startTime, "minute") / 60;
-        const isCrossLunch = startTime.isBefore(breakEnd) && endTime.isAfter(breakStart);
-        const total = isCrossLunch ? duration - 1 : duration;
-        hours = total > 0 ? Math.floor(total) : 0;
+        const leaveDuration = endTime.diff(startTime, "minute") / 60;
+        const isCrossLunchBreak = startTime.isBefore(breakEnd) && endTime.isAfter(breakStart);
+        const totalHours = isCrossLunchBreak ? leaveDuration - 1 : leaveDuration;
+        hours = totalHours > 0 ? parseFloat(totalHours.toFixed(2)) : 0;
       }
     } else {
       // หาวันหยุดกับวันเสาร์อาทิตย์
@@ -535,14 +534,13 @@ export const validateSgowAllHourLeave = (value: number, row: any, createdataleav
       days = timeCheck ? diffDays - dayOffCount : diffDays - dayOffCount;
     }
   }
-  const safeValue = Number(value) || 0;
+  const safeValue = Number(row.haveLeaveDays) || 0;
+  const TotalHours = Number(row.haveLeaveHours) || 0;
   const baseDays = Math.floor(safeValue);
-  const decimalHours = +(safeValue % 1).toFixed(2) || 0;
-  let totalHours = Math.floor(decimalHours * 10) + hours;
+  let totalHours = TotalHours + hours;
   const extraDays = Math.floor(totalHours / 8);
   totalHours = totalHours % 8;
   const totalDays = baseDays + days + extraDays;
-
   const isOverLimit = totalDays > row.limitLeaveLastResult;
   const rowClass = rowClassName(row);
   const color = rowClass === "disabled-row" ? "default" : isSelected && hasDateRange ? (isOverLimit ? "orange-inverse" : "success") : undefined;

@@ -93,7 +93,7 @@ export const MenuSider: MenuItem[] = [
     key: "bookingroom",
     icon: bookingIcon,
     label: "ห้องประชุม",
-    rule: ["user", "admin"],
+    rule: ["user", "admin", "ma-user"],
     children: [
       {
         key: `bookingroom/booking-room`,
@@ -103,7 +103,7 @@ export const MenuSider: MenuItem[] = [
       {
         key: `bookingroom/booking-room-management`,
         label: `จัดการข้อมูลห้องประชุม`,
-        rule: ["admin", "hr"],
+        rule: ["admin", "hr", "ma-user"],
       },
       {
         key: `bookingroom/booking-room-refreshment`,

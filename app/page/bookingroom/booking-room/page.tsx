@@ -249,7 +249,7 @@ const BookingRoomPage: React.FC = () => {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<BookingType> label="ชื่อแผนก" name="bookerDepartment">
+              <Form.Item<BookingType> label="ตำแหน่ง" name="bookerDepartment">
                 <Input disabled />
               </Form.Item>
             </Col>
@@ -308,7 +308,7 @@ const BookingRoomPage: React.FC = () => {
                   max={100}
                   min={1}
                   onKeyDown={(event) => {
-                    if (!/[1-9]/.test(event.key) && event.key !== "Backspace") {
+                    if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
                       event.preventDefault();
                     }
                   }}

@@ -345,7 +345,7 @@ const ManageRoom: React.FC = () => {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<BookingType> label="ชื่อแผนก" name="bookerDepartment" rules={[{ required: true, message: "กรุณากรอกกรอกชื่อแผนก!" }]}>
+              <Form.Item<BookingType> label="ตำแหน่ง" name="bookerDepartment" rules={[{ required: true, message: "กรุณากรอกกรอกชื่อแผนก!" }]}>
                 <Input />
               </Form.Item>
             </Col>

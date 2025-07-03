@@ -43,7 +43,7 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
             </Col>
             <Col span={6}>
               <Form.Item<MaCarBookType> name="carBookTitle" label="วัตถุประสงค์การใช้งาน :">
-                <Input placeholder="กรอกวัตถุประสงค์การใช้งาน" disabled />
+                <Input.TextArea placeholder="กรอกวัตถุประสงค์การใช้งาน" disabled />
               </Form.Item>
             </Col>
             <Col span={6}>
@@ -69,13 +69,13 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item name="carBookEndDate" label="วันที่สิ้นสุดการจอง" rules={[{ required: true, message: "กรุณาเลือกวันที่เริ่มการจอง" }]}>
+              <Form.Item name="carBookEndDate" label="วันที่สิ้นสุดการจอง">
                 <DatePicker disabled placeholder="กรอกวันที่สิ้นสุดการจอง" style={{ width: "100%" }} format={"DD/MM/YYYY"} />
               </Form.Item>
             </Col>
           </Row>
           {status === "return" ? (
-            <>
+            <div>
               <Col span={12}>
                 <Form.Item name="carMile" label="เลขไมล์รถ">
                   <InputNumber style={{ width: "100%" }} placeholder="กรอกเลขไมล์รถ" />
@@ -93,7 +93,7 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
                   />
                 </Form.Item>
               </Col>
-            </>
+            </div>
           ) : null}
           <Row gutter={24}>
             <Col span={12}>
@@ -104,40 +104,29 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
             <Col span={12}>
               <Form.Item
                 name={status === "approved" ? "remark" : status === "cancel" ? "remarkCancel" : "remarkApproved"}
-                label={status === "approved" ? "หมายเหตุการจองรถ" : status === "cancel" ? "หมายเหตุยกเลิกการจองรถ" : "หมายเหตุการไม่อนุมัติ"}
-                rules={[
-                  {
-                    required: true,
-                    message:
-                      status === "approved"
-                        ? "กรุณากรอกหมายเหตุการยกเลิก"
-                        : status === "cancel"
-                        ? "กรุณากรอกหมายเหตุการไม่อนุมัติ"
-                        : "กรอกหมายเหตุการจองรถ",
-                  },
-                ]}>
+                label={status === "approved" ? "หมายเหตุการจองรถ" : status === "cancel" ? "หมายเหตุยกเลิกการจองรถ" : "หมายเหตุ"}>
                 <TextArea placeholder="กรอกหมายเหตุการยกเลิก" disabled={status === "approved" ? true : false} />
               </Form.Item>
             </Col>
           </Row>
-          <Row gutter={[8, 8]}>
+          <Row gutter={[8, 8]} className="flex justify-center ">
             {status === "approved" ? (
-              <>
+              <div className="flex justify-center gap-2">
                 <Button type="default" htmlType="submit" onClick={() => setCheckStatusApproved("disable")}>
                   {`ไม่อนุมัติ`}
                 </Button>
                 <Button type="primary" htmlType="submit" onClick={() => setCheckStatusApproved("approved")}>
                   {`อนุมัติ`}
                 </Button>
-              </>
+              </div>
             ) : null}
             {status === "return" ? (
-              <>
+              <div className="flex justify-center gap-2">
                 <Button type="default" onClick={() => closeModalFecthStatus()}>{`ยกเลิก`}</Button>
                 <Button type="primary" htmlType="submit">
                   {`รับคืนรถ`}
                 </Button>
-              </>
+              </div>
             ) : null}
             {status === "delete" ? (
               <Button type="primary" htmlType="submit">

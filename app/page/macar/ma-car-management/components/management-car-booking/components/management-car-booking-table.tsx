@@ -67,10 +67,20 @@ const ManagementCarBookingTable: React.FC<props> = ({
       align: "center",
       render: (_: any, record: MaCarBookType) => (
         <Space>
-          <Button type="link" onClick={() => openModalFecthStatus(`approved`, record)} style={{ color: "green" }}>
+          <Button
+            type="link"
+            onClick={() => openModalFecthStatus(`approved`, record)}
+            style={{ color: record.carBookApprovedStatus === "Cancel" ? "" : "green" }}
+            // disabled={record.carBookApprovedStatus === "Cancel"}
+          >
             {`อนุมัติ`}
           </Button>
-          <Button type="link" onClick={() => openModalFecthStatus(`cancel`, record)} style={{ color: "orange" }}>
+          <Button
+            type="link"
+            onClick={() => openModalFecthStatus(`cancel`, record)}
+            style={{ color: record.carBookApprovedStatus === "Cancel" ? "" : "orange" }}
+            // disabled={record.carBookApprovedStatus === "Cancel"}
+          >
             {`ยกเลิก`}
           </Button>
           {record.carBookApprovedStatus === "Return" ? (

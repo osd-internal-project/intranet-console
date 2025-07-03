@@ -31,12 +31,12 @@ export const CarReturnForm: React.FC<props> = ({ formBookData, statusApprove }) 
           </Col>
           <Col span={6}>
             <Form.Item<MaCarBookType> name="carBookTitle" label="วัตถุประสงค์การใช้งาน :">
-              <Input disabled className="read-only-input" />
+              <Input.TextArea disabled className="read-only-input" />
             </Form.Item>
           </Col>
           <Col span={6}>
             <Form.Item<MaCarBookType> name="carBookPlace" label="สถานที่ไป :">
-              <Input.TextArea  disabled className="read-only-input" />
+              <Input.TextArea disabled className="read-only-input" />
             </Form.Item>
           </Col>
           <Col span={6}>
@@ -192,7 +192,13 @@ export const CarReturnForm: React.FC<props> = ({ formBookData, statusApprove }) 
               </Col>
               <Col span={8}>
                 <Form.Item name="returnAt" label="วันที่รับคืน :">
-                  <DatePicker className="read-only-input" format={dateFormatTime(formBookData.getFieldValue("returnAt"))} style={{ width: "100%" }} />
+                  {formBookData.getFieldValue("returnAt") ? (
+                    <DatePicker
+                      className="read-only-input"
+                      format={dateFormatTime(formBookData.getFieldValue("returnAt"))}
+                      style={{ width: "100%" }}
+                    />
+                  ) : null}
                 </Form.Item>
               </Col>
             </Row>

@@ -6,6 +6,7 @@ import MaFilterComponent from "./components/MaFilter";
 import MaTableComponent from "./components/MaTable";
 import { ITMaTask, ITMaType } from "./common";
 import Link from "next/link";
+import { saveAs } from "file-saver";
 import MaServices from "./services/ma.service";
 import dayjs from "dayjs";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
@@ -14,8 +15,9 @@ import MasterHolidaysService from "../setting/master-holidays/services/index.ser
 export default function MaTaskPage() {
   const { id24Axios } = useId24();
   const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlReport = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_REPORT);
   const maServices = MaServices(baseUrIntranet);
-  const reportServices = MaServices(baseUrIntranet);
+  const reportServices = MaServices(baseUrlReport);
   const [search, setSearch] = useState<object>({});
   const [loading, setloading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -97,10 +99,7 @@ export default function MaTaskPage() {
     const blob = new Blob([response], {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
-    const link = document.createElement("a");
-    link.href = window.URL.createObjectURL(blob);
-    link.download = `รายงานการดำเนินการMA-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`;
-    link.click();
+    saveAs(blob, `รายงานการดำเนินการMA-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`);
     message.success("สำเร็จ");
   }
   function searchMa(filter: any): void {

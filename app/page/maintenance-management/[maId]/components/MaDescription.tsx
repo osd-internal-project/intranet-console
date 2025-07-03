@@ -1,11 +1,8 @@
-import React, { useState } from "react";
-import type { BadgeProps, CalendarProps, TableColumnsType, TableColumnType, UploadFile } from "antd";
-import { Badge, Button, Calendar, Card, DatePicker, Divider, Form, Input, Modal, Select, Switch, Table, Tag } from "antd";
-import type { Dayjs } from "dayjs";
-import { ColumnType } from "antd/es/table";
+import React from "react";
+import type { UploadFile } from "antd";
+import { Button, Card, Divider, Tag } from "antd";
 import { dateToStringTh, dateToStringThNoTime } from "@/app/utils/format";
-import { ITMaDetail, ITMaTask, ITMaType, ITMaUpdateForm } from "../../common";
-import TextArea from "antd/es/input/TextArea";
+import { ITMaTask, ITMaType, ITMaUpdateForm } from "../../common";
 import MaSubmitForm from "./MaSubmitForm";
 import MaSolution from "./MaSolution";
 import Link from "next/link";
@@ -20,15 +17,7 @@ export interface props {
   getImageBlob: (id: number, name: string) => Promise<Blob | undefined>;
 }
 
-const MaDescriptionComponent: React.FC<props> = ({
-  data,
-  loading,
-  setLoading,
-  maTypes,
-  updateMa,
-  downloadFile,
-  getImageBlob,
-}): React.ReactElement => {
+const MaDescriptionComponent: React.FC<props> = ({ data, maTypes, updateMa, downloadFile, getImageBlob }): React.ReactElement => {
   return (
     <Card styles={{ body: { padding: "10px" } }}>
       <div className="grid grid-cols-1 md:grid-cols-3">

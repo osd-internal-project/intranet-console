@@ -129,7 +129,7 @@ export const MenuSider: MenuItem[] = [
     key: "macar",
     icon: macarIcon,
     label: `ข้อมูลการจองรถยนต์`,
-    rule: ["user", "admin"],
+    rule: ["user", "admin", "ma-user"],
     children: [
       {
         key: `macar/ma-car`,
@@ -139,12 +139,12 @@ export const MenuSider: MenuItem[] = [
       {
         key: `macar/ma-car-booking`,
         label: `Ma car Booking`,
-        rule: ["user", "admin"],
+        rule: ["admin"],
       },
       {
         key: `macar/ma-car-management`,
         label: `ข้อมูลการจองรถยนต์`,
-        rule: ["user", "admin", "ma-user"],
+        rule: ["admin", "ma-user"],
       },
     ],
   },

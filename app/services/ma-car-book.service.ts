@@ -18,9 +18,10 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
         });
     },
 
-    getMaCarBookQuery: async (body: any) => {
+    getMaCarBookQuery: async (userId: string) => {
+      console.log(userId);
       return await axiosInstance
-        .get(`${baseUrlApiMaCarBook}/${body}`)
+        .get(`${baseUrlApiMaCarBook}/car-booking/${userId}`)
         .then((res) => {
           return res.data;
         })
@@ -29,9 +30,9 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getMaCarBookCheck: async (carId: string) => {
+    getMaCarBookCheck: async (carId: string, carBookStartDate: Date, carBookEndDate: Date) => {
       return await axiosInstance
-        .get(`${baseUrlApiMaCarBook}/carId/${carId}`)
+        .get(`${baseUrlApiMaCarBook}/carId/${carId}`, { params: { carBookStartDate, carBookEndDate } })
         .then((res) => {
           return res.data;
         })

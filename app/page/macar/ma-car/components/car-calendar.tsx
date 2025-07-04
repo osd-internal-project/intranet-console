@@ -67,7 +67,6 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
     }
     return {};
   };
-
   return (
     <>
       <Calendar<CustomEvent>

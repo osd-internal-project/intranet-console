@@ -30,6 +30,11 @@ const TableOvertimeHistory: React.FC<Props> = ({
         pagination.current && pagination.pageSize ? (pagination.current - 1) * pagination.pageSize + (index + 1) : "",
     },
     {
+      key: "fullname",
+      title: "ชื่อ - สกุล",
+      dataIndex: "fullname",
+    },
+    {
       key: "dateStart",
       title: "วันที่ทำ OT",
       dataIndex: "dateStart",
@@ -39,6 +44,15 @@ const TableOvertimeHistory: React.FC<Props> = ({
       key: "detailWork",
       title: "รายละเอียดการทำ OT",
       dataIndex: "detailWork",
+    },
+    {
+      key: "partTimeType",
+      title: "ประเภทการทำ OT",
+      dataIndex: "partTimeType",
+      align: "center",
+      render: (status: string) => {
+        return <Tag>{status === "working" ? "ทำงาน" : "ขับรถ"}</Tag>;
+      },
     },
     {
       key: "id",

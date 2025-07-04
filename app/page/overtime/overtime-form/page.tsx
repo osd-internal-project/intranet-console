@@ -6,11 +6,9 @@ import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
 import LeaveManagementServices from "../../../services/leave-management.service";
-// import UserServices from "@/app/services/user.service";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
-import { optionsTimes, optionsTimesNormall } from "./common";
 import { OvertimeShowDetail } from "./components/overtime-show-detail";
 import OverTimeServices from "@/app/services/overtime.service";
 import { ExclamationCircleFilled } from "@ant-design/icons";
@@ -21,13 +19,11 @@ export default function OverTimePage() {
   const [createForm] = useForm();
   const navigate = useRouter();
   const searchParams = useSearchParams();
+  const date = searchParams.get("date") as string;
   const { user } = useContext(UserContext) as UserContectType;
   const { id24Axios } = useId24();
-  // const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [loading, setLoading] = useState<boolean>(true);
-
-  const date = searchParams.get("date") as string;
   const [getHeader, setHeader] = useState<any[]>([]);
   const [getStartTime, setStartTime] = useState<number>(18);
   const [getEndTime, setEndTime] = useState<number>(19);
@@ -35,6 +31,7 @@ export default function OverTimePage() {
   const [getcarName, setCarName] = useState<string>("");
   const [getSelectCar, setSelectCar] = useState<boolean>(false);
   const [getMasterOt, setMasterOt] = useState<number>(0);
+  const [getTime, setTime] = useState<{ value: string; label: string; key: string }[]>([]);
 
   useEffect(() => {
     if (user && loading) {
@@ -50,6 +47,7 @@ export default function OverTimePage() {
     if (user && user.userId && loading) {
       fetchData();
     }
+    TimeOptions();
   }, [user, loading]);
 
   useEffect(() => {
@@ -61,14 +59,10 @@ export default function OverTimePage() {
   }, [getHeader]);
 
   const fetchData = async () => {
-    if (!user) return;
-    if (!date) return;
     const HeaderGroup = await LeaveManagementServices(baseUrlIntranet).getHeaderByUserId();
-    const masterConfigTime = await OverTimeServices(baseUrlIntranet).findMasterOt(date);
-    const resCar: any = await MaCarServices(baseUrlIntranet).getMaCarQuery();
-    setMasterOt(masterConfigTime);
-    setCar(resCar);
     setHeader(HeaderGroup);
+    const resCar: any = await MaCarServices(baseUrlIntranet).getMaCarQuery();
+    setCar(resCar);
     setLoading(false);
   };
 
@@ -77,6 +71,7 @@ export default function OverTimePage() {
     if (value) {
       data = value.split(":");
     }
+
     setStartTime(data ? (data[1][0] === "3" ? Number(data[0]) + 0.5 : Number(data[0])) : 18);
   };
   const handleEndTime = (value: string) => {
@@ -136,6 +131,19 @@ export default function OverTimePage() {
     setCarName("");
     const data = getCar.find((events: any) => (events.carId = value));
     setCarName(data.carName);
+  };
+
+  const TimeOptions = () => {
+    const timeOptions = [];
+    for (let h = 0; h < 24; h++) {
+      for (let m = 0; m < 60; m += 30) {
+        const hour = h.toString().padStart(2, "0");
+        const minute = m.toString().padStart(2, "0");
+        const time = `${hour}:${minute}`;
+        timeOptions.push({ value: time, label: time, key: time });
+      }
+    }
+    setTime(timeOptions);
   };
 
   return (
@@ -217,22 +225,12 @@ export default function OverTimePage() {
                 </div>
                 <div>
                   <Form.Item name={"startTime"} label={"เวลาเข้า"} rules={[{ required: true, message: "กรุณาเลือกเวลาเข้า" }]}>
-                    <Select
-                      allowClear
-                      placeholder={`Please Select`}
-                      options={getMasterOt === 1 ? optionsTimes : optionsTimesNormall}
-                      onChange={(value) => handleStartTime(value)}
-                    />
+                    <Select allowClear placeholder={`Please Select`} options={getTime} onChange={(value) => handleStartTime(value)} />
                   </Form.Item>
                 </div>
                 <div>
                   <Form.Item name={"endTime"} label={"เวลาออก"} rules={[{ required: true, message: "กรุณาเลือกเวลาออก" }]}>
-                    <Select
-                      allowClear
-                      placeholder={`Please Select`}
-                      options={getMasterOt === 1 ? optionsTimes : optionsTimesNormall}
-                      onChange={(value) => handleEndTime(value)}
-                    />
+                    <Select allowClear placeholder={`Please Select`} options={getTime} onChange={(value) => handleEndTime(value)} />
                   </Form.Item>
                 </div>
                 <div>

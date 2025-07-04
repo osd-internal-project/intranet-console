@@ -18,6 +18,8 @@ interface CustomEvent extends RbcEvent {
   type: string;
   start: Date;
   end: Date;
+  endTime: string;
+  startTime: string;
 }
 
 interface THoliday {
@@ -31,14 +33,9 @@ interface THoliday {
 
 const CalendarPage: React.FC<props> = ({ holiday }): React.ReactElement => {
   const localizer = momentLocalizer(moment);
-  const [visible, setVisible] = useState<boolean>(true);
-  const [userClicked, setUserClicked] = useState(false);
+  const [visible, setVisible] = useState<boolean>(false);
   const [form] = Form.useForm();
   const { Option } = Select;
-
-  useEffect(() => {
-    setUserClicked(false); // รีเซ็ตหลังโหลดหน้า
-  }, []);
 
   const handleOk = () => {
     setVisible(true);
@@ -50,6 +47,8 @@ const CalendarPage: React.FC<props> = ({ holiday }): React.ReactElement => {
   };
 
   const onSelectEventCalendar = (event: CustomEvent) => {
+    console.log(event);
+
     if (event.type === "holiday") {
       message.info(event.title);
       return false;
@@ -60,14 +59,13 @@ const CalendarPage: React.FC<props> = ({ holiday }): React.ReactElement => {
       status: event.status,
       start: dayjs(event.start),
       end: dayjs(event.end),
+      startTime: event.startTime,
+      endTime: event.endTime,
     });
     setVisible(true);
-
-    // window.location.href = `${window.location.origin}/page/overtime/overtime-form?date=${dayjs(value).format("YYYY-MM-DD")}`;
   };
 
   const CustomEventComponent = ({ event }: { event: CustomEvent }) => {
-    setUserClicked(true); // แสดงว่าเกิดจาก user จริง
     return (
       <span className="flex justify-start items-center gap-1">
         {event.status === "approved" ? checkIcon : event.type === "holiday" ? "" : loadingIcon} {event.title}
@@ -105,13 +103,23 @@ const CalendarPage: React.FC<props> = ({ holiday }): React.ReactElement => {
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item name="start" label="เวลาเริ่ม" rules={[{ required: true, message: "กรุณาเลือกเวลาเริ่ม" }]}>
+                <Form.Item name="start" label="วันที่เริ่มทำ OT">
                   <DatePicker style={{ width: "100%" }} placeholder="เลือกวันเวลาเริ่ม" disabled />
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item name="end" label="เวลาสิ้นสุด" rules={[{ required: true, message: "กรุณาเลือกเวลาสิ้นสุด" }]}>
+                <Form.Item name="end" label="เวันที่สิ้นสุดทำ OT">
                   <DatePicker style={{ width: "100%" }} placeholder="เลือกวันเวลาสิ้นสุด" disabled />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item name="startTime" label="เวลาเริ่ม">
+                  <Input style={{ width: "100%" }} disabled />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item name="endTime" label="เวลาสิ้นสุด">
+                  <Input style={{ width: "100%" }} disabled />
                 </Form.Item>
               </Col>
               <Col span={24}>
@@ -143,7 +151,9 @@ const CalendarPage: React.FC<props> = ({ holiday }): React.ReactElement => {
             id: events.id,
             title: events.holidaysName,
             start: events.holidaysDate,
+            startTime: events.startTime,
             end: events.holidaysDate,
+            endTime: events.endTime,
             type: events.type,
             status: events.status,
           };
@@ -165,10 +175,10 @@ const CalendarPage: React.FC<props> = ({ holiday }): React.ReactElement => {
             color = "#ffff";
           } else {
             if (event.status === "approved") {
-              backgroundColor = "green";
+              backgroundColor = "#4CAF50";
               color = "#000000";
             } else if (event.status === "waiting") {
-              backgroundColor = "blue";
+              backgroundColor = "#25B9EB";
               color = "#ffff";
             } else {
               backgroundColor = "silver";

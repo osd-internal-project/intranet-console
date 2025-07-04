@@ -43,11 +43,14 @@ export default function OverTimeCalendatPage() {
     const take: number = Number(pagination.pageSize);
     const holiday = await SlideImageService(baseUrlIntra).getHoliday(year);
     const overtime = await OverTimeServices(baseUrlIntra).findById(skip, take);
+
     const mapdataOT = overtime.map((e: any) => {
       return {
         ...e,
         holidaysDate: e.dateStart,
         holidaysName: e.detailWork,
+        startTime: e.startTime,
+        endTime: e.endTime,
         type: "ot",
       };
     });
@@ -55,6 +58,8 @@ export default function OverTimeCalendatPage() {
       const mapData = {
         ...e,
         type: "holiday",
+        startTime: "",
+        endTime: "",
       };
       return mapData;
     });

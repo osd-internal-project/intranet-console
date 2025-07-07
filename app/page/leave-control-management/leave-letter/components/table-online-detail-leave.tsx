@@ -1,4 +1,4 @@
-import { Card, Modal, Space, Table, TableColumnsType, Tag, Tooltip, Typography } from "antd";
+import { Alert, Button, Card, Modal, Space, Table, TableColumnsType, Tag, Tooltip, Typography } from "antd";
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { ITypetypeleave } from "../../common";
@@ -20,7 +20,17 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
   createdataleaveFormValues,
   dataHolidayDay,
 }): React.ReactElement => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [showTooltip, setShowTooltip] = useState<boolean>(false);
+  const [text, setText] = useState<string>("");
+  const handleMouseEnter = (description: string) => {
+    setText(description);
+    setShowTooltip(true);
+  };
+
+  const handleMouseLeave = () => {
+    setShowTooltip(false);
+  };
   const columns: TableColumnsType<ITypetypeleave> = [
     {
       key: "typeName",
@@ -28,6 +38,15 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       title: "ประเภทการลา",
       align: "center",
       className: "font-bold ",
+      render: (_: string, rows: ITypetypeleave) => {
+        return (
+          <Tooltip
+            overlayInnerStyle={{ width: 600, whiteSpace: "pre-wrap" }}
+            title={<div dangerouslySetInnerHTML={{ __html: rows.descriptionLeave }} />}>
+            {_}
+          </Tooltip>
+        );
+      },
     },
     {
       key: "haveLeaveDays",
@@ -89,7 +108,6 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       },
     },
   ];
-
   return (
     <>
       <Card className="w-full grid grid-cols-1 gap-2" styles={{ body: { padding: 5 } }}>
@@ -114,7 +132,26 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
           scroll={{ x: "max-content" }}
           rowClassName={rowClassName}
         />
+        {/* {showTooltip ? <Alert type="warning" message={`${text}`} /> : <></>} */}
       </Card>
+      {/* {showTooltip && (
+        <div
+          style={{
+            position: "absolute",
+            top: "120%",
+            left: "50%",
+            transform: "translateX(-50%)",
+            backgroundColor: "#333",
+            color: "#fff",
+            padding: "6px 10px",
+            borderRadius: "4px",
+            fontSize: "12px",
+            whiteSpace: "nowrap",
+            zIndex: 100,
+          }}>
+          {text}
+        </div>
+      )} */}
       {isModalOpen ? (
         <Modal
           title="ระยะเวลาในการลาแต่ละประเภท"

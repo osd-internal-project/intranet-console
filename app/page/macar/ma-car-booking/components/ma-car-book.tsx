@@ -17,11 +17,12 @@ export interface props {
 
 const MaCarBook: React.FC<props> = ({ maCarData, masterDataProvinces }): React.ReactElement => {
   const router = useRouter();
-  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const { id24Axios } = useId24();
+  const [formUser] = Form.useForm();
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const macarbookservices = MaCarBookServices(baseUrIntranet);
-  const [formUser] = Form.useForm();
+
   useEffect(() => {
     if (user) {
       formUser.setFieldsValue({
@@ -37,12 +38,12 @@ const MaCarBook: React.FC<props> = ({ maCarData, masterDataProvinces }): React.R
 
   const createMaCarBook: FormProps<MaCarBookType>["onFinish"] = async (values) => {
     const { carBookStartDate, carBookEndDate } = values;
+    const carSelected = maCarData.find((car): car is any => car.carId === values.carId);
     const checkCarAvilable = await macarbookservices.getMaCarBookCheck(values.carId, carBookStartDate, carBookEndDate);
     if (checkCarAvilable && Object.keys(checkCarAvilable).length > 0) {
       message.error("รถคันนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่ !");
       return false;
     }
-    const carSelected = maCarData.find((car): car is any => car.carId === values.carId);
     const data = {
       carId: values.carId,
       carName: carSelected?.carName,

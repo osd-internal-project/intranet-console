@@ -32,15 +32,15 @@ const MaCarBookTable: React.FC<props> = ({
   setLoading,
   loading,
   maCarData,
-  maCarBookById,
+  // maCarBookById,
   dataProvinces,
   maFetchCalendar,
 }: any): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const [form] = Form.useForm();
   const [formCancel] = Form.useForm();
-  const { id24Axios, tokenAccess } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const { id24Axios } = useId24();
+  // const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const intraAuthService = MaCarServices(baseUrlIntranet);
   const [modalEditMaCarBook, setModalEditMa] = useState(false);

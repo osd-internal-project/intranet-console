@@ -40,8 +40,6 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
     setOldCarMile(record.maCar.carMile);
     formReturn.setFieldsValue({
       carName: record.maCar.carName,
-      // carMile: record.maCar.carMile,
-      // carPetrol: record.maCar.carPetrol,
       status: record.maCar.status,
     });
     record.carBookApprovedStatus === "Approve" ? setModalEditReturn(true) : null;
@@ -56,7 +54,6 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
     setCurrentMaBookId(record.id);
     setStatusApprove(record.carBookApprovedStatus);
     const approvedStatus = checkApprovedStatus(record);
-
     formBookData.setFieldsValue({
       ...record,
       carBookStartDate: dayjs(record.carBookStartDate),
@@ -83,9 +80,8 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
   const updatedMaCarReturn: FormProps<MaCarType>["onFinish"] = async (values) => {
     if (currentMaId && currentMaBookId) {
       try {
-        const { ...restValues } = values;
         const updatedMaCar = {
-          ...restValues,
+          ...values,
           carMile: values.carMile,
           carPetrol: values.carPetrol,
           updatedAt: dayjs().toISOString(),
@@ -93,6 +89,7 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
           updatedByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
         };
         const maCarBook = {
+          createdById: user?.userId,
           carBookApprovedStatus: "Return",
           returnNotifAt: dayjs().toISOString(),
         };

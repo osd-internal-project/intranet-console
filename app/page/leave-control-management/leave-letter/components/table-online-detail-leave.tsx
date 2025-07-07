@@ -36,12 +36,17 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       key: "typeName",
       dataIndex: "typeName",
       title: "ประเภทการลา",
-      align: "center",
+      align: "left",
       className: "font-bold ",
       render: (_: string, rows: ITypetypeleave) => {
         return (
           <Tooltip
-            overlayInnerStyle={{ width: 600, whiteSpace: "pre-wrap" }}
+            overlayInnerStyle={{
+              width: 600,
+              whiteSpace: "pre-wrap",
+              backgroundColor: "#ED9121", // สีส้ม Coral
+              color: "white",
+            }}
             title={<div dangerouslySetInnerHTML={{ __html: rows.descriptionLeave }} />}>
             {_}
           </Tooltip>

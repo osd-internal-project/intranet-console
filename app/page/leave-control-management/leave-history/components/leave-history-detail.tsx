@@ -42,6 +42,11 @@ export const LeaveHistoryDetail: React.FC<props> = ({
             </Form.Item>
           </div>
           <div className=" col-span-3 md:col-span-1 ml-5">
+            <Form.Item label={`ผู้ขอลา :`} name={`name`}>
+              <Input disabled className="read-only-input" />
+            </Form.Item>
+          </div>
+          <div className=" col-span-3 md:col-span-1 ml-5">
             <Form.Item label={`เนื่องจาก :`} name={`detail`}>
               <Input disabled className="read-only-input" />
             </Form.Item>

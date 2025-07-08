@@ -47,7 +47,7 @@ export const MenuSider: MenuItem[] = [
     key: "housekeeper",
     icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
     label: "งานแม่บ้าน",
-    rule: ["ma-user", "admin"],
+    rule: ["admin"],
     children: [
       {
         key: `housekeeper/housekeepers`,
@@ -65,7 +65,7 @@ export const MenuSider: MenuItem[] = [
     key: "leave-control-management",
     icon: IconDataLeave,
     label: `ข้อมูลการลา`,
-    rule: ["user", "admin", "header"],
+    rule: ["user", "admin", "header", "hr"],
     children: [
       {
         key: `leave-control-management/leave-letter`,
@@ -108,7 +108,7 @@ export const MenuSider: MenuItem[] = [
       {
         key: `bookingroom/booking-room-refreshment`,
         label: `จัดการอาหารว่าง`,
-        rule: ["admin", "hr"],
+        rule: ["admin", "hr", "ma-user"],
       },
     ],
   },

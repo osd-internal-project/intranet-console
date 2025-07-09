@@ -170,17 +170,13 @@ const MaCarBookTable: React.FC<props> = ({
     {
       key: "carBookStartDate",
       dataIndex: "carBookStartDate",
-      title: "วันที่เริ่มจอง",
+      title: "เวลาที่ใช้งาน",
       align: "center",
-      render: (value) => dateFormatTime(value),
+      render: (event: number, row: MaCarBookType, index: number) => {
+        return `${dateFormatTime(String(row.carBookStartDate))} ถึง ${dateFormatTime(String(row.carBookEndDate))}`;
+      },
     },
-    {
-      key: "carBookEndDate",
-      dataIndex: "carBookEndDate",
-      title: "วันที่สิ้นสุดการจอง",
-      align: "center",
-      render: (value) => dateFormatTime(value),
-    },
+
     {
       key: "createdByName",
       title: "ชื่อผู้จอง",
@@ -201,37 +197,37 @@ const MaCarBookTable: React.FC<props> = ({
       align: "center",
       render: (value: string) => (value ? value : "-"),
     },
-    {
-      title: "จัดการ",
-      key: "note",
-      dataIndex: "note",
-      align: "center",
-      render: (_, record) => (
-        <Space>
-          <Tooltip title="แก้ไข">
-            <Button
-              disabled={record.carBookApprovedStatus !== "Process" ? true : false}
-              type="link"
-              onClick={() => {
-                onModalEdit(record);
-              }}>
-              {`แก้ไข`}
-            </Button>
-          </Tooltip>
-          <Tooltip title="ยกเลิก">
-            <Button
-              type="link"
-              disabled={record.carBookApprovedStatus !== "Process" ? true : false}
-              onClick={() => {
-                onModalCancel(record);
-              }}
-              danger>
-              {`ยกเลิก`}
-            </Button>
-          </Tooltip>
-        </Space>
-      ),
-    },
+    // {
+    //   title: "จัดการ",
+    //   key: "note",
+    //   dataIndex: "note",
+    //   align: "center",
+    //   render: (_, record) => (
+    //     <Space>
+    //       <Tooltip title="แก้ไข">
+    //         <Button
+    //           disabled={record.carBookApprovedStatus !== "Process" ? true : false}
+    //           type="link"
+    //           onClick={() => {
+    //             onModalEdit(record);
+    //           }}>
+    //           {`แก้ไข`}
+    //         </Button>
+    //       </Tooltip>
+    //       <Tooltip title="ยกเลิก">
+    //         <Button
+    //           type="link"
+    //           disabled={record.carBookApprovedStatus !== "Process" ? true : false}
+    //           onClick={() => {
+    //             onModalCancel(record);
+    //           }}
+    //           danger>
+    //           {`ยกเลิก`}
+    //         </Button>
+    //       </Tooltip>
+    //     </Space>
+    //   ),
+    // },
   ];
 
   return (

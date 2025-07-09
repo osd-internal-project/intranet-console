@@ -51,9 +51,11 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
   };
 
   const CustomEventComponent = ({ event }: { event: CustomEvent }) => {
+    const icon = event.carBookApprovedStatus === "Approve" ? checkIcon : event.carBookApprovedStatus === "holiday" ? null : loadingIcon;
     return (
-      <span className="flex justify-start items-center gap-1">
-        {event.carBookApprovedStatus === "Approve" ? checkIcon : event.carBookApprovedStatus === "holiday" ? "" : loadingIcon} {event.title}
+      <span className="flex justify-start items-center gap-1 text-[10px] text-white overflow-hidden">
+        {icon && <span className="flex-shrink-0">{icon}</span>}
+        <span className="truncate">{event.title}</span>
       </span>
     );
   };
@@ -81,7 +83,7 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
           .filter((maCarCalendar: MaCarBookCalendarType) => maCarCalendar.carBookApprovedStatus !== "Cancel")
           .map((maCarCalendar: MaCarBookCalendarType) => ({
             id: maCarCalendar.id,
-            title: maCarCalendar.carName,
+            title: `${maCarCalendar.carName} ${maCarCalendar.createdByName ? `(${maCarCalendar.createdByName})` : ""}`,
             start: new Date(maCarCalendar.carBookStartDate),
             end: new Date(maCarCalendar.carBookEndDate),
             carBookApprovedStatus: maCarCalendar.carBookApprovedStatus,

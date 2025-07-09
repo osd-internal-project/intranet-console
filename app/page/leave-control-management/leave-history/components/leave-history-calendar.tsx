@@ -81,9 +81,11 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, download
   };
 
   const CustomEventComponent = ({ event }: { event: CustomEvent }) => {
+    const icon = event.status === "approved" ? checkIcon : event.status === "holiday" ? null : loadingIcon;
     return (
-      <span className="flex justify-start items-center gap-1">
-        {event.status === "approved" ? checkIcon : event.status === "holiday" ? "" : loadingIcon} {event.title}
+      <span className="flex justify-start items-center gap-1 text-[10px] text-white overflow-hidden">
+        {icon && <span className="flex-shrink-0">{icon}</span>}
+        <span className="truncate">{event.title}</span>
       </span>
     );
   };

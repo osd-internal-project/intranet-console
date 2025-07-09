@@ -35,9 +35,11 @@ const MaCalendarComponent: React.FC<props> = ({ calendarEvents, handleCalendarCh
   };
 
   const CustomEventComponent = ({ event }: { event: any }) => {
+    const icon = event.status === "success" ? checkIcon : event.status === "holiday" ? null : loadingIcon;
     return (
-      <span className="flex justify-start items-center gap-1">
-        {event.status === "success" ? checkIcon : event.status === "holiday" ? "" : loadingIcon} {event.title}
+      <span className="flex justify-start items-center gap-1 text-[10px] text-white overflow-hidden">
+        {icon && <span className="flex-shrink-0">{icon}</span>}
+        <span className="truncate">{event.title}</span>
       </span>
     );
   };

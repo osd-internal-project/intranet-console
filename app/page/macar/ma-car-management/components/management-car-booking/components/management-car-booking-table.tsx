@@ -65,36 +65,43 @@ const ManagementCarBookingTable: React.FC<props> = ({
       key: "note",
       dataIndex: "note",
       align: "center",
-      render: (_: any, record: MaCarBookType) => (
-        <Space>
-          <Button
-            type="link"
-            onClick={() => openModalFecthStatus(`approved`, record)}
-            style={{ color: record.carBookApprovedStatus === "Cancel" ? "" : "green" }}
-            // disabled={record.carBookApprovedStatus === "Cancel"}
-          >
-            {`อนุมัติ`}
-          </Button>
-          <Button
-            type="link"
-            onClick={() => openModalFecthStatus(`cancel`, record)}
-            style={{ color: record.carBookApprovedStatus === "Cancel" ? "" : "orange" }}
-            // disabled={record.carBookApprovedStatus === "Cancel"}
-          >
-            {`ยกเลิก`}
-          </Button>
-          {record.carBookApprovedStatus === "Return" ? (
-            <Button type="link" onClick={() => openModalFecthStatus(`return`, record)}>
-              {`รับคืนรถ`}
+      render: (_: any, record: MaCarBookType) => {
+        const isActionDisabled = record.carBookApprovedStatus === "Cancel" || record.carBookApprovedStatus === "Approve";
+        let status = false;
+        if (record.carBookApprovedStatus === "Cancel" || record.carBookApprovedStatus === "Approve") {
+          status = true;
+        } else {
+          status = false;
+        }
+        return (
+          <Space>
+            <Button
+              type="link"
+              onClick={() => openModalFecthStatus(`approved`, record)}
+              style={{ color: isActionDisabled ? "" : "green" }}
+              disabled={status}>
+              {`อนุมัติ`}
             </Button>
-          ) : (
-            <span style={{ color: "grey" }}>{record.carBookApprovedStatus === "Completed" ? `รับคืนแล้ว` : `รอแจ้งคืนรถ`}</span>
-          )}
-          <Button type="link" onClick={() => openModalFecthStatus(`delete`, record)} danger>
-            {`ลบ`}
-          </Button>
-        </Space>
-      ),
+            <Button
+              type="link"
+              onClick={() => openModalFecthStatus(`cancel`, record)}
+              style={{ color: isActionDisabled ? "" : "orange" }}
+              disabled={status}>
+              {`ยกเลิก`}
+            </Button>
+            {record.carBookApprovedStatus === "Return" ? (
+              <Button type="link" onClick={() => openModalFecthStatus(`return`, record)}>
+                {`รับคืนรถ`}
+              </Button>
+            ) : (
+              <span style={{ color: "grey" }}>{record.carBookApprovedStatus === "Completed" ? `รับคืนแล้ว` : `รอแจ้งคืนรถ`}</span>
+            )}
+            <Button type="link" onClick={() => openModalFecthStatus(`delete`, record)} danger>
+              {`ลบ`}
+            </Button>
+          </Space>
+        );
+      },
     },
   ];
   return (

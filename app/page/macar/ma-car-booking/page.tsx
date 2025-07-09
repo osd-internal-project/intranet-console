@@ -88,14 +88,14 @@ const MaCarBooking: React.FC = () => {
                 title: <span>หน้าหลัก</span>,
               },
               {
-                title: <span>ข้อมูลการจองรถยนต์</span>,
+                title: <span>แบบฟอร์มการจองรถ</span>,
               },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
           <div className="title-page-font" style={{ display: "flex", alignItems: "left" }}>
-            <span style={{ marginRight: "8px" }}>จองรถยนต์เพื่อใช้งาน</span>
+            <span style={{ marginRight: "8px" }}>แบบฟอร์มการจองรถ</span>
           </div>
         </Divider>
         <Col span={24}>

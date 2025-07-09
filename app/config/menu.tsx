@@ -133,17 +133,17 @@ export const MenuSider: MenuItem[] = [
     children: [
       {
         key: `macar/ma-car`,
-        label: `ข้อมูลการจองรถยนต์`,
+        label: `การจองรถยนต์`,
         rule: ["user", "admin"],
       },
       {
         key: `macar/ma-car-booking`,
-        label: `Ma car Booking`,
+        label: `แบบฟอร์มการจองรถ`,
         rule: ["admin"],
       },
       {
         key: `macar/ma-car-management`,
-        label: `ข้อมูลการจองรถยนต์`,
+        label: `การจัดการรถยนต์`,
         rule: ["admin", "ma-user"],
       },
     ],

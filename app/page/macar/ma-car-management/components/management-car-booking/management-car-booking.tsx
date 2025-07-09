@@ -22,10 +22,10 @@ export interface props {
 
 const managementCarBooking: React.FC<props> = ({ setLoading, loading, maCarBookData, pagination, changePagination }): React.ReactElement => {
   const { id24Axios } = useId24();
+  const [form] = Form.useForm();
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const showStatusBox = showStatus();
-  const [form] = Form.useForm();
   const [checkType, setCheckType] = useState<string>("");
   const [checkStatusApproved, setCheckStatusApproved] = useState<string>("");
   const [openModal, setOpenModal] = useState<boolean>(false);

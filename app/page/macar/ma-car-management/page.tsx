@@ -99,14 +99,14 @@ const ManageMaCar = () => {
                 title: <span>หน้าหลัก</span>,
               },
               {
-                title: <span>ข้อมูลการจองรถยนต์ (แอดมิน)</span>,
+                title: <span>การจัดการรถยนต์</span>,
               },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
           <div className="title-page-font" style={{ display: "flex", alignItems: "left" }}>
-            <span style={{ marginRight: "8px" }}>ข้อมูลการจองรถยนต์ (แอดมิน)</span>
+            <span style={{ marginRight: "8px" }}>การจัดการรถยนต์</span>
           </div>
         </Divider>
         <Col span={24}>

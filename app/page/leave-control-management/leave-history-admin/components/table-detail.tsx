@@ -144,8 +144,9 @@ export const TableDetail: React.FC<props> = ({
         <div style={{ display: "flex", justifyContent: "end", alignItems: "center" }}>
           <div>
             <Form layout="inline" onFinish={dataLeaveSearch} form={form}>
-              <Form.Item label={`Type`} name={`type`} rules={[{ required: true }]}>
+              <Form.Item label={`Type`} name={`type`} rules={[{ required: true }]} className="w-48">
                 <Select
+                  className="w-full"
                   allowClear
                   placeholder={`Select`}
                   options={[

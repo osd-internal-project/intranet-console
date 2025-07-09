@@ -61,6 +61,19 @@ const ManagementCarBookingTable: React.FC<props> = ({
       render: (status: string) => CheckStatusMaCarBookType(status),
     },
     {
+      title: "รายละเอียด",
+      key: "id",
+      dataIndex: "id",
+      align: "center",
+      render: (_: any, record: MaCarBookType) => {
+        return (
+          <Button type="primary" onClick={() => openModalFecthStatus(``, record)} size="small">
+            {`รายละเอียด`}
+          </Button>
+        );
+      },
+    },
+    {
       title: "จัดการ",
       key: "note",
       dataIndex: "note",

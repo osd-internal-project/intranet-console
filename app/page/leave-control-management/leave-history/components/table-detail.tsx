@@ -114,7 +114,7 @@ export const TableDetail: React.FC<props> = ({
 
   return (
     <div>
-      {ShowStatusLeaves}
+      <div className="mb-3">{ShowStatusLeaves}</div>
       <Table
         dataSource={dataSource.filter((e) => e.status !== "holiday")}
         columns={columns}

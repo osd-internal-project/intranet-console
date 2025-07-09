@@ -1,6 +1,6 @@
 "use client";
-import { PaperClipOutlined } from "@ant-design/icons";
-import { Button, Form, FormInstance, Input, Modal, Space, Tooltip } from "antd";
+import { PaperClipOutlined, CalendarOutlined, UserOutlined, PhoneOutlined, FileTextOutlined, CheckCircleOutlined } from "@ant-design/icons";
+import { Button, Form, FormInstance, Input, Modal, Space, Tooltip, Card, Divider, Tag, Row, Col } from "antd";
 import React from "react";
 
 export interface props {
@@ -16,102 +16,209 @@ export const LeaveHistoryCalendarDetail: React.FC<props> = ({
   formDetail,
   downloadFile,
 }): React.ReactElement => {
+  const userApproved = formDetail.getFieldValue("userApproved");
+  const dataLeaveFiles = formDetail.getFieldValue("dataLeaveFiles");
+
   return (
     <div>
-      <Modal forceRender title="" open={modalDataLeaveDetail} footer={false} onCancel={() => onCancelModalDetail()} width={600}>
-        <div className="w-full justify-center flex mb-2 font-bold text-lg">{`< รายละเอียดการลา >`}</div>
-        <Form autoComplete="off" form={formDetail}>
-          <div style={{ paddingLeft: "380px", margin: "10px  " }}>
-            <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`วันที่ :`} name={`createAt`}>
-                <Input disabled className="read-only-input" />
+      <Modal
+        forceRender
+        title={null}
+        open={modalDataLeaveDetail}
+        footer={null}
+        onCancel={() => onCancelModalDetail()}
+        width={700}
+        bodyStyle={{ padding: 0 }}
+        className="leave-detail-modal">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-t-lg">
+          <div className="flex items-center justify-center">
+            <FileTextOutlined className="text-2xl mr-3" />
+            <h2 className="text-xl font-bold mb-0">รายละเอียดการลา</h2>
+          </div>
+        </div>
+
+        {/* Body */}
+        <div className="p-6">
+          <Form autoComplete="off" form={formDetail} layout="vertical">
+            {/* Basic Information Card */}
+            <Card
+              className="mb-4 shadow-sm"
+              title={
+                <div className="flex items-center">
+                  <UserOutlined className="mr-2 text-blue-500" />
+                  <span>ข้อมูลทั่วไป</span>
+                </div>
+              }>
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Form.Item label="วันที่สร้าง" name="createAt">
+                    <Input disabled className="read-only-input" prefix={<CalendarOutlined className="text-gray-400" />} />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="เรียนถึง" name="ownerName">
+                    <Input disabled className="read-only-input" prefix={<UserOutlined className="text-gray-400" />} />
+                  </Form.Item>
+                </Col>
+              </Row>
+
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Form.Item label="ผู้ขอลา" name="name">
+                    <Input disabled className="read-only-input" prefix={<UserOutlined className="text-gray-400" />} />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="เบอร์ติดต่อระหว่างลา" name="phoneNumber">
+                    <Input disabled className="read-only-input" prefix={<PhoneOutlined className="text-gray-400" />} />
+                  </Form.Item>
+                </Col>
+              </Row>
+
+              <Form.Item label="เนื่องจาก" name="detail">
+                <Input.TextArea disabled className="read-only-input" rows={2} placeholder="รายละเอียดเหตุผลการลา" />
               </Form.Item>
-            </div>
-          </div>
-          <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`เรียนถึง :`} name={`ownerName`}>
-              <Input disabled className="read-only-input" />
-            </Form.Item>
-          </div>
-          <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`ผู้ขอลา :`} name={`name`}>
-              <Input disabled className="read-only-input" />
-            </Form.Item>
-          </div>
-          <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`เนื่องจาก :`} name={`detail`}>
-              <Input disabled className="read-only-input" />
-            </Form.Item>
-          </div>
-          <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
-            <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`จึงขอ :`} name={`typeLeave`}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`เป็นเวลา :`} name={`leaveHour`}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-          </div>
-          <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
-            <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`ตั้งแต่วันที่ :`} name={`startDate`}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div className=" col-span-3 md:col-span-1 ml-5">
-              <Form.Item label={`ถึงวันที่ :`} name={`endDate`}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-          </div>
-          <div className=" col-span-3 md:col-span-1 ml-5">
-            <Form.Item label={`เบอร์ติดต่อระหว่างลา :`} name={`phoneNumber`}>
-              <Input disabled className="read-only-input" />
-            </Form.Item>
-          </div>
-          {Array.isArray(formDetail.getFieldValue("dataLeaveFiles")) && formDetail.getFieldValue("dataLeaveFiles").length > 0 && (
-            <>
-              {
-                <div className=" col-span-3 md:col-span-1 ml-5">
-                  <Form.Item label={`ไฟล์ `} name={`endDate`} layout={`horizontal`}>
-                    {formDetail.getFieldValue("dataLeaveFiles").map((file: any, index: number) => (
-                      <div key={index}>
-                        <Tooltip title={`ดาวน์โหลด`}>
-                          <Button type="link" onClick={() => downloadFile(file.id, file.fileName)}>
-                            <Space>
-                              <PaperClipOutlined />
-                              {file.fileName}
-                            </Space>
+            </Card>
+
+            {/* Leave Details Card */}
+            <Card
+              className="mb-4 shadow-sm"
+              title={
+                <div className="flex items-center">
+                  <CalendarOutlined className="mr-2 text-green-500" />
+                  <span>รายละเอียดการลา</span>
+                </div>
+              }>
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Form.Item label="ประเภทการลา" name="typeLeave">
+                    <Input
+                      disabled
+                      className="read-only-input"
+                      prefix={
+                        <Tag color="blue" className="m-0">
+                          ลา
+                        </Tag>
+                      }
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="เป็นเวลา" name="leaveHour">
+                    <Input disabled className="read-only-input" suffix={<span className="text-gray-400">ชั่วโมง</span>} />
+                  </Form.Item>
+                </Col>
+              </Row>
+
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Form.Item label="ตั้งแต่วันที่" name="startDate">
+                    <Input disabled className="read-only-input" prefix={<CalendarOutlined className="text-gray-400" />} />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="ถึงวันที่" name="endDate">
+                    <Input disabled className="read-only-input" prefix={<CalendarOutlined className="text-gray-400" />} />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Card>
+
+            {/* Files Section */}
+            {Array.isArray(dataLeaveFiles) && dataLeaveFiles.length > 0 && (
+              <Card
+                className="mb-4 shadow-sm"
+                title={
+                  <div className="flex items-center">
+                    <PaperClipOutlined className="mr-2 text-purple-500" />
+                    <span>ไฟล์แนบ</span>
+                  </div>
+                }>
+                <div className="grid grid-cols-1 gap-2">
+                  {dataLeaveFiles.map((file: any, index: number) => (
+                    <div key={index} className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                      <PaperClipOutlined className="text-blue-500 mr-3" />
+                      <div className="flex-1">
+                        <Tooltip title="คลิกเพื่อดาวน์โหลด">
+                          <Button type="link" onClick={() => downloadFile(file.id, file.fileName)} className="p-0 h-auto text-left">
+                            <span className="text-blue-600 hover:text-blue-800 font-medium">{file.fileName}</span>
                           </Button>
                         </Tooltip>
                       </div>
-                    ))}
-                  </Form.Item>
+                    </div>
+                  ))}
                 </div>
-              }
-            </>
-          )}
-          {formDetail.getFieldValue("userApproved") ? (
-            <>
-              <div className="w-full grid grid-cols-2 gap-y-2 mt-2">
-                <div className=" col-span-3 md:col-span-1 ml-5">
-                  <Form.Item label={`ผู้อนุมัติ :`} name={`userApproved`}>
-                    <Input disabled className="read-only-input" />
-                  </Form.Item>
+              </Card>
+            )}
+
+            {/* Approval Section */}
+            {userApproved && (
+              <Card
+                className="shadow-sm border-green-200"
+                title={
+                  <div className="flex items-center">
+                    <CheckCircleOutlined className="mr-2 text-green-500" />
+                    <span className="text-green-600">การอนุมัติ</span>
+                  </div>
+                }>
+                <div className="bg-green-50 p-4 rounded-lg">
+                  <Row gutter={16}>
+                    <Col span={12}>
+                      <Form.Item label="ผู้อนุมัติ" name="userApproved" className="mb-2">
+                        <Input disabled className="read-only-input border-green-300" prefix={<UserOutlined className="text-green-500" />} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item label="วันที่อนุมัติ" name="approvedDate" className="mb-2">
+                        <Input disabled className="read-only-input border-green-300" prefix={<CalendarOutlined className="text-green-500" />} />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  <div className="text-center mt-2">
+                    <Tag color="success" className="px-4 py-1">
+                      <CheckCircleOutlined className="mr-1" />
+                      อนุมัติแล้ว
+                    </Tag>
+                  </div>
                 </div>
-                <div className=" col-span-3 md:col-span-1 ml-5">
-                  <Form.Item label={`วันที่อนุมัติ :`} name={`approvedDate`}>
-                    <Input disabled className="read-only-input" />
-                  </Form.Item>
-                </div>
-              </div>
-            </>
-          ) : null}
-        </Form>
+              </Card>
+            )}
+          </Form>
+        </div>
+
+        {/* Footer */}
+        <div className="p-4 bg-gray-50 rounded-b-lg text-center">
+          <Button type="primary" size="large" onClick={() => onCancelModalDetail()} className="px-8">
+            ปิด
+          </Button>
+        </div>
       </Modal>
+
+      <style jsx>{`
+        .read-only-input {
+          background-color: #f5f5f5 !important;
+          cursor: default !important;
+        }
+        .read-only-input:hover {
+          border-color: #d9d9d9 !important;
+        }
+        .read-only-input:focus {
+          border-color: #d9d9d9 !important;
+          box-shadow: none !important;
+        }
+        .leave-detail-modal .ant-modal-content {
+          padding: 0 !important;
+        }
+        .leave-detail-modal .ant-card-head {
+          background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+          border-bottom: 2px solid #e9ecef;
+        }
+        .leave-detail-modal .ant-card-head-title {
+          font-weight: 600;
+          color: #495057;
+        }
+      `}</style>
     </div>
   );
 };

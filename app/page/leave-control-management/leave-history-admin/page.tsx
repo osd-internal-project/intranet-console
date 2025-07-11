@@ -61,7 +61,7 @@ export default function Page() {
         },
       },
       onOk: async () => {
-        const res = await DataLeaveService(baseUrlIntranet).approvedDataLeave(values.detailApproved, type, id, user);
+        const res = await DataLeaveService(baseUrlIntranet).approvedDataLeave(values.detailApproved, type, id, user, values.typeLeave);
         if (res) {
           type === "cancel" ? message.error("cancel success") : message.success("approved success");
           setSubmitAction("approved");

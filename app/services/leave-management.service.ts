@@ -256,12 +256,13 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
         .catch((err) => err);
     },
 
-    approvedDataLeave: async (detailApproved: string, event: string, id: number, data: any) => {
+    approvedDataLeave: async (detailApproved: string, event: string, id: number, data: any, typeLeave: string) => {
       const condition = {
         where: {
           id: id,
         },
         data: {
+          typeLeave,
           status: event,
           userApproved: `${data.firstNameTh} ${data.lastNameTh}`,
           approvedDate: new Date(),

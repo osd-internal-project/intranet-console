@@ -111,7 +111,7 @@ const BookingRoomPage: React.FC = () => {
 
   const showModal = () => {
     form.setFieldsValue({
-      bookerName: `${user?.firstNameTh}`,
+      bookerName: `${user?.firstNameTh} ${user?.lastNameTh}`,
       bookerPhone: user?.phoneNumber,
       bookerDepartment: user?.masterPosition?.nameEn,
     });
@@ -147,14 +147,13 @@ const BookingRoomPage: React.FC = () => {
       return;
     }
     const guestData = values.guest ? JSON.stringify(values.guest) : "";
-
     const data = {
       userId: user?.userId,
       token: user?.token,
       roomId: values.roomId,
       roomName: selectedOption ? selectedOption.label : undefined,
       roomType: values.roomType,
-      bookerName: user?.firstNameTh,
+      bookerName: `${user?.firstNameTh} ${user?.lastNameTh}`,
       bookerPhone: user?.phoneNumber,
       title: values.title,
       bookerDepartment: values.bookerDepartment.toString(),

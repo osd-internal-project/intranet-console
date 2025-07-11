@@ -212,6 +212,11 @@ const ManageRoom: React.FC = () => {
   };
 
   const showModalApproveBooking = (record: BookingType) => {
+    form.setFieldsValue({
+      ...record,
+      startDate: dayjs(record.startDate),
+      endDate: dayjs(record.endDate),
+    });
     setBookingStatus(record.bookingStatus);
     setCurrentBookingId(record.id);
     setModalApproveBooking(true);
@@ -304,8 +309,15 @@ const ManageRoom: React.FC = () => {
 
   const onFinishApprove = async (status: "Approve" | "Reject" | "process") => {
     setSubmitLoading(true);
+    const { bookerName, bookerPhone, roomName, roomType, title } = form.getFieldsValue(true);
+
     try {
       const updatedApproveBooking = {
+        bookerName,
+        bookerPhone,
+        roomName,
+        roomType,
+        title,
         id: currentBookingId,
         approverId: user?.userId,
         approver: `${user?.firstNameTh} ${user?.lastNameTh}`,

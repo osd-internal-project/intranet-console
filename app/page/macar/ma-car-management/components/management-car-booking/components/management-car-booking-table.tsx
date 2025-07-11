@@ -79,9 +79,18 @@ const ManagementCarBookingTable: React.FC<props> = ({
       dataIndex: "note",
       align: "center",
       render: (_: any, record: MaCarBookType) => {
-        const isActionDisabled = record.carBookApprovedStatus === "Cancel" || record.carBookApprovedStatus === "Approve";
+        const isActionDisabled =
+          record.carBookApprovedStatus === "Cancel" ||
+          record.carBookApprovedStatus === "Approve" ||
+          record.carBookApprovedStatus === "Return" ||
+          record.carBookApprovedStatus === "Completed";
         let status = false;
-        if (record.carBookApprovedStatus === "Cancel" || record.carBookApprovedStatus === "Approve") {
+        if (
+          record.carBookApprovedStatus === "Cancel" ||
+          record.carBookApprovedStatus === "Approve" ||
+          record.carBookApprovedStatus === "Return" ||
+          record.carBookApprovedStatus === "Completed"
+        ) {
           status = true;
         } else {
           status = false;

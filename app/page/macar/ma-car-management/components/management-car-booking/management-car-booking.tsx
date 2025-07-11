@@ -40,7 +40,13 @@ const managementCarBooking: React.FC<props> = ({ setLoading, loading, maCarBookD
     } else {
       setCheckType(status);
     }
-    form.setFieldsValue({ ...record, carBookStartDate: dayjs(record.carBookStartDate), carBookEndDate: dayjs(record.carBookEndDate) });
+    form.setFieldsValue({
+      ...record,
+      carBookStartDate: dayjs(record.carBookStartDate),
+      carBookEndDate: dayjs(record.carBookEndDate),
+      carMile: record.maCar.carMile,
+      carPetrol: record.maCar.carPetrol,
+    });
     setOpenModal(true);
   };
 
@@ -50,10 +56,17 @@ const managementCarBooking: React.FC<props> = ({ setLoading, loading, maCarBookD
   };
 
   const onFinish = async (status: string, values: any) => {
+    const { createdById, carName, detail, carBookPlace, carBookStartDate, carBookEndDate } = form.getFieldsValue(true);
     let updatedApproveMa: any = {};
     try {
       if (status === "approved") {
         updatedApproveMa = {
+          carName,
+          createdById,
+          detail,
+          carBookPlace,
+          carBookStartDate,
+          carBookEndDate,
           id: form.getFieldValue("id"),
           carBookApprovedById: user?.userId,
           carBookApprovedByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
@@ -64,6 +77,12 @@ const managementCarBooking: React.FC<props> = ({ setLoading, loading, maCarBookD
       }
       if (status === "return") {
         updatedApproveMa = {
+          carName,
+          createdById,
+          detail,
+          carBookPlace,
+          carBookStartDate,
+          carBookEndDate,
           id: form.getFieldValue("id"),
           recipientId: user?.userId,
           recipientName: `${user?.firstNameTh} ${user?.lastNameTh}`,

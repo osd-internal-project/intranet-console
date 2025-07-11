@@ -16,32 +16,10 @@ interface props {
 
 const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, openModal, closeModalFecthStatus, setCheckStatusApproved }) => {
   const getModalTitle = () => {
-    const titles = {
-      return: "รับคืนรถ",
-      approved: "อนุมัติการจองรถ",
-      cancel: "ยกเลิกการจองรถ",
-      delete: "ลบการจองรถ",
-    };
     return "จัดการการจองรถ";
   };
 
-  // const getSectionTitle = () => {
-  //   const titles = {
-  //     return: "ข้อมูลการคืนรถ",
-  //     approved: "ข้อมูลการจองรถ",
-  //     cancel: "ข้อมูลการยกเลิกการจองรถ",
-  //     delete: "ข้อมูลการลบการจองรถ",
-  //   };
-  //   return titles[status] || "ข้อมูลการจอง";
-  // };
-
   const getStatusColor = () => {
-    const colors = {
-      return: "#52c41a",
-      approved: "#1890ff",
-      cancel: "#ff4d4f",
-      delete: "#ff4d4f",
-    };
     return "#1890ff";
   };
 
@@ -132,7 +110,7 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
                   disabled
                   placeholder="เลือกวันที่เริ่มการจอง"
                   style={{ width: "100%" }}
-                  format={"DD/MM/YYYY"}
+                  format={"DD/MM/YYYY HH:mm"}
                   suffixIcon={<CalendarOutlined />}
                 />
               </Form.Item>
@@ -143,7 +121,7 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
                   disabled
                   placeholder="กรอกวันที่สิ้นสุดการจอง"
                   style={{ width: "100%" }}
-                  format={"DD/MM/YYYY"}
+                  format={"DD/MM/YYYY HH:mm"}
                   suffixIcon={<CalendarOutlined />}
                 />
               </Form.Item>
@@ -166,6 +144,7 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
               <Col span={12}>
                 <Form.Item name="carMile" label="เลขไมล์รถ">
                   <InputNumber
+                    disabled
                     style={{ width: "100%" }}
                     placeholder="กรอกเลขไมล์รถ"
                     formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
@@ -176,6 +155,7 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
               <Col span={12}>
                 <Form.Item label="ระดับน้ำมันรถ" name="carPetrol">
                   <Select
+                    disabled
                     placeholder="เลือกระดับน้ำมัน"
                     options={[
                       { value: "high", label: "🟢 มาก" },

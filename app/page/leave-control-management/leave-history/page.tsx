@@ -79,7 +79,7 @@ export default function Page() {
       okButtonProps: { type: "primary", danger: true },
       cancelText: "Cancel",
       onOk: async () => {
-        const res = await DataLeaveService(baseUrlIntranet).approvedDataLeave("", type, id, user);
+        const res = await DataLeaveService(baseUrlIntranet).approvedDataLeave("", type, id, user, "");
         if (res) {
           type === "cancel" ? message.error("cancel success") : message.success("approved success");
           setLoading(true);

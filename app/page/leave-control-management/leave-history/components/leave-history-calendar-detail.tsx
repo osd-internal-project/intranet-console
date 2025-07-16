@@ -29,7 +29,7 @@ export const LeaveHistoryCalendarDetail: React.FC<props> = ({
         onCancel={() => onCancelModalDetail()}
         width={700}
         bodyStyle={{ padding: 0 }}
-        className="leave-detail-modal">
+        className="[&_.ant-modal-content]:!p-0">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-t-lg">
           <div className="flex items-center justify-center">
@@ -43,7 +43,7 @@ export const LeaveHistoryCalendarDetail: React.FC<props> = ({
           <Form autoComplete="off" form={formDetail} layout="vertical">
             {/* Basic Information Card */}
             <Card
-              className="mb-4 shadow-sm"
+              className="mb-4 shadow-sm [&_.ant-card-head]:bg-gradient-to-r [&_.ant-card-head]:from-gray-50 [&_.ant-card-head]:to-gray-100 [&_.ant-card-head]:border-b-2 [&_.ant-card-head]:border-gray-200 [&_.ant-card-head-title]:font-semibold [&_.ant-card-head-title]:text-gray-700"
               title={
                 <div className="flex items-center">
                   <UserOutlined className="mr-2 text-blue-500" />
@@ -53,12 +53,20 @@ export const LeaveHistoryCalendarDetail: React.FC<props> = ({
               <Row gutter={16}>
                 <Col span={12}>
                   <Form.Item label="วันที่สร้าง" name="createAt">
-                    <Input disabled className="read-only-input" prefix={<CalendarOutlined className="text-gray-400" />} />
+                    <Input
+                      disabled
+                      className="bg-gray-50 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none"
+                      prefix={<CalendarOutlined className="text-gray-400" />}
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
                   <Form.Item label="เรียนถึง" name="ownerName">
-                    <Input disabled className="read-only-input" prefix={<UserOutlined className="text-gray-400" />} />
+                    <Input
+                      disabled
+                      className="bg-gray-50 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none"
+                      prefix={<UserOutlined className="text-gray-400" />}
+                    />
                   </Form.Item>
                 </Col>
               </Row>
@@ -66,24 +74,37 @@ export const LeaveHistoryCalendarDetail: React.FC<props> = ({
               <Row gutter={16}>
                 <Col span={12}>
                   <Form.Item label="ผู้ขอลา" name="name">
-                    <Input disabled className="read-only-input" prefix={<UserOutlined className="text-gray-400" />} />
+                    <Input
+                      disabled
+                      className="bg-gray-50 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none"
+                      prefix={<UserOutlined className="text-gray-400" />}
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
                   <Form.Item label="เบอร์ติดต่อระหว่างลา" name="phoneNumber">
-                    <Input disabled className="read-only-input" prefix={<PhoneOutlined className="text-gray-400" />} />
+                    <Input
+                      disabled
+                      className="bg-gray-50 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none"
+                      prefix={<PhoneOutlined className="text-gray-400" />}
+                    />
                   </Form.Item>
                 </Col>
               </Row>
 
               <Form.Item label="เนื่องจาก" name="detail">
-                <Input.TextArea disabled className="read-only-input" rows={2} placeholder="รายละเอียดเหตุผลการลา" />
+                <Input.TextArea
+                  disabled
+                  className="bg-gray-50 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none"
+                  rows={2}
+                  placeholder="รายละเอียดเหตุผลการลา"
+                />
               </Form.Item>
             </Card>
 
             {/* Leave Details Card */}
             <Card
-              className="mb-4 shadow-sm"
+              className="mb-4 shadow-sm [&_.ant-card-head]:bg-gradient-to-r [&_.ant-card-head]:from-gray-50 [&_.ant-card-head]:to-gray-100 [&_.ant-card-head]:border-b-2 [&_.ant-card-head]:border-gray-200 [&_.ant-card-head-title]:font-semibold [&_.ant-card-head-title]:text-gray-700"
               title={
                 <div className="flex items-center">
                   <CalendarOutlined className="mr-2 text-green-500" />
@@ -95,7 +116,7 @@ export const LeaveHistoryCalendarDetail: React.FC<props> = ({
                   <Form.Item label="ประเภทการลา" name="typeLeave">
                     <Input
                       disabled
-                      className="read-only-input"
+                      className="bg-gray-50 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none"
                       prefix={
                         <Tag color="blue" className="m-0">
                           ลา
@@ -106,7 +127,11 @@ export const LeaveHistoryCalendarDetail: React.FC<props> = ({
                 </Col>
                 <Col span={12}>
                   <Form.Item label="เป็นเวลา" name="leaveHour">
-                    <Input disabled className="read-only-input" suffix={<span className="text-gray-400">ชั่วโมง</span>} />
+                    <Input
+                      disabled
+                      className="bg-gray-50 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none"
+                      suffix={<span className="text-gray-400">ชั่วโมง</span>}
+                    />
                   </Form.Item>
                 </Col>
               </Row>
@@ -114,12 +139,20 @@ export const LeaveHistoryCalendarDetail: React.FC<props> = ({
               <Row gutter={16}>
                 <Col span={12}>
                   <Form.Item label="ตั้งแต่วันที่" name="startDate">
-                    <Input disabled className="read-only-input" prefix={<CalendarOutlined className="text-gray-400" />} />
+                    <Input
+                      disabled
+                      className="bg-gray-50 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none"
+                      prefix={<CalendarOutlined className="text-gray-400" />}
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
                   <Form.Item label="ถึงวันที่" name="endDate">
-                    <Input disabled className="read-only-input" prefix={<CalendarOutlined className="text-gray-400" />} />
+                    <Input
+                      disabled
+                      className="bg-gray-50 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none"
+                      prefix={<CalendarOutlined className="text-gray-400" />}
+                    />
                   </Form.Item>
                 </Col>
               </Row>
@@ -128,7 +161,7 @@ export const LeaveHistoryCalendarDetail: React.FC<props> = ({
             {/* Files Section */}
             {Array.isArray(dataLeaveFiles) && dataLeaveFiles.length > 0 && (
               <Card
-                className="mb-4 shadow-sm"
+                className="mb-4 shadow-sm [&_.ant-card-head]:bg-gradient-to-r [&_.ant-card-head]:from-gray-50 [&_.ant-card-head]:to-gray-100 [&_.ant-card-head]:border-b-2 [&_.ant-card-head]:border-gray-200 [&_.ant-card-head-title]:font-semibold [&_.ant-card-head-title]:text-gray-700"
                 title={
                   <div className="flex items-center">
                     <PaperClipOutlined className="mr-2 text-purple-500" />
@@ -137,7 +170,7 @@ export const LeaveHistoryCalendarDetail: React.FC<props> = ({
                 }>
                 <div className="grid grid-cols-1 gap-2">
                   {dataLeaveFiles.map((file: any, index: number) => (
-                    <div key={index} className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div key={index} className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
                       <PaperClipOutlined className="text-blue-500 mr-3" />
                       <div className="flex-1">
                         <Tooltip title="คลิกเพื่อดาวน์โหลด">
@@ -155,7 +188,7 @@ export const LeaveHistoryCalendarDetail: React.FC<props> = ({
             {/* Approval Section */}
             {userApproved && (
               <Card
-                className="shadow-sm border-green-200"
+                className="shadow-sm border-green-200 [&_.ant-card-head]:bg-gradient-to-r [&_.ant-card-head]:from-gray-50 [&_.ant-card-head]:to-gray-100 [&_.ant-card-head]:border-b-2 [&_.ant-card-head]:border-gray-200 [&_.ant-card-head-title]:font-semibold [&_.ant-card-head-title]:text-gray-700"
                 title={
                   <div className="flex items-center">
                     <CheckCircleOutlined className="mr-2 text-green-500" />
@@ -166,17 +199,25 @@ export const LeaveHistoryCalendarDetail: React.FC<props> = ({
                   <Row gutter={16}>
                     <Col span={12}>
                       <Form.Item label="ผู้อนุมัติ" name="userApproved" className="mb-2">
-                        <Input disabled className="read-only-input border-green-300" prefix={<UserOutlined className="text-green-500" />} />
+                        <Input
+                          disabled
+                          className="bg-gray-50 cursor-default hover:border-green-300 focus:border-green-300 focus:shadow-none border-green-300"
+                          prefix={<UserOutlined className="text-green-500" />}
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={12}>
                       <Form.Item label="วันที่อนุมัติ" name="approvedDate" className="mb-2">
-                        <Input disabled className="read-only-input border-green-300" prefix={<CalendarOutlined className="text-green-500" />} />
+                        <Input
+                          disabled
+                          className="bg-gray-50 cursor-default hover:border-green-300 focus:border-green-300 focus:shadow-none border-green-300"
+                          prefix={<CalendarOutlined className="text-green-500" />}
+                        />
                       </Form.Item>
                     </Col>
                   </Row>
                   <div className="text-center mt-2">
-                    <Tag color="success" className="px-4 py-1">
+                    <Tag color="success" className="px-4 py-1 font-medium rounded-full">
                       <CheckCircleOutlined className="mr-1" />
                       อนุมัติแล้ว
                     </Tag>
@@ -189,36 +230,15 @@ export const LeaveHistoryCalendarDetail: React.FC<props> = ({
 
         {/* Footer */}
         <div className="p-4 bg-gray-50 rounded-b-lg text-center">
-          <Button type="primary" size="large" onClick={() => onCancelModalDetail()} className="px-8">
+          <Button
+            type="primary"
+            size="large"
+            onClick={() => onCancelModalDetail()}
+            className="px-8 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
             ปิด
           </Button>
         </div>
       </Modal>
-
-      <style jsx>{`
-        .read-only-input {
-          background-color: #f5f5f5 !important;
-          cursor: default !important;
-        }
-        .read-only-input:hover {
-          border-color: #d9d9d9 !important;
-        }
-        .read-only-input:focus {
-          border-color: #d9d9d9 !important;
-          box-shadow: none !important;
-        }
-        .leave-detail-modal .ant-modal-content {
-          padding: 0 !important;
-        }
-        .leave-detail-modal .ant-card-head {
-          background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-          border-bottom: 2px solid #e9ecef;
-        }
-        .leave-detail-modal .ant-card-head-title {
-          font-weight: 600;
-          color: #495057;
-        }
-      `}</style>
     </div>
   );
 };

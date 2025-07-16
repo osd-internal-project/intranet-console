@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
-import { Table, Button, Row, Col, Space, Select, Modal, Form, Input, Divider, message, InputNumber, Tag } from "antd";
-import type { TableProps, FormProps } from "antd";
+import { Table, Button, Row, Col, Space, Select, Modal, Form, Input, Divider, message, InputNumber, Tag, Upload } from "antd";
+import type { TableProps, FormProps, UploadProps, UploadFile } from "antd";
 import dayjs from "dayjs";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { MaCarBookServices } from "../../../../services/ma-car-book.service";
@@ -11,6 +11,8 @@ import { CarReturnForm } from "./car-return-form";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import { UploadOutlined } from "@ant-design/icons";
+import { RcFile } from "antd/es/upload";
 export interface props {
   maCarBookData: MaCarBookType[];
   loading: boolean;
@@ -29,7 +31,6 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
   const [modalEditDetail, setModalEditDetail] = useState(false);
   const maCarBookServices = MaCarBookServices(baseUrIntranet);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [oldCarMile, setOldCarMile] = useState<number>(0);
   const [statusApprove, setStatusApprove] = useState("");
   const [messages, messageHeader] = message.useMessage();
 
@@ -37,7 +38,6 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
     checkStatusReturn(record);
     setCurrentMaId(record.carId);
     setCurrentMaBookId(record.id);
-    setOldCarMile(record.maCar.carMile);
     formReturn.setFieldsValue({ ...record, carName: record.maCar.carName, status: record.maCar.status });
     record.carBookApprovedStatus === "Approve" ? setModalEditReturn(true) : null;
   };
@@ -75,7 +75,7 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
   };
 
   const updatedMaCarReturn: FormProps<MaCarType>["onFinish"] = async (values) => {
-    const { createdById, carName, detail, carBookPlace, carBookStartDate, carBookEndDate } = formReturn.getFieldsValue(true);
+    const { carName, detail, carBookPlace, carBookStartDate, carBookEndDate } = formReturn.getFieldsValue(true);
     if (currentMaId && currentMaBookId) {
       try {
         const updatedMaCar = {
@@ -194,6 +194,19 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
     },
   ];
 
+  const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
+
+  const beforeUploadAttendFiles = (file: RcFile) => {
+    if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
+      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
+      return false;
+    }
+    return false;
+  };
+  const handleChangeAttendFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
+    return setAttendFiles(newFileList);
+  };
+
   return (
     <>
       {messageHeader}
@@ -206,21 +219,7 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item
-              name="carMile"
-              label="เลขไมล์รถ"
-              rules={[
-                {
-                  required: true,
-                  message: "กรุณากรอกเลขไมล์รถ!",
-                  validator: (_, value) => {
-                    if (value >= oldCarMile) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(new Error("กรุณากรอกเลขไมล์รถ"));
-                  },
-                },
-              ]}>
+            <Form.Item name="carMile" label="เลขไมล์รถ">
               <InputNumber
                 placeholder="กรอกเลขไมล์รถ"
                 onKeyDown={(event) => {
@@ -240,12 +239,23 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
               </Select>
             </Form.Item>
           </Col>
-          {/* <Col span={24}>
-            <Form.Item label="สถานะของรถ" name="status" rules={[{ required: true, message: "กรุณาเลือกสถานะรถ!" }]}>
-              <Select>
-                <Select.Option value={true}>ใช้งานได้ปกติ</Select.Option>
-                <Select.Option value={false}>ไม่สามารถใช้งานได้</Select.Option>
-              </Select>
+          <Col span={12}>
+            <Form.Item label="หมายเหตุ" name="remark">
+              <Input.TextArea placeholder="แจ้งเรื่องอื่นๆ" showCount maxLength={250} />
+            </Form.Item>
+          </Col>
+          {/* <Col span={12}>
+            <Form.Item label="Upload Images" valuePropName="fileList" extra="เฉพาะ PNG และ JPEG ">
+              <Upload
+                accept="image/png, image/jpeg"
+                fileList={attendFiles}
+                onChange={handleChangeAttendFiles}
+                beforeUpload={beforeUploadAttendFiles}
+                multiple={true}
+                maxCount={10}
+                listType="picture">
+                <Button icon={<UploadOutlined />}>Click to upload</Button>
+              </Upload>
             </Form.Item>
           </Col> */}
           <Row justify="end" gutter={16}>
@@ -259,7 +269,7 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
         </Form>
       </Modal>
 
-      <Modal style={{ top: 10 }} title="รายละเอียด" open={modalEditDetail} onCancel={handleModalDetail} footer={null} width={1200}>
+      <Modal style={{ top: 10 }} open={modalEditDetail} onCancel={handleModalDetail} footer={null} width={1200}>
         <CarReturnForm formBookData={formBookData} statusApprove={statusApprove} />
       </Modal>
 

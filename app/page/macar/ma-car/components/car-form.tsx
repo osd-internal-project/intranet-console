@@ -118,7 +118,7 @@ export const CarForm: React.FC<props> = ({
               />
             </Form.Item>
           </Col>
-          <Col span={8}>
+          {/* <Col span={8}>
             <Form.Item name="remark" label="หมายเหตุการจองรถ :">
               <TextArea
                 placeholder={!editState ? "กรอกหมายเหตุการจองรถ" : ""}
@@ -129,7 +129,7 @@ export const CarForm: React.FC<props> = ({
                 maxLength={250}
               />
             </Form.Item>
-          </Col>
+          </Col> */}
         </Row>
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>

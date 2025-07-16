@@ -150,15 +150,7 @@ export const LeaveDetailForm: React.FC<props> = ({
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item label="ประเภทการลา" name="typeLeave">
-                <Input
-                  disabled
-                  className="bg-gray-100 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none"
-                  prefix={
-                    <Tag color="blue" className="m-0 rounded-full px-3 py-1 font-medium">
-                      ลา
-                    </Tag>
-                  }
-                />
+                <Input disabled className="bg-gray-100 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none" />
               </Form.Item>
             </Col>
             <Col span={12}>

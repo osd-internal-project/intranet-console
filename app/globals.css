@@ -221,6 +221,10 @@
   cursor: not-allowed; /* Change cursor to indicate non-interactive rows */
   pointer-events: none; /* Prevent click events */
 }
+.disabled-row td {
+  /* ให้ pointer events ยังทำงานได้สำหรับ tooltip */
+  pointer-events: auto;
+}
 .read-only-input {
   background-color: #fff !important;
   color: #555 !important;

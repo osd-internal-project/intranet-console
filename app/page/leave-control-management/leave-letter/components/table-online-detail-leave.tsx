@@ -21,16 +21,7 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
   dataHolidayDay,
 }): React.ReactElement => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [showTooltip, setShowTooltip] = useState<boolean>(false);
-  const [text, setText] = useState<string>("");
-  const handleMouseEnter = (description: string) => {
-    setText(description);
-    setShowTooltip(true);
-  };
 
-  const handleMouseLeave = () => {
-    setShowTooltip(false);
-  };
   const columns: TableColumnsType<ITypetypeleave> = [
     {
       key: "typeName",
@@ -44,7 +35,7 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
             overlayInnerStyle={{
               width: 600,
               whiteSpace: "pre-wrap",
-              backgroundColor: "#ED9121", // สีส้ม Coral
+              backgroundColor: "#ED9121",
               color: "white",
             }}
             title={<div dangerouslySetInnerHTML={{ __html: rows.descriptionLeave }} />}>

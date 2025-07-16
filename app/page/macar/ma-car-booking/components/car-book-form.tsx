@@ -128,11 +128,6 @@ export const CarBookForm: React.FC<props> = ({ formUser, createMaCarBook, maCarD
               <TextArea placeholder="กรอกรายละเอียด" rows={2} showCount maxLength={250} />
             </Form.Item>
           </Col>
-          <Col span={8}>
-            <Form.Item name="remark" label="หมายเหตุการจองรถ">
-              <TextArea placeholder="หมายเหตุการจองรถ" showCount maxLength={250} />
-            </Form.Item>
-          </Col>
         </Row>
         <Col span={24} style={{ textAlign: "center" }}>
           <Form.Item>

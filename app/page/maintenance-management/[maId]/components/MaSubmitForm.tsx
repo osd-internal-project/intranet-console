@@ -120,7 +120,6 @@ const MaDescriptionComponent: React.FC<props> = ({
               showCount={true}
             />
           </Form.Item>
-
           <Form.Item
             className="md:col-span-3"
             label="Upload Images"

@@ -165,15 +165,7 @@ export const LeaveHistoryDetail: React.FC<props> = ({
               <Row gutter={16}>
                 <Col span={12}>
                   <Form.Item label="ประเภทการลา" name="typeLeave">
-                    <Input
-                      disabled
-                      className="bg-gray-50 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none"
-                      prefix={
-                        <Tag color="blue" className="m-0">
-                          ลา
-                        </Tag>
-                      }
-                    />
+                    <Input disabled className="bg-gray-50 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none" />
                   </Form.Item>
                 </Col>
                 <Col span={12}>

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Table, Button, Row, Col, Space, Select, Modal, Form, Input, Divider, message, InputNumber } from "antd";
+import { Table, Button, Row, Col, Space, Select, Modal, Form, Input, Divider, message, InputNumber, Tag } from "antd";
 import type { TableProps, FormProps } from "antd";
 import dayjs from "dayjs";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -184,8 +184,10 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
             <Button type="link" onClick={() => showModalReturn(record)}>
               แจ้งคืนรถ
             </Button>
+          ) : record.carBookApprovedStatus === "Completed" ? (
+            <Tag color="gold">{`ดำเนินการเสร็จสิ้น`}</Tag>
           ) : (
-            <span style={{ color: "grey" }}>ไม่สามารถแจ้งคืนรถได้</span>
+            <span style={{ color: "grey" }}>{`ไม่สามารถแจ้งคืนรถได้`}</span>
           )}
         </Space>
       ),

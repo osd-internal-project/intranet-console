@@ -176,7 +176,6 @@ const MaCarBookTable: React.FC<props> = ({
         return `${dateFormatTime(String(row.carBookStartDate))} ถึง ${dateFormatTime(String(row.carBookEndDate))}`;
       },
     },
-
     {
       key: "createdByName",
       title: "ชื่อผู้จอง",

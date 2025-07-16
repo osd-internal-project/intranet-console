@@ -8,7 +8,7 @@ import { CaretRightOutlined } from "@ant-design/icons";
 import { MaCarBookCalendarType } from "../../common/index";
 import dayjs from "dayjs";
 import { dateFormatTime } from "@/app/utils";
-import { CheckStatusMaCarBookType } from "@/app/utils/validatefield";
+import { CheckStatusMaCarBookType, showStatus } from "@/app/utils/validatefield";
 import { checkIcon, loadingIcon } from "@/components/icon";
 interface CustomEvent extends RbcEvent {
   id: number;
@@ -51,7 +51,12 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
   };
 
   const CustomEventComponent = ({ event }: { event: CustomEvent }) => {
-    const icon = event.carBookApprovedStatus === "Approve" ? checkIcon : event.carBookApprovedStatus === "holiday" ? null : loadingIcon;
+    const icon =
+      event.carBookApprovedStatus === "Approve" || event.carBookApprovedStatus === "Return" || event.carBookApprovedStatus === "Completed"
+        ? checkIcon
+        : event.carBookApprovedStatus === "holiday"
+        ? null
+        : loadingIcon;
     return (
       <span className="flex justify-start items-center gap-1 text-[10px] text-white overflow-hidden">
         {icon && <span className="flex-shrink-0">{icon}</span>}
@@ -71,6 +76,7 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
   };
   return (
     <>
+      <div style={{ justifyContent: "start", display: "flex", alignItems: "center", marginBottom: "10px" }}>{showStatus()}</div>
       <Calendar<CustomEvent>
         style={{ height: 500 }}
         localizer={localizer}
@@ -101,8 +107,16 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
         dayPropGetter={dayPropGetter}
         eventPropGetter={(event: CustomEvent) => {
           let backgroundColor = "#FFA500";
-          let color = "#ffff";
-          backgroundColor = event.carBookApprovedStatus === "Approve" ? "#4CAF50" : event.carBookApprovedStatus === "holiday" ? "#FFA500" : "#2196F3";
+          backgroundColor =
+            event.carBookApprovedStatus === "Approve"
+              ? "#4CAF50"
+              : event.carBookApprovedStatus === "holiday"
+              ? "#FFA500"
+              : event.carBookApprovedStatus === "Return"
+              ? "#ffbf00"
+              : event.carBookApprovedStatus === "Completed"
+              ? "#9370db"
+              : "#2196F3";
           return {
             style: { backgroundColor, color: "#fff", fontSize: 10 },
           };

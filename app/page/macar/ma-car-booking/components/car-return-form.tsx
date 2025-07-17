@@ -1,5 +1,21 @@
 import React from "react";
-import { Row, Col, Form, Input, Divider, ConfigProvider, Select, InputNumber, DatePicker, FormInstance, Card, Typography, Badge, Space } from "antd";
+import {
+  Row,
+  Col,
+  Form,
+  Input,
+  Divider,
+  ConfigProvider,
+  Select,
+  InputNumber,
+  DatePicker,
+  FormInstance,
+  Card,
+  Typography,
+  Badge,
+  Space,
+  Image,
+} from "antd";
 import {
   UserOutlined,
   CarOutlined,
@@ -60,6 +76,8 @@ const getStatusIcon = (status: string) => {
 };
 
 export const CarReturnForm: React.FC<Props> = ({ formBookData, statusApprove }) => {
+  const values = formBookData.getFieldsValue(true);
+
   const customTheme = {
     token: {
       colorBgContainerDisabled: "#fafafa",
@@ -347,7 +365,23 @@ export const CarReturnForm: React.FC<Props> = ({ formBookData, statusApprove }) 
                   </Form.Item>
                 </Col>
               </Row>
-
+              {values.maCarBookImage && values.maCarBookImage.length > 0 ? (
+                <div className="flex justify-center gap-3 mt-2 mb-2">
+                  {values.maCarBookImage.map((e: any, index: number) => {
+                    <Image
+                      alt="news"
+                      preview={false}
+                      crossOrigin="anonymous"
+                      src={`${process.env.REACT_APP_API_BASE_URL_INTRANET}/get-image/${e.idCarBookImage}`}
+                      style={{
+                        width: "100%",
+                        height: "150px",
+                        objectFit: "cover",
+                      }}
+                    />;
+                  })}
+                </div>
+              ) : null}
               <Row gutter={[24, 16]}>
                 <Col xs={24} sm={12} md={8}>
                   <Form.Item name="recipientName" label="ผู้รับคืนรถ">
@@ -360,7 +394,7 @@ export const CarReturnForm: React.FC<Props> = ({ formBookData, statusApprove }) 
                       <DatePicker
                         disabled
                         className="read-only-input w-full"
-                        format={dateFormatTime(formBookData.getFieldValue("returnAt"))}
+                        format={dateFormatTime(formBookData.getFieldValue("returnAt") ? formBookData.getFieldValue("returnAt") : null)}
                         suffixIcon={<CalendarOutlined className="text-gray-400" />}
                         size="large"
                       />

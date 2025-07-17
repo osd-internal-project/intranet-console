@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Table, Button, Row, Col, Space, Select, Modal, Form, Input, Divider, message, InputNumber, Tag, Upload } from "antd";
+import { Table, Button, Row, Col, Space, Select, Modal, Form, Input, Divider, message, InputNumber, Tag, Upload, Image } from "antd";
 import type { TableProps, FormProps, UploadProps, UploadFile } from "antd";
 import dayjs from "dayjs";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -20,6 +20,7 @@ export interface props {
 }
 
 const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: any): React.ReactElement => {
+  const baseImageUrl = process.env.REACT_APP_API_BASE_URL_INTRANET;
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const { id24Axios } = useId24();
   const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
@@ -32,7 +33,9 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
   const maCarBookServices = MaCarBookServices(baseUrIntranet);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [statusApprove, setStatusApprove] = useState("");
+  const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [messages, messageHeader] = message.useMessage();
+  const values = formReturn.getFieldsValue(true);
 
   const showModalReturn = (record: MaCarBookType) => {
     checkStatusReturn(record);
@@ -47,6 +50,8 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
   };
 
   const showModalDetail = (record: MaCarBookType) => {
+    console.log(record.returnAt);
+
     setModalEditDetail(true);
     setCurrentMaBookId(record.id);
     setStatusApprove(record.carBookApprovedStatus);
@@ -60,10 +65,10 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
       status: record.maCar.status,
       carMile: record.maCar.carMile,
       carPetrol: record.maCar.carPetrol,
-      returnNotifAt: dayjs(record.returnNotifAt),
+      returnNotifAt: record.returnNotifAt ? dayjs(record.returnNotifAt) : null,
       carBookApprovedStatus: record.carBookApprovedStatus,
       recipientName: record.recipientName,
-      returnAt: dayjs(record.returnAt),
+      returnAt: record.returnAt ? dayjs(record.returnAt) : null,
       carName1: record.carName,
       statusApprove: approvedStatus,
       phoneNumber: user?.phoneNumber,
@@ -96,18 +101,18 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
           carBookApprovedStatus: "Return",
           returnNotifAt: dayjs().toISOString(),
         };
-        // const updateCarBooikng = await maCarBookServices.updateMaCarBook(currentMaBookId, maCarBook);
-        // if (updateCarBooikng) {
-        if (attendFiles.length > 0) {
-          attendFiles.forEach(async (file) => {
-            const formData: any = new FormData();
-            formData.append("type", "attend");
-            formData.append("files", file.originFileObj);
-            await maCarBookServices.updateMaCarBookingImages(24, formData);
-          });
+        const updateCarBooikng = await maCarBookServices.updateMaCarBook(currentMaBookId, maCarBook);
+        if (updateCarBooikng) {
+          if (attendFiles.length > 0) {
+            attendFiles.forEach(async (file) => {
+              const formData: any = new FormData();
+              formData.append("type", "create-attend");
+              formData.append("files", file.originFileObj);
+              await maCarBookServices.updateMaCarBookingImages(updateCarBooikng.id, formData);
+            });
+          }
         }
-        // }
-        // await maCarBookServices.updateMaCar(currentMaId, updatedMaCar);
+        await maCarBookServices.updateMaCar(currentMaId, updatedMaCar);
         messages.success("คืนรถสำเร็จ");
         handleModalReturn();
         setSubmitLoading(false);
@@ -196,6 +201,8 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
             </Button>
           ) : record.carBookApprovedStatus === "Completed" ? (
             <Tag color="gold">{`ดำเนินการเสร็จสิ้น`}</Tag>
+          ) : record.carBookApprovedStatus === "Return" ? (
+            <Tag color="orange">{`ดำเนินการแจ้งคืนแล้ว`}</Tag>
           ) : (
             <span style={{ color: "grey" }}>{`ไม่สามารถแจ้งคืนรถได้`}</span>
           )}
@@ -203,8 +210,6 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
       ),
     },
   ];
-
-  const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
 
   const beforeUploadAttendFiles = (file: RcFile) => {
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
@@ -340,50 +345,66 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
                 <Input.TextArea placeholder="แจ้งเรื่องอื่นๆ เช่น ปัญหาหรือข้อสังเกต" showCount maxLength={250} rows={4} style={{ resize: "none" }} />
               </Form.Item>
             </Col>
-
             <Col span={12}>
-              <Form.Item
-                label={
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <CameraOutlined />
-                    <span>อัปโหลดรูปภาพ</span>
-                  </div>
-                }
-                valuePropName="fileList"
-                extra={
-                  <div
-                    style={{
-                      color: "#8c8c8c",
-                      fontSize: "12px",
-                      marginTop: "4px",
-                    }}>
-                    เฉพาะไฟล์ PNG และ JPEG (สูงสุด 10 ไฟล์)
-                  </div>
-                }>
-                <Upload
-                  accept="image/png, image/jpeg"
-                  fileList={attendFiles}
-                  onChange={handleChangeAttendFiles}
-                  beforeUpload={beforeUploadAttendFiles}
-                  multiple={true}
-                  maxCount={10}
-                  onPreview={() => {}}
-                  listType="picture-card"
-                  style={{ width: "100%" }}>
-                  {attendFiles.length >= 10 ? null : (
+              {values.maCarBookImage && values.maCarBookImage.length > 0 ? (
+                <>
+                  {formReturn.getFieldsValue(true).maCarBookImage.map((e: any, index: number) => {
+                    <Image
+                      alt="news"
+                      preview={false}
+                      crossOrigin="anonymous"
+                      src={`${process.env.REACT_APP_API_BASE_URL_INTRANET}/get-image/${e.idCarBookImage}`}
+                      style={{
+                        width: "100%",
+                        height: "150px",
+                        objectFit: "cover",
+                      }}
+                    />;
+                  })}
+                </>
+              ) : (
+                <Form.Item
+                  label={
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <CameraOutlined />
+                      <span>อัปโหลดรูปภาพ</span>
+                    </div>
+                  }
+                  valuePropName="fileList"
+                  extra={
                     <div
                       style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        padding: "8px",
+                        color: "#8c8c8c",
+                        fontSize: "12px",
+                        marginTop: "4px",
                       }}>
-                      <PlusOutlined style={{ fontSize: "16px", marginBottom: "8px" }} />
-                      <div style={{ fontSize: "12px" }}>อัปโหลด</div>
+                      เฉพาะไฟล์ PNG และ JPEG (สูงสุด 10 ไฟล์)
                     </div>
-                  )}
-                </Upload>
-              </Form.Item>
+                  }>
+                  <Upload
+                    fileList={attendFiles}
+                    onChange={handleChangeAttendFiles}
+                    beforeUpload={beforeUploadAttendFiles}
+                    multiple={false}
+                    // maxCount={10}
+                    onPreview={() => {}}
+                    listType="picture-card"
+                    style={{ width: "100%" }}>
+                    {attendFiles.length >= 10 ? null : (
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          padding: "8px",
+                        }}>
+                        <PlusOutlined style={{ fontSize: "16px", marginBottom: "8px" }} />
+                        <div style={{ fontSize: "12px" }}>อัปโหลด</div>
+                      </div>
+                    )}
+                  </Upload>
+                </Form.Item>
+              )}
             </Col>
           </Row>
 

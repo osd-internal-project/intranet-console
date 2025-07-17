@@ -1,6 +1,5 @@
 import { MaCarBookType } from "@/app/page/macar/common";
-import { dateFormatTime } from "@/app/utils";
-import { Button, Col, DatePicker, Divider, Form, FormInstance, Input, InputNumber, Modal, Row, Select, Space, Card } from "antd";
+import { Button, Col, DatePicker, Form, FormInstance, Input, InputNumber, Modal, Row, Select, Space, Card, Image } from "antd";
 import { CarOutlined, UserOutlined, CalendarOutlined, EnvironmentOutlined, FileTextOutlined, DashboardOutlined } from "@ant-design/icons";
 import TextArea from "antd/lib/input/TextArea";
 import React from "react";
@@ -15,6 +14,8 @@ interface props {
 }
 
 const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, openModal, closeModalFecthStatus, setCheckStatusApproved }) => {
+  const values = form.getFieldsValue(true);
+
   const getModalTitle = () => {
     return "จัดการการจองรถ";
   };
@@ -164,6 +165,26 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
                     ]}
                   />
                 </Form.Item>
+              </Col>
+              <Col span={24}>
+                {values.maCarBookImage && values.maCarBookImage.length > 0 ? (
+                  <div className="flex justify-center gap-3 mt-2 mb-2">
+                    <>{`รูปภาพ`}</>
+                    {values.maCarBookImage.map((e: any, index: number) => {
+                      <Image
+                        alt="news"
+                        preview={false}
+                        crossOrigin="anonymous"
+                        src={`${process.env.REACT_APP_API_BASE_URL_INTRANET}/get-image/${e.idCarBookImage}`}
+                        style={{
+                          width: "100%",
+                          height: "150px",
+                          objectFit: "cover",
+                        }}
+                      />;
+                    })}
+                  </div>
+                ) : null}
               </Col>
             </Row>
           </Card>

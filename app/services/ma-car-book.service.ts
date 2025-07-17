@@ -91,6 +91,17 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    getMaCarBookingImages: async (carBookingId: number) => {
+      return await axiosInstance
+        .get(`${baseUrlmaCarBookingImages}/${carBookingId}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
     getOrganizeChartQuery: async () => {
       return await axiosInstance
         .get(`${baseUrlApiMaCarBook}`)

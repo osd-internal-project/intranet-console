@@ -11,7 +11,7 @@ import { CarReturnForm } from "./car-return-form";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
-import { UploadOutlined } from "@ant-design/icons";
+import { CameraOutlined, CarOutlined, CheckOutlined, InfoCircleOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/es/upload";
 export interface props {
   maCarBookData: MaCarBookType[];
@@ -38,7 +38,7 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
     checkStatusReturn(record);
     setCurrentMaId(record.carId);
     setCurrentMaBookId(record.id);
-    formReturn.setFieldsValue({ ...record, carName: record.maCar.carName, status: record.maCar.status });
+    formReturn.setFieldsValue({ ...record, carName: record.maCar.carName, status: record.maCar.status, carMile: record.maCar.carMile });
     record.carBookApprovedStatus === "Approve" ? setModalEditReturn(true) : null;
   };
 
@@ -90,14 +90,24 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
           carName,
           detail,
           carBookPlace,
-          carBookStartDate,
-          carBookEndDate,
+          carBookStartDate: dayjs(carBookStartDate).startOf("date").toISOString(),
+          carBookEndDate: dayjs(carBookEndDate).endOf("date").toISOString(),
           createdById: user?.userId,
           carBookApprovedStatus: "Return",
           returnNotifAt: dayjs().toISOString(),
         };
-        await maCarBookServices.updateMaCarBook(currentMaBookId, maCarBook);
-        await maCarBookServices.updateMaCar(currentMaId, updatedMaCar);
+        // const updateCarBooikng = await maCarBookServices.updateMaCarBook(currentMaBookId, maCarBook);
+        // if (updateCarBooikng) {
+        if (attendFiles.length > 0) {
+          attendFiles.forEach(async (file) => {
+            const formData: any = new FormData();
+            formData.append("type", "attend");
+            formData.append("files", file.originFileObj);
+            await maCarBookServices.updateMaCarBookingImages(24, formData);
+          });
+        }
+        // }
+        // await maCarBookServices.updateMaCar(currentMaId, updatedMaCar);
         messages.success("คืนรถสำเร็จ");
         handleModalReturn();
         setSubmitLoading(false);
@@ -210,61 +220,203 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
   return (
     <>
       {messageHeader}
-      <Modal title="การคืนรถ" open={modalEditReturn} onCancel={handleModalReturn} footer={null} width={500}>
-        <Form form={formReturn} layout="vertical" onFinish={updatedMaCarReturn} autoComplete="off" size="small">
-          <Divider orientation="left">ข้อมูลการคืนรถ</Divider>
-          <Col span={24}>
-            <Form.Item name="carName" label="ชื่อรถ">
-              <Input disabled placeholder="กรอกชื่อรถ" />
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item name="carMile" label="เลขไมล์รถ">
-              <InputNumber
-                placeholder="กรอกเลขไมล์รถ"
-                onKeyDown={(event) => {
-                  if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
-                    event.preventDefault();
-                  }
-                }}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item label="ระดับน้ำมันรถ" name="carPetrol" rules={[{ required: true, message: "กรุณาเลือกระดับน้ำมัน!" }]}>
-              <Select>
-                <Select.Option value="high">มาก</Select.Option>
-                <Select.Option value="medium">ปานกลาง</Select.Option>
-                <Select.Option value="low">น้อย</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item label="หมายเหตุ" name="remark">
-              <Input.TextArea placeholder="แจ้งเรื่องอื่นๆ" showCount maxLength={250} />
-            </Form.Item>
-          </Col>
-          {/* <Col span={12}>
-            <Form.Item label="Upload Images" valuePropName="fileList" extra="เฉพาะ PNG และ JPEG ">
-              <Upload
-                accept="image/png, image/jpeg"
-                fileList={attendFiles}
-                onChange={handleChangeAttendFiles}
-                beforeUpload={beforeUploadAttendFiles}
-                multiple={true}
-                maxCount={10}
-                listType="picture">
-                <Button icon={<UploadOutlined />}>Click to upload</Button>
-              </Upload>
-            </Form.Item>
-          </Col> */}
+      <Modal
+        title={
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <CarOutlined style={{ color: "#1890ff" }} />
+            <span>การคืนรถ</span>
+          </div>
+        }
+        open={modalEditReturn}
+        onCancel={handleModalReturn}
+        footer={null}
+        width={600}
+        style={{ top: 20 }}>
+        <Form form={formReturn} layout="vertical" onFinish={updatedMaCarReturn} autoComplete="off" size="middle">
+          <div
+            style={{
+              background: "#f8f9fa",
+              padding: "16px",
+              borderRadius: "8px",
+              marginBottom: "24px",
+              border: "1px solid #e8e8e8",
+            }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                marginBottom: "16px",
+                color: "#1890ff",
+                fontWeight: 500,
+              }}>
+              <InfoCircleOutlined />
+              <span>ข้อมูลการคืนรถ</span>
+            </div>
+
+            <Row gutter={16}>
+              <Col span={24}>
+                <Form.Item name="carName" label="ชื่อรถ">
+                  <Input
+                    disabled
+                    placeholder="กรอกชื่อรถ"
+                    style={{
+                      backgroundColor: "#f5f5f5",
+                      border: "1px solid #d9d9d9",
+                    }}
+                    prefix={<CarOutlined style={{ color: "#8c8c8c" }} />}
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col span={12}>
+                <Form.Item name="carMile" label="เลขไมล์รถ">
+                  <InputNumber
+                    placeholder="กรอกเลขไมล์รถ"
+                    style={{ width: "100%" }}
+                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    parser={(value: any) => value.replace(/\$\s?|(,*)/g, "")}
+                    onKeyDown={(event) => {
+                      if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
+                        event.preventDefault();
+                      }
+                    }}
+                    addonAfter="กิโลเมตร"
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col span={12}>
+                <Form.Item label="ระดับน้ำมันรถ" name="carPetrol" rules={[{ required: true, message: "กรุณาเลือกระดับน้ำมัน!" }]}>
+                  <Select placeholder="เลือกระดับน้ำมัน">
+                    <Select.Option value="high">
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <div
+                          style={{
+                            width: "12px",
+                            height: "12px",
+                            backgroundColor: "#52c41a",
+                            borderRadius: "50%",
+                          }}
+                        />
+                        มาก (เต็มถัง)
+                      </div>
+                    </Select.Option>
+                    <Select.Option value="medium">
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <div
+                          style={{
+                            width: "12px",
+                            height: "12px",
+                            backgroundColor: "#faad14",
+                            borderRadius: "50%",
+                          }}
+                        />
+                        ปานกลาง (ครึ่งถัง)
+                      </div>
+                    </Select.Option>
+                    <Select.Option value="low">
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <div
+                          style={{
+                            width: "12px",
+                            height: "12px",
+                            backgroundColor: "#ff4d4f",
+                            borderRadius: "50%",
+                          }}
+                        />
+                        น้อย (ต่ำกว่าครึ่งถัง)
+                      </div>
+                    </Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+          </div>
+
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item label="หมายเหตุ" name="remark">
+                <Input.TextArea placeholder="แจ้งเรื่องอื่นๆ เช่น ปัญหาหรือข้อสังเกต" showCount maxLength={250} rows={4} style={{ resize: "none" }} />
+              </Form.Item>
+            </Col>
+
+            <Col span={12}>
+              <Form.Item
+                label={
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <CameraOutlined />
+                    <span>อัปโหลดรูปภาพ</span>
+                  </div>
+                }
+                valuePropName="fileList"
+                extra={
+                  <div
+                    style={{
+                      color: "#8c8c8c",
+                      fontSize: "12px",
+                      marginTop: "4px",
+                    }}>
+                    เฉพาะไฟล์ PNG และ JPEG (สูงสุด 10 ไฟล์)
+                  </div>
+                }>
+                <Upload
+                  accept="image/png, image/jpeg"
+                  fileList={attendFiles}
+                  onChange={handleChangeAttendFiles}
+                  beforeUpload={beforeUploadAttendFiles}
+                  multiple={true}
+                  maxCount={10}
+                  onPreview={() => {}}
+                  listType="picture-card"
+                  style={{ width: "100%" }}>
+                  {attendFiles.length >= 10 ? null : (
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        padding: "8px",
+                      }}>
+                      <PlusOutlined style={{ fontSize: "16px", marginBottom: "8px" }} />
+                      <div style={{ fontSize: "12px" }}>อัปโหลด</div>
+                    </div>
+                  )}
+                </Upload>
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Divider style={{ margin: "24px 0 16px 0" }} />
+
           <Row justify="end" gutter={16}>
-            <Button type="default" onClick={handleModalReturn} style={{ marginRight: "16px" }}>
-              ยกเลิก
-            </Button>
-            <Button type="primary" htmlType="submit" loading={submitLoading}>
-              คืนรถ
-            </Button>
+            <Col>
+              <Button
+                type="default"
+                onClick={handleModalReturn}
+                size="large"
+                style={{
+                  minWidth: "100px",
+                  borderRadius: "6px",
+                }}>
+                ยกเลิก
+              </Button>
+            </Col>
+            <Col>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={submitLoading}
+                size="large"
+                style={{
+                  minWidth: "100px",
+                  borderRadius: "6px",
+                  background: "#1890ff",
+                }}
+                icon={<CheckOutlined />}>
+                คืนรถ
+              </Button>
+            </Col>
           </Row>
         </Form>
       </Modal>

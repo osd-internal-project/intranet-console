@@ -32,7 +32,7 @@ const OvertimeHistory = () => {
     if (loading) {
       fecthData();
     }
-  }, [params, loading]);
+  }, [loading]);
 
   const fecthData = async () => {
     try {
@@ -43,10 +43,6 @@ const OvertimeHistory = () => {
         ? await OverTimeServices(baseUrlIntra).findManyHr(skip, take, params)
         : await OverTimeServices(baseUrlIntra).findMany(skip, take, params);
       setDataResource({ data: overtime.data, total: overtime.total });
-      setPagination({
-        current: 1,
-        pageSize: 10,
-      });
       setLoading(false);
     } catch (error) {
       console.error("Error fetching overtime data:", error);

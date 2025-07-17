@@ -23,7 +23,7 @@ interface DataType {
 }
 
 export interface props {
-  bookingFetchData: any[];
+  bookingFetchData: { data: any[]; count: number };
   pagination: TablePaginationConfig;
   changePagination: (pagination: TablePaginationConfig) => void;
 }
@@ -143,7 +143,6 @@ const BookingTable: React.FC<props> = ({ bookingFetchData, pagination, changePag
     setCurrentBookingDetails(null);
   };
 
-  useEffect(() => {}, []);
 
   return (
     <>
@@ -265,10 +264,10 @@ const BookingTable: React.FC<props> = ({ bookingFetchData, pagination, changePag
       <Table
         size="small"
         columns={columns}
-        dataSource={bookingFetchData}
+        dataSource={bookingFetchData.data}
         rowKey="id"
         onChange={changePagination}
-        pagination={pagination}
+        pagination={{ ...pagination, total: bookingFetchData.count }}
         scroll={{ x: "max-content" }}
       />
     </>

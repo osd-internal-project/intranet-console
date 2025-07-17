@@ -5,6 +5,7 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
   const baseUrlApiMaCar = "/ma-car";
   const baseUrlApiMaCarType = "/ma-car-type";
   const baseUrlApiMaCarWrapup = "/ma-car-wrapup";
+  const baseUrlmaCarBookingImages = "/ma-car-booking-images";
   return {
     getMaCarQuery: async () => {
       return await axiosInstance
@@ -67,6 +68,21 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
     updateMaCarBook: async (bookId: number, body: any) => {
       return await axiosInstance
         .patch(`${baseUrlApiMaCarBook}/${bookId}`, body)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    updateMaCarBookingImages: async (bookId: number, body: any) => {
+      return await axiosInstance
+        .post(`${baseUrlmaCarBookingImages}/upload-images/${24}`, body, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
         .then((res) => {
           return res.data;
         })

@@ -120,8 +120,8 @@ export default function Page() {
         return false;
       }
       let base = {
-        startDate: values.startDate,
-        endDate: values.endDate,
+        startDate: dayjs(values.startDate).startOf("date").toISOString(),
+        endDate: dayjs(values.endDate).endOf("date").toISOString(),
         startTime: values.startTime ? values.startTime : undefined,
         endTime: values.endTime ? values.endTime : undefined,
         detail: values.detail,

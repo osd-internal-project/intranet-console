@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+
 export interface ITypetypeleave {
   haveLeftHours: number;
   haveLeaveDays: number;
@@ -143,9 +145,9 @@ export interface ITypeDataLeave {
   departName?: string;
   typeId?: number;
   typeName?: string;
-  startDate?: Date;
+  startDate?: Date | Dayjs | string;
   startTime?: string;
-  endDate?: Date;
+  endDate?: Date | Dayjs | string;
   endTime?: string;
   leaveHour?: number;
   detail?: string;

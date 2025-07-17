@@ -84,8 +84,8 @@ export default function OverTimePage() {
 
   const onFinish = async (values: any) => {
     const res = {
-      dateStart: values.startDate,
-      startTime: values.startTime,
+      dateStart: dayjs(values.startDate).startOf("date").toISOString(),
+      startTime: dayjs(values.startTime).endOf("date").toISOString(),
       endTime: values.endTime,
       fullname: values.fullname,
       userId: user?.userId,

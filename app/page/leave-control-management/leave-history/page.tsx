@@ -16,7 +16,6 @@ import MasterHolidaysService from "../../setting/master-holidays/services/index.
 export default function Page() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const { id24Axios } = useId24();
-  // const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [loading, setLoading] = useState<boolean>(true);
   const [dataSource, setDataSource] = useState<ITypeDataLeave[]>([]);
@@ -54,17 +53,13 @@ export default function Page() {
         typeName: "วันหยุด",
         status: "holiday",
       }));
-
-      // Merge data
       const mergedUserData = [...userLeave, ...holidayMappedData];
       const mergedGroupData = [...groupLeave, ...holidayMappedData];
 
-      // Set state
       setDataLeaveGroup(mergedGroupData);
       setDataSource(mergedUserData);
     } catch (error) {
       console.error("Failed to load calendar data:", error);
-      // Optionally set error state or show user feedback
     } finally {
       setLoading(false);
     }

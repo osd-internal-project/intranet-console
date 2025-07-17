@@ -75,7 +75,7 @@ const BookingRoomPage: React.FC = () => {
   const [isModalBooking, setIsModalBooking] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [masterRoomData, setMasterRoomData] = useState<MasterRoomType[]>([]);
-  const [bookingFetchData, setBookingFetchData] = useState([]);
+  const [bookingFetchData, setBookingFetchData] = useState<{ data: any[]; count: number }>({ data: [], count: 0 });
   const [refreshmentData, setRefreshmentData] = useState([]);
   const [bookingFetchCalendar, setBookingFetchCalendar] = useState([]);
   // const [department, setDepartment] = useState<{ createdAt: string; departId: number; departName: string; id: number; updatedAt: string }[]>([]);
@@ -213,7 +213,7 @@ const BookingRoomPage: React.FC = () => {
       const bookingCalendar = await BookingRoomServices(baseUrIntranet).getBookingRoomQuery();
       const refreshment = await BookingRoomServices(baseUrIntranet).getMasterRefreshmentQuery();
       const bookings = await BookingRoomServices(baseUrIntranet).findBookingRoom(skip, take);
-      setBookingFetchData(bookings.data);
+      setBookingFetchData(bookings);
       setRefreshmentData(refreshment);
       const dataFilterCalendar = bookingCalendar.data.filter((events: any) => events.bookingStatus !== "Reject");
       const mapCalendar: any = [...dataFilterCalendar, ...holidayMappedData];

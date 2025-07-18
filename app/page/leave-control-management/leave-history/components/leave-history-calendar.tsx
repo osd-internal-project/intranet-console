@@ -91,7 +91,6 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, download
   };
 
   const getBgColorByTypeId = (TypeId: any) => {
-    console.log(TypeId);
     const matchedColor = colorOfType.find((item) => item.id === Number(TypeId));
     return matchedColor ? matchedColor.bgcolor : "#FFA500";
   };

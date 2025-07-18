@@ -54,8 +54,8 @@ export const TableDetail: React.FC<props> = ({
         name: `${record.firstName} ${record.lastName}`,
         createAt: record.createdAt ? dateToStringThNoTime(record.createdAt) : "-",
         leaveHour: record.leaveHour ? (record.leaveHour % 8 === 0 ? `${record.leaveHour / 8} วัน` : `${record.leaveHour} ชม.`) : "ไม่มีข้อมูล",
-        startDate: record?.startDate ? dateToStringThNoTime(record?.startDate) : "-",
-        endDate: record?.endDate ? dateToStringThNoTime(record?.endDate) : "-",
+        startDate: record?.startDate ? dateToStringThNoTime(record?.startDate as any) : "-",
+        endDate: record?.endDate ? dateToStringThNoTime(record?.endDate as any) : "-",
         typeLeave: record.typeName,
         approvedDate: record.approvedDate ? dateToStringThNoTime(record?.approvedDate) : "-",
       };
@@ -82,7 +82,9 @@ export const TableDetail: React.FC<props> = ({
       dataIndex: "id",
       title: "วันที่ลา",
       render: (e: string, row: ITypeDataLeave) => {
-        return row?.startDate && row?.endDate ? `${dateToStringThNoTime(row?.startDate)} ถึง ${dateToStringThNoTime(row?.endDate)}` : "-";
+        return row?.startDate && row?.endDate
+          ? `${dateToStringThNoTime(row?.startDate as any)} ถึง ${dateToStringThNoTime(row?.endDate as any)}`
+          : "-";
       },
     },
 

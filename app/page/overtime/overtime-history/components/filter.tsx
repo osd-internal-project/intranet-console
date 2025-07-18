@@ -1,3 +1,4 @@
+import { IOverTimeForm } from "@/app/common/overtime";
 import { FilterOutlined } from "@ant-design/icons";
 import { Button, Form, Input, DatePicker, Popover, FormInstance, Select } from "antd";
 import React from "react";
@@ -7,9 +8,18 @@ export interface props {
   openFilter: boolean;
   filterForm: FormInstance;
   onSearch: (value: object) => void;
+  handleExport: () => void;
+  dataResource: { data: IOverTimeForm[]; total: number };
 }
 
-export const FilterOverTimeHistory: React.FC<props> = ({ handleOpenFilter, openFilter, filterForm, onSearch }): React.ReactElement => {
+export const FilterOverTimeHistory: React.FC<props> = ({
+  handleOpenFilter,
+  openFilter,
+  filterForm,
+  onSearch,
+  dataResource,
+  handleExport,
+}): React.ReactElement => {
   const { RangePicker } = DatePicker;
   const searchContent = (
     <Form layout="vertical" form={filterForm} onFinish={onSearch} autoComplete="off">
@@ -42,7 +52,7 @@ export const FilterOverTimeHistory: React.FC<props> = ({ handleOpenFilter, openF
     </Form>
   );
   return (
-    <div>
+    <div className="flex justify-between mb-3">
       <Popover
         onOpenChange={handleOpenFilter}
         open={openFilter}
@@ -54,6 +64,7 @@ export const FilterOverTimeHistory: React.FC<props> = ({ handleOpenFilter, openF
           Filters
         </Button>
       </Popover>
+      <Button type="default" disabled={dataResource.data.length === 0} onClick={handleExport}>{`Export`}</Button>
     </div>
   );
 };

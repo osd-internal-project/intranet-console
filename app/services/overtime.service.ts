@@ -11,10 +11,13 @@ export interface TServices {
   create: (condition: any) => Promise<any[]>;
   update: (overTimeID: string, type: string, user: { userId?: string; fullName?: string }) => Promise<any[]>;
   delete: (overTimeID: string) => Promise<any[]>;
+  exportReport: (page: { search: object }) => Promise<ArrayBuffer>;
 }
 const OverTimeServices = (axiosInstance: AxiosInstance): TServices => {
   const baseUrl = "/overtime";
   const baseMasterOtUrl = "/master-config-ot";
+  const baseReportOt = "/report-ot";
+
   return {
     findAll: async () => {
       return await axiosInstance
@@ -96,6 +99,17 @@ const OverTimeServices = (axiosInstance: AxiosInstance): TServices => {
     delete: async (overTimeID: string) => {
       return await axiosInstance
         .delete(`${baseUrl}/${overTimeID}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    exportReport: async (req: { search: object }) => {
+      return await axiosInstance
+        .get(`${baseReportOt}/export`, { params: req.search, responseType: "blob" })
         .then((res) => {
           return res.data;
         })

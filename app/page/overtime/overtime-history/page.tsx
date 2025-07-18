@@ -10,6 +10,8 @@ import TableOvertimeHistory from "./components/table";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { intersection } from "lodash";
+import { saveAs } from "file-saver";
+import dayjs from "dayjs";
 
 const OvertimeHistory = () => {
   const { id24Axios, tokenAccess } = useId24();
@@ -17,6 +19,7 @@ const OvertimeHistory = () => {
   const sideMenuGroups =
     tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
   const baseUrlIntra = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlReport = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_REPORT);
   const [filterForm] = Form.useForm();
   const [openFilter, setOpenFilter] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
@@ -52,10 +55,21 @@ const OvertimeHistory = () => {
     }
   };
 
+  const handleExport = async () => {
+    const response = await OverTimeServices(baseUrlReport).exportReport({
+      search: params,
+    });
+    const blob = new Blob([response], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    saveAs(blob, `รายงานการดำเนินการMA-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`);
+    message.success("สำเร็จ");
+  };
+
   const onSearch = async (value: object) => {
     setParams({ ...value });
     setLoading(true);
-    // setPagination({ pageSize: 10, current: 1 });
+    setPagination({ pageSize: 10, current: 1 });
     setOpenFilter(false);
   };
 
@@ -144,7 +158,14 @@ const OvertimeHistory = () => {
       </Divider>
       <div>
         <Card>
-          <FilterOverTimeHistory handleOpenFilter={handleOpenFilter} openFilter={openFilter} filterForm={filterForm} onSearch={onSearch} />
+          <FilterOverTimeHistory
+            handleOpenFilter={handleOpenFilter}
+            openFilter={openFilter}
+            filterForm={filterForm}
+            onSearch={onSearch}
+            handleExport={handleExport}
+            dataResource={dataResource}
+          />
           <TableOvertimeHistory
             dataResource={dataResource}
             pagination={pagination}

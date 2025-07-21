@@ -18,6 +18,17 @@
 //   },
 //   reactStrictMode: false,
 //   output: "standalone",
+// webpack: (config) => {
+//     config.externals = [...config.externals, "jsdom", "canvas"];
+//     config.module.rules.push({
+//       test: /\.node/,
+//       use: "raw-loader",
+//     });
+//     return config;
+//   },
+// images: {
+//   unoptimized: true,
+// },
 // };
 
 // local
@@ -39,6 +50,17 @@ const nextConfig = {
   },
   reactStrictMode: false,
   output: "standalone",
+  webpack: (config) => {
+    config.externals = [...config.externals, "jsdom", "canvas"];
+    config.module.rules.push({
+      test: /\.node/,
+      use: "raw-loader",
+    });
+    return config;
+  },
+  images: {
+    unoptimized: true,
+  },
 };
 
 module.exports = nextConfig;

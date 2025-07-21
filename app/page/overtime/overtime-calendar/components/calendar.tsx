@@ -3,24 +3,36 @@ import dayjs from "dayjs";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Calendar, momentLocalizer, Event as RbcEvent } from "react-big-calendar";
-import { Col, DatePicker, Form, Input, message, Modal, Row, Select } from "antd";
+import { Modal, Form, Input, DatePicker, Select, Row, Col, Badge, Tag, Space, Typography, Divider, Card, Avatar, message } from "antd";
+import {
+  UserOutlined,
+  ClockCircleOutlined,
+  CalendarOutlined,
+  CheckCircleOutlined,
+  ExclamationCircleOutlined,
+  CloseCircleOutlined,
+} from "@ant-design/icons";
 import { checkIcon, loadingIcon } from "@/components/icon";
+import { IOverTimeForm } from "@/app/common/overtime";
+
+const { Option } = Select;
+const { Text } = Typography;
 
 export interface props {
   holiday: THoliday[];
   fetchDataHoliday: (value: string) => void;
 }
 
-interface CustomEvent extends RbcEvent {
-  id: number | undefined;
-  title: string;
-  status: string;
-  type: string;
-  start: Date;
-  end: Date;
-  endTime: string;
-  startTime: string;
-}
+// interface CustomEvent extends RbcEvent {
+//   id: number | undefined;
+//   title: string;
+//   status: string;
+//   type: string;
+//   start: Date;
+//   end: Date;
+//   endTime: string;
+//   startTime: string;
+// }
 
 interface THoliday {
   id: number;
@@ -35,6 +47,7 @@ const CalendarPage: React.FC<props> = ({ holiday }): React.ReactElement => {
   const localizer = momentLocalizer(moment);
   const [visible, setVisible] = useState<boolean>(false);
   const [form] = Form.useForm();
+  const detail = form.getFieldsValue(true);
   const { Option } = Select;
 
   const handleOk = () => {
@@ -46,31 +59,68 @@ const CalendarPage: React.FC<props> = ({ holiday }): React.ReactElement => {
     form.resetFields();
   };
 
-  const onSelectEventCalendar = (event: CustomEvent) => {
-    console.log(event);
+  const getStatusConfig = (status: string) => {
+    switch (status) {
+      case "approved":
+        return {
+          color: "success",
+          icon: <CheckCircleOutlined />,
+          text: "อนุมัติ",
+          bgColor: "bg-green-50",
+          borderColor: "border-green-200",
+        };
+      case "waiting":
+        return {
+          color: "warning",
+          icon: <ExclamationCircleOutlined />,
+          text: "รอดำเนินการ",
+          bgColor: "bg-yellow-50",
+          borderColor: "border-yellow-200",
+        };
+      case "cancel":
+        return {
+          color: "error",
+          icon: <CloseCircleOutlined />,
+          text: "ยกเลิก",
+          bgColor: "bg-red-50",
+          borderColor: "border-red-200",
+        };
+      default:
+        return {
+          color: "default",
+          icon: <ExclamationCircleOutlined />,
+          text: status,
+          bgColor: "bg-gray-50",
+          borderColor: "border-gray-200",
+        };
+    }
+  };
 
+  const statusConfig = getStatusConfig(detail.status);
+
+  const onSelectEventCalendar = (event: IOverTimeForm) => {
     if (event.type === "holiday") {
-      message.info(event.title);
+      message.info(event.detailWork);
       return false;
     }
     form.setFieldsValue({
       ...event,
-      title: event.title,
-      status: event.status,
-      start: dayjs(event.start),
-      end: dayjs(event.end),
-      startTime: event.startTime,
-      endTime: event.endTime,
+      dateStart: event?.dateStart ? dayjs(event?.dateStart) : null,
+      startTime: event?.startTime,
+      endTime: event?.endTime,
+      approvedDate: event?.approvedDate ? dayjs(event?.approvedDate) : null,
+      createdAt: event?.createdAt ? dayjs(event?.createdAt) : null,
+      updatedAt: event?.updatedAt ? dayjs(event?.updatedAt) : null,
     });
     setVisible(true);
   };
 
-  const CustomEventComponent = ({ event }: { event: CustomEvent }) => {
+  const CustomEventComponent = ({ event }: { event: IOverTimeForm }) => {
     const icon = event.status === "approved" ? checkIcon : event.type === "holiday" ? null : loadingIcon;
     return (
       <span className="flex justify-start items-center gap-1 text-[10px] text-white overflow-hidden">
         {icon && <span className="flex-shrink-0">{icon}</span>}
-        <span className="truncate">{event.title}</span>
+        <span className="truncate">{event.detailWork}</span>
       </span>
     );
   };
@@ -96,69 +146,188 @@ const CalendarPage: React.FC<props> = ({ holiday }): React.ReactElement => {
   return (
     <div>
       {visible ? (
-        <Modal title="รายละเอียด OT" open={visible} onCancel={onCancel} onOk={handleOk} okText="บันทึก" cancelText="ยกเลิก" footer={false}>
-          <Form form={form} layout="vertical">
-            <Row gutter={16}>
-              <Col span={24}>
-                <Form.Item name="title" label="ชื่อรายการ" rules={[{ required: true, message: "กรุณากรอกชื่อรายการ" }]}>
-                  <Input placeholder="ระบุชื่อรายการ OT" disabled />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item name="start" label="วันที่เริ่มทำ OT">
-                  <DatePicker style={{ width: "100%" }} placeholder="เลือกวันเวลาเริ่ม" disabled />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item name="end" label="เวันที่สิ้นสุดทำ OT">
-                  <DatePicker style={{ width: "100%" }} placeholder="เลือกวันเวลาสิ้นสุด" disabled />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item name="startTime" label="เวลาเริ่ม">
-                  <Input style={{ width: "100%" }} disabled />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item name="endTime" label="เวลาสิ้นสุด">
-                  <Input style={{ width: "100%" }} disabled />
-                </Form.Item>
-              </Col>
-              <Col span={24}>
-                <Form.Item name="status" label="สถานะ" rules={[{ required: true, message: "กรุณาเลือกสถานะ" }]}>
-                  <Select placeholder="เลือกสถานะ" disabled>
-                    <Option value="waiting">รอดำเนินการ</Option>
-                    <Option value="approved">อนุมัติ</Option>
-                    <Option value="cancel">ยกเลิก</Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-            </Row>
-          </Form>
+        <Modal
+          title={
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                  <CalendarOutlined className="text-white text-sm" />
+                </div>
+                <span className="text-lg font-semibold text-gray-800">รายละเอียด OT</span>
+              </div>
+              <Badge status={statusConfig.color as "default" | "success" | "warning" | "error" | "processing"} />
+            </div>
+          }
+          open={visible}
+          onCancel={onCancel}
+          onOk={handleOk}
+          okText="บันทึก"
+          cancelText="ยกเลิก"
+          footer={false}
+          width={600}
+          className="top-8">
+          <div className="py-4">
+            <Card className={`mb-4 ${statusConfig.bgColor} ${statusConfig.borderColor} border-l-4`}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <Avatar size={40} icon={<UserOutlined />} className="bg-blue-500" />
+                  <div>
+                    <Text strong className="text-lg block">
+                      {detail.fullname}
+                    </Text>
+                    <Text type="secondary" className="text-sm">
+                      ID: {detail.overTimeID.slice(-8)}
+                    </Text>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <Tag icon={statusConfig.icon} color={statusConfig.color} className="px-3 py-1 text-sm font-medium">
+                    {statusConfig.text}
+                  </Tag>
+                  <div className="text-xs text-gray-500 mt-1">{dayjs(detail.createdAt).format("DD/MM/YYYY HH:mm")}</div>
+                </div>
+              </div>
+            </Card>
+
+            <Form form={form} layout="vertical" className="space-y-1">
+              <Row gutter={16}>
+                <Col span={24}>
+                  <Form.Item
+                    name="title"
+                    label={<span className="text-sm font-medium text-gray-700">ชื่อรายการ</span>}
+                    rules={[{ required: true, message: "กรุณากรอกชื่อรายการ" }]}>
+                    <Input placeholder="ระบุชื่อรายการ OT" disabled className="rounded-lg border-gray-200 bg-gray-50" />
+                  </Form.Item>
+                </Col>
+
+                <Col span={12}>
+                  <Form.Item name="dateStart" label={<span className="text-sm font-medium text-gray-700">วันที่เริ่มทำ OT</span>}>
+                    <DatePicker
+                      style={{ width: "100%" }}
+                      placeholder="เลือกวันเวลาเริ่ม"
+                      disabled
+                      className="rounded-lg border-gray-200 bg-gray-50"
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col span={12}>
+                  <Form.Item name="dateStart" label={<span className="text-sm font-medium text-gray-700">วันที่สิ้นสุดทำ OT</span>}>
+                    <DatePicker
+                      style={{ width: "100%" }}
+                      placeholder="เลือกวันเวลาสิ้นสุด"
+                      disabled
+                      className="rounded-lg border-gray-200 bg-gray-50"
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col span={12}>
+                  <Form.Item name="startTime" label={<span className="text-sm font-medium text-gray-700">เวลาเริ่ม</span>}>
+                    <Input
+                      style={{ width: "100%" }}
+                      disabled
+                      prefix={<ClockCircleOutlined className="text-gray-400" />}
+                      className="rounded-lg border-gray-200 bg-gray-50"
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col span={12}>
+                  <Form.Item name="endTime" label={<span className="text-sm font-medium text-gray-700">เวลาสิ้นสุด</span>}>
+                    <Input
+                      style={{ width: "100%" }}
+                      disabled
+                      prefix={<ClockCircleOutlined className="text-gray-400" />}
+                      className="rounded-lg border-gray-200 bg-gray-50"
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col span={24}>
+                  <Form.Item
+                    name="status"
+                    label={<span className="text-sm font-medium text-gray-700">สถานะ</span>}
+                    rules={[{ required: true, message: "กรุณาเลือกสถานะ" }]}>
+                    <Select placeholder="เลือกสถานะ" disabled className="rounded-lg">
+                      <Option value="waiting">รอดำเนินการ</Option>
+                      <Option value="approved">อนุมัติ</Option>
+                      <Option value="cancel">ยกเลิก</Option>
+                    </Select>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Form>
+
+            {/* Additional Info Summary */}
+            <Divider className="my-4" />
+
+            <div className="bg-gradient-to-r from-gray-50 to-blue-50/50 rounded-lg p-4 border border-gray-100">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="flex justify-between">
+                  <Text type="secondary">รายละเอียดงาน:</Text>
+                  <Text className="font-medium">{detail.detailWork}</Text>
+                </div>
+                <div className="flex justify-between">
+                  <Text type="secondary">ลูกค้า:</Text>
+                  <Text className="font-medium">{detail.customerName}</Text>
+                </div>
+                <div className="flex justify-between">
+                  <Text type="secondary">เวลาทำงาน:</Text>
+                  <Text className="font-medium text-green-600">{detail.workingTime} ชม.</Text>
+                </div>
+                <div className="flex justify-between">
+                  <Text type="secondary">เวลาพัก:</Text>
+                  <Text className="font-medium text-orange-600">{detail.breakTime} ชม.</Text>
+                </div>
+                <div className="flex justify-between">
+                  <Text type="secondary">เวลารวม:</Text>
+                  <Text className="font-medium text-blue-600">{detail.totalTime} ชม.</Text>
+                </div>
+                <div className="flex justify-between">
+                  <Text type="secondary">เบอร์ติดต่อ:</Text>
+                  <Text className="font-medium">{detail.phoneNumber || "-"}</Text>
+                </div>
+              </div>
+            </div>
+
+            {/* Calculation Summary */}
+            {detail.calculate && detail.calculate.length > 0 && (
+              <div className="mt-4">
+                <Text strong className="text-sm text-gray-700 block mb-2">
+                  การคำนวณค่าตอบแทน
+                </Text>
+                <div className="space-y-2">
+                  {detail.calculate.map((calc: { date: string; rate: number; timeRate: number; typeRate: string }, index: number) => (
+                    <div key={index} className="flex justify-between items-center bg-white p-3 rounded-lg border border-gray-100">
+                      <div className="flex items-center space-x-4">
+                        <Tag color={calc.typeRate === "overtime" ? "red" : "green"} className="min-w-[70px] text-center">
+                          {calc.typeRate === "overtime" ? "ล่วงเวลา" : "ปกติ"}
+                        </Tag>
+                        <Text className="text-sm">{calc.timeRate} ชม.</Text>
+                      </div>
+                      <Text className="font-medium text-orange-600">อัตรา ×{calc.rate}</Text>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </Modal>
       ) : null}
 
-      <Calendar<CustomEvent>
+      <Calendar<IOverTimeForm>
         style={{ height: 500 }}
         localizer={localizer}
         popup
         selectable
-        startAccessor="start"
-        endAccessor="end"
+        startAccessor="dateStart"
+        endAccessor="dateStart"
         defaultView="month"
         views={["month"]}
         onSelectSlot={handleSelectSlot}
         events={holiday.map((events: any) => {
-          return {
-            id: events.id,
-            title: events.holidaysName,
-            start: events.holidaysDate,
-            startTime: events.startTime,
-            end: events.holidaysDate,
-            endTime: events.endTime,
-            type: events.type,
-            status: events.status,
-          };
+          return { ...events };
         })}
         messages={{
           next: ">",
@@ -169,7 +338,7 @@ const CalendarPage: React.FC<props> = ({ holiday }): React.ReactElement => {
           event: CustomEventComponent,
         }}
         dayPropGetter={dayPropGetter}
-        eventPropGetter={(event: CustomEvent) => {
+        eventPropGetter={(event: IOverTimeForm) => {
           let backgroundColor = "#FFA500";
           let color = "#ffff";
           if (event.type === "holiday") {

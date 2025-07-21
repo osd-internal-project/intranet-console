@@ -11,6 +11,7 @@ export interface Props {
   onFinishUpdate: (values: IOverTimeForm, type: string) => void;
   onFinishDelete: (id: string) => void;
   sideMenuGroups: any;
+  handleOpenModal: (status: boolean, data: IOverTimeForm) => void;
 }
 
 const TableOvertimeHistory: React.FC<Props> = ({
@@ -20,6 +21,7 @@ const TableOvertimeHistory: React.FC<Props> = ({
   onFinishUpdate,
   onFinishDelete,
   sideMenuGroups,
+  handleOpenModal,
 }): React.ReactElement => {
   const columns: TableProps<IOverTimeForm>["columns"] = [
     {
@@ -87,6 +89,14 @@ const TableOvertimeHistory: React.FC<Props> = ({
       dataIndex: "breakTime",
     },
     {
+      key: "id",
+      title: "รายละเอียด",
+      dataIndex: "id",
+      render: (status: string, record) => {
+        return <Button type="primary" size="small" onClick={() => handleOpenModal(true, record)}>{`รายละเอียด`}</Button>;
+      },
+    },
+    {
       key: "status",
       title: "สถานะ",
       dataIndex: "status",
@@ -127,12 +137,12 @@ const TableOvertimeHistory: React.FC<Props> = ({
         return (
           <div className="flex justify-center gap-2">
             <div>
-              <Button size="small" type="link" onClick={() => onFinishUpdate(record, "approved")}>
+              <Button size="small" type="link" onClick={() => onFinishUpdate(record, "approved")} disabled={record.status !== "waiting"}>
                 อนุมัติ
               </Button>
             </div>
             <div>
-              <Button size="small" type="link" danger onClick={() => onFinishUpdate(record, "cancel")}>
+              <Button size="small" type="link" danger onClick={() => onFinishUpdate(record, "cancel")} disabled={record.status !== "waiting"}>
                 ไม่อนุมัติ
               </Button>
             </div>
@@ -158,7 +168,7 @@ const TableOvertimeHistory: React.FC<Props> = ({
         dataSource={dataResource.data}
         rowKey="id"
         onChange={changePagination}
-        pagination={{ ...pagination, total: dataResource.total, showSizeChanger: false }}
+        pagination={{ ...pagination, total: dataResource.total, showSizeChanger: true }}
         scroll={{ x: "max-content" }}
       />
     </div>

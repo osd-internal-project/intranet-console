@@ -12,6 +12,7 @@ import { UserContectType, UserContext } from "@/app/config/userContext";
 import { intersection } from "lodash";
 import { saveAs } from "file-saver";
 import dayjs from "dayjs";
+import { ModalOvertimeHistory } from "./components/modal";
 
 const OvertimeHistory = () => {
   const { id24Axios, tokenAccess } = useId24();
@@ -21,6 +22,7 @@ const OvertimeHistory = () => {
   const baseUrlIntra = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const baseUrlReport = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_REPORT);
   const [filterForm] = Form.useForm();
+  const [formDetail] = Form.useForm();
   const [openFilter, setOpenFilter] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [params, setParams] = useState<any>({});
@@ -30,6 +32,7 @@ const OvertimeHistory = () => {
     total: 0,
   });
   const [dataResource, setDataResource] = useState<{ data: IOverTimeForm[]; total: number }>({ data: [], total: 0 });
+  const [openModal, setOpenModal] = useState<boolean>(false);
 
   useEffect(() => {
     if (loading) {
@@ -135,6 +138,22 @@ const OvertimeHistory = () => {
     });
   };
 
+  const handleOpenModal = (status: boolean, data: IOverTimeForm | null) => {
+    if (status === false) {
+      formDetail.resetFields();
+    }
+    formDetail.setFieldsValue({
+      ...data,
+      dateStart: data?.dateStart ? dayjs(data?.dateStart) : null,
+      startTime: data?.startTime,
+      endTime: data?.endTime,
+      approvedDate: data?.approvedDate ? dayjs(data?.approvedDate) : null,
+      createdAt: data?.createdAt ? dayjs(data?.createdAt) : null,
+      updatedAt: data?.updatedAt ? dayjs(data?.updatedAt) : null,
+    });
+    setOpenModal(status);
+  };
+
   return (
     <div>
       <div className="mb-4">
@@ -173,9 +192,11 @@ const OvertimeHistory = () => {
             onFinishUpdate={onFinishUpdate}
             onFinishDelete={onFinishDelete}
             sideMenuGroups={sideMenuGroups}
+            handleOpenModal={handleOpenModal}
           />
         </Card>
       </div>
+      {openModal ? <ModalOvertimeHistory formDetail={formDetail} openModal={openModal} handleOpenModal={handleOpenModal} /> : null}
     </div>
   );
 };

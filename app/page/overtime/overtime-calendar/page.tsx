@@ -6,8 +6,10 @@ import { loadAppConfig } from "@/app/config/app-config";
 import SlideImageService from "../../home/services/index.service";
 import Calendar from "./components/calendar";
 import OverTimeServices from "@/app/services/overtime.service";
-import { Breadcrumb, Card, Divider, TablePaginationConfig, Tabs, TabsProps } from "antd";
+import { Breadcrumb, Card, Divider, Form, TablePaginationConfig, Tabs, TabsProps } from "antd";
 import { TableOvertime } from "./components/table";
+import { IOverTimeForm } from "@/app/common/overtime";
+import { ModalOvertimeHistory } from "./components/modal";
 export interface THoliday {
   id: number;
   holidaysName: string;
@@ -21,7 +23,9 @@ export interface THoliday {
 export default function OverTimeCalendatPage() {
   const { id24Axios } = useId24();
   const baseUrlIntra = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const [formDetail] = Form.useForm();
   const [holiday, setHoliday] = useState<THoliday[]>([]);
+  const [dataTable, setDataTable] = useState<IOverTimeForm[]>([]);
   const [activekey, setActiveKey] = useState<string>("1");
   const [loading, setloading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -29,6 +33,7 @@ export default function OverTimeCalendatPage() {
     pageSize: 10,
     total: 0,
   });
+  const [openModal, setOpenModal] = useState<boolean>(false);
   useEffect(() => {
     if (loading) fetchDataHoliday(dayjs(new Date()).format("YYYY"));
   }, [activekey, loading]);
@@ -43,12 +48,9 @@ export default function OverTimeCalendatPage() {
     const take: number = Number(pagination.pageSize);
     const holiday = await SlideImageService(baseUrlIntra).getHoliday(year);
     const overtime = await OverTimeServices(baseUrlIntra).findById(skip, take);
-
     const mapdataOT = overtime.map((e: any) => {
       return {
         ...e,
-        holidaysDate: e.dateStart,
-        holidaysName: e.detailWork,
         startTime: e.startTime,
         endTime: e.endTime,
         type: "ot",
@@ -57,6 +59,8 @@ export default function OverTimeCalendatPage() {
     const mapHoliday = holiday.map((e: any) => {
       const mapData = {
         ...e,
+        dateStart: e.holidaysDate,
+        detailWork: e.holidaysName,
         type: "holiday",
         startTime: "",
         endTime: "",
@@ -64,8 +68,25 @@ export default function OverTimeCalendatPage() {
       return mapData;
     });
     const merged = [...mapdataOT, ...mapHoliday];
+    setDataTable(overtime);
     setHoliday(merged);
     setloading(false);
+  };
+
+  const handleOpenModal = (status: boolean, data: IOverTimeForm | null) => {
+    if (status === false) {
+      formDetail.resetFields();
+    }
+    formDetail.setFieldsValue({
+      ...data,
+      dateStart: data?.dateStart ? dayjs(data?.dateStart) : null,
+      startTime: data?.startTime,
+      endTime: data?.endTime,
+      approvedDate: data?.approvedDate ? dayjs(data?.approvedDate) : null,
+      createdAt: data?.createdAt ? dayjs(data?.createdAt) : null,
+      updatedAt: data?.updatedAt ? dayjs(data?.updatedAt) : null,
+    });
+    setOpenModal(status);
   };
 
   const items: TabsProps["items"] = [
@@ -77,7 +98,7 @@ export default function OverTimeCalendatPage() {
     {
       key: "2",
       label: "ตารางรายละเอียดการทำงานล่วงเวลา",
-      children: <TableOvertime holiday={holiday} changePagination={changePagination} pagination={pagination} />,
+      children: <TableOvertime dataTable={dataTable} changePagination={changePagination} pagination={pagination} handleOpenModal={handleOpenModal} />,
     },
   ];
 
@@ -112,6 +133,7 @@ export default function OverTimeCalendatPage() {
       <Card styles={{ body: { padding: "10px" } }} className="w-full h-full">
         <Tabs activeKey={activekey} items={items} onChange={onChange} destroyInactiveTabPane={false} type="card" />
       </Card>
+      {openModal ? <ModalOvertimeHistory formDetail={formDetail} openModal={openModal} handleOpenModal={handleOpenModal} /> : null}
     </div>
   );
 }

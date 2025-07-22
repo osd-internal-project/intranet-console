@@ -25,7 +25,7 @@ export default function OverTimeCalendatPage() {
   const baseUrlIntra = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [formDetail] = Form.useForm();
   const [holiday, setHoliday] = useState<THoliday[]>([]);
-  const [dataTable, setDataTable] = useState<IOverTimeForm[]>([]);
+  const [dataTable, setDataTable] = useState<{ data: IOverTimeForm[]; count: number }>({ data: [], count: 0 });
   const [activekey, setActiveKey] = useState<string>("1");
   const [loading, setloading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -47,8 +47,8 @@ export default function OverTimeCalendatPage() {
     const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
     const take: number = Number(pagination.pageSize);
     const holiday = await SlideImageService(baseUrlIntra).getHoliday(year);
-    const overtime = await OverTimeServices(baseUrlIntra).findById(skip, take);
-    const mapdataOT = overtime.map((e: any) => {
+    const { data, count } = await OverTimeServices(baseUrlIntra).findById(skip, take);
+    const mapdataOT = data.map((e: any) => {
       return {
         ...e,
         startTime: e.startTime,
@@ -68,7 +68,7 @@ export default function OverTimeCalendatPage() {
       return mapData;
     });
     const merged = [...mapdataOT, ...mapHoliday];
-    setDataTable(overtime);
+    setDataTable({ data, count });
     setHoliday(merged);
     setloading(false);
   };

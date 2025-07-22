@@ -6,7 +6,7 @@ export interface TServices {
   findAll: () => Promise<IOverTimeForm[]>;
   findMany: (skip: number, take: number, params: any) => Promise<{ data: IOverTimeForm[]; total: number }>;
   findManyHr: (skip: number, take: number, params: any) => Promise<{ data: IOverTimeForm[]; total: number }>;
-  findById: (skip: number, take: number) => Promise<any[]>;
+  findById: (skip: number, take: number) => Promise<{ data: IOverTimeForm[]; count: number }>;
   findMasterOt: (date: any) => Promise<number>;
   create: (condition: any) => Promise<any[]>;
   update: (overTimeID: string, type: string, user: { userId?: string; fullName?: string }) => Promise<any[]>;

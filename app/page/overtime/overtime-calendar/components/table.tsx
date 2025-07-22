@@ -5,7 +5,7 @@ import { dateFormatTimeNoTIme } from "@/app/utils";
 import { IOverTimeForm } from "@/app/common/overtime";
 
 export interface props {
-  dataTable: IOverTimeForm[];
+  dataTable: { data: IOverTimeForm[]; count: number };
   changePagination: (page: TablePaginationConfig) => void;
   pagination: TablePaginationConfig;
   handleOpenModal: (status: boolean, data: IOverTimeForm) => void;
@@ -118,10 +118,10 @@ export const TableOvertime: React.FC<props> = ({ dataTable, changePagination, pa
       <Table
         columns={columns}
         size="small"
-        dataSource={dataTable}
+        dataSource={dataTable.data}
         rowKey="id"
         onChange={changePagination}
-        pagination={pagination}
+        pagination={{ ...pagination, total: dataTable.count }}
         scroll={{ x: "max-content" }}
       />
     </div>

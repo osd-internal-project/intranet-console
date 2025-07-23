@@ -89,7 +89,7 @@ const CalendarPage: React.FC<props> = ({ holiday }): React.ReactElement => {
         return {
           color: "default",
           icon: <ExclamationCircleOutlined />,
-          text: status,
+          text: "ไม่อนุมัติ",
           bgColor: "bg-gray-50",
           borderColor: "border-gray-200",
         };
@@ -252,6 +252,7 @@ const CalendarPage: React.FC<props> = ({ holiday }): React.ReactElement => {
                     <Select placeholder="เลือกสถานะ" disabled className="rounded-lg">
                       <Option value="waiting">รอดำเนินการ</Option>
                       <Option value="approved">อนุมัติ</Option>
+                      <Option value="reject">ไม่อนุมัติ</Option>
                       <Option value="cancel">ยกเลิก</Option>
                     </Select>
                   </Form.Item>

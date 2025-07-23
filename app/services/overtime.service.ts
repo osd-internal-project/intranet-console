@@ -9,7 +9,7 @@ export interface TServices {
   findById: (skip: number, take: number) => Promise<{ data: IOverTimeForm[]; count: number }>;
   findMasterOt: (date: any) => Promise<number>;
   create: (condition: any) => Promise<any[]>;
-  update: (overTimeID: string, type: string, user: { userId?: string; fullName?: string }) => Promise<any[]>;
+  update: (overTimeID: string, type: string, description: string, user: { userId?: string; fullName?: string }) => Promise<any[]>;
   delete: (overTimeID: string) => Promise<any[]>;
   exportReport: (page: { search: object }) => Promise<ArrayBuffer>;
 }
@@ -85,9 +85,14 @@ const OverTimeServices = (axiosInstance: AxiosInstance): TServices => {
           return [];
         });
     },
-    update: async (overTimeID: string, type: string, user: { userId?: string; fullName?: string }) => {
+    update: async (overTimeID: string, type: string, description: string, user: { userId?: string; fullName?: string }) => {
       return await axiosInstance
-        .patch(`${baseUrl}/${overTimeID}`, { status: type, approvedUser: user.fullName, approvedDate: dayjs(new Date()) })
+        .patch(`${baseUrl}/${overTimeID}`, {
+          status: type,
+          approvedUser: user.fullName,
+          approvedDate: dayjs(new Date()),
+          approvedDetail: description,
+        })
         .then((res) => {
           return res.data;
         })

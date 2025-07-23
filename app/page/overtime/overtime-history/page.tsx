@@ -88,15 +88,15 @@ const OvertimeHistory = () => {
   const onFinishUpdate = (values: IOverTimeForm, type: string) => {
     if (!values.overTimeID) return;
     Modal.confirm({
-      title: <>{type === "cancel" ? "Cancel " : "Approved"}</>,
+      title: <>{type === "cancel" ? "Cancel " : type === "reject" ? "Not Approved" : "Approved"}</>,
       icon: <ExclamationCircleFilled />,
       content: <>{type === "cancel" ? "Are you sure you want to cancel this ?" : "Are you sure you want to Approved this ?"}</>,
       okText: "Confirm",
       okButtonProps: {
         type: "primary",
         style: {
-          backgroundColor: type === "cancel" ? "#ff4d4f" : "#1890ff",
-          borderColor: type === "cancel" ? "#ff4d4f" : "#1890ff",
+          backgroundColor: type === "cancel" || type === "reject" ? "#ff4d4f" : "#1890ff",
+          borderColor: type === "cancel" || type === "reject" ? "#ff4d4f" : "#1890ff",
           color: "white",
         },
       },
@@ -110,9 +110,15 @@ const OvertimeHistory = () => {
       },
       onOk: async () => {
         const detailUser = { userId: user?.userId, fullName: `${user?.firstNameTh} ${user?.lastNameTh}` };
-        const res = await OverTimeServices(baseUrlIntra).update(values?.overTimeID ? values?.overTimeID : "", type, detailUser);
+        const res = await OverTimeServices(baseUrlIntra).update(values?.overTimeID as string, type, values.approvedDetail as string, detailUser);
         if (res) {
-          type === "cancel" ? message.error("cancel success") : message.success("approved success");
+          type === "cancel"
+            ? message.error("cancel success")
+            : type === "reject"
+            ? message.success("reject success")
+            : message.success("approved success");
+
+          setOpenModal(false);
           setLoading(true);
         }
       },

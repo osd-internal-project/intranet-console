@@ -23,7 +23,7 @@ export const OvertimeShowDetail: React.FC<props> = ({ getStartTime, getEndTime }
             {`: `}
             {(() => {
               const duration = getStartTime < getEndTime ? getEndTime - getStartTime : 24 - getStartTime + getEndTime;
-              return duration >= 8 ? 1.5 : duration >= 5 ? 1 : duration > 4 ? 0.5 : 0;
+              return duration > 9 ? 1.5 : duration >= 5 ? 1 : duration > 4 ? 0.5 : 0;
             })()}
             {` ชม.`}
           </div>
@@ -36,7 +36,7 @@ export const OvertimeShowDetail: React.FC<props> = ({ getStartTime, getEndTime }
               const duration = getStartTime < getEndTime ? getEndTime - getStartTime : 24 - getStartTime + getEndTime;
 
               let result;
-              if (duration >= 8) {
+              if (duration > 9) {
                 result = duration - 1.5;
               } else if (duration > 4 && duration < 5) {
                 result = duration - 0.5;

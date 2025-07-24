@@ -1,6 +1,16 @@
 import { IOverTimeForm } from "@/app/common/overtime";
 import { dateFormatTimeNoTIme } from "@/app/utils";
-import { CarOutlined, ClockCircleOutlined, PhoneOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  CarOutlined,
+  ClockCircleOutlined,
+  PhoneOutlined,
+  TeamOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  StopOutlined,
+  DeleteOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import {
   Badge,
   Button,
@@ -18,6 +28,7 @@ import {
   TablePaginationConfig,
   TableProps,
   Tag,
+  Tooltip,
   Typography,
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
@@ -50,7 +61,6 @@ const TableOvertimeHistory: React.FC<Props> = ({
   const dataDetail = formUpdate.getFieldsValue(true);
   const [openModal, setOpenModal] = useState<{ status: boolean; type: string }>({ status: false, type: "create" });
   const handleUpdateApproved = (status: boolean, data: IOverTimeForm | null, type: string) => {
-    // onFinishUpdate(data, type);
     setOpenModal({ status, type });
     formUpdate.setFieldsValue({
       ...data,
@@ -68,77 +78,15 @@ const TableOvertimeHistory: React.FC<Props> = ({
       key: "no",
       title: "ลำดับ",
       dataIndex: "no",
-      render: (id, record, index) => (pagination.current && pagination.pageSize ? (pagination.current - 1) * pagination.pageSize + (index + 1) : ""),
-    },
-    {
-      key: "fullname",
-      title: "ชื่อ - สกุล",
-      dataIndex: "fullname",
-    },
-    {
-      key: "dateStart",
-      title: "วันที่ทำ OT",
-      dataIndex: "dateStart",
-      render: (_) => dateFormatTimeNoTIme(_),
-    },
-    {
-      key: "detailWork",
-      title: "รายละเอียดการทำ OT",
-      dataIndex: "detailWork",
-    },
-    {
-      key: "partTimeType",
-      title: "ประเภทการทำ OT",
-      dataIndex: "partTimeType",
       align: "center",
-      render: (status: string) => {
-        return <Tag>{status === "working" ? "ทำงาน" : "ขับรถ"}</Tag>;
-      },
-    },
-    {
-      key: "id",
-      title: "เวลาเริ่ม - เวลาสิ้นสุด",
-      dataIndex: "id",
-      render: (_, record) => (
-        <span>
-          {record.startTime} - {record.endTime}
-        </span>
-      ),
-    },
-    {
-      key: "typeDate",
-      title: "วันที่ทำการ",
-      dataIndex: "typeDate",
-      render: (_) => <span>{_ === "normall" ? "วันปกติ" : "วันหยุด"}</span>,
-    },
-
-    {
-      key: "totalTime",
-      title: "ระยะเวลารวม",
-      dataIndex: "totalTime",
-    },
-    {
-      key: "workingTime",
-      title: "ระยะเวลาทำงาน",
-      dataIndex: "workingTime",
-    },
-    {
-      key: "breakTime",
-      title: "พัก",
-      dataIndex: "breakTime",
-    },
-    {
-      key: "id",
-      title: "รายละเอียด",
-      dataIndex: "id",
-      render: (status, record) => {
-        return <Button type="primary" size="small" onClick={() => handleOpenModal(true, record)}>{`รายละเอียด`}</Button>;
-      },
+      render: (id, record, index) =>
+        pagination.current && pagination.pageSize ? (pagination.current - 1) * pagination.pageSize + (index + 1) : null,
     },
     {
       key: "status",
       title: "สถานะ",
       dataIndex: "status",
+      align: "center",
       render: (status: string) => {
         let color = "";
         let text = "";
@@ -164,7 +112,80 @@ const TableOvertimeHistory: React.FC<Props> = ({
             text = "Unknown Status";
             break;
         }
-        return <Tag color={color}>{text}</Tag>;
+        return (
+          <div className="flex justify-center">
+            <Tag color={color}>{text}</Tag>
+          </div>
+        );
+      },
+    },
+    {
+      key: "fullname",
+      title: "ชื่อ - สกุล",
+      dataIndex: "fullname",
+    },
+    {
+      key: "dateStart",
+      title: "วันที่ทำ OT",
+      dataIndex: "dateStart",
+      render: (_) => dateFormatTimeNoTIme(_),
+    },
+    {
+      key: "detailWork",
+      title: "รายละเอียด",
+      dataIndex: "detailWork",
+      width: "120px",
+    },
+    // {
+    //   key: "partTimeType",
+    //   title: "ประเภทการทำ OT",
+    //   dataIndex: "partTimeType",
+    //   align: "center",
+    //   render: (status: string) => {
+    //     return <Tag>{status === "working" ? "ทำงาน" : "ขับรถ"}</Tag>;
+    //   },
+    // },
+    {
+      key: "id",
+      title: "เวลาเริ่ม - สิ้นสุด",
+      dataIndex: "id",
+      align: "center",
+      render: (_, record) => (
+        <span>
+          {record.startTime} - {record.endTime}
+        </span>
+      ),
+    },
+    {
+      key: "typeDate",
+      title: "วันที่ทำการ",
+      dataIndex: "typeDate",
+      render: (_) => <span>{_ === "normall" ? "วันปกติ" : "วันหยุด"}</span>,
+    },
+    {
+      key: "totalTime",
+      title: "รวม",
+      dataIndex: "totalTime",
+      align: "center",
+    },
+    {
+      key: "workingTime",
+      title: "ทำงาน",
+      dataIndex: "workingTime",
+      align: "center",
+    },
+    {
+      key: "breakTime",
+      title: "พัก",
+      dataIndex: "breakTime",
+      align: "center",
+    },
+    {
+      key: "id",
+      title: "รายละเอียด",
+      dataIndex: "id",
+      render: (status, record) => {
+        return <Button type="primary" size="small" onClick={() => handleOpenModal(true, record)}>{`รายละเอียด`}</Button>;
       },
     },
     {
@@ -174,52 +195,42 @@ const TableOvertimeHistory: React.FC<Props> = ({
       dataIndex: "id",
       render: (_, record) => {
         return (
-          <div className="flex justify-center gap-2">
-            <div>
+          <div className="flex justify-center gap-1">
+            <Tooltip title="อนุมัติ">
               <Button
                 size="small"
                 type="link"
-                onClick={() =>
-                  //  onFinishUpdate(record, "approved")
-                  handleUpdateApproved(true, record, "approved")
-                }
-                disabled={record.status !== "waiting"}>
-                อนุมัติ
-              </Button>
-            </div>
-            <div>
-              <Button
-                size="small"
-                type="link"
-                danger
-                onClick={() =>
-                  // onFinishUpdate(record, "reject")
-                  handleUpdateApproved(true, record, "reject")
-                }
-                // disabled={record.status !== "waiting"}
-              >
-                ไม่อนุมัติ
-              </Button>
-            </div>
-            <div>
+                icon={<CheckCircleOutlined />}
+                onClick={() => handleUpdateApproved(true, record, "approved")}
+                disabled={record.status !== "waiting"}
+              />
+            </Tooltip>
+
+            <Tooltip title="ไม่อนุมัติ">
+              <Button size="small" type="link" danger icon={<CloseCircleOutlined />} onClick={() => handleUpdateApproved(true, record, "reject")} />
+            </Tooltip>
+
+            <Tooltip title="ยกเลิก">
               <Button
                 size="small"
                 type="link"
                 danger
-                onClick={() =>
-                  // onFinishUpdate(record, "cancel")
-                  handleUpdateApproved(true, record, "cancel")
-                }
-                disabled={record.status !== "waiting"}>
-                ยกเลิก
-              </Button>
-            </div>
+                icon={<StopOutlined />}
+                onClick={() => handleUpdateApproved(true, record, "cancel")}
+                disabled={record.status !== "waiting"}
+              />
+            </Tooltip>
+
             {intersection(sideMenuGroups, ["hr"]).length ? (
-              <div>
-                <Button size="small" type="link" danger onClick={() => onFinishDelete(record.overTimeID ? record.overTimeID : "")}>
-                  ลบ
-                </Button>
-              </div>
+              <Tooltip title="ลบ">
+                <Button
+                  size="small"
+                  type="link"
+                  danger
+                  icon={<DeleteOutlined />}
+                  onClick={() => onFinishDelete(record.overTimeID ? record.overTimeID : "")}
+                />
+              </Tooltip>
             ) : null}
           </div>
         );

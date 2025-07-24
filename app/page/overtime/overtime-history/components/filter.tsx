@@ -21,9 +21,25 @@ export const FilterOverTimeHistory: React.FC<props> = ({
   handleExport,
 }): React.ReactElement => {
   const { RangePicker } = DatePicker;
+
   const searchContent = (
     <Form layout="vertical" form={filterForm} onFinish={onSearch} autoComplete="off">
       <div className="grid grid-cols-1 md:gap-4 ">
+        <Form.Item label="สถานะ" name="status">
+          <Select
+            allowClear
+            className="w-full"
+            showSearch
+            optionFilterProp="label"
+            placeholder="Select Status"
+            options={[
+              { value: "waiting", label: "กำลังรออนุมัติ" },
+              { value: "approved", label: "อนุมัติสำเร็จ" },
+              { value: "cancel", label: "ยกเลิก" },
+              { value: "reject", label: "ไม่อนุมัติ" },
+            ]}
+          />
+        </Form.Item>
         <Form.Item label="ชื่อ" name="fullname">
           <Input placeholder="Search Text" />
         </Form.Item>

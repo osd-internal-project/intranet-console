@@ -30,29 +30,17 @@ export const CreateSlideImage: React.FC<props> = ({
   slideImage,
   beforeUploadAddFiles,
 }): React.ReactElement => {
-  const [messages, messageHeader] = message.useMessage();
-
-  // const beforeUploadImageFiles = (file: RcFile) => {
-  //   if (slideImage.find((oneFile: any) => oneFile.fileName === file.name)) {
-  //     messages.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
-  //     return false;
-  //   }
-  //   return false;
-  // };
-
   const handleChangeImageFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
     return setImageFiles(newFileList);
   };
   return (
     <>
-      {messageHeader}
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
         }}>
-        <p style={{ margin: 0 }}>หมายเหตุ : สามารถอัปโหลดรูปภาพได้สูงสุด 10 รูป</p>
         <Button
           style={{ marginBottom: "20px" }}
           type="primary"

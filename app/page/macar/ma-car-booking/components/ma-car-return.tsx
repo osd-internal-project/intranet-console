@@ -50,8 +50,6 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
   };
 
   const showModalDetail = (record: MaCarBookType) => {
-    console.log(record.returnAt);
-
     setModalEditDetail(true);
     setCurrentMaBookId(record.id);
     setStatusApprove(record.carBookApprovedStatus);
@@ -84,7 +82,7 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
     if (currentMaId && currentMaBookId) {
       try {
         const updatedMaCar = {
-          ...values,
+          carName: values.carName,
           carMile: values.carMile,
           carPetrol: values.carPetrol,
           updatedAt: dayjs().toISOString(),
@@ -92,6 +90,7 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
           updatedByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
         };
         const maCarBook = {
+          remark: values.remark,
           carName,
           detail,
           carBookPlace,
@@ -378,7 +377,7 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
                         fontSize: "12px",
                         marginTop: "4px",
                       }}>
-                      เฉพาะไฟล์ PNG และ JPEG (สูงสุด 10 ไฟล์)
+                      เฉพาะไฟล์ PNG และ JPEG
                     </div>
                   }>
                   <Upload

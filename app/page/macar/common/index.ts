@@ -138,5 +138,5 @@ export interface MaCarType {
   createdAt: Date;
   createdById: string;
   createdByName: string;
+  remark?: string;
 }
-

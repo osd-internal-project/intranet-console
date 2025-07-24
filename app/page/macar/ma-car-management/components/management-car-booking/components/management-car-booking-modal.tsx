@@ -175,7 +175,7 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
                         alt="news"
                         preview={false}
                         crossOrigin="anonymous"
-                        src={`${process.env.REACT_APP_API_BASE_URL_INTRANET}/get-image/${e.idCarBookImage}`}
+                        src={`${process.env.REACT_APP_API_BASE_URL_INTRANET}/ma-car-booking-images/get-image/${e.idCarBookImage}`}
                         style={{
                           width: "100%",
                           height: "150px",

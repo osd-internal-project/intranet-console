@@ -78,7 +78,7 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
     },
     updateMaCarBookingImages: async (bookId: number, body: any) => {
       return await axiosInstance
-        .post(`${baseUrlmaCarBookingImages}/upload-images/${24}`, body, {
+        .post(`${baseUrlmaCarBookingImages}/upload-images/${bookId}`, body, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

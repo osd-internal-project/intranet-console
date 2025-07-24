@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { UploadOutlined } from "@ant-design/icons";
-import { Button, Form, message, Modal, Upload } from "antd";
+import { Button, Form, Modal, Upload } from "antd";
 import { SlideImageType } from "../common";
 import { RcFile, UploadProps } from "antd/es/upload";
 
@@ -27,7 +27,6 @@ export const CreateSlideImage: React.FC<props> = ({
   showModal,
   setImageFiles,
   imageFiles,
-  slideImage,
   beforeUploadAddFiles,
 }): React.ReactElement => {
   const handleChangeImageFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {

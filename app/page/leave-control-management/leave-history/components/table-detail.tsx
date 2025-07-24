@@ -26,8 +26,6 @@ export const TableDetail: React.FC<props> = ({
   downloadFile,
 }): React.ReactElement => {
   const ShowStatusLeaves = showStatusLeave();
-  const Auth = useAxiosIntranet();
-  const dataleaveservice = DataLeaveService(Auth);
   const [statusById, setStatusById] = useState<any | null>(null);
   const [dataById, setDataById] = useState<number | undefined>(undefined);
 

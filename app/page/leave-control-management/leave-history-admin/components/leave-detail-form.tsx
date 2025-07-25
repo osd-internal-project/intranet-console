@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Form, Input, Space, Tooltip, Row, Col, Card, Tag, Divider } from "antd";
+import { Button, Form, Input, Space, Tooltip, Row, Col, Card, Tag, Divider, FormInstance } from "antd";
 import {
   PaperClipOutlined,
   CalendarOutlined,
@@ -14,11 +14,11 @@ import {
 import { intersection } from "lodash";
 
 interface props {
-  formdetail: any;
+  formdetail: FormInstance;
   downloadFile: (id: number, filename: string) => void;
   statusById: string;
   sideMenuGroups: any;
-  onFinishUpdate: (values: any, type: string, Id: number) => void;
+  onFinishUpdate: (values: string, type: string, Id: number) => void;
   onFinishDelete: (type: string, Id: number) => void;
   setSubmitAction: (value: "approved" | "cancel") => void;
   submitAction: string;

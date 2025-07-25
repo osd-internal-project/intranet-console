@@ -1,4 +1,5 @@
 import { IOverTimeForm } from "@/app/common/overtime";
+import { ExcelIcon } from "@/components/icon";
 import { FilterOutlined } from "@ant-design/icons";
 import { Button, Form, Input, DatePicker, Popover, FormInstance, Select } from "antd";
 import React from "react";
@@ -80,7 +81,9 @@ export const FilterOverTimeHistory: React.FC<props> = ({
           Filters
         </Button>
       </Popover>
-      <Button type="default" disabled={dataResource.data.length === 0} onClick={handleExport}>{`Export`}</Button>
+      <Button type="default" disabled={dataResource.data.length === 0} onClick={handleExport} icon={<ExcelIcon width="1.5rem" height="1.5rem" />}>
+        {`ดาวน์โหลดไฟล์`}
+      </Button>
     </div>
   );
 };

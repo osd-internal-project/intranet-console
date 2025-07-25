@@ -1,25 +1,26 @@
 "use client";
 import React, { useState } from "react";
-import { Button, Form, Input, Modal, Row, Select, Table } from "antd";
+import { Button, Form, FormInstance, Input, Modal, Select, Table } from "antd";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { ExcelIcon } from "@/components/icon";
 import { ITypeDataLeave } from "../../common";
 import { CheckStatusLeaveType, showStatusLeave } from "@/app/utils/validatefield";
 import { dateFormatTimeNoTIme } from "@/app/utils";
 import { LeaveDetailForm } from "./leave-detail-form";
+import { ColumnsType } from "antd/es/table";
 
 export interface props {
   dataLeaveUser: ITypeDataLeave[];
   setOpenModalDetail: (e: boolean) => void;
   openModalDetail: boolean;
-  formdetail: any;
-  onFinishUpdate: (values: any, type: string, id: number) => void;
+  formdetail: FormInstance;
+  onFinishUpdate: (values: string, type: string, id: number) => void;
   onFinishDelete: (type: string, id: number) => void;
   downloadFile: (id: number, filename: string) => void;
   sideMenuGroups: string[];
   setSubmitAction: (value: "approved" | "cancel") => void;
   submitAction: string;
-  setParams: (type: any) => void;
+  setParams: (data: { type: string; value: string }) => void;
   setLoading: (value: boolean) => void;
   handleExport: () => void;
 }
@@ -40,7 +41,7 @@ export const TableDetail: React.FC<props> = ({
   handleExport,
 }): React.ReactElement => {
   const [form] = Form.useForm();
-  const [statusById, setStatusById] = useState<any | null>(null);
+  const [statusById, setStatusById] = useState<string | null>(null);
 
   const dataLeaveSearch = (value: any) => {
     setParams(value);
@@ -67,39 +68,7 @@ export const TableDetail: React.FC<props> = ({
     }
   };
 
-  const columns: any = [
-    {
-      key: "id",
-      dataIndex: "id",
-      title: "ชื่อ - นามสกุล",
-      render: (e: string, row: ITypeDataLeave) => {
-        return <>{`${row.firstName} ${row.lastName}`}</>;
-      },
-    },
-    { key: "typeName", dataIndex: "typeName", title: "ประเภทการลา" },
-    {
-      key: "id",
-      dataIndex: "id",
-      title: "วันที่ลา",
-      render: (e: string, row: ITypeDataLeave) => {
-        return row?.startDate && row?.endDate
-          ? `${dateToStringThNoTime(row?.startDate as any)} ถึง ${dateToStringThNoTime(row?.endDate as any)}`
-          : "-";
-      },
-    },
-
-    {
-      key: "userApproved",
-      dataIndex: "userApproved",
-      title: "ผู้อนุมัติ",
-      render: (userApproved: string) => (userApproved ? userApproved : "-"),
-    },
-    {
-      key: "approvedDate",
-      dataIndex: "approvedDate",
-      title: "วันที่อนุมัติ",
-      render: (value: any) => dateFormatTimeNoTIme(value),
-    },
+  const columns: ColumnsType<ITypeDataLeave> = [
     {
       key: "status",
       dataIndex: "status",
@@ -110,37 +79,46 @@ export const TableDetail: React.FC<props> = ({
     {
       key: "id",
       dataIndex: "id",
+      title: "ชื่อ - นามสกุล",
+      render: (e, row) => `${row.firstName} ${row.lastName}`,
+    },
+    { key: "typeName", dataIndex: "typeName", title: "ประเภทการลา" },
+    {
+      key: "id",
+      dataIndex: "id",
+      title: "วันที่ลา",
+      render: (e, row) =>
+        row?.startDate && row?.endDate ? `${dateToStringThNoTime(row?.startDate as any)} ถึง ${dateToStringThNoTime(row?.endDate as any)}` : "-",
+    },
+
+    {
+      key: "userApproved",
+      dataIndex: "userApproved",
+      title: "ผู้อนุมัติ",
+      render: (userApproved) => (userApproved ? userApproved : "-"),
+    },
+    {
+      key: "approvedDate",
+      dataIndex: "approvedDate",
+      title: "วันที่อนุมัติ",
+      render: (value) => dateFormatTimeNoTIme(value),
+    },
+
+    {
+      key: "id",
+      dataIndex: "id",
       title: "...",
       align: "center",
-      render: (e: string, row: ITypeDataLeave, index: number) => {
-        return (
-          <>
-            <Button size="small" type="primary" ghost onClick={() => fecthDataDetail(row)}>
-              {`รายละเอียด`}
-            </Button>
-          </>
-        );
-      },
+      render: (e, row) => (
+        <Button size="small" type="primary" ghost onClick={() => fecthDataDetail(row)}>
+          {`รายละเอียด`}
+        </Button>
+      ),
     },
   ];
 
   return (
     <div>
-      <>
-        <Modal forceRender open={openModalDetail} footer={false} onCancel={() => setOpenModalDetail(false)} width={600}>
-          <LeaveDetailForm
-            formdetail={formdetail}
-            downloadFile={(id: number, filename: string) => downloadFile(id, filename)}
-            statusById={statusById}
-            sideMenuGroups={sideMenuGroups}
-            onFinishUpdate={onFinishUpdate}
-            onFinishDelete={onFinishDelete}
-            setSubmitAction={setSubmitAction}
-            submitAction={submitAction}
-          />
-        </Modal>
-      </>
-
       <div style={{ justifyContent: "space-between", display: "flex" }}>
         <div style={{ justifyContent: "start", display: "flex", alignItems: "center" }}>{showStatusLeave()}</div>
         <div style={{ display: "flex", justifyContent: "end", alignItems: "center" }}>
@@ -199,6 +177,20 @@ export const TableDetail: React.FC<props> = ({
       <div style={{ marginTop: "10px" }}>
         <Table dataSource={dataLeaveUser.length > 0 ? dataLeaveUser : []} columns={columns} size="small" rowKey="id" scroll={{ x: "max-content" }} />
       </div>
+      {openModalDetail ? (
+        <Modal forceRender open={openModalDetail} footer={false} onCancel={() => setOpenModalDetail(false)} width={600}>
+          <LeaveDetailForm
+            formdetail={formdetail}
+            downloadFile={(id: number, filename: string) => downloadFile(id, filename)}
+            statusById={statusById as string}
+            sideMenuGroups={sideMenuGroups}
+            onFinishUpdate={onFinishUpdate}
+            onFinishDelete={onFinishDelete}
+            setSubmitAction={setSubmitAction}
+            submitAction={submitAction}
+          />
+        </Modal>
+      ) : null}
     </div>
   );
 };

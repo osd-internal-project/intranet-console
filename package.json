@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start ",
     "lint": "next lint",
-    "docker:buildx:intra": "docker build --no-cache --platform linux/amd64 -t 'osd-intranet-fe:v1.1.9' -f ./Dockerfile .",
+    "docker:buildx:intra": "docker build --no-cache --platform linux/amd64 -t 'osd-intranet-fe:v1.1.10' -f ./Dockerfile .",
     "docker:buildx:lextect": "docker build --no-cache --platform linux/amd64 -t 'lextect-intranet-fe:v1.0.0' -f ./Dockerfile ."
   },
   "dependencies": {

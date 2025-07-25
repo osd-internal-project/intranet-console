@@ -175,9 +175,9 @@ export interface ITypeDataLeaveCreate {
   departName: string;
   type_id: number;
   typeName: string;
-  startDate: Date;
+  startDate: Date | Dayjs;
   startTime: string;
-  endDate: Date;
+  endDate: Date | Dayjs;
   endTime: string;
   leaveHour: number;
   detail: string;

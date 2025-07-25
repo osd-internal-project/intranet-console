@@ -78,6 +78,7 @@ export const validateSumTotalLeave = (values: ITypeDataLeaveCreate, holidays: IF
   let SumTime: number = 1;
   const dateStart = new Date(dayjs(values.startDate).format("YYYY-MM-DD")).getTime();
   const dateEnd = new Date(dayjs(values.endDate).format("YYYY-MM-DD")).getTime();
+
   if (dayjs(values.endDate).format("YYYY-MM-DD") === dayjs(values.startDate).format("YYYY-MM-DD")) {
     if (values.time_start_check) {
       SumTime = 8;

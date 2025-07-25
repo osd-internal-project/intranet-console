@@ -1,5 +1,6 @@
 import { AxiosInstance } from "axios";
 import { ITpyeUser, ITypeDataLeave } from "../page/leave-control-management/common";
+import { Dayjs } from "dayjs";
 
 const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
   const baseUrlTypeleave = "/master-type-leave";
@@ -10,7 +11,14 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
   const basrUrIDepartment = "/department";
 
   return {
-    countDataLeaveRange: async (userId: string, TypeId: number, startDate: Date, endDate: Date, startTime: string, endTime: string) => {
+    countDataLeaveRange: async (
+      userId: string,
+      TypeId: number,
+      startDate: Date | Dayjs,
+      endDate: Date | Dayjs,
+      startTime: string,
+      endTime: string,
+    ) => {
       const url = `${baseUrlDataLeave}/check-data-range`;
       const params = {
         userId,

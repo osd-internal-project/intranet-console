@@ -9,6 +9,8 @@ import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import { intersection } from "lodash";
+import dayjs from "dayjs";
+import saveAs from "file-saver";
 
 export default function Page() {
   const { id24Axios, tokenAccess } = useId24();
@@ -16,6 +18,7 @@ export default function Page() {
   const sideMenuGroups =
     tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
   const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlReport = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_REPORT);
   const [loading, setLoading] = useState<boolean>(true);
   const [dataLeaveUser, setDataLeaveUser] = useState<ITypeDataLeave[]>([]);
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
@@ -122,6 +125,17 @@ export default function Page() {
     }
   }
 
+  const handleExport = async () => {
+    const response = await DataLeaveService(baseUrlReport).exportReport({
+      search: params,
+    });
+    const blob = new Blob([response], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    saveAs(blob, `รายงานการลา-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`);
+    message.success("สำเร็จ");
+  };
+
   return (
     <>
       <Row>
@@ -156,6 +170,7 @@ export default function Page() {
               submitAction={submitAction}
               setParams={setParams}
               setLoading={setLoading}
+              handleExport={handleExport}
             />
           </Card>
         </div>

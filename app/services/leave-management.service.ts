@@ -9,6 +9,7 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
   const baseUrlDataLeave = "/data-leave";
   const baseUrlDataLeaveFile = "/data-leave-file";
   const basrUrIDepartment = "/department";
+  const baseReportDataleave = "report-data-leave";
 
   return {
     countDataLeaveRange: async (
@@ -404,6 +405,17 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
     getUserGroupMapPermission: async () => {
       return await axiosInstance
         .get(`/user-group-map-permission/`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    exportReport: async (req: { search: object }) => {
+      return await axiosInstance
+        .get(`${baseReportDataleave}/export`, { params: req.search, responseType: "blob" })
         .then((res) => {
           return res.data;
         })

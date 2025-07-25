@@ -1,14 +1,12 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Button, Col, Form, Input, Modal, Row, Select, Table, Tooltip } from "antd";
+import React, { useState } from "react";
+import { Button, Form, Input, Modal, Row, Select, Table } from "antd";
 import { dateToStringThNoTime } from "@/app/utils/format";
-import { deleteIcon, CancelIcon, CheckIcon } from "@/components/icon";
-import ExportDataLeaveAll from "../../until/export-excel";
+import { ExcelIcon } from "@/components/icon";
 import { ITypeDataLeave } from "../../common";
 import { CheckStatusLeaveType, showStatusLeave } from "@/app/utils/validatefield";
 import { dateFormatTimeNoTIme } from "@/app/utils";
 import { LeaveDetailForm } from "./leave-detail-form";
-import { intersection } from "lodash";
 
 export interface props {
   dataLeaveUser: ITypeDataLeave[];
@@ -23,6 +21,7 @@ export interface props {
   submitAction: string;
   setParams: (type: any) => void;
   setLoading: (value: boolean) => void;
+  handleExport: () => void;
 }
 
 export const TableDetail: React.FC<props> = ({
@@ -38,6 +37,7 @@ export const TableDetail: React.FC<props> = ({
   submitAction,
   setParams,
   setLoading,
+  handleExport,
 }): React.ReactElement => {
   const [form] = Form.useForm();
   const [statusById, setStatusById] = useState<any | null>(null);
@@ -191,9 +191,9 @@ export const TableDetail: React.FC<props> = ({
               </Form.Item>
             </Form>
           </div>
-          <div>
-            <ExportDataLeaveAll data={dataLeaveUser} />
-          </div>
+          <Button type="default" onClick={handleExport} icon={<ExcelIcon width="1.5rem" height="1.5rem" />}>
+            {`ดาวน์โหลดไฟล์`}
+          </Button>
         </div>
       </div>
       <div style={{ marginTop: "10px" }}>

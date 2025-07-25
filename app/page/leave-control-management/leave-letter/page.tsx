@@ -77,250 +77,144 @@ export default function Page() {
     return setAttendFiles(newFileList);
   };
 
+  // Helper functions
+  const createLeaveBase = (values: ITypeDataLeaveCreate, user: any, dataMasterType: any, totalHours: number) => ({
+    startDate: dayjs(values.startDate).startOf("date").toISOString(),
+    endDate: dayjs(values.endDate).endOf("date").toISOString(),
+    startTime: values.startTime || undefined,
+    endTime: values.endTime || undefined,
+    detail: values.detail,
+    phoneNumber: values.phoneNumber,
+    ownerName: values.ownerName,
+    userId: values.userId,
+    firstName: values.firstNameTh,
+    lastName: values.lastNameTh,
+    positionId: values.posId,
+    position: user?.masterPosition.nameEn,
+    typeId: values.type_id,
+    typeName: dataMasterType?.typeName,
+    status: "waiting",
+    attrachFile: attendFiles[0]?.name,
+    leaveHour: totalHours,
+    groupId: user?.ownerGroupId,
+  });
+
+  const showConfirmModal = (base: any, isCrossYear = false) => {
+    Modal.confirm({
+      title: "Add",
+      icon: <ExclamationCircleFilled />,
+      content: `Are you sure you want to add this leave request?${isCrossYear ? " (Cross-year leave)" : ""}`,
+      okText: "Confirm",
+      cancelText: "Cancel",
+      okButtonProps: {
+        style: { backgroundColor: "#00a1df", borderColor: "#00a1df" },
+      },
+      onOk: async () => {
+        const result = await LeaveManagementServices(baseUrlIntranet).createDataLeave(base);
+        if (result) {
+          if (attendFiles.length > 0) {
+            attendFiles.forEach(async (file) => {
+              const formData: any = new FormData();
+              formData.append("type", "attend");
+              formData.append("files", file.originFileObj);
+              await LeaveManagementServices(baseUrlIntranet).uploadFiles(result.id, formData);
+            });
+          }
+          message.success("Add success");
+          setStartDate(undefined);
+          setEndDate(undefined);
+          setCheckSwitch(false);
+          createdataleaveForm.resetFields();
+          setLoading(true);
+          router.push("/page/leave-control-management/leave-history");
+        }
+      },
+      onCancel: () => setLoading(false),
+    });
+  };
+
+  const validateLeavePermission = async (user: any, typeId: number) => {
+    const dataMasterType = await LeaveManagementServices(baseUrlIntranet).getdataMasterTypeLeaveByTypeId(typeId);
+    const datadisabledLeave = await LeaveManagementServices(baseUrlIntranet).getdataTypeLeaveMap(user.id, dataMasterType.typeId);
+    if (datadisabledLeave.length > 0) {
+      message.error(`ท่านไม่มีสิทธ์${dataMasterType.typeName}`);
+      return { valid: false, dataMasterType: null };
+    }
+
+    return { valid: true, dataMasterType };
+  };
+
+  const validateYearlyLeave = async (values: ITypeDataLeaveCreate, user: any, dataMasterType: any, startDate: any, endDate: any) => {
+    const sumDataLeave = await validateSumTotalLeave({ ...values, startDate, endDate }, dataHolidayDay);
+
+    const dataLeaveUserById = await LeaveManagementServices(baseUrlIntranet).getdataLeaveUserById({
+      userId: user.userId,
+      typeId: values.type_id,
+      startDate,
+    });
+
+    const remainingLeave = await validateCheckLeaveDay(dataLeaveUserById, dataMasterType, user.startWork);
+
+    const count = await LeaveManagementServices(baseUrlIntranet).countDataLeaveRange(
+      user.userId,
+      values.type_id,
+      startDate,
+      endDate,
+      values.startTime,
+      values.endTime,
+    );
+
+    const total = remainingLeave - sumDataLeave;
+    const currentYear = dayjs(startDate).year();
+
+    if (count.status === 200) {
+      message.error(`ช่วงเวลาที่คุณเลือก${currentYear ? `ในปี ${currentYear} ` : ""}มีการลาแล้ว กรุณาเลือกช่วงเวลาใหม่`);
+      return { valid: false, hours: 0 };
+    }
+
+    if (total < 0) {
+      message.error(`ไม่สามารถทำการลาได้เนื่องจากวันลาที่เหลืออยู่${currentYear ? `ในปี ${currentYear} ` : ""}หมด หรือไม่เพียงพอ`);
+      return { valid: false, hours: 0 };
+    }
+
+    return { valid: true, hours: sumDataLeave };
+  };
+
+  // Main function
   const onfinishCreate = async (values: ITypeDataLeaveCreate) => {
     const startDateYear = dayjs(values.startDate).format("YYYY");
     const endDateYear = dayjs(values.endDate).format("YYYY");
-    if (startDateYear === endDateYear) {
-      // เช็ควันลา ว่าสามารถลาในช่วงเวลานั้นได้ไหม (ลาล่วงหน้่า)
-      const checkStatusLeave = await checkStatusTypeLeave(values);
-      if (checkStatusLeave.status === 500) {
-        return false;
-      }
-      if (user?.userId && user?.startWork) {
-        // เช็คว่าเลือกการลาประเภทลาอะไร เพื่อนำข้อมูลของประเภทการลานั้นๆไปเช็คอย่างอื่น
-        const dataMasterType = await LeaveManagementServices(baseUrlIntranet).getdataMasterTypeLeaveByTypeId(values.type_id);
+    const isSameYear = startDateYear === endDateYear;
 
-        // เช็คว่ามีการจัดการสิทธ์การลาว่าไม่ให้ลาอะไรบ้าง
-        const datadisabledLeave = await LeaveManagementServices(baseUrlIntranet).getdataTypeLeaveMap(user.id, dataMasterType.typeId);
-        // คำนวนจำนวนเวลาของการลา
-        const sumDataLeave = await validateSumTotalLeave(values, dataHolidayDay);
+    // Check leave status permission
+    const checkStatusLeave = await checkStatusTypeLeave(values);
+    if (checkStatusLeave.status === 500) return false;
 
-        // เช็คว่ามีการลาประเภทนั้นๆไปทั้งหมดกี่วันแล้ว
-        const dataLeaveUserById = await LeaveManagementServices(baseUrlIntranet).getdataLeaveUserById({
-          userId: user?.userId,
-          typeId: values.type_id,
-          startDate: values.startDate,
-        });
+    if (!user?.userId || !user?.startWork) return false;
+    const { valid: hasPermission, dataMasterType } = await validateLeavePermission(user, values?.type_id);
+    if (!hasPermission) return false;
 
-        // เช็คว่าเหลือวันลาเท่าไหร่
-        const remainingLeave = await validateCheckLeaveDay(dataLeaveUserById, dataMasterType, user.startWork);
-
-        // เช็คว่าลาวันดังกล่าวไปยัง
-        const count = await LeaveManagementServices(baseUrlIntranet).countDataLeaveRange(
-          user.userId,
-          values.type_id,
-          values.startDate,
-          values.endDate,
-          values.startTime,
-          values.endTime,
-        );
-
-        const total = remainingLeave - sumDataLeave;
-
-        if (datadisabledLeave.length > 0) {
-          message.error(`ท่านไม่มีสิทธ์${dataMasterType.typeName}`);
-          return false;
-        }
-        if (count.status === 200) {
-          message.error("ช่วงเวลาที่คุณเลือกมีการการลาแล้ว กรุณาเลือกช่วงเวลาใหม่.");
-          return false;
-        }
-
-        if (total < 0) {
-          message.error(`ไม่สามารถทำการลาได้เนื่องจากวันลาที่เหลืออยู่ หมด หรือไม่เพียงพอ`);
-          return false;
-        }
-        let base = {
-          startDate: dayjs(values.startDate).startOf("date").toISOString(),
-          endDate: dayjs(values.endDate).endOf("date").toISOString(),
-          startTime: values.startTime ? values.startTime : undefined,
-          endTime: values.endTime ? values.endTime : undefined,
-          detail: values.detail,
-          phoneNumber: values.phoneNumber,
-          ownerName: values.ownerName,
-          userId: values.userId,
-          firstName: values.firstNameTh,
-          lastName: values.lastNameTh,
-          positionId: values.posId,
-          position: user?.masterPosition.nameEn,
-          typeId: values.type_id,
-          typeName: dataMasterType ? dataMasterType.typeName : undefined,
-          status: "waiting",
-          attrachFile: attendFiles[0]?.name,
-          leaveHour: sumDataLeave,
-          groupId: user?.ownerGroupId,
-        };
-        Modal.confirm({
-          title: "Add ",
-          icon: <ExclamationCircleFilled />,
-          content: "Are you sure you want to add this ?",
-          okText: "Confirm",
-          cancelText: "Cancel",
-          okButtonProps: {
-            style: {
-              backgroundColor: "#00a1df",
-              borderColor: "#00a1df",
-            },
-          },
-          onOk: async () => {
-            const result = await LeaveManagementServices(baseUrlIntranet).createDataLeave(base);
-            if (result) {
-              if (attendFiles.length > 0) {
-                attendFiles.forEach(async (file) => {
-                  const formData: any = new FormData();
-                  formData.append("type", "attend");
-                  formData.append("files", file.originFileObj);
-                  await LeaveManagementServices(baseUrlIntranet).uploadFiles(result.id, formData);
-                });
-              }
-              message.success(`Add success`);
-              setStartDate(undefined);
-              setEndDate(undefined);
-              setCheckSwitch(false);
-              createdataleaveForm.resetFields();
-              setLoading(true);
-              router.push("/page/leave-control-management/leave-history");
-            }
-          },
-          onCancel() {
-            setLoading(false);
-          },
-        });
-      }
+    let totalLeaveHours = 0;
+    if (isSameYear) {
+      const validation = await validateYearlyLeave(values, user, dataMasterType, values.startDate, values.endDate);
+      if (!validation.valid) return false;
+      totalLeaveHours = validation.hours;
     } else {
-      const DateMap = [
+      const dateRanges = [
         { startDate: values.startDate, endDate: dayjs(values.startDate).endOf("year") },
         { startDate: dayjs(values.endDate).startOf("year"), endDate: values.endDate },
       ];
-      // เช็ควันลา ว่าสามารถลาในช่วงเวลานั้นได้ไหม (ลาล่วงหน้า)
-      const checkStatusLeave = await checkStatusTypeLeave(values);
-      if (checkStatusLeave.status === 500) {
-        return false;
-      }
-      if (user?.userId && user?.startWork) {
-        // เช็คว่าเลือกการลาประเภทลาอะไร เพื่อนำข้อมูลของประเภทการลานั้นๆไปเช็คอย่างอื่น
-        const dataMasterType = await LeaveManagementServices(baseUrlIntranet).getdataMasterTypeLeaveByTypeId(values.type_id);
-
-        // เช็คว่ามีการจัดการสิทธ์การลาว่าไม่ให้ลาอะไรบ้าง
-        const datadisabledLeave = await LeaveManagementServices(baseUrlIntranet).getdataTypeLeaveMap(user.id, dataMasterType.typeId);
-
-        if (datadisabledLeave.length > 0) {
-          message.error(`ท่านไม่มีสิทธ์${dataMasterType.typeName}`);
-          return false;
-        }
-        // ============ การคำนวณแบบใหม่สำหรับการลาข้ามปี ============
-        let totalLeaveHours = 0;
-        let allValidationsPassed = true;
-        // วนลูปคำนวณแต่ละปี
-        for (const dateRange of DateMap) {
-          const yearStartDate = dateRange.startDate;
-          const yearEndDate = dateRange.endDate;
-          const currentYear = dayjs(yearStartDate).year();
-          // คำนวนจำนวนเวลาของการลาในปีนี้
-          const sumDataLeaveThisYear = await validateSumTotalLeave(
-            {
-              ...values,
-              startDate: yearStartDate,
-              endDate: yearEndDate,
-            },
-            dataHolidayDay,
-          );
-          // เช็คว่ามีการลาประเภทนั้นๆไปในปีนี้ทั้งหมดกี่วันแล้ว
-          const dataLeaveUserByIdThisYear = await LeaveManagementServices(baseUrlIntranet).getdataLeaveUserById({
-            userId: user?.userId,
-            typeId: values.type_id,
-            startDate: yearStartDate,
-          });
-          // เช็คว่าเหลือวันลาในปีนี้เท่าไหร่
-          const remainingLeaveThisYear = await validateCheckLeaveDay(dataLeaveUserByIdThisYear, dataMasterType, user.startWork);
-          // เช็คว่าลาวันดังกล่าวในปีนี้ไปแล้วหรือยัง
-          const countThisYear = await LeaveManagementServices(baseUrlIntranet).countDataLeaveRange(
-            user.userId,
-            values.type_id,
-            yearStartDate,
-            yearEndDate,
-            values.startTime,
-            values.endTime,
-          );
-          // คำนวณวันลาที่เหลือในปีนี้
-          const totalThisYear = remainingLeaveThisYear - sumDataLeaveThisYear;
-          // ตรวจสอบเงื่อนไขในปีนี้
-          if (countThisYear.status === 200) {
-            message.error(`ช่วงเวลาที่คุณเลือกในปี ${currentYear} มีการลาแล้ว กรุณาเลือกช่วงเวลาใหม่`);
-            allValidationsPassed = false;
-            break;
-          }
-          if (totalThisYear < 0) {
-            message.error(`ไม่สามารถทำการลาได้เนื่องจากวันลาที่เหลืออยู่ในปี ${currentYear} หมด หรือไม่เพียงพอ`);
-            allValidationsPassed = false;
-            break;
-          }
-          // รวมชั่วโมงการลาทั้งหมด
-          totalLeaveHours += sumDataLeaveThisYear;
-        }
-        // หากการตรวจสอบทั้งหมดผ่าน
-        if (!allValidationsPassed) {
-          return false;
-        }
-        // ============ สร้างข้อมูลสำหรับบันทึก ============
-        let base = {
-          startDate: dayjs(values.startDate).startOf("date").toISOString(),
-          endDate: dayjs(values.endDate).endOf("date").toISOString(),
-          startTime: values.startTime ? values.startTime : undefined,
-          endTime: values.endTime ? values.endTime : undefined,
-          detail: values.detail,
-          phoneNumber: values.phoneNumber,
-          ownerName: values.ownerName,
-          userId: values.userId,
-          firstName: values.firstNameTh,
-          lastName: values.lastNameTh,
-          positionId: values.posId,
-          position: user?.masterPosition.nameEn,
-          typeId: values.type_id,
-          typeName: dataMasterType ? dataMasterType.typeName : undefined,
-          status: "waiting",
-          attrachFile: attendFiles[0]?.name,
-          leaveHour: totalLeaveHours,
-          groupId: user?.ownerGroupId,
-        };
-        Modal.confirm({
-          title: "Add ",
-          icon: <ExclamationCircleFilled />,
-          content: `Are you sure you want to add this leave request?${DateMap.length > 1 ? " (Cross-year leave)" : ""}`,
-          okText: "Confirm",
-          cancelText: "Cancel",
-          okButtonProps: {
-            style: {
-              backgroundColor: "#00a1df",
-              borderColor: "#00a1df",
-            },
-          },
-          onOk: async () => {
-            const result = await LeaveManagementServices(baseUrlIntranet).createDataLeave(base);
-            if (result) {
-              if (attendFiles.length > 0) {
-                attendFiles.forEach(async (file) => {
-                  const formData: any = new FormData();
-                  formData.append("type", "attend");
-                  formData.append("files", file.originFileObj);
-                  await LeaveManagementServices(baseUrlIntranet).uploadFiles(result.id, formData);
-                });
-              }
-              message.success(`Add success`);
-              setStartDate(undefined);
-              setEndDate(undefined);
-              setCheckSwitch(false);
-              createdataleaveForm.resetFields();
-              setLoading(true);
-              router.push("/page/leave-control-management/leave-history");
-            }
-          },
-          onCancel() {
-            setLoading(false);
-          },
-        });
+      for (const dateRange of dateRanges) {
+        const validation = await validateYearlyLeave(values, user, dataMasterType, dateRange.startDate, dateRange.endDate);
+        if (!validation.valid) return false;
+        totalLeaveHours += validation.hours;
       }
     }
+
+    const base = createLeaveBase(values, user, dataMasterType, totalLeaveHours);
+    console.log(base);
+
+    // showConfirmModal(base, !isSameYear);
   };
 
   function onChangeFormCreate(values: any): void {

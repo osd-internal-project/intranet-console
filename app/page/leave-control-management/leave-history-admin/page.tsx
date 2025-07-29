@@ -1,7 +1,7 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
 import { TableDetail } from "./components/table-detail";
-import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, message } from "antd";
+import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, TablePaginationConfig, message } from "antd";
 import DataLeaveService from "../../../services/leave-management.service";
 import { ITypeDataLeave } from "../common";
 import { ExclamationCircleFilled } from "@ant-design/icons";
@@ -20,10 +20,15 @@ export default function Page() {
   const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const baseUrlReport = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_REPORT);
   const [loading, setLoading] = useState<boolean>(true);
-  const [dataLeaveUser, setDataLeaveUser] = useState<ITypeDataLeave[]>([]);
+  const [dataLeaveUser, setDataLeaveUser] = useState<{ data: ITypeDataLeave[]; count: number }>({ data: [], count: 0 });
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
   const [submitAction, setSubmitAction] = useState<"approved" | "cancel">("approved");
   const [params, setParams] = useState<{ type: string; value: string }>({ type: "", value: "" });
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
   const [formdetail] = Form.useForm();
 
   useEffect(() => {
@@ -32,13 +37,20 @@ export default function Page() {
 
   const loadData = async () => {
     if (user?.userId) {
+      const skip = (Number(pagination.current) - 1) * Number(pagination.pageSize);
+      const take = Number(pagination.pageSize);
       const isHr = intersection(sideMenuGroups, ["hr"]).length > 0;
-      const res = isHr
-        ? await DataLeaveService(baseUrlIntranet).getdataLeaveHrfindBygroup(user.userId, params)
-        : await DataLeaveService(baseUrlIntranet).getdataLeavefindBygroup(user.userId, params);
-      setDataLeaveUser(res);
+      const { data, count } = isHr
+        ? await DataLeaveService(baseUrlIntranet).getdataLeaveHrfindBygroup(user.userId, params, skip, take)
+        : await DataLeaveService(baseUrlIntranet).getdataLeavefindBygroup(user.userId, params, skip, take);
+      setDataLeaveUser({ data, count });
       setLoading(false);
     }
+  };
+
+  const changePagination = (page: TablePaginationConfig) => {
+    setPagination({ ...page });
+    setLoading(true);
   };
 
   const onFinishUpdate = (values: any, type: string, id: number) => {
@@ -171,6 +183,8 @@ export default function Page() {
               setParams={setParams}
               setLoading={setLoading}
               handleExport={handleExport}
+              pagination={pagination}
+              changePagination={changePagination}
             />
           </Card>
         </div>

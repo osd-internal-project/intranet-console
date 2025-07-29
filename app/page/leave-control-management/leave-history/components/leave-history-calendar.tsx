@@ -7,6 +7,7 @@ import { ITypeDataLeave } from "../../common";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { LeaveHistoryCalendarDetail } from "./leave-history-calendar-detail";
 import { checkIcon, loadingIcon } from "@/components/icon";
+import dayjs, { Dayjs } from "dayjs";
 
 interface CustomEvent extends RbcEvent {
   id: number | undefined;
@@ -36,11 +37,12 @@ const colorOfType = [
 ];
 
 export interface Props {
+  handleChangemonth: (value: Dayjs) => void;
   dataSource: ITypeDataLeave[];
   downloadFile: (id: number, filename: string) => void;
 }
 
-export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, downloadFile }: any) => {
+export const DepartmentCalendarDetail: React.FC<Props> = ({ handleChangemonth, dataSource, downloadFile }: any) => {
   const [formDetail] = Form.useForm();
   const localizer = momentLocalizer(moment);
   const [modalDataLeaveDetail, setModalDataLeaveDetail] = useState(false);
@@ -165,6 +167,9 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, download
               fontSize: 10,
             },
           };
+        }}
+        onNavigate={(newDate, view, action) => {
+          handleChangemonth(dayjs(newDate));
         }}
       />
     </div>

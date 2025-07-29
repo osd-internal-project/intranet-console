@@ -1,20 +1,20 @@
 import React, { useState } from "react";
-import { Button, Table } from "antd";
+import { Button, Table, TablePaginationConfig } from "antd";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { ITypeDataLeave } from "../../common";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import DataLeaveService from "../../../../services/leave-management.service";
 import { CheckStatusLeaveType, showStatus, showStatusLeave } from "@/app/utils/validatefield";
 import { dateFormatTime } from "@/app/utils";
 import { LeaveHistoryDetail } from "./leave-history-detail";
 
 export interface props {
-  dataSource: ITypeDataLeave[];
+  dataSource: { data: ITypeDataLeave[]; count: number };
   setOpenModalDetail: (e: boolean) => void;
   openModalDetail: boolean;
   formdetail: any;
   onFinishUpdate: (type: string, id: number) => void;
   downloadFile: (id: number, filename: string) => void;
+  pagination: TablePaginationConfig;
+  changePagination: (pagination: TablePaginationConfig) => void;
 }
 
 export const TableDetail: React.FC<props> = ({
@@ -24,6 +24,8 @@ export const TableDetail: React.FC<props> = ({
   formdetail,
   onFinishUpdate,
   downloadFile,
+  pagination,
+  changePagination,
 }): React.ReactElement => {
   const ShowStatusLeaves = showStatusLeave();
   const [statusById, setStatusById] = useState<any | null>(null);
@@ -116,11 +118,13 @@ export const TableDetail: React.FC<props> = ({
     <div>
       <div className="mb-3">{ShowStatusLeaves}</div>
       <Table
-        dataSource={dataSource.filter((e) => e.status !== "holiday")}
+        dataSource={dataSource.data}
         columns={columns}
         size="small"
         scroll={{ x: "max-content" }}
         rowKey={(e: any) => e.id}
+        onChange={changePagination}
+        pagination={{ ...pagination, total: dataSource.count }}
       />
       {openModalDetail ? (
         <LeaveHistoryDetail

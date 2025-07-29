@@ -49,9 +49,6 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
         });
     },
     getdataUserAll: async () => {
-      // const condition = {
-      //   orderBy: { id: "asc" },
-      // };
       return await axiosInstance
         .get(`${baseUrlUser}`)
         .then((res) => {
@@ -76,9 +73,14 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getdataLeaveAll: async (userId: string) => {
+    getdataLeaveCalendarTeamsByMonth: async (month: Date | string | Dayjs) => {
+      const condition = {
+        month,
+      };
       return await axiosInstance
-        .get(`${baseUrlDataLeave}/${userId}`)
+        .get(`${baseUrlDataLeave}/calendar-teams`, {
+          params: condition,
+        })
         .then((res) => {
           return res.data;
         })
@@ -86,7 +88,36 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getdataLeavefindBygroup: async (userId: string, params: any) => {
+    getdataLeaveCalendarByMonth: async (month: Date | string | Dayjs) => {
+      const condition = {
+        month,
+      };
+      return await axiosInstance
+        .get(`${baseUrlDataLeave}/calendar`, {
+          params: condition,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
+    getdataLeaveAll: async (userId: string, skip: number, take: number) => {
+      return await axiosInstance
+        .get(`${baseUrlDataLeave}/${userId}?take=${take}&skip=${skip}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
+    getdataLeavefindBygroup: async (userId: string, params: any, skip: number | null, take: number | null) => {
+      let filter = "";
+      if (skip && take) {
+        filter = `?take=${take}&skip=${skip}`;
+      }
       return await axiosInstance
         .get(`${baseUrlDataLeave}/findGroup/${userId}`, { params: params })
         .then((res) => {
@@ -96,9 +127,9 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getdataLeaveHrfindBygroup: async (userId: string, params: any) => {
+    getdataLeaveHrfindBygroup: async (userId: string, params: any, skip: number, take: number) => {
       return await axiosInstance
-        .get(`${baseUrlDataLeave}/findGroup-hr/${userId}`, { params: params })
+        .get(`${baseUrlDataLeave}/findGroup-hr/${userId}?take=${take}&skip=${skip}`, { params: params })
         .then((res) => {
           return res.data;
         })

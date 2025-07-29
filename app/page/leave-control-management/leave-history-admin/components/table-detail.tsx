@@ -7,10 +7,10 @@ import { ITypeDataLeave } from "../../common";
 import { CheckStatusLeaveType, showStatusLeave } from "@/app/utils/validatefield";
 import { dateFormatTimeNoTIme } from "@/app/utils";
 import { LeaveDetailForm } from "./leave-detail-form";
-import { ColumnsType } from "antd/es/table";
+import { ColumnsType, TablePaginationConfig } from "antd/es/table";
 
 export interface props {
-  dataLeaveUser: ITypeDataLeave[];
+  dataLeaveUser: { data: ITypeDataLeave[]; count: number };
   setOpenModalDetail: (e: boolean) => void;
   openModalDetail: boolean;
   formdetail: FormInstance;
@@ -23,6 +23,8 @@ export interface props {
   setParams: (data: { type: string; value: string }) => void;
   setLoading: (value: boolean) => void;
   handleExport: () => void;
+  pagination: TablePaginationConfig;
+  changePagination: (pagination: TablePaginationConfig) => void;
 }
 
 export const TableDetail: React.FC<props> = ({
@@ -39,6 +41,8 @@ export const TableDetail: React.FC<props> = ({
   setParams,
   setLoading,
   handleExport,
+  pagination,
+  changePagination,
 }): React.ReactElement => {
   const [form] = Form.useForm();
   const [statusById, setStatusById] = useState<string | null>(null);
@@ -175,7 +179,15 @@ export const TableDetail: React.FC<props> = ({
         </div>
       </div>
       <div style={{ marginTop: "10px" }}>
-        <Table dataSource={dataLeaveUser.length > 0 ? dataLeaveUser : []} columns={columns} size="small" rowKey="id" scroll={{ x: "max-content" }} />
+        <Table
+          dataSource={dataLeaveUser.data}
+          columns={columns}
+          size="small"
+          rowKey="id"
+          scroll={{ x: "max-content" }}
+          pagination={{ ...pagination, total: dataLeaveUser.count }}
+          onChange={changePagination}
+        />
       </div>
       {openModalDetail ? (
         <Modal forceRender open={openModalDetail} footer={false} onCancel={() => setOpenModalDetail(false)} width={600}>

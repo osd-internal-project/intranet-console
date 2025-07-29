@@ -6,6 +6,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useForm } from "antd/es/form/Form";
 import { CaretRightOutlined } from "@ant-design/icons";
 import { checkIcon, loadingIcon } from "@/components/icon";
+import dayjs, { Dayjs } from "dayjs";
 
 const localizer = momentLocalizer(moment);
 const { TextArea } = Input;
@@ -27,6 +28,7 @@ interface BookingType {
 
 interface Props {
   bookingFetchCalendar: BookingType[];
+  handleChangeMonth: (month: Dayjs | string) => void;
 }
 
 interface CustomEvent extends RbcEvent {
@@ -36,7 +38,7 @@ interface CustomEvent extends RbcEvent {
   userName: string;
 }
 
-const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar }) => {
+const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar, handleChangeMonth }) => {
   const [selectedBooking, setSelectedBooking] = useState<BookingType | null>(null);
   const [statusModalDetail, setStatusModalDetail] = useState(false);
   const [formUpdate] = useForm();
@@ -119,6 +121,9 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar }) => {
           description: booking.description,
           userName: booking.bookerName,
         }))}
+        onNavigate={(newDate, view, action) => {
+          handleChangeMonth(dayjs(newDate));
+        }}
         popup
         startAccessor="start"
         endAccessor="end"

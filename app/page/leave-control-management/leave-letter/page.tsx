@@ -212,9 +212,7 @@ export default function Page() {
     }
 
     const base = createLeaveBase(values, user, dataMasterType, totalLeaveHours);
-    console.log(base);
-
-    // showConfirmModal(base, !isSameYear);
+    showConfirmModal(base, !isSameYear);
   };
 
   function onChangeFormCreate(values: any): void {

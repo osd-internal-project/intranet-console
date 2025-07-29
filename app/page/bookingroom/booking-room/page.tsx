@@ -72,6 +72,8 @@ const BookingRoomPage: React.FC = () => {
   };
   const { id24Axios } = useId24();
   const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const holidayService = MasterHolidaysService(baseUrIntranet);
+  const [month, setMonth] = useState<Dayjs | string>(dayjs());
   const [isModalBooking, setIsModalBooking] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [masterRoomData, setMasterRoomData] = useState<MasterRoomType[]>([]);
@@ -91,11 +93,16 @@ const BookingRoomPage: React.FC = () => {
     setloading(true);
   };
 
+  const handleChangeMonth = (month: Dayjs | string) => {
+    setMonth(month);
+    setloading(true);
+  };
+
   const items: TabsProps["items"] = [
     {
       key: "1",
       label: "แสดงข้อมูลแบบปฎิทิน",
-      children: <CalendarComponent bookingFetchCalendar={bookingFetchCalendar} />,
+      children: <CalendarComponent bookingFetchCalendar={bookingFetchCalendar} handleChangeMonth={handleChangeMonth} />,
     },
     {
       key: "2",
@@ -125,7 +132,6 @@ const BookingRoomPage: React.FC = () => {
 
   const createBooking: FormProps<BookingType>["onFinish"] = async (values) => {
     setSubmitLoading(true);
-    // const roomName = values.roomName as string;
     const startDate = values.startDate;
     const endDate = values.endDate;
     const selectedOption = masterRoomData.find((option) => option.value === values.roomId);
@@ -190,8 +196,10 @@ const BookingRoomPage: React.FC = () => {
     const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
     const take: number = Number(pagination.pageSize);
     try {
+      const bookings = await BookingRoomServices(baseUrIntranet).findBookingRoom(skip, take);
+      setBookingFetchData(bookings);
+
       const yearNow = dayjs().format("YYYY");
-      const holidayService = MasterHolidaysService(baseUrIntranet);
       const holidayData = await holidayService.getHolidayByYear(yearNow);
       const holidayMappedData: any = holidayData.map((item: any) => ({
         id: item.id,
@@ -203,24 +211,10 @@ const BookingRoomPage: React.FC = () => {
         bookerName: "วันหยุด",
         bookingStatus: "holiday",
       }));
-      const bookingRoom = await BookingRoomServices(baseUrIntranet).getMasterRoomQuery();
-      const options = bookingRoom
-        .filter((filtersroom: any) => filtersroom.roomsStatus === true)
-        .map((event: any) => {
-          return { value: event.roomId, label: event.roomName };
-        });
-      setMasterRoomData(options);
-      const bookingCalendar = await BookingRoomServices(baseUrIntranet).getBookingRoomQuery();
-      const refreshment = await BookingRoomServices(baseUrIntranet).getMasterRefreshmentQuery();
-      const bookings = await BookingRoomServices(baseUrIntranet).findBookingRoom(skip, take);
-      setBookingFetchData(bookings);
-      setRefreshmentData(refreshment);
-      const dataFilterCalendar = bookingCalendar.data.filter((events: any) => events.bookingStatus !== "Reject");
-      const mapCalendar: any = [...dataFilterCalendar, ...holidayMappedData];
+      const bookingCalendar = await BookingRoomServices(baseUrIntranet).getBookingRoomCarlendar(month);
+      const mapCalendar: any = [...bookingCalendar, ...holidayMappedData];
       setBookingFetchCalendar(mapCalendar);
       setPagination({ ...pagination, total: bookings.count });
-      // const department = await MasterDepartmentServices(baseUrIntranet).findAllDepartment();
-      // setDepartment(department);
       setloading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -228,8 +222,23 @@ const BookingRoomPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (loading === true) fetchData();
+    if (loading === true) {
+      fetchData();
+    }
+    fecthMasterData();
   }, [loading]);
+
+  const fecthMasterData = async () => {
+    const bookingRoom = await BookingRoomServices(baseUrIntranet).getMasterRoomQuery();
+    const options = bookingRoom
+      .filter((filtersroom: any) => filtersroom.roomsStatus === true)
+      .map((event: any) => {
+        return { value: event.roomId, label: event.roomName };
+      });
+    setMasterRoomData(options);
+    const refreshment = await BookingRoomServices(baseUrIntranet).getMasterRefreshmentQuery();
+    setRefreshmentData(refreshment);
+  };
 
   return (
     <>
@@ -382,7 +391,7 @@ const BookingRoomPage: React.FC = () => {
           )}
           {outSider === "มี" && (
             <>
-              <Divider orientation="left">ข้อมูลบุคคลภายนอก</Divider>
+              <Divider orientation="left">{`ข้อมูลบุคคลภายนอก`}</Divider>
               <Form.List name="guest">
                 {(fields, { add, remove }) => (
                   <>
@@ -401,9 +410,9 @@ const BookingRoomPage: React.FC = () => {
                         <Col span={5}>
                           <Form.Item {...restField} label="ลำดับความสำคัญ" name={[name, "guestpriority"]}>
                             <Select placeholder="เลือกความสำคัญ">
-                              <Select.Option value="1">สูง</Select.Option>
-                              <Select.Option value="2">กลาง</Select.Option>
-                              <Select.Option value="3">ต่ำ</Select.Option>
+                              <Select.Option value="1">{`สูง`}</Select.Option>
+                              <Select.Option value="2">{`กลาง`}</Select.Option>
+                              <Select.Option value="3">{`ต่ำ`}</Select.Option>
                             </Select>
                           </Form.Item>
                         </Col>
@@ -425,7 +434,7 @@ const BookingRoomPage: React.FC = () => {
                     ))}
                     <Form.Item>
                       <Button type="dashed" onClick={() => add()} block>
-                        เพิ่มบุคคลภายนอก
+                        {`เพิ่มบุคคลภายนอก`}
                       </Button>
                     </Form.Item>
                   </>
@@ -436,10 +445,10 @@ const BookingRoomPage: React.FC = () => {
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Row justify="end">
               <Button type="default" onClick={handleCancel} style={{ marginRight: 8 }}>
-                ยกเลิก
+                {`ยกเลิก`}
               </Button>
               <Button type="primary" htmlType="submit" loading={submitLoading}>
-                ตกลง
+                {`ตกลง`}
               </Button>
             </Row>
           </Form.Item>
@@ -451,10 +460,10 @@ const BookingRoomPage: React.FC = () => {
             items={[
               {
                 href: "/page/home",
-                title: <span>หน้าหลัก</span>,
+                title: <span>{`หน้าหลัก`}</span>,
               },
               {
-                title: <span>Booking Room Details</span>,
+                title: <span>{`Booking Room Details`}</span>,
               },
             ]}
           />
@@ -467,7 +476,7 @@ const BookingRoomPage: React.FC = () => {
             <Card styles={{ body: { padding: "10px" } }}>
               <div className="flex justify-end">
                 <Button type="primary" onClick={showModal}>
-                  จองห้องประชุม
+                  {`จองห้องประชุม`}
                 </Button>
               </div>
               <Tabs defaultActiveKey="1" items={items} type="card" />

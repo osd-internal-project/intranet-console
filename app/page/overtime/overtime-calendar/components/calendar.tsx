@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import dayjs from "dayjs";
+import React, { useState } from "react";
+import dayjs, { Dayjs } from "dayjs";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Calendar, momentLocalizer, Event as RbcEvent } from "react-big-calendar";
@@ -15,35 +15,15 @@ import {
 import { checkIcon, loadingIcon } from "@/components/icon";
 import { IOverTimeForm } from "@/app/common/overtime";
 
-const { Option } = Select;
 const { Text } = Typography;
 
 export interface props {
-  holiday: THoliday[];
+  calendar: IOverTimeForm[];
   fetchDataHoliday: (value: string) => void;
+  handleChangeMonth: (month: Dayjs | string) => void;
 }
 
-// interface CustomEvent extends RbcEvent {
-//   id: number | undefined;
-//   title: string;
-//   status: string;
-//   type: string;
-//   start: Date;
-//   end: Date;
-//   endTime: string;
-//   startTime: string;
-// }
-
-interface THoliday {
-  id: number;
-  holidaysName: string;
-  masterHolidaysYearId: number;
-  holidaysDate: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-const CalendarPage: React.FC<props> = ({ holiday }): React.ReactElement => {
+const CalendarPage: React.FC<props> = ({ calendar, handleChangeMonth }): React.ReactElement => {
   const localizer = momentLocalizer(moment);
   const [visible, setVisible] = useState<boolean>(false);
   const [form] = Form.useForm();
@@ -137,7 +117,7 @@ const CalendarPage: React.FC<props> = ({ holiday }): React.ReactElement => {
 
   const handleSelectSlot = (slotInfo: { start: any; end: any; action: "select" | "click" | "doubleClick" }) => {
     const clickedDate = dayjs(slotInfo.start).startOf("day");
-    const hasEvent = holiday.some((event: any) => dayjs(event.holidaysDate).startOf("day").isSame(clickedDate));
+    const hasEvent = calendar.some((event: any) => dayjs(event.holidaysDate).startOf("day").isSame(clickedDate));
     if (!hasEvent) {
       window.location.href = `${window.location.origin}/page/overtime/overtime-form?date=${dayjs(slotInfo.start).format("YYYY-MM-DD")}`;
     }
@@ -327,7 +307,7 @@ const CalendarPage: React.FC<props> = ({ holiday }): React.ReactElement => {
         defaultView="month"
         views={["month"]}
         onSelectSlot={handleSelectSlot}
-        events={holiday.map((events: any) => {
+        events={calendar.map((events: any) => {
           return { ...events };
         })}
         messages={{
@@ -337,6 +317,9 @@ const CalendarPage: React.FC<props> = ({ holiday }): React.ReactElement => {
         onSelectEvent={onSelectEventCalendar}
         components={{
           event: CustomEventComponent,
+        }}
+        onNavigate={(newDate, view, action) => {
+          handleChangeMonth(dayjs(newDate));
         }}
         dayPropGetter={dayPropGetter}
         eventPropGetter={(event: IOverTimeForm) => {

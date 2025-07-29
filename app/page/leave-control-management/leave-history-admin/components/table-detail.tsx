@@ -94,7 +94,16 @@ export const TableDetail: React.FC<props> = ({
       render: (e, row) =>
         row?.startDate && row?.endDate ? `${dateToStringThNoTime(row?.startDate as any)} ถึง ${dateToStringThNoTime(row?.endDate as any)}` : "-",
     },
-
+    {
+      key: "leaveHour",
+      dataIndex: "leaveHour",
+      title: "จำนวนที่ลา",
+      render: (e) => {
+        if (!e) return "-";
+        const sumHours = e / 8;
+        return e < 8 ? `${e} ช.ม.` : `${sumHours} วัน`;
+      },
+    },
     {
       key: "userApproved",
       dataIndex: "userApproved",

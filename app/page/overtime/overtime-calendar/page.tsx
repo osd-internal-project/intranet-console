@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import SlideImageService from "../../home/services/index.service";
@@ -24,7 +24,8 @@ export default function OverTimeCalendatPage() {
   const { id24Axios } = useId24();
   const baseUrlIntra = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [formDetail] = Form.useForm();
-  const [holiday, setHoliday] = useState<THoliday[]>([]);
+  const [calendar, setCalendar] = useState<IOverTimeForm[]>([]);
+  const [month, setMonth] = useState<Dayjs | string>(dayjs());
   const [dataTable, setDataTable] = useState<{ data: IOverTimeForm[]; count: number }>({ data: [], count: 0 });
   const [activekey, setActiveKey] = useState<string>("1");
   const [loading, setloading] = useState<boolean>(true);
@@ -35,7 +36,9 @@ export default function OverTimeCalendatPage() {
   });
   const [openModal, setOpenModal] = useState<boolean>(false);
   useEffect(() => {
-    if (loading) fetchDataHoliday(dayjs(new Date()).format("YYYY"));
+    if (loading) {
+      fetchDataHoliday();
+    }
   }, [activekey, loading]);
 
   const changePagination = (page: TablePaginationConfig) => {
@@ -43,12 +46,19 @@ export default function OverTimeCalendatPage() {
     setloading(true);
   };
 
-  const fetchDataHoliday = async (year: string) => {
+  const handleChangeMonth = (month: Dayjs | string) => {
+    setMonth(month);
+    setloading(true);
+  };
+
+  const fetchDataHoliday = async () => {
+    const yearNow = dayjs().format("YYYY");
     const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
     const take: number = Number(pagination.pageSize);
-    const holiday = await SlideImageService(baseUrlIntra).getHoliday(year);
+    const holiday = await SlideImageService(baseUrlIntra).getHoliday(yearNow);
+    const calendar = await OverTimeServices(baseUrlIntra).findCalendar(month);
     const { data, count } = await OverTimeServices(baseUrlIntra).findById(skip, take);
-    const mapdataOT = data.map((e: any) => {
+    const mapdataOT = calendar.map((e: IOverTimeForm) => {
       return {
         ...e,
         startTime: e.startTime,
@@ -69,7 +79,7 @@ export default function OverTimeCalendatPage() {
     });
     const merged = [...mapdataOT, ...mapHoliday];
     setDataTable({ data, count });
-    setHoliday(merged);
+    setCalendar(merged);
     setloading(false);
   };
 
@@ -93,7 +103,7 @@ export default function OverTimeCalendatPage() {
     {
       key: "1",
       label: "ปฏิทินทำงานล่วงเวลา",
-      children: <Calendar holiday={holiday} fetchDataHoliday={fetchDataHoliday} />,
+      children: <Calendar calendar={calendar} fetchDataHoliday={fetchDataHoliday} handleChangeMonth={handleChangeMonth} />,
     },
     {
       key: "2",
@@ -105,7 +115,7 @@ export default function OverTimeCalendatPage() {
   const onChange = (key: string) => {
     setActiveKey(key);
     if (key === "1") {
-      fetchDataHoliday(dayjs().format("YYYY"));
+      fetchDataHoliday();
     }
   };
 

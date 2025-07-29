@@ -1,12 +1,13 @@
 import { AxiosInstance } from "axios";
 import { IOverTimeForm } from "../common/overtime";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 export interface TServices {
   findAll: () => Promise<IOverTimeForm[]>;
   findMany: (skip: number, take: number, params: any) => Promise<{ data: IOverTimeForm[]; total: number }>;
   findManyHr: (skip: number, take: number, params: any) => Promise<{ data: IOverTimeForm[]; total: number }>;
   findById: (skip: number, take: number) => Promise<{ data: IOverTimeForm[]; count: number }>;
+  findCalendar: (month: Date | Dayjs | string) => Promise<IOverTimeForm[]>;
   findMasterOt: (date: any) => Promise<number>;
   create: (condition: any) => Promise<any[]>;
   update: (overTimeID: string, type: string, description: string, user: { userId?: string; fullName?: string }) => Promise<any[]>;
@@ -55,6 +56,18 @@ const OverTimeServices = (axiosInstance: AxiosInstance): TServices => {
     findById: async (skip, take) => {
       return await axiosInstance
         .get(`${baseUrl}/by-id?take=${take}&skip=${skip}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    findCalendar: async (month) => {
+      const condition = { month };
+      return await axiosInstance
+        .get(`${baseUrl}/calendar`, { params: condition })
         .then((res) => {
           return res.data;
         })

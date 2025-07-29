@@ -12,7 +12,7 @@ import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import MasterHolidaysService from "../../setting/master-holidays/services/index.service";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 const MaCar: React.FC = () => {
   const { user } = (useContext(UserContext) as UserContectType) || {
@@ -25,7 +25,7 @@ const MaCar: React.FC = () => {
   const [maCarBookData, setMaCarBookData] = useState<dataMaCarbook[]>([]);
   const [maFetchCalendar, setMaFetchCalendar] = useState<MaCarBookCalendarType[]>([]);
   const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
-  const [maCarBookById, setMaCarBookById] = useState<MaCarBookType[]>([]);
+  const [month, setMonth] = useState<Dayjs | string>(dayjs());
   const [loading, setLoading] = useState<boolean>(true);
   const [dataProvinces, setDataProvinces] = useState<ProvincesType[]>([]);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -35,7 +35,10 @@ const MaCar: React.FC = () => {
   });
 
   useEffect(() => {
-    if (loading) fetchData();
+    if (loading) {
+      fetchData();
+    }
+    fecthMasterData();
   }, [loading, user]);
 
   const fetchData = async () => {
@@ -43,6 +46,8 @@ const MaCar: React.FC = () => {
     const take: number = Number(pagination.pageSize);
     try {
       if (user) {
+        const maCarBook = await intraAuthService.findMaCarBook(skip, take);
+        setMaCarBookData(maCarBook);
         const yearNow = dayjs().format("YYYY");
         const holidayData = await holidayService.getHolidayByYear(yearNow);
         const mapHoliday: MaCarBookCalendarType[] = holidayData.map((events: any) => {
@@ -57,21 +62,8 @@ const MaCar: React.FC = () => {
           };
           return mapData;
         });
-        const maCar = await intraAuthService.getMaCarQuery();
-        const maCarBook = await intraAuthService.findMaCarBook(skip, take);
-        const maCalender = await intraAuthService.getMaCarBookQuery();
-        const maCarBookById = await intraAuthService.findMaCarBookById(user.userId);
-        const response = await axios.get("https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json");
-        const provincesData = response.data;
-        const optionsProvinces = provincesData.map((event: ProvincesType) => ({
-          value: event.id,
-          label: event.name_th,
-        }));
+        const maCalender = await intraAuthService.getMaCarBookCalendar(month);
         const mergeCalendar: MaCarBookCalendarType[] = [...maCalender, ...mapHoliday];
-        setDataProvinces(optionsProvinces);
-        setMaCarBookById(maCarBookById);
-        setMaCarData(maCar);
-        setMaCarBookData(maCarBook);
         setMaFetchCalendar(mergeCalendar);
         setPagination({ ...pagination, total: maCarBook.count });
         setLoading(false);
@@ -79,15 +71,31 @@ const MaCar: React.FC = () => {
     } catch (error) {}
   };
 
+  const fecthMasterData = async () => {
+    const maCar = await intraAuthService.getMaCarQuery();
+    setMaCarData(maCar);
+    const response = await axios.get("https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json");
+    const optionsProvinces = response.data.map((event: ProvincesType) => ({
+      value: event.id,
+      label: event.name_th,
+    }));
+    setDataProvinces(optionsProvinces);
+  };
+
   const changePagination = (page: TablePaginationConfig) => {
     setPagination({ ...page });
+    setLoading(true);
+  };
+
+  const handleChangeMonth = (month: Dayjs | string) => {
+    setMonth(month);
     setLoading(true);
   };
   const items: TabsProps["items"] = [
     {
       key: "1",
       label: "แสดงข้อมูลแบบปฎิทิน",
-      children: <CalendarComponent maFetchCalendar={maFetchCalendar} />,
+      children: <CalendarComponent maFetchCalendar={maFetchCalendar} handleChangeMonth={handleChangeMonth} />,
     },
     {
       key: "2",
@@ -100,7 +108,6 @@ const MaCar: React.FC = () => {
           loading={loading}
           setLoading={setLoading}
           maCarData={maCarData}
-          maCarBookById={maCarBookById}
           dataProvinces={dataProvinces}
           maFetchCalendar={maFetchCalendar}
         />

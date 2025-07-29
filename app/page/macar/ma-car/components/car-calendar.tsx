@@ -6,7 +6,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useForm } from "antd/es/form/Form";
 import { CaretRightOutlined } from "@ant-design/icons";
 import { MaCarBookCalendarType } from "../../common/index";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { dateFormatTime } from "@/app/utils";
 import { CheckStatusMaCarBookType, showStatus } from "@/app/utils/validatefield";
 import { checkIcon, loadingIcon } from "@/components/icon";
@@ -18,9 +18,10 @@ interface CustomEvent extends RbcEvent {
 }
 interface Props {
   maFetchCalendar: MaCarBookCalendarType[];
+  handleChangeMonth: (month: Dayjs | string) => void;
 }
 
-const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
+const CalendarComponent: React.FC<Props> = ({ maFetchCalendar, handleChangeMonth }) => {
   const [formUpdate] = useForm();
   const [modalMaCarBookDetail, setModalMaCarBookDetail] = useState(false);
   const [selectedMa, setSelectedMa] = useState<MaCarBookCalendarType | null>(null);
@@ -99,6 +100,9 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
         messages={{
           next: ">",
           previous: "<",
+        }}
+        onNavigate={(newDate, view, action) => {
+          handleChangeMonth(dayjs(newDate));
         }}
         onSelectEvent={onSelectEventCalendar}
         components={{

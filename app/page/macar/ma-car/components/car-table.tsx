@@ -20,7 +20,6 @@ interface props {
   pagination: TablePaginationConfig;
   changePagination: (pagination: TablePaginationConfig) => void;
   maCarData: MaCarType[];
-  maCarBookById: MaCarBookType[];
   dataProvinces: ProvincesType[];
   maFetchCalendar: MaCarBookCalendarType[];
 }
@@ -32,7 +31,6 @@ const MaCarBookTable: React.FC<props> = ({
   setLoading,
   loading,
   maCarData,
-  // maCarBookById,
   dataProvinces,
   maFetchCalendar,
 }: any): React.ReactElement => {

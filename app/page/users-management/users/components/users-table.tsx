@@ -1,5 +1,5 @@
 "use client";
-import { Button, Card, FormInstance, Table, TablePaginationConfig, Tag } from "antd";
+import { Avatar, Button, Card, FormInstance, Table, TablePaginationConfig, Tag } from "antd";
 import { useContext } from "react";
 import { editIcon } from "@/components/icon";
 import { dateToStringTh } from "@/app/utils/format";
@@ -9,6 +9,7 @@ import { TManageUserPageDto, TUserAllDto } from "../common";
 import { UsersServices } from "@/app/services/users.service";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import dayjs from "dayjs";
+import { AntDesignOutlined } from "@ant-design/icons";
 export interface Props {
   setManagePage: (event: TManageUserPageDto) => void;
   managePage: TManageUserPageDto;
@@ -39,8 +40,15 @@ const UserTable: React.FC<Props> = ({ setManagePage, managePage, createForm, set
       render: (value: string, record: TUserAllDto) => {
         return (
           <>
-            <b>{value}</b>
-            <br /> <p className=" text-gray-400 m-0">{record.email}</p>
+            <div className="grid grid-cols-3 items-center">
+              <div className="flex col-span-1 justify-center">
+                <Avatar icon={<AntDesignOutlined />} />
+              </div>
+              <div className="col-span-2">
+                <b>{value}</b>
+                <p className="text-gray-400 m-0">{record.email}</p>
+              </div>
+            </div>
           </>
         );
       },

@@ -82,14 +82,13 @@ export default function UsermanagementPage() {
       featchData();
       loaddata();
     }
+    masterFecthData();
   }, [managePage.loading]);
 
   const loaddata = async () => {
     const resOrganize = await OrganizeServices(baseUrlIntranet).getOrganizeByType("department");
     const tree = createTreeDepartMent(resOrganize, null);
     setTreeListDepartment(tree);
-
-    // }
   };
 
   const featchData = async () => {
@@ -100,7 +99,9 @@ export default function UsermanagementPage() {
       skip: skip,
       take: take,
     });
-
+    setManagePage({ ...managePage, loading: false, dataUsers: resultUsers });
+  };
+  const masterFecthData = async () => {
     const resultMasterPosition = await MasterPositionServices(baseUrlUser).findAllPosition();
     const groupResponse = await UserGroupServices(baseUrlUser).getUserGroupAll();
     const tree = createTree(groupResponse, null) as any;
@@ -120,7 +121,6 @@ export default function UsermanagementPage() {
       group: groupResponse,
     });
     setOptionsOrganize([...orgList]);
-    setManagePage({ ...managePage, loading: false, dataUsers: resultUsers });
   };
   const createTreeDepartMent = (obj: TfindAllOrganizeDto[], parentId: string | null) => {
     const tree: any[] = [];

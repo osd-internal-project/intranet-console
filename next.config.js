@@ -11,6 +11,7 @@
 //     REACT_APP_API_BASE_URL_INTRANET: "https://intra.osd.co.th/public/api/intranet",
 //     REACT_APP_API_BASE_URL_REPORT: "https://intra.osd.co.th/public/api/report",
 //     REACT_APP_API_BASE_URL_USER: "https://intra.osd.co.th/public/api/user",
+//  REACT_APP_API_BASE_URL_INVENTORY: "https://intra.osd.co.th/public/api/inventory",
 //     AUTH_BACKEND_URL: "https://intra.osd.co.th/public/api/user",
 //     NEXTAUTH_URL: "https://intra.osd.co.th",
 //     REACT_APP_USE_AUTH: "https://osd-auth.osd.co.th",
@@ -18,7 +19,7 @@
 //   },
 //   reactStrictMode: false,
 //   output: "standalone",
-// webpack: (config) => {
+//   webpack: (config) => {
 //     config.externals = [...config.externals, "jsdom", "canvas"];
 //     config.module.rules.push({
 //       test: /\.node/,
@@ -26,9 +27,9 @@
 //     });
 //     return config;
 //   },
-// images: {
-//   unoptimized: true,
-// },
+//   images: {
+//     unoptimized: true,
+//   },
 // };
 
 // local
@@ -45,6 +46,7 @@ const nextConfig = {
     REACT_APP_API_BASE_URL_REPORT: "http://localhost:4001/api",
     REACT_APP_API_BASE_URL_INTRANET: "http://localhost:4003/api",
     REACT_APP_API_BASE_URL_HR_MANAGEMENT: "http://localhost:4005/api",
+    REACT_APP_API_BASE_URL_INVENTORY: "http://localhost:4002/api",
     REACT_APP_USE_AUTH: "https://osd-auth.osd.co.th",
     MOUNT_DIR: "services/intranet/src",
   },

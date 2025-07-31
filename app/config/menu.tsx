@@ -2,7 +2,7 @@ import React from "react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
-import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, macarIcon, hrIcon } from "@/components/icon";
+import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, macarIcon, hrIcon, stockIcon } from "@/components/icon";
 import { FieldTimeOutlined, HomeOutlined } from "@ant-design/icons";
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -110,6 +110,29 @@ export const MenuSider: MenuItem[] = [
         label: `จัดการอาหารว่าง`,
         rule: ["admin", "hr", "ma-user"],
       },
+    ],
+  },
+  {
+    key: "stock",
+    icon: stockIcon,
+    label: "การจัดการสินค้า",
+    rule: ["user", "admin", "ma-user"],
+    children: [
+      {
+        key: `stock/stock-management`,
+        label: `ตารางรายการสินค้า`,
+        rule: ["user", "admin", "ma-user"],
+      },
+      // {
+      //   key: `stock/booking-room-management`,
+      //   label: `จัดการข้อมูลห้องประชุม`,
+      //   rule: ["admin", "hr", "ma-user"],
+      // },
+      // {
+      //   key: `stock/booking-room-refreshment`,
+      //   label: `จัดการอาหารว่าง`,
+      //   rule: ["admin", "hr", "ma-user"],
+      // },
     ],
   },
   {
@@ -254,6 +277,11 @@ export const MenuSider: MenuItem[] = [
         key: `setting/master-overtime-config`,
         label: `Master Overtime Config`,
         rule: "admin",
+      },
+      {
+        key: `setting/unit`,
+        label: `ประเภทยูนิตสินค้า`,
+        rule: ["admin", "ma-user"],
       },
     ],
   },

@@ -1,25 +1,8 @@
 "use client";
 import { Breadcrumb, Button, Col, Row, Space, Typography } from "antd";
 import Link from "next/link";
-import {
-  buldingIcon,
-  cubeIcon,
-  groupLineIcon,
-  truckIcon,
-  circleSqureIcon,
-  starIcon,
-  gridIcon,
-  mindMappingIcon,
-  userGroupIcon,
-  vectorIcon,
-  shieldExclamationIcon,
-  colorSwatchIcon,
-  warningIcon,
-  moveRightIcon,
-  IconPosition,
-} from "@/components/icon";
+import { cubeIcon, truckIcon, circleSqureIcon, starIcon, gridIcon, colorSwatchIcon, warningIcon, moveRightIcon } from "@/components/icon";
 import { checkRule } from "@/app/utils/rules";
-import { useEffect, useState } from "react";
 export interface TypeButton {
   name_header: string;
   name_path: string;
@@ -30,23 +13,9 @@ export interface TypeButton {
 type TypeButtonData = TypeButton[];
 
 export default function Setting() {
-  const [submenu, setSubmenu] = useState<TypeButtonData[]>([]);
+  // const [submenu, setSubmenu] = useState<TypeButtonData[]>([]);
   const categories: string[] = ["PRODUCT MANAGEMENT"];
   const buttonsData: TypeButtonData[] = [
-    // [
-    //   { name_header: "User Management", name_path: "setting/usermanagement", icon: groupLineIcon, rule: "um-s" },
-    //   { name_header: "User Group", name_path: "setting/user-group", icon: userGroupIcon, rule: "um-ug-s" },
-    //   { name_header: "User Role", name_path: "setting/user-role", icon: mindMappingIcon, rule: "um-ro-s" },
-    //   // { name_header: "Organization", name_path: "setting/user-organization", icon: vectorIcon },
-    //   { name_header: "Set Rule", name_path: "setting/user-rule", icon: shieldExclamationIcon, rule: "um-ru-s" },
-    //   { name_header: "Set Position", name_path: "setting/masterdata-position", icon: IconPosition, rule: "st-p-s" },
-    // ],
-    // [
-    //   { name_header: "Department", name_path: "stock-management/location", icon: buldingIcon, rule: "department-show" },
-    //   { name_header: "Inventory Store", name_path: "stock-management/inventory", icon: cubeIcon, rule: "inventory-show" },
-    //   { name_header: "Set Objective", name_path: "setting/objective", icon: colorSwatchIcon, rule: "objective-show" },
-    //   { name_header: "Set MA Type", name_path: "setting/ma-type", icon: colorSwatchIcon, rule: "objective-show" },
-    // ],
     [
       {
         name_header: "Master Product Management ",
@@ -125,60 +94,44 @@ export default function Setting() {
       <div className=" grid grid-cols-3 gap-4">
         {categories?.map((category: string, index: number) => {
           return (
-            <div
-              key={index}
-              className=" col-span-3 md:col-span-1"
-              style={{ width: "100%" }}
-            >
+            <div key={index} className=" col-span-3 md:col-span-1" style={{ width: "100%" }}>
               <Col span={24}>
                 <Typography className="text-name-header">{category}</Typography>
               </Col>
               <br />
-              {buttonsData[index].map(
-                (buttonText: TypeButton, buttonIndex: number) => {
-                  return checkRule(buttonText.rule) ? (
-                    <Col
-                      key={buttonIndex}
-                      span={24}
-                      style={{ marginBottom: "10px" }}
-                    >
-                      <Link href={`/page/${buttonText.name_path}`}>
-                        <Button className="button_setting">
-                          <div
-                            style={{
-                              height: "100%",
-                              justifyContent: "start",
-                              display: "flex",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Space>
-                              <Typography className="text-name-menu">
-                                {buttonText.icon}
-                              </Typography>
-                              <Typography className="text-name-menu">
-                                {buttonText.name_header}{" "}
-                              </Typography>
-                            </Space>
-                          </div>
-                          <div
-                            style={{
-                              alignItems: "center",
-                              justifyContent: "center",
-                              display: "flex",
-                              height: "100%",
-                            }}
-                          >
-                            {moveRightIcon}
-                          </div>
-                        </Button>
-                      </Link>
-                    </Col>
-                  ) : (
-                    <></>
-                  );
-                }
-              )}
+              {buttonsData[index].map((buttonText: TypeButton, buttonIndex: number) => {
+                return checkRule(buttonText.rule) ? (
+                  <Col key={buttonIndex} span={24} style={{ marginBottom: "10px" }}>
+                    <Link href={`/page/${buttonText.name_path}`}>
+                      <Button className="button_setting">
+                        <div
+                          style={{
+                            height: "100%",
+                            justifyContent: "start",
+                            display: "flex",
+                            alignItems: "center",
+                          }}>
+                          <Space>
+                            <Typography className="text-name-menu">{buttonText.icon}</Typography>
+                            <Typography className="text-name-menu">{buttonText.name_header} </Typography>
+                          </Space>
+                        </div>
+                        <div
+                          style={{
+                            alignItems: "center",
+                            justifyContent: "center",
+                            display: "flex",
+                            height: "100%",
+                          }}>
+                          {moveRightIcon}
+                        </div>
+                      </Button>
+                    </Link>
+                  </Col>
+                ) : (
+                  <></>
+                );
+              })}
             </div>
           );
         })}

@@ -81,12 +81,10 @@ const ManageMasterProductPage: React.FC<props> = ({
             onPreview={() => {}}
             listType="picture-card"
             className="w-full">
-            {imageFiles.length >= 1 ? null : (
-              <div className="flex flex-col items-center p-4">
-                <PlusOutlined className="text-base mb-2" />
-                <div className="text-xs">อัปโหลด</div>
-              </div>
-            )}
+            <div className="flex flex-col items-center p-4">
+              <PlusOutlined className="text-base mb-2" />
+              <div className="text-xs">อัปโหลด</div>
+            </div>
           </Upload>
         </Form.Item>
 

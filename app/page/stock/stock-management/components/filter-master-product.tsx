@@ -5,7 +5,7 @@ import React from "react";
 import { ITMasterProduct } from "../common";
 
 export interface props {
-  onFilters: (values: { unitName?: string; createdAt?: Dayjs | string }) => void;
+  onFilters: (values: { unitName?: string; updatedBy: string; createdAt?: Dayjs | string }) => void;
   form: FormInstance;
   handleFilter: (status: boolean) => void;
   openFilter: boolean;
@@ -18,7 +18,12 @@ const FilterMasterProductPage: React.FC<props> = ({ onFilters, form, handleFilte
     <Form form={form} onFinish={onFilters} layout="vertical" autoComplete="off">
       <div className="grid grid-cols-4 gap-2">
         <div className="grid col-span-1">
-          <Form.Item name={"unitName"} label={`ชื่อ Unit`}>
+          <Form.Item name={"prdName"} label={`ชื่อ สินค้า`}>
+            <Input placeholder="Input" />
+          </Form.Item>
+        </div>
+        <div className="grid col-span-1">
+          <Form.Item name={"updatedBy"} label={`นำเข้าโดย`}>
             <Input placeholder="Input" />
           </Form.Item>
         </div>

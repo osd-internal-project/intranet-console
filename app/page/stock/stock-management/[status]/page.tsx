@@ -3,27 +3,29 @@ import { loadAppConfig } from "@/app/config/app-config";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { Breadcrumb, Card, Col, Divider, Form, message, Row, Spin, TablePaginationConfig, UploadFile } from "antd";
 import React, { useContext, useEffect, useState } from "react";
-import { ITMasterProduct, ITMasterProductCreateInput } from "../common";
+import { ITMasterProductCreateInput } from "../common";
 import MasterProductServices from "../services";
 import ManageMasterProductPage from "./components/manage-master-product";
 import { RcFile, UploadProps } from "antd/es/upload";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import UnitServices from "@/app/page/setting/unit/services";
+import dayjs from "dayjs";
 
 const StockManagement: React.FC = (): React.ReactElement => {
   const { id24Axios } = useId24();
   const navigate = useRouter();
-  const useparams = useParams();
+  const params = useParams();
+  const searchParams = useSearchParams();
+  const type = params.status;
+  const prdId = searchParams.get("prdId");
   const { user } = useContext(UserContext) as UserContectType;
   const baseUrlInventory = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INVENTORY);
   const masterproductServices = MasterProductServices(baseUrlInventory);
   const unitServices = UnitServices(baseUrlInventory);
   const [formManage] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(true);
-  const [dataSource, setDataSource] = useState<{ data: ITMasterProduct[]; count: number }>({ data: [], count: 0 });
   const [optionsUnit, setOptionsUnit] = useState<{ value: string; label: string }[]>([]);
-
   const [imageFiles, setImageFiles] = useState<UploadFile[]>([]);
 
   useEffect(() => {
@@ -35,9 +37,28 @@ const StockManagement: React.FC = (): React.ReactElement => {
 
   const fecthData = async () => {
     try {
-      // const { data, count } = await masterproductServices.findMany(params, skip, take);
-      // setDataSource({ data, count });
-      setLoading(false);
+      if (prdId !== "undefined") {
+        const data = await masterproductServices.findOne(prdId as string);
+        formManage.setFieldsValue({
+          ...data,
+          expired: dayjs(data.expired),
+          createdAt: dayjs(data.createdAt),
+          updatedAt: dayjs(data.updatedAt),
+          unitId: data?.unit?.unitID,
+        });
+        if (data.masterProductImage && data.masterProductImage.length > 0) {
+          const initialImage = data.masterProductImage[0];
+          setImageFiles([
+            {
+              uid: "-1",
+              name: initialImage.fileName || "image.jpg",
+              status: "done",
+              url: `${process.env.REACT_APP_API_BASE_URL_INVENTORY}/master-product-image/get-image/${initialImage?.prdImageId}`,
+            },
+          ]);
+        }
+        setLoading(false);
+      }
     } catch (err) {
       message.error(`error fecth-data 🚀 ${err}`);
     }
@@ -61,13 +82,12 @@ const StockManagement: React.FC = (): React.ReactElement => {
   };
 
   const onFinish = async (values: ITMasterProductCreateInput, type: string) => {
-    console.log(values);
     const data = { ...values, updatedBy: `${user?.firstNameTh} ${user?.lastNameTh}` };
     try {
       const records = formManage.getFieldsValue(true);
       const response = type === "create" ? await masterproductServices.create(data) : await masterproductServices.update(records.id, data);
       if (response) {
-        if (imageFiles.length > 0) {
+        if (imageFiles.length > 0 && !imageFiles[0].status) {
           imageFiles.forEach(async (file) => {
             const formData: any = new FormData();
             formData.append("type", "create-attend");
@@ -77,6 +97,7 @@ const StockManagement: React.FC = (): React.ReactElement => {
         }
         setLoading(true);
         formManage.resetFields();
+        setImageFiles([]);
         message.info(type === "create" ? "create success" : "edit success");
         navigate.push(`${window.location.origin}/page/stock/stock-management`);
       }
@@ -84,7 +105,7 @@ const StockManagement: React.FC = (): React.ReactElement => {
       message.error(`error manage 🚀 ${err}`);
     }
   };
-  return user && useparams.status ? (
+  return user && type ? (
     <div>
       <Row>
         <Col span={24}>
@@ -100,21 +121,21 @@ const StockManagement: React.FC = (): React.ReactElement => {
               },
               { href: "/page/stock/stock-management", title: <span>ตารางรายการสินค้า</span> },
               {
-                title: <span>{useparams.status === "create" ? "เพิ่มรายการสินค้า" : "แก้ไขรายการสินค้า"}</span>,
+                title: <span>{type === "create" ? "เพิ่มรายการสินค้า" : "แก้ไขรายการสินค้า"}</span>,
               },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
           <div className="title-page-font" style={{ display: "flex", alignItems: "left" }}>
-            <span style={{ marginRight: "8px" }}>{`${useparams.status === "create" ? "เพิ่มรายการสินค้า" : "แก้ไขรายการสินค้า"}`}</span>
+            <span style={{ marginRight: "8px" }}>{`${type === "create" ? "เพิ่มรายการสินค้า" : "แก้ไขรายการสินค้า"}`}</span>
           </div>
         </Divider>
       </Row>
       <Card styles={{ body: { padding: "10px" } }}>
         <div>
           <ManageMasterProductPage
-            status={useparams.status as string}
+            status={type as string}
             user={user}
             formManage={formManage}
             onFinish={onFinish}

@@ -11,7 +11,7 @@ export type ITMasterProduct = {
   updatedAt: Date;
   unitId: string;
   masterProductImage?: any[];
-  unit?: any[];
+  unit?: { unitID: string };
 };
 
 export type ITMasterProductCreateInput = {

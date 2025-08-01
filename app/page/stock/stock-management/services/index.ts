@@ -7,6 +7,7 @@ interface TServices {
     skip: number,
     take: number,
   ) => Promise<{ data: ITMasterProduct[]; count: number }>;
+  findOne: (prdId: string) => Promise<ITMasterProduct>;
   create: (data: ITMasterProductCreateInput) => Promise<ITMasterProduct>;
   update: (id: number, data: ITMasterProductCreateInput) => Promise<ITMasterProduct>;
   delete: (id: number) => Promise<number>;
@@ -23,6 +24,17 @@ const MasterProductServices = (axiosInstance: AxiosInstance): TServices => {
         .get(`${masterproductUrl}?take=${take}&skip=${skip}`, {
           params: search,
         })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return err;
+        });
+    },
+    findOne: async (prdId) => {
+      return await axiosInstance
+        .get(`${masterproductUrl}/:${prdId}`)
         .then((res) => {
           return res.data;
         })

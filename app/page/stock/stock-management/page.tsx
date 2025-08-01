@@ -21,7 +21,11 @@ const StockManagement: React.FC = (): React.ReactElement => {
   const [loading, setLoading] = useState<boolean>(true);
   const [openFilter, setOpenFilter] = useState<boolean>(false);
   const [dataSource, setDataSource] = useState<{ data: ITMasterProduct[]; count: number }>({ data: [], count: 0 });
-  const [params, setParams] = useState<{ prdName?: string; createdAt?: Dayjs | string | null }>({ prdName: "", createdAt: null });
+  const [params, setParams] = useState<{ prdName?: string; updatedBy: string; createdAt?: Dayjs | string | null }>({
+    prdName: "",
+    updatedBy: "",
+    createdAt: null,
+  });
   const [openMange, setOpenMange] = useState<{ status: boolean; type: string }>({ status: false, type: "create" });
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -47,7 +51,7 @@ const StockManagement: React.FC = (): React.ReactElement => {
     }
   };
 
-  const onFilters = (values: { prdName?: string; createdAt?: Dayjs | string }) => {
+  const onFilters = (values: { prdName?: string; updatedBy: string; createdAt?: Dayjs | string }) => {
     setParams(values);
     setLoading(true);
   };
@@ -66,7 +70,7 @@ const StockManagement: React.FC = (): React.ReactElement => {
       type === "close" ? formManage.resetFields() : formManage.setFieldsValue(values);
       setOpenMange({ status, type });
     } else {
-      navigate.push(`${window.location.origin}/page/stock/stock-management/${type}`);
+      navigate.push(`/page/stock/stock-management/${type}?prdId=${values?.prdId}`);
     }
   };
 

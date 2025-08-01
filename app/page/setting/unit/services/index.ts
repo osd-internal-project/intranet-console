@@ -7,6 +7,7 @@ interface TServices {
     skip: number,
     take: number,
   ) => Promise<{ data: ITUnit[]; count: number }>;
+  findOptions: () => Promise<{ value: string; label: string }[]>;
   create: (data: ITUnitCreateInput) => Promise<ITUnit>;
   update: (id: number, data: ITUnitCreateInput) => Promise<ITUnit>;
   delete: (id: number) => void;
@@ -20,6 +21,17 @@ const UnitServices = (axiosInstance: AxiosInstance): TServices => {
         .get(`${unitUrl}?take=${take}&skip=${skip}`, {
           params: search,
         })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return err;
+        });
+    },
+    findOptions: async () => {
+      return await axiosInstance
+        .get(`${unitUrl}/options`)
         .then((res) => {
           return res.data;
         })

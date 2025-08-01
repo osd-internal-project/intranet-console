@@ -244,7 +244,6 @@ const ManageRoom: React.FC = () => {
       message.error("No booking selected for update");
       return;
     }
-
     try {
       const { startDate, endDate, roomName, ...restValues } = values;
       const updatedStartDate = dayjs(startDate);

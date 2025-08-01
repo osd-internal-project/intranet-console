@@ -129,7 +129,6 @@ const UnitPage = () => {
           </div>
         </div>
       </Card>
-
       {openMange.status ? (
         <>
           <ManageUnit openMange={openMange} handleManage={handleManage} formManage={formManage} onFinish={onFinish} />

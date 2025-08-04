@@ -1,17 +1,18 @@
-import { Button, Table, TablePaginationConfig, TableProps, Tag } from "antd";
+import { Button, Table, TablePaginationConfig, TableProps, Tag, Tooltip } from "antd";
 import React from "react";
-import { THoliday } from "../page";
 import { dateFormatTimeNoTIme } from "@/app/utils";
 import { IOverTimeForm } from "@/app/common/overtime";
+import { StopOutlined } from "@ant-design/icons";
 
 export interface props {
   dataTable: { data: IOverTimeForm[]; count: number };
   changePagination: (page: TablePaginationConfig) => void;
   pagination: TablePaginationConfig;
   handleOpenModal: (status: boolean, data: IOverTimeForm) => void;
+  onFinishUpdate: (type: string, id: string) => void;
 }
 
-export const TableOvertime: React.FC<props> = ({ dataTable, changePagination, pagination, handleOpenModal }): React.ReactElement => {
+export const TableOvertime: React.FC<props> = ({ dataTable, changePagination, pagination, handleOpenModal, onFinishUpdate }): React.ReactElement => {
   const columns: TableProps<IOverTimeForm>["columns"] = [
     {
       key: "no",
@@ -111,6 +112,30 @@ export const TableOvertime: React.FC<props> = ({ dataTable, changePagination, pa
       key: "approvedDate",
       title: "วันที่อนุมัติ",
       dataIndex: "approvedDate",
+      render: (_) => dateFormatTimeNoTIme(_),
+    },
+    {
+      fixed: "right",
+      key: "id",
+      title: "...",
+      dataIndex: "id",
+      render: (_, record) => {
+        return (
+          <div className="flex justify-center gap-1">
+            <Tooltip title="ยกเลิก">
+              <Button
+                size="small"
+                type="link"
+                danger
+                icon={<StopOutlined />}
+                onClick={() => onFinishUpdate("cancel", record?.overTimeID as string)}
+                disabled={record.status !== "waiting"}>{`ยกเลิก`}</Button>
+            </Tooltip>
+          </div>
+        );
+      },
+      // width: 150,
+      align: "center",
     },
   ];
   return (

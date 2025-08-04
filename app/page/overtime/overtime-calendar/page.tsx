@@ -1,15 +1,17 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import SlideImageService from "../../home/services/index.service";
 import Calendar from "./components/calendar";
 import OverTimeServices from "@/app/services/overtime.service";
-import { Breadcrumb, Card, Divider, Form, TablePaginationConfig, Tabs, TabsProps } from "antd";
+import { Breadcrumb, Card, Divider, Form, message, Modal, TablePaginationConfig, Tabs, TabsProps } from "antd";
 import { TableOvertime } from "./components/table";
 import { IOverTimeForm } from "@/app/common/overtime";
 import { ModalOvertimeHistory } from "./components/modal";
+import { ExclamationCircleFilled } from "@ant-design/icons";
+import { UserContectType, UserContext } from "@/app/config/userContext";
 export interface THoliday {
   id: number;
   holidaysName: string;
@@ -22,6 +24,8 @@ export interface THoliday {
 
 export default function OverTimeCalendatPage() {
   const { id24Axios } = useId24();
+
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const baseUrlIntra = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
   const [formDetail] = Form.useForm();
   const [calendar, setCalendar] = useState<IOverTimeForm[]>([]);
@@ -99,6 +103,26 @@ export default function OverTimeCalendatPage() {
     setOpenModal(status);
   };
 
+  const onFinishUpdate = async (type: string, id: string) => {
+    Modal.confirm({
+      title: <>{type === "cancel" ? "Cancel" : "Approved"}</>,
+      icon: <ExclamationCircleFilled />,
+      content: <>{type === "cancel" ? "Are you sure you want to cancel this ?" : "Are you sure you want to Approved this ?"}</>,
+      okText: "Confirm",
+      okButtonProps: { type: "primary", danger: true },
+      cancelText: "Cancel",
+      onOk: async () => {
+        const data = { userId: user?.userId, fullName: `${user?.firstNameTh} ${user?.lastNameTh}` };
+        const res = await OverTimeServices(baseUrlIntra).update(id as string, type, "", data);
+        if (res) {
+          type === "cancel" ? message.error("cancel success") : message.success("approved success");
+        }
+        setloading(true);
+      },
+      onCancel() {},
+    });
+  };
+
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -108,7 +132,15 @@ export default function OverTimeCalendatPage() {
     {
       key: "2",
       label: "ตารางรายละเอียดการทำงานล่วงเวลา",
-      children: <TableOvertime dataTable={dataTable} changePagination={changePagination} pagination={pagination} handleOpenModal={handleOpenModal} />,
+      children: (
+        <TableOvertime
+          dataTable={dataTable}
+          changePagination={changePagination}
+          pagination={pagination}
+          handleOpenModal={handleOpenModal}
+          onFinishUpdate={onFinishUpdate}
+        />
+      ),
     },
   ];
 

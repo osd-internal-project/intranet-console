@@ -1,7 +1,6 @@
-import { Button, Form, FormInstance, Input, Modal, Switch, UploadProps } from "antd";
+import { Button, Form, FormInstance, Input, Modal } from "antd";
 import React from "react";
-import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
-import { ITMasterProduct, ITMasterProductCreateInput } from "../common";
+import { ITMasterProduct, ITMasterProductCreateInput } from "../../common/master-product";
 
 export interface props {
   openMange: { status: boolean; type: string };

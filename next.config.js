@@ -11,7 +11,7 @@
 //     REACT_APP_API_BASE_URL_INTRANET: "https://intra.osd.co.th/public/api/intranet",
 //     REACT_APP_API_BASE_URL_REPORT: "https://intra.osd.co.th/public/api/report",
 //     REACT_APP_API_BASE_URL_USER: "https://intra.osd.co.th/public/api/user",
-//  REACT_APP_API_BASE_URL_INVENTORY: "https://intra.osd.co.th/public/api/inventory",
+//     REACT_APP_API_BASE_URL_INVENTORY: "https://intra.osd.co.th/public/api/inventory",
 //     AUTH_BACKEND_URL: "https://intra.osd.co.th/public/api/user",
 //     NEXTAUTH_URL: "https://intra.osd.co.th",
 //     REACT_APP_USE_AUTH: "https://osd-auth.osd.co.th",

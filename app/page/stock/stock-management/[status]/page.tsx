@@ -1,10 +1,10 @@
 "use client";
 import { loadAppConfig } from "@/app/config/app-config";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
-import { Breadcrumb, Card, Col, Divider, Form, message, Row, Spin, TablePaginationConfig, UploadFile } from "antd";
+import { Breadcrumb, Card, Col, Divider, Form, message, Row, Spin, UploadFile } from "antd";
 import React, { useContext, useEffect, useState } from "react";
-import { ITMasterProductCreateInput } from "../common";
-import MasterProductServices from "../services";
+import { ITMasterProductCreateInput } from "../../common/master-product";
+import MasterProductServices from "../../services/stock.service";
 import ManageMasterProductPage from "./components/manage-master-product";
 import { RcFile, UploadProps } from "antd/es/upload";
 import { useRouter, useParams, useSearchParams } from "next/navigation";

@@ -2,7 +2,7 @@ import { FilterOutlined } from "@ant-design/icons";
 import { Button, DatePicker, Form, FormInstance, Input, Popover } from "antd";
 import { Dayjs } from "dayjs";
 import React from "react";
-import { ITMasterProduct } from "../common";
+import { ITMasterProduct } from "../../common/master-product";
 
 export interface props {
   onFilters: (values: { unitName?: string; updatedBy: string; createdAt?: Dayjs | string }) => void;

@@ -116,23 +116,18 @@ export const MenuSider: MenuItem[] = [
     key: "stock",
     icon: stockIcon,
     label: "การจัดการสินค้า",
-    rule: ["user", "admin", "ma-user"],
+    rule: ["admin"],
     children: [
+      {
+        key: `stock/order`,
+        label: `นำเข้าสินค้า`,
+        rule: ["user", "admin", "ma-user"],
+      },
       {
         key: `stock/stock-management`,
         label: `ตารางรายการสินค้า`,
         rule: ["user", "admin", "ma-user"],
       },
-      // {
-      //   key: `stock/booking-room-management`,
-      //   label: `จัดการข้อมูลห้องประชุม`,
-      //   rule: ["admin", "hr", "ma-user"],
-      // },
-      // {
-      //   key: `stock/booking-room-refreshment`,
-      //   label: `จัดการอาหารว่าง`,
-      //   rule: ["admin", "hr", "ma-user"],
-      // },
     ],
   },
   {

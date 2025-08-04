@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 import { Dayjs } from "dayjs";
-import { ITMasterProduct, ITMasterProductCreateInput, MasterProductImage } from "../common";
+import { ITMasterProduct, ITMasterProductCreateInput, MasterProductImage } from "../common/master-product";
 interface TServices {
   findMany: (
     search: { unitName?: string; createdAt?: Dayjs | string | null },

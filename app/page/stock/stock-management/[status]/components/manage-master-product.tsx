@@ -1,35 +1,8 @@
-import {
-  Button,
-  Card,
-  DatePicker,
-  Divider,
-  Form,
-  FormInstance,
-  Input,
-  Modal,
-  Select,
-  Switch,
-  Typography,
-  Upload,
-  UploadFile,
-  UploadProps,
-} from "antd";
+import { Button, DatePicker, Form, FormInstance, Input, Select, Typography, Upload, UploadFile, UploadProps } from "antd";
 import React from "react";
-import {
-  CheckOutlined,
-  ClockCircleOutlined,
-  CloseOutlined,
-  PlusOutlined,
-  SaveOutlined,
-  ShoppingOutlined,
-  UploadOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
-import { ITMasterProduct, ITMasterProductCreateInput } from "../../common";
+import { PlusOutlined } from "@ant-design/icons";
+import { ITMasterProductCreateInput } from "../../../common/master-product";
 import { TUser } from "@/app/common";
-import dayjs from "dayjs";
-import TextArea from "antd/es/input/TextArea";
-import Title from "antd/es/typography/Title";
 
 export interface props {
   status: string;

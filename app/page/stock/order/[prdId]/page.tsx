@@ -1,0 +1,90 @@
+"use client";
+import React, { useContext, useEffect, useState } from "react";
+import { ManageFormPage } from "./components/manage-form";
+import { Form, message } from "antd";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { useParams, useRouter } from "next/navigation";
+import { loadAppConfig } from "@/app/config/app-config";
+import OrderServices from "../../services/order.service";
+import MasterProductServices from "../../services/stock.service";
+import { UserContectType, UserContext } from "@/app/config/userContext";
+
+interface OrderFormData {
+  oderId?: string;
+  prdId: string;
+  prdName: string;
+  price: number;
+  totalPrice: number;
+  totalQty: number;
+  unit?: string;
+  expiredAt?: Date;
+  updatedBy: string;
+  masterProductId?: string;
+}
+
+const ManageOrderPage: React.FC = (): React.ReactElement => {
+  const { id24Axios } = useId24();
+
+  const { user } = useContext(UserContext) as UserContectType;
+  const params = useParams();
+  const baseUrlInventory = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INVENTORY);
+  //   const orderServices = OrderServices(baseUrlInventory);
+  const masterproductServices = MasterProductServices(baseUrlInventory);
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (loading) {
+      fecthData();
+    }
+  }, [loading, user]);
+
+  const fecthData = async () => {
+    try {
+      if (params.prdId && user) {
+        const data = await masterproductServices.findOne(params.prdId as string);
+        const currentValues = form.getFieldsValue(true);
+        form.setFieldsValue({
+          ...currentValues,
+          prdId: data.prdId,
+          prdName: data.prdName,
+          unit: data.unit?.unitName,
+          updatedBy: `${user?.firstNameTh} ${user?.lastNameTh}`,
+        });
+        setLoading(false);
+      }
+    } catch (err) {
+      message.error(`error fecth-data 🚀 ${err}`);
+    }
+  };
+
+  const handleCalculateTotal = () => {
+    const price = form.getFieldValue("price") || 0;
+    const qty = form.getFieldValue("totalQty") || 0;
+    const total = price * qty;
+    form.setFieldsValue({ totalPrice: total });
+  };
+
+  const onFinish = async (values: OrderFormData) => {
+    try {
+      console.log("Order Data:", values);
+      message.success("บันทึกข้อมูลออเดอร์เรียบร้อยแล้ว!");
+    } catch (error) {
+      message.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+    } finally {
+      setLoading(true);
+    }
+  };
+
+  const onReset = () => {
+    form.resetFields();
+    message.info("ล้างข้อมูลฟอร์มเรียบร้อยแล้ว");
+  };
+  return (
+    <div>
+      <ManageFormPage form={form} handleCalculateTotal={handleCalculateTotal} onFinish={onFinish} />
+    </div>
+  );
+};
+
+export default ManageOrderPage;

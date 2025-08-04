@@ -3,7 +3,8 @@ import { Button, Image, Table, TablePaginationConfig, Tag, Typography } from "an
 import { ColumnsType } from "antd/es/table";
 import { dateToStringTh } from "@/app/utils/format";
 import { deleteIcon, editIcon } from "@/components/icon";
-import { ITMasterProduct, ITMasterProductCreateInput } from "../common";
+import { ITMasterProduct } from "../../common/master-product";
+import { useRouter } from "next/navigation";
 
 export interface props {
   dataSource: { data: ITMasterProduct[]; count: number };
@@ -13,6 +14,7 @@ export interface props {
 }
 
 const TableMasterProductPage: React.FC<props> = ({ dataSource, changePagination, pagination, handleManage }): React.ReactElement => {
+  const navigate = useRouter();
   const columns: ColumnsType<ITMasterProduct> = [
     {
       title: "ลำดับ",
@@ -69,10 +71,22 @@ const TableMasterProductPage: React.FC<props> = ({ dataSource, changePagination,
       key: "createdAt",
       render: (value, record, index) => (value ? dateToStringTh(value) : ""),
     },
+    // {
+    //   title: "นำเข้าสินค้า",
+    //   dataIndex: "prdId",
+    //   key: "prdId",
+    //   render: (value) => (
+    //     <div>
+    //       <Button type="primary" className="p-1 gap-2" onClick={() => navigate.push(`/page/stock/stock-management/${value}`)}>
+    //         {IconImport} {`นำเข้าสินค้า`}
+    //       </Button>
+    //     </div>
+    //   ),
+    // },
     {
       title: "...",
-      key: "userId",
-      dataIndex: "userId",
+      key: "id",
+      dataIndex: "id",
       fixed: "right" as "right",
       align: "center",
       render: (value, record, index) => (

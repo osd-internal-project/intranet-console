@@ -1,3 +1,5 @@
+import { ITOrder } from "./order";
+
 export type ITMasterProduct = {
   id: number;
   prdId: string;
@@ -11,7 +13,8 @@ export type ITMasterProduct = {
   updatedAt: Date;
   unitId: string;
   masterProductImage?: any[];
-  unit?: { unitID: string };
+  unit?: { unitID: string; unitName: string };
+  order?: ITOrder[];
 };
 
 export type ITMasterProductCreateInput = {

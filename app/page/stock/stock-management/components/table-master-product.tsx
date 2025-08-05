@@ -29,8 +29,10 @@ const TableMasterProductPage: React.FC<props> = ({ dataSource, changePagination,
       render: (_, record, index) => {
         return (
           <div className="grid grid-cols-3">
-            <div className="grid col-span-1">
+            <div className="grid col-span-1 justify-center items-center align-middle">
               <Image
+                width={"40px"}
+                height={"40px"}
                 src={`${process.env.REACT_APP_API_BASE_URL_INVENTORY}/master-product-image/get-image/${
                   record?.masterProductImage?.[0]?.prdImageId ?? ""
                 }`}

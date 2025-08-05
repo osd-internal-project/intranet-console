@@ -2,18 +2,16 @@
 import { loadAppConfig } from "@/app/config/app-config";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { Breadcrumb, Card, Col, Divider, Form, message, Row, TablePaginationConfig } from "antd";
-import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import OrderServices from "../services/order.service";
 import { Dayjs } from "dayjs";
-import { ITOrder } from "../common/order";
 import { OrderTablePage } from "./components/order-table";
 import MasterProductServices from "../services/stock.service";
 import { ITMasterProduct } from "../common/master-product";
 
 const OrderPage: React.FC = (): React.ReactElement => {
   const { id24Axios } = useId24();
-  const navigate = useRouter();
+
   const baseUrlInventory = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INVENTORY);
   const orderServices = OrderServices(baseUrlInventory);
   const masterproductServices = MasterProductServices(baseUrlInventory);

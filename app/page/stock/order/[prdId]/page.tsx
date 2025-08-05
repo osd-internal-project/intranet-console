@@ -24,11 +24,11 @@ interface OrderFormData {
 
 const ManageOrderPage: React.FC = (): React.ReactElement => {
   const { id24Axios } = useId24();
-
+  const navigate = useRouter();
   const { user } = useContext(UserContext) as UserContectType;
   const params = useParams();
   const baseUrlInventory = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INVENTORY);
-  //   const orderServices = OrderServices(baseUrlInventory);
+  const orderServices = OrderServices(baseUrlInventory);
   const masterproductServices = MasterProductServices(baseUrlInventory);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(true);
@@ -67,8 +67,13 @@ const ManageOrderPage: React.FC = (): React.ReactElement => {
 
   const onFinish = async (values: OrderFormData) => {
     try {
-      console.log("Order Data:", values);
-      message.success("บันทึกข้อมูลออเดอร์เรียบร้อยแล้ว!");
+      const response = await orderServices.createOrder({ ...values, masterProductId: params.prdId as string });
+      if (response) {
+        message.success("บันทึกข้อมูลออเดอร์เรียบร้อยแล้ว!");
+        form.resetFields();
+        setLoading(true);
+        navigate.push(`${window.location.origin}/page/stock/order`);
+      }
     } catch (error) {
       message.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
     } finally {
@@ -76,10 +81,6 @@ const ManageOrderPage: React.FC = (): React.ReactElement => {
     }
   };
 
-  const onReset = () => {
-    form.resetFields();
-    message.info("ล้างข้อมูลฟอร์มเรียบร้อยแล้ว");
-  };
   return (
     <div>
       <ManageFormPage form={form} handleCalculateTotal={handleCalculateTotal} onFinish={onFinish} />

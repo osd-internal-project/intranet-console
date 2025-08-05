@@ -7,6 +7,7 @@ export type ITOrder = {
   totalPrice?: number;
   totalQty?: number;
   unit?: string;
+  masterProductId?: string;
   expiredAt?: string | Date;
   updatedBy?: string;
   createdAt?: string | Date;
@@ -22,6 +23,7 @@ export type ITOrderCreateInput = {
   totalPrice?: number;
   totalQty?: number;
   unit?: string;
+  masterProductId?: string;
   expiredAt?: Date | string;
   updatedBy: string;
   createdAt?: Date | string;

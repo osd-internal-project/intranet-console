@@ -1,6 +1,16 @@
 import React, { useState } from "react";
 import { Form, Input, InputNumber, Select, DatePicker, Button, Card, Row, Col, Space, Typography, Divider, message, FormInstance } from "antd";
-import { ShoppingCartOutlined, SaveOutlined, ClearOutlined, CalendarOutlined, DollarOutlined, ProductOutlined } from "@ant-design/icons";
+import {
+  ShoppingCartOutlined,
+  SaveOutlined,
+  ClearOutlined,
+  CalendarOutlined,
+  DollarOutlined,
+  ProductOutlined,
+  MinusCircleOutlined,
+  PlusOutlined,
+  BarcodeOutlined,
+} from "@ant-design/icons";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -148,6 +158,149 @@ export const ManageFormPage: React.FC<props> = ({ form, handleCalculateTotal, on
                 </Form.Item>
               </Col>
             </Row>
+          </div>
+          {/* Order Lot Section */}
+          <div>
+            <Title level={4} className="flex items-center mb-4">
+              <BarcodeOutlined className="mr-2 text-purple-500" />
+              รายการ Order Lot
+            </Title>
+
+            <Form.List name="orderLot">
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map(({ key, name, ...restField }, index) => (
+                    <Card
+                      key={key}
+                      className="mb-4 shadow-sm border-l-4 border-purple-400"
+                      size="small"
+                      title={
+                        <div className="flex justify-between items-center">
+                          <span className="text-purple-600">Order Lot #{index + 1}</span>
+                          <Button
+                            type="text"
+                            danger
+                            icon={<MinusCircleOutlined />}
+                            onClick={() => remove(name)}
+                            className="text-red-500 hover:text-red-700">
+                            ลบรายการ
+                          </Button>
+                        </div>
+                      }>
+                      <Row gutter={[16, 16]}>
+                        <Col xs={24} sm={12} lg={8}>
+                          <Form.Item
+                            {...restField}
+                            name={[name, "prdName"]}
+                            label="ชื่อสินค้า"
+                            rules={[
+                              { required: true, message: "กรุณากรอกชื่อสินค้า" },
+                              { max: 250, message: "ชื่อสินค้าต้องไม่เกิน 250 ตัวอักษร" },
+                            ]}>
+                            <Input placeholder="ชื่อสินค้าใน Lot" className="rounded-md" disabled />
+                          </Form.Item>
+                        </Col>
+
+                        <Col xs={24} sm={12} lg={8}>
+                          <Form.Item
+                            {...restField}
+                            name={[name, "barcode"]}
+                            label="บาร์โค้ด"
+                            rules={[{ max: 50, message: "บาร์โค้ดต้องไม่เกิน 50 ตัวอักษร" }]}>
+                            <Input placeholder="บาร์โค้ดสินค้า" className="rounded-md" />
+                          </Form.Item>
+                        </Col>
+
+                        <Col xs={24} sm={12} lg={8}>
+                          <Form.Item {...restField} name={[name, "unit"]} label="หน่วย">
+                            <Input disabled />
+                          </Form.Item>
+                        </Col>
+
+                        <Col xs={24} sm={8}>
+                          <Form.Item
+                            {...restField}
+                            name={[name, "price"]}
+                            label="ราคาต่อหน่วย (บาท)"
+                            rules={[
+                              { required: true, message: "กรุณากรอกราคา" },
+                              { type: "number", min: 0, message: "ราคาต้องมากกว่าหรือเท่ากับ 0" },
+                            ]}>
+                            <InputNumber
+                              className="w-full rounded-md"
+                              placeholder="0.00"
+                              min={0}
+                              precision={2}
+                              // onChange={() => handleCalculateLotTotal(index)}
+                              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                              disabled
+                            />
+                          </Form.Item>
+                        </Col>
+
+                        <Col xs={24} sm={8}>
+                          <Form.Item
+                            {...restField}
+                            name={[name, "qty"]}
+                            label="จำนวน"
+                            rules={[
+                              { required: true, message: "กรุณากรอกจำนวน" },
+                              { type: "number", min: 0.01, message: "จำนวนต้องมากกว่า 0" },
+                            ]}>
+                            <InputNumber
+                              className="w-full rounded-md"
+                              placeholder="1"
+                              min={0.01}
+                              precision={2}
+                              disabled
+                              // onChange={() => handleCalculateLotTotal(index)}
+                            />
+                          </Form.Item>
+                        </Col>
+
+                        {/* <Col xs={24} sm={8}>
+                          <Form.Item {...restField} name={[name, "totalPrice"]} label="ราคารวม (บาท)">
+                            <InputNumber
+                              className="w-full rounded-md"
+                              placeholder="0.00"
+                              min={0}
+                              precision={2}
+                              readOnly
+                              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                            />
+                          </Form.Item>
+                        </Col> */}
+
+                        <Col xs={24}>
+                          <Form.Item {...restField} name={[name, "expiredAt"]} label="วันหมดอายุ">
+                            <DatePicker className="w-full rounded-md" placeholder="เลือกวันหมดอายุ" format="DD/MM/YYYY" />
+                          </Form.Item>
+                        </Col>
+                      </Row>
+                    </Card>
+                  ))}
+
+                  <Form.Item>
+                    <Button
+                      type="dashed"
+                      onClick={() => {
+                        const rootPrice = form.getFieldValue("price");
+                        add({
+                          prdName: form.getFieldValue("prdName"),
+                          unit: form.getFieldValue("unit"),
+                          price: rootPrice,
+                          qty: 1,
+                        });
+                      }}
+                      block
+                      icon={<PlusOutlined />}
+                      className="h-12 border-2 border-dashed border-purple-300 text-purple-600 hover:border-purple-400 hover:text-purple-700 rounded-md">
+                      เพิ่ม Order Lot ใหม่
+                    </Button>
+                  </Form.Item>
+                </>
+              )}
+            </Form.List>
           </div>
 
           <div className="flex justify-end flex-col sm:flex-row gap-4 pt-6">

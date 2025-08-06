@@ -34,7 +34,7 @@ const MasterProductServices = (axiosInstance: AxiosInstance): TServices => {
     },
     findOne: async (prdId) => {
       return await axiosInstance
-        .get(`${masterproductUrl}/:${prdId}`)
+        .get(`${masterproductUrl}/${prdId}`)
         .then((res) => {
           return res.data;
         })

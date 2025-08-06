@@ -61,12 +61,10 @@ export const OrderTablePage: React.FC<props> = ({ dataSource, changePagination, 
       dataIndex: "updatedBy",
       key: "updatedBy",
     },
-
     {
-      title: "วันหมดอายุ",
-      dataIndex: "expired",
-      key: "expired",
-      render: (value) => (value ? dateToStringTh(value) : ""),
+      title: "จำนวน",
+      dataIndex: "totalQty",
+      key: "totalQty",
     },
     {
       title: "วันที่สร้าง",
@@ -74,7 +72,6 @@ export const OrderTablePage: React.FC<props> = ({ dataSource, changePagination, 
       key: "createdAt",
       render: (value) => (value ? dateToStringTh(value) : ""),
     },
-
     {
       title: "Action",
       key: "prdId",
@@ -135,6 +132,15 @@ export const OrderTablePage: React.FC<props> = ({ dataSource, changePagination, 
       title: "นำเข้าโดย",
       dataIndex: "updatedBy",
       key: "updatedBy",
+    },
+    {
+      title: "...",
+      dataIndex: "id",
+      key: "id",
+      align: "center",
+      render: (value, record, index) => (
+        <Button size="small" type="link" onClick={() => navigate.push(`/page/stock/order/order-lot/${record.oderId}`)}>{`รายละเอียด`}</Button>
+      ),
     },
   ];
 

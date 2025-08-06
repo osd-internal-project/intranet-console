@@ -4,11 +4,10 @@ export type ITMasterProduct = {
   id: number;
   prdId: string;
   prdName: string;
-  prdImageId?: string;
-  responsible?: string;
+  totalQty: number;
+  price: number;
   description?: string;
   updatedBy?: string;
-  expired: Date;
   createdAt: Date;
   updatedAt: Date;
   unitId: string;
@@ -21,11 +20,9 @@ export type ITMasterProductCreateInput = {
   id?: number;
   prdId?: string;
   prdName: string;
-  prdImageId?: string;
-  responsible: string;
+  price: number;
   description?: string;
   updatedBy: string;
-  expired: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
 };

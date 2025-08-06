@@ -1,7 +1,7 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
 import { ManageFormPage } from "./components/manage-form";
-import { Form, message } from "antd";
+import { Breadcrumb, Col, Form, message, Row } from "antd";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { useParams, useRouter } from "next/navigation";
 import { loadAppConfig } from "@/app/config/app-config";
@@ -83,6 +83,24 @@ const ManageOrderPage: React.FC = (): React.ReactElement => {
 
   return (
     <div>
+      <Row className="mb-2">
+        <Col span={24}>
+          <Breadcrumb
+            items={[
+              {
+                href: "/page/home",
+                title: <span>{`หน้าหลัก`}</span>,
+              },
+              {
+                href: "/page/stock",
+                title: <span>{`การจัดการสินค้า`}</span>,
+              },
+              { href: "/page/stock/order", title: <span>{`นำเข้าสินค้า`}</span> },
+              { title: <span>{`สร้างออเดอร์ใหม่`}</span> },
+            ]}
+          />
+        </Col>
+      </Row>
       <ManageFormPage form={form} handleCalculateTotal={handleCalculateTotal} onFinish={onFinish} />
     </div>
   );

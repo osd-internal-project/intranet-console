@@ -14,7 +14,6 @@ export interface props {
 }
 
 const TableMasterProductPage: React.FC<props> = ({ dataSource, changePagination, pagination, handleManage }): React.ReactElement => {
-  const navigate = useRouter();
   const columns: ColumnsType<ITMasterProduct> = [
     {
       title: "ลำดับ",
@@ -56,16 +55,14 @@ const TableMasterProductPage: React.FC<props> = ({ dataSource, changePagination,
       key: "updatedBy",
     },
     {
+      title: "จำนวนทั้งหมด",
+      dataIndex: "totalQty",
+      key: "totalQty",
+    },
+    {
       title: "นำเข้าโดย",
       dataIndex: "updatedBy",
       key: "updatedBy",
-    },
-
-    {
-      title: "วันหมดอายุ",
-      dataIndex: "expired",
-      key: "expired",
-      render: (value, record, index) => (value ? dateToStringTh(value) : ""),
     },
     {
       title: "วันที่สร้าง",
@@ -73,18 +70,6 @@ const TableMasterProductPage: React.FC<props> = ({ dataSource, changePagination,
       key: "createdAt",
       render: (value, record, index) => (value ? dateToStringTh(value) : ""),
     },
-    // {
-    //   title: "นำเข้าสินค้า",
-    //   dataIndex: "prdId",
-    //   key: "prdId",
-    //   render: (value) => (
-    //     <div>
-    //       <Button type="primary" className="p-1 gap-2" onClick={() => navigate.push(`/page/stock/stock-management/${value}`)}>
-    //         {IconImport} {`นำเข้าสินค้า`}
-    //       </Button>
-    //     </div>
-    //   ),
-    // },
     {
       title: "...",
       key: "id",

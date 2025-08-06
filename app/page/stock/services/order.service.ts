@@ -3,7 +3,11 @@ import { Dayjs } from "dayjs";
 import { ITOrder, ITOrderCreateInput, ITOrderLot, ITOrderLotCreateInput, ITOrderLotUpdateInput, ITOrderUpdateInput } from "../common/order";
 interface TServices {
   findManyOrder: (search: { createdAt?: Dayjs | string | null }, skip: number, take: number) => Promise<{ data: ITOrder[]; count: number }>;
-  findManyOrderLot: (search: { createdAt?: Dayjs | string | null }, skip: number, take: number) => Promise<{ data: ITOrderLot[]; count: number }>;
+  findManyOrderLot: (
+    search: { oderId?: string; createdAt?: Dayjs | string | null },
+    skip: number,
+    take: number,
+  ) => Promise<{ data: ITOrderLot[]; count: number }>;
   findOneOrder: (prdId: string) => Promise<ITOrder>;
   findOneOrderLot: (prdId: string) => Promise<ITOrderLot>;
   createOrder: (data: ITOrderCreateInput) => Promise<ITOrder>;
@@ -47,7 +51,7 @@ const OrderServices = (axiosInstance: AxiosInstance): TServices => {
     },
     findOneOrder: async (prdId) => {
       return await axiosInstance
-        .get(`${orderUrl}/:${prdId}`)
+        .get(`${orderUrl}/${prdId}`)
         .then((res) => {
           return res.data;
         })
@@ -58,7 +62,7 @@ const OrderServices = (axiosInstance: AxiosInstance): TServices => {
     },
     findOneOrderLot: async (prdId) => {
       return await axiosInstance
-        .get(`${orderLotUrl}/:${prdId}`)
+        .get(`${orderLotUrl}/${prdId}`)
         .then((res) => {
           return res.data;
         })

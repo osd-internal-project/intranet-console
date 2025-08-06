@@ -8,10 +8,11 @@ export type ITOrder = {
   totalQty?: number;
   unit?: string;
   masterProductId?: string;
-  expiredAt?: string | Date;
   updatedBy?: string;
   createdAt?: string | Date;
   updatedAt?: string | Date;
+  orderLot?: ITOrderLot[];
+  status?: string;
 };
 
 export type ITOrderCreateInput = {
@@ -23,8 +24,8 @@ export type ITOrderCreateInput = {
   totalPrice?: number;
   totalQty?: number;
   unit?: string;
+  status?: string;
   masterProductId?: string;
-  expiredAt?: Date | string;
   updatedBy: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -38,7 +39,7 @@ export type ITOrderUpdateInput = {
   totalPrice?: number;
   totalQty?: number;
   unit?: string;
-  expiredAt?: Date | string;
+  status?: string;
   updatedBy?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -50,14 +51,13 @@ export type ITOrderLot = {
   prdId?: string;
   prdName?: string;
   price?: number;
-  totalPrice?: number;
-  totalQty?: number;
   unit?: string;
   barcode?: string;
   expiredAt?: Date | string;
   updatedBy?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  status?: string;
 };
 
 export type ITOrderLotCreateInput = {
@@ -66,11 +66,9 @@ export type ITOrderLotCreateInput = {
   prdId: string;
   prdName: string;
   price?: number;
-  totalPrice?: number;
-  totalQty?: number;
   unit?: string;
   barcode?: string;
-  expiredAt?: Date | string;
+  status?: string;
   updatedBy: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -81,11 +79,9 @@ export type ITOrderLotUpdateInput = {
   prdId?: string;
   prdName?: string;
   price?: number;
-  totalPrice?: number;
-  totalQty?: number;
   unit?: string;
   barcode?: string;
-  expiredAt?: Date | string;
+  status?: string;
   updatedBy?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;

@@ -3,7 +3,7 @@ import { loadAppConfig } from "@/app/config/app-config";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { Breadcrumb, Card, Col, Divider, Form, message, Row, TablePaginationConfig } from "antd";
 import React, { useEffect, useState } from "react";
-import OrderServices from "../services/order.service";
+// import OrderServices from "../services/order.service";
 import { Dayjs } from "dayjs";
 import { OrderTablePage } from "./components/order-table";
 import MasterProductServices from "../services/stock.service";
@@ -13,17 +13,17 @@ const OrderPage: React.FC = (): React.ReactElement => {
   const { id24Axios } = useId24();
 
   const baseUrlInventory = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INVENTORY);
-  const orderServices = OrderServices(baseUrlInventory);
+  // const orderServices = OrderServices(baseUrlInventory);
   const masterproductServices = MasterProductServices(baseUrlInventory);
-  const [form] = Form.useForm();
-  const [formManage] = Form.useForm();
+  // const [form] = Form.useForm();
+  // const [formManage] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(true);
   const [openFilter, setOpenFilter] = useState<boolean>(false);
   const [dataSource, setDataSource] = useState<{ data: ITMasterProduct[]; count: number }>({ data: [], count: 0 });
   const [params, setParams] = useState<{ createdAt?: Dayjs | string | null }>({
     createdAt: null,
   });
-  const [openMange, setOpenMange] = useState<{ status: boolean; type: string }>({ status: false, type: "create" });
+  // const [openMange, setOpenMange] = useState<{ status: boolean; type: string }>({ status: false, type: "create" });
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -41,8 +41,6 @@ const OrderPage: React.FC = (): React.ReactElement => {
       const skip = (Number(pagination.current) - 1) * Number(pagination.pageSize);
       const take = Number(pagination.pageSize);
       const { data, count } = await masterproductServices.findMany(params, skip, take);
-      console.log(`data 🚀 ~`, data);
-      console.log(`count 🚀 ~`, count);
       setDataSource({ data, count });
       setLoading(false);
     } catch (err) {
@@ -50,19 +48,19 @@ const OrderPage: React.FC = (): React.ReactElement => {
     }
   };
 
-  const onFilters = (values: { prdName?: string; updatedBy: string; createdAt?: Dayjs | string }) => {
-    setParams(values);
-    setLoading(true);
-  };
+  // const onFilters = (values: { prdName?: string; updatedBy: string; createdAt?: Dayjs | string }) => {
+  //   setParams(values);
+  //   setLoading(true);
+  // };
 
   const changePagination = (page: TablePaginationConfig) => {
     setPagination({ ...page });
     setLoading(true);
   };
 
-  const handleFilter = (status: boolean) => {
-    setOpenFilter(status);
-  };
+  // const handleFilter = (status: boolean) => {
+  //   setOpenFilter(status);
+  // };
   return (
     <div>
       <Row>

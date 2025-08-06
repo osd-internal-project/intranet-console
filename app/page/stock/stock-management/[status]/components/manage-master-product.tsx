@@ -1,4 +1,4 @@
-import { Button, DatePicker, Form, FormInstance, Input, Select, Typography, Upload, UploadFile, UploadProps } from "antd";
+import { Button, Form, FormInstance, Input, InputNumber, Select, Typography, Upload, UploadFile, UploadProps } from "antd";
 import React from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { ITMasterProductCreateInput } from "../../../common/master-product";
@@ -43,7 +43,6 @@ const ManageMasterProductPage: React.FC<props> = ({
 
       {/* Form */}
       <Form form={formManage} layout="vertical" autoComplete="off" onFinish={(e) => onFinish(e, status)} className="space-y-6">
-        {/* Image Upload */}
         <Form.Item name="masterProductImages" label="รูปภาพ">
           <Upload
             fileList={imageFiles}
@@ -66,17 +65,15 @@ const ManageMasterProductPage: React.FC<props> = ({
           <Form.Item name="prdName" label="ชื่อสินค้า">
             <Input size="large" placeholder="กรอกชื่อสินค้า" />
           </Form.Item>
-
           <Form.Item name="unitId" label="หน่วยสินค้า">
             <Select size="large" placeholder="เลือกหน่วยสินค้า" options={optionsUnit} optionFilterProp="label" allowClear />
           </Form.Item>
-          <Form.Item name="expired" label="วันหมดอายุ">
-            <DatePicker size="large" placeholder="เลือกวันหมดอายุ" className="w-full md:w-full" />
+          <Form.Item name="price" label="ราคาสินค้า">
+            <InputNumber size="large" placeholder="กรอกราคาสินค้า" className="w-full" addonAfter={"บาท"} />
           </Form.Item>
         </div>
-
         <Form.Item name="description" label="รายละเอียดสินค้า">
-          <Input.TextArea rows={4} placeholder="กรอกรายละเอียดสินค้า" />
+          <Input.TextArea rows={3} placeholder="กรอกรายละเอียดสินค้า" showCount maxLength={250} />
         </Form.Item>
 
         {/* Submit Button */}

@@ -21,15 +21,16 @@ const ManageMasterProductPage: React.FC<props> = ({ openMange, handleManage, for
           <Form.Item label={`Master Product Name`} name={"prdName"} rules={[{ required: true, message: "กรุณากรอกข้อมูล" }]}>
             <Input placeholder="Input" disabled={openMange.type === "delete" ? true : false} />
           </Form.Item>
+          <Form.Item label={`Price`} name={"price"} rules={[{ required: true, message: "กรุณากรอกข้อมูล" }]}>
+            <Input placeholder="Input" disabled={openMange.type === "delete" ? true : false} />
+          </Form.Item>
           <Form.Item label={`Description`} name={"description"} rules={[{ required: true, message: "กรุณากรอกข้อมูล" }]}>
             <Input placeholder="Input" disabled={openMange.type === "delete" ? true : false} />
           </Form.Item>
           <Form.Item label={`Updated By`} name={"updatedBy"} rules={[{ required: true, message: "กรุณากรอกข้อมูล" }]}>
             <Input placeholder="Input" disabled={openMange.type === "delete" ? true : false} />
           </Form.Item>
-          <Form.Item label={`Expired Date`} name={"expired"} rules={[{ required: true, message: "กรุณากรอกข้อมูล" }]}>
-            <Input placeholder="Input" disabled={openMange.type === "delete" ? true : false} />
-          </Form.Item>
+
           <div className="flex justify-end">
             <Button htmlType="submit" type="primary" danger={openMange.type === "delete" ? true : false}>{`ยืนยัน`}</Button>
           </div>

@@ -41,7 +41,6 @@ const StockManagement: React.FC = (): React.ReactElement => {
         const data = await masterproductServices.findOne(prdId as string);
         formManage.setFieldsValue({
           ...data,
-          expired: dayjs(data.expired),
           createdAt: dayjs(data.createdAt),
           updatedAt: dayjs(data.updatedAt),
           unitId: data?.unit?.unitID,

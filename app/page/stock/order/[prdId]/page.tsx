@@ -20,6 +20,7 @@ interface OrderFormData {
   expiredAt?: Date;
   updatedBy: string;
   masterProductId?: string;
+  orderLot: any[];
 }
 
 const ManageOrderPage: React.FC = (): React.ReactElement => {
@@ -46,6 +47,7 @@ const ManageOrderPage: React.FC = (): React.ReactElement => {
         const currentValues = form.getFieldsValue(true);
         form.setFieldsValue({
           ...currentValues,
+          price: data.price,
           prdId: data.prdId,
           prdName: data.prdName,
           unit: data.unit?.unitName,
@@ -66,6 +68,10 @@ const ManageOrderPage: React.FC = (): React.ReactElement => {
   };
 
   const onFinish = async (values: OrderFormData) => {
+    if (values.totalQty !== values.orderLot.length) {
+      message.warning(`กรุณากรอกข้อมูล Order Lot ให้ตรงกับจำนวนสินค้าทั้งหมด`);
+      return false;
+    }
     try {
       const response = await orderServices.createOrder({ ...values, masterProductId: params.prdId as string });
       if (response) {

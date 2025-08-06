@@ -1,4 +1,4 @@
-import { Button, Table, TablePaginationConfig, Typography, Image } from "antd";
+import { Button, Table, TablePaginationConfig, Typography, Image, Tag } from "antd";
 import React from "react";
 import { ITOrder } from "../../common/order";
 import { ITMasterProduct } from "../../common/master-product";
@@ -62,7 +62,13 @@ export const OrderTablePage: React.FC<props> = ({ dataSource, changePagination, 
       key: "updatedBy",
     },
     {
-      title: "จำนวน",
+      title: "ราคา",
+      dataIndex: "price",
+      key: "price",
+      render: (value: number) => `${value?.toLocaleString(undefined, { minimumFractionDigits: 2 })} บาท`,
+    },
+    {
+      title: "จำนวนทั้งหมด",
       dataIndex: "totalQty",
       key: "totalQty",
     },
@@ -71,6 +77,12 @@ export const OrderTablePage: React.FC<props> = ({ dataSource, changePagination, 
       dataIndex: "createdAt",
       key: "createdAt",
       render: (value) => (value ? dateToStringTh(value) : ""),
+    },
+    {
+      title: "สถานะสินค้า",
+      dataIndex: "totalQty",
+      key: "totalQty",
+      render: (value) => (value === 0 ? <Tag color="error">{`สินค้าหมด`}</Tag> : <Tag color="blue-inverse">{`มีสินค้าในคลัง`}</Tag>),
     },
     {
       title: "Action",
@@ -104,16 +116,16 @@ export const OrderTablePage: React.FC<props> = ({ dataSource, changePagination, 
       title: "ราคา",
       dataIndex: "price",
       key: "price",
-      render: (value: number) => value?.toLocaleString(undefined, { minimumFractionDigits: 2 }),
+      render: (value: number) => `${value?.toLocaleString(undefined, { minimumFractionDigits: 2 })} บาท`,
     },
     {
       title: "ราคารวม",
       dataIndex: "totalPrice",
       key: "totalPrice",
-      render: (value: number) => value?.toLocaleString(undefined, { minimumFractionDigits: 2 }),
+      render: (value: number) => `${value?.toLocaleString(undefined, { minimumFractionDigits: 2 })} บาท`,
     },
     {
-      title: "จำนวนทั้งหมด",
+      title: "จำนวน",
       dataIndex: "totalQty",
       key: "totalQty",
     },
@@ -123,15 +135,16 @@ export const OrderTablePage: React.FC<props> = ({ dataSource, changePagination, 
       key: "unit",
     },
     {
-      title: "หมดอายุ",
-      dataIndex: "expiredAt",
-      key: "expiredAt",
-      render: (value, record, index) => (value ? dateToStringTh(value) : ""),
-    },
-    {
       title: "นำเข้าโดย",
       dataIndex: "updatedBy",
       key: "updatedBy",
+    },
+    {
+      title: "สถานะสินค้า",
+      dataIndex: "status",
+      key: "status",
+      align: "center",
+      render: (e) => (e === "in-stock" ? <Tag color="blue-inverse">{`มีสินค้าในคลัง`}</Tag> : <Tag color="error">{`สินค้าถูกนำจ่าย`}</Tag>),
     },
     {
       title: "...",
@@ -144,9 +157,11 @@ export const OrderTablePage: React.FC<props> = ({ dataSource, changePagination, 
     },
   ];
 
-  const expandedRowRender = (record: any) => (
-    <Table<ITOrder> size="small" columns={orderColumns} dataSource={record.order} pagination={false} rowKey="id" scroll={{ x: "max-content" }} />
-  );
+  const expandedRowRender = (record: any) => {
+    return (
+      <Table<ITOrder> size="small" columns={orderColumns} dataSource={record.order} pagination={false} rowKey="id" scroll={{ x: "max-content" }} />
+    );
+  };
 
   return (
     <div>

@@ -1,6 +1,6 @@
 import { ITOrder, ITOrderLot } from "@/app/page/stock/common/order";
 import { dateToStringThNoTime } from "@/app/utils/format";
-import { Table, TablePaginationConfig } from "antd";
+import { Table, TablePaginationConfig, Tag } from "antd";
 import { ColumnsType } from "antd/es/table";
 import React from "react";
 
@@ -18,7 +18,6 @@ const TableOrderLotPage: React.FC<props> = ({ dataOrderLot, changePagination, pa
       key: "id",
       render: (id, record, index) => (pagination.current && pagination.pageSize ? (pagination.current - 1) * pagination.pageSize + (index + 1) : ""),
     },
-
     {
       title: "Product Name",
       dataIndex: "prdName",
@@ -30,20 +29,11 @@ const TableOrderLotPage: React.FC<props> = ({ dataOrderLot, changePagination, pa
       key: "price",
     },
     {
-      title: "Total Price",
-      dataIndex: "totalPrice",
-      key: "totalPrice",
-    },
-    {
-      title: "Total Quantity",
-      dataIndex: "totalQty",
-      key: "totalQty",
-    },
-    {
       title: "Unit",
       dataIndex: "unit",
       key: "unit",
     },
+
     {
       title: "Updated By",
       dataIndex: "updatedBy",
@@ -60,6 +50,17 @@ const TableOrderLotPage: React.FC<props> = ({ dataOrderLot, changePagination, pa
       dataIndex: "updatedAt",
       key: "updatedAt",
       render: (value) => dateToStringThNoTime(value),
+    },
+    {
+      title: "Barcode",
+      dataIndex: "barcode",
+      key: "barcode",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (e) => (e === "in-stock" ? <Tag color="blue-inverse">{`มีสินค้าในคลัง`}</Tag> : <Tag color="error">{`สินค้าถูกนำจ่าย`}</Tag>),
     },
   ];
   return (

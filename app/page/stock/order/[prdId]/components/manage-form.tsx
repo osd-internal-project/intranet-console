@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import { Form, Input, InputNumber, Select, DatePicker, Button, Card, Row, Col, Space, Typography, Divider, message, FormInstance } from "antd";
+import React from "react";
+import { Form, Input, InputNumber, DatePicker, Button, Card, Row, Col, Typography, Divider, FormInstance } from "antd";
 import {
   ShoppingCartOutlined,
   SaveOutlined,
-  ClearOutlined,
   CalendarOutlined,
   DollarOutlined,
   ProductOutlined,
@@ -13,8 +12,6 @@ import {
 } from "@ant-design/icons";
 
 const { Title, Text } = Typography;
-const { Option } = Select;
-const { TextArea } = Input;
 
 interface OrderFormData {
   oderId?: string;
@@ -27,6 +24,7 @@ interface OrderFormData {
   expiredAt?: Date;
   updatedBy: string;
   masterProductId?: string;
+  orderLot: any[];
 }
 
 export interface props {
@@ -98,6 +96,7 @@ export const ManageFormPage: React.FC<props> = ({ form, handleCalculateTotal, on
                     { type: "number", min: 0, message: "ราคาต้องมากกว่าหรือเท่ากับ 0" },
                   ]}>
                   <InputNumber
+                    disabled
                     className="w-full rounded-md"
                     placeholder="0.00"
                     min={0}
@@ -116,7 +115,7 @@ export const ManageFormPage: React.FC<props> = ({ form, handleCalculateTotal, on
                     { required: true, message: "กรุณากรอกจำนวน" },
                     { type: "number", min: 0.01, message: "จำนวนต้องมากกว่า 0" },
                   ]}>
-                  <InputNumber className="w-full rounded-md" placeholder="1" min={0.01} precision={2} onChange={handleCalculateTotal} />
+                  <InputNumber className="w-full rounded-md" placeholder="1" min={0} onChange={handleCalculateTotal} />
                 </Form.Item>
               </Col>
 
@@ -133,7 +132,7 @@ export const ManageFormPage: React.FC<props> = ({ form, handleCalculateTotal, on
                     placeholder="0.00"
                     min={0}
                     precision={2}
-                    readOnly
+                    disabled
                     formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                   />
                 </Form.Item>
@@ -147,11 +146,6 @@ export const ManageFormPage: React.FC<props> = ({ form, handleCalculateTotal, on
             </Title>
 
             <Row gutter={[16, 16]}>
-              <Col xs={24} sm={12}>
-                <Form.Item name="expiredAt" label="วันหมดอายุ">
-                  <DatePicker className="w-full rounded-md" placeholder="เลือกวันหมดอายุ" format="DD/MM/YYYY" />
-                </Form.Item>
-              </Col>
               <Col xs={24} sm={12}>
                 <Form.Item name="updatedBy" label="ผู้บันทึกข้อมูล">
                   <Input placeholder="ชื่อผู้บันทึก" className="rounded-md" disabled />
@@ -237,40 +231,6 @@ export const ManageFormPage: React.FC<props> = ({ form, handleCalculateTotal, on
                             />
                           </Form.Item>
                         </Col>
-
-                        <Col xs={24} sm={8}>
-                          <Form.Item
-                            {...restField}
-                            name={[name, "qty"]}
-                            label="จำนวน"
-                            rules={[
-                              { required: true, message: "กรุณากรอกจำนวน" },
-                              { type: "number", min: 0.01, message: "จำนวนต้องมากกว่า 0" },
-                            ]}>
-                            <InputNumber
-                              className="w-full rounded-md"
-                              placeholder="1"
-                              min={0.01}
-                              precision={2}
-                              disabled
-                              // onChange={() => handleCalculateLotTotal(index)}
-                            />
-                          </Form.Item>
-                        </Col>
-
-                        {/* <Col xs={24} sm={8}>
-                          <Form.Item {...restField} name={[name, "totalPrice"]} label="ราคารวม (บาท)">
-                            <InputNumber
-                              className="w-full rounded-md"
-                              placeholder="0.00"
-                              min={0}
-                              precision={2}
-                              readOnly
-                              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                            />
-                          </Form.Item>
-                        </Col> */}
-
                         <Col xs={24}>
                           <Form.Item {...restField} name={[name, "expiredAt"]} label="วันหมดอายุ">
                             <DatePicker className="w-full rounded-md" placeholder="เลือกวันหมดอายุ" format="DD/MM/YYYY" />
@@ -289,7 +249,6 @@ export const ManageFormPage: React.FC<props> = ({ form, handleCalculateTotal, on
                           prdName: form.getFieldValue("prdName"),
                           unit: form.getFieldValue("unit"),
                           price: rootPrice,
-                          qty: 1,
                         });
                       }}
                       block

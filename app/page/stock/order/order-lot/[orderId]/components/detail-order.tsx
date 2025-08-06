@@ -72,13 +72,13 @@ const DetailOrderPage: React.FC<props> = ({ formDetailOrder }): React.ReactEleme
           </Form.Item>
 
           {/* หมดอายุ */}
-          <Form.Item label={<span className="text-sm font-medium text-gray-700">หมดอายุ</span>} name="expiredAt" className="mb-4">
+          {/* <Form.Item label={<span className="text-sm font-medium text-gray-700">หมดอายุ</span>} name="expiredAt" className="mb-4">
             <Input
               readOnly
               className="border-0 border-b-2 border-gray-200 rounded-none bg-transparent px-0 py-2 focus:shadow-none focus:border-blue-500 hover:border-gray-300"
               placeholder="-"
             />
-          </Form.Item>
+          </Form.Item> */}
 
           {/* นำเข้าโดย */}
           <Form.Item label={<span className="text-sm font-medium text-gray-700">นำเข้าโดย</span>} name="updatedBy" className="mb-4">

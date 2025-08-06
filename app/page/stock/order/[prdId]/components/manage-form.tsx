@@ -87,6 +87,37 @@ export const ManageFormPage: React.FC<props> = ({ form, handleCalculateTotal, on
             </Title>
 
             <Row gutter={[16, 16]}>
+              <Col xs={24} sm={12}>
+                <Form.Item
+                  name="cost"
+                  label="ราคาทุน (บาท)"
+                  rules={[
+                    { required: true, message: "กรุณากรอกราคา" },
+                    { type: "number", min: 0, message: "ราคาต้องมากกว่าหรือเท่ากับ 0" },
+                  ]}>
+                  <InputNumber
+                    className="w-full rounded-md"
+                    placeholder="0.00"
+                    min={0}
+                    precision={2}
+                    onChange={handleCalculateTotal}
+                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col xs={12}>
+                <Form.Item name="avgCost" label="ราคาทุนต่อชิ้น (บาท)">
+                  <InputNumber
+                    className="w-full rounded-md"
+                    placeholder="0.00"
+                    min={0}
+                    precision={2}
+                    disabled
+                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  />
+                </Form.Item>
+              </Col>
               <Col xs={24} sm={8}>
                 <Form.Item
                   name="price"
@@ -225,7 +256,45 @@ export const ManageFormPage: React.FC<props> = ({ form, handleCalculateTotal, on
                               placeholder="0.00"
                               min={0}
                               precision={2}
-                              // onChange={() => handleCalculateLotTotal(index)}
+                              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                              disabled
+                            />
+                          </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={8}>
+                          <Form.Item
+                            {...restField}
+                            name={[name, "cost"]}
+                            label="ราคาทุน (บาท)"
+                            rules={[
+                              { required: true, message: "กรุณากรอกราคา" },
+                              { type: "number", min: 0, message: "ราคาต้องมากกว่าหรือเท่ากับ 0" },
+                            ]}>
+                            <InputNumber
+                              className="w-full rounded-md"
+                              placeholder="0.00"
+                              min={0}
+                              precision={2}
+                              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                              disabled
+                            />
+                          </Form.Item>
+                        </Col>
+
+                        <Col xs={24} sm={8}>
+                          <Form.Item
+                            {...restField}
+                            name={[name, "avgCost"]}
+                            label="ราคาทุนต่อชิ้น (บาท)"
+                            rules={[
+                              { required: true, message: "กรุณากรอกราคา" },
+                              { type: "number", min: 0, message: "ราคาต้องมากกว่าหรือเท่ากับ 0" },
+                            ]}>
+                            <InputNumber
+                              className="w-full rounded-md"
+                              placeholder="0.00"
+                              min={0}
+                              precision={2}
                               formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                               disabled
                             />
@@ -245,10 +314,15 @@ export const ManageFormPage: React.FC<props> = ({ form, handleCalculateTotal, on
                       type="dashed"
                       onClick={() => {
                         const rootPrice = form.getFieldValue("price");
+                        const rootCost = form.getFieldValue("cost");
+                        const rootAvgCost = form.getFieldValue("avgCost");
+
                         add({
                           prdName: form.getFieldValue("prdName"),
                           unit: form.getFieldValue("unit"),
                           price: rootPrice,
+                          cost: rootCost,
+                          avgCost: rootAvgCost,
                         });
                       }}
                       block

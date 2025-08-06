@@ -61,10 +61,15 @@ const ManageOrderPage: React.FC = (): React.ReactElement => {
   };
 
   const handleCalculateTotal = () => {
+    const cost = form.getFieldValue("cost") || 0;
     const price = form.getFieldValue("price") || 0;
     const qty = form.getFieldValue("totalQty") || 0;
     const total = price * qty;
-    form.setFieldsValue({ totalPrice: total });
+    const avgCost = qty !== 0 ? cost / qty : 0;
+    form.setFieldsValue({
+      avgCost,
+      totalPrice: total,
+    });
   };
 
   const onFinish = async (values: OrderFormData) => {

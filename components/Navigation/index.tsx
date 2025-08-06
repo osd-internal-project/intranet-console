@@ -26,7 +26,6 @@ interface Prop {
 
 const Navigation: React.FC<Prop> = ({ profileDetail, collapsed, setCollapsed, currentPath, menulist, logOut }) => {
   const [open, setOpen] = useState(false);
-  const navigate = useRouter();
   const MenuNav: MenuProps["items"] = [
     {
       key: "1",
@@ -72,11 +71,7 @@ const Navigation: React.FC<Prop> = ({ profileDetail, collapsed, setCollapsed, cu
                 {profileDetail?.firstNameTh
                   ? `คุณ ${profileDetail?.firstNameTh} ${profileDetail?.lastNameTh && profileDetail.lastNameTh}`
                   : profileDetail?.username}
-                {/* {avatar && avatar instanceof Blob ? (
-                  <Avatar size={40} src={avatar instanceof Blob ? URL.createObjectURL(avatar) : ""} />
-                ) : ( */}
                 <Avatar icon={<UserOutlined />} />
-                {/* )} */}
               </Space>
             </a>
           </Dropdown>

@@ -9,7 +9,7 @@ interface TServices {
     take: number,
   ) => Promise<{ data: ITOrderLot[]; count: number }>;
   findOneOrder: (prdId: string) => Promise<ITOrder>;
-  findOneOrderLot: (prdId: string) => Promise<ITOrderLot>;
+  findOneOrderLot: (barcode: string) => Promise<ITOrderLot>;
   createOrder: (data: ITOrderCreateInput) => Promise<ITOrder>;
   updateOrder: (id: number, data: ITOrderUpdateInput) => Promise<ITOrder>;
   deleteOrder: (id: number) => Promise<number>;
@@ -60,9 +60,9 @@ const OrderServices = (axiosInstance: AxiosInstance): TServices => {
           return err;
         });
     },
-    findOneOrderLot: async (prdId) => {
+    findOneOrderLot: async (barcode) => {
       return await axiosInstance
-        .get(`${orderLotUrl}/${prdId}`)
+        .get(`${orderLotUrl}/${barcode}`)
         .then((res) => {
           return res.data;
         })
@@ -115,7 +115,7 @@ const OrderServices = (axiosInstance: AxiosInstance): TServices => {
           return err;
         });
     },
-    updateOrderLot: async (id: number, data) => {
+    updateOrderLot: async (id, data) => {
       const req = {
         ...data,
       };

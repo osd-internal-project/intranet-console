@@ -1,5 +1,5 @@
 "use client";
-import { Avatar, Button, Card, FormInstance, Table, TablePaginationConfig, Tag } from "antd";
+import { Avatar, Button, Card, FormInstance, Table, TablePaginationConfig, Tag, Image } from "antd";
 import { useContext } from "react";
 import { editIcon } from "@/components/icon";
 import { dateToStringTh } from "@/app/utils/format";
@@ -42,7 +42,7 @@ const UserTable: React.FC<Props> = ({ setManagePage, managePage, createForm, set
           <>
             <div className="grid grid-cols-3 items-center">
               <div className="flex col-span-1 justify-center">
-                <Avatar icon={<AntDesignOutlined />} />
+                <Avatar src={record.imageId ? `${process.env.REACT_APP_API_BASE_URL_USER}/id24users/get-image-user/${record.imageId}` : ""} />
               </div>
               <div className="col-span-2">
                 <b>{value}</b>

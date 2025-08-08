@@ -46,9 +46,6 @@ export default function HomePage() {
   }, [loading]);
 
   async function downloadFile(id: string, name: string): Promise<void> {
-    console.log(id);
-    console.log(name);
-
     if (id && name) {
       const fileUrl = `${baseImageUrl}/public/handbook-file/${id}?fileName=${encodeURIComponent(name)}`;
       try {

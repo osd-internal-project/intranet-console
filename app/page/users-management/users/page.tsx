@@ -46,7 +46,7 @@ export default function UsermanagementPage() {
   const [getImage, setImage] = useState<any>();
   const [filterForm] = Form.useForm();
   const [createForm] = Form.useForm();
-  const [selectUserType, setSelectUserType] = useState<"ldap" | "local">("local");
+  const [selectUserType, setSelectUserType] = useState<"ldap" | "local">("ldap");
   const [managePage, setManagePage] = useState<TManageUserPageDto>({
     loading: true,
     pagination: { current: 1, pageSize: 10 },
@@ -56,24 +56,24 @@ export default function UsermanagementPage() {
     modalTitle: "create",
   });
   const [optionsOrganize, setOptionsOrganize] = useState<TabType[]>([]);
-  const [groupDetailData, setGroupDetailData] = useState<GroupDetailData>({
-    loading: true,
-    group: {
-      name: "Loading...",
-      description: "",
-      notes: "",
-      subGroups: [
-        {
-          name: "subGroup",
-          id: "234",
-          description: "",
-          notes: "",
-          subGroups: [],
-        },
-      ],
-      id: "123",
-    },
-  });
+  // const [groupDetailData, setGroupDetailData] = useState<GroupDetailData>({
+  //   loading: true,
+  //   group: {
+  //     name: "Loading...",
+  //     description: "",
+  //     notes: "",
+  //     subGroups: [
+  //       {
+  //         name: "subGroup",
+  //         id: "234",
+  //         description: "",
+  //         notes: "",
+  //         subGroups: [],
+  //       },
+  //     ],
+  //     id: "123",
+  //   },
+  // });
   const [treeData, setTreeData] = useState<DataNode[]>([]);
   const [treeListDepartment, setTreeListDepartment] = useState<any[] | null>(null);
 
@@ -116,10 +116,10 @@ export default function UsermanagementPage() {
       value: d.id,
     }));
     setPositionOption(positionOption);
-    setGroupDetailData({
-      loading: false,
-      group: groupResponse,
-    });
+    // setGroupDetailData({
+    //   loading: false,
+    //   group: groupResponse,
+    // });
     setOptionsOrganize([...orgList]);
   };
   const createTreeDepartMent = (obj: TfindAllOrganizeDto[], parentId: string | null) => {

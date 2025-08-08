@@ -94,7 +94,16 @@ export const UserAction: React.FC<Props> = ({
       const validateUsername = { ...value, username: value.username.toLowerCase(), password: "P@ssw0rd" } as TCreateUserDto;
       const resCreate = await UsersServices(baseUrlUser).addUser(validateUsername);
       if (resCreate) {
+        if (resCreate && imageFiles.length > 0) {
+          imageFiles.forEach(async (file) => {
+            const formData: any = new FormData();
+            formData.append("type", "create-attend");
+            formData.append("files", file.originFileObj);
+            await UsersServices(baseUrlUser).uploadFiles(resCreate.userId, formData);
+          });
+        }
         message.success("Add Success");
+        setImageFiles([]);
         setManagePage({ ...managePage, loading: true, modalStatus: false });
         createForm.resetFields();
       }
@@ -114,6 +123,7 @@ export const UserAction: React.FC<Props> = ({
             });
           }
           message.success("Update Success");
+          setImageFiles([]);
           createForm.resetFields();
           setManagePage({ ...managePage, loading: true, modalStatus: false });
         }

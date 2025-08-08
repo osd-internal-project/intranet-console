@@ -51,6 +51,7 @@ export type TUserAllDto = {
   ldapQuery: string;
   phoneNumber: string;
   masterPosition?: TMasterPosition;
+  imageId: string;
   userMapOrganizeChart: {
     id: number;
     positionId: string;

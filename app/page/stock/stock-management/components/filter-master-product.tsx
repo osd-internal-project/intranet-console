@@ -42,6 +42,7 @@ const FilterMasterProductPage: React.FC<props> = ({ onFilters, form, handleFilte
     <div>
       <div className="flex justify-between p-1">
         <Popover
+          placement="bottomLeft"
           onOpenChange={(e) => handleFilter(e)}
           open={openFilter}
           content={searchContent}

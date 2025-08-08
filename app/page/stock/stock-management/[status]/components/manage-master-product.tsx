@@ -35,13 +35,10 @@ const ManageMasterProductPage: React.FC<props> = ({
 
   return (
     <div className="max-w-full mx-auto p-2 bg-white">
-      {/* Header */}
       <div className="mb-2 p-6 bg-gray-50 rounded-lg">
         <Typography.Text className="text-lg font-semibold block mb-2">{`${status === "create" ? "เพิ่ม" : "แก้ไข"}รายการสินค้า`}</Typography.Text>
         <Typography.Text className="text-gray-600">{`${formatDate(currentDate)} - โดย: ${user.firstNameTh} ${user.lastNameTh} 🚀`}</Typography.Text>
       </div>
-
-      {/* Form */}
       <Form form={formManage} layout="vertical" autoComplete="off" onFinish={(e) => onFinish(e, status)} className="space-y-6">
         <Form.Item name="masterProductImages" label="รูปภาพ">
           <Upload
@@ -59,24 +56,20 @@ const ManageMasterProductPage: React.FC<props> = ({
             </div>
           </Upload>
         </Form.Item>
-
-        {/* Product Info Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Form.Item name="prdName" label="ชื่อสินค้า">
+          <Form.Item name="prdName" label="ชื่อสินค้า" rules={[{ required: true, message: "กรุณากรอกชื่อสินค้า" }]}>
             <Input size="large" placeholder="กรอกชื่อสินค้า" />
           </Form.Item>
-          <Form.Item name="unitId" label="หน่วยสินค้า">
+          <Form.Item name="unitId" label="หน่วยสินค้า" rules={[{ required: true, message: "กรุณาเลือกหน่วยสินค้า" }]}>
             <Select size="large" placeholder="เลือกหน่วยสินค้า" options={optionsUnit} optionFilterProp="label" allowClear />
           </Form.Item>
-          <Form.Item name="price" label="ราคาสินค้า">
+          <Form.Item name="price" label="ราคาสินค้า" rules={[{ required: true, message: "กรุณากรอกราคาสินค้า" }]}>
             <InputNumber size="large" placeholder="กรอกราคาสินค้า" className="w-full" addonAfter={"บาท"} />
           </Form.Item>
         </div>
-        <Form.Item name="description" label="รายละเอียดสินค้า">
+        <Form.Item name="description" label="รายละเอียดสินค้า" rules={[{ required: true, message: "กรุณากรอกรายละเอียดสินค้า" }]}>
           <Input.TextArea rows={3} placeholder="กรอกรายละเอียดสินค้า" showCount maxLength={250} />
         </Form.Item>
-
-        {/* Submit Button */}
         <div className="flex justify-end ">
           <Button htmlType="submit" type="primary" size="large" className="px-8">
             ยืนยัน

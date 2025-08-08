@@ -1,10 +1,9 @@
 "use client";
-// import "../style.css";
-import { Button, Card, Form, Input, Modal, Select, Switch, message } from "antd";
+import { Button, Card, Form, Input, Modal, Select, Switch, message, Image } from "antd";
 import React, { useState, useEffect } from "react";
 import UserServices from "../services/index.service";
 import { useForm } from "antd/es/form/Form";
-import { dateToStringTh, dateToStringThNoTime } from "@/app/utils/format";
+import { dateToStringThNoTime } from "@/app/utils/format";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import dayjs from "dayjs";
@@ -13,9 +12,22 @@ import relativeTime from "dayjs/plugin/relativeTime";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
+
+// Custom styles for borderless inputs - using inline styles only
+const customInputStyle = {
+  border: "none",
+  borderRadius: "0",
+  boxShadow: "none",
+  background: "transparent",
+  padding: "4px 0",
+  borderBottom: "1px solid #e5e7eb",
+  fontSize: "14px",
+};
+
 export interface props {
   userid: string;
 }
+
 type detailType = {
   userId: string | null;
   username: string | null;
@@ -32,10 +44,12 @@ type detailType = {
   empId: string | null;
   startWork: Date | null;
 };
+
 type option = {
   label: number;
   value: string;
 };
+
 const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement => {
   const { id24Axios } = useId24();
   const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
@@ -47,11 +61,14 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
   const [checkedActiveStatus, setCheckedActiveStatus] = useState<boolean>(false);
   const [dateWork, setDateWork] = useState<string>("");
   const [positionOption, setPositionOption] = useState<option[]>([]);
+  const image = detailForm.getFieldsValue(true);
+
   useEffect(() => {
     if (loading) {
       loadingDetail();
     }
   }, [loading]);
+
   const loadingDetail = async () => {
     if (userid) {
       const data = (await userServices.getUsersByUserId(userid)) as detailType;
@@ -63,6 +80,7 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
       const formattedDuration = `${years} ปี ${months} เดือน ${days} วัน`;
       setDateWork(formattedDuration);
       const formdata = {
+        ...data,
         empId: data.empId,
         startWork: data.startWork ? dateToStringThNoTime(data.startWork) : "",
         userId: data.userId,
@@ -91,6 +109,7 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
       callback();
     }
   };
+
   const validatePassword = (rule: any, value: string, callback: any) => {
     const lowerCaseMatches = value.match(/[a-z]/g);
     const upperCaseMatches = value.match(/[A-Z]/g);
@@ -105,6 +124,7 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
     }
     callback();
   };
+
   const validateConfirmPassword = (_: any, value: any) => {
     const firstPassword = repasswordForm.getFieldValue("newPassword");
     if (value && value !== firstPassword) {
@@ -112,6 +132,7 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
     }
     return Promise.resolve();
   };
+
   const validateOnlyNumbers = (rule: any, value: any, callback: any) => {
     if (value === undefined) {
       callback();
@@ -146,126 +167,170 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
     }
     setOpenChangePassword(false);
   };
+
   return (
     <>
-      <Card>
-        <div className="flex justify-end ">
-          <div className="text-red-500">*</div>
-          <div className="text-lg font-bold">{`อายุงาน ${dateWork}`}</div>
-        </div>
-        <Form form={detailForm} name="basic" wrapperCol={{ span: 16 }} autoComplete="off" layout="vertical">
-          <div className="grid grid-cols-1 md:grid-cols-3 space-y-0">
-            <div>
-              <Form.Item label="User Id :" name="userId" style={{ marginBottom: "2px" }}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item
-                label="Username"
-                name="username"
-                style={{ marginBottom: "2px" }}
-                rules={[{ required: true, message: "กรุณากรอก  Username" }, { validator: validateNoSpaces }]}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item label="Email :" name="email" rules={[{ required: true, message: "กรุณากรอก Email" }]} style={{ marginBottom: "2px" }}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item label="Status :" name="activeStatus" style={{ marginBottom: "2px" }}>
-                <Switch
-                  disabled={true}
-                  checkedChildren="Active"
-                  unCheckedChildren="Inactive"
-                  checked={checkedActiveStatus}
-                  onChange={() => setCheckedActiveStatus(!checkedActiveStatus)}
-                  className={checkedActiveStatus === true ? "active-switch" : "inactive-switch"}
+      <div className="max-w-5xl mx-auto p-4">
+        <Card className="shadow-sm border border-gray-200" bodyStyle={{ padding: "20px" }}>
+          {/* Header Section */}
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 space-y-4 lg:space-y-0">
+            <div className="flex items-center space-x-3">
+              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200">
+                <Image
+                  className="w-full h-full object-cover"
+                  src={image.imageId ? `${process.env.REACT_APP_API_BASE_URL_USER}/id24users/get-image-user/${image.imageId}` : ""}
+                  fallback="/api/placeholder/64/64"
+                  preview={false}
                 />
-              </Form.Item>
-            </div>
-            <Form.Item label="Change Password :">
-              <div className=" flex w-full space-x-2">
-                <div className=" w-2/3">
-                  <Input.Password disabled value={"1234"} className="read-only-input2" />
-                </div>
-                <div>
-                  <Button
-                    onClick={() => {
-                      setOpenChangePassword(true);
-                      repasswordForm.resetFields();
-                    }}>
-                    Change Password
-                  </Button>
-                </div>
               </div>
-            </Form.Item>
-            <div></div>
-
-            <div className=" col-span-3">
-              <hr className="h-px my-3 bg-gray-200 border-0 dark:bg-gray-200" />
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900">
+                  {detailForm.getFieldValue("firstNameTh")} {detailForm.getFieldValue("lastNameTh")}
+                </h2>
+                <p className="text-sm text-gray-600">
+                  {detailForm.getFieldValue("firstNameEn")} {detailForm.getFieldValue("lastNameEn")}
+                </p>
+                <p className="text-sm text-gray-500">@{detailForm.getFieldValue("username")}</p>
+              </div>
             </div>
-
-            <div>
-              <Form.Item label="First Name :" name="firstNameTh" rules={[{ required: true, message: "กรุณากรอก  Username" }]}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item
-                label="Last Name :"
-                name="lastNameTh"
-                rules={[{ required: true, message: "กรุณากรอก Last Name" }]}
-                style={{ marginBottom: "2px" }}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item label="EMP ID :" name="empId" style={{ marginBottom: "2px" }}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item label="Phone Number :" name="phoneNumber" rules={[{ validator: validateOnlyNumbers }]} style={{ marginBottom: "2px" }}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item label="Position :" name="masterPositionId" style={{ marginBottom: "2px" }}>
-                <Select options={positionOption} disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item label="Created Date :" name="createdAt" style={{ marginBottom: "2px" }}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item label="Updated Date :" name="updatedAt">
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item label="Start Date :" name="startWork">
-                <Input disabled className="read-only-input" />
-              </Form.Item>
+            <div className="text-right">
+              <div className="flex items-center space-x-1">
+                <span className="text-red-500 text-xs">*</span>
+                <span className="text-sm font-medium text-gray-700">อายุงาน {dateWork}</span>
+              </div>
             </div>
           </div>
-        </Form>
-      </Card>
 
-      <Modal open={openChangePassword} onCancel={() => setOpenChangePassword(false)} footer={null} title="Change Password">
-        <Form form={repasswordForm} wrapperCol={{ span: 16 }} labelCol={{ span: 8 }} onFinish={changeUserPassword} autoComplete="off">
+          <Form form={detailForm} name="basic" autoComplete="off" layout="vertical">
+            {/* Account Information Section */}
+            <div className="mb-6">
+              <h3 className="text-base font-medium text-gray-800 mb-3 pb-1 border-b border-blue-200">ข้อมูลบัญชีผู้ใช้</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Form.Item label="User ID" name="userId" className="mb-2">
+                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
+                </Form.Item>
+
+                <Form.Item
+                  label="Username"
+                  name="username"
+                  className="mb-2"
+                  rules={[{ required: true, message: "กรุณากรอก Username" }, { validator: validateNoSpaces }]}>
+                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
+                </Form.Item>
+
+                <Form.Item label="Email" name="email" rules={[{ required: true, message: "กรุณากรอก Email" }]} className="mb-2">
+                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
+                </Form.Item>
+
+                <Form.Item label="Status" name="activeStatus" className="mb-2">
+                  <Switch
+                    disabled={true}
+                    checkedChildren="Active"
+                    unCheckedChildren="Inactive"
+                    checked={checkedActiveStatus}
+                    onChange={() => setCheckedActiveStatus(!checkedActiveStatus)}
+                    className={checkedActiveStatus ? "bg-green-500" : "bg-red-500"}
+                  />
+                </Form.Item>
+
+                <Form.Item label="Change Password" className="mb-2 lg:col-span-2">
+                  <div className="flex items-center space-x-2">
+                    <div className="flex-1">
+                      <Input.Password
+                        disabled
+                        value="••••••••"
+                        style={customInputStyle}
+                        className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none"
+                      />
+                    </div>
+                    <Button
+                      type="primary"
+                      disabled
+                      onClick={() => {
+                        setOpenChangePassword(true);
+                        repasswordForm.resetFields();
+                      }}
+                      className="px-4 py-1 h-8 text-xs">
+                      เปลี่ยนรหัสผ่าน
+                    </Button>
+                  </div>
+                </Form.Item>
+              </div>
+            </div>
+
+            {/* Personal Information Section */}
+            <div className="mb-6">
+              <h3 className="text-base font-medium text-gray-800 mb-3 pb-1 border-b border-green-200">ข้อมูลส่วนตัว</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Form.Item label="ชื่อจริง" name="firstNameTh" rules={[{ required: true, message: "กรุณากรอกชื่อจริง" }]} className="mb-2">
+                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
+                </Form.Item>
+
+                <Form.Item label="นามสกุล" name="lastNameTh" rules={[{ required: true, message: "กรุณากรอกนามสกุล" }]} className="mb-2">
+                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
+                </Form.Item>
+
+                <Form.Item label="รหัสพนักงาน" name="empId" className="mb-2">
+                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
+                </Form.Item>
+
+                <Form.Item label="เบอร์โทรศัพท์" name="phoneNumber" rules={[{ validator: validateOnlyNumbers }]} className="mb-2">
+                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
+                </Form.Item>
+
+                <Form.Item label="ตำแหน่ง" name="masterPositionId" className="mb-2">
+                  <Select
+                    options={positionOption}
+                    disabled
+                    className="text-sm text-gray-700"
+                    style={{
+                      ...customInputStyle,
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  />
+                </Form.Item>
+              </div>
+            </div>
+
+            {/* System Information Section */}
+            <div>
+              <h3 className="text-base font-medium text-gray-800 mb-3 pb-1 border-b border-purple-200">ข้อมูลระบบ</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Form.Item label="วันที่สร้างบัญชี" name="createdAt" className="mb-2">
+                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
+                </Form.Item>
+
+                <Form.Item label="วันที่อัปเดตล่าสุด" name="updatedAt" className="mb-2">
+                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
+                </Form.Item>
+
+                <Form.Item label="วันที่เริ่มงาน" name="startWork" className="mb-2">
+                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
+                </Form.Item>
+              </div>
+            </div>
+          </Form>
+        </Card>
+      </div>
+
+      {/* Change Password Modal */}
+      <Modal
+        open={openChangePassword}
+        onCancel={() => setOpenChangePassword(false)}
+        footer={null}
+        title={<div className="text-base font-medium text-gray-800">เปลี่ยนรหัสผ่าน</div>}
+        width={400}>
+        <Form form={repasswordForm} layout="vertical" onFinish={changeUserPassword} autoComplete="off" className="pt-2">
           <Form.Item
-            label="New Password"
+            label="รหัสผ่านใหม่"
             name="newPassword"
-            rules={[{ required: true, message: "กรุณากรอกรหัสผ่านใหม่" }, { validator: validatePassword }]}>
-            <Input.Password type="password" />
+            rules={[{ required: true, message: "กรุณากรอกรหัสผ่านใหม่" }, { validator: validatePassword }]}
+            className="mb-3">
+            <Input.Password placeholder="กรุณากรอกรหัสผ่านใหม่" className="h-9" />
           </Form.Item>
+
           <Form.Item
-            label="Confirm Password"
+            label="ยืนยันรหัสผ่าน"
             name="rePassword"
             rules={[
               { required: true, message: "กรุณากรอกรหัสผ่านใหม่อีกครั้ง" },
@@ -275,19 +340,23 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                   return validateConfirmPassword(_, value);
                 },
               }),
-            ]}>
-            <Input.Password type="password" />
+            ]}
+            className="mb-4">
+            <Input.Password placeholder="กรุณายืนยันรหัสผ่านใหม่" className="h-9" />
           </Form.Item>
-          <div className="flex justify-end">
-            <Form.Item style={{ marginBottom: 0 }}>
-              <Button type="primary" htmlType="submit">
-                Save
-              </Button>
-            </Form.Item>
+
+          <div className="flex justify-end space-x-2 pt-3 border-t border-gray-200">
+            <Button onClick={() => setOpenChangePassword(false)} className="px-4 h-9 text-sm">
+              ยกเลิก
+            </Button>
+            <Button type="primary" htmlType="submit" className="px-4 h-9 text-sm">
+              บันทึก
+            </Button>
           </div>
         </Form>
       </Modal>
     </>
   );
 };
+
 export default ShowDetailComponent;

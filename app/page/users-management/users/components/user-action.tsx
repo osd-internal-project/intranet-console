@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { ITypeOption, TCreateUserDto, TManageUserPageDto, TUpdateUserDto } from "../common";
 import {
-  Avatar,
   Button,
   DatePicker,
   Form,
@@ -17,6 +16,7 @@ import {
   Upload,
   UploadFile,
   UploadProps,
+  Image,
 } from "antd";
 import { CarryOutOutlined, CheckOutlined, CloseOutlined, FilterOutlined, PlusCircleOutlined, UploadOutlined } from "@ant-design/icons";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
@@ -300,7 +300,7 @@ export const UserAction: React.FC<Props> = ({
         }}
         width={1200}>
         <Form form={createForm} name="create" wrapperCol={{ span: 24 }} onFinish={onFinishSave} autoComplete="off" layout="vertical">
-          {imageFiles.length > 1 ? (
+          {imageFiles.length >= 1 ? (
             <div className=" flex justify-center">
               <Form.Item name="image">
                 <Upload
@@ -316,11 +316,14 @@ export const UserAction: React.FC<Props> = ({
               </Form.Item>
             </div>
           ) : (
-            <div className=" flex justify-center p-1">
-              <div className=" flex justify-center p-1">
-                <Avatar src={value.imageId ? `${process.env.REACT_APP_API_BASE_URL_USER}/id24users/get-image-user/${value.imageId}` : ""} />
+            <div className="grid grid-cols-1 justify-center p-1 gap-2 space-y-2">
+              <div className="grid col-span-1 justify-center items-center">
+                <Image
+                  rootClassName="w-[100px] h-[100px] object-cover"
+                  src={value.imageId ? `${process.env.REACT_APP_API_BASE_URL_USER}/id24users/get-image-user/${value.imageId}` : ""}
+                />
               </div>
-              <div className=" flex justify-center">
+              <div className="grid col-span-1 justify-center items-center">
                 <Form.Item name="image">
                   <Upload
                     accept="image/png, image/jpeg"
@@ -330,7 +333,9 @@ export const UserAction: React.FC<Props> = ({
                     multiple={false}
                     maxCount={1}
                     listType="picture">
-                    <Button icon={<UploadOutlined />}>Click to upload</Button>
+                    <Button className="w-full" icon={<UploadOutlined />}>
+                      Click to upload
+                    </Button>
                   </Upload>
                 </Form.Item>
               </div>

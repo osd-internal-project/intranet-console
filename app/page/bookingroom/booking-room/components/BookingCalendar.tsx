@@ -86,9 +86,9 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar, handleChangeMo
       setSelectedBooking(booking);
       formUpdate.setFieldsValue({
         ...booking,
-        startDate: moment(booking.startDate),
-        endDate: moment(booking.endDate),
-        approveDate: moment(booking.approveDate).format("DD-MM-YYYY HH:mm"),
+        startDate: dayjs(booking.startDate),
+        endDate: dayjs(booking.endDate),
+        approveDate: dayjs(booking.approveDate).format("DD-MM-YYYY HH:mm"),
       });
       setStatusModalDetail(true);
     }

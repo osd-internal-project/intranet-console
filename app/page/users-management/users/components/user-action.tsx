@@ -66,6 +66,7 @@ export const UserAction: React.FC<Props> = ({
   const [openFilter, setOpenFilter] = useState<boolean>(false);
   const [imageFiles, setImageFiles] = useState<UploadFile[]>([]);
   const [image, setImage] = useState<any>();
+  const value = createForm.getFieldsValue(true);
 
   const handleOpenFilter = (state: boolean) => {
     setOpenFilter(state);
@@ -300,7 +301,7 @@ export const UserAction: React.FC<Props> = ({
         width={1200}>
         <Form form={createForm} name="create" wrapperCol={{ span: 24 }} onFinish={onFinishSave} autoComplete="off" layout="vertical">
           <div className=" flex justify-center p-1">
-            <Avatar size={128} src={image && getImage ? image : getImage ? URL.createObjectURL(getImage) : ""} />
+            <Avatar src={value.imageId ? `${process.env.REACT_APP_API_BASE_URL_USER}/id24users/get-image-user/${value.imageId}` : ""} />
           </div>
           <div className=" flex justify-center">
             <Form.Item name="image">

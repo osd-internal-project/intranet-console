@@ -108,14 +108,14 @@ const StockManagement: React.FC = (): React.ReactElement => {
                 title: <span>{`การจัดการสินค้า`}</span>,
               },
               {
-                title: <span>{`ตารางรายการสินค้า`}</span>,
+                title: <span>{`รายการสินค้า`}</span>,
               },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
           <div className="title-page-font" style={{ display: "flex", alignItems: "left" }}>
-            <span style={{ marginRight: "8px" }}>{`ตารางรายการสินค้า`}</span>
+            <span style={{ marginRight: "8px" }}>{`รายการสินค้า`}</span>
           </div>
         </Divider>
       </Row>

@@ -8,8 +8,10 @@ interface TServices {
     take: number,
   ) => Promise<{ data: ITMasterProduct[]; count: number }>;
   findOne: (prdId: string) => Promise<ITMasterProduct>;
+  findByBarcode: (barcode: string) => Promise<ITMasterProduct>;
   create: (data: ITMasterProductCreateInput) => Promise<ITMasterProduct>;
   update: (id: number, data: ITMasterProductCreateInput) => Promise<ITMasterProduct>;
+  updateQty: (id: number, data: { totalQty: number }) => Promise<{ text: string; data: ITMasterProduct; status: number }>;
   delete: (id: number) => Promise<number>;
   uploadImage: (prdId: string, body: any) => Promise<MasterProductImage>;
 }
@@ -43,6 +45,17 @@ const MasterProductServices = (axiosInstance: AxiosInstance): TServices => {
           return err;
         });
     },
+    findByBarcode: async (barcode) => {
+      return await axiosInstance
+        .get(`${masterproductUrl}/barcode/${barcode}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return err;
+        });
+    },
 
     create: async (data: ITMasterProductCreateInput) => {
       const req = {
@@ -64,6 +77,19 @@ const MasterProductServices = (axiosInstance: AxiosInstance): TServices => {
       };
       return await axiosInstance
         .patch(`${masterproductUrl}/${id}`, req)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return err;
+        });
+    },
+    updateQty: async (id: number, data: { totalQty: number }) => {
+      const req = {
+        ...data,
+      };
+      return await axiosInstance
+        .patch(`${masterproductUrl}/total-qty/${id}`, req)
         .then((res) => {
           return res.data;
         })

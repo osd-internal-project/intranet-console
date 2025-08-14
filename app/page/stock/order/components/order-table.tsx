@@ -1,9 +1,9 @@
-import { Button, Table, TablePaginationConfig, Typography, Image, Tag } from "antd";
+import { Button, Table, TablePaginationConfig, Typography, Image, Tag, Tooltip } from "antd";
 import React from "react";
 import { ITOrder } from "../../common/order";
 import { ITMasterProduct } from "../../common/master-product";
 // import { deleteIcon, editIcon } from "@/components/icon";
-import { dateToStringTh } from "@/app/utils/format";
+import { dateToStringTh, dateToStringThNoTime } from "@/app/utils/format";
 import { ColumnsType } from "antd/es/table";
 import { useRouter } from "next/navigation";
 import { editIcon } from "@/components/icon";
@@ -56,13 +56,9 @@ export const OrderTablePage: React.FC<props> = ({ dataSource, changePagination, 
       dataIndex: ["unit", "unitName"],
       key: "updatedBy",
     },
+
     {
-      title: "นำเข้าโดย",
-      dataIndex: "updatedBy",
-      key: "updatedBy",
-    },
-    {
-      title: "ราคา",
+      title: "ราคา / หน่วย",
       dataIndex: "price",
       key: "price",
       render: (value: number) => `${value?.toLocaleString(undefined, { minimumFractionDigits: 2 })} บาท`,
@@ -73,28 +69,29 @@ export const OrderTablePage: React.FC<props> = ({ dataSource, changePagination, 
       key: "totalQty",
     },
     {
-      title: "วันที่สร้าง",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      render: (value) => (value ? dateToStringTh(value) : ""),
-    },
-    {
       title: "สถานะสินค้า",
       dataIndex: "totalQty",
       key: "totalQty",
       render: (value) => (value === 0 ? <Tag color="error">{`สินค้าหมด`}</Tag> : <Tag color="blue-inverse">{`มีสินค้าในคลัง`}</Tag>),
     },
     {
-      title: "Action",
+      title: "นำเข้าโดย",
+      dataIndex: "updatedBy",
+      key: "updatedBy",
+    },
+    {
+      title: "...",
       key: "prdId",
       dataIndex: "prdId",
       fixed: "right" as "right",
       align: "center",
       render: (value) => (
         <div className=" space-x-2">
-          <Button type="link" className="p-1" onClick={() => navigate.push(`/page/stock/order/${value}`)}>
-            {editIcon}
-          </Button>
+          <Tooltip placement="topLeft" title={`นำเข้าสินค้า`}>
+            <Button type="link" className="p-1" onClick={() => navigate.push(`/page/stock/order/${value}`)}>
+              {editIcon}
+            </Button>
+          </Tooltip>
         </div>
       ),
     },
@@ -106,23 +103,16 @@ export const OrderTablePage: React.FC<props> = ({ dataSource, changePagination, 
       dataIndex: "oderId",
       key: "oderId",
     },
-
+    {
+      title: "วันที่นำเข้า",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (value) => (value ? dateToStringThNoTime(value) : ""),
+    },
     {
       title: "ชื่อสินค้า",
       dataIndex: "prdName",
       key: "prdName",
-    },
-    {
-      title: "ราคา",
-      dataIndex: "price",
-      key: "price",
-      render: (value: number) => `${value?.toLocaleString(undefined, { minimumFractionDigits: 2 })} บาท`,
-    },
-    {
-      title: "ราคารวม",
-      dataIndex: "totalPrice",
-      key: "totalPrice",
-      render: (value: number) => `${value?.toLocaleString(undefined, { minimumFractionDigits: 2 })} บาท`,
     },
     {
       title: "จำนวน",
@@ -135,26 +125,39 @@ export const OrderTablePage: React.FC<props> = ({ dataSource, changePagination, 
       key: "unit",
     },
     {
+      title: "ราคา / หน่วย",
+      dataIndex: "price",
+      key: "price",
+      render: (value: number) => `${value?.toLocaleString(undefined, { minimumFractionDigits: 2 })} บาท`,
+    },
+    {
+      title: "ราคารวม",
+      dataIndex: "totalPrice",
+      key: "totalPrice",
+      render: (value: number) => `${value?.toLocaleString(undefined, { minimumFractionDigits: 2 })} บาท`,
+    },
+
+    {
       title: "นำเข้าโดย",
       dataIndex: "updatedBy",
       key: "updatedBy",
     },
-    {
-      title: "สถานะสินค้า",
-      dataIndex: "status",
-      key: "status",
-      align: "center",
-      render: (e) => (e === "in-stock" ? <Tag color="blue-inverse">{`มีสินค้าในคลัง`}</Tag> : <Tag color="error">{`สินค้าถูกนำจ่าย`}</Tag>),
-    },
-    {
-      title: "...",
-      dataIndex: "id",
-      key: "id",
-      align: "center",
-      render: (value, record, index) => (
-        <Button size="small" type="link" onClick={() => navigate.push(`/page/stock/order/order-lot/${record.oderId}`)}>{`รายละเอียด`}</Button>
-      ),
-    },
+    // {
+    //   title: "สถานะสินค้า",
+    //   dataIndex: "status",
+    //   key: "status",
+    //   align: "center",
+    //   render: (e) => (e === "in-stock" ? <Tag color="blue-inverse">{`มีสินค้าในคลัง`}</Tag> : <Tag color="error">{`สินค้าถูกนำจ่าย`}</Tag>),
+    // },
+    // {
+    //   title: "...",
+    //   dataIndex: "id",
+    //   key: "id",
+    //   align: "center",
+    //   render: (value, record, index) => (
+    //     <Button size="small" type="link" onClick={() => navigate.push(`/page/stock/order/order-lot/${record.oderId}`)}>{`รายละเอียด`}</Button>
+    //   ),
+    // },
   ];
 
   const expandedRowRender = (record: any) => {

@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Form, Button, Card, Typography, Image, Space, InputNumber, Input, message } from "antd";
 import { ShoppingCartOutlined, HeartOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
+import MasterProductServices from "@/app/page/stock/services/stock.service";
 
 const { Title, Text } = Typography;
 
@@ -20,7 +21,7 @@ export default function ScanBarcodeByProductPage() {
   const params = useParams<{ barcode: string }>();
   const { id24Axios } = useId24();
   const baseUrlInventory = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INVENTORY);
-  const orderServices = OrderServices(baseUrlInventory);
+  const masterproductServices = MasterProductServices(baseUrlInventory);
   const [form] = Form.useForm<ProductFormData>();
   const [valueNumber, setValueNumber] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(true);
@@ -33,7 +34,7 @@ export default function ScanBarcodeByProductPage() {
   }, [loading]);
 
   const fecthData = async () => {
-    const response = await orderServices.findOneOrderLot(params.barcode);
+    const response = await masterproductServices.findByBarcode(params.barcode);
     form.setFieldsValue(response);
     setLoading(false);
   };
@@ -47,11 +48,13 @@ export default function ScanBarcodeByProductPage() {
   };
 
   const onFinish = async (values: ProductFormData) => {
-    const response = await orderServices.updateOrderLot(getImage.id, { status: "out-stock" });
-    if (response) {
-      message.success(`ซื้อขายสำเร็จ`);
+    const { text, data, status } = await masterproductServices.updateQty(getImage.id, { totalQty: valueNumber });
+    if (status == 200) {
+      message.success(`ซื้อสินค้า ${data.prdName} จำนวน ${valueNumber} ชิ้น สำเร็จ`);
       form.resetFields();
       setValueNumber(0);
+    } else {
+      message.warning(`${text}`);
     }
     setLoading(true);
   };
@@ -67,14 +70,22 @@ export default function ScanBarcodeByProductPage() {
         <Form form={form} onFinish={onFinish} layout="vertical" autoComplete="off" name="form-buy-products">
           <Card className="shadow-md border-0 rounded-xl overflow-hidden mb-4">
             <div className="relative bg-white p-3 mb-3">
-              <Image
+              {/* <Image
                 src={`${process.env.REACT_APP_API_BASE_URL_INVENTORY}/master-product-image/get-image/${
-                  getImage.order?.masterProduct?.masterProductImage[0]?.prdImageId ?? ""
+                  getImage?.masterProductImage[0]?.prdImageId ?? ""
                 }`}
                 alt="สินค้าตัวอย่าง"
                 className="w-full h-48 object-cover rounded-lg"
                 preview={false}
-              />
+              /> */}
+              {getImage?.masterProductImage?.length > 0 && (
+                <Image
+                  src={`${process.env.REACT_APP_API_BASE_URL_INVENTORY}/master-product-image/get-image/${getImage.masterProductImage[0].prdImageId}`}
+                  alt="สินค้าตัวอย่าง"
+                  className="w-full h-48 object-cover rounded-lg"
+                  preview={false}
+                />
+              )}
             </div>
             <div className="px-1">
               <Form.Item name="prdName" className="mb-0">
@@ -86,7 +97,7 @@ export default function ScanBarcodeByProductPage() {
                   <Input className="text-sm !mb-0 text-gray-500 border-none p-0" readOnly style={{ boxShadow: "none" }} />
                 </Form.Item>
               </div>
-              <Form.Item name={["order", "masterProduct", "description"]} className="mb-0">
+              <Form.Item name={"description"} className="mb-0">
                 <Input.TextArea
                   className="text-sm !mb-0 text-gray-500 border-none p-0"
                   readOnly
@@ -103,7 +114,7 @@ export default function ScanBarcodeByProductPage() {
               <div className="bg-gray-50 rounded-lg p-3">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-600">จำนวนที่เหลือ</span>
-                  <Form.Item name={["order", "masterProduct", "totalQty"]} className="mb-0">
+                  <Form.Item name={"totalQty"} className="mb-0">
                     <Input
                       className="text-sm text-gray-600 border-none p-0 font-medium text-right"
                       readOnly
@@ -114,7 +125,7 @@ export default function ScanBarcodeByProductPage() {
               </div>
             </div>
           </Card>
-          {/* <Card className="shadow-md border-0 rounded-xl mb-4">
+          <Card className="shadow-md border-0 rounded-xl mb-4">
             <div className="text-center">
               <Text className="text-base font-medium text-gray-700 mb-4 block">เลือกจำนวน</Text>
 
@@ -146,7 +157,7 @@ export default function ScanBarcodeByProductPage() {
 
                   <Button
                     onClick={increase}
-                    disabled={valueNumber >= 10}
+                    // disabled={valueNumber >= 10}
                     size="large"
                     shape="circle"
                     icon={<PlusOutlined />}
@@ -167,7 +178,7 @@ export default function ScanBarcodeByProductPage() {
                 </div>
               </Form.Item>
             </div>
-          </Card> */}
+          </Card>
           <Form.Item className="mb-4">
             <Button
               disabled={getImage.status === "out-stock"}

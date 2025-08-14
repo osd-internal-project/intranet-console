@@ -119,13 +119,18 @@ export const MenuSider: MenuItem[] = [
     rule: ["admin"],
     children: [
       {
+        key: `stock/stock-request`,
+        label: `ขอเบิกสินค้า`,
+        rule: ["user", "admin", "ma-user"],
+      },
+      {
         key: `stock/order`,
         label: `นำเข้าสินค้า`,
         rule: ["user", "admin", "ma-user"],
       },
       {
         key: `stock/stock-management`,
-        label: `ตารางรายการสินค้า`,
+        label: `รายการสินค้า`,
         rule: ["user", "admin", "ma-user"],
       },
     ],

@@ -118,7 +118,7 @@ const StockManagement: React.FC = (): React.ReactElement => {
                 href: "/page/stock",
                 title: <span>การจัดการสินค้า</span>,
               },
-              { href: "/page/stock/stock-management", title: <span>ตารางรายการสินค้า</span> },
+              { href: "/page/stock/stock-management", title: <span>รายการสินค้า</span> },
               {
                 title: <span>{type === "create" ? "เพิ่มรายการสินค้า" : "แก้ไขรายการสินค้า"}</span>,
               },

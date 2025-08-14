@@ -11,9 +11,10 @@ export type ITMasterProduct = {
   createdAt: Date;
   updatedAt: Date;
   unitId: string;
+  barcode?: string;
   masterProductImage?: any[];
   unit?: { unitID: string; unitName: string };
-  order?: ITOrder[];
+  // order?: ITOrder[];
 };
 
 export type ITMasterProductCreateInput = {
@@ -21,6 +22,7 @@ export type ITMasterProductCreateInput = {
   prdId?: string;
   prdName: string;
   price: number;
+  totalQty?: number;
   description?: string;
   updatedBy: string;
   createdAt?: Date | string;

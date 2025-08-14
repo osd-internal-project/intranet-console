@@ -40,20 +40,17 @@ export const ManageFormPage: React.FC<props> = ({ form, handleCalculateTotal, on
         <div className="text-center ">
           <ShoppingCartOutlined className="text-4xl text-blue-500 " />
           <Title level={2} className="text-gray-800 ">
-            สร้างออเดอร์ใหม่
+            นำสินค้าเข้าคลัง
           </Title>
           <Text type="secondary">กรอกข้อมูลออเดอร์ให้ครบถ้วนเพื่อดำเนินการต่อ</Text>
         </div>
-
         <Divider />
-
         <Form form={form} layout="vertical" onFinish={onFinish} autoComplete="off">
           <div>
             <Title level={4} className="flex items-center mb-4">
               <ProductOutlined className="mr-2 text-blue-500" />
               ข้อมูลสินค้า
             </Title>
-
             <Row gutter={[16, 16]}>
               <Col xs={24} sm={12}>
                 <Form.Item
@@ -184,7 +181,7 @@ export const ManageFormPage: React.FC<props> = ({ form, handleCalculateTotal, on
               </Col>
             </Row>
           </div>
-          {/* Order Lot Section */}
+          {/* Order Lot Section
           <div>
             <Title level={4} className="flex items-center mb-4">
               <BarcodeOutlined className="mr-2 text-purple-500" />
@@ -334,8 +331,7 @@ export const ManageFormPage: React.FC<props> = ({ form, handleCalculateTotal, on
                 </>
               )}
             </Form.List>
-          </div>
-
+          </div> */}
           <div className="flex justify-end flex-col sm:flex-row gap-4 pt-6">
             <Button
               type="primary"
@@ -343,7 +339,7 @@ export const ManageFormPage: React.FC<props> = ({ form, handleCalculateTotal, on
               icon={<SaveOutlined />}
               size="large"
               className="flex-1 sm:flex-none bg-blue-500 hover:bg-blue-600 border-blue-500 hover:border-blue-600 rounded-md">
-              บันทึกออเดอร์
+              บันทึกการนำเข้า
             </Button>
           </div>
         </Form>

@@ -13,6 +13,9 @@ export type ITOrder = {
   updatedAt?: string | Date;
   orderLot?: ITOrderLot[];
   status?: string;
+  approvedBy?: string;
+  approvedAt?: Date | string;
+  approvedDetail?: string;
 };
 
 export type ITOrderCreateInput = {
@@ -29,6 +32,8 @@ export type ITOrderCreateInput = {
   updatedBy: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  approvedBy?: string;
+  approvedAt?: Date | string;
 };
 
 export type ITOrderUpdateInput = {
@@ -43,6 +48,8 @@ export type ITOrderUpdateInput = {
   updatedBy?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  approvedBy?: string;
+  approvedAt?: Date | string;
 };
 
 export type ITOrderLot = {

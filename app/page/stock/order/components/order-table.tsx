@@ -142,22 +142,6 @@ export const OrderTablePage: React.FC<props> = ({ dataSource, changePagination, 
       dataIndex: "updatedBy",
       key: "updatedBy",
     },
-    // {
-    //   title: "สถานะสินค้า",
-    //   dataIndex: "status",
-    //   key: "status",
-    //   align: "center",
-    //   render: (e) => (e === "in-stock" ? <Tag color="blue-inverse">{`มีสินค้าในคลัง`}</Tag> : <Tag color="error">{`สินค้าถูกนำจ่าย`}</Tag>),
-    // },
-    // {
-    //   title: "...",
-    //   dataIndex: "id",
-    //   key: "id",
-    //   align: "center",
-    //   render: (value, record, index) => (
-    //     <Button size="small" type="link" onClick={() => navigate.push(`/page/stock/order/order-lot/${record.oderId}`)}>{`รายละเอียด`}</Button>
-    //   ),
-    // },
   ];
 
   const expandedRowRender = (record: any) => {

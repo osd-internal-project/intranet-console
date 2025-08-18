@@ -73,6 +73,7 @@ export interface IDataUser {
 export interface ISelect {
   value: string | number;
   label: string;
+  unit?: string;
 }
 export interface ISelectDepartment {
   value: string | number;

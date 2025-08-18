@@ -1,5 +1,3 @@
-import { ITOrder } from "./order";
-
 export type ITMasterProduct = {
   id: number;
   prdId: string;

@@ -13,14 +13,22 @@ export interface props {
 
 export const ManageStockRequestPage: React.FC<props> = ({ getdataUser, options, form, onFinish }): React.ReactElement => {
   const [unitNames, setUnitNames] = useState<string[]>([]);
+  const [balance, setBalance] = useState<number[]>([]);
   const handleProductChange = (value: string, index: number) => {
     const unitName = options.find((o) => o.value === value)?.unit || "";
+    const balance = options.find((o) => o.value === value)?.balance || 0;
     setUnitNames((prev) => {
       const valueBefore = [...prev];
       valueBefore[index] = unitName;
       return valueBefore;
     });
+    setBalance((prev) => {
+      const valueBefore = [...prev];
+      valueBefore[index] = balance;
+      return valueBefore;
+    });
   };
+
   return (
     <div className="max-w-6xl mx-auto p-6 bg-gray-50 min-h-screen">
       <Card className="shadow-lg">
@@ -74,8 +82,33 @@ export const ManageStockRequestPage: React.FC<props> = ({ getdataUser, options, 
                             onChange={(value) => handleProductChange(value, index)}
                           />
                         </Form.Item>
-                        <Form.Item {...restField} label="จำนวน" name={[name, "qty"]} rules={[{ required: true, message: "กรุณากรอกจำนวน" }]}>
-                          <InputNumber placeholder="0" min={0} step={1} className="w-full" suffix={unitNames[index] || ""} />
+                        <Form.Item
+                          {...restField}
+                          label="จำนวน"
+                          name={[name, "qty"]}
+                          rules={[
+                            { required: true, message: "" },
+                            {
+                              validator: (_, value) => {
+                                const currentBalance = balance[index] ?? 0;
+                                const unit = unitNames[index] || "";
+                                if (!value) {
+                                  return Promise.reject(new Error("กรุณากรอกจำนวนสินค้า"));
+                                }
+                                if (currentBalance === 0) {
+                                  return Promise.reject(new Error(`สินค้าในคลังหมด`));
+                                }
+
+                                if (value > currentBalance) {
+                                  return Promise.reject(
+                                    new Error(`จำนวนที่ต้องการ (${value} ${unit}) มากกว่าจำนวนคงเหลือ (${currentBalance} ${unit})`),
+                                  );
+                                }
+                                return Promise.resolve();
+                              },
+                            },
+                          ]}>
+                          <InputNumber placeholder="0" min={0} step={1} className="w-full" suffix={`${unitNames[index] ?? ""} `} />
                         </Form.Item>
                         <Form.Item {...restField} label="ราคา" name={[name, "amount"]} rules={[{ required: true, message: "กรุณากรอกราคา" }]}>
                           <InputNumber

@@ -49,8 +49,6 @@ const page = () => {
   };
 
   const onFinish = (values: ITRequestOrder) => {
-    console.log("Form Values:", values);
-
     modal.confirm({
       title: "ยืนยันการขอเบิก",
       icon: <ExclamationCircleOutlined />,

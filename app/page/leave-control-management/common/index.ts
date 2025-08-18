@@ -74,6 +74,7 @@ export interface ISelect {
   value: string | number;
   label: string;
   unit?: string;
+  balance?: number;
 }
 export interface ISelectDepartment {
   value: string | number;

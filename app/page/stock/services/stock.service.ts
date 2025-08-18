@@ -7,7 +7,7 @@ interface TServices {
     skip: number,
     take: number,
   ) => Promise<{ data: ITMasterProduct[]; count: number }>;
-  findOptions: () => Promise<{ value: string; label: string }[]>;
+  findOptions: () => Promise<{ value: string; label: string; unit?: string; balance?: number }[]>;
   findOne: (prdId: string) => Promise<ITMasterProduct>;
   findByBarcode: (barcode: string) => Promise<ITMasterProduct>;
   create: (data: ITMasterProductCreateInput) => Promise<ITMasterProduct>;

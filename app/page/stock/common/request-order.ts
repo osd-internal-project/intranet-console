@@ -1,3 +1,4 @@
+import { Dayjs } from "dayjs";
 import { ITMasterProduct } from "./master-product";
 
 export type ITRequestOrder = {
@@ -6,13 +7,13 @@ export type ITRequestOrder = {
   requestPrice?: number;
   requestQty?: number;
   requester?: string;
-  requestDate?: Date | string;
+  requestDate?: Date | string | Dayjs | null;
   object?: string;
   status?: "new" | "approved" | "rejected" | "cancelled";
   remark?: string;
   createdBy?: string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
+  createdAt?: Date | string | Dayjs | null;
+  updatedAt?: Date | string | Dayjs | null;
   requestList?: ITRequestOrderList[];
 };
 
@@ -31,6 +32,6 @@ export type ITCreateRequestOrderInput = {
   status?: string;
   remark?: string;
   createdBy?: string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
+  createdAt?: Date | string | Dayjs | null;
+  updatedAt?: Date | string | Dayjs | null;
 };

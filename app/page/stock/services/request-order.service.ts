@@ -5,7 +5,7 @@ interface TServices {
   findMany: (search: { createdAt?: Dayjs | string | null }, skip: number, take: number) => Promise<{ data: ITRequestOrder[]; count: number }>;
   findOne: (requestId: string) => Promise<ITRequestOrder>;
   create: (data: ITCreateRequestOrderInput) => Promise<ITRequestOrder>;
-  update: (id: number, data: ITCreateRequestOrderInput) => Promise<ITRequestOrder>;
+  update: (requestId: number, data: ITCreateRequestOrderInput) => Promise<ITRequestOrder>;
   delete: (id: number) => Promise<number>;
 }
 
@@ -53,12 +53,12 @@ const RequestOrderServices = (axiosInstance: AxiosInstance): TServices => {
           return err;
         });
     },
-    update: async (id: number, data) => {
+    update: async (requestId: number, data) => {
       const req = {
         ...data,
       };
       return await axiosInstance
-        .patch(`${orderUrl}/${id}`, req)
+        .patch(`${orderUrl}/${requestId}`, req)
         .then((res) => {
           return res.data;
         })

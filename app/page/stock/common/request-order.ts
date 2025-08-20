@@ -2,6 +2,7 @@ import { Dayjs } from "dayjs";
 import { ITMasterProduct } from "./master-product";
 
 export type ITRequestOrder = {
+  approvedDetail: string;
   id?: number;
   requestId?: string;
   requestPrice?: number;
@@ -15,6 +16,7 @@ export type ITRequestOrder = {
   createdAt?: Date | string | Dayjs | null;
   updatedAt?: Date | string | Dayjs | null;
   requestList?: ITRequestOrderList[];
+  action?: "new" | "approved" | "rejected" | "cancelled";
 };
 
 export type ITRequestOrderList = {

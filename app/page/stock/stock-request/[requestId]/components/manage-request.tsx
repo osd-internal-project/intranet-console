@@ -1,8 +1,9 @@
 import { ISelect } from "@/app/page/leave-control-management/common";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Card, DatePicker, Form, FormInstance, Input, InputNumber, Select } from "antd";
+import { Button, Card, DatePicker, Form, FormInstance, Input, InputNumber, Select, Tag } from "antd";
 import React, { useEffect, useState } from "react";
 import { ITRequestOrder } from "../../../common/request-order";
+import { useRouter } from "next/navigation";
 
 export interface props {
   getdataUser: ISelect[];
@@ -14,6 +15,7 @@ export interface props {
 }
 
 const ManageRequestDetailPage: React.FC<props> = ({ getdataUser, options, form, onFinish, unitNames, setUnitNames }): React.ReactElement => {
+  const navigate = useRouter();
   useEffect(() => {
     const list = form.getFieldsValue(true);
     list?.requestList?.forEach((item: any, idx: number) => {
@@ -32,11 +34,25 @@ const ManageRequestDetailPage: React.FC<props> = ({ getdataUser, options, form, 
     });
   };
 
+  const checkStatus = (status: string) => {
+    const statusMap: Record<string, { text: string; color: string }> = {
+      new: { text: "ใหม่", color: "blue" },
+      approved: { text: "อนุมัติ", color: "green" },
+      rejected: { text: "ปฏิเสธ", color: "red" },
+      cancelled: { text: "ยกเลิก", color: "orange" },
+    };
+    const test = statusMap[status] || { text: status, color: "default" };
+    return <Tag color={test.color}>{test.text}</Tag>;
+  };
+
   return (
     <Card className="shadow-lg" bodyStyle={{ padding: "16px" }}>
-      <div className="mb-4">
-        <h1 className="text-xl font-bold text-gray-800 mb-1">IT Request Order Form</h1>
-        <p className="text-sm text-gray-600">กรุณากรอกข้อมูลคำขอสั่งซื้ออุปกรณ์ IT</p>
+      <div className="flex justify-between">
+        <div className="mb-4">
+          <h1 className="text-xl font-bold text-gray-800 mb-1">IT Request Order Form</h1>
+          <p className="text-sm text-gray-600">กรุณากรอกข้อมูลคำขอสั่งซื้ออุปกรณ์ IT</p>
+        </div>
+        <div>{checkStatus(form.getFieldValue("status"))}</div>
       </div>
 
       <Form form={form} name="itRequestOrder" layout="vertical" onFinish={onFinish} autoComplete="off" className="space-y-3" size="small">
@@ -48,6 +64,9 @@ const ManageRequestDetailPage: React.FC<props> = ({ getdataUser, options, form, 
           headStyle={{ padding: "8px 12px", minHeight: "auto" }}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             <Form.Item label="ผู้ขอ" name="requester" className="mb-2">
+              <Form.Item name="action" hidden>
+                <Input />
+              </Form.Item>
               <Select options={getdataUser} placeholder="ชื่อผู้ขอ" className="w-full" showSearch optionFilterProp="label" disabled size="small" />
             </Form.Item>
 
@@ -106,11 +125,27 @@ const ManageRequestDetailPage: React.FC<props> = ({ getdataUser, options, form, 
         </Card>
 
         <div className="flex justify-end gap-2 mt-3 pt-3 border-t">
-          <Button size="middle" className="px-4" danger>
-            ยกเลิกการเบิก
+          <Button size="small" className="" onClick={() => navigate.push("/page/stock/stock-request")}>
+            {`ย้อนกลับ`}
           </Button>
-          <Button type="primary" htmlType="submit" size="middle" className="px-4 bg-blue-600 hover:bg-blue-700">
-            อนุมัติการเบิก
+          <Button
+            type="primary"
+            size="small"
+            htmlType="submit"
+            className=""
+            danger
+            onClick={() => form.setFieldsValue({ action: "rejected" })}
+            disabled={form.getFieldValue("status") !== "new"}>
+            {`ไม่อนุมัติ`}
+          </Button>
+          <Button
+            type="primary"
+            htmlType="submit"
+            size="small"
+            className=" bg-blue-600 hover:bg-blue-700"
+            onClick={() => form.setFieldsValue({ action: "approved" })}
+            disabled={form.getFieldValue("status") !== "new"}>
+            {`อนุมัติ`}
           </Button>
         </div>
       </Form>

@@ -1,7 +1,7 @@
 "use client";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { Breadcrumb, Form, Modal, Spin } from "antd";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import { ITRequestOrder } from "../../common/request-order";
 import { loadAppConfig } from "@/app/config/app-config";
@@ -14,8 +14,11 @@ import ManageRequestDetailPage from "./components/manage-request";
 import dayjs, { Dayjs } from "dayjs";
 
 const RequestOrderDetailPage: React.FC = (): React.ReactElement => {
+  const navigate = useRouter();
   const { requestId } = useParams();
-
+  const { user } = (useContext(UserContext) as UserContectType) || {
+    user: null,
+  };
   const [modal, contextHolder] = Modal.useModal();
   const [form] = Form.useForm<ITRequestOrder>();
   const { id24Axios } = useId24();
@@ -60,6 +63,22 @@ const RequestOrderDetailPage: React.FC = (): React.ReactElement => {
 
   const onFinish = async (values: ITRequestOrder) => {
     console.log(values);
+    const { requestId } = form.getFieldsValue(true);
+    console.log(requestId);
+    const data = { ...values, approvedBy: `${user?.firstNameTh} ${user?.lastNameTh}`, approvedDetail: values.approvedDetail, status: values.action };
+    const response = await requestorderServices.update(requestId, data);
+    if (response) {
+      modal.success({
+        title: "สำเร็จ",
+        content: "การดำเนินการสำเร็จ",
+        onOk: () => {
+          navigate.push("/page/stock/stock-request");
+          form.resetFields();
+          setUnitNames([]);
+          setLoading(true);
+        },
+      });
+    }
   };
   return loading ? (
     <Spin></Spin>

@@ -95,7 +95,7 @@ const page = () => {
                 href: "/page/stock/stock-request/",
                 title: <span>{`การเบิกสินค้า`}</span>,
               },
-              { href: "/page/stock/stock-request/manage", title: <span>{`จัดการการเบิกสินค้า`}</span> },
+              { title: <span>{`จัดการการเบิกสินค้า`}</span> },
             ]}
           />
         </Col>

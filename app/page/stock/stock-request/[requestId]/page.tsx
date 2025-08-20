@@ -99,7 +99,7 @@ const RequestOrderDetailPage: React.FC = (): React.ReactElement => {
               href: "/page/stock/stock-request/",
               title: <span>{`การเบิกสินค้า`}</span>,
             },
-            { href: "/page/stock/stock-request/manage", title: <span>{`รายละเอียดการขอเบิกสินค้า`}</span> },
+            { title: <span>{`รายละเอียดการขอเบิกสินค้า`}</span> },
           ]}
         />
       </div>

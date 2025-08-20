@@ -72,7 +72,7 @@ export const OrderTablePage: React.FC<props> = ({ dataSource, changePagination, 
       title: "สถานะสินค้า",
       dataIndex: "totalQty",
       key: "totalQty",
-      render: (value) => (value === 0 ? <Tag color="error">{`สินค้าหมด`}</Tag> : <Tag color="blue-inverse">{`มีสินค้าในคลัง`}</Tag>),
+      render: (value) => (value <= 0 ? <Tag color="error">{`สินค้าหมด`}</Tag> : <Tag color="blue-inverse">{`มีสินค้าในคลัง`}</Tag>),
     },
     {
       title: "นำเข้าโดย",

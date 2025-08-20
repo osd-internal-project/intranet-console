@@ -7,6 +7,7 @@ import { useForm } from "antd/es/form/Form";
 import { CaretRightOutlined } from "@ant-design/icons";
 import { checkIcon, loadingIcon } from "@/components/icon";
 import dayjs, { Dayjs } from "dayjs";
+import { dateToStringThWithTime } from "@/app/utils/format";
 
 const localizer = momentLocalizer(moment);
 const { TextArea } = Input;
@@ -63,15 +64,12 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar, handleChangeMo
 
   const CustomEventComponent = ({ event }: { event: CustomEvent }) => {
     const icon = event.status === "Approve" ? checkIcon : event.status === "holiday" ? null : loadingIcon;
-    // return (
-    //   <span className="flex justify-start items-center gap-1">
-    //     {event.status === "Approve" ? checkIcon : event.status === "holiday" ? "" : loadingIcon} {event.title}
-    //   </span>
-    // );
     return (
       <span className="flex justify-start items-center gap-1 text-[10px] text-white overflow-hidden">
         {icon && <span className="flex-shrink-0">{icon}</span>}
-        <span className="truncate">{event.title}</span>
+        <span className="truncate">
+          {event.start ? dateToStringThWithTime(event.start) : ""}-{event.end ? dateToStringThWithTime(event.end) : ""}, {event.title}
+        </span>
       </span>
     );
   };
@@ -104,6 +102,22 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar, handleChangeMo
     return {};
   };
 
+  // function reduceEventsToOnePerDay(events: CustomEvent[]) {
+  //   const grouped: Record<string, CustomEvent[]> = {};
+
+  //   // group events by day
+  //   events.forEach((ev) => {
+  //     const dayKey = dayjs(ev.start).format("YYYY-MM-DD");
+  //     if (!grouped[dayKey]) {
+  //       grouped[dayKey] = [];
+  //     }
+  //     grouped[dayKey].push(ev);
+  //   });
+
+  //   // keep only the first event in each day
+  //   return Object.values(grouped).map((evts) => evts[0]);
+  // }
+
   return (
     <>
       <Calendar<CustomEvent>
@@ -111,8 +125,10 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar, handleChangeMo
         messages={{
           next: ">",
           previous: "<",
+          showMore: (total: number) => `+${total} more`,
         }}
-        events={bookingFetchCalendar.map((booking: BookingType) => ({
+        dayLayoutAlgorithm="no-overlap"
+        events={bookingFetchCalendar.map((booking: BookingType, idx: number) => ({
           id: booking.id,
           title: booking.roomName,
           start: new Date(booking.startDate),
@@ -120,6 +136,7 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar, handleChangeMo
           status: booking.bookingStatus,
           description: booking.description,
           userName: booking.bookerName,
+          isHidden: idx > 0,
         }))}
         onNavigate={(newDate, view, action) => {
           handleChangeMonth(dayjs(newDate));

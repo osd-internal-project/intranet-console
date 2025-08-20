@@ -33,6 +33,7 @@ const OvertimeHistory = () => {
   });
   const [dataResource, setDataResource] = useState<{ data: IOverTimeForm[]; total: number }>({ data: [], total: 0 });
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openModalApproved, setOpenModalApproved] = useState<{ status: boolean; type: string }>({ status: false, type: "create" });
 
   useEffect(() => {
     if (loading) {
@@ -119,6 +120,7 @@ const OvertimeHistory = () => {
             : message.success("approved success");
 
           setOpenModal(false);
+          setOpenModalApproved({ status: false, type: "create" });
           setLoading(true);
         }
       },
@@ -199,6 +201,8 @@ const OvertimeHistory = () => {
             onFinishDelete={onFinishDelete}
             sideMenuGroups={sideMenuGroups}
             handleOpenModal={handleOpenModal}
+            setOpenModal={setOpenModalApproved}
+            openModal={openModalApproved}
           />
         </Card>
       </div>

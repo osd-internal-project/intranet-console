@@ -44,6 +44,8 @@ export interface Props {
   onFinishDelete: (id: string) => void;
   sideMenuGroups: any;
   handleOpenModal: (status: boolean, data: IOverTimeForm) => void;
+  setOpenModal: (approved: { status: boolean; type: string }) => void;
+  openModal: { status: boolean; type: string };
 }
 
 const TableOvertimeHistory: React.FC<Props> = ({
@@ -54,12 +56,14 @@ const TableOvertimeHistory: React.FC<Props> = ({
   onFinishDelete,
   sideMenuGroups,
   handleOpenModal,
+  setOpenModal,
+  openModal,
 }): React.ReactElement => {
   const { Option } = Select;
   const { Text } = Typography;
   const [formUpdate] = Form.useForm();
   const dataDetail = formUpdate.getFieldsValue(true);
-  const [openModal, setOpenModal] = useState<{ status: boolean; type: string }>({ status: false, type: "create" });
+
   const handleUpdateApproved = (status: boolean, data: IOverTimeForm | null, type: string) => {
     setOpenModal({ status, type });
     formUpdate.setFieldsValue({
@@ -136,15 +140,6 @@ const TableOvertimeHistory: React.FC<Props> = ({
       dataIndex: "detailWork",
       width: "120px",
     },
-    // {
-    //   key: "partTimeType",
-    //   title: "ประเภทการทำ OT",
-    //   dataIndex: "partTimeType",
-    //   align: "center",
-    //   render: (status: string) => {
-    //     return <Tag>{status === "working" ? "ทำงาน" : "ขับรถ"}</Tag>;
-    //   },
-    // },
     {
       key: "id",
       title: "เวลาเริ่ม - สิ้นสุด",

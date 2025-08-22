@@ -1,10 +1,10 @@
 "use client";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { message, Form, FormProps } from "antd";
 import { MaCarBookServices } from "../../../../services/ma-car-book.service";
 import { MaCarType, MaCarBookType, ProvincesType } from "../../common/index";
 import { RangePickerProps } from "antd/es/date-picker";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { CarBookForm } from "./car-book-form";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
@@ -52,8 +52,8 @@ const MaCarBook: React.FC<props> = ({ maCarData, masterDataProvinces }): React.R
       carBookProvince: values.idProvinces,
       carBookPlace: values.carBookPlace,
       carBookUsers: Number(values.carBookUsers),
-      carBookStartDate: dayjs(values.carBookStartDate).startOf("date").toISOString(),
-      carBookEndDate: dayjs(values.carBookEndDate).endOf("date").toISOString(),
+      carBookStartDate: dayjs(values.carBookStartDate).toISOString(),
+      carBookEndDate: dayjs(values.carBookEndDate).toISOString(),
       detail: values.detail,
       carBookTitle: values.carBookTitle,
       carBookApprovedStatus: "Process",

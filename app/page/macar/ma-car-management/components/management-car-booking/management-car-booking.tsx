@@ -56,7 +56,7 @@ const managementCarBooking: React.FC<props> = ({ setLoading, loading, maCarBookD
   };
 
   const onFinish = async (status: string, values: any) => {
-    const { createdById, carName, detail, carBookPlace, carBookStartDate, carBookEndDate } = form.getFieldsValue(true);
+    const { createdById, carName, detail, carBookPlace, carBookStartDate, carBookEndDate } = form.getFieldsValue(true) || {};
     let updatedApproveMa: any = {};
     try {
       if (status === "approved") {
@@ -65,8 +65,8 @@ const managementCarBooking: React.FC<props> = ({ setLoading, loading, maCarBookD
           createdById,
           detail,
           carBookPlace,
-          carBookStartDate: dayjs(carBookStartDate).startOf("date").toISOString(),
-          carBookEndDate: dayjs(carBookEndDate).endOf("date").toISOString(),
+          carBookStartDate: dayjs(carBookStartDate).toISOString(),
+          carBookEndDate: dayjs(carBookEndDate).toISOString(),
           id: form.getFieldValue("id"),
           carBookApprovedById: user?.userId,
           carBookApprovedByName: `${user?.firstNameTh} ${user?.lastNameTh}`,

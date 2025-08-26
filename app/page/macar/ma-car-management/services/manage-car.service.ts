@@ -20,9 +20,13 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         });
     },
 
-    findMaCarBookForApprove: async (skip: number, take: number) => {
+    findMaCarBookForApprove: async (
+      filters: { carBookApprovedStatus?: string; carBookStartDate?: Date | string; createdByName?: string },
+      skip: number,
+      take: number,
+    ) => {
       return await axiosInstance
-        .get(`${baseUrlApiMaCarBook}/approve/${skip}/${take}`)
+        .get(`${baseUrlApiMaCarBook}/approve/${skip}/${take}`, { params: filters })
         .then((res) => {
           return res.data;
         })

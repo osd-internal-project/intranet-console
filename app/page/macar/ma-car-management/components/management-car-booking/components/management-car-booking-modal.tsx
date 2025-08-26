@@ -171,17 +171,19 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
                   <div className="flex justify-center gap-3 mt-2 mb-2">
                     <>{`รูปภาพ`}</>
                     {values.maCarBookImage.map((e: any, index: number) => {
-                      <Image
-                        alt="news"
-                        preview={false}
-                        crossOrigin="anonymous"
-                        src={`${process.env.REACT_APP_API_BASE_URL_INTRANET}/ma-car-booking-images/get-image/${e.idCarBookImage}`}
-                        style={{
-                          width: "100%",
-                          height: "150px",
-                          objectFit: "cover",
-                        }}
-                      />;
+                      return (
+                        <Image
+                          alt="news"
+                          preview={false}
+                          crossOrigin="anonymous"
+                          src={`${process.env.REACT_APP_API_BASE_URL_INTRANET}/ma-car-booking-images/get-image/${e.idCarBookImage}`}
+                          style={{
+                            width: "100%",
+                            height: "150px",
+                            objectFit: "cover",
+                          }}
+                        />
+                      );
                     })}
                   </div>
                 ) : null}
@@ -206,17 +208,20 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
                 <TextArea placeholder="กรอกรายละเอียด" rows={3} disabled />
               </Form.Item>
             </Col>
-            <Col span={12}>
-              <Form.Item
-                name={status === "approved" ? "remark" : status === "cancel" ? "remarkCancel" : "remarkApproved"}
-                label={status === "approved" ? "หมายเหตุการจองรถ" : status === "cancel" ? "หมายเหตุยกเลิกการจองรถ" : "หมายเหตุ"}>
-                <TextArea
-                  placeholder={status === "approved" ? "กรอกหมายเหตุการจองรถ" : status === "cancel" ? "กรอกหมายเหตุการยกเลิก" : "กรอกหมายเหตุ"}
-                  rows={3}
-                  disabled={status === "approved"}
-                />
-              </Form.Item>
-            </Col>
+            {form.getFieldValue("carBookApprovedStatus") !== "Cancel" ? (
+              <Col span={12}>
+                <Form.Item name={"remarkApproved"} label={"หมายเหตุ"}>
+                  <TextArea placeholder={"กรอกหมายเหตุ"} rows={3} disabled={true} />
+                </Form.Item>
+              </Col>
+            ) : null}
+            {form.getFieldValue("carBookApprovedStatus") === "Cancel" ? (
+              <Col span={12}>
+                <Form.Item name={"remarkCancel"} label={"หมายเหตุยกเลิกการจองรถ"}>
+                  <TextArea placeholder={"กรอกหมายเหตุการยกเลิก"} rows={3} disabled={true} />
+                </Form.Item>
+              </Col>
+            ) : null}
           </Row>
         </Card>
 

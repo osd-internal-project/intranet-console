@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Input, Button, Avatar, Image, message } from "antd";
 import { SendOutlined, EllipsisOutlined } from "@ant-design/icons";
 import axios from "axios";
-import logo from "../../public/images/logo.png"; // Adjust the path as necessary
+import logo from "@/public/images/LOGO.png";
 
 const { TextArea } = Input;
 

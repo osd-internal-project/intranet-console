@@ -1,5 +1,5 @@
 "use client";
-import { Breadcrumb, Card, Col, Divider, Row, Tabs, TabsProps, TablePaginationConfig } from "antd";
+import { Breadcrumb, Card, Col, Divider, Row, Tabs, TabsProps, TablePaginationConfig, Form } from "antd";
 import React, { useEffect, useState } from "react";
 import ManageCar from "./components/management-car-booking/management-car-booking";
 import { ManageCarServices } from "./services/manage-car.service";
@@ -13,6 +13,8 @@ import { loadAppConfig } from "@/app/config/app-config";
 const ManageMaCar = () => {
   const { id24Axios } = useId24();
   const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const [filterForm] = Form.useForm();
+  const [openFilter, setOpenFilter] = useState<boolean>(false);
   const [maCarBookData, setMaCarBookData] = useState<dataMaCarbook>({
     total: 0,
     docs: [],
@@ -24,6 +26,11 @@ const ManageMaCar = () => {
     current: 1,
     pageSize: 10,
     total: 0,
+  });
+  const [filters, setFilters] = useState<{ carBookApprovedStatus?: string; carBookStartDate?: Date | string; createdByName?: string }>({
+    carBookApprovedStatus: "",
+    carBookStartDate: "",
+    createdByName: "",
   });
   const changePagination = (page: TablePaginationConfig) => {
     setPagination({ ...page });
@@ -38,7 +45,7 @@ const ManageMaCar = () => {
     const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
     const take: number = Number(pagination.pageSize);
     try {
-      const MaCarBook = await ManageCarServices(baseUrIntranet).findMaCarBookForApprove(skip, take);
+      const MaCarBook = await ManageCarServices(baseUrIntranet).findMaCarBookForApprove(filters, skip, take);
       const MaCar = await ManageCarServices(baseUrIntranet).getMaCarQuery();
       setMaCarBookData(MaCarBook);
       setMaCarBookAll(MaCarBook.docs);
@@ -47,6 +54,27 @@ const ManageMaCar = () => {
     } catch (error) {
       console.error("Failed to fetch data", error);
     }
+  };
+
+  const handleOpenFilter = (value: boolean) => {
+    setOpenFilter(value);
+  };
+
+  const onSearch = (value: { carBookApprovedStatus?: string; carBookStartDate?: Date | string; createdByName?: string }) => {
+    const { carBookApprovedStatus, carBookStartDate, createdByName } = value || {};
+    let filter = {};
+    if (carBookApprovedStatus) {
+      filter = { ...filter, carBookApprovedStatus };
+    }
+    if (carBookStartDate) {
+      filter = { ...filter, carBookStartDate };
+    }
+    if (createdByName) {
+      filter = { ...filter, createdByName };
+    }
+    setFilters(filter);
+    setPagination({ current: 1, pageSize: 10, total: 0 });
+    setLoading(true);
   };
 
   const items: TabsProps["items"] = [
@@ -60,6 +88,10 @@ const ManageMaCar = () => {
           setLoading={setLoading}
           pagination={pagination}
           changePagination={changePagination}
+          handleOpenFilter={handleOpenFilter}
+          openFilter={openFilter}
+          filterForm={filterForm}
+          onSearch={onSearch}
         />
       ),
     },

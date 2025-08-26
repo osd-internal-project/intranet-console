@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Form, message } from "antd";
-import type { TablePaginationConfig } from "antd";
+import type { FormInstance, TablePaginationConfig } from "antd";
 import { dataMaCarbook } from "../../../common";
 import { showStatus } from "@/app/utils/validatefield";
 import { ManageCarServices } from "../../services/manage-car.service";
@@ -11,6 +11,7 @@ import dayjs from "dayjs";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import ManagementCarFilterPage from "./components/management-car-filter";
 
 export interface props {
   loading: boolean;
@@ -18,9 +19,23 @@ export interface props {
   maCarBookData: dataMaCarbook;
   pagination: any;
   changePagination: (pagination: TablePaginationConfig) => void;
+  handleOpenFilter: (value: boolean) => void;
+  openFilter: boolean;
+  filterForm: FormInstance;
+  onSearch: (values: { carBookApprovedStatus?: string; carBookStartDate?: Date | string; createdByName?: string }) => void;
 }
 
-const managementCarBooking: React.FC<props> = ({ setLoading, loading, maCarBookData, pagination, changePagination }): React.ReactElement => {
+const managementCarBooking: React.FC<props> = ({
+  setLoading,
+  loading,
+  maCarBookData,
+  pagination,
+  changePagination,
+  handleOpenFilter,
+  openFilter,
+  filterForm,
+  onSearch,
+}): React.ReactElement => {
   const { id24Axios } = useId24();
   const [form] = Form.useForm();
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
@@ -115,7 +130,12 @@ const managementCarBooking: React.FC<props> = ({ setLoading, loading, maCarBookD
 
   return (
     <div>
-      <div style={{ marginTop: "14px", display: "flex", justifyContent: "space-between" }}>{showStatusBox}</div>
+      <div style={{ marginTop: "14px", display: "flex", justifyContent: "space-between" }}>
+        <> {showStatusBox}</>
+        <>
+          <ManagementCarFilterPage handleOpenFilter={handleOpenFilter} openFilter={openFilter} filterForm={filterForm} onSearch={onSearch} />
+        </>
+      </div>
       {maCarBookData.docs ? (
         <ManagementCarBookingTable
           dataSource={maCarBookData.docs}

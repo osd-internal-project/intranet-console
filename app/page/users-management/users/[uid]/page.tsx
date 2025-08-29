@@ -16,7 +16,7 @@ export default function UserDetailPage() {
         <Breadcrumb
           items={[
             {
-              href: "/page",
+              href: "/page/home",
               title: <span>หน้าหลัก</span>,
             },
             {

@@ -141,7 +141,7 @@ const AddDetailComponent: React.FC = (): React.ReactElement => {
         <Breadcrumb
           items={[
             {
-              href: "/page",
+              href: "/page/home",
               title: <span>หน้าหลัก</span>,
             },
 

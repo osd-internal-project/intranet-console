@@ -4,6 +4,7 @@ export type ITypeOption = {
 };
 
 export type TCreateUserDto = {
+  extension: string;
   userType: string;
   username: string;
   email: string;

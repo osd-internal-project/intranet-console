@@ -26,6 +26,7 @@ import React from "react";
 import { DataNode } from "antd/es/tree";
 import { RcFile } from "antd/es/upload";
 import { FormInstance } from "antd/lib";
+import { intersection } from "lodash";
 
 type TabType = {
   label: string;
@@ -61,7 +62,10 @@ export const UserAction: React.FC<Props> = ({
   selectUserType,
   getImage,
 }): React.ReactElement => {
-  const { id24Axios } = useId24();
+  const { id24Axios, tokenAccess } = useId24();
+  const sideMenuGroups =
+    tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
+  const isHr = intersection(sideMenuGroups, ["hr", "admin"]).length > 0;
   const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
   const [openFilter, setOpenFilter] = useState<boolean>(false);
   const [imageFiles, setImageFiles] = useState<UploadFile[]>([]);
@@ -135,38 +139,19 @@ export const UserAction: React.FC<Props> = ({
   const searchContent = (
     <Form layout="vertical" form={filterForm} onFinish={onSearch} autoComplete="off">
       <div className="grid grid-cols-1 md:gap-4 md:grid-cols-4">
-        <Form.Item label="User Id" name="userId">
+        <Form.Item label="ยูสเซอร์เนม" name="username">
           <Input placeholder="Search Text" />
         </Form.Item>
-        <Form.Item label="Name" name="userName">
+        <Form.Item label="รหัสพนักงาน" name="empId">
           <Input placeholder="Search Text" />
         </Form.Item>
-        <Form.Item label="Email" name="email">
+        <Form.Item label="ชื่อ - สกุล" name="fullname">
           <Input placeholder="Search Text" />
         </Form.Item>
-        <Form.Item label="First Name" name="firstNameTh">
-          <Input placeholder="Search Text" />
+        <Form.Item label="ตำแหน่ง" name="positionName">
+          <Select placeholder="กรุณาเลือก ตำแหน่ง" options={positionOption} allowClear showSearch optionFilterProp="label" />
         </Form.Item>
-        <Form.Item label="Last Name" name="lastNameTh">
-          <Input placeholder="Search Text" />
-        </Form.Item>
-        <Form.Item label="Phone Number" name="phoneNumber">
-          <Input placeholder="Search Text" />
-        </Form.Item>
-        <Form.Item label="Status" name="activeStatus">
-          <Select
-            placeholder="All"
-            allowClear
-            options={[
-              { value: true, label: <Tag color="green">Active</Tag> },
-              { value: false, label: <Tag color="red">Inactive</Tag> },
-            ]}
-          />
-        </Form.Item>
-        <Form.Item label="Created" name="created">
-          <RangePicker className=" w-full" />
-        </Form.Item>
-        <Form.Item className=" md:col-span-4  text-right">
+        <Form.Item className=" md:col-span-4  text-left">
           <Button type="primary" htmlType="submit">
             Search
           </Button>
@@ -275,20 +260,22 @@ export const UserAction: React.FC<Props> = ({
             </Button>
           </Popover>
         </div>
-        <div className=" space-x-2">
-          <Button
-            icon={<PlusCircleOutlined />}
-            className="button-blue"
-            onClick={() =>
-              setManagePage({
-                ...managePage,
-                modalStatus: true,
-                modalTitle: "create",
-              })
-            }>
-            สร้างผู้ใช้
-          </Button>
-        </div>
+        {isHr ? (
+          <div className=" space-x-2">
+            <Button
+              icon={<PlusCircleOutlined />}
+              className="button-blue"
+              onClick={() =>
+                setManagePage({
+                  ...managePage,
+                  modalStatus: true,
+                  modalTitle: "create",
+                })
+              }>
+              สร้างผู้ใช้
+            </Button>
+          </div>
+        ) : null}
       </div>
 
       <Modal
@@ -435,6 +422,11 @@ export const UserAction: React.FC<Props> = ({
           <div className="grid grid-cols-4 gap-2">
             <div className=" col-span-1">
               <Form.Item<TCreateUserDto> label="เบอร์โทรติดต่อ" name="phoneNumber" style={{ marginBottom: "2px" }}>
+                <Input />
+              </Form.Item>
+            </div>
+            <div className=" col-span-1">
+              <Form.Item<TCreateUserDto> label="Extension" name={"extension"} style={{ marginBottom: "2px" }} rules={[{ required: true }]}>
                 <Input />
               </Form.Item>
             </div>

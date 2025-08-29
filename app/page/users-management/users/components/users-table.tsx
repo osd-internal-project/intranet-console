@@ -10,6 +10,7 @@ import { UsersServices } from "@/app/services/users.service";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import dayjs from "dayjs";
 import { AntDesignOutlined } from "@ant-design/icons";
+import { intersection } from "lodash";
 export interface Props {
   setManagePage: (event: TManageUserPageDto) => void;
   managePage: TManageUserPageDto;
@@ -21,20 +22,24 @@ export interface Props {
 }
 
 const UserTable: React.FC<Props> = ({ setManagePage, managePage, createForm, setImage }): React.ReactElement => {
-  const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
-  const { user } = (useContext(UserContext) as UserContectType) || {
-    user: null,
-  };
+  const { tokenAccess } = useId24();
+  const sideMenuGroups =
+    tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
+  const isHr = intersection(sideMenuGroups, ["hr", "admin"]).length > 0;
   const columns: any = [
     {
-      title: "NO.",
+      title: "ลำดับ",
       dataIndex: "no",
       key: "no",
       render: (value: string, record: TUserAllDto, index: number) => index + 1 + (managePage.pagination.current - 1) * managePage.pagination.pageSize,
     },
     {
-      title: "USERNAME",
+      title: "รหัสพนักงาน",
+      dataIndex: "empId",
+      key: "no",
+    },
+    {
+      title: "username",
       dataIndex: "username",
       key: "username",
       render: (value: string, record: TUserAllDto) => {
@@ -54,50 +59,40 @@ const UserTable: React.FC<Props> = ({ setManagePage, managePage, createForm, set
       },
     },
     {
-      title: "FULL NAME",
+      title: "ชื่อ - สกุล",
       dataIndex: "fullname",
       key: "fullname",
       render: (value: string, record: TUserAllDto) => `${record.firstNameTh} ${record.lastNameTh}`,
     },
     {
-      title: "POSITION",
+      title: "ตำแหน่ง",
       dataIndex: "position",
       key: "position",
       render: (value: string, record: TUserAllDto) => record.masterPosition?.nameEn,
     },
     {
-      title: "PHONE NUMBER",
-      dataIndex: "phoneNumber",
-      key: "phoneNumber",
+      title: "Extension",
+      dataIndex: "extension",
+      key: "extension",
     },
-    {
-      title: "STATUS",
-      dataIndex: "activeStatus",
-      key: "activeStatus",
-      render: (value: string, record: TUserAllDto, index: number) => (value ? <Tag color="green">Active</Tag> : <Tag color="volcano">Inactive</Tag>),
-    },
-    {
-      title: "CREATED",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      render: (value: Date, record: TUserAllDto, index: number) => (value ? dateToStringTh(value) : ""),
-    },
-    {
-      title: "ACTIVE",
-      key: "userId",
-      dataIndex: "userId",
-      fixed: "right" as "right",
-      width: 30,
-      align: "center",
-      render: (value: string, record: TUserAllDto, index: number) => (
-        <div className=" space-x-2">
-          <Button type="link" className="p-1" onClick={() => onClickEdit(record)}>
-            {editIcon}
-          </Button>
-        </div>
-      ),
-    },
-  ];
+    isHr
+      ? {
+          title: "...",
+          key: "userId",
+          dataIndex: "userId",
+          fixed: "right" as "right",
+          width: 30,
+          align: "center",
+          render: (value: string, record: TUserAllDto, index: number) => (
+            <div className=" space-x-2">
+              <Button type="link" className="p-1" onClick={() => onClickEdit(record)}>
+                {editIcon}
+              </Button>
+            </div>
+          ),
+        }
+      : null,
+  ].filter(Boolean);
 
   const onClickEdit = async (record: TUserAllDto) => {
     // if (user) {
@@ -130,7 +125,7 @@ const UserTable: React.FC<Props> = ({ setManagePage, managePage, createForm, set
             columns={columns}
             loading={managePage.loading}
             dataSource={managePage.dataUsers.data}
-            scroll={{ x: true }}
+            scroll={{ x: "max-content" }}
             size="small"
             pagination={{
               ...managePage.pagination,

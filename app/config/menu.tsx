@@ -197,13 +197,13 @@ export const MenuSider: MenuItem[] = [
   {
     key: `users-management`,
     icon: gridIcon,
-    label: `User Management`,
-    rule: ["admin", "hr"],
+    label: `การจัดการบุคคล`,
+    rule: ["admin", "hr", "user"],
     children: [
       {
         key: `users-management/users`,
-        label: `Users`,
-        rule: ["admin", "hr"],
+        label: `บุคลากร`,
+        rule: ["admin", "hr", "user"],
       },
       {
         key: `users-management/user-organization`,

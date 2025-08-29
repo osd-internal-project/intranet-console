@@ -147,10 +147,10 @@ const AddDetailComponent: React.FC = (): React.ReactElement => {
 
             {
               href: "/page/users-management/users",
-              title: <span>User Management</span>,
+              title: <span>การจัดการบุคคล</span>,
             },
             {
-              title: <span>Add User</span>,
+              title: <span>เพิ่ม บุคลากร</span>,
             },
           ]}
         />

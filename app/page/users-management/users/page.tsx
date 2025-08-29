@@ -56,30 +56,12 @@ export default function UsermanagementPage() {
     modalTitle: "create",
   });
   const [optionsOrganize, setOptionsOrganize] = useState<TabType[]>([]);
-  // const [groupDetailData, setGroupDetailData] = useState<GroupDetailData>({
-  //   loading: true,
-  //   group: {
-  //     name: "Loading...",
-  //     description: "",
-  //     notes: "",
-  //     subGroups: [
-  //       {
-  //         name: "subGroup",
-  //         id: "234",
-  //         description: "",
-  //         notes: "",
-  //         subGroups: [],
-  //       },
-  //     ],
-  //     id: "123",
-  //   },
-  // });
   const [treeData, setTreeData] = useState<DataNode[]>([]);
   const [treeListDepartment, setTreeListDepartment] = useState<any[] | null>(null);
 
   useEffect(() => {
     if (managePage.loading) {
-      featchData();
+      fetchData();
       loaddata();
     }
     masterFecthData();
@@ -91,7 +73,7 @@ export default function UsermanagementPage() {
     setTreeListDepartment(tree);
   };
 
-  const featchData = async () => {
+  const fetchData = async () => {
     const skip = (Number(managePage.pagination.current) - 1) * Number(managePage.pagination.pageSize);
     const take = Number(managePage.pagination.pageSize);
     const resultUsers = await UsersServices(baseUrlUser).findAllUser({
@@ -167,17 +149,17 @@ export default function UsermanagementPage() {
               title: <span>หน้าหลัก</span>,
             },
             {
-              title: <span>User Management</span>,
+              title: <span>การจัดการบุคคล</span>,
             },
             {
-              title: <span>Users</span>,
+              title: <span>บุคลากร</span>,
             },
           ]}
         />
       </Col>
 
       <Divider orientation="left" orientationMargin="0">
-        <div className="title-page-font">{`Users`}</div>
+        <div className="title-page-font">{`บุคลากร`}</div>
       </Divider>
       <Col span={24}>
         <UserAction

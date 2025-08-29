@@ -170,17 +170,18 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
 
   return (
     <>
-      <div className="max-w-5xl mx-auto p-4">
-        <Card className="shadow-sm border border-gray-200" bodyStyle={{ padding: "20px" }}>
+      <div className=" p-4">
+        <Card className="shadow-sm border border-gray-200" bodyStyle={{ padding: "20px" }} title={`🫵 ข้อมูลส่วนตัว`}>
           {/* Header Section */}
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 space-y-4 lg:space-y-0">
             <div className="flex items-center space-x-3">
-              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200">
+              <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200">
                 <Image
                   className="w-full h-full object-cover"
+                  // src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
                   src={image.imageId ? `${process.env.REACT_APP_API_BASE_URL_USER}/id24users/get-image-user/${image.imageId}` : ""}
                   fallback="/api/placeholder/64/64"
-                  preview={false}
+                  // preview={false}
                 />
               </div>
               <div>
@@ -206,7 +207,7 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
             <div className="mb-6">
               <h3 className="text-base font-medium text-gray-800 mb-3 pb-1 border-b border-blue-200">ข้อมูลบัญชีผู้ใช้</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <Form.Item label="User ID" name="userId" className="mb-2">
+                <Form.Item label="รหัสพนักงาน" name="empId" className="mb-2">
                   <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
                 </Form.Item>
 
@@ -222,7 +223,7 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                   <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
                 </Form.Item>
 
-                <Form.Item label="Status" name="activeStatus" className="mb-2">
+                {/* <Form.Item label="Status" name="activeStatus" className="mb-2">
                   <Switch
                     disabled={true}
                     checkedChildren="Active"
@@ -231,9 +232,9 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                     onChange={() => setCheckedActiveStatus(!checkedActiveStatus)}
                     className={checkedActiveStatus ? "bg-green-500" : "bg-red-500"}
                   />
-                </Form.Item>
+                </Form.Item> */}
 
-                <Form.Item label="Change Password" className="mb-2 lg:col-span-2">
+                {/* <Form.Item label="Change Password" className="mb-2 lg:col-span-2">
                   <div className="flex items-center space-x-2">
                     <div className="flex-1">
                       <Input.Password
@@ -254,7 +255,7 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                       เปลี่ยนรหัสผ่าน
                     </Button>
                   </div>
-                </Form.Item>
+                </Form.Item> */}
               </div>
             </div>
 
@@ -269,15 +270,6 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                 <Form.Item label="นามสกุล" name="lastNameTh" rules={[{ required: true, message: "กรุณากรอกนามสกุล" }]} className="mb-2">
                   <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
                 </Form.Item>
-
-                <Form.Item label="รหัสพนักงาน" name="empId" className="mb-2">
-                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
-                </Form.Item>
-
-                <Form.Item label="เบอร์โทรศัพท์" name="phoneNumber" rules={[{ validator: validateOnlyNumbers }]} className="mb-2">
-                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
-                </Form.Item>
-
                 <Form.Item label="ตำแหน่ง" name="masterPositionId" className="mb-2">
                   <Select
                     options={positionOption}
@@ -288,6 +280,13 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                       borderBottom: "1px solid #e5e7eb",
                     }}
                   />
+                </Form.Item>
+                <Form.Item label="เบอร์โต๊ะทำงาน" name="extension" className="mb-2">
+                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
+                </Form.Item>
+
+                <Form.Item label="เบอร์โทรศัพท์" name="phoneNumber" rules={[{ validator: validateOnlyNumbers }]} className="mb-2">
+                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
                 </Form.Item>
               </div>
             </div>

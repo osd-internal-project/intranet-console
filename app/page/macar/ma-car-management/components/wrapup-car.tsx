@@ -788,7 +788,7 @@ const WrapupCar: React.FC = () => {
           <Form.Item label="รูปภาพปัจจุบัน:">
             {existingFiles.map((file, index) => (
               <div key={index} style={{ marginBottom: "20px", position: "relative" }}>
-                <Image preview={false} crossOrigin="anonymous" src={file.url} style={{ width: "470px", height: "460px" }} alt="news" />
+                <Image preview={true} crossOrigin="anonymous" src={file.url} style={{ width: "470px", height: "460px" }} alt="news" />
                 <Button
                   type="primary"
                   danger

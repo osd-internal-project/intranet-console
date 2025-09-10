@@ -350,7 +350,7 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
                   {formReturn.getFieldsValue(true).maCarBookImage.map((e: any, index: number) => {
                     <Image
                       alt="news"
-                      preview={false}
+                      preview={true}
                       crossOrigin="anonymous"
                       src={`${process.env.REACT_APP_API_BASE_URL_INTRANET}/get-image/${e.idCarBookImage}`}
                       style={{

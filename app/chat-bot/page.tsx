@@ -83,7 +83,7 @@ const TemplateChatBot: React.FC = (): React.ReactElement => {
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-3">
             <div className="w-20 h-20  flex items-center justify-center">
-              <Image src={logo.src} />
+              <Image src={logo.src} preview={false}/>
             </div>
             <div className="w-px h-12 bg-gray-300"></div>
             <div className="grid col-span-1">

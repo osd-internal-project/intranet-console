@@ -168,8 +168,8 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
               </Col>
               <Col span={24}>
                 {values.maCarBookImage && values.maCarBookImage.length > 0 ? (
-                  <div className="flex justify-center gap-3 mt-2 mb-2">
-                    <>{`รูปภาพ`}</>
+                  <div className="grid justify-center  gap-3 mt-2 mb-2">
+                    <div className="flex justify-center">{`รูปภาพ`}</div>
                     {values.maCarBookImage.map((e: any, index: number) => {
                       return (
                         <Image

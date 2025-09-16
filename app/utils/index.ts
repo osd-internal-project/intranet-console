@@ -30,7 +30,7 @@ export const dateFormat = (date: string) =>
 
 export const dateFormatTime = (date: string) =>
   date ? `${dayjs(date).format(dateTimeFormat)} น.` : "-";
-export const dateFormatTimeNoTIme = (date: string) => {
+export const dateFormatTimeNoTIme = (date: string | Date) => {
   return date ? `${dayjs(date).format(dateTimeFormatNoTime)} น.` : "-";
 };
 

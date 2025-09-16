@@ -137,6 +137,20 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    getdataLeaveDetailBygroup: async (params: any, skip?: number, take?: number) => {
+      let filter = "";
+      if (skip && take) {
+        filter = `?take=${take}&skip=${skip}`;
+      }
+      return await axiosInstance
+        .get(`${baseUrlDataLeave}/find-total-leave-by-group`, { params: params })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
     getdataUserByTypeLeaveId: async (search: { typeid: string }) => {
       const condition = {
         where: {

@@ -1,7 +1,7 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
 import { TableDetail } from "./components/table-detail";
-import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, TablePaginationConfig, message } from "antd";
+import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, TablePaginationConfig, Tabs, message } from "antd";
 import DataLeaveService from "../../../services/leave-management.service";
 import { ITypeDataLeave } from "../common";
 import { ExclamationCircleFilled } from "@ant-design/icons";
@@ -11,6 +11,7 @@ import { loadAppConfig } from "@/app/config/app-config";
 import { intersection } from "lodash";
 import dayjs from "dayjs";
 import saveAs from "file-saver";
+import { TableTotalLeaveDetailPage } from "./components/table-leave-detail";
 
 export default function Page() {
   const { id24Axios, tokenAccess } = useId24();
@@ -148,6 +149,10 @@ export default function Page() {
     message.success("สำเร็จ");
   };
 
+  // const onChange = (key: string) => {
+  //   console.log(key);
+  // };
+
   return (
     <>
       <Row>
@@ -164,29 +169,77 @@ export default function Page() {
             ]}
           />
         </Col>
-        <Divider orientation="left" orientationMargin="0" style={{ padding: "0px 0px 0px 0px", marginBottom: "0px", marginTop: "0px" }}>
-          <div className="title-page-font">{`จัดการการลา`}</div>
-        </Divider>
-        <div className="w-full">
-          <Card>
-            <TableDetail
-              dataLeaveUser={dataLeaveUser}
-              setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
-              openModalDetail={openModalDetail}
-              formdetail={formdetail}
-              onFinishUpdate={onFinishUpdate}
-              onFinishDelete={onFinishDelete}
-              downloadFile={downloadFile}
-              sideMenuGroups={sideMenuGroups}
-              setSubmitAction={setSubmitAction}
-              submitAction={submitAction}
-              setParams={setParams}
-              setLoading={setLoading}
-              handleExport={handleExport}
-              pagination={pagination}
-              changePagination={changePagination}
-            />
-          </Card>
+        <div className="site-card-border-less-wrapper" style={{ width: "100%", marginTop: "10px" }}>
+          <Tabs
+            // onChange={onChange}
+            type="card"
+            items={[
+              {
+                label: `จัดการการลา`,
+                key: "1",
+                children: (
+                  <div>
+                    <Divider orientation="left" orientationMargin="0" style={{ padding: "0px 0px 0px 0px", marginBottom: "0px", marginTop: "0px" }}>
+                      <div className="title-page-font">{`จัดการการลา`}</div>
+                    </Divider>
+                    <div className="w-full">
+                      <Card>
+                        <TableDetail
+                          dataLeaveUser={dataLeaveUser}
+                          setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
+                          openModalDetail={openModalDetail}
+                          formdetail={formdetail}
+                          onFinishUpdate={onFinishUpdate}
+                          onFinishDelete={onFinishDelete}
+                          downloadFile={downloadFile}
+                          sideMenuGroups={sideMenuGroups}
+                          setSubmitAction={setSubmitAction}
+                          submitAction={submitAction}
+                          setParams={setParams}
+                          setLoading={setLoading}
+                          handleExport={handleExport}
+                          pagination={pagination}
+                          changePagination={changePagination}
+                        />
+                      </Card>
+                    </div>
+                  </div>
+                ),
+              },
+              {
+                label: `ประวัติการลารวมของพนักงาน`,
+                key: "2",
+                children: (
+                  <div>
+                    <Divider orientation="left" orientationMargin="0" style={{ padding: "0px 0px 0px 0px", marginBottom: "0px", marginTop: "0px" }}>
+                      <div className="title-page-font">{`ประวัติการลารวมของพนักงาน`}</div>
+                    </Divider>
+                    <div className="w-full">
+                      <Card>
+                        <TableTotalLeaveDetailPage
+                        // dataLeaveUser={dataLeaveUser}
+                        // setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
+                        // openModalDetail={openModalDetail}
+                        // formdetail={formdetail}
+                        // onFinishUpdate={onFinishUpdate}
+                        // onFinishDelete={onFinishDelete}
+                        // downloadFile={downloadFile}
+                        // sideMenuGroups={sideMenuGroups}
+                        // setSubmitAction={setSubmitAction}
+                        // submitAction={submitAction}
+                        // setParams={setParams}
+                        // setLoading={setLoading}
+                        // handleExport={handleExport}
+                        // pagination={pagination}
+                        // changePagination={changePagination}
+                        />
+                      </Card>
+                    </div>
+                  </div>
+                ),
+              },
+            ]}
+          />
         </div>
       </Row>
     </>

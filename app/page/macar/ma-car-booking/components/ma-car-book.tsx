@@ -40,7 +40,7 @@ const MaCarBook: React.FC<props> = ({ maCarData, masterDataProvinces }): React.R
     const { carBookStartDate, carBookEndDate } = values;
     const carSelected = maCarData.find((car): car is any => car.carId === values.carId);
     const checkCarAvilable = await macarbookservices.getMaCarBookCheck(values.carId, carBookStartDate, carBookEndDate);
-    if (checkCarAvilable && Object.keys(checkCarAvilable).length > 0) {
+    if (checkCarAvilable && checkCarAvilable.id) {
       message.error("รถคันนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่ !");
       return false;
     }

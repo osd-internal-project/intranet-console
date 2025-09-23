@@ -80,7 +80,7 @@ const MaCar: React.FC = () => {
     console.log(masterdataProvince);
 
     const optionsProvinces = masterdataProvince.map((event: ProvincesType) => ({
-      value: event.provinceId,
+      value: event.nameProvinceTH,
       label: event.nameProvinceTH,
     }));
     setDataProvinces(optionsProvinces);

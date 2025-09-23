@@ -58,7 +58,7 @@ const MaCarBooking: React.FC = () => {
   const masterFecthData = async () => {
     const masterdataProvince = await masterprovincethailandServices.findAll();
     const optionsProvinces = masterdataProvince.map((event: ProvincesType) => ({
-      value: event.provinceId,
+      value: event.nameProvinceTH,
       label: event.nameProvinceTH,
     }));
     const maCar = await intraAuthService.getMaCarQuery();

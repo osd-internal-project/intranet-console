@@ -20,7 +20,7 @@ interface props {
   pagination: TablePaginationConfig;
   changePagination: (pagination: TablePaginationConfig) => void;
   maCarData: MaCarType[];
-  dataProvinces: ProvincesType[];
+  dataProvinces: { value: string; label: string }[];
   maFetchCalendar: MaCarBookCalendarType[];
 }
 
@@ -101,7 +101,7 @@ const MaCarBookTable: React.FC<props> = ({
         setSubmitLoading(false);
         return;
       }
-      const selectedOptionProvinces = dataProvinces.find((option: ProvincesType) => option.value === values.carBookProvince);
+      const selectedOptionProvinces = dataProvinces.find((option: { value: string; label: string }) => option.value === values.carBookProvince);
       const maCarBookData = {
         id: currentMaCarBookId,
         carName: carSelected.carName,

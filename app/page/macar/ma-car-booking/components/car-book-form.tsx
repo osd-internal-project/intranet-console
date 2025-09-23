@@ -11,7 +11,7 @@ interface props {
   formUser: FormInstance<MaCarBookType>;
   createMaCarBook: (e: MaCarBookType) => void;
   maCarData: MaCarType[];
-  masterDataProvinces: ProvincesType[];
+  masterDataProvinces: { value: string; label: string }[];
   disabledDate: RangePickerProps["disabledDate"];
 }
 

@@ -13,6 +13,7 @@ import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import MasterHolidaysService from "../../setting/master-holidays/services/index.service";
 import dayjs, { Dayjs } from "dayjs";
+import { MasterProvinceThailandServices } from "@/app/services/master-province-thailaind.service";
 
 const MaCar: React.FC = () => {
   const { user } = (useContext(UserContext) as UserContectType) || {
@@ -20,6 +21,7 @@ const MaCar: React.FC = () => {
   };
   const { id24Axios } = useId24();
   const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
+  const masterprovincethailandServices = MasterProvinceThailandServices(baseUrIntranet);
   const intraAuthService = MaCarServices(baseUrIntranet);
   const holidayService = MasterHolidaysService(baseUrIntranet);
   const [maCarBookData, setMaCarBookData] = useState<dataMaCarbook[]>([]);
@@ -27,7 +29,7 @@ const MaCar: React.FC = () => {
   const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
   const [month, setMonth] = useState<Dayjs | string>(dayjs());
   const [loading, setLoading] = useState<boolean>(true);
-  const [dataProvinces, setDataProvinces] = useState<ProvincesType[]>([]);
+  const [dataProvinces, setDataProvinces] = useState<{ value: string; label: string }[]>([]);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -74,12 +76,14 @@ const MaCar: React.FC = () => {
   const fecthMasterData = async () => {
     const maCar = await intraAuthService.getMaCarQuery();
     setMaCarData(maCar);
-    // const response = await axios.get("https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json");
-    // const optionsProvinces = response.data.map((event: ProvincesType) => ({
-    //   value: event.id,
-    //   label: event.name_th,
-    // }));
-    // setDataProvinces(optionsProvinces);
+    const masterdataProvince = await masterprovincethailandServices.findAll();
+    console.log(masterdataProvince);
+
+    const optionsProvinces = masterdataProvince.map((event: ProvincesType) => ({
+      value: event.provinceId,
+      label: event.nameProvinceTH,
+    }));
+    setDataProvinces(optionsProvinces);
   };
 
   const changePagination = (page: TablePaginationConfig) => {

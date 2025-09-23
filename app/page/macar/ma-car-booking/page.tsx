@@ -10,6 +10,7 @@ import axios from "axios";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import { MasterProvinceThailandServices } from "@/app/services/master-province-thailaind.service";
 
 const MaCarBooking: React.FC = () => {
   const searchParams = useSearchParams();
@@ -20,10 +21,11 @@ const MaCarBooking: React.FC = () => {
   const { id24Axios } = useId24();
   const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const intraAuthService = MaCarBookServices(baseUrIntranet);
+  const masterprovincethailandServices = MasterProvinceThailandServices(baseUrIntranet);
   const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
   const [maCarBookData, setMaCarBookData] = useState<MaCarBookType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [masterDataProvinces, setMasterDataProvinces] = useState<ProvincesType[]>([]);
+  const [masterDataProvinces, setMasterDataProvinces] = useState<{ value: string; label: string }[]>([]);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -54,13 +56,13 @@ const MaCarBooking: React.FC = () => {
   }, []);
 
   const masterFecthData = async () => {
-    // const response = await axios.get("https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json");
-    // const optionsProvinces = response.data.map((event: ProvincesType) => ({
-    //   value: event.name_th,
-    //   label: event.name_th,
-    // }));
+    const masterdataProvince = await masterprovincethailandServices.findAll();
+    const optionsProvinces = masterdataProvince.map((event: ProvincesType) => ({
+      value: event.provinceId,
+      label: event.nameProvinceTH,
+    }));
     const maCar = await intraAuthService.getMaCarQuery();
-    // setMasterDataProvinces(optionsProvinces);
+    setMasterDataProvinces(optionsProvinces);
     setMaCarData(maCar);
   };
 

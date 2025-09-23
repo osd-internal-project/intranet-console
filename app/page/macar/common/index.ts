@@ -119,9 +119,10 @@ export interface MaCarWrapupImage {
 
 export interface ProvincesType {
   id: number;
-  name_th: string;
-  value: string;
-  label: string;
+  provinceId: string;
+  nameProvinceTH: string;
+  createdAt: string | Date;
+  updatedAt: string | Date;
 }
 
 export type ITPagination = {

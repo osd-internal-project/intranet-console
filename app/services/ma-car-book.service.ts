@@ -20,7 +20,6 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
     },
 
     getMaCarBookQuery: async (userId: string) => {
-      console.log(userId);
       return await axiosInstance
         .get(`${baseUrlApiMaCarBook}/car-booking/${userId}`)
         .then((res) => {

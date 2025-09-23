@@ -12,7 +12,7 @@ import { loadAppConfig } from "@/app/config/app-config";
 import { useRouter } from "next/navigation";
 export interface props {
   maCarData: MaCarType[];
-  masterDataProvinces: ProvincesType[];
+  masterDataProvinces: { value: string; label: string }[];
 }
 
 const MaCarBook: React.FC<props> = ({ maCarData, masterDataProvinces }): React.ReactElement => {

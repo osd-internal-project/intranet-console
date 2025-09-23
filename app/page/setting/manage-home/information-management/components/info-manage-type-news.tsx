@@ -23,7 +23,7 @@ const InfoTypeNews: React.FC = () => {
   const [form] = useForm();
   const [formEdit] = useForm();
   const { id24Axios } = useId24();
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const manageinformationNewsServices = ManageinformationNewsServices(baseUrlIntranet);
   const [newType, setnewType] = useState<newType[]>([]);
   const [submitLoading, setSubmitLoading] = useState<boolean>(true);

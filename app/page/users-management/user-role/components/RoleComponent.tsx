@@ -21,7 +21,7 @@ type ProfileList = {
 const { RangePicker } = DatePicker;
 const RoleComponent: React.FC = (): React.ReactElement => {
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const addRule = checkRule("um-ro-a");
   const editRule = checkRule("um-ro-e");
   const deleteRule = checkRule("um-ro-d");

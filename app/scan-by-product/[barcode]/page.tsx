@@ -20,7 +20,7 @@ interface ProductFormData {
 export default function ScanBarcodeByProductPage() {
   const params = useParams<{ barcode: string }>();
   const { id24Axios } = useId24();
-  const baseUrlInventory = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INVENTORY);
+  const baseUrlInventory = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INVENTORY);
   const masterproductServices = MasterProductServices(baseUrlInventory);
   const [form] = Form.useForm<ProductFormData>();
   const [valueNumber, setValueNumber] = useState<number>(1);
@@ -71,7 +71,7 @@ export default function ScanBarcodeByProductPage() {
           <Card className="shadow-md border-0 rounded-xl overflow-hidden mb-4">
             <div className="relative bg-white p-3 mb-3">
               {/* <Image
-                src={`${process.env.REACT_APP_API_BASE_URL_INVENTORY}/master-product-image/get-image/${
+                src={`${process.env.NEXT_PUBLIC_API_BASE_URL_INVENTORY}/master-product-image/get-image/${
                   getImage?.masterProductImage[0]?.prdImageId ?? ""
                 }`}
                 alt="สินค้าตัวอย่าง"
@@ -80,7 +80,7 @@ export default function ScanBarcodeByProductPage() {
               /> */}
               {getImage?.masterProductImage?.length > 0 && (
                 <Image
-                  src={`${process.env.REACT_APP_API_BASE_URL_INVENTORY}/master-product-image/get-image/${getImage.masterProductImage[0].prdImageId}`}
+                  src={`${process.env.NEXT_PUBLIC_API_BASE_URL_INVENTORY}/master-product-image/get-image/${getImage.masterProductImage[0].prdImageId}`}
                   alt="สินค้าตัวอย่าง"
                   className="w-full h-48 object-cover rounded-lg"
                   preview={false}

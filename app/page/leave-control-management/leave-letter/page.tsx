@@ -21,7 +21,7 @@ export default function Page() {
   const router = useRouter();
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const { id24Axios } = useId24();
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [getTypeLeaveOption, setTypeLeaveOption] = useState<ISelect[]>([]);
   const [typeLeaveTable, setTypeLeaveTable] = useState<ITypetypeleave[]>([]);
   const [getHeader, setHeader] = useState<any>();

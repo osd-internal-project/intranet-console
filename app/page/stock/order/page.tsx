@@ -12,7 +12,7 @@ import { ITMasterProduct } from "../common/master-product";
 const OrderPage: React.FC = (): React.ReactElement => {
   const { id24Axios } = useId24();
 
-  const baseUrlInventory = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INVENTORY);
+  const baseUrlInventory = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INVENTORY);
   // const orderServices = OrderServices(baseUrlInventory);
   const masterproductServices = MasterProductServices(baseUrlInventory);
   // const [form] = Form.useForm();

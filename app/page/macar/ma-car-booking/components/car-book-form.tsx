@@ -17,7 +17,7 @@ interface props {
 
 export const CarBookForm: React.FC<props> = ({ formUser, createMaCarBook, maCarData, masterDataProvinces, disabledDate }) => {
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const macarervices = MaCarServices(baseUrIntranet);
 
   const validateCarSelect = async (rule: any, value: string) => {

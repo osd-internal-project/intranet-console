@@ -23,7 +23,7 @@ const EditTreeComponent: React.FC<props> = ({ userid }): React.ReactElement => {
   // const userAuth = useAxiosUser();
 
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const userGroupServices = UserGroupServices(baseUrlUser);
   const userServices = UserServices(baseUrlUser);
   const [treeform] = useForm();

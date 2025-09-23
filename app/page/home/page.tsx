@@ -13,11 +13,11 @@ import { MasterRoomType, HandbookFileType, InformationNewsType } from "./common"
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
-const baseImageUrl = process.env.REACT_APP_API_BASE_URL_INTRANET;
+const baseImageUrl = process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET;
 
 export default function HomePage() {
   const { id24Axios, tokenAccess } = useId24();
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [loading, setLoading] = useState<boolean>(true);
   const [slideImage, setSlideImage] = useState<any[]>([]);
   const [masterBookingRoom, setMasterBookingRoom] = useState<MasterRoomType[]>([]);

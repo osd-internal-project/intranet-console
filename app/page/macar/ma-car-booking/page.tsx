@@ -18,7 +18,7 @@ const MaCarBooking: React.FC = () => {
     user: null,
   };
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const intraAuthService = MaCarBookServices(baseUrIntranet);
   const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
   const [maCarBookData, setMaCarBookData] = useState<MaCarBookType[]>([]);
@@ -54,13 +54,13 @@ const MaCarBooking: React.FC = () => {
   }, []);
 
   const masterFecthData = async () => {
-    const response = await axios.get("https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json");
-    const optionsProvinces = response.data.map((event: ProvincesType) => ({
-      value: event.name_th,
-      label: event.name_th,
-    }));
+    // const response = await axios.get("https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json");
+    // const optionsProvinces = response.data.map((event: ProvincesType) => ({
+    //   value: event.name_th,
+    //   label: event.name_th,
+    // }));
     const maCar = await intraAuthService.getMaCarQuery();
-    setMasterDataProvinces(optionsProvinces);
+    // setMasterDataProvinces(optionsProvinces);
     setMaCarData(maCar);
   };
 

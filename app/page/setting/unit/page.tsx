@@ -12,7 +12,7 @@ import ManageUnit from "./components/manage-unit";
 
 const UnitPage = () => {
   const { id24Axios } = useId24();
-  const baseUrlInventory = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INVENTORY);
+  const baseUrlInventory = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INVENTORY);
   const unitServices = UnitServices(baseUrlInventory);
   const [form] = Form.useForm();
   const [formManage] = Form.useForm();

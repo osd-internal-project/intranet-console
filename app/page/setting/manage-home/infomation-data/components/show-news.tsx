@@ -26,14 +26,14 @@ export interface newsImage {
 }
 const NewsShow: React.FC = () => {
   const { id24Axios } = useId24();
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [informationNews, setInformationNews] = useState<informationNews[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedNews, setSelectedNews] = useState<informationNews | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const manageInformationNewsServices = ManageinformationNewsServices(baseUrlIntranet);
-  const baseImageUrl = process.env.REACT_APP_API_BASE_URL_INTRANET;
+  const baseImageUrl = process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET;
   useEffect(() => {
     fetchDatainformationNews();
   }, []);

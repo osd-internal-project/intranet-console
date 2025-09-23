@@ -12,8 +12,8 @@ import { loadAppConfig } from "@/app/config/app-config";
 
 export default function TypeLeave() {
   const { id24Axios, tokenAccess } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const mastertypeleaveService = MasterTypeLeaveService(baseUrlIntranet);
   const [loading, setLoading] = useState<boolean>(true);
   const [getswitch, setSwitch] = useState<boolean>(false);

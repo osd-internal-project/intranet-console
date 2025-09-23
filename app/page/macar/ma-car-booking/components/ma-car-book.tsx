@@ -20,7 +20,7 @@ const MaCarBook: React.FC<props> = ({ maCarData, masterDataProvinces }): React.R
   const { id24Axios } = useId24();
   const [formUser] = Form.useForm();
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const macarbookservices = MaCarBookServices(baseUrIntranet);
 
   useEffect(() => {

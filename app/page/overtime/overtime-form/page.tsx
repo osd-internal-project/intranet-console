@@ -22,7 +22,7 @@ export default function OverTimePage() {
   const date = searchParams.get("date") as string;
   const { user } = useContext(UserContext) as UserContectType;
   const { id24Axios } = useId24();
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [loading, setLoading] = useState<boolean>(true);
   const [getHeader, setHeader] = useState<any[]>([]);
   const [getStartTime, setStartTime] = useState<number>(18);

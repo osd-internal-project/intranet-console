@@ -21,7 +21,7 @@ type ruleForm = {
 };
 const GroupManage: React.FC<props> = ({ propDataManage, manageStatus }): React.ReactElement => {
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const [titel, setTitel] = useState<string>("");
   const [content, setContent] = useState<React.JSX.Element>(<></>);
   const [open, setOpen] = useState<boolean>(false);

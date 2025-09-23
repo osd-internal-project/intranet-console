@@ -66,7 +66,7 @@ export const UserAction: React.FC<Props> = ({
   const sideMenuGroups =
     tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
   const isHr = intersection(sideMenuGroups, ["hr", "admin"]).length > 0;
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const [openFilter, setOpenFilter] = useState<boolean>(false);
   const [imageFiles, setImageFiles] = useState<UploadFile[]>([]);
   const [image, setImage] = useState<any>();
@@ -307,7 +307,7 @@ export const UserAction: React.FC<Props> = ({
               <div className="grid col-span-1 justify-center items-center">
                 <Image
                   rootClassName="w-[100px] h-[100px] object-cover"
-                  src={value.imageId ? `${process.env.REACT_APP_API_BASE_URL_USER}/id24users/get-image-user/${value.imageId}` : ""}
+                  src={value.imageId ? `${process.env.NEXT_PUBLIC_API_BASE_URL_USER}/id24users/get-image-user/${value.imageId}` : ""}
                 />
               </div>
               <div className="grid col-span-1 justify-center items-center">

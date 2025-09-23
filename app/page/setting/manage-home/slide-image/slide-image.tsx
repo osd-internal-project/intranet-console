@@ -14,7 +14,7 @@ import { loadAppConfig } from "@/app/config/app-config";
 export default function SlideImageSetting() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const { id24Axios } = useId24();
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const intraAuthService = ManageHomeService(baseUrlIntranet);
   const [slideImage, setSlideImage] = useState<SlideImageType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);

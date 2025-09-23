@@ -372,7 +372,7 @@ export const CarReturnForm: React.FC<Props> = ({ formBookData, statusApprove }) 
                         alt="news"
                         preview={true}
                         crossOrigin="anonymous"
-                        src={`${process.env.REACT_APP_API_BASE_URL_INTRANET}/ma-car-booking-images/get-image/${e.idCarBookImage}`}
+                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET}/ma-car-booking-images/get-image/${e.idCarBookImage}`}
                         style={{
                           width: "100%",
                           height: "150px",

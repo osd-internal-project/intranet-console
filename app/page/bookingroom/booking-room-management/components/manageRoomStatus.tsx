@@ -18,7 +18,7 @@ interface MasterRoomType {
 const RoomStatus = () => {
   const [form] = useForm();
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [bookingData, setBookingData] = useState<MasterRoomType[]>([]);
   const [currentBookingId, setCurrentBookingId] = useState<string | null>(null);
   const [modalEditMasterRoom, setModalEditMasterRoom] = useState(false);

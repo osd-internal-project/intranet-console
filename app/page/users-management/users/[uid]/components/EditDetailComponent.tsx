@@ -39,7 +39,7 @@ type option = {
 const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement => {
   const router = useRouter();
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const userServices = UserServices(baseUrlUser);
   const masterPositionServices = MasterPositionServices(baseUrlUser);
   const [detailForm] = useForm();

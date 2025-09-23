@@ -22,8 +22,8 @@ const RequestOrderDetailPage: React.FC = (): React.ReactElement => {
   const [modal, contextHolder] = Modal.useModal();
   const [form] = Form.useForm<ITRequestOrder>();
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
-  const baseUrlInventory = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INVENTORY);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
+  const baseUrlInventory = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INVENTORY);
   const dataleaveService = DataLeaveService(baseUrlUser);
   const masterproductServices = MasterProductServices(baseUrlInventory);
   const requestorderServices = RequestOrderServices(baseUrlInventory);

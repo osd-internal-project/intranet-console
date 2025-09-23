@@ -13,7 +13,7 @@ import TableOrderLotPage from "./components/table-order-lot";
 const OrderLotDetail: React.FC = (): React.ReactElement => {
   const params = useParams<{ orderId: string }>();
   const { id24Axios } = useId24();
-  const baseUrlInventory = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INVENTORY);
+  const baseUrlInventory = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INVENTORY);
   const orderServices = OrderServices(baseUrlInventory);
   const [formDetailOrder] = Form.useForm();
   const [dataOrderLot, setDataOrderLot] = useState<{ data: ITOrderLot[]; count: number }>({ data: [], count: 0 });

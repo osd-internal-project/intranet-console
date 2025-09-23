@@ -26,7 +26,7 @@ import { loadAppConfig } from "@/app/config/app-config";
 
 const ManageBookingRoom = () => {
   const { id24Axios } = useId24();
-  const baseUrlIntra = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntra = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [form] = useForm();
   const [submitLoading, setSubmitLoading] = useState(false);
   const [modalAddRefreshment, setModalAddRefreshment] = useState(false);

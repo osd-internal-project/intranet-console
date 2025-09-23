@@ -28,7 +28,7 @@ const ManageOrderPage: React.FC = (): React.ReactElement => {
   const navigate = useRouter();
   const { user } = useContext(UserContext) as UserContectType;
   const params = useParams();
-  const baseUrlInventory = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INVENTORY);
+  const baseUrlInventory = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INVENTORY);
   const orderServices = OrderServices(baseUrlInventory);
   const masterproductServices = MasterProductServices(baseUrlInventory);
   const [form] = Form.useForm();

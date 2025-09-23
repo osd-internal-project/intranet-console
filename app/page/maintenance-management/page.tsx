@@ -14,8 +14,8 @@ import { loadAppConfig } from "@/app/config/app-config";
 import MasterHolidaysService from "../setting/master-holidays/services/index.service";
 export default function MaTaskPage() {
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
-  const baseUrlReport = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_REPORT);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
+  const baseUrlReport = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_REPORT);
   const maServices = MaServices(baseUrIntranet);
   const reportServices = MaServices(baseUrlReport);
   const [search, setSearch] = useState<object>({});

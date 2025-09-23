@@ -18,8 +18,8 @@ export default function Page() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const sideMenuGroups =
     tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
-  const baseUrlReport = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_REPORT);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
+  const baseUrlReport = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_REPORT);
   const [loading, setLoading] = useState<boolean>(true);
   const [dataLeaveUser, setDataLeaveUser] = useState<{ data: ITypeDataLeave[]; count: number }>({ data: [], count: 0 });
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);

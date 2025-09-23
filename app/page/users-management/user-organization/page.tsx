@@ -22,7 +22,7 @@ interface TypeTable {
 }
 export default function Organization() {
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const organizedServices = OrganizedServices(baseUrlUser);
   const [dataSource, setDataSource] = useState<TypeTable[]>([]);
   const [loading, setLoading] = useState<boolean>(true);

@@ -17,7 +17,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const navigate = useRouter();
   const { tokenAccess, authenticated, login, logout, id24Axios } = useId24();
   const { saveUser, saveRoles } = useContext(UserContext) as UserContectType;
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const [loading, setLoading] = useState<boolean>(true);
   const [collapsed, setCollapsed] = useState(false);
   const [profileDetail, setProfileDetail] = useState<any>();

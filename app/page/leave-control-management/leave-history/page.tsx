@@ -16,7 +16,7 @@ import MasterHolidaysService from "../../setting/master-holidays/services/index.
 export default function Page() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const { id24Axios } = useId24();
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [loading, setLoading] = useState<boolean>(true);
   const [month, setMonth] = useState<Dayjs | string>(dayjs());
   const [dataSource, setDataSource] = useState<{ data: ITypeDataLeave[]; count: number }>({ data: [], count: 0 });

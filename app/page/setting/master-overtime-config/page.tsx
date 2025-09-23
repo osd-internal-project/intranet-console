@@ -12,7 +12,7 @@ import { manageDays } from "./manage-config";
 export default function MasterOvertimeConfig() {
   const [ManageForm] = useForm();
   const { id24Axios } = useId24();
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [dataSource, setDataSource] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [openModal, setOpenModal] = useState<boolean>(false);

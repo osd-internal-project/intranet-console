@@ -81,7 +81,7 @@ const TableMasterProductPage: React.FC<props> = ({ dataSource, changePagination,
               <Image
                 width={"40px"}
                 height={"40px"}
-                src={`${process.env.REACT_APP_API_BASE_URL_INVENTORY}/master-product-image/get-image/${
+                src={`${process.env.NEXT_PUBLIC_API_BASE_URL_INVENTORY}/master-product-image/get-image/${
                   record?.masterProductImage?.[0]?.prdImageId ?? ""
                 }`}
               />

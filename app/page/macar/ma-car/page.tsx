@@ -19,7 +19,7 @@ const MaCar: React.FC = () => {
     user: null,
   };
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const intraAuthService = MaCarServices(baseUrIntranet);
   const holidayService = MasterHolidaysService(baseUrIntranet);
   const [maCarBookData, setMaCarBookData] = useState<dataMaCarbook[]>([]);
@@ -74,12 +74,12 @@ const MaCar: React.FC = () => {
   const fecthMasterData = async () => {
     const maCar = await intraAuthService.getMaCarQuery();
     setMaCarData(maCar);
-    const response = await axios.get("https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json");
-    const optionsProvinces = response.data.map((event: ProvincesType) => ({
-      value: event.id,
-      label: event.name_th,
-    }));
-    setDataProvinces(optionsProvinces);
+    // const response = await axios.get("https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json");
+    // const optionsProvinces = response.data.map((event: ProvincesType) => ({
+    //   value: event.id,
+    //   label: event.name_th,
+    // }));
+    // setDataProvinces(optionsProvinces);
   };
 
   const changePagination = (page: TablePaginationConfig) => {

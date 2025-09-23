@@ -18,8 +18,8 @@ export interface props {
 
 export const AddMasterdataPosition: React.FC<props> = ({ departMent, setLoading }) => {
   const { id24Axios, tokenAccess } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const positionServices = PositionServices(baseUrlUser);
   const [FORM] = Form.useForm();
   const [buttonLoading, setbuttonLoading] = useState<boolean>(false);

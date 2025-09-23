@@ -71,7 +71,7 @@ const BookingRoomPage: React.FC = () => {
     user: null,
   };
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const holidayService = MasterHolidaysService(baseUrIntranet);
   const [month, setMonth] = useState<Dayjs | string>(dayjs());
   const [isModalBooking, setIsModalBooking] = useState(false);

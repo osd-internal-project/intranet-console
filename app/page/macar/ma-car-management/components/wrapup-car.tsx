@@ -98,7 +98,7 @@ const WrapupCar: React.FC = () => {
   const [formchange] = useForm();
   const [formdetail] = useForm();
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const manageCarServices = ManageCarServices(baseUrIntranet);
   const [maData, setMaData] = useState<MaCar[]>([]);
   const [maDataType, setMaDataType] = useState<MaCarType[]>([]);

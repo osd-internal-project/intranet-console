@@ -33,7 +33,7 @@ export interface handbooktype {
 const HandBookManage: React.FC = () => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const { id24Axios } = useId24();
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const managehandbookFileServices = ManagehandbookFileServices(baseUrlIntranet);
   const [handbooktype, sethandbooktype] = useState<handbooktype[]>([]);
   const [handbookFile, sethandbookFile] = useState<handbookFile[]>([]);
@@ -46,7 +46,7 @@ const HandBookManage: React.FC = () => {
   const [form] = useForm();
   const [searchFileName, setSearchFileName] = useState("");
   const [searchFileType, setSearchFileType] = useState("");
-  const baseImageUrl = process.env.REACT_APP_API_BASE_URL_INTRANET;
+  const baseImageUrl = process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET;
   const [handbooktypeOptions, sethandbooktypeOptions] = useState<
     {
       value: number;

@@ -21,9 +21,9 @@ export default function AuthProviderId24({
     async function getServerSideProps() {
       const appConfig = {
         clientId:
-          process.env.REACT_APP_ID24_CLIENT_ID ||
+          process.env.NEXT_PUBLIC_ID24_CLIENT_ID ||
           "b7f34680-2d41-42a7-8e96-3752626c0054",
-        authUrl: process.env.REACT_APP_AUTH_URL || "http://localhost:8080",
+        authUrl: process.env.NEXT_PUBLIC_AUTH_URL || "http://localhost:8080",
       };
       const { authUrl, clientId } = appConfig;
       const id24 = Id24(
@@ -96,7 +96,7 @@ export default function AuthProviderId24({
         config={{
           refreshTokenIntervalInSeconds: 30,
           resourceApiBaseUrl:
-            `${process.env.REACT_APP_API_BASE_URL}` || "http://localhost:3000",
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}` || "http://localhost:3000",
         }}
       >
         <>{children}</>

@@ -30,7 +30,7 @@ type TabType = {
 
 const EditAssignGroupComponent: React.FC<props> = ({ userid }): React.ReactElement => {
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const [assignGroupForm] = useForm();
   const [optionsOrganize, setOptionsOrganize] = useState<TabType[]>([]);
   const [loadTree, setLoadTree] = useState<boolean>(false);

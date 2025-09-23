@@ -47,7 +47,7 @@ const UserTable: React.FC<Props> = ({ setManagePage, managePage, createForm, set
           <>
             <div className="grid grid-cols-3 items-center">
               <div className="flex col-span-1 justify-center">
-                <Avatar src={record.imageId ? `${process.env.REACT_APP_API_BASE_URL_USER}/id24users/get-image-user/${record.imageId}` : ""} />
+                <Avatar src={record.imageId ? `${process.env.NEXT_PUBLIC_API_BASE_URL_USER}/id24users/get-image-user/${record.imageId}` : ""} />
               </div>
               <div className="col-span-2">
                 <b>{value}</b>

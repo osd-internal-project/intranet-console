@@ -23,7 +23,7 @@ const EditRoleComponent: React.FC<props> = ({ userid }): React.ReactElement => {
   // const useAuth = useAxiosUser();
 
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const rolesServices = RolesServices(baseUrlUser);
   const userServices = UserServices(baseUrlUser);
   const [roleForm] = useForm();

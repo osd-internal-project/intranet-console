@@ -46,8 +46,8 @@ export interface newsType {
 const InfoTableNews: React.FC = () => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const { id24Axios, tokenAccess } = useId24();
-  // const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  // const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [informationNews, setinformationNews] = useState<informationNews[]>([]);
   // const [newsimage, setnewsimage] = useState<newsImage[]>([]);
   const manageinformationNewsServices = ManageinformationNewsServices(baseUrlIntranet);
@@ -220,7 +220,7 @@ const InfoTableNews: React.FC = () => {
       uid: String(image.imageId),
       name: image.fileimageName as string,
       status: "done" as UploadFileStatus,
-      url: `${process.env.REACT_APP_API_BASE_URL_INTRANET}/public/news-image/${image.fileName}`,
+      url: `${process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET}/public/news-image/${image.fileName}`,
     }));
     setExistingFiles(existingFilesList);
     setIsmodlaupdatedata(true);

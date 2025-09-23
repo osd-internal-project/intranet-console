@@ -26,7 +26,7 @@ export default function OverTimeCalendatPage() {
   const { id24Axios } = useId24();
 
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const baseUrlIntra = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntra = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [formDetail] = Form.useForm();
   const [calendar, setCalendar] = useState<IOverTimeForm[]>([]);
   const [month, setMonth] = useState<Dayjs | string>(dayjs());

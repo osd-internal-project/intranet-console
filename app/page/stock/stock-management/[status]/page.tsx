@@ -20,7 +20,7 @@ const StockManagement: React.FC = (): React.ReactElement => {
   const type = params.status;
   const prdId = searchParams.get("prdId");
   const { user } = useContext(UserContext) as UserContectType;
-  const baseUrlInventory = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INVENTORY);
+  const baseUrlInventory = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INVENTORY);
   const masterproductServices = MasterProductServices(baseUrlInventory);
   const unitServices = UnitServices(baseUrlInventory);
   const [formManage] = Form.useForm();
@@ -52,7 +52,7 @@ const StockManagement: React.FC = (): React.ReactElement => {
               uid: "-1",
               name: initialImage.fileName || "image.jpg",
               status: "done",
-              url: `${process.env.REACT_APP_API_BASE_URL_INVENTORY}/master-product-image/get-image/${initialImage?.prdImageId}`,
+              url: `${process.env.NEXT_PUBLIC_API_BASE_URL_INVENTORY}/master-product-image/get-image/${initialImage?.prdImageId}`,
             },
           ]);
         }

@@ -20,10 +20,10 @@ export interface props {
 }
 
 const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: any): React.ReactElement => {
-  const baseImageUrl = process.env.REACT_APP_API_BASE_URL_INTRANET;
+  const baseImageUrl = process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET;
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [formBookData] = Form.useForm();
   const [formReturn] = Form.useForm();
   const [currentMaId, setCurrentMaId] = useState<string | null>(null);
@@ -352,7 +352,7 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
                       alt="news"
                       preview={true}
                       crossOrigin="anonymous"
-                      src={`${process.env.REACT_APP_API_BASE_URL_INTRANET}/get-image/${e.idCarBookImage}`}
+                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET}/get-image/${e.idCarBookImage}`}
                       style={{
                         width: "100%",
                         height: "150px",

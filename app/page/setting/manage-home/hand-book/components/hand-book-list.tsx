@@ -20,12 +20,12 @@ export interface handbookFile {
 }
 const HandBookList: React.FC = () => {
   const { id24Axios } = useId24();
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const managehandbookFileServices = ManagehandbookFileServices(baseUrlIntranet);
   const [handbookFile, sethandbookFile] = useState<handbookFile[]>([]);
   const [searchFileName, setSearchFileName] = useState("");
   const [searchFileType, setSearchFileType] = useState("");
-  const baseImageUrl = process.env.REACT_APP_API_BASE_URL_INTRANET;
+  const baseImageUrl = process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET;
   useEffect(() => {
     fetchDataHandbookfile();
   }, []);

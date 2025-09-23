@@ -19,8 +19,8 @@ const OvertimeHistory = () => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const sideMenuGroups =
     tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
-  const baseUrlIntra = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
-  const baseUrlReport = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_REPORT);
+  const baseUrlIntra = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
+  const baseUrlReport = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_REPORT);
   const [filterForm] = Form.useForm();
   const [formDetail] = Form.useForm();
   const [openFilter, setOpenFilter] = useState<boolean>(false);

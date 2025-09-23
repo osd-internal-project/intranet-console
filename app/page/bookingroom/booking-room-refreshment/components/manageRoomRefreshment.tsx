@@ -17,8 +17,8 @@ const Refreshment: React.FC<any> = ({
   fetchData,
 }: any): React.ReactElement => {
   const { id24Axios, tokenAccess } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [form] = useForm();
   const manageRefreshmentServices = ManageRefreshmentServices(baseUrlIntranet);
   const [currentRefreshmentId, setCurrentRefreshmentId] = useState<string | null>(null);

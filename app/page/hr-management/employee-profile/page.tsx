@@ -14,9 +14,9 @@ import { MasterPositionServices } from "@/app/services/master-position.service";
 
 export default function EmployeeProfilePage() {
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
-  const baseUrlHrManagement = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_HR_MANAGEMENT);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
+  const baseUrlHrManagement = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_HR_MANAGEMENT);
 
   // MasterPositionServices
   const [form] = Form.useForm();

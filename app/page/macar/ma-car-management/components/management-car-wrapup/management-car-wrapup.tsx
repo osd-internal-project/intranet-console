@@ -15,7 +15,7 @@ const ManagementCarWrapup: React.FC = (): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const [form] = Form.useForm();
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [dataSourceWrapup, setDataSourceWrapup] = useState<any[]>([]);
   const [carDetail, setDataCarDetail] = useState<any[]>([]);
   const [optionsType, setOptionsType] = useState<{ value: string; label: string; key: number }[]>([]);

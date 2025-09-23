@@ -15,7 +15,7 @@ export const BigCarouselComponent: React.FC<Props> = ({ slideImage }) => {
               return (
                 <div key={image.id}>
                   {/* <Image
-                    src={`${process.env.REACT_APP_API_BASE_URL_INTRANET}/slide-image/get-file/${image.fileId}`}
+                    src={`${process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET}/slide-image/get-file/${image.fileId}`}
                     crossOrigin="anonymous"
                     style={{
                       objectFit: "cover",
@@ -25,7 +25,7 @@ export const BigCarouselComponent: React.FC<Props> = ({ slideImage }) => {
                     width={"100%"}
                   /> */}
                   <img
-                    src={`${process.env.REACT_APP_API_BASE_URL_INTRANET}/slide-image/get-file/${image.fileId}`}
+                    src={`${process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET}/slide-image/get-file/${image.fileId}`}
                     loading="lazy"
                     style={{
                       objectFit: "cover",

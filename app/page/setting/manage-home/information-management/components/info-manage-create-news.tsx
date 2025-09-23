@@ -41,7 +41,7 @@ export interface newsType {
 const InfoCreateNews: React.FC<newsImage> = ({}) => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const { id24Axios} = useId24();
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [submitLoading, setSubmitLoading] = useState(true);
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [informationNews, setinformationNews] = useState<informationNews[]>([]);

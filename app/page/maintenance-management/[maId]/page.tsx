@@ -14,7 +14,7 @@ export default function MaTaskPage() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   // const intranetAuth = useAxiosIntranet();
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const maServices = MaServices(baseUrIntranet);
   const params = useParams<{ maId: string }>();
   const [loading, setloading] = useState<boolean>(true);

@@ -122,7 +122,7 @@ interface THoliday {
 
 const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const intraAuthService = SlideImageService(baseUrIntranet);
   const { styles } = useStyle({ test: true });
   const [selectDate, setSelectDate] = useState<Dayjs>(dayjs());

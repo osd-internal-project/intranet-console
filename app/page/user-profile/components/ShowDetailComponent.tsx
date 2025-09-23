@@ -52,7 +52,7 @@ type option = {
 
 const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement => {
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const userServices = UserServices(baseUrlUser);
   const [detailForm] = useForm();
   const [repasswordForm] = Form.useForm();
@@ -179,7 +179,7 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                 <Image
                   className="w-full h-full object-cover"
                   // src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-                  src={image.imageId ? `${process.env.REACT_APP_API_BASE_URL_USER}/id24users/get-image-user/${image.imageId}` : ""}
+                  src={image.imageId ? `${process.env.NEXT_PUBLIC_API_BASE_URL_USER}/id24users/get-image-user/${image.imageId}` : ""}
                   fallback="/api/placeholder/64/64"
                   // preview={false}
                 />

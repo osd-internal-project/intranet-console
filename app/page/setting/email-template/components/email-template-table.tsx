@@ -22,7 +22,7 @@ interface props {
 
 const EmailTemplateTable: React.FC<props> = ({ dataSource, loading, setLoading }): React.ReactElement => {
   const { id24Axios } = useId24();
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const manageemailtemplateservices = ManageemailTemplateServices(baseUrlIntranet);
   const [openModal, setopenModal] = useState<boolean>(false);
   const [dataDetailTemplate, setDataDetailTemplate] = useState<string>("");

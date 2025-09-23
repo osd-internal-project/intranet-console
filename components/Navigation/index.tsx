@@ -72,7 +72,7 @@ const Navigation: React.FC<Prop> = ({ profileDetail, collapsed, setCollapsed, cu
                   ? `คุณ ${profileDetail?.firstNameTh} ${profileDetail?.lastNameTh && profileDetail.lastNameTh}`
                   : profileDetail?.username}
                 <Avatar
-                  src={profileDetail?.imageId ? `${process.env.REACT_APP_API_BASE_URL_USER}/id24users/get-image-user/${profileDetail?.imageId}` : ""}
+                  src={profileDetail?.imageId ? `${process.env.NEXT_PUBLIC_API_BASE_URL_USER}/id24users/get-image-user/${profileDetail?.imageId}` : ""}
                 />
               </Space>
             </a>

@@ -28,7 +28,7 @@ export interface props {
 }
 const GroupTree: React.FC<props> = ({ propDataTree, loading, selectOrganize }): React.ReactElement => {
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const [treeList, setTreeList] = useState<any[] | null>(null);
   const [tabList, setTabList] = useState<TabType[]>([]);
   const [tabsKey, setTabsKey] = useState<string>("0");

@@ -11,7 +11,7 @@ import { ITRequestOrder } from "../common/request-order";
 const StockRequestPage = () => {
   const { id24Axios } = useId24();
   const navigate = useRouter();
-  const baseUrlInventory = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INVENTORY);
+  const baseUrlInventory = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INVENTORY);
   const requestorderServices = RequestOrderServices(baseUrlInventory);
   const [loading, setLoading] = useState<boolean>(true);
   const [dataSource, setDataSource] = useState<{ data: ITRequestOrder[]; count: number }>({ data: [], count: 0 });

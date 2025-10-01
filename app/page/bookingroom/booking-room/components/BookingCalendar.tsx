@@ -25,6 +25,7 @@ interface BookingType {
   approveDate: string;
   endDate: string;
   updatedAt: string;
+  note: string;
 }
 
 interface Props {
@@ -75,6 +76,8 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar, handleChangeMo
   };
 
   const onSelectEventCalendar = (event: CustomEvent) => {
+    console.log(event);
+
     if (event.status === "holiday") {
       message.info(event.title);
       return false;
@@ -134,7 +137,7 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar, handleChangeMo
           start: new Date(booking.startDate),
           end: new Date(booking.endDate),
           status: booking.bookingStatus,
-          description: booking.description,
+          description: booking.note,
           userName: booking.bookerName,
           isHidden: idx > 0,
         }))}
@@ -171,6 +174,7 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar, handleChangeMo
                 <Form.Item label="ห้อง" name="roomName">
                   <Input className="read-only-input" disabled />
                 </Form.Item>
+
                 <Form.Item label="เริ่มวันที่" name="startDate">
                   <DatePicker showTime={false} format="DD-MM-YYYY HH:mm" disabled className="read-only-input" />
                 </Form.Item>

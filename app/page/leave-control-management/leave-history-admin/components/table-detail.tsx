@@ -3,12 +3,11 @@ import React, { useState } from "react";
 import { Button, Form, FormInstance, Input, Modal, Select, Table } from "antd";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { ExcelIcon } from "@/components/icon";
-import { ITypeDataLeave } from "../../common";
+import { ITypeDataLeave, type ITypetypeleave } from "../../common";
 import { CheckStatusLeaveType, showStatusLeave } from "@/app/utils/validatefield";
 import { dateFormatTimeNoTIme } from "@/app/utils";
 import { LeaveDetailForm } from "./leave-detail-form";
 import { ColumnsType, TablePaginationConfig } from "antd/es/table";
-
 export interface props {
   dataLeaveUser: { data: ITypeDataLeave[]; count: number };
   setOpenModalDetail: (e: boolean) => void;
@@ -25,6 +24,8 @@ export interface props {
   handleExport: () => void;
   pagination: TablePaginationConfig;
   changePagination: (pagination: TablePaginationConfig) => void;
+  dataDetailLeaveHour: (userId: string, typeId: number) => void;
+  typeLeavebyTypeId?: ITypetypeleave;
 }
 
 export const TableDetail: React.FC<props> = ({
@@ -43,6 +44,8 @@ export const TableDetail: React.FC<props> = ({
   handleExport,
   pagination,
   changePagination,
+  dataDetailLeaveHour,
+  typeLeavebyTypeId,
 }): React.ReactElement => {
   const [form] = Form.useForm();
   const [statusById, setStatusById] = useState<string | null>(null);
@@ -53,6 +56,10 @@ export const TableDetail: React.FC<props> = ({
   };
 
   const fecthDataDetail = async (record: ITypeDataLeave) => {
+    if (!record.userId || !record.typeId) {
+      return false;
+    }
+    await dataDetailLeaveHour(record.userId, record.typeId);
     try {
       const base = {
         ...record,
@@ -209,6 +216,7 @@ export const TableDetail: React.FC<props> = ({
             onFinishDelete={onFinishDelete}
             setSubmitAction={setSubmitAction}
             submitAction={submitAction}
+            typeLeavebyTypeId={typeLeavebyTypeId}
           />
         </Modal>
       ) : null}

@@ -245,6 +245,17 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    findDetailByTypeLeaveUserId: async (userId: string | undefined, typeId: number) => {
+      let url = `${baseUrlDataLeave}/find-detail-by-type-leave-userId/${userId}/${typeId}`;
+      return await axiosInstance
+        .get(url)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
 
     getdataTypeLeaveMap: async (user_id: number, masterTypeleaveId: string) => {
       const condition = {

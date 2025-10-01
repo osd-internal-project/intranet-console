@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { TableDetail } from "./components/table-detail";
 import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, TablePaginationConfig, Tabs, message } from "antd";
 import DataLeaveService from "../../../services/leave-management.service";
-import { ITypeDataLeave } from "../common";
+import { ITypeDataLeave, type ITypetypeleave } from "../common";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
@@ -12,6 +12,7 @@ import { intersection } from "lodash";
 import dayjs from "dayjs";
 import saveAs from "file-saver";
 import { TableTotalLeaveDetailPage } from "./components/table-leave-detail";
+import LeaveManagementServices from "../../../services/leave-management.service";
 
 export default function Page() {
   const { id24Axios, tokenAccess } = useId24();
@@ -30,6 +31,7 @@ export default function Page() {
     pageSize: 10,
     total: 0,
   });
+  const [typeLeaveTableAll, setTypeLeaveTableAll] = useState<ITypetypeleave>();
   const [formdetail] = Form.useForm();
 
   useEffect(() => {
@@ -47,6 +49,12 @@ export default function Page() {
       setDataLeaveUser({ data, count });
       setLoading(false);
     }
+  };
+
+  const dataDetailLeaveHour = async (userId: string, typeId: number) => {
+    console.log(typeId);
+    const resTableDeatilTypeLeave = await LeaveManagementServices(baseUrlIntranet).findDetailByTypeLeaveUserId(userId, typeId);
+    setTypeLeaveTableAll(resTableDeatilTypeLeave);
   };
 
   const changePagination = (page: TablePaginationConfig) => {
@@ -200,6 +208,8 @@ export default function Page() {
                           handleExport={handleExport}
                           pagination={pagination}
                           changePagination={changePagination}
+                          dataDetailLeaveHour={dataDetailLeaveHour}
+                          typeLeavebyTypeId={typeLeaveTableAll}
                         />
                       </Card>
                     </div>

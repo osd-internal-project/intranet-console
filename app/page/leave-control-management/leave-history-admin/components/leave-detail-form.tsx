@@ -12,6 +12,7 @@ import {
   EditOutlined,
 } from "@ant-design/icons";
 import { intersection } from "lodash";
+import type { ITypetypeleave } from "../../common";
 
 interface props {
   formdetail: FormInstance;
@@ -22,6 +23,7 @@ interface props {
   onFinishDelete: (type: string, Id: number) => void;
   setSubmitAction: (value: "approved" | "cancel") => void;
   submitAction: string;
+  typeLeavebyTypeId?: any;
 }
 
 export const LeaveDetailForm: React.FC<props> = ({
@@ -33,7 +35,10 @@ export const LeaveDetailForm: React.FC<props> = ({
   onFinishDelete,
   setSubmitAction,
   submitAction,
+  typeLeavebyTypeId,
 }) => {
+  console.log(typeLeavebyTypeId);
+
   const userApproved = formdetail.getFieldValue("userApproved");
   const dataLeaveFiles = formdetail.getFieldValue("dataLeaveFiles");
 
@@ -140,46 +145,65 @@ export const LeaveDetailForm: React.FC<props> = ({
 
         {/* Leave Details Card */}
         <Card
-          className="mb-4 shadow-sm"
+          className="mb-4 shadow-sm hover:shadow-md transition-shadow duration-200"
           title={
             <div className="flex items-center">
               <CalendarOutlined className="mr-2 text-green-500" />
-              <span className="font-medium text-gray-700">รายละเอียดการลา</span>
+              <span className="font-semibold text-gray-800">รายละเอียดการลา</span>
             </div>
-          }>
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item label="ประเภทการลา" name="typeLeave">
-                <Input disabled className="bg-gray-100 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none" />
+          }
+          bordered={false}>
+          <Row gutter={[16, 16]}>
+            {/* ประเภทการลา */}
+            <Col xs={24} md={12}>
+              <Form.Item label={<span className="font-medium text-gray-700">ประเภทการลา</span>} name="typeLeave">
+                <Input disabled className="bg-gray-50 cursor-default border-gray-200" size="large" />
               </Form.Item>
             </Col>
-            <Col span={12}>
-              <Form.Item label="เป็นเวลา" name="leaveHour">
+
+            {/* เป็นเวลา */}
+            <Col xs={24} md={12}>
+              <Form.Item
+                label={
+                  <div className="space-y-1">
+                    <span className="font-medium text-gray-700">เป็นเวลา</span>
+                    <div className="text-xs space-y-0.5">
+                      <div className="text-blue-600 font-medium">{`คงเหลือ ${Math.floor(typeLeavebyTypeId.limitLeaveLastResult / 4) / 2} วัน`}</div>
+                      <div className="text-red-500">{`ลามาแล้ว ${typeLeavebyTypeId?.haveLeaveDays}.${typeLeavebyTypeId?.haveLeaveHours} วัน`}</div>
+                    </div>
+                  </div>
+                }
+                name="leaveHour">
                 <Input
                   disabled
-                  className="bg-gray-100 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none"
-                  suffix={<span className="text-gray-400">ชั่วโมง</span>}
+                  className="bg-gray-50 cursor-default border-gray-200"
+                  size="large"
+                  suffix={<span className="text-gray-500 font-medium">ชั่วโมง</span>}
                 />
               </Form.Item>
             </Col>
           </Row>
 
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item label="ตั้งแต่วันที่" name="startDate">
+          <Row gutter={[16, 16]}>
+            {/* ตั้งแต่วันที่ */}
+            <Col xs={24} md={12}>
+              <Form.Item label={<span className="font-medium text-gray-700">ตั้งแต่วันที่</span>} name="startDate">
                 <Input
                   disabled
-                  className="bg-gray-100 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none"
-                  prefix={<CalendarOutlined className="text-gray-400" />}
+                  className="bg-gray-50 cursor-default border-gray-200"
+                  size="large"
+                  prefix={<CalendarOutlined className="text-green-500" />}
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
-              <Form.Item label="ถึงวันที่" name="endDate">
+            {/* ถึงวันที่ */}
+            <Col xs={24} md={12}>
+              <Form.Item label={<span className="font-medium text-gray-700">ถึงวันที่</span>} name="endDate">
                 <Input
                   disabled
-                  className="bg-gray-100 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none"
-                  prefix={<CalendarOutlined className="text-gray-400" />}
+                  className="bg-gray-50 cursor-default border-gray-200"
+                  size="large"
+                  prefix={<CalendarOutlined className="text-green-500" />}
                 />
               </Form.Item>
             </Col>

@@ -577,6 +577,9 @@ const ManageRoom: React.FC = () => {
               <strong>ประเภทการจอง : </strong> <span className="modal-content">{currentBookingDetails.roomType}</span>
             </p>
             <p>
+              <strong>รายละเอียดการจอง : </strong> <span className="modal-content">{currentBookingDetails.note}</span>
+            </p>
+            <p>
               <strong>วันที่จอง : </strong>
               <span className="modal-content">
                 {dayjs(currentBookingDetails.startDate).format("DD/MM/YYYY")} ถึง {dayjs(currentBookingDetails.endDate).format("DD/MM/YYYY")}

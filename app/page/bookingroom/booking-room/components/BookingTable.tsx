@@ -20,6 +20,7 @@ interface DataType {
   guest: string;
   created_at: string;
   officer: string;
+  note: string;
 }
 
 export interface props {
@@ -143,7 +144,6 @@ const BookingTable: React.FC<props> = ({ bookingFetchData, pagination, changePag
     setCurrentBookingDetails(null);
   };
 
-
   return (
     <>
       <Modal
@@ -169,6 +169,9 @@ const BookingTable: React.FC<props> = ({ bookingFetchData, pagination, changePag
                   ? "อบรม (Train)"
                   : "สัมมนา (Seminar)"}
               </span>
+            </p>
+            <p>
+              <strong>รายละเอียดการจอง : </strong> <span className="modal-content">{currentBookingDetails.note}</span>
             </p>
             <p>
               <strong>วันที่จอง : </strong>{" "}

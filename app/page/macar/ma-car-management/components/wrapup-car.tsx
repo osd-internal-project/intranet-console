@@ -35,6 +35,8 @@ import { UploadFileStatus } from "antd/es/upload/interface";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import imageCompression from "browser-image-compression";
+import { handleCompress } from "@/app/utils";
 export interface MaCarType {
   id: number;
   typeName: string;
@@ -414,12 +416,13 @@ const WrapupCar: React.FC = () => {
     return setAttendFiles(newFileList);
   };
 
-  const beforeUploadAttendFiles = (file: RcFile) => {
+  const beforeUploadAttendFiles = async (file: RcFile) => {
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return Upload.LIST_IGNORE;
     }
-    return true;
+    const compressed = await handleCompress(file);
+    return compressed;
   };
 
   const columns: TableProps<MaCarwarpup>["columns"] = [

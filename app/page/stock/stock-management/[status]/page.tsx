@@ -11,6 +11,7 @@ import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import UnitServices from "@/app/page/setting/unit/services";
 import dayjs from "dayjs";
+import { handleCompress } from "@/app/utils";
 
 const StockManagement: React.FC = (): React.ReactElement => {
   const { id24Axios } = useId24();
@@ -68,12 +69,13 @@ const StockManagement: React.FC = (): React.ReactElement => {
     setOptionsUnit(data);
   };
 
-  const beforeUploadImageFiles = (file: RcFile) => {
+  const beforeUploadImageFiles = async (file: RcFile) => {
     if (imageFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return false;
     }
-    return false;
+    const compressed = await handleCompress(file);
+    return compressed;
   };
 
   const handleChangeImageFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {

@@ -4,7 +4,9 @@ import { FormInstance } from "antd/lib";
 import TextArea from "antd/lib/input/TextArea";
 import { RcFile } from "antd/lib/upload";
 import dayjs from "dayjs";
+import imageCompression from "browser-image-compression";
 import React from "react";
+import { handleCompress } from "@/app/utils";
 
 export interface props {
   form: FormInstance;
@@ -44,12 +46,15 @@ const ManagementCarWrapupManage: React.FC<props> = ({
     }
     return setAttendFiles(newFileList);
   };
-  const beforeUploadAttendFiles = (file: RcFile) => {
+
+ 
+  const beforeUploadAttendFiles = async (file: RcFile) => {
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return Upload.LIST_IGNORE;
     }
-    return true;
+    const compressed = await handleCompress(file);
+    return compressed;
   };
   return (
     <div>

@@ -2,7 +2,7 @@ import React from "react";
 import { Card, DatePicker, Form, Input, Modal, Select, Upload, Image, Row, Col, Tabs, Space, Button } from "antd";
 import { FormInstance } from "antd/lib";
 import type { GetProp, TabsProps, UploadFile, UploadProps } from "antd";
-import { PlusOutlined, StarOutlined } from "@ant-design/icons";
+// import { PlusOutlined, StarOutlined } from "@ant-design/icons";
 import FormManageBasicInformation from "./From/form-manage-basic-infomation";
 import FormManagePersonalInformation from "./From/form-manage-personal-infomation";
 import FormManageEmergencyContact from "./From/form-manage-emergency-contact";

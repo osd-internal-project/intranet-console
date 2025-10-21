@@ -14,7 +14,9 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import imageCompression from "browser-image-compression";
 import dayjs from "dayjs";
+import { handleCompress } from "@/app/utils";
 
 export default function Page() {
   const [createdataleaveForm] = Form.useForm();
@@ -61,12 +63,13 @@ export default function Page() {
     setDataHolidayDay(dataResult);
   };
 
-  const beforeUploadAttendFiles = (file: RcFile) => {
+  const beforeUploadAttendFiles = async (file: RcFile) => {
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return false;
     }
-    return false;
+    const compressed = await handleCompress(file);
+    return compressed;
   };
 
   const rowClassName = (record: any) => {

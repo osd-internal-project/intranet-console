@@ -6,11 +6,12 @@ import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { MaCarBookServices } from "../../../../services/ma-car-book.service";
 import { MaCarType, MaCarBookType } from "../../common/index";
 import { checkApprovedStatus, checkStatusReturn, CheckStatusMaCarBookType, showStatus } from "@/app/utils/validatefield";
-import { dateFormatTime } from "@/app/utils";
+import { dateFormatTime, handleCompress } from "@/app/utils";
 import { CarReturnForm } from "./car-return-form";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import imageCompression from "browser-image-compression";
 import { CameraOutlined, CarOutlined, CheckOutlined, InfoCircleOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/es/upload";
 export interface props {
@@ -210,12 +211,13 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
     },
   ];
 
-  const beforeUploadAttendFiles = (file: RcFile) => {
+  const beforeUploadAttendFiles = async (file: RcFile) => {
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return false;
     }
-    return false;
+    const compressed = await handleCompress(file);
+    return compressed;
   };
   const handleChangeAttendFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
     return setAttendFiles(newFileList);

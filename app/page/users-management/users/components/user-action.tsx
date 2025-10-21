@@ -27,6 +27,7 @@ import { DataNode } from "antd/es/tree";
 import { RcFile } from "antd/es/upload";
 import { FormInstance } from "antd/lib";
 import { intersection } from "lodash";
+import { handleCompress } from "@/app/utils";
 
 type TabType = {
   label: string;
@@ -180,17 +181,18 @@ export const UserAction: React.FC<Props> = ({
     }
   };
 
-  const beforeUploadImageFiles = (file: RcFile) => {
-    const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
-    if (file.size > maxSizeInBytes) {
-      message.error(`ไฟล์ ${file.name} มีขนาดใหญ่เกิน 2MB`);
-      return false;
-    }
+  const beforeUploadImageFiles = async (file: RcFile) => {
+    // const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
+    // if (file.size > maxSizeInBytes) {
+    //   message.error(`ไฟล์ ${file.name} มีขนาดใหญ่เกิน 2MB`);
+    //   return false;
+    // }
     if (imageFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return false;
     }
-    return false;
+    const compressed = await handleCompress(file);
+    return compressed;
   };
 
   const handleChangeImageFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {

@@ -12,6 +12,7 @@ import UserServices from "../../services/user.service";
 import MasterPositionServices from "../../services/position.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import { handleCompress } from "@/app/utils";
 export interface props {
   userid: string;
 }
@@ -207,12 +208,13 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
     setOpenChangePassword(false);
   };
 
-  const beforeUploadImageFiles = (file: RcFile) => {
+  const beforeUploadImageFiles = async (file: RcFile) => {
     if (imageFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return false;
     }
-    return false;
+    const compressed = await handleCompress(file);
+    return compressed;
   };
 
   const handleChangeImageFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {

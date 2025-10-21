@@ -261,6 +261,7 @@ export const CreateOnlineLeave: React.FC<props> = ({
             <div className=" col-span-3 md:col-span-1 ">
               <Form.Item label={`แนบไฟล์ :`} name={"attrachFile"}>
                 <Upload
+                  showUploadList={true}
                   fileList={attendFiles}
                   onChange={handleChangeAttendFiles}
                   beforeUpload={beforeUploadAttendFiles}

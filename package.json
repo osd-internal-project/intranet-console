@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start ",
     "lint": "next lint",
-    "docker:buildx:intra": "docker build --no-cache --platform linux/amd64 -t 'osd-intranet-fe:v1.2.7' -f ./Dockerfile .",
+    "docker:buildx:intra": "docker build --no-cache --platform linux/amd64 -t 'osd-intranet-fe:v1.2.8' -f ./Dockerfile .",
     "docker:buildx:lextect": "docker build --no-cache --platform linux/amd64 -t 'lextect-intranet-fe:v1.0.0' -f ./Dockerfile ."
   },
   "dependencies": {
@@ -33,6 +33,7 @@
     "antd-img-crop": "^4.18.0",
     "antd-style": "^3.7.1",
     "axios": "^1.7.2",
+    "browser-image-compression": "^2.0.2",
     "cookie": "^0.5.0",
     "cookies-next": "^4.1.0",
     "crypto-js": "^4.2.0",

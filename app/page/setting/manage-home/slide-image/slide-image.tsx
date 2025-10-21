@@ -10,6 +10,7 @@ import { RcFile } from "antd/es/upload";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import { handleCompress } from "@/app/utils";
 
 export default function SlideImageSetting() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
@@ -52,17 +53,18 @@ export default function SlideImageSetting() {
     }
   };
 
-  const beforeUploadAddFiles = (file: RcFile) => {
-    const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
-    if (file.size > maxSizeInBytes) {
-      message.error(`ไฟล์ ${file.name} มีขนาดใหญ่เกิน 2MB`);
-      return false;
-    }
+  const beforeUploadAddFiles = async (file: RcFile) => {
+    // const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
+    // if (file.size > maxSizeInBytes) {
+    //   message.error(`ไฟล์ ${file.name} มีขนาดใหญ่เกิน 2MB`);
+    //   return false;
+    // }
     if (imageFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return false;
     }
-    return false;
+    const compressed = await handleCompress(file);
+    return compressed;
   };
 
   const onfinishCreateSlide = async (values: any) => {

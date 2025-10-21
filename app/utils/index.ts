@@ -1,3 +1,6 @@
+import { message } from "antd";
+import imageCompression from "browser-image-compression";
+import { PDFDocument } from 'pdf-lib';
 import dayjs from "dayjs";
 export const defaultDateFormat = "DD/MM/BBBB";
 export const defaultDatePickerFormat = "DD/MM/YYYY";
@@ -37,8 +40,8 @@ export const dateFormatTimeNoTIme = (date: string | Date) => {
 export const numberFormat = (n: number): string =>
   n && !isNaN(n)
     ? (Math.round(n * 100) / 100).toLocaleString("th-TH", {
-        // minimumFractionDigits: 2,
-      })
+      // minimumFractionDigits: 2,
+    })
     : "-";
 
 export const phoneFormat = (input: any) => {
@@ -61,7 +64,7 @@ export const diffDayDate = (startDate: Date, endDate: Date) => {
   return Math.floor(
     (Date.UTC(eday.getFullYear(), eday.getMonth(), eday.getDate()) -
       Date.UTC(sday.getFullYear(), sday.getMonth(), sday.getDate())) /
-      (1000 * 60 * 60 * 24)
+    (1000 * 60 * 60 * 24)
   );
 };
 export const diffHourBetweenDate = (startDate: Date, endDate: Date) => {
@@ -103,3 +106,72 @@ const Formatter = (value: any) => {
   }
   return formattedValue;
 };
+// handleCompress
+export async function handleCompress(file: File): Promise<File> {
+  try {
+    if (typeof window === 'undefined') return file;
+
+    const mime = file.type.toLowerCase();
+
+    // ============================
+    // 📄 PDF
+    // ============================
+    if (mime === 'application/pdf') {
+      console.log('🔹 กำลังบีบ PDF...');
+      const arrayBuffer = await file.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(arrayBuffer);
+
+      // ลบ metadata และ re-save
+      pdfDoc.setTitle('');
+      pdfDoc.setAuthor('');
+      pdfDoc.setSubject('');
+      pdfDoc.setKeywords([]);
+      pdfDoc.setProducer('');
+      pdfDoc.setCreator('');
+      pdfDoc.setCreationDate(new Date());
+      pdfDoc.setModificationDate(new Date());
+
+      const compressedPdfBytes: any = await pdfDoc.save({ useObjectStreams: true });
+
+      // แปลงเป็น Blob ก่อนสร้าง File
+      const blob = new Blob([compressedPdfBytes], { type: 'application/pdf' });
+      const compressedPdf = new File([blob], file.name, { type: 'application/pdf' });
+
+      console.log(
+        `PDF: ${(file.size / 1024 / 1024).toFixed(2)}MB → ${(compressedPdf.size / 1024 / 1024).toFixed(2)}MB`
+      );
+
+      return compressedPdf;
+    }
+
+    // ============================
+    // 📸 รูปภาพ (JPEG / PNG)
+    // ============================
+    if (mime.startsWith('image/')) {
+      console.log('🔹 กำลังบีบรูป...');
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+      };
+
+      const compressedImage = await imageCompression(file, options);
+
+      console.log(
+        `Image: ${(file.size / 1024 / 1024).toFixed(2)}MB → ${(compressedImage.size / 1024 / 1024).toFixed(2)}MB`
+      );
+
+      return compressedImage;
+    }
+
+    // ============================
+    // 🗂️ ไฟล์อื่น ๆ → ส่งเดิม
+    // ============================
+    console.log('ไม่ใช่ PDF หรือรูปภาพ ข้ามการบีบอัด');
+    return file;
+  } catch (err) {
+    console.error('บีบอัดไฟล์ไม่สำเร็จ:', err);
+    message.warning('บีบอัดไฟล์ไม่สำเร็จ — จะใช้ไฟล์เดิมแทน');
+    return file; // fallback
+  }
+}

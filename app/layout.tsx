@@ -7,8 +7,8 @@ import { ConfigProvider } from "antd";
 import AuthProviderId24 from "./provider/AuthProvider";
 import TodoProvider from "./config/userContext";
 export const metadata: Metadata = {
-  title: "Intranet",
-  description: "Intranet",
+  title: "Intranet - OSD",
+  description: "Intranet - OSD",
 };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -21,7 +21,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 token: {
                   fontSize: 14,
                   colorPrimary: "#00a1df",
-                  // fontFamily: sarabun.style.fontFamily,
                 },
               }}>
               {children}

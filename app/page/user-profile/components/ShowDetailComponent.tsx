@@ -13,7 +13,6 @@ import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
-// Custom styles for borderless inputs - using inline styles only
 const customInputStyle = {
   border: "none",
   borderRadius: "0",
@@ -62,6 +61,11 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
   const [dateWork, setDateWork] = useState<string>("");
   const [positionOption, setPositionOption] = useState<option[]>([]);
   const image = detailForm.getFieldsValue(true);
+  const [clickUpdate, setClickUpdate] = React.useState(false);
+
+  const handleUpdate = async (values: { extension: string; phoneNumber: string }) => {
+    console.log(values);
+  };
 
   useEffect(() => {
     if (loading) {
@@ -170,39 +174,50 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
 
   return (
     <>
-      <div className=" p-4">
-        <Card className="shadow-sm border border-gray-200" bodyStyle={{ padding: "20px" }} title={`🫵 ข้อมูลส่วนตัว`}>
-          {/* Header Section */}
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 space-y-4 lg:space-y-0">
-            <div className="flex items-center space-x-3">
-              <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200">
-                <Image
-                  className="w-full h-full object-cover"
-                  // src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-                  src={image.imageId ? `${process.env.NEXT_PUBLIC_API_BASE_URL_USER}/id24users/get-image-user/${image.imageId}` : ""}
-                  fallback="/api/placeholder/64/64"
-                  // preview={false}
-                />
+      <Form form={detailForm} name="basic" autoComplete="off" layout="vertical">
+        <div className="p-4">
+          <Card
+            className="shadow-sm border border-gray-200"
+            bodyStyle={{ padding: "20px" }}
+            title={`🫵 ข้อมูลส่วนตัว`}
+            extra={
+              <Button size="small" type="primary" onClick={() => (clickUpdate ? setClickUpdate(false) : setClickUpdate(true))}>
+                {clickUpdate ? `ยกเลิก` : `แก้ไข`}
+              </Button>
+            }>
+            {/* Header Section */}
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 space-y-4 lg:space-y-0">
+              <div className="flex items-center space-x-3">
+                <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200">
+                  {clickUpdate ? (
+                    <> </>
+                  ) : (
+                    <Image
+                      className="w-full h-full object-cover"
+                      src={image.imageId ? `${process.env.NEXT_PUBLIC_API_BASE_URL_USER}/id24users/get-image-user/${image.imageId}` : ""}
+                      fallback="/api/placeholder/64/64"
+                      preview={true}
+                    />
+                  )}
+                </div>
+                <div>
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    {detailForm.getFieldValue("firstNameTh")} {detailForm.getFieldValue("lastNameTh")}
+                  </h2>
+                  <p className="text-sm text-gray-600">
+                    {detailForm.getFieldValue("firstNameEn")} {detailForm.getFieldValue("lastNameEn")}
+                  </p>
+                  <p className="text-sm text-gray-500">@{detailForm.getFieldValue("username")}</p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-xl font-semibold text-gray-900">
-                  {detailForm.getFieldValue("firstNameTh")} {detailForm.getFieldValue("lastNameTh")}
-                </h2>
-                <p className="text-sm text-gray-600">
-                  {detailForm.getFieldValue("firstNameEn")} {detailForm.getFieldValue("lastNameEn")}
-                </p>
-                <p className="text-sm text-gray-500">@{detailForm.getFieldValue("username")}</p>
+              <div className="text-right">
+                <div className="flex items-center space-x-1">
+                  <span className="text-red-500 text-xs">*</span>
+                  <span className="text-sm font-medium text-gray-700">อายุงาน {dateWork}</span>
+                </div>
               </div>
             </div>
-            <div className="text-right">
-              <div className="flex items-center space-x-1">
-                <span className="text-red-500 text-xs">*</span>
-                <span className="text-sm font-medium text-gray-700">อายุงาน {dateWork}</span>
-              </div>
-            </div>
-          </div>
 
-          <Form form={detailForm} name="basic" autoComplete="off" layout="vertical">
             {/* Account Information Section */}
             <div className="mb-6">
               <h3 className="text-base font-medium text-gray-800 mb-3 pb-1 border-b border-blue-200">ข้อมูลบัญชีผู้ใช้</h3>
@@ -210,52 +225,12 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                 <Form.Item label="รหัสพนักงาน" name="empId" className="mb-2">
                   <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
                 </Form.Item>
-
-                <Form.Item
-                  label="Username"
-                  name="username"
-                  className="mb-2"
-                  rules={[{ required: true, message: "กรุณากรอก Username" }, { validator: validateNoSpaces }]}>
+                <Form.Item label="Username" name="username" className="mb-2">
                   <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
                 </Form.Item>
-
-                <Form.Item label="Email" name="email" rules={[{ required: true, message: "กรุณากรอก Email" }]} className="mb-2">
+                <Form.Item label="Email" name="email" className="mb-2">
                   <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
                 </Form.Item>
-
-                {/* <Form.Item label="Status" name="activeStatus" className="mb-2">
-                  <Switch
-                    disabled={true}
-                    checkedChildren="Active"
-                    unCheckedChildren="Inactive"
-                    checked={checkedActiveStatus}
-                    onChange={() => setCheckedActiveStatus(!checkedActiveStatus)}
-                    className={checkedActiveStatus ? "bg-green-500" : "bg-red-500"}
-                  />
-                </Form.Item> */}
-
-                {/* <Form.Item label="Change Password" className="mb-2 lg:col-span-2">
-                  <div className="flex items-center space-x-2">
-                    <div className="flex-1">
-                      <Input.Password
-                        disabled
-                        value="••••••••"
-                        style={customInputStyle}
-                        className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none"
-                      />
-                    </div>
-                    <Button
-                      type="primary"
-                      disabled
-                      onClick={() => {
-                        setOpenChangePassword(true);
-                        repasswordForm.resetFields();
-                      }}
-                      className="px-4 py-1 h-8 text-xs">
-                      เปลี่ยนรหัสผ่าน
-                    </Button>
-                  </div>
-                </Form.Item> */}
               </div>
             </div>
 
@@ -263,11 +238,11 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
             <div className="mb-6">
               <h3 className="text-base font-medium text-gray-800 mb-3 pb-1 border-b border-green-200">ข้อมูลส่วนตัว</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <Form.Item label="ชื่อจริง" name="firstNameTh" rules={[{ required: true, message: "กรุณากรอกชื่อจริง" }]} className="mb-2">
+                <Form.Item label="ชื่อจริง" name="firstNameTh" className="mb-2">
                   <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
                 </Form.Item>
 
-                <Form.Item label="นามสกุล" name="lastNameTh" rules={[{ required: true, message: "กรุณากรอกนามสกุล" }]} className="mb-2">
+                <Form.Item label="นามสกุล" name="lastNameTh" className="mb-2">
                   <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
                 </Form.Item>
                 <Form.Item label="ตำแหน่ง" name="masterPositionId" className="mb-2">
@@ -281,12 +256,24 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                     }}
                   />
                 </Form.Item>
-                <Form.Item label="เบอร์โต๊ะทำงาน" name="extension" className="mb-2">
-                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
+                <Form.Item label="เบอร์โต๊ะทำงาน" name="extension" className="mb-2" rules={[{ required: clickUpdate }]}>
+                  <Input
+                    disabled={clickUpdate ? false : true}
+                    style={clickUpdate ? {} : customInputStyle}
+                    className={clickUpdate ? "" : "text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none"}
+                  />
                 </Form.Item>
 
-                <Form.Item label="เบอร์โทรศัพท์" name="phoneNumber" rules={[{ validator: validateOnlyNumbers }]} className="mb-2">
-                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
+                <Form.Item
+                  label="เบอร์โทรศัพท์"
+                  name="phoneNumber"
+                  className="mb-2"
+                  rules={[{ required: clickUpdate, validator: validateOnlyNumbers }]}>
+                  <Input
+                    disabled={clickUpdate ? false : true}
+                    style={clickUpdate ? {} : customInputStyle}
+                    className={clickUpdate ? "" : "text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none"}
+                  />
                 </Form.Item>
               </div>
             </div>
@@ -298,22 +285,16 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                 <Form.Item label="วันที่สร้างบัญชี" name="createdAt" className="mb-2">
                   <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
                 </Form.Item>
-
-                <Form.Item label="วันที่อัปเดตล่าสุด" name="updatedAt" className="mb-2">
-                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
-                </Form.Item>
-
                 <Form.Item label="วันที่เริ่มงาน" name="startWork" className="mb-2">
                   <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
                 </Form.Item>
               </div>
             </div>
-          </Form>
-        </Card>
-      </div>
+          </Card>
+        </div>
 
-      {/* Change Password Modal */}
-      <Modal
+        {/* Change Password Modal */}
+        {/* <Modal
         open={openChangePassword}
         onCancel={() => setOpenChangePassword(false)}
         footer={null}
@@ -353,7 +334,8 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
             </Button>
           </div>
         </Form>
-      </Modal>
+      </Modal> */}
+      </Form>
     </>
   );
 };

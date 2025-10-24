@@ -186,14 +186,20 @@ const HandBookManage: React.FC = () => {
     }
     return setAttendFiles(newFileList);
   };
-  
+
   const beforeUploadAttendFiles = async (file: RcFile) => {
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return Upload.LIST_IGNORE;
     }
-    const compressed = await handleCompress(file);
-    return compressed;
+    try {
+      const compressed = await handleCompress(file);
+      return compressed ?? true; // ✅ ถ้า compress สำเร็จ หรือ undefined → upload ปกติ
+    } catch (err) {
+      console.error("❌ Compress error:", err);
+      message.error(`ไฟล์ ${file.name} ขนาดใหญ่เกินไปหรือ compress ล้มเหลว`);
+      return true; 
+    }
   };
 
   const handleDownload = async (record: handbookFile) => {

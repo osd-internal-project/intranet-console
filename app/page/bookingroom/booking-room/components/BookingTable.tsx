@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Table, Tag, Button, Modal, Divider, TablePaginationConfig, Collapse } from "antd";
 import type { TableProps } from "antd";
 import { CaretRightOutlined } from "@ant-design/icons";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { BookingRoomServices } from "../services/booking-room.service";
 import dayjs from "dayjs";
 
 interface DataType {

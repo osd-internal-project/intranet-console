@@ -94,11 +94,13 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           className=" min-h-screen  hidden  md:block bg ">
           <div className="flex justify-center py-4 ">
             {!collapsed ? (
-              <>
+              <div onClick={() => navigate.push(`${window.location.origin}/page/home`)} className="cursor-pointer">
                 <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : " w-32"}`} />
-              </>
+              </div>
             ) : (
-              <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
+              <div onClick={() => navigate.push(`${window.location.origin}/page/home`)} className="cursor-pointer">
+                <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
+              </div>
             )}
           </div>
           <Menu

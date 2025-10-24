@@ -5,6 +5,7 @@ import ShowDetailComponent from "./components/ShowDetailComponent";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 export default function UserDetailPage() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
+
   if (user?.userId) {
     return (
       <Row>

@@ -116,32 +116,42 @@ export async function handleCompress(file: File): Promise<File> {
     // ============================
     // 📄 PDF
     // ============================
-    if (mime === 'application/pdf') {
-      console.log('🔹 กำลังบีบ PDF...');
-      const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer);
+    // เฉพาะ PDF
+    if (file.type === 'application/pdf') {
+      // skip compress ถ้าใหญ่เกิน 20MB
+      if (file.size > 20 * 1024 * 1024) {
+        message.info('ไฟล์ใหญ่เกิน 20MB จะไม่บีบอัด');
+        return file; // ✅ upload ไฟล์ต้นฉบับ
+      }
 
-      // ลบ metadata และ re-save
-      pdfDoc.setTitle('');
-      pdfDoc.setAuthor('');
-      pdfDoc.setSubject('');
-      pdfDoc.setKeywords([]);
-      pdfDoc.setProducer('');
-      pdfDoc.setCreator('');
-      pdfDoc.setCreationDate(new Date());
-      pdfDoc.setModificationDate(new Date());
+      try {
+        console.log('🔹 กำลังบีบ PDF...');
+        const arrayBuffer = await file.arrayBuffer();
+        const pdfDoc = await PDFDocument.load(arrayBuffer);
 
-      const compressedPdfBytes: any = await pdfDoc.save({ useObjectStreams: true });
+        pdfDoc.setTitle('');
+        pdfDoc.setAuthor('');
+        pdfDoc.setSubject('');
+        pdfDoc.setKeywords([]);
+        pdfDoc.setProducer('');
+        pdfDoc.setCreator('');
+        pdfDoc.setCreationDate(new Date());
+        pdfDoc.setModificationDate(new Date());
 
-      // แปลงเป็น Blob ก่อนสร้าง File
-      const blob = new Blob([compressedPdfBytes], { type: 'application/pdf' });
-      const compressedPdf = new File([blob], file.name, { type: 'application/pdf' });
+        const compressedPdfBytes = await pdfDoc.save({ useObjectStreams: true });
+        const blob = new Blob([new Uint8Array(compressedPdfBytes)], { type: 'application/pdf' });
+        const compressedPdf = new File([blob], file.name, { type: 'application/pdf' });
 
-      console.log(
-        `PDF: ${(file.size / 1024 / 1024).toFixed(2)}MB → ${(compressedPdf.size / 1024 / 1024).toFixed(2)}MB`
-      );
+        console.log(
+          `PDF: ${(file.size / 1024 / 1024).toFixed(2)}MB → ${(compressedPdf.size / 1024 / 1024).toFixed(2)}MB`
+        );
 
-      return compressedPdf;
+        return compressedPdf; // ✅ compressed file
+      } catch (err) {
+        console.error('❌ PDF compress failed:', err);
+        message.warning('ไฟล์ PDF บีบอัดล้มเหลว จะอัปโหลดไฟล์ต้นฉบับแทน');
+        return file; // ✅ fallback ไฟล์ต้นฉบับ
+      }
     }
 
     // ============================

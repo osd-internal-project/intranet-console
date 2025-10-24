@@ -567,3 +567,17 @@ export const validateSgowAllHourLeave = (row: ITypetypeleave, createdataleaveFor
     </div>
   );
 };
+
+export const validateOnlyNumbers = (rule: any, value: any, callback: any) => {
+  if (value === undefined) {
+    callback();
+  } else {
+    if (/\s/.test(value)) {
+      callback("ห้ามใช้เว้นวรรค");
+    } else if (isNaN(value)) {
+      callback("กรุณากรอกเฉพาะตัวเลข");
+    } else {
+      callback();
+    }
+  }
+};

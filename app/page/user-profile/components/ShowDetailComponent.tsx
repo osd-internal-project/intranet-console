@@ -1,5 +1,5 @@
 "use client";
-import { Button, Card, Form, Input, Modal, Select, Switch, message, Image } from "antd";
+import { Button, Card, Form, Input, Modal, Select, Switch, message, Image, Upload, type UploadFile, type UploadProps } from "antd";
 import React, { useState, useEffect } from "react";
 import UserServices from "../services/index.service";
 import { useForm } from "antd/es/form/Form";
@@ -9,6 +9,12 @@ import { loadAppConfig } from "@/app/config/app-config";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { validateOnlyNumbers } from "@/app/utils/validatefield";
+import { UploadOutlined } from "@ant-design/icons";
+import type { RcFile } from "antd/es/upload";
+import { handleCompress } from "@/app/utils";
+import type { TUpdateUserDto } from "../../users-management/users/common";
+import { UsersServices } from "@/app/services/users.service";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -54,18 +60,12 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
   const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const userServices = UserServices(baseUrlUser);
   const [detailForm] = useForm();
-  const [repasswordForm] = Form.useForm();
+  const [imageFiles, setImageFiles] = useState<UploadFile[]>([]);
   const [loading, setLoading] = useState(true);
-  const [openChangePassword, setOpenChangePassword] = useState(false);
-  const [checkedActiveStatus, setCheckedActiveStatus] = useState<boolean>(false);
   const [dateWork, setDateWork] = useState<string>("");
   const [positionOption, setPositionOption] = useState<option[]>([]);
-  const image = detailForm.getFieldsValue(true);
   const [clickUpdate, setClickUpdate] = React.useState(false);
-
-  const handleUpdate = async (values: { extension: string; phoneNumber: string }) => {
-    console.log(values);
-  };
+  const image = detailForm.getFieldsValue(true);
 
   useEffect(() => {
     if (loading) {
@@ -97,7 +97,6 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
         updatedAt: data.updatedAt ? dateToStringThNoTime(data.updatedAt) : "",
         masterPositionId: data.masterPosition.posId,
       };
-      setCheckedActiveStatus(data.activeStatus);
       detailForm.setFieldsValue(formdata);
       const positions = await userServices.getMasterPositionAll();
       const positionOption: option[] = positions.map((d: any) => ({ label: d.nameTh, value: d.id }));
@@ -106,75 +105,62 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
     setLoading(false);
   };
 
-  const validateNoSpaces = (rule: any, value: string, callback: any) => {
-    if (/\s/.test(value)) {
-      callback("ห้ามใช้เว้นวรรค");
-    } else {
-      callback();
-    }
+  const getBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
+
+  const handleChangeImageFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
+    return setImageFiles(newFileList);
   };
 
-  const validatePassword = (rule: any, value: string, callback: any) => {
-    const lowerCaseMatches = value.match(/[a-z]/g);
-    const upperCaseMatches = value.match(/[A-Z]/g);
-    if (/\s/.test(value)) {
-      callback("ห้ามใช้เว้นวรรค");
-    } else if (!lowerCaseMatches) {
-      callback("รหัสต้องมีตัวพิมพ์เล็ก");
-    } else if (!upperCaseMatches) {
-      callback("รหัสต้องมีตัวพิมพ์ใหญ่");
-    } else if (!/^[a-zA-Z0-9]+$/.test(value)) {
-      callback("รหัสต้องมีเฉพาะตัวอักษรภาษาอังกฤษและตัวเลข");
+  const beforeUploadImageFiles = async (file: RcFile) => {
+    // const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
+    // if (file.size > maxSizeInBytes) {
+    //   message.error(`ไฟล์ ${file.name} มีขนาดใหญ่เกิน 2MB`);
+    //   return false;
+    // }
+    if (imageFiles.find((oneFile) => oneFile.name === file.name)) {
+      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
+      return false;
     }
-    callback();
+    const compressed = await handleCompress(file);
+    return compressed;
   };
 
-  const validateConfirmPassword = (_: any, value: any) => {
-    const firstPassword = repasswordForm.getFieldValue("newPassword");
-    if (value && value !== firstPassword) {
-      return Promise.reject(new Error("กรุณากรอก Password ทั้ง 2 ช่องให้ตรงกัน"));
-    }
-    return Promise.resolve();
-  };
+  const handleUpdate = async (values: { extension: string; phoneNumber: string }) => {
+    const base = {
+      extension: values.extension,
+      phoneNumber: values.phoneNumber,
+    };
 
-  const validateOnlyNumbers = (rule: any, value: any, callback: any) => {
-    if (value === undefined) {
-      callback();
-    } else {
-      if (/\s/.test(value)) {
-        callback("ห้ามใช้เว้นวรรค");
-      } else if (isNaN(value)) {
-        callback("กรุณากรอกเฉพาะตัวเลข");
-      } else {
-        callback();
-      }
-    }
-  };
-
-  const changeUserPassword = async (value: any) => {
-    if (value.newPassword !== value.rePassword) {
-      message.error("กรุณากรอกรหัสผ่านให้ถูกต้อง");
-    } else {
-      if (confirm("ยืนยันการรีเซ็ตรหัสผ่าน ?")) {
-        await userServices
-          .changeUserPassword(userid, value.newPassword)
-          .then(() => {
-            message.success("Success");
-            repasswordForm.resetFields();
-            setOpenChangePassword(false);
-          })
-          .catch((err) => {
-            message.error("ผิดพลาด");
-            console.log(err);
+    if (userid) {
+      const resUpdate = await UsersServices(baseUrlUser).updateProfile(userid, base);
+      if (resUpdate) {
+        if (resUpdate && imageFiles.length > 0) {
+          console.log(resUpdate && imageFiles.length > 0);
+          imageFiles.forEach(async (file) => {
+            const formData: any = new FormData();
+            formData.append("type", "create-attend");
+            formData.append("files", file.originFileObj);
+            await UsersServices(baseUrlUser).uploadFiles(resUpdate.userId, formData);
           });
+        }
+        message.success("Update Success");
+        setImageFiles([]);
+        detailForm.resetFields();
+        setLoading(true);
+        setClickUpdate(false);
       }
     }
-    setOpenChangePassword(false);
   };
 
   return (
     <>
-      <Form form={detailForm} name="basic" autoComplete="off" layout="vertical">
+      <Form form={detailForm} name="basic" autoComplete="off" layout="vertical" onFinish={handleUpdate}>
         <div className="p-4">
           <Card
             className="shadow-sm border border-gray-200"
@@ -188,18 +174,32 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
             {/* Header Section */}
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 space-y-4 lg:space-y-0">
               <div className="flex items-center space-x-3">
-                <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200">
-                  {clickUpdate ? (
-                    <> </>
-                  ) : (
+                {clickUpdate ? (
+                  <>
+                    <Upload
+                      accept="image/png, image/jpeg"
+                      fileList={imageFiles}
+                      onChange={handleChangeImageFiles}
+                      beforeUpload={beforeUploadImageFiles}
+                      multiple={false}
+                      maxCount={1}
+                      listType="picture">
+                      <Button className="w-full" icon={<UploadOutlined />}>
+                        upload
+                      </Button>
+                    </Upload>
+                  </>
+                ) : (
+                  <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200">
                     <Image
                       className="w-full h-full object-cover"
                       src={image.imageId ? `${process.env.NEXT_PUBLIC_API_BASE_URL_USER}/id24users/get-image-user/${image.imageId}` : ""}
                       fallback="/api/placeholder/64/64"
                       preview={true}
                     />
-                  )}
-                </div>
+                  </div>
+                )}
+
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900">
                     {detailForm.getFieldValue("firstNameTh")} {detailForm.getFieldValue("lastNameTh")}
@@ -288,53 +288,17 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                 <Form.Item label="วันที่เริ่มงาน" name="startWork" className="mb-2">
                   <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
                 </Form.Item>
+                {clickUpdate ? (
+                  <div className="flex justify-end items-end">
+                    <Button htmlType="submit" type="primary">
+                      ยืนยัน
+                    </Button>
+                  </div>
+                ) : null}
               </div>
             </div>
           </Card>
         </div>
-
-        {/* Change Password Modal */}
-        {/* <Modal
-        open={openChangePassword}
-        onCancel={() => setOpenChangePassword(false)}
-        footer={null}
-        title={<div className="text-base font-medium text-gray-800">เปลี่ยนรหัสผ่าน</div>}
-        width={400}>
-        <Form form={repasswordForm} layout="vertical" onFinish={changeUserPassword} autoComplete="off" className="pt-2">
-          <Form.Item
-            label="รหัสผ่านใหม่"
-            name="newPassword"
-            rules={[{ required: true, message: "กรุณากรอกรหัสผ่านใหม่" }, { validator: validatePassword }]}
-            className="mb-3">
-            <Input.Password placeholder="กรุณากรอกรหัสผ่านใหม่" className="h-9" />
-          </Form.Item>
-
-          <Form.Item
-            label="ยืนยันรหัสผ่าน"
-            name="rePassword"
-            rules={[
-              { required: true, message: "กรุณากรอกรหัสผ่านใหม่อีกครั้ง" },
-              { validator: validateNoSpaces },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  return validateConfirmPassword(_, value);
-                },
-              }),
-            ]}
-            className="mb-4">
-            <Input.Password placeholder="กรุณายืนยันรหัสผ่านใหม่" className="h-9" />
-          </Form.Item>
-
-          <div className="flex justify-end space-x-2 pt-3 border-t border-gray-200">
-            <Button onClick={() => setOpenChangePassword(false)} className="px-4 h-9 text-sm">
-              ยกเลิก
-            </Button>
-            <Button type="primary" htmlType="submit" className="px-4 h-9 text-sm">
-              บันทึก
-            </Button>
-          </div>
-        </Form>
-      </Modal> */}
       </Form>
     </>
   );

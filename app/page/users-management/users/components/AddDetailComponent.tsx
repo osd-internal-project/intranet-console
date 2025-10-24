@@ -9,6 +9,7 @@ import MasterPositionServices from "../services/position.service";
 import { ITypeOption } from "../common";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import { validateOnlyNumbers } from "@/app/utils/validatefield";
 interface detailType {
   username: string;
   password: string;
@@ -114,19 +115,6 @@ const AddDetailComponent: React.FC = (): React.ReactElement => {
       }
     }
     callback();
-  };
-  const validateOnlyNumbers = (rule: any, value: any, callback: any) => {
-    if (value === undefined) {
-      callback();
-    } else {
-      if (/\s/.test(value)) {
-        callback("Please do not enter space");
-      } else if (isNaN(value)) {
-        callback("Please enter numbers only");
-      } else {
-        callback();
-      }
-    }
   };
   const validateConfirmPassword = (_: any, value: any) => {
     const firstPassword = detailForm.getFieldValue("password");

@@ -13,6 +13,7 @@ import MasterPositionServices from "../../services/position.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import { handleCompress } from "@/app/utils";
+import { validateOnlyNumbers } from "@/app/utils/validatefield";
 export interface props {
   userid: string;
 }
@@ -173,19 +174,7 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
     }
     return Promise.resolve();
   };
-  const validateOnlyNumbers = (rule: any, value: any, callback: any) => {
-    if (value === undefined) {
-      callback();
-    } else {
-      if (/\s/.test(value)) {
-        callback("Please do not enter space");
-      } else if (isNaN(value)) {
-        callback("Please enter numbers only");
-      } else {
-        callback();
-      }
-    }
-  };
+
 
   const changeUserPassword = async (value: any) => {
     if (value.newPassword !== value.rePassword) {

@@ -10,7 +10,7 @@ export interface TUsersService {
   findGroupsId24: () => Promise<any>;
   findByToken: () => Promise<any>;
   addUser: (formData: TCreateUserDto) => Promise<any>;
-  updateUser: (userId: string, formData: TCreateUserDto) => Promise<any>;
+  updateUser: (userId: string, formData: any) => Promise<any>;
   updateProfile: (userId: string, formData: { extension: string, phoneNumber: string }) => Promise<any>;
   uploadFiles: (userId: string, form: any) => Promise<any>;
   getImage: (userId: string) => Promise<any>;

@@ -19,6 +19,7 @@ export default function Page() {
   const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [loading, setLoading] = useState<boolean>(true);
   const [month, setMonth] = useState<Dayjs | string>(dayjs());
+  const [monthGroup, setMonthGroup] = useState<Dayjs | string>(dayjs());
   const [dataSource, setDataSource] = useState<{ data: ITypeDataLeave[]; count: number }>({ data: [], count: 0 });
   const [dataCalendarUser, setDataCalendar๊User] = useState<ITypeDataLeave[]>([]);
   const [dataCalendarGroup, setDataCalendarGroup] = useState<ITypeDataLeave[]>([]);
@@ -43,7 +44,7 @@ export default function Page() {
       const leaveService = DataLeaveService(baseUrlIntranet);
       const [holidayData, calendarTeams, calendarUser, { data, count }] = await Promise.all([
         holidayService.getHolidayByYear(yearNow),
-        leaveService.getdataLeaveCalendarTeamsByMonth(month),
+        leaveService.getdataLeaveCalendarTeamsByMonth(monthGroup),
         leaveService.getdataLeaveCalendarByMonth(month),
         leaveService.getdataLeaveAll(user.userId, skip, take),
       ]);
@@ -71,6 +72,11 @@ export default function Page() {
 
   const handleChangemonth = (month: Dayjs | string) => {
     setMonth(month);
+    setLoading(true);
+  };
+
+  const handleChangemonthGroup = (month: Dayjs | string) => {
+    setMonthGroup(month);
     setLoading(true);
   };
 
@@ -128,7 +134,7 @@ export default function Page() {
       label: "ปฏิทินการลาทีม",
       children: (
         <DepartmentCalendarDetail
-          handleChangemonth={handleChangemonth}
+          handleChangemonth={handleChangemonthGroup}
           dataSource={dataCalendarGroup}
           downloadFile={(id: number, filename: string) => downloadFile(id, filename)}
         />
@@ -152,7 +158,8 @@ export default function Page() {
     },
   ];
 
-  const onChange = () => {
+  const onChange = (value: string) => {
+    loadData();
     setLoading(true);
   };
 
@@ -177,7 +184,7 @@ export default function Page() {
         </Divider>
         <div className="w-full">
           <Card>
-            <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+            <Tabs defaultActiveKey="1" items={items} onChange={(value) => onChange(value)} />
           </Card>
         </div>
       </Row>

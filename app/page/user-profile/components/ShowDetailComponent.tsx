@@ -138,7 +138,7 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
     };
 
     if (userid) {
-      const resUpdate = await UsersServices(baseUrlUser).updateProfile(userid, base);
+      const resUpdate = await UsersServices(baseUrlUser).updateUser(userid, base);
       if (resUpdate) {
         if (resUpdate && imageFiles.length > 0) {
           console.log(resUpdate && imageFiles.length > 0);
@@ -194,7 +194,6 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
                     <Image
                       className="w-full h-full object-cover"
                       src={image.imageId ? `${process.env.NEXT_PUBLIC_API_BASE_URL_USER}/id24users/get-image-user/${image.imageId}` : ""}
-                      fallback="/api/placeholder/64/64"
                       preview={true}
                     />
                   </div>

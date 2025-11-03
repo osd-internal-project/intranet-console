@@ -114,10 +114,15 @@ export const UserAction: React.FC<Props> = ({
         createForm.resetFields();
       }
     } else if (managePage.modalTitle === "update") {
+      console.log('test');
       const updateForm = value as TUpdateUserDto;
       if (updateForm.userId) {
+        const { masterPositionId, ...formWithoutMasterPositionId } = updateForm;
         const userId = updateForm.userId;
-        const resUpdate = await UsersServices(baseUrlUser).updateUser(userId, updateForm);
+        const resUpdate = await UsersServices(baseUrlUser).updateUser(userId, {
+          ...formWithoutMasterPositionId,
+          positionId: updateForm.masterPositionId,
+        });
         if (resUpdate) {
           if (resUpdate && imageFiles.length > 0) {
             console.log(resUpdate && imageFiles.length > 0);

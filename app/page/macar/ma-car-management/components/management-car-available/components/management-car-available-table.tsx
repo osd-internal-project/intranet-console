@@ -8,11 +8,17 @@ export interface props {
   pagination: any;
   changePagination: (pagination: TablePaginationConfig) => void;
   handleOpenModal: (status: string, a: any) => void;
+  handleCloseModalFiles: (status: string, a: any) => void;
 }
 
-const ManagementCarAvailableTable: React.FC<props> = ({ dataSource, loading, pagination, changePagination, handleOpenModal }): React.ReactElement => {
-  console.log(dataSource);
-
+const ManagementCarAvailableTable: React.FC<props> = ({
+  dataSource,
+  loading,
+  pagination,
+  changePagination,
+  handleOpenModal,
+  handleCloseModalFiles,
+}): React.ReactElement => {
   const columns: TableProps<MaCarType>["columns"] = [
     {
       title: "ลำดับ",
@@ -71,6 +77,17 @@ const ManagementCarAvailableTable: React.FC<props> = ({ dataSource, loading, pag
 
           <Button type="link" onClick={() => handleOpenModal("delete", record)} danger>{`ลบ`}</Button>
         </Space>
+      ),
+    },
+    {
+      title: "ไฟล์แนบ",
+      dataIndex: "carId",
+      key: "carId",
+      align: "center",
+      render: (_, record) => (
+        <Button type="primary" onClick={() => handleCloseModalFiles("open", record)} disabled={record.maCarFiles.length > 0 ? false : true}>
+          {`ไฟล์ทั้งหมด`}
+        </Button>
       ),
     },
   ];

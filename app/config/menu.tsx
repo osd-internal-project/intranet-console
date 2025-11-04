@@ -165,6 +165,16 @@ export const MenuSider: MenuItem[] = [
         rule: ["admin"],
       },
       {
+        key: `macar/management-car-wrapup`,
+        label: `เช็คสภาพรถยนต์`,
+        rule: ["admin", "ma-user"],
+      },
+      // {
+      //   key: `macar/management-car-wrapup`,
+      //   label: `ต่อประกันรถยนต์`,
+      //   rule: ["admin", "ma-user"],
+      // },
+      {
         key: `macar/ma-car-management`,
         label: `การจัดการรถยนต์`,
         rule: ["admin", "ma-user"],

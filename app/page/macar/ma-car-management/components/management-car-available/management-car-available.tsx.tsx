@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Button, message } from "antd";
+import { Button, message, Upload, type UploadFile, type UploadProps } from "antd";
 import { TablePaginationConfig } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -10,6 +10,12 @@ import dayjs from "dayjs";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { loadAppConfig } from "@/app/config/app-config";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import type { RcFile } from "antd/es/upload";
+import { handleCompress } from "@/app/utils";
+import ManagementCarAvailableFilesPage from "./components/management-car-available-files";
+
+
+const baseImageUrl = process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET;
 
 export interface props {
   loading: boolean;
@@ -22,11 +28,14 @@ export interface props {
 const ManagementCarAvailable: React.FC<props> = ({ setLoading, loading, maCarData, pagination, changePagination }): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const [form] = useForm();
+  const [formfiles] = useForm();
   const { id24Axios } = useId24();
   const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const intraAuthService = ManageCarServices(baseUrIntranet);
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openModalFiles, setOpenModalFiles] = useState<boolean>(false);
   const [checkType, setCheckType] = useState<string>("create");
+  const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
 
   const handleOpenModal = (status: string, value: any) => {
     if (status !== "create") {
@@ -39,6 +48,15 @@ const ManagementCarAvailable: React.FC<props> = ({ setLoading, loading, maCarDat
   const handleCloseModal = () => {
     form.resetFields();
     setOpenModal(false);
+  };
+
+  const handleCloseModalFiles = (status: string, data: any) => {
+    if (status === "open") {
+      formfiles.setFieldsValue(data);
+      setOpenModalFiles(true);
+    } else {
+      setOpenModalFiles(false);
+    }
   };
 
   const onFinish = async (status: string, values: any) => {
@@ -61,14 +79,19 @@ const ManagementCarAvailable: React.FC<props> = ({ setLoading, loading, maCarDat
         updatedById: user?.userId,
         updatedByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
       };
-    } else {
     }
-
     try {
       if (status === "create") {
         intraAuthService.createMaCar(maCarCreateData);
       } else if (status === "edit") {
-        intraAuthService.updateMaCar(form.getFieldValue("carId"), maCarCreateData);
+        let formData: any = new FormData();
+        attendFiles.forEach((file: any) => {
+          formData.append("files", file.originFileObj);
+        });
+        const data = await intraAuthService.updateMaCar(form.getFieldValue("carId"), maCarCreateData);
+        if (data) {
+          const upload = await intraAuthService.uploadFilesDoc(form.getFieldValue("carId"), formData);
+        }
       } else {
         intraAuthService.deleteMaCar(form.getFieldValue("carId"));
       }
@@ -80,6 +103,54 @@ const ManagementCarAvailable: React.FC<props> = ({ setLoading, loading, maCarDat
     setOpenModal(false);
     setLoading(true);
   };
+
+  const handleChangeAttendFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
+    if (newFileList.length > 10) {
+      message.warning("คุณไม่สามารถอัปโหลดภาพเกิน 10 ไฟล์");
+      return Upload.LIST_IGNORE;
+    }
+
+    return setAttendFiles(newFileList);
+  };
+
+  const beforeUploadAttendFiles = async (file: RcFile) => {
+    if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
+      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
+      return Upload.LIST_IGNORE;
+    }
+    const isPdf = file.type === "application/pdf";
+    if (!isPdf) {
+      message.error("คุณสามารถอัปโหลดได้เฉพาะไฟล์ .pdf เท่านั้น");
+    }
+    const compressed = await handleCompress(file);
+    return compressed;
+  };
+
+  async function downloadFile(id: number, name: string): Promise<void> {
+      if (id && name) {
+        const fileUrl = `${baseImageUrl}/public/car-file/${id}?fileName=${encodeURIComponent(name)}`;
+        try {
+          const response = await fetch(fileUrl);
+  
+          if (response.ok) {
+            const blob = await response.blob();
+            const link = document.createElement("a");
+  
+            link.href = window.URL.createObjectURL(blob);
+            link.download = `${name}`;
+            link.click();
+  
+            window.URL.revokeObjectURL(link.href);
+          } else {
+            message.error("ไม่มีไฟล์ให้ดาวน์โหลด");
+          }
+        } catch (error) {
+          message.error("เกิดข้อผิดพลาดในการดาวน์โหลดไฟล์");
+        }
+      } else {
+        message.error("ไม่มีไฟล์ให้ดาวน์โหลด");
+      }
+    }
 
   return (
     <>
@@ -96,6 +167,7 @@ const ManagementCarAvailable: React.FC<props> = ({ setLoading, loading, maCarDat
             pagination={pagination}
             changePagination={changePagination}
             handleOpenModal={handleOpenModal}
+            handleCloseModalFiles={handleCloseModalFiles}
           />
         </>
       ) : null}
@@ -106,6 +178,17 @@ const ManagementCarAvailable: React.FC<props> = ({ setLoading, loading, maCarDat
           openModal={openModal}
           checkType={checkType}
           onFinish={onFinish}
+          handleChangeAttendFiles={handleChangeAttendFiles}
+          beforeUploadAttendFiles={beforeUploadAttendFiles}
+          attendFiles={attendFiles}
+        />
+      ) : null}
+      {openModalFiles ? (
+        <ManagementCarAvailableFilesPage
+          formfiles={formfiles}
+          handleCloseModalFiles={handleCloseModalFiles}
+          openModalFiles={openModalFiles}
+          downloadFile={downloadFile}
         />
       ) : null}
     </>

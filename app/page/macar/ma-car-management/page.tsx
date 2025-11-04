@@ -6,7 +6,6 @@ import { ManageCarServices } from "./services/manage-car.service";
 import { MaCarBookType, MaCarType, dataMaCarbook } from "../common/index";
 import ManagementCarAvailable from "./components/management-car-available/management-car-available.tsx";
 import ManagementCarMasterdataType from "./components/management-car-masterdata-type/management-car-masterdata-type";
-import ManagementCarWrapup from "./components/management-car-wrapup/management-car-wrapup";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
@@ -113,11 +112,11 @@ const ManageMaCar = () => {
       label: "ประเภทการตรวจสภาพ",
       children: <ManagementCarMasterdataType />,
     },
-    {
-      key: "4",
-      label: "เช็คสภาพรถ",
-      children: <ManagementCarWrapup />,
-    },
+    // {
+    //   key: "4",
+    //   label: "เช็คสภาพรถ",
+    //   children: <ManagementCarWrapup />,
+    // },
   ];
 
   return (

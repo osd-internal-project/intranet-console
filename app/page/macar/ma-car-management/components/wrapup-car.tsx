@@ -45,6 +45,7 @@ export interface MaCarType {
   createdAt: string;
   createdById: string;
   createdByName: string;
+  maCarFiles:[];
 }
 
 export interface MaCar {

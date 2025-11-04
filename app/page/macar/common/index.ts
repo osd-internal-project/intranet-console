@@ -16,6 +16,17 @@ export interface MaCarType {
   maCarBook: MaCarBookType[];
   maCarName: string;
   maStatus: boolean;
+  maCarFiles: MaCarFile[]
+}
+
+export interface MaCarFile {
+  id: number;
+  fileName?: string;
+  fileType?: string;
+  filePath?: string;
+  createdAt: string;
+  updatedAt?: string
+  carId?: string
 }
 
 export interface MaCarBookType {

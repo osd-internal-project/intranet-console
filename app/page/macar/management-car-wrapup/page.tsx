@@ -1,17 +1,18 @@
+"use client";
 import React, { useContext, useEffect, useState } from "react";
 import ManagementCarWrapupManage from "./components/management-car-wrapup-manage";
 import ManagementCarWrapupTable from "./components/management-car-wrapup-table";
-import { Button, Col, Form, message, Row, UploadFile } from "antd";
-import ExportExcel from "../../export/export-excel";
-import { ManageCarServices } from "../../services/manage-car.service";
-import { MaCarType } from "../wrapup-car";
+import { Breadcrumb, Button, Card, Col, Divider, Form, message, Row, UploadFile } from "antd";
 import { RcFile } from "antd/lib/upload";
 import dayjs from "dayjs";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import { ManageCarServices } from "../ma-car-management/services/manage-car.service";
+import type { MaCarType } from "../common";
+import ExportExcel from "../ma-car-management/export/export-excel";
 
-const ManagementCarWrapup: React.FC = (): React.ReactElement => {
+export default function ManagementCarWrapup() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const [form] = Form.useForm();
   const { id24Axios } = useId24();
@@ -146,21 +147,45 @@ const ManagementCarWrapup: React.FC = (): React.ReactElement => {
   };
   return (
     <div>
-      <Row gutter={[8, 8]} className="mb-2 flex justify-end">
-        <Col>
-          <Button type="primary" onClick={() => handleOpen("create", undefined)}>
-            {`เพิ่มข้อมูลตรวจสภาพรถ`}
-          </Button>
+      <Row gutter={[8, 8]}>
+        <Col span={24}>
+          <Breadcrumb
+            items={[
+              {
+                href: "/page",
+                title: <span>หน้าหลัก</span>,
+              },
+              {
+                title: <span>Over Time</span>,
+              },
+              {
+                title: <span>เช็คสภาพรถยนต์</span>,
+              },
+            ]}
+          />
         </Col>
-        {dataSourceWrapup ? (
-          <>
-            <Col>
-              <ExportExcel datamacar={dataSourceWrapup} />
-            </Col>
-          </>
-        ) : null}
+        <Divider orientation="left" orientationMargin="0">
+          <div className="title-page-font">{`เช็คสภาพรถยนต์`}</div>
+        </Divider>
       </Row>
-      <ManagementCarWrapupTable handleOpen={handleOpen} dataSource={dataSourceWrapup} loading={loading} />
+      <Card>
+        <Row gutter={[8, 8]} className="mb-2 flex justify-end">
+          <Col>
+            <Button type="primary" onClick={() => handleOpen("create", undefined)}>
+              {`เพิ่มข้อมูลตรวจสภาพรถ`}
+            </Button>
+          </Col>
+          {dataSourceWrapup ? (
+            <>
+              <Col>
+                <ExportExcel datamacar={dataSourceWrapup} />
+              </Col>
+            </>
+          ) : null}
+        </Row>
+        <ManagementCarWrapupTable handleOpen={handleOpen} dataSource={dataSourceWrapup} loading={loading} />
+      </Card>
+
       {openModal ? (
         <ManagementCarWrapupManage
           form={form}
@@ -180,6 +205,4 @@ const ManagementCarWrapup: React.FC = (): React.ReactElement => {
       ) : null}
     </div>
   );
-};
-
-export default ManagementCarWrapup;
+}

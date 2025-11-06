@@ -1,15 +1,37 @@
 import { Button, Space, Table, TableProps, Tag, Tooltip } from "antd";
 import React from "react";
-import { MaCarwarpup } from "../../wrapup-car";
 import { EyeOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { dateFormatTime, numberFormat } from "@/app/utils";
 import { numberWithCommas } from "@/app/utils/format";
+import type { Decimal } from "@prisma/client/runtime/library";
+import type { MaCarWrapupImage } from "../../common";
 
 export interface props {
   handleOpen: (status: string, values: any) => void;
   dataSource: any;
   loading: boolean;
+}
+
+export interface MaCarwarpup {
+  id: number;
+  carWrapupId: string;
+  carId?: string;
+  carName: string;
+  typeId?: number;
+  typeName: string;
+  vender: string;
+  cost: Decimal;
+  detail: string;
+  wrapupMiles: number;
+  dateStart: Date | string;
+  dateEnd: Date | string;
+  remark: string;
+  createdAt: string;
+  updatedAt: string;
+  status?: boolean;
+  createbyName?: string;
+  maCarWrapupImage: MaCarWrapupImage[];
 }
 
 const ManagementCarWrapupTable: React.FC<props> = ({ handleOpen, dataSource, loading }): React.ReactElement => {

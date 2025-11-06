@@ -126,7 +126,7 @@ const ManagementCarAvailable: React.FC<props> = ({ setLoading, loading, maCarDat
     return compressed;
   };
 
-  async function downloadFile(id: number, name: string): Promise<void> {
+  async function downloadFile(id: string, name: string): Promise<void> {
       if (id && name) {
         const fileUrl = `${baseImageUrl}/public/car-file/${id}?fileName=${encodeURIComponent(name)}`;
         try {

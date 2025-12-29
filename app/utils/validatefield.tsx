@@ -74,6 +74,30 @@ export const validateCheckLeaveDay = (leavedata: ITypeDataLeaveCreate[], dataMas
   return defaultcanLeave - totalLeaveHours;
 };
 
+export const getQuotaLeavePerYear = (dataMasterType: ITypetypeleave, startWork: string) => {
+  let defaultcanLeave_Hour = 0;
+  let defaultcanLeave_Day = 0;
+  const dateNow = dayjs(new Date());
+  const startwork = dayjs(startWork);
+  const yearOfWork = dateNow.diff(startwork, "years", true);
+  if (yearOfWork <= 1) {
+    defaultcanLeave_Hour += Number(dataMasterType.limitLeaveFour) * 8;
+    defaultcanLeave_Day += Number(dataMasterType.limitLeaveFour);
+  } else if (yearOfWork < 3) {
+    defaultcanLeave_Hour += Number(dataMasterType.limitLeaveOne) * 8;
+    defaultcanLeave_Day += Number(dataMasterType.limitLeaveOne);
+  } else if (yearOfWork < 5) {
+    defaultcanLeave_Hour += Number(dataMasterType.limitLeaveTwo) * 8;
+    defaultcanLeave_Day += Number(dataMasterType.limitLeaveTwo);
+  } else {
+    defaultcanLeave_Hour += Number(dataMasterType.limitLeaveThree) * 8;
+    defaultcanLeave_Day += Number(dataMasterType.limitLeaveThree);
+  }
+  return {quotaLeaveHour: defaultcanLeave_Hour,
+          quotaLeaveDay: Math.floor(defaultcanLeave_Day)
+  };
+};
+
 export const validateSumTotalLeave = (values: ITypeDataLeaveCreate, holidays: IFindAllDayDto[]) => {
   let SumTime: number = 1;
   const dateStart = new Date(dayjs(values.startDate).format("YYYY-MM-DD")).getTime();

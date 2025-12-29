@@ -37,20 +37,38 @@ export const validateCheckEndDate = (startDate: any, endDate: any, TypeLeave: nu
       dayjs(holiday.holidaysDate).format("DD-MM-YYYY") === dayjs(startDate).format("DD-MM-YYYY") ||
       dayjs(holiday.holidaysDate).format("DD-MM-YYYY") === dayjs(endDate).format("DD-MM-YYYY"),
   );
+
   if (!TypeLeave) {
     return Promise.reject(new Error("โปรดเลือกประเภทการลาก่อนเสมอ"));
   }
+
+  // Ensure start and end dates are provided
+  if (!startDate) {
+    return Promise.reject(new Error("กรุณาเลือกวันที่เริ่มลาก่อน"));
+  }
   if (!endDate) {
     return Promise.reject(new Error("กรุณาเลือกวันที่สิ้นสุดการลา"));
-  } else if (!startDate) {
-    return Promise.reject(new Error("กรุณาเลือกวันที่เริ่มลาก่อน"));
-  } else if (!endDate || !startDate || endDate.isAfter(startDate) || endDate.isSame(startDate, "day")) {
-    return Promise.resolve();
   }
+
+  const start = dayjs(startDate);
+  const end = dayjs(endDate);
+
+  // End must not be before start
+  if (end.isBefore(start, "day")) {
+    return Promise.reject(new Error("วันที่สิ้นสุดต้องเท่ากับหรือหลังจากวันที่เริ่ม"));
+  }
+
+  // Enforce both dates be within the same calendar year
+  // if (start.year() !== end.year()) {
+  //   return Promise.reject(new Error("ไม่สามารถเลือกวันที่ข้ามปีได้ กรุณาเลือกวันที่ภายในปีเดียวกัน"));
+  // }
+
+  // Check holidays
   if (findHolidays) {
     return Promise.reject(new Error("โปรตรวจสอบว่าวันลาของท่านตรงกับวันหยุดไหม"));
   }
-  return Promise.reject(new Error("วันที่สิ้นสุดต้องเท่ากับหรือหลังจากวันที่เริ่ม"));
+
+  return Promise.resolve();
 };
 
 export const validateCheckLeaveDay = (leavedata: ITypeDataLeaveCreate[], dataMasterType: ITypetypeleave, startWork: string) => {

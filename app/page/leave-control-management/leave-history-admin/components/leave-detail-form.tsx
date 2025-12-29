@@ -1,5 +1,17 @@
 import React from "react";
-import { Button, Form, Input, Space, Tooltip, Row, Col, Card, Tag, Divider, FormInstance } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Space,
+  Tooltip,
+  Row,
+  Col,
+  Card,
+  Tag,
+  Divider,
+  FormInstance,
+} from "antd";
 import {
   PaperClipOutlined,
   CalendarOutlined,
@@ -81,7 +93,14 @@ export const LeaveDetailForm: React.FC<props> = ({
         autoComplete="off"
         form={formdetail}
         layout="vertical"
-        onFinish={(e) => onFinishUpdate(e, submitAction, formdetail.getFieldValue("id") ? formdetail.getFieldValue("id") : 0)}>
+        onFinish={(e) =>
+          onFinishUpdate(
+            e,
+            submitAction,
+            formdetail.getFieldValue("id") ? formdetail.getFieldValue("id") : 0
+          )
+        }
+      >
         {/* Basic Information Card */}
         <Card
           className="mb-4 shadow-sm"
@@ -90,7 +109,8 @@ export const LeaveDetailForm: React.FC<props> = ({
               <UserOutlined className="mr-2 text-blue-500" />
               <span className="font-medium text-gray-700">ข้อมูลทั่วไป</span>
             </div>
-          }>
+          }
+        >
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item label="วันที่สร้าง" name="createAt">
@@ -149,15 +169,55 @@ export const LeaveDetailForm: React.FC<props> = ({
           title={
             <div className="flex items-center">
               <CalendarOutlined className="mr-2 text-green-500" />
-              <span className="font-semibold text-gray-800">รายละเอียดการลา</span>
+              <span className="font-semibold text-gray-800">
+                รายละเอียดการลา
+              </span>
             </div>
           }
-          bordered={false}>
-          <Row gutter={[16, 16]}>
+          bordered={false}
+        >
+        <Row gutter={[5, 5]} className="mb-8">
+          {[
+            { label: "สิทธิ์ทั้งหมด", value: "0", unit: "วัน", color: "text-gray-700", bg: "bg-gray-100", border: "border-gray-200" },
+            { label: "ใช้ไปแล้ว", value: "0", unit: "วัน", color: "text-red-600", bg: "bg-red-50", border: "border-red-100" },
+            { label: "ขอลาครั้งนี้", value: "4", unit: "วัน", color: "text-blue-700", bg: "bg-blue-50", border: "border-blue-100" },
+            { label: "คงเหลือเดิม", value: "8", unit: "วัน", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-100" },
+            { label: "คงเหลือใหม่", value: "0", unit: "วัน", color: "text-green-700", bg: "bg-green-50", border: "border-green-200"},
+          ].map((item, idx) => (
+            <Col xs={12} style={{ flex: 1 }} className="flex-grow">
+              <div className={`${item.bg} ${item.border} p-2 rounded-xl border shadow-sm h-full flex flex-col items-center justify-center transition-all hover:shadow-md`}>
+                {/* ส่วนชื่อหัวข้อ */}
+                <span className="text-[11px] text-gray-500 font-bold mb-1 text-center leading-tight h-8 flex items-center">
+                  {item.label}
+                </span>
+                
+                {/* ส่วนตัวเลขและหน่วย */}
+                <div className="flex items-baseline gap-1">
+                  <span className={`text-xl font-black ${item.color} 'text-2xl'`}>
+                    {item.value}
+                  </span>
+                  <span className={`text-[10px] font-medium ${item.color} opacity-80`}>
+                    {item.unit}
+                  </span>
+                </div>
+              </div>
+            </Col>
+          ))}
+        </Row>
+          <Row gutter={[16, 0]}>
             {/* ประเภทการลา */}
             <Col xs={24} md={12}>
-              <Form.Item label={<span className="font-medium text-gray-700">ประเภทการลา</span>} name="typeLeave">
-                <Input disabled className="bg-gray-50 cursor-default border-gray-200" size="large" />
+              <Form.Item
+                label={
+                  <span className="font-medium text-gray-700">ประเภทการลา</span>
+                }
+                name="typeLeave"
+              >
+                <Input
+                  disabled
+                  className="bg-gray-50 cursor-default border-gray-200"
+                  size="middle"
+                />
               </Form.Item>
             </Col>
 
@@ -167,18 +227,15 @@ export const LeaveDetailForm: React.FC<props> = ({
                 label={
                   <div className="space-y-1">
                     <span className="font-medium text-gray-700">เป็นเวลา</span>
-                    <div className="text-xs space-y-0.5">
-                      <div className="text-blue-600 font-medium">{`คงเหลือ ${Math.floor(typeLeavebyTypeId.limitLeaveLastResult / 4) / 2} วัน`}</div>
-                      <div className="text-red-500">{`ลามาแล้ว ${typeLeavebyTypeId?.haveLeaveDays}.${typeLeavebyTypeId?.haveLeaveHours} วัน`}</div>
-                    </div>
                   </div>
                 }
-                name="leaveHour">
+                name="leaveHour"
+              >
                 <Input
                   disabled
                   className="bg-gray-50 cursor-default border-gray-200"
-                  size="large"
-                  suffix={<span className="text-gray-500 font-medium">ชั่วโมง</span>}
+                  size="middle"
+                  // suffix={<span className="text-gray-500 font-medium">ชั่วโมง</span>}
                 />
               </Form.Item>
             </Col>
@@ -187,22 +244,34 @@ export const LeaveDetailForm: React.FC<props> = ({
           <Row gutter={[16, 16]}>
             {/* ตั้งแต่วันที่ */}
             <Col xs={24} md={12}>
-              <Form.Item label={<span className="font-medium text-gray-700">ตั้งแต่วันที่</span>} name="startDate">
+              <Form.Item
+                label={
+                  <span className="font-medium text-gray-700">
+                    ตั้งแต่วันที่
+                  </span>
+                }
+                name="startDate"
+              >
                 <Input
                   disabled
                   className="bg-gray-50 cursor-default border-gray-200"
-                  size="large"
+                  size="middle"
                   prefix={<CalendarOutlined className="text-green-500" />}
                 />
               </Form.Item>
             </Col>
             {/* ถึงวันที่ */}
             <Col xs={24} md={12}>
-              <Form.Item label={<span className="font-medium text-gray-700">ถึงวันที่</span>} name="endDate">
+              <Form.Item
+                label={
+                  <span className="font-medium text-gray-700">ถึงวันที่</span>
+                }
+                name="endDate"
+              >
                 <Input
                   disabled
                   className="bg-gray-50 cursor-default border-gray-200"
-                  size="large"
+                  size="middle"
                   prefix={<CalendarOutlined className="text-green-500" />}
                 />
               </Form.Item>
@@ -219,15 +288,25 @@ export const LeaveDetailForm: React.FC<props> = ({
                 <PaperClipOutlined className="mr-2 text-purple-500" />
                 <span className="font-medium text-gray-700">ไฟล์แนบ</span>
               </div>
-            }>
+            }
+          >
             <div className="grid grid-cols-1 gap-2">
               {dataLeaveFiles.map((file: any, index: number) => (
-                <div key={index} className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <div
+                  key={index}
+                  className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                >
                   <PaperClipOutlined className="text-blue-500 mr-3" />
                   <div className="flex-1">
                     <Tooltip title="คลิกเพื่อดาวน์โหลด">
-                      <Button type="link" onClick={() => downloadFile(file.id, file.fileName)} className="p-0 h-auto text-left">
-                        <span className="text-blue-600 hover:text-blue-800 font-medium">{file.fileName}</span>
+                      <Button
+                        type="link"
+                        onClick={() => downloadFile(file.id, file.fileName)}
+                        className="p-0 h-auto text-left"
+                      >
+                        <span className="text-blue-600 hover:text-blue-800 font-medium">
+                          {file.fileName}
+                        </span>
                       </Button>
                     </Tooltip>
                   </div>
@@ -246,16 +325,29 @@ export const LeaveDetailForm: React.FC<props> = ({
                 <CheckCircleOutlined className="mr-2 text-green-500" />
                 <span className="text-green-600 font-medium">การอนุมัติ</span>
               </div>
-            }>
+            }
+          >
             <div className="bg-green-50 p-4 rounded-lg">
               <Row gutter={16}>
                 <Col span={12}>
-                  <Form.Item label="ผู้อนุมัติ" name="userApproved" className="mb-2">
-                    <Input disabled className="bg-green-50 border-green-300 cursor-default" prefix={<UserOutlined className="text-green-500" />} />
+                  <Form.Item
+                    label="ผู้อนุมัติ"
+                    name="userApproved"
+                    className="mb-2"
+                  >
+                    <Input
+                      disabled
+                      className="bg-green-50 border-green-300 cursor-default"
+                      prefix={<UserOutlined className="text-green-500" />}
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="วันที่อนุมัติ" name="approvedDate" className="mb-2">
+                  <Form.Item
+                    label="วันที่อนุมัติ"
+                    name="approvedDate"
+                    className="mb-2"
+                  >
                     <Input
                       disabled
                       className="bg-green-50 border-green-300 cursor-default"
@@ -276,10 +368,14 @@ export const LeaveDetailForm: React.FC<props> = ({
               <EditOutlined className="mr-2 text-orange-500" />
               <span className="text-orange-600 font-medium">การดำเนินการ</span>
             </div>
-          }>
+          }
+        >
           <div className="bg-orange-50 p-4 rounded-lg">
             <Form.Item label="เหตุผล/หมายเหตุ" name="detailApproved">
-              <Input.TextArea rows={3} placeholder="กรอกเหตุผลหรือหมายเหตุสำหรับการอนุมัติ/ยกเลิก" />
+              <Input.TextArea
+                rows={3}
+                placeholder="กรอกเหตุผลหรือหมายเหตุสำหรับการอนุมัติ/ยกเลิก"
+              />
             </Form.Item>
 
             <Divider className="my-4" />
@@ -293,8 +389,11 @@ export const LeaveDetailForm: React.FC<props> = ({
                     size="large"
                     className="flex items-center justify-center px-6 transition-all duration-300 hover:-translate-y-[1px] hover:shadow-lg"
                     onClick={() => setSubmitAction("approved")}
-                    disabled={statusById === "cancel" || statusById === "approved"}
-                    icon={<CheckCircleOutlined />}>
+                    disabled={
+                      statusById === "cancel" || statusById === "approved"
+                    }
+                    icon={<CheckCircleOutlined />}
+                  >
                     อนุมัติ
                   </Button>
                 </Tooltip>
@@ -308,7 +407,8 @@ export const LeaveDetailForm: React.FC<props> = ({
                     className="flex items-center justify-center px-6 transition-all duration-300 hover:-translate-y-[1px] hover:shadow-lg"
                     onClick={() => setSubmitAction("cancel")}
                     disabled={statusById === "cancel"}
-                    icon={<CloseCircleOutlined />}>
+                    icon={<CloseCircleOutlined />}
+                  >
                     ยกเลิก
                   </Button>
                 </Tooltip>
@@ -321,9 +421,15 @@ export const LeaveDetailForm: React.FC<props> = ({
                       danger
                       className="flex items-center justify-center px-6 transition-all duration-300 hover:-translate-y-[1px] hover:shadow-lg"
                       onClick={() => {
-                        onFinishDelete("delete", formdetail.getFieldValue("id") ? formdetail.getFieldValue("id") : 0);
+                        onFinishDelete(
+                          "delete",
+                          formdetail.getFieldValue("id")
+                            ? formdetail.getFieldValue("id")
+                            : 0
+                        );
                       }}
-                      icon={<DeleteOutlined />}>
+                      icon={<DeleteOutlined />}
+                    >
                       ลบ
                     </Button>
                   </Tooltip>

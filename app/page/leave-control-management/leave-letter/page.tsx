@@ -183,8 +183,37 @@ export default function Page() {
     return { valid: true, hours: sumDataLeave };
   };
 
+  // ตรวจสอบเลือกวันที่เริ่มต้น และถึงวันที่ โดยให้อยู่ในปีเดียวกัน
+  const checkDate = (startDate: any, endDate: any) => {
+    // If either date is missing, let form validators handle required behavior
+    if (!startDate || !endDate) return Promise.resolve(true);
+    const start = dayjs(startDate);
+    const end = dayjs(endDate);
+
+    // End date must not be before start date
+    // if (end.isBefore(start, "day")) {
+    //   return Promise.reject(new Error("วันที่สิ้นสุดต้องไม่อยู่ก่อนวันที่เริ่มต้น"));
+    // }
+
+    // Enforce both dates to be within the same calendar year
+    if (start.year() !== end.year()) {
+      return Promise.reject(new Error("ไม่สามารถเลือกวันที่ข้ามปีได้ กรุณาเลือกวันที่ภายในปีเดียวกัน"));
+    }
+
+    return Promise.resolve(true);
+  };
+
+
   // Main function
   const onfinishCreate = async (values: ITypeDataLeaveCreate) => {
+    // Run form validation first (this will display inline errors under the date fields)
+    try {
+      await createdataleaveForm.validateFields();
+    } catch (err) {
+      // validation errors are shown by the form, stop submission
+      return false;
+    }
+
     const startDateYear = dayjs(values.startDate).format("YYYY");
     const endDateYear = dayjs(values.endDate).format("YYYY");
     const isSameYear = startDateYear === endDateYear;
@@ -203,17 +232,23 @@ export default function Page() {
       if (!validation.valid) return false;
       totalLeaveHours = validation.hours;
     } else {
-      const dateRanges = [
-        { startDate: values.startDate, endDate: dayjs(values.startDate).endOf("year") },
-        { startDate: dayjs(values.endDate).startOf("year"), endDate: values.endDate },
-      ];
-      for (const dateRange of dateRanges) {
-        const validation = await validateYearlyLeave(values, user, dataMasterType, dateRange.startDate, dateRange.endDate);
-        if (!validation.valid) return false;
-        totalLeaveHours += validation.hours;
-      }
+      // Cross-year selection is not allowed; set inline validation error on endDate and stop submission
+      createdataleaveForm.setFields([
+        { name: "endDate", errors: ["ไม่สามารถเลือกวันที่ข้ามปีได้ กรุณาเลือกวันที่ภายในปีเดียวกัน"] },
+      ]);
+      
+      return false;
+      // If you want to support cross-year leaves in the future, uncomment and use the following logic:
+      // const dateRanges = [
+      //   { startDate: values.startDate, endDate: dayjs(values.startDate).endOf("year") },
+      //   { startDate: dayjs(values.endDate).startOf("year"), endDate: values.endDate },
+      // ];
+      // for (const dateRange of dateRanges) {
+      //   const validation = await validateYearlyLeave(values, user, dataMasterType, dateRange.startDate, dateRange.endDate);
+      //   if (!validation.valid) return false;
+      //   totalLeaveHours += validation.hours;
+      // }
     }
-
     const base = createLeaveBase(values, user, dataMasterType, totalLeaveHours);
     showConfirmModal(base, !isSameYear);
   };
@@ -248,7 +283,10 @@ export default function Page() {
             <CreateOnlineLeave
               getUser={user}
               getTypeLeaveOption={getTypeLeaveOption}
-              onfinishCreate={(e: ITypeDataLeaveCreate) => onfinishCreate(e)}
+              onfinishCreate={(e: ITypeDataLeaveCreate) => {
+                // checkDate(e.startDate, e.endDate)
+                onfinishCreate(e)
+              }}
               createdataleaveForm={createdataleaveForm}
               setStartDate={(e: Date) => setStartDate(e)}
               setEndDate={(e: Date) => setEndDate(e)}

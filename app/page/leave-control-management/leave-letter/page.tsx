@@ -254,19 +254,19 @@ export default function Page() {
     const usedLeaveHour = usedDays * 8 + usedHoursPart;
     console.log("ลามาแล้ว(usedLeaveHour):", usedLeaveHour);
 
-    // คงเหลือ(beforeLeaveHour)
+    // คงเหลือก่อนอนุมัติ(beforeLeaveHour)
     const beforeLeaveHour = Number(currentTypeLeaveData?.limitLeaveLastResult || 0);
     console.log("คงเหลือ(beforeLeaveHour):", beforeLeaveHour);
 
     console.log("ลาครั้งนี้(leaveHour):", totalLeaveHours);
 
-    // รวม(afterLeaveHour)
-    const afterLeaveHour = usedLeaveHour + totalLeaveHours;
-    console.log("รวม(afterLeaveHour):", afterLeaveHour);
+    // คงเหลือหลังอนุมัติ(afterLeaveHour)
+    const afterLeaveHour = beforeLeaveHour - totalLeaveHours;
+    console.log("คงเหลือหลังอนุมัติ(afterLeaveHour):", afterLeaveHour);
 
     const base = createLeaveBase(values, user, dataMasterType, totalLeaveHours, quotaLeaveHour, usedLeaveHour, beforeLeaveHour, afterLeaveHour);
     console.log("base:", base);
-    //showConfirmModal(base, !isSameYear);
+    showConfirmModal(base, !isSameYear);
   };
 
   function onChangeFormCreate(values: any): void {

@@ -51,35 +51,45 @@ export const countWithCommas = (x: any) => {
   }
 };
 
-export function HourAmountToDateString(hourAmount: number) {
+export function HourAmountToDateHourString(hourAmount: number) {
   if (!hourAmount || hourAmount <= 0) {
     return "-";
   }
-    const days = Math.trunc(hourAmount / 8);
-    const hours = hourAmount % 8;
+  const days = Math.trunc(hourAmount / 8);
+  const hours = hourAmount % 8;
 
-    let result = "";
-    if (days > 0) {
-      result += `${days} วัน`;
-    }
-    if (hours > 0) {
-      result += ` ${hours} ชม.`;
-    }
+  let result = "";
 
-    return result;    
+  result += (days && days > 0) ? `${days} วัน` : "";
+
+  result += (hours && hours > 0) ? ` ${hours} ชม.` : "";
+
+  // if (days > 0) {
+  //   result += (days && days >= 0) ? `${ days } วัน`: "";
+  // }
+  // if (hours > 0) {
+  //   result += (hours && hours >= 0) ? ` ${ hours } ชม.`: "";
+  // }
+
+  return result;
 }
 
-export function HourAmountToDateHourObj(hourAmount: number) { {
-  if (!hourAmount || hourAmount <= 0) {
-    return { days: 0, 
-      hours: 0,
-    toString: () => "- วัน - ชม." };
-  }
+export function HourAmountToDateHourObj(hourAmount: number) {
+  {
+    if (!hourAmount || hourAmount <= 0) {
+      return {
+        days: 0,
+        hours: 0,
+        toString: () => "- วัน - ชม."
+      };
+    }
     const days = Math.trunc(hourAmount / 8);
     const hours = hourAmount % 8;
 
-    return { days,
-       hours,
-      toString: () => `${days} วัน ${hours} ชม.` };
+    return {
+      days,
+      hours,
+      toString: () => `${days} วัน ${hours} ชม.`
+    };
   }
 }

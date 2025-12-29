@@ -25,7 +25,7 @@ import {
 } from "@ant-design/icons";
 import { intersection } from "lodash";
 import type { ITypetypeleave } from "../../common";
-import { HourAmountToDateHourObj, HourAmountToDateString } from "@/app/utils/format";
+import { HourAmountToDateHourObj, HourAmountToDateHourString } from "@/app/utils/format";
 
 interface props {
   formdetail: FormInstance;
@@ -49,15 +49,16 @@ export const LeaveDetailForm: React.FC<props> = ({
   setSubmitAction,
   submitAction,
   typeLeavebyTypeId,
-  //dataLeaveby
 }) => {
-  console.log("typeLeavebyTypeId: ",typeLeavebyTypeId);
-  console.log("formdetail: ",formdetail);
-  console.log("formdetail.getFieldsValue(): ",formdetail.getFieldsValue());
-  console.log("statusById: ",statusById);
+  console.log("typeLeavebyTypeId: ", typeLeavebyTypeId);
+  console.log("formdetail: ", formdetail);
+  console.log("formdetail.getFieldsValue(): ", formdetail.getFieldsValue());
+  console.log("statusById: ", statusById);
+  const details = Form.useWatch([], formdetail) || {};
+  console.log("details: ", details);
 
-  const userApproved = formdetail.getFieldValue("userApproved");
-  const dataLeaveFiles = formdetail.getFieldValue("dataLeaveFiles");
+  // const userApproved = formdetail.getFieldValue("userApproved");
+  // const dataLeaveFiles = formdetail.getFieldValue("dataLeaveFiles");
 
   const getStatusTag = () => {
     if (statusById === "approved") {
@@ -181,34 +182,34 @@ export const LeaveDetailForm: React.FC<props> = ({
           }
           bordered={false}
         >
-        <Row gutter={[5, 5]} className="mb-8">
-          {[
-            { label: "สิทธิ์ทั้งหมด", value: formdetail.getFieldValue("yearLeaveHour") ? HourAmountToDateHourObj(formdetail.getFieldValue("yearLeaveHour")).days : "-", color: "text-gray-700", bg: "bg-gray-100", border: "border-gray-200" },
-            { label: "ใช้ไปแล้ว", value: formdetail.getFieldValue("usedLeaveHour") ? HourAmountToDateHourObj(formdetail.getFieldValue("usedLeaveHour")).days : "-", color: "text-red-600", bg: "bg-red-50", border: "border-red-100" },
-            { label: "ขอลาครั้งนี้", value: formdetail.getFieldValue("reqLeaveHour") ? HourAmountToDateHourObj(formdetail.getFieldValue("reqLeaveHour")).days : "-", color: "text-blue-700", bg: "bg-blue-50", border: "border-blue-100" },
-            { label: "คงเหลือเดิม", value: formdetail.getFieldValue("beforeLeaveHour") ? HourAmountToDateHourObj(formdetail.getFieldValue("beforeLeaveHour")).days : "-", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-100" },
-            { label: "คงเหลือใหม่", value: formdetail.getFieldValue("afterLeaveHour") ? HourAmountToDateHourObj(formdetail.getFieldValue("afterLeaveHour")).days : "-", color: "text-green-700", bg: "bg-green-50", border: "border-green-200"},
-          ].map((item, idx) => (
-            <Col xs={12} style={{ flex: 1 }} className="flex-grow">
-              <div className={`${item.bg} ${item.border} p-2 rounded-xl border shadow-sm h-full flex flex-col items-center justify-center transition-all hover:shadow-md`}>
-                {/* ส่วนชื่อหัวข้อ */}
-                <span className="text-[11px] text-gray-500 font-bold mb-1 text-center leading-tight h-8 flex items-center">
-                  {item.label}
-                </span>
-                
-                {/* ส่วนตัวเลขและหน่วย */}
-                <div className="flex items-baseline gap-1">
-                  <span className={`text-xl font-black ${item.color} 'text-2xl'`}>
-                    {item.value}
+          <Row gutter={[5, 5]} className="mb-8">
+            {[
+              { label: "สิทธิ์ทั้งหมด", value: details.yearLeaveHour ? HourAmountToDateHourString(details.yearLeaveHour) : "-", color: "text-gray-700", bg: "bg-gray-100", border: "border-gray-200" },
+              { label: "ใช้ไปแล้ว", value: details.usedLeaveHour ? HourAmountToDateHourString(details.usedLeaveHour) : "-", color: "text-red-600", bg: "bg-red-50", border: "border-red-100" },
+              { label: "ขอลาครั้งนี้", value: details.reqLeaveHour ? HourAmountToDateHourString(details.reqLeaveHour) : "-", color: "text-blue-700", bg: "bg-blue-50", border: "border-blue-100" },
+              { label: "คงเหลือเดิม", value: details.beforeLeaveHour ? HourAmountToDateHourString(details.beforeLeaveHour) : "-", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-100" },
+              { label: "คงเหลือใหม่", value: details.afterLeaveHour ? HourAmountToDateHourString(details.afterLeaveHour) : "-", color: "text-green-700", bg: "bg-green-50", border: "border-green-200" },
+            ].map((item, idx) => (
+              <Col xs={12} style={{ flex: 1 }} className="flex-grow">
+                <div className={`${item.bg} ${item.border} p-2 rounded-xl border shadow-sm h-full flex flex-col items-center justify-center transition-all hover:shadow-md`}>
+                  {/* ส่วนชื่อหัวข้อ */}
+                  <span className="text-[13px] text-gray-500 font-bold mb-1 text-center leading-tight h-8 flex items-center">
+                    {item.label}
                   </span>
-                  <span className={`text-[10px] font-medium ${item.color} opacity-80`}>
-                    {/*item.unit*/}
-                  </span>
+
+                  {/* ส่วนตัวเลขและหน่วย */}
+                  <div className="flex items-baseline gap-1">
+                    <span className={`text-xl font-black ${item.color} 'text-2xl'`}>
+                      {item.value}
+                    </span>
+                    <span className={`text-[13px] font-medium ${item.color} opacity-80`}>
+                      {/*item.unit*/}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </Col>
-          ))}
-        </Row>
+              </Col>
+            ))}
+          </Row>
           <Row gutter={[16, 0]}>
             {/* ประเภทการลา */}
             <Col xs={24} md={12}>
@@ -240,7 +241,7 @@ export const LeaveDetailForm: React.FC<props> = ({
                   disabled
                   className="bg-gray-50 cursor-default border-gray-200"
                   size="middle"
-                  // suffix={<span className="text-gray-500 font-medium">ชั่วโมง</span>}
+                // suffix={<span className="text-gray-500 font-medium">ชั่วโมง</span>}
                 />
               </Form.Item>
             </Col>
@@ -285,7 +286,7 @@ export const LeaveDetailForm: React.FC<props> = ({
         </Card>
 
         {/* Files Section */}
-        {Array.isArray(dataLeaveFiles) && dataLeaveFiles.length > 0 && (
+        {Array.isArray(details?.dataLeaveFiles) && details?.dataLeaveFiles.length > 0 && (
           <Card
             className="mb-4 shadow-sm"
             title={
@@ -296,7 +297,7 @@ export const LeaveDetailForm: React.FC<props> = ({
             }
           >
             <div className="grid grid-cols-1 gap-2">
-              {dataLeaveFiles.map((file: any, index: number) => (
+              {details?.dataLeaveFiles.map((file: any, index: number) => (
                 <div
                   key={index}
                   className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
@@ -322,7 +323,7 @@ export const LeaveDetailForm: React.FC<props> = ({
         )}
 
         {/* Approval Section */}
-        {userApproved && (
+        {details.userApproved && (
           <Card
             className="mb-4 shadow-sm border-green-200"
             title={
@@ -445,6 +446,24 @@ export const LeaveDetailForm: React.FC<props> = ({
         </Card>
 
         <Form.Item hidden name="id">
+          <Input />
+        </Form.Item>
+        <Form.Item hidden name="reqLeaveHour">
+          <Input />
+        </Form.Item>
+        <Form.Item hidden name="yearLeaveHour">
+          <Input />
+        </Form.Item>
+        <Form.Item hidden name="usedLeaveHour">
+          <Input />
+        </Form.Item>
+        <Form.Item hidden name="beforeLeaveHour">
+          <Input />
+        </Form.Item>
+        <Form.Item hidden name="afterLeaveHour">
+          <Input />
+        </Form.Item>
+        <Form.Item hidden name="dataLeaveFiles">
           <Input />
         </Form.Item>
       </Form>

@@ -7,7 +7,7 @@ import { RcFile, UploadProps } from "antd/es/upload";
 import { ISelect, ITypetypeleave, ITypeDataLeaveCreate } from "../common";
 import { CreateOnlineLeave } from "./components/create-online-leave";
 import { TableOnlineDetailLeave } from "./components/table-online-detail-leave";
-import { checkStatusTypeLeave, validateCheckLeaveDay, validateSumTotalLeave } from "@/app/utils/validatefield";
+import { checkStatusTypeLeave, validateCheckLeaveDay, validateSumTotalLeave, getQuotaLeavePerYear } from "@/app/utils/validatefield";
 import MasterHolidaysService from "../../setting/master-holidays/services/index.service";
 import { IFindAllDayDto } from "../../setting/master-holidays/common";
 import { ExclamationCircleFilled } from "@ant-design/icons";
@@ -81,7 +81,7 @@ export default function Page() {
   };
 
   // Helper functions
-  const createLeaveBase = (values: ITypeDataLeaveCreate, user: any, dataMasterType: any, totalHours: number) => ({
+  const createLeaveBase = (values: ITypeDataLeaveCreate, user: any, dataMasterType: any, totalHours: number, quotaLeaveHour: number, usedLeaveHour: number, beforeLeaveHour: number, afterLeaveHour: number) => ({
     startDate: dayjs(values.startDate).startOf("date").toISOString(),
     endDate: dayjs(values.endDate).endOf("date").toISOString(),
     startTime: values.startTime || undefined,
@@ -100,6 +100,10 @@ export default function Page() {
     attrachFile: attendFiles[0]?.name,
     leaveHour: totalHours,
     groupId: user?.ownerGroupId,
+    yearLeaveHour: quotaLeaveHour,   // จำนวนวันลาที่ได้ขอในปีนั้น
+    usedLeaveHour: usedLeaveHour,   // จำนวนวันลาที่ใช้ไปในปีนั้น
+    beforeLeaveHour: beforeLeaveHour, // จำนวนวันลาคงเหลือก่อนขอลา(อนุมัติ)
+    afterLeaveHour: afterLeaveHour,  // จำนวนวันลาคงเหลือหลังขอลา(อนุมัติ)
   });
 
   const showConfirmModal = (base: any, isCrossYear = false) => {
@@ -249,6 +253,7 @@ export default function Page() {
       //   totalLeaveHours += validation.hours;
       // }
     }
+
     const base = createLeaveBase(values, user, dataMasterType, totalLeaveHours);
     showConfirmModal(base, !isSameYear);
   };
@@ -304,10 +309,10 @@ export default function Page() {
           </Col>
           <Col span={13}>
             <TableOnlineDetailLeave
+              rowClassName={rowClassName}
               typeLeaveTable={typeLeaveTable}
               createdataleaveForm={createdataleaveForm}
               typeLeaveTableAll={typeLeaveTableAll}
-              rowClassName={rowClassName}
               createdataleaveFormValues={createdataleaveFormValues}
               dataHolidayDay={dataHolidayDay}
             />

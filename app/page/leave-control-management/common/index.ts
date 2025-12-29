@@ -165,6 +165,10 @@ export interface ITypeDataLeave {
   description?: string;
   groupId?: string;
   detailApproved?: string;
+  yearLeaveHour?: number;   // จำนวนวันลาที่ได้ขอในปีนั้น
+  usedLeaveHour?: number;   // จำนวนวันลาที่ใช้ไปในปีนั้น
+  beforeLeaveHour?: number; // จำนวนวันลาคงเหลือก่อนขอลา(อนุมัติ)
+  afterLeaveHour?: number;  // จำนวนวันลาคงเหลือหลังขอลา(อนุมัติ)
 }
 
 export interface ITypeDataLeaveCreate {

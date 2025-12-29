@@ -228,16 +228,14 @@ export default function Page() {
       if (!validation.valid) return false;
       totalLeaveHours = validation.hours;
     } else {
-      const dateRanges = [
-        { startDate: values.startDate, endDate: dayjs(values.startDate).endOf("year") },
-        { startDate: dayjs(values.endDate).startOf("year"), endDate: values.endDate },
-      ];
-      for (const dateRange of dateRanges) {
-        const validation = await validateYearlyLeave(values, user, dataMasterType, dateRange.startDate, dateRange.endDate);
-        if (!validation.valid) return false;
-        totalLeaveHours += validation.hours;
-      }
+      // Cross-year selection is not allowed; set inline validation error on endDate and stop submission
+      createdataleaveForm.setFields([
+        { name: "endDate", errors: ["ไม่สามารถเลือกวันที่ข้ามปีได้ กรุณาเลือกวันที่ภายในปีเดียวกัน"] },
+      ]);
+      
+      return false;
     }
+    
     console.log("totalLeaveHours:", totalLeaveHours);
     console.log("values:", values);
     console.log("user:", user);

@@ -210,14 +210,6 @@ export default function Page() {
 
   // Main function
   const onfinishCreate = async (values: ITypeDataLeaveCreate) => {
-    // Run form validation first (this will display inline errors under the date fields)
-    try {
-      await createdataleaveForm.validateFields();
-    } catch (err) {
-      // validation errors are shown by the form, stop submission
-      return false;
-    }
-
     const startDateYear = dayjs(values.startDate).format("YYYY");
     const endDateYear = dayjs(values.endDate).format("YYYY");
     const isSameYear = startDateYear === endDateYear;
@@ -236,25 +228,46 @@ export default function Page() {
       if (!validation.valid) return false;
       totalLeaveHours = validation.hours;
     } else {
-      // Cross-year selection is not allowed; set inline validation error on endDate and stop submission
-      createdataleaveForm.setFields([
-        { name: "endDate", errors: ["ไม่สามารถเลือกวันที่ข้ามปีได้ กรุณาเลือกวันที่ภายในปีเดียวกัน"] },
-      ]);
-      
-      return false;
-      // If you want to support cross-year leaves in the future, uncomment and use the following logic:
-      // const dateRanges = [
-      //   { startDate: values.startDate, endDate: dayjs(values.startDate).endOf("year") },
-      //   { startDate: dayjs(values.endDate).startOf("year"), endDate: values.endDate },
-      // ];
-      // for (const dateRange of dateRanges) {
-      //   const validation = await validateYearlyLeave(values, user, dataMasterType, dateRange.startDate, dateRange.endDate);
-      //   if (!validation.valid) return false;
-      //   totalLeaveHours += validation.hours;
-      // }
+      const dateRanges = [
+        { startDate: values.startDate, endDate: dayjs(values.startDate).endOf("year") },
+        { startDate: dayjs(values.endDate).startOf("year"), endDate: values.endDate },
+      ];
+      for (const dateRange of dateRanges) {
+        const validation = await validateYearlyLeave(values, user, dataMasterType, dateRange.startDate, dateRange.endDate);
+        if (!validation.valid) return false;
+        totalLeaveHours += validation.hours;
+      }
     }
+    console.log("totalLeaveHours:", totalLeaveHours);
+    console.log("values:", values);
+    console.log("user:", user);
+    console.log("dataMasterType:", dataMasterType);
+    console.log("typeLeaveTable:", typeLeaveTable);
 
-    const base = createLeaveBase(values, user, dataMasterType, totalLeaveHours);
+    const currentTypeLeaveData = typeLeaveTable.find((item) => item.typeId === values.type_id);
+
+    // โควตาวันลา(yearLeaveHour)
+    const { quotaLeaveHour, quotaLeaveDay } = getQuotaLeavePerYear(dataMasterType, user.startWork);
+    console.log("โควตาวันลา(yearLeaveHour):", quotaLeaveHour);
+
+    // ลามาแล้ว(usedLeaveHour)
+    const usedDays = Number(currentTypeLeaveData?.haveLeaveDays || 0);
+    const usedHoursPart = Number(currentTypeLeaveData?.haveLeaveHours || 0);
+    const usedLeaveHour = usedDays * 8 + usedHoursPart;
+    console.log("ลามาแล้ว(usedLeaveHour):", usedLeaveHour);
+
+    // คงเหลือ(beforeLeaveHour)
+    const beforeLeaveHour = Number(currentTypeLeaveData?.limitLeaveLastResult || 0);
+    console.log("คงเหลือ(beforeLeaveHour):", beforeLeaveHour);
+
+    console.log("ลาครั้งนี้(leaveHour):", totalLeaveHours);
+
+    // รวม(afterLeaveHour)
+    const afterLeaveHour = usedLeaveHour + totalLeaveHours;
+    console.log("รวม(afterLeaveHour):", afterLeaveHour);
+
+    const base = createLeaveBase(values, user, dataMasterType, totalLeaveHours, quotaLeaveHour, usedLeaveHour, beforeLeaveHour, afterLeaveHour);
+    console.log("base:", base);
     showConfirmModal(base, !isSameYear);
   };
 

@@ -70,6 +70,11 @@ export const TableDetail: React.FC<props> = ({
         endDate: record?.endDate ? dateToStringThNoTime(record?.endDate as any) : "-",
         typeLeave: record.typeName,
         approvedDate: record.approvedDate ? dateToStringThNoTime(record?.approvedDate) : "-",
+        reqLeaveHour: record.leaveHour,
+        yearLeaveHour: record.yearLeaveHour,
+        usedLeaveHour: record.usedLeaveHour,
+        beforeLeaveHour: record.beforeLeaveHour,
+        afterLeaveHour: record.afterLeaveHour,
       };
       setStatusById(record.status);
       formdetail.setFieldsValue(base);

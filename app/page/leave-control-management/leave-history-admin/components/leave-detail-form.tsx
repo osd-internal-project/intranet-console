@@ -25,6 +25,7 @@ import {
 } from "@ant-design/icons";
 import { intersection } from "lodash";
 import type { ITypetypeleave } from "../../common";
+import { HourAmountToDateHourObj, HourAmountToDateString } from "@/app/utils/format";
 
 interface props {
   formdetail: FormInstance;
@@ -48,8 +49,12 @@ export const LeaveDetailForm: React.FC<props> = ({
   setSubmitAction,
   submitAction,
   typeLeavebyTypeId,
+  //dataLeaveby
 }) => {
-  console.log(typeLeavebyTypeId);
+  console.log("typeLeavebyTypeId: ",typeLeavebyTypeId);
+  console.log("formdetail: ",formdetail);
+  console.log("formdetail.getFieldsValue(): ",formdetail.getFieldsValue());
+  console.log("statusById: ",statusById);
 
   const userApproved = formdetail.getFieldValue("userApproved");
   const dataLeaveFiles = formdetail.getFieldValue("dataLeaveFiles");
@@ -178,11 +183,11 @@ export const LeaveDetailForm: React.FC<props> = ({
         >
         <Row gutter={[5, 5]} className="mb-8">
           {[
-            { label: "สิทธิ์ทั้งหมด", value: "0", unit: "วัน", color: "text-gray-700", bg: "bg-gray-100", border: "border-gray-200" },
-            { label: "ใช้ไปแล้ว", value: "0", unit: "วัน", color: "text-red-600", bg: "bg-red-50", border: "border-red-100" },
-            { label: "ขอลาครั้งนี้", value: "4", unit: "วัน", color: "text-blue-700", bg: "bg-blue-50", border: "border-blue-100" },
-            { label: "คงเหลือเดิม", value: "8", unit: "วัน", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-100" },
-            { label: "คงเหลือใหม่", value: "0", unit: "วัน", color: "text-green-700", bg: "bg-green-50", border: "border-green-200"},
+            { label: "สิทธิ์ทั้งหมด", value: formdetail.getFieldValue("yearLeaveHour") ? HourAmountToDateHourObj(formdetail.getFieldValue("yearLeaveHour")).days : "-", color: "text-gray-700", bg: "bg-gray-100", border: "border-gray-200" },
+            { label: "ใช้ไปแล้ว", value: formdetail.getFieldValue("usedLeaveHour") ? HourAmountToDateHourObj(formdetail.getFieldValue("usedLeaveHour")).days : "-", color: "text-red-600", bg: "bg-red-50", border: "border-red-100" },
+            { label: "ขอลาครั้งนี้", value: formdetail.getFieldValue("reqLeaveHour") ? HourAmountToDateHourObj(formdetail.getFieldValue("reqLeaveHour")).days : "-", color: "text-blue-700", bg: "bg-blue-50", border: "border-blue-100" },
+            { label: "คงเหลือเดิม", value: formdetail.getFieldValue("beforeLeaveHour") ? HourAmountToDateHourObj(formdetail.getFieldValue("beforeLeaveHour")).days : "-", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-100" },
+            { label: "คงเหลือใหม่", value: formdetail.getFieldValue("afterLeaveHour") ? HourAmountToDateHourObj(formdetail.getFieldValue("afterLeaveHour")).days : "-", color: "text-green-700", bg: "bg-green-50", border: "border-green-200"},
           ].map((item, idx) => (
             <Col xs={12} style={{ flex: 1 }} className="flex-grow">
               <div className={`${item.bg} ${item.border} p-2 rounded-xl border shadow-sm h-full flex flex-col items-center justify-center transition-all hover:shadow-md`}>
@@ -197,7 +202,7 @@ export const LeaveDetailForm: React.FC<props> = ({
                     {item.value}
                   </span>
                   <span className={`text-[10px] font-medium ${item.color} opacity-80`}>
-                    {item.unit}
+                    {/*item.unit*/}
                   </span>
                 </div>
               </div>

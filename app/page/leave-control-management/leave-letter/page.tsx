@@ -266,7 +266,7 @@ export default function Page() {
 
     const base = createLeaveBase(values, user, dataMasterType, totalLeaveHours, quotaLeaveHour, usedLeaveHour, beforeLeaveHour, afterLeaveHour);
     console.log("base:", base);
-    showConfirmModal(base, !isSameYear);
+    //showConfirmModal(base, !isSameYear);
   };
 
   function onChangeFormCreate(values: any): void {

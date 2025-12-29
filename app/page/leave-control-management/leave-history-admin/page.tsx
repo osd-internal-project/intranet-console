@@ -46,7 +46,8 @@ export default function Page() {
       const { data, count } = isHr
         ? await DataLeaveService(baseUrlIntranet).getdataLeaveHrfindBygroup(user.userId, params, skip, take)
         : await DataLeaveService(baseUrlIntranet).getdataLeavefindBygroup(user.userId, params, skip, take);
-      setDataLeaveUser({ data, count });
+      console.log("DataLeaveUser_data: ", data);
+        setDataLeaveUser({ data, count });
       setLoading(false);
     }
   };
@@ -54,6 +55,7 @@ export default function Page() {
   const dataDetailLeaveHour = async (userId: string, typeId: number) => {
     console.log(typeId);
     const resTableDeatilTypeLeave = await LeaveManagementServices(baseUrlIntranet).findDetailByTypeLeaveUserId(userId, typeId);
+    console.log("resTableDeatilTypeLeave: ",resTableDeatilTypeLeave);
     setTypeLeaveTableAll(resTableDeatilTypeLeave);
   };
 

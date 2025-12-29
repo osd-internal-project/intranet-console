@@ -50,3 +50,36 @@ export const countWithCommas = (x: any) => {
     return String(fixedNumber).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 };
+
+export function HourAmountToDateString(hourAmount: number) {
+  if (!hourAmount || hourAmount <= 0) {
+    return "-";
+  }
+    const days = Math.trunc(hourAmount / 8);
+    const hours = hourAmount % 8;
+
+    let result = "";
+    if (days > 0) {
+      result += `${days} วัน`;
+    }
+    if (hours > 0) {
+      result += ` ${hours} ชม.`;
+    }
+
+    return result;    
+}
+
+export function HourAmountToDateHourObj(hourAmount: number) { {
+  if (!hourAmount || hourAmount <= 0) {
+    return { days: 0, 
+      hours: 0,
+    toString: () => "- วัน - ชม." };
+  }
+    const days = Math.trunc(hourAmount / 8);
+    const hours = hourAmount % 8;
+
+    return { days,
+       hours,
+      toString: () => `${days} วัน ${hours} ชม.` };
+  }
+}

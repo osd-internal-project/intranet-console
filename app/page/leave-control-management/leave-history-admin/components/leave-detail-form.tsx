@@ -190,21 +190,21 @@ export const LeaveDetailForm: React.FC<props> = ({
               { label: "คงเหลือเดิม", value: details.beforeLeaveHour ? HourAmountToDateHourString(details.beforeLeaveHour) : "-", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-100" },
               { label: "คงเหลือใหม่", value: details.afterLeaveHour ? HourAmountToDateHourString(details.afterLeaveHour) : "-", color: "text-green-700", bg: "bg-green-50", border: "border-green-200" },
             ].map((item, idx) => (
-              <Col xs={12} style={{ flex: 1 }} className="flex-grow">
-                <div className={`${item.bg} ${item.border} p-2 rounded-xl border shadow-sm h-full flex flex-col items-center justify-center transition-all hover:shadow-md`}>
-                  {/* ส่วนชื่อหัวข้อ */}
-                  <span className="text-[13px] text-gray-500 font-bold mb-1 text-center leading-tight h-8 flex items-center">
+            <Col key={idx} xs={12} style={{ flex: 1 }} className="flex-grow">
+              <div className={`${item.bg} ${item.border} rounded-xl border shadow-sm h-full flex flex-col transition-all hover:shadow-md overflow-hidden`}>
+                <div className="w-full py-2 text-center items-center border-b border-black/5">
+                  <span className="text-[13px] text-gray-600 font-bold leading-tight block">
                     {item.label}
                   </span>
+                </div>
 
-                  {/* ส่วนตัวเลขและหน่วย */}
-                  <div className="flex items-baseline gap-1">
-                    <span className={`text-xl font-black ${item.color} 'text-2xl'`}>
-                      {item.value}
-                    </span>
-                    <span className={`text-[13px] font-medium ${item.color} opacity-80`}>
-                      {/*item.unit*/}
-                    </span>
+                <div className="flex items-center justify-center flex-col flex-grow py-3">
+                  <span className={`text-[13px] font-black ${item.color} mb-1`}>
+                    {item.value}
+                  </span>
+                    {/* <span className={`text-[13px] font-medium ${item.color} opacity-80`}>
+                      {item.unit}
+                    </span> */}
                   </div>
                 </div>
               </Col>

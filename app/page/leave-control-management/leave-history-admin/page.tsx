@@ -55,7 +55,7 @@ export default function Page() {
   const dataDetailLeaveHour = async (userId: string, typeId: number) => {
     console.log(typeId);
     const resTableDeatilTypeLeave = await LeaveManagementServices(baseUrlIntranet).findDetailByTypeLeaveUserId(userId, typeId);
-    console.log("resTableDeatilTypeLeave: ",resTableDeatilTypeLeave);
+    //console.log("resTableDeatilTypeLeave: ",resTableDeatilTypeLeave);
     setTypeLeaveTableAll(resTableDeatilTypeLeave);
   };
 

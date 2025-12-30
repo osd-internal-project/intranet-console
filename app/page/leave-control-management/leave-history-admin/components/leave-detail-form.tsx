@@ -50,12 +50,12 @@ export const LeaveDetailForm: React.FC<props> = ({
   submitAction,
   typeLeavebyTypeId,
 }) => {
-  console.log("typeLeavebyTypeId: ", typeLeavebyTypeId);
-  console.log("formdetail: ", formdetail);
-  console.log("formdetail.getFieldsValue(): ", formdetail.getFieldsValue());
-  console.log("statusById: ", statusById);
+  // console.log("typeLeavebyTypeId: ", typeLeavebyTypeId);
+  // console.log("formdetail: ", formdetail);
+  // console.log("formdetail.getFieldsValue(): ", formdetail.getFieldsValue());
+  // console.log("statusById: ", statusById);
   const details = Form.useWatch([], formdetail) || {};
-  console.log("details: ", details);
+  // console.log("details: ", details);
 
   // const userApproved = formdetail.getFieldValue("userApproved");
   // const dataLeaveFiles = formdetail.getFieldValue("dataLeaveFiles");

@@ -236,36 +236,36 @@ export default function Page() {
       return false;
     }
     
-    console.log("totalLeaveHours:", totalLeaveHours);
-    console.log("values:", values);
-    console.log("user:", user);
-    console.log("dataMasterType:", dataMasterType);
-    console.log("typeLeaveTable:", typeLeaveTable);
+    // console.log("totalLeaveHours:", totalLeaveHours);
+    // console.log("values:", values);
+    // console.log("user:", user);
+    // console.log("dataMasterType:", dataMasterType);
+    // console.log("typeLeaveTable:", typeLeaveTable);
 
     const currentTypeLeaveData = typeLeaveTable.find((item) => item.typeId === values.type_id);
 
     // โควตาวันลา(yearLeaveHour)
     const { quotaLeaveHour, quotaLeaveDay } = getQuotaLeavePerYear(dataMasterType, user.startWork);
-    console.log("โควตาวันลา(yearLeaveHour):", quotaLeaveHour);
+    // console.log("โควตาวันลา(yearLeaveHour):", quotaLeaveHour);
 
     // ลามาแล้ว(usedLeaveHour)
     const usedDays = Number(currentTypeLeaveData?.haveLeaveDays || 0);
     const usedHoursPart = Number(currentTypeLeaveData?.haveLeaveHours || 0);
     const usedLeaveHour = usedDays * 8 + usedHoursPart;
-    console.log("ลามาแล้ว(usedLeaveHour):", usedLeaveHour);
+    // console.log("ลามาแล้ว(usedLeaveHour):", usedLeaveHour);
 
     // คงเหลือก่อนอนุมัติ(beforeLeaveHour)
     const beforeLeaveHour = Number(currentTypeLeaveData?.limitLeaveLastResult || 0);
-    console.log("คงเหลือ(beforeLeaveHour):", beforeLeaveHour);
+    // console.log("คงเหลือ(beforeLeaveHour):", beforeLeaveHour);
 
-    console.log("ลาครั้งนี้(leaveHour):", totalLeaveHours);
+    // console.log("ลาครั้งนี้(leaveHour):", totalLeaveHours);
 
     // คงเหลือหลังอนุมัติ(afterLeaveHour)
     const afterLeaveHour = beforeLeaveHour - totalLeaveHours;
-    console.log("คงเหลือหลังอนุมัติ(afterLeaveHour):", afterLeaveHour);
+    // console.log("คงเหลือหลังอนุมัติ(afterLeaveHour):", afterLeaveHour);
 
     const base = createLeaveBase(values, user, dataMasterType, totalLeaveHours, quotaLeaveHour, usedLeaveHour, beforeLeaveHour, afterLeaveHour);
-    console.log("base:", base);
+    // console.log("base:", base);
     showConfirmModal(base, !isSameYear);
   };
 

@@ -50,12 +50,12 @@ export const LeaveDetailForm: React.FC<props> = ({
   submitAction,
   typeLeavebyTypeId,
 }) => {
-  // console.log("typeLeavebyTypeId: ", typeLeavebyTypeId);
+  console.log("typeLeavebyTypeId: ", typeLeavebyTypeId);
   // console.log("formdetail: ", formdetail);
   // console.log("formdetail.getFieldsValue(): ", formdetail.getFieldsValue());
   // console.log("statusById: ", statusById);
   const details = Form.useWatch([], formdetail) || {};
-  // console.log("details: ", details);
+  console.log("details: ", details);
 
   // const userApproved = formdetail.getFieldValue("userApproved");
   // const dataLeaveFiles = formdetail.getFieldValue("dataLeaveFiles");
@@ -183,32 +183,41 @@ export const LeaveDetailForm: React.FC<props> = ({
           bordered={false}
         >
           <Row gutter={[5, 5]} className="mb-8">
-            {[
-              { label: "สิทธิ์ทั้งหมด", value: details.yearLeaveHour ? HourAmountToDateHourString(details.yearLeaveHour) : "-", color: "text-gray-700", bg: "bg-gray-100", border: "border-gray-200" },
-              { label: "ใช้ไปแล้ว", value: details.usedLeaveHour ? HourAmountToDateHourString(details.usedLeaveHour) : "-", color: "text-red-600", bg: "bg-red-50", border: "border-red-100" },
-              { label: "ขอลาครั้งนี้", value: details.reqLeaveHour ? HourAmountToDateHourString(details.reqLeaveHour) : "-", color: "text-blue-700", bg: "bg-blue-50", border: "border-blue-100" },
-              { label: "คงเหลือเดิม", value: details.beforeLeaveHour ? HourAmountToDateHourString(details.beforeLeaveHour) : "-", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-100" },
-              { label: "คงเหลือใหม่", value: details.afterLeaveHour ? HourAmountToDateHourString(details.afterLeaveHour) : "-", color: "text-green-700", bg: "bg-green-50", border: "border-green-200" },
-            ].map((item, idx) => (
-            <Col key={idx} xs={12} style={{ flex: 1 }} className="flex-grow">
-              <div className={`${item.bg} ${item.border} rounded-xl border shadow-sm h-full flex flex-col transition-all hover:shadow-md overflow-hidden`}>
-                <div className="w-full py-2 text-center items-center border-b border-black/5">
-                  <span className="text-[13px] text-gray-600 font-bold leading-tight block">
-                    {item.label}
-                  </span>
-                </div>
+            {/* typeId === 13 ลาอื่นๆ */}
+            {(typeLeavebyTypeId.typeId === 13 ?
+              [
+                { label: "ใช้ไปแล้ว", value: details.usedLeaveHour ? HourAmountToDateHourString(details.usedLeaveHour) : "-", color: "text-red-600", bg: "bg-red-50", border: "border-red-100", txtLabelSize: 20, txtValueSize: 18 },
+                { label: "ขอลาครั้งนี้", value: details.reqLeaveHour ? HourAmountToDateHourString(details.reqLeaveHour) : "-", color: "text-blue-700", bg: "bg-blue-50", border: "border-blue-100", txtLabelSize: 20, txtValueSize: 18 },
+              ] : [
+                { label: "สิทธิ์ทั้งหมด", value: details.yearLeaveHour ? HourAmountToDateHourString(details.yearLeaveHour) : "-", color: "text-gray-700", bg: "bg-gray-100", border: "border-gray-200", txtLabelSize: 15, txtValueSize: 13 },
+                { label: "ใช้ไปแล้ว", value: details.usedLeaveHour ? HourAmountToDateHourString(details.usedLeaveHour) : "-", color: "text-red-600", bg: "bg-red-50", border: "border-red-100", txtLabelSize: 15, txtValueSize: 13 },
+                { label: "ขอลาครั้งนี้", value: details.reqLeaveHour ? HourAmountToDateHourString(details.reqLeaveHour) : "-", color: "text-blue-700", bg: "bg-blue-50", border: "border-blue-100", txtLabelSize: 15, txtValueSize: 13 },
+                { label: "คงเหลือเดิม", value: details.beforeLeaveHour ? HourAmountToDateHourString(details.beforeLeaveHour) : "-", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-100", txtLabelSize: 15, txtValueSize: 13 },
+                { label: "คงเหลือใหม่", value: details.afterLeaveHour ? HourAmountToDateHourString(details.afterLeaveHour) : "-", color: "text-green-700", bg: "bg-green-50", border: "border-green-200", txtLabelSize: 15, txtValueSize: 13 },
+              ]).map((item, idx) => (
+                <Col key={idx} xs={12} style={{ flex: 1 }} className="flex-grow">
+                  <div className={`${item.bg} ${item.border} py-2 rounded-xl border shadow-md h-full flex flex-col transition-all hover:shadow-[0_0_7px_rgba(0,0,0,0.25)] overflow-hidden`}>
+                    <div className="w-full py-1 text-center items-center border-b border-black/5">
+                      <span
+                        className={`text-gray-600 font-bold leading-tight block`}
+                        style={{ fontSize: `${item.txtLabelSize}px` }}>
+                        {item.label}
+                      </span>
+                    </div>
 
-                <div className="flex items-center justify-center flex-col flex-grow py-3">
-                  <span className={`text-[13px] font-black ${item.color} mb-1`}>
-                    {item.value}
-                  </span>
-                    {/* <span className={`text-[13px] font-medium ${item.color} opacity-80`}>
+                    <div className="flex items-center justify-center flex-col flex-grow">
+                      <span
+                        className={`font-black ${item.color} mb-1`}
+                        style={{ fontSize: `${item.txtValueSize}px` }}>
+                        {item.value}
+                      </span>
+                      {/* <span className={`text-[13px] font-medium ${item.color} opacity-80`}>
                       {item.unit}
                     </span> */}
+                    </div>
                   </div>
-                </div>
-              </Col>
-            ))}
+                </Col>
+              ))}
           </Row>
           <Row gutter={[16, 0]}>
             {/* ประเภทการลา */}

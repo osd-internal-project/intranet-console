@@ -52,8 +52,9 @@ export const LeaveDetailForm: React.FC<props> = ({
 }) => {
   console.log("typeLeavebyTypeId: ", typeLeavebyTypeId);
   console.log("formdetail: ", formdetail);
-  console.log("formdetail.getFieldsValue(): ", formdetail.getFieldsValue());
+  //console.log("formdetail.getFieldsValue(): ", formdetail.getFieldsValue());
   console.log("statusById: ", statusById);
+  //const details = formdetail.getFieldsValue();
   const details = Form.useWatch([], formdetail) || {};
   console.log("details: ", details);
 

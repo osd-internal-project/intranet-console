@@ -24,7 +24,6 @@ const TodoProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         .filter(([key, value]) => roles.includes(value))
         .map(([key]) => [key, true]),
     );
-
     setRoles(result);
   };
   return <UserContext.Provider value={{ user, saveUser, roles, saveRoles }}>{children}</UserContext.Provider>;

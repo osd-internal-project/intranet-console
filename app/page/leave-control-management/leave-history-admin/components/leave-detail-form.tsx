@@ -50,12 +50,14 @@ export const LeaveDetailForm: React.FC<props> = ({
   submitAction,
   typeLeavebyTypeId,
 }) => {
-  console.log("typeLeavebyTypeId: ", typeLeavebyTypeId);
+  // console.log("typeLeavebyTypeId: ", typeLeavebyTypeId);
   // console.log("formdetail: ", formdetail);
   // console.log("formdetail.getFieldsValue(): ", formdetail.getFieldsValue());
   // console.log("statusById: ", statusById);
   const details = Form.useWatch([], formdetail) || {};
-  console.log("details: ", details);
+  // console.log("details: ", details);
+
+  // console.log("formdetail.getFieldValue(\"id\"): ", formdetail.getFieldValue("id"));
 
   // const userApproved = formdetail.getFieldValue("userApproved");
   // const dataLeaveFiles = formdetail.getFieldValue("dataLeaveFiles");
@@ -98,12 +100,14 @@ export const LeaveDetailForm: React.FC<props> = ({
       <Form
         autoComplete="off"
         form={formdetail}
+        //form={details}
         layout="vertical"
         onFinish={(e) =>
           onFinishUpdate(
             e,
             submitAction,
-            formdetail.getFieldValue("id") ? formdetail.getFieldValue("id") : 0
+            //formdetail.getFieldValue("id") ? formdetail.getFieldValue("id") : 0
+            details.id ? details.id : 0
           )
         }
       >

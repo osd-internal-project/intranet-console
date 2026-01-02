@@ -78,6 +78,7 @@ export const TableDetail: React.FC<props> = ({
       };
       setStatusById(record.status);
       formdetail.setFieldsValue(base);
+      //console.log("base", base);
       setOpenModalDetail(true);
     } catch (err) {
       console.log(err);

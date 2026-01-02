@@ -1,5 +1,4 @@
 "use client";
-
 import { axiosUser, axiosIntranet } from "../axios";
 import { useSession, signOut } from "next-auth/react";
 import { useEffect } from "react";

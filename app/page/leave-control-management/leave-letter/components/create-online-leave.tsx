@@ -77,7 +77,8 @@ export const CreateOnlineLeave: React.FC<props> = ({
           className=" grid grid-cols-1 p-0 no-label-padding"
           layout="vertical"
           autoComplete="off"
-          onFinish={onfinishCreate}>
+          onFinish={onfinishCreate}
+        >
           <div className="col-span-1 md:col-span-1  justify-end flex p-0">
             <Form.Item label={`วันที่ `} name={`createdAt`} layout="horizontal">
               <Typography.Text>{dayjs(new Date()).format("DD-MM-YYYY")}</Typography.Text>
@@ -159,7 +160,8 @@ export const CreateOnlineLeave: React.FC<props> = ({
                       return validateCheckEndDate(startDate, value, type_id, dataHolidayDay);
                     },
                   }),
-                ]}>
+                ]}
+              >
                 <DatePicker allowClear className="w-full" onChange={(e: any) => setStartDate(e)} format={"DD-MM-YYYY"} />
               </Form.Item>
             </div>
@@ -176,7 +178,8 @@ export const CreateOnlineLeave: React.FC<props> = ({
                       return validateCheckEndDate(startDate, value, type_id, dataHolidayDay);
                     },
                   }),
-                ]}>
+                ]}
+              >
                 <DatePicker allowClear className="w-full" onChange={(e: any) => setEndDate(e)} format={"DD-MM-YYYY"} />
               </Form.Item>
             </div>
@@ -246,7 +249,8 @@ export const CreateOnlineLeave: React.FC<props> = ({
                     pattern: /^[0-9]{10}$/,
                     message: "กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง",
                   },
-                ]}>
+                ]}
+              >
                 <Input
                   maxLength={10}
                   placeholder="เบอร์โทรศัพท์"
@@ -266,7 +270,8 @@ export const CreateOnlineLeave: React.FC<props> = ({
                   onChange={handleChangeAttendFiles}
                   beforeUpload={beforeUploadAttendFiles}
                   multiple={false}
-                  maxCount={1}>
+                  maxCount={1}
+                >
                   <Button icon={<UploadOutlined />}>{`อัปโหลดไฟล์`}</Button>
                 </Upload>
               </Form.Item>

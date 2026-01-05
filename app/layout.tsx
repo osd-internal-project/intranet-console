@@ -10,7 +10,11 @@ export const metadata: Metadata = {
   title: "Intranet - OSD",
   description: "Intranet - OSD",
 };
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <body className={` m-0 `}>
@@ -22,7 +26,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   fontSize: 14,
                   colorPrimary: "#00a1df",
                 },
-              }}>
+              }}
+            >
               {children}
             </ConfigProvider>
           </TodoProvider>

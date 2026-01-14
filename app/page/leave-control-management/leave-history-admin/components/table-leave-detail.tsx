@@ -9,9 +9,9 @@ import { dateFormatTimeNoTIme } from "@/app/utils";
 
 export const TableTotalLeaveDetailPage = () => {
   const { id24Axios, tokenAccess } = useId24();
-  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const sideMenuGroups =
-    tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
+  // const { user } = (useContext(UserContext) as UserContectType) || { user: null };
+  // const sideMenuGroups =
+  //   tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
   const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [params, setParams] = useState<{ type: string; value: string }>({ type: "", value: "" });
   const [getdata, setData] = useState<{

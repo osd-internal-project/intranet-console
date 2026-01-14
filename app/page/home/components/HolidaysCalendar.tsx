@@ -164,37 +164,44 @@ const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
         : false;
 
     if (info.type === "date") {
-      return React.cloneElement(info.originNode, {
-        ...info.originNode.props,
-        className: classNames(styles.dateCell, {
-          [styles.current]: selectDate.isSame(date, "date"),
-          [styles.today]: date.isSame(dayjs(), "date"),
-        }),
-        children: (
-          <div
-            className={classNames({
-              [styles.text]: true,
-              [styles.holiday]: isHoliday,
-            })}>
-            <span
+      return React.cloneElement(
+        info.originNode as React.ReactElement<{
+          className?: string;
+          children?: React.ReactNode;
+        }>,
+        {
+          className: classNames(styles.dateCell, {
+            [styles.current]: selectDate.isSame(date, "date"),
+            [styles.today]: date.isSame(dayjs(), "date"),
+          }),
+          children: (
+            <div
               className={classNames({
-                [styles.weekend]: isWeekend,
-                // [styles.holiday]: isHoliday,
-                gray: !panelDateDate.isSame(date, "month"),
-              })}>
-              {date.get("date")}
-            </span>
-            {info.type === "date" && <div className={styles.lunar}>-</div>}
-          </div>
-        ),
-      });
+                [styles.text]: true,
+                [styles.holiday]: isHoliday,
+              })}
+            >
+              <span
+                className={classNames({
+                  [styles.weekend]: isWeekend,
+                  gray: !panelDateDate.isSame(date, "month"),
+                })}
+              >
+                {date.get("date")}
+              </span>
+              <div className={styles.lunar}>-</div>
+            </div>
+          ),
+        },
+      );
     }
     if (info.type === "month") {
       return (
         <div
           className={classNames(styles.monthCell, {
             [styles.monthCellCurrent]: selectDate.isSame(date, "month"),
-          })}>
+          })}
+        >
           {dayjs(date).format("MMM")}
         </div>
       );
@@ -244,7 +251,8 @@ const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
                       setPanelDate(newDate);
                       onChange?.(newDate);
                     }}
-                    style={{ width: 100 }}>
+                    style={{ width: 100 }}
+                  >
                     {years.map((year) => (
                       <Select.Option key={year} value={year}>
                         {year}
@@ -258,7 +266,8 @@ const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
                       setPanelDate(newDate);
                       onChange?.(newDate);
                     }}
-                    style={{ width: 100 }}>
+                    style={{ width: 100 }}
+                  >
                     {months.map((month) => (
                       <Select.Option key={month.value} value={month.value}>
                         {month.label}

@@ -14,11 +14,7 @@ import { UserContectType, UserContext } from "../config/userContext";
 import Script from "next/script";
 const { Content, Sider } = Layout;
 
-export default function MainLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function MainLayout({ children }: { children: React.ReactNode }) {
   const navigate = useRouter();
   const { tokenAccess, authenticated, login, logout, id24Axios } = useId24();
   const { saveUser, saveRoles } = useContext(UserContext) as UserContectType;
@@ -33,11 +29,7 @@ export default function MainLayout({
 
   useEffect(() => {
     const sideMenuGroups =
-      tokenAccess && tokenAccess.userAccess.length > 0
-        ? Array.from(
-            new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())
-          )
-        : [];
+      tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
 
     saveRoles(sideMenuGroups);
   }, [tokenAccess?.userAccess]);
@@ -45,9 +37,7 @@ export default function MainLayout({
   const fetchData = useCallback(async () => {
     try {
       setIsCheckingProfile(true);
-      const profileUser = await UsersServices(
-        baseUrlUser
-      ).processAfterLoginAuth();
+      const profileUser = await UsersServices(baseUrlUser).processAfterLoginAuth();
 
       if (profileUser) {
         setProfileDetail(profileUser);
@@ -87,11 +77,7 @@ export default function MainLayout({
   };
 
   const sideMenuGroups =
-    tokenAccess && tokenAccess.userAccess.length > 0
-      ? Array.from(
-          new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())
-        )
-      : [];
+    tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
 
   const menulist = MenuSiderWithModule(sideMenuGroups);
   const currentPath = pathname.split("/")[2];
@@ -110,40 +96,19 @@ export default function MainLayout({
         >
           <div className="flex justify-center py-4 ">
             {!collapsed ? (
-              <div
-                onClick={() =>
-                  navigate.push(`${window.location.origin}/page/home`)
-                }
-                className="cursor-pointer"
-              >
-                <img
-                  src="/images/osd-logo.png"
-                  alt="logo-page"
-                  className={`${collapsed ? "w-14 " : " w-32"}`}
-                />
+              <div onClick={() => navigate.push(`${window.location.origin}/page/home`)} className="cursor-pointer">
+                <img src="/images/logo_osd.png" alt="logo-page" className={`${collapsed ? "w-14 " : " w-32"}`} />
               </div>
             ) : (
-              <div
-                onClick={() =>
-                  navigate.push(`${window.location.origin}/page/home`)
-                }
-                className="cursor-pointer"
-              >
-                <img
-                  src="/images/osd-logo.png"
-                  alt="logo-page"
-                  className={`${collapsed ? "w-14 " : "w-28 "}`}
-                />
+              <div onClick={() => navigate.push(`${window.location.origin}/page/home`)} className="cursor-pointer">
+                <img src="/images/logo_osd.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
               </div>
             )}
           </div>
           <Menu
             mode="inline"
             selectedKeys={[currentPath, `${currentPath}/${currentPathSub}`]}
-            defaultSelectedKeys={[
-              currentPath,
-              `${currentPath}/${currentPathSub}`,
-            ]}
+            defaultSelectedKeys={[currentPath, `${currentPath}/${currentPathSub}`]}
             items={menulist}
           />
         </Sider>
@@ -168,9 +133,7 @@ export default function MainLayout({
           >
             {children}
           </Content>
-          <Footer style={{ textAlign: "center" }}>
-            Intranet ©{new Date().getFullYear()} Created by OSD
-          </Footer>
+          <Footer style={{ textAlign: "center" }}>Intranet ©{new Date().getFullYear()} Created by OSD</Footer>
         </Layout>
         <Script
           src="https://agenza.osd.co.th/resources/product/llm/public/sdk/embedLite.js"

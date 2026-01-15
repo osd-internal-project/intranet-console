@@ -41,7 +41,7 @@
 }
 
 .ant-menu-item-disabled,
-.ant-menu-item-disabled > span > a {
+.ant-menu-item-disabled>span>a {
   pointer-events: none;
 }
 
@@ -53,7 +53,7 @@
   background-color: rgb(59 130 246 / 0.3);
 }
 
-.ant-tree-node-selected > .ant-tree-title {
+.ant-tree-node-selected>.ant-tree-title {
   font-weight: 500;
 }
 
@@ -242,7 +242,8 @@
 }
 
 .disabled-row td {
-  pointer-events: auto; /* Allow tooltips */
+  pointer-events: auto;
+  /* Allow tooltips */
 }
 
 .ant-table-container {

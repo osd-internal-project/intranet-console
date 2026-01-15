@@ -88,15 +88,18 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar, handleChangeMonth
         views={["month"]}
         events={maFetchCalendar
           .filter((maCarCalendar: MaCarBookCalendarType) => maCarCalendar.carBookApprovedStatus !== "Cancel")
-          .map((maCarCalendar: MaCarBookCalendarType) => ({
-            id: maCarCalendar.id,
-            title: `${maCarCalendar.carName} ${maCarCalendar.createdByName ? `(${maCarCalendar.createdByName})` : ""}`,
-            start: new Date(maCarCalendar.carBookStartDate),
-            end: new Date(maCarCalendar.carBookEndDate),
-            carBookApprovedStatus: maCarCalendar.carBookApprovedStatus,
-            description: maCarCalendar.description,
-            userName: maCarCalendar.userName,
-          }))}
+          .map((maCarCalendar: MaCarBookCalendarType) => {
+            const isAllDay = dayjs(maCarCalendar.carBookStartDate).hour() === 0 && dayjs(maCarCalendar.carBookEndDate).hour() === 0;
+            return {
+              id: maCarCalendar.id,
+              title: `${maCarCalendar.carName} ${maCarCalendar.createdByName ? `(${maCarCalendar.createdByName})` : ""}`,
+              start: new Date(maCarCalendar.carBookStartDate),
+              end: isAllDay ? dayjs(maCarCalendar.carBookEndDate).add(1, "day").toDate() : new Date(maCarCalendar.carBookEndDate),
+              carBookApprovedStatus: maCarCalendar.carBookApprovedStatus,
+              description: maCarCalendar.description,
+              userName: maCarCalendar.userName,
+            };
+          })}
         messages={{
           next: ">",
           previous: "<",
@@ -110,6 +113,8 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar, handleChangeMonth
         }}
         dayPropGetter={dayPropGetter}
         eventPropGetter={(event: CustomEvent) => {
+          console.log(event);
+
           let backgroundColor = "#FFA500";
           backgroundColor =
             event.carBookApprovedStatus === "Approve"
@@ -133,7 +138,8 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar, handleChangeMonth
             <Collapse
               bordered={false}
               defaultActiveKey={["1", "2", "3"]}
-              expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
+              expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
+            >
               <Collapse.Panel header="ข้อมูลการจอง" key="1">
                 <Form.Item label="ชื่อรถ" name="carName">
                   <Input className="read-only-input-calendar" disabled />

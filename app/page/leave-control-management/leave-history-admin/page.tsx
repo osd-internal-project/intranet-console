@@ -13,6 +13,7 @@ import dayjs from "dayjs";
 import saveAs from "file-saver";
 import { TableTotalLeaveDetailPage } from "./components/table-leave-detail";
 import LeaveManagementServices from "../../../services/leave-management.service";
+import CreateLeaveAdminPage from "./components/create-leave-admin";
 
 export default function Page() {
   const { id24Axios, tokenAccess } = useId24();
@@ -47,7 +48,7 @@ export default function Page() {
         ? await DataLeaveService(baseUrlIntranet).getdataLeaveHrfindBygroup(user.userId, params, skip, take)
         : await DataLeaveService(baseUrlIntranet).getdataLeavefindBygroup(user.userId, params, skip, take);
       console.log("DataLeaveUser_data: ", data);
-        setDataLeaveUser({ data, count });
+      setDataLeaveUser({ data, count });
       setLoading(false);
     }
   };
@@ -228,23 +229,23 @@ export default function Page() {
                     </Divider>
                     <div className="w-full">
                       <Card>
-                        <TableTotalLeaveDetailPage
-                        // dataLeaveUser={dataLeaveUser}
-                        // setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
-                        // openModalDetail={openModalDetail}
-                        // formdetail={formdetail}
-                        // onFinishUpdate={onFinishUpdate}
-                        // onFinishDelete={onFinishDelete}
-                        // downloadFile={downloadFile}
-                        // sideMenuGroups={sideMenuGroups}
-                        // setSubmitAction={setSubmitAction}
-                        // submitAction={submitAction}
-                        // setParams={setParams}
-                        // setLoading={setLoading}
-                        // handleExport={handleExport}
-                        // pagination={pagination}
-                        // changePagination={changePagination}
-                        />
+                        <TableTotalLeaveDetailPage />
+                      </Card>
+                    </div>
+                  </div>
+                ),
+              },
+              {
+                label: `จัดการการลาพนักงาน`,
+                key: "3",
+                children: (
+                  <div>
+                    <Divider orientation="left" orientationMargin="0" style={{ padding: "0px 0px 0px 0px", marginBottom: "0px", marginTop: "0px" }}>
+                      <div className="title-page-font">{`จัดการการลาพนักงาน`}</div>
+                    </Divider>
+                    <div className="w-full">
+                      <Card>
+                        <CreateLeaveAdminPage />
                       </Card>
                     </div>
                   </div>

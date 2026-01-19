@@ -5,7 +5,9 @@ export interface TUserServices {
   findUsersFormSaleProjectModule: () => Promise<ITSelectUsers[]>;
   findHeaderUserByUserId: (userId: string) => Promise<ITUser[]>;
   findUsersByOwnerGroupIds: (userGroupId: string[]) => Promise<any>;
+  findUsersInOwnerGroupIds: (userId: string) => Promise<any>;
 }
+// dropdown-user-in-owner-group/:userId
 const UserServices = (axiosInstance: AxiosInstance): TUserServices => {
   //User Service
   const userUrl = "/user";
@@ -46,6 +48,12 @@ const UserServices = (axiosInstance: AxiosInstance): TUserServices => {
     findUsersByOwnerGroupIds: async (userGroupId) => {
       return await axiosInstance
         .post(`${userUrl}/users-in-owner-groups`, { groups: userGroupId })
+        .then((result) => result.data)
+        .catch((err) => err);
+    },
+    findUsersInOwnerGroupIds: async (userId) => {
+      return await axiosInstance
+        .get(`${userUrl}/dropdown-user-in-owner-group/${userId}`)
         .then((result) => result.data)
         .catch((err) => err);
     },

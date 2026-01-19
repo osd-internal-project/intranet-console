@@ -295,6 +295,12 @@ export const MenuSider: MenuItem[] = [
       },
     ],
   },
+  {
+    key: `employee-property`,
+    icon: gridIcon,
+    label: `การจัดการทรัพย์สินพนักงาน`,
+    rule: ["admin", "hr", "user"],
+  },
 ].map((item) => {
   return {
     ...item,

@@ -81,7 +81,16 @@ export default function Page() {
   };
 
   // Helper functions
-  const createLeaveBase = (values: ITypeDataLeaveCreate, user: any, dataMasterType: any, totalHours: number, quotaLeaveHour: number, usedLeaveHour: number, beforeLeaveHour: number, afterLeaveHour: number) => ({
+  const createLeaveBase = (
+    values: ITypeDataLeaveCreate,
+    user: any,
+    dataMasterType: any,
+    totalHours: number,
+    quotaLeaveHour: number,
+    usedLeaveHour: number,
+    beforeLeaveHour: number,
+    afterLeaveHour: number,
+  ) => ({
     startDate: dayjs(values.startDate).startOf("date").toISOString(),
     endDate: dayjs(values.endDate).endOf("date").toISOString(),
     startTime: values.startTime || undefined,
@@ -100,10 +109,10 @@ export default function Page() {
     attrachFile: attendFiles[0]?.name,
     leaveHour: totalHours,
     groupId: user?.ownerGroupId,
-    yearLeaveHour: quotaLeaveHour,   // จำนวนวันลาที่ได้ขอในปีนั้น
-    usedLeaveHour: usedLeaveHour,   // จำนวนวันลาที่ใช้ไปในปีนั้น
+    yearLeaveHour: quotaLeaveHour, // จำนวนวันลาที่ได้ขอในปีนั้น
+    usedLeaveHour: usedLeaveHour, // จำนวนวันลาที่ใช้ไปในปีนั้น
     beforeLeaveHour: beforeLeaveHour, // จำนวนวันลาคงเหลือก่อนขอลา(อนุมัติ)
-    afterLeaveHour: afterLeaveHour,  // จำนวนวันลาคงเหลือหลังขอลา(อนุมัติ)
+    afterLeaveHour: afterLeaveHour, // จำนวนวันลาคงเหลือหลังขอลา(อนุมัติ)
   });
 
   const showConfirmModal = (base: any, isCrossYear = false) => {
@@ -207,7 +216,6 @@ export default function Page() {
     return Promise.resolve(true);
   };
 
-
   // Main function
   const onfinishCreate = async (values: ITypeDataLeaveCreate) => {
     const startDateYear = dayjs(values.startDate).format("YYYY");
@@ -229,19 +237,10 @@ export default function Page() {
       totalLeaveHours = validation.hours;
     } else {
       // Cross-year selection is not allowed; set inline validation error on endDate and stop submission
-      createdataleaveForm.setFields([
-        { name: "endDate", errors: ["ไม่สามารถเลือกวันที่ข้ามปีได้ กรุณาเลือกวันที่ภายในปีเดียวกัน"] },
-      ]);
-      
+      createdataleaveForm.setFields([{ name: "endDate", errors: ["ไม่สามารถเลือกวันที่ข้ามปีได้ กรุณาเลือกวันที่ภายในปีเดียวกัน"] }]);
+
       return false;
     }
-    
-    // console.log("totalLeaveHours:", totalLeaveHours);
-    // console.log("values:", values);
-    // console.log("user:", user);
-    // console.log("dataMasterType:", dataMasterType);
-    // console.log("typeLeaveTable:", typeLeaveTable);
-
     const currentTypeLeaveData = typeLeaveTable.find((item) => item.typeId === values.type_id);
 
     // โควตาวันลา(yearLeaveHour)
@@ -301,7 +300,7 @@ export default function Page() {
               getTypeLeaveOption={getTypeLeaveOption}
               onfinishCreate={(e: ITypeDataLeaveCreate) => {
                 // checkDate(e.startDate, e.endDate)
-                onfinishCreate(e)
+                onfinishCreate(e);
               }}
               createdataleaveForm={createdataleaveForm}
               setStartDate={(e: Date) => setStartDate(e)}

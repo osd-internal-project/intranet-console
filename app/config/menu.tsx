@@ -248,6 +248,30 @@ export const MenuSider: MenuItem[] = [
     ],
   },
   {
+    key: `employee-property`,
+    icon: gridIcon,
+    label: `ทรัพย์สิน`,
+    rule: ["admin", "hr", "user"],
+  },
+  {
+    key: `complain`,
+    icon: gridIcon,
+    label: `ร้องเรียนปัญหา`,
+    rule: ["admin", "user"],
+    children: [
+      {
+        key: `complain/complain-problem`,
+        label: `ร้องเรียนปัญหา`,
+        rule: ["admin", "user"],
+      },
+      {
+        key: `complain/complain-problem-hr`,
+        label: `ร้องเรียนปัญหา`,
+        rule: ["admin", "hr"],
+      },
+    ],
+  },
+  {
     key: `setting`,
     icon: <Icon icon="uil:setting" width="15" height="15" />,
     label: `ตั้งค่า`,
@@ -294,12 +318,6 @@ export const MenuSider: MenuItem[] = [
         rule: ["admin", "ma-user"],
       },
     ],
-  },
-  {
-    key: `employee-property`,
-    icon: gridIcon,
-    label: `การจัดการทรัพย์สินพนักงาน`,
-    rule: ["admin", "hr", "user"],
   },
 ].map((item) => {
   return {

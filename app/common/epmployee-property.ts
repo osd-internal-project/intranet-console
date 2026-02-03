@@ -15,6 +15,7 @@ export interface ITEmployeePropertyCommon {
   updatedAt: string; // หรือ Date ถ้า parse แล้ว
   users: User;
   mistakesType: ITMistakesType[];
+  imageUrl: string;
 }
 
 export interface User {

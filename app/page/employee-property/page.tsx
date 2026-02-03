@@ -4,11 +4,16 @@ import { loadAppConfig } from "@/app/config/app-config";
 import { UserContext, type UserContectType } from "@/app/config/userContext";
 import employeePropertyService from "@/app/services/employee-property.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
-import { Breadcrumb, Button, Card, Col, Divider, Form, Input, Modal, Row, Select, Space, Spin, Tabs } from "antd";
-import { useContext, useEffect, useState } from "react";
+import { Breadcrumb, Button, Card, Col, Divider, Form, Input, message, Modal, Row, Select, Tabs, Upload, type GetProp, type UploadProps } from "antd";
+import { useContext, useState } from "react";
 import EmployeePropertyTable from "./components/employee-property-table";
 import EmployeePropertyTeamsTable from "./components/employee-property-table-teams";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import type { UploadFile } from "antd/es/upload/interface";
+import { handleCompress } from "@/app/utils";
+import type { RcFile } from "antd/es/upload";
+
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 export default function Page() {
   const { user } = (useContext(UserContext) as UserContectType) || {
@@ -20,6 +25,7 @@ export default function Page() {
   const [openModal, setOpen] = useState<boolean>(false);
   const [reloadKey, setReloadKey] = useState(0);
   const [form] = Form.useForm();
+  const [attendFiles, setAttendFiles] = useState<UploadFile[][]>([]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -33,13 +39,57 @@ export default function Page() {
   const onFinish = async (values: { items: ITEmployeePropertyCommon[] }) => {
     if (!user) return;
     try {
-      await employeepropertyservice.create(values.items);
+      const formData = new FormData();
+      formData.append("items", JSON.stringify(values.items));
+      attendFiles.forEach((fileList) => {
+        const file = fileList?.[0];
+        if (file) {
+          formData.append("files", file.originFileObj as RcFile);
+        }
+      });
+      const response = await employeepropertyservice.create(formData);
+      console.log(response);
+
       setOpen(false);
       form.resetFields();
       setReloadKey((prev) => prev + 1);
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const getUploadProps = (name: number): UploadProps => ({
+    beforeUpload: async (file) => {
+      const isPNG = file.type === "image/png";
+      if (!isPNG) {
+        message.error(`${file.name} is not a png file`);
+        return Upload.LIST_IGNORE;
+      }
+      const compressed = await handleCompress(file);
+      return compressed;
+    },
+    onChange: (info) => {
+      const newFiles = [...attendFiles];
+      newFiles[name] = info.fileList;
+
+      form.setFieldValue(["items", name, "pathImage"], info.fileList);
+      setAttendFiles(newFiles);
+    },
+  });
+
+  const onPreview = async (file: UploadFile) => {
+    let src = file.url as string;
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj as FileType);
+        reader.onload = () => resolve(reader.result as string);
+      });
+    }
+    const image = new Image();
+    image.src = src;
+    const imgWindow = window.open(src);
+    imgWindow?.document.write(image.outerHTML);
   };
 
   return (
@@ -122,7 +172,20 @@ export default function Page() {
                       className="mb-1"
                       title={
                         <div className="flex justify-end items-center ">
-                          <Button danger type="link" icon={<MinusCircleOutlined />} onClick={() => remove(name)} />
+                          <Button
+                            danger
+                            type="link"
+                            icon={<MinusCircleOutlined />}
+                            onClick={() => {
+                              remove(name);
+
+                              setAttendFiles((prev) => {
+                                const newFiles = [...prev];
+                                newFiles.splice(name, 1);
+                                return newFiles;
+                              });
+                            }}
+                          />
                         </div>
                       }
                     >
@@ -177,7 +240,15 @@ export default function Page() {
                         </Col>
                         <Col span={6}>
                           <Form.Item {...restField} name={[name, "pathImage"]} label="Path Image">
-                            <Input placeholder="Please Input" />
+                            <Upload
+                              {...getUploadProps(name)}
+                              fileList={attendFiles[name] || []}
+                              listType="picture-card"
+                              maxCount={1}
+                              onPreview={onPreview}
+                            >
+                              {(attendFiles[name]?.length || 0) < 1 && "+ Upload"}
+                            </Upload>
                           </Form.Item>
                         </Col>
                       </Row>

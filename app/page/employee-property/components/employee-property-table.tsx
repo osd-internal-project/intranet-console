@@ -3,7 +3,7 @@ import { loadAppConfig } from "@/app/config/app-config";
 import { UserContext, type UserContectType } from "@/app/config/userContext";
 import employeePropertyService from "@/app/services/employee-property.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
-import { Button, Form, Input, message, Modal, Popover, Select, Space, Table, Typography, type MenuProps } from "antd";
+import { Button, Form, Input, message, Modal, Popover, Select, Space, Table, Typography, type MenuProps, Image } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 import React, { useContext, useEffect, useState } from "react";
@@ -64,11 +64,24 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey }): React.ReactEleme
       title: "ชื่อทรัพย์สิน",
       dataIndex: "name",
       key: "name",
-    },
-    {
-      title: "ยี่ห้อ",
-      dataIndex: "brand",
-      key: "brand",
+      render: (e: string, record: ITEmployeePropertyCommon) => {
+        return (
+          <div className="flex items-center gap-3">
+            {/* Image */}
+            <div className="w-[50px] h-[50px] rounded-lg overflow-hidden border bg-gray-100 flex items-center justify-center">
+              {record.imageUrl ? (
+                <Image src={record.imageUrl} alt={e} width={50} height={50} className="object-cover" />
+              ) : (
+                <span className="text-xs text-gray-400">No Image</span>
+              )}
+            </div>
+            <div className="flex flex-col">
+              <span className="font-medium text-gray-800">{e}</span>
+              <span className="text-xs text-gray-500">{`${record.brand}`}</span>
+            </div>
+          </div>
+        );
+      },
     },
     {
       title: "Serial",

@@ -53,7 +53,11 @@ const EmployeePropertySerivce = (axiosInstance: AxiosInstance): TServices => {
     },
     create: async (form) => {
       return await axiosInstance
-        .post(`${baseUrl}`, form)
+        .post(`${baseUrl}`, form, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
         .then((res) => {
           return res.data;
         })

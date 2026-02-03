@@ -4,7 +4,7 @@ import { UserContext, type UserContectType } from "@/app/config/userContext";
 import employeePropertyService from "@/app/services/employee-property.service";
 import UserServices from "@/app/services/user.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
-import { Button, Form, Input, message, Popover, Select, Table } from "antd";
+import { Button, Form, Input, message, Popover, Select, Table, Image } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 import React, { useContext, useEffect, useState } from "react";
@@ -36,7 +36,11 @@ const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.React
       fetchData();
     }
     masterData();
-  }, [loading, user, params, reloadKey]);
+  }, [loading, user, params]);
+
+  useEffect(() => {
+    fetchData();
+  }, [reloadKey]);
 
   const fetchData = async () => {
     if (!user) {
@@ -65,11 +69,11 @@ const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.React
     {
       title: "ชื่อพนักงาน",
       key: "employeeName",
-      render: (_, record) => `${record.users.firstNameEn} ${record.users.lastNameEn}`,
+      render: (_, record) => `${record.users.firstNameTh} ${record.users.lastNameTh}`,
     },
     {
       title: "แผนก",
-      dataIndex: ["users", "department", "departName"],
+      dataIndex: ["users", "masterPosition", "nameTh"],
       key: "department",
     },
     {
@@ -83,6 +87,24 @@ const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.React
       title: "ชื่อทรัพย์สิน",
       dataIndex: "name",
       key: "name",
+      render: (e: string, record: ITEmployeePropertyCommon) => {
+        return (
+          <div className="flex items-center gap-3">
+            {/* Image */}
+            <div className="w-[50px] h-[50px] rounded-lg overflow-hidden border bg-gray-100 flex items-center justify-center">
+              {record.imageUrl ? (
+                <Image src={record.imageUrl} alt={e} width={50} height={50} className="object-cover" />
+              ) : (
+                <span className="text-xs text-gray-400">No Image</span>
+              )}
+            </div>
+            <div className="flex flex-col">
+              <span className="font-medium text-gray-800">{e}</span>
+              <span className="text-xs text-gray-500">{`${record.brand}`}</span>
+            </div>
+          </div>
+        );
+      },
     },
     {
       title: "ยี่ห้อ",
@@ -113,7 +135,7 @@ const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.React
       title: "วันที่สร้าง",
       dataIndex: "createdAt",
       key: "createdAt",
-      render: (value: string) => new Date(value).toLocaleDateString("th-TH"),
+      render: (value: string) => new Date(value).toLocaleDateString("en-GB"),
     },
   ];
   const onFinish = (values: { type: string; name: string; userId: string }) => {

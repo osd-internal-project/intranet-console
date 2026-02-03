@@ -3,18 +3,20 @@ import { loadAppConfig } from "@/app/config/app-config";
 import { UserContext, type UserContectType } from "@/app/config/userContext";
 import employeePropertyService from "@/app/services/employee-property.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
-import { Button, Form, Input, message, Modal, Popover, Select, Space, Table, Typography, type MenuProps, Image } from "antd";
+import { Button, Form, Input, message, Modal, Popover, Select, Space, Table, Typography, type MenuProps, Image, Upload } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { saveAs } from "file-saver";
 import type { ITMistakesType } from "@/app/common/mistakes-type";
+import type { UploadFile } from "antd/es/upload/interface";
 
 export interface props {
   reloadKey: number;
+  setReloadKey: Dispatch<SetStateAction<number>>;
 }
 
-const EmployeePropertyTable: React.FC<props> = ({ reloadKey }): React.ReactElement => {
+const EmployeePropertyTable: React.FC<props> = ({ reloadKey, setReloadKey }): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || {
     user: null,
   };
@@ -31,12 +33,17 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey }): React.ReactEleme
   const [mistakesForm] = Form.useForm();
   const [openEdit, setOpenEdit] = useState<boolean>(false);
   const [openModalMistake, setOpenModalMistake] = useState<boolean>(false);
+  const [editFiles, setEditFiles] = useState<UploadFile[]>([]);
 
   useEffect(() => {
     if (loading) {
       fetchData();
     }
-  }, [loading, user, params, reloadKey]);
+  }, [loading, user, params]);
+
+  useEffect(() => {
+    fetchData();
+  }, [reloadKey]);
 
   const fetchData = async () => {
     if (!user) {
@@ -52,6 +59,7 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey }): React.ReactEleme
       dataIndex: "id",
       key: "id",
       width: 80,
+      render: (value: string, record: ITEmployeePropertyCommon, index: number) => index + 1,
     },
     {
       title: "ประเภททรัพย์สิน",
@@ -107,7 +115,7 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey }): React.ReactEleme
       title: "วันที่สร้าง",
       dataIndex: "createdAt",
       key: "createdAt",
-      render: (value: string) => new Date(value).toLocaleDateString("th-TH"),
+      render: (value: string) => new Date(value).toLocaleDateString("en-GB"),
     },
     {
       title: "แก้ไขข้อมูล",
@@ -148,6 +156,19 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey }): React.ReactEleme
 
   const handleEdit = (record: ITEmployeePropertyCommon) => {
     setOpenEdit(true);
+    // set รูปเดิม
+    if (record.imageUrl) {
+      setEditFiles([
+        {
+          uid: "-1",
+          name: "image.png",
+          status: "done",
+          url: record.imageUrl,
+        },
+      ]);
+    } else {
+      setEditFiles([]);
+    }
     editForm.setFieldsValue({
       ...record,
     });
@@ -205,6 +226,7 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey }): React.ReactEleme
     try {
       await employeepropertyservice.delete(id);
       message.success("ลบข้อมูลสำเร็จ");
+      setReloadKey((prev) => prev + 1);
       setLoading(true);
     } catch {
       message.error("ไม่สามารถลบข้อมูลได้");
@@ -221,7 +243,7 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey }): React.ReactEleme
       const blob = new Blob([data], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
-      saveAs(blob, `รายงานอุปกรณ์-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`);
+      saveAs(blob, `รายงานอุปกรณ์ของตนเอง-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`);
       message.success("สำเร็จ");
     }
   };
@@ -237,12 +259,6 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey }): React.ReactEleme
       dataIndex: "detail",
       key: "detail",
     },
-    // {
-    //   title: "สถานะ",
-    //   dataIndex: "status",
-    //   key: "status",
-    //   render: (status) => (status ? "ใช้งาน" : "ไม่ใช้งาน"),
-    // },
     {
       title: "วันที่แจ้ง",
       dataIndex: "createdAt",
@@ -279,6 +295,7 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey }): React.ReactEleme
                 await employeepropertyservice.createMistakesType(editingRecord!.id, base);
                 message.success("แก้ไขข้อมูลสำเร็จ");
                 setLoading(true);
+                setReloadKey((prev) => prev + 1);
                 setOpenModalMistake(false);
                 mistakesForm.resetFields();
               } catch {
@@ -339,7 +356,6 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey }): React.ReactEleme
             return <Table columns={mistakeColumns} dataSource={record.mistakesType} rowKey="id" pagination={false} size="small" />;
           },
           rowExpandable: (record) => {
-            console.log(record);
             return record.mistakesType && record.mistakesType.length > 0;
           },
         }}
@@ -360,17 +376,28 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey }): React.ReactEleme
             onFinish={async (values) => {
               const editingRecord = editForm.getFieldsValue(true) as ITEmployeePropertyCommon;
               try {
-                await employeepropertyservice.update(editingRecord!.id, values);
+                await employeepropertyservice.update(editingRecord.id, values, editFiles);
                 message.success("แก้ไขข้อมูลสำเร็จ");
+                setReloadKey((prev) => prev + 1);
                 setOpenEdit(false);
                 editForm.resetFields();
+                setEditFiles([]);
               } catch {
                 message.error("เกิดข้อผิดพลาด");
-              } finally {
-                setLoading(true);
               }
             }}
           >
+            <Form.Item label="รูปภาพ">
+              <Upload
+                listType="picture-card"
+                maxCount={1}
+                fileList={editFiles}
+                beforeUpload={() => false} // ไม่ auto upload
+                onChange={(info) => setEditFiles(info.fileList)}
+              >
+                {editFiles.length < 1 && "+ Upload"}
+              </Upload>
+            </Form.Item>
             <Form.Item name="type" label="ประเภททรัพย์สิน" rules={[{ required: true }]}>
               <Select
                 options={[

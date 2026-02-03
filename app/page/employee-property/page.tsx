@@ -125,10 +125,10 @@ export default function Page() {
               items={[
                 {
                   key: "1",
-                  label: "อุปรณ์ของตนเอง",
+                  label: "อุปกรณ์ของตนเอง",
                   children: (
                     <>
-                      <EmployeePropertyTable reloadKey={reloadKey} />
+                      <EmployeePropertyTable reloadKey={reloadKey} setReloadKey={setReloadKey} />
                     </>
                   ),
                 },

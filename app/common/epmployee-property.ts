@@ -21,8 +21,8 @@ export interface ITEmployeePropertyCommon {
 export interface User {
   id: number;
   userId: string;
-  firstNameEn: string;
-  lastNameEn: string;
+  firstNameTh: string;
+  lastNameTh: string;
   username: string;
   email: string;
   department: Department;

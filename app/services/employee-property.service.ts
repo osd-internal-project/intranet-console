@@ -1,5 +1,6 @@
 import { AxiosInstance } from "axios";
 import type { ITEmployeePropertyCommon } from "../common/epmployee-property";
+import type { UploadFile } from "antd";
 
 export interface TServices {
   findAll: () => Promise<ITEmployeePropertyCommon[]>;
@@ -7,7 +8,7 @@ export interface TServices {
   findTeamsByUserId: (userId: string, values: { type: string; name: string; userId: string }) => Promise<ITEmployeePropertyCommon[]>;
   create: (form: any) => Promise<ITEmployeePropertyCommon>;
   createMistakesType: (id: number, form: any) => Promise<ITEmployeePropertyCommon>;
-  update: (id: number, form: any) => Promise<ITEmployeePropertyCommon>;
+  update: (id: number, form: any, files?: UploadFile[]) => Promise<ITEmployeePropertyCommon>;
   delete: (id: number) => Promise<ITEmployeePropertyCommon>;
   export: (userId: string, values: { type: string; name: string }) => Promise<ArrayBuffer>;
   exportTeams: (userId: string, values: { type: string; name: string }) => Promise<ArrayBuffer>;
@@ -78,9 +79,20 @@ const EmployeePropertySerivce = (axiosInstance: AxiosInstance): TServices => {
           return [];
         });
     },
-    update: async (id: number, form) => {
+    update: async (id: number, form, files) => {
+      const formData = new FormData();
+
+      Object.keys(form).forEach((key) => {
+        formData.append(key, form[key]);
+      });
+
+      const file = files?.[0];
+      if (file?.originFileObj) {
+        formData.append("file", file.originFileObj);
+      }
+
       return await axiosInstance
-        .patch(`${baseUrl}/${id}`, form)
+        .patch(`${baseUrl}/${id}`, formData)
         .then((res) => {
           return res.data;
         })

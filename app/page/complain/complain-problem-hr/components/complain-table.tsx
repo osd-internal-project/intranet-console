@@ -36,14 +36,12 @@ export interface Props {
 }
 
 const ComplainHrTable: React.FC<Props> = ({ dataSource, handleUpdateStatus }): React.ReactElement => {
-  console.log(dataSource);
-
   const complainColumns: ColumnsType<ITComplainProblem> = [
     {
       title: "ลำดับ",
       dataIndex: "id",
       key: "id",
-      width: 80,
+      width: "100px",
       align: "center",
     },
     {
@@ -51,12 +49,14 @@ const ComplainHrTable: React.FC<Props> = ({ dataSource, handleUpdateStatus }): R
       dataIndex: "users",
       key: "users",
       align: "center",
+      width: 100,
       render: (users) => `${users.firstNameTh} ${users.lastNameTh}`,
     },
     {
       title: "ประเภทปัญหา",
       dataIndex: "name",
       key: "name",
+      width: "200px",
       render: (value: string) => {
         const type = problemTypeMap[value];
 
@@ -71,25 +71,29 @@ const ComplainHrTable: React.FC<Props> = ({ dataSource, handleUpdateStatus }): R
       title: "รายละเอียด",
       dataIndex: "detail",
       key: "detail",
-      ellipsis: true,
+      width: "300px",
+      ellipsis: true, // ตัด ... อัตโนมัติ
     },
     {
       title: "สถานะ",
       dataIndex: "status",
       key: "status",
       align: "center",
+      width: 100,
       render: (status: boolean) => (status ? <Tag color="green">รับทราบปัญหา</Tag> : <Tag color="orange">ส่งปัญหา</Tag>),
     },
     {
       title: "วันที่แจ้ง",
       dataIndex: "createdAt",
       key: "createdAt",
+      width: 100,
       render: (value: string) => new Date(value).toLocaleDateString("th-TH"),
     },
     {
       title: "จัดการ",
       key: "action",
       align: "center",
+      width: 100,
       render: (_, record) => (
         <Space>
           <Button type="link" onClick={() => handleUpdateStatus(record)}>
@@ -101,7 +105,7 @@ const ComplainHrTable: React.FC<Props> = ({ dataSource, handleUpdateStatus }): R
   ];
   return (
     <div>
-      <Table size="small" dataSource={dataSource} scroll={{ x: "max-content" }} columns={complainColumns} rowKey={"id"} />
+      <Table size="small" dataSource={dataSource} columns={complainColumns} rowKey={"id"} />
     </div>
   );
 };

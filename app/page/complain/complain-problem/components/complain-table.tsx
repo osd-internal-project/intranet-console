@@ -40,13 +40,22 @@ const ComplainTable: React.FC<Props> = ({ dataSource }): React.ReactElement => {
       title: "ลำดับ",
       dataIndex: "id",
       key: "id",
-      width: 80,
+      width: "100px",
       align: "center",
+    },
+    {
+      title: "ชื่อผู้ร้องเรียน",
+      dataIndex: "users",
+      key: "users",
+      align: "center",
+      width: 100,
+      render: (users) => `${users.firstNameTh} ${users.lastNameTh}`,
     },
     {
       title: "ประเภทปัญหา",
       dataIndex: "name",
       key: "name",
+      width: "200px",
       render: (value: string) => {
         const type = problemTypeMap[value];
 
@@ -61,19 +70,22 @@ const ComplainTable: React.FC<Props> = ({ dataSource }): React.ReactElement => {
       title: "รายละเอียด",
       dataIndex: "detail",
       key: "detail",
-      ellipsis: true,
+      width: "300px",
+      ellipsis: true, // ตัด ... อัตโนมัติ
     },
     {
       title: "สถานะ",
       dataIndex: "status",
       key: "status",
       align: "center",
+      width: 100,
       render: (status: boolean) => (status ? <Tag color="green">รับทราบปัญหา</Tag> : <Tag color="orange">ส่งปัญหา</Tag>),
     },
     {
       title: "วันที่แจ้ง",
       dataIndex: "createdAt",
       key: "createdAt",
+      width: 100,
       render: (value: string) => new Date(value).toLocaleDateString("th-TH"),
     },
   ];

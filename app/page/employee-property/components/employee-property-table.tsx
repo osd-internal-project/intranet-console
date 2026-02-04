@@ -329,7 +329,7 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey, setReloadKey }): Re
               <Input.TextArea rows={4} showCount maxLength={250} placeholder="รายละเอียดปัญหา" />
             </Form.Item>
             <Form.Item className="flex justify-end">
-              <Button onClick={() => setOpenEdit(false)} style={{ marginRight: 8 }}>
+              <Button onClick={() => setOpenModalMistake(false)} style={{ marginRight: 8 }}>
                 {`ยกเลิก`}
               </Button>
               <Button type="primary" htmlType="submit">

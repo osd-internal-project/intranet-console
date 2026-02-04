@@ -60,8 +60,8 @@ export default function Page() {
 
   const getUploadProps = (name: number): UploadProps => ({
     beforeUpload: async (file) => {
-      const isPNG = file.type === "image/png";
-      if (!isPNG) {
+      const isImage = file.type.startsWith("image/");
+      if (!isImage) {
         message.error(`${file.name} is not a png file`);
         return Upload.LIST_IGNORE;
       }
@@ -239,7 +239,7 @@ export default function Page() {
                           </Form.Item>
                         </Col>
                         <Col span={6}>
-                          <Form.Item {...restField} name={[name, "pathImage"]} label="Path Image">
+                          <Form.Item {...restField} name={[name, "pathImage"]} label="Image">
                             <Upload
                               {...getUploadProps(name)}
                               fileList={attendFiles[name] || []}

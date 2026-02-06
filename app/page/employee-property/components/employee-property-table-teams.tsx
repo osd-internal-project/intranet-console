@@ -65,6 +65,7 @@ const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.React
       dataIndex: "id",
       key: "id",
       width: 80,
+      render: (value: string, record: ITEmployeePropertyCommon, index: number) => index + 1,
     },
     {
       title: "ชื่อพนักงาน",

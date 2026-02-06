@@ -87,7 +87,11 @@ const ComplainHrTable: React.FC<Props> = ({ dataSource, handleUpdateStatus }): R
       dataIndex: "createdAt",
       key: "createdAt",
       width: 100,
-      render: (value: string) => new Date(value).toLocaleDateString("th-TH"),
+      render: (value: string) =>
+        new Date(value).toLocaleString("th-TH", {
+          dateStyle: "short",
+          timeStyle: "short",
+        }),
     },
     {
       title: "จัดการ",

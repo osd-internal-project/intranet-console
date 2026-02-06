@@ -6,6 +6,7 @@ export interface TUserServices {
   findHeaderUserByUserId: (userId: string) => Promise<ITUser[]>;
   findUsersByOwnerGroupIds: (userGroupId: string[]) => Promise<any>;
   findUsersInOwnerGroupIds: (userId: string) => Promise<any>;
+  getUsersAllDropdown: () => Promise<any>;
 }
 // dropdown-user-in-owner-group/:userId
 const UserServices = (axiosInstance: AxiosInstance): TUserServices => {
@@ -32,6 +33,17 @@ const UserServices = (axiosInstance: AxiosInstance): TUserServices => {
         .catch((err) => {
           console.log(err);
           return;
+        });
+    },
+    getUsersAllDropdown: async () => {
+      return await axiosInstance
+        .get(`${userUrl}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
         });
     },
     findHeaderUserByUserId: async (userId) => {

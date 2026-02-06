@@ -6,11 +6,13 @@ export interface TServices {
   findAll: () => Promise<ITEmployeePropertyCommon[]>;
   findByUserId: (userId: string, values: { type: string; name: string }) => Promise<ITEmployeePropertyCommon[]>;
   findTeamsByUserId: (userId: string, values: { type: string; name: string; userId: string }) => Promise<ITEmployeePropertyCommon[]>;
+  findUserAll: (values: { type: string; name: string; userId: string }) => Promise<ITEmployeePropertyCommon[]>;
   create: (form: any) => Promise<ITEmployeePropertyCommon>;
   createMistakesType: (id: number, form: any) => Promise<ITEmployeePropertyCommon>;
   update: (id: number, form: any, files?: UploadFile[]) => Promise<ITEmployeePropertyCommon>;
   delete: (id: number) => Promise<ITEmployeePropertyCommon>;
   export: (userId: string, values: { type: string; name: string }) => Promise<ArrayBuffer>;
+  exportAll: (values: { type: string; name: string }) => Promise<ArrayBuffer>;
   exportTeams: (userId: string, values: { type: string; name: string }) => Promise<ArrayBuffer>;
 }
 
@@ -44,6 +46,17 @@ const EmployeePropertySerivce = (axiosInstance: AxiosInstance): TServices => {
     findTeamsByUserId: async (userId: string, values: { type: string; name: string; userId: string }) => {
       return await axiosInstance
         .get(`${baseUrl}/find-teams/${userId}`, { params: values })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    findUserAll: async (values: { type: string; name: string; userId: string }) => {
+      return await axiosInstance
+        .get(`${baseUrl}`, { params: values })
         .then((res) => {
           return res.data;
         })
@@ -104,6 +117,17 @@ const EmployeePropertySerivce = (axiosInstance: AxiosInstance): TServices => {
     delete: async (id: number) => {
       return await axiosInstance
         .delete(`${baseUrl}/${id}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    exportAll: async (values: { type: string; name: string }) => {
+      return await axiosInstance
+        .get(`${baseUrlReport}/export-all`, { params: values, responseType: "blob" })
         .then((res) => {
           return res.data;
         })

@@ -256,3 +256,8 @@ thead[class*="ant-table-thead"] th {
   border-bottom: 2px solid #b0bec5;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+.rbc-calendar {
+  position: relative;
+  z-index: 1;
+}

@@ -12,6 +12,8 @@ import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import type { UploadFile } from "antd/es/upload/interface";
 import { handleCompress } from "@/app/utils";
 import type { RcFile } from "antd/es/upload";
+import { intersection } from "lodash";
+import EmployeePropertyAllUsersTable from "./components/employee-property-table-all";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -19,7 +21,10 @@ export default function Page() {
   const { user } = (useContext(UserContext) as UserContectType) || {
     user: null,
   };
-  const { id24Axios } = useId24();
+  const { id24Axios, tokenAccess } = useId24();
+  const sideMenuGroups =
+    tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
+  const isHr = intersection(sideMenuGroups, ["hr"]).length > 0;
   const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const employeepropertyservice = employeePropertyService(baseUrIntranet);
   const [openModal, setOpen] = useState<boolean>(false);
@@ -141,6 +146,19 @@ export default function Page() {
                     </>
                   ),
                 },
+                ...(isHr
+                  ? [
+                      {
+                        key: "3",
+                        label: "อุปกรณ์ของทุกคน",
+                        children: (
+                          <>
+                            <EmployeePropertyAllUsersTable reloadKey={reloadKey} />
+                          </>
+                        ),
+                      },
+                    ]
+                  : []),
               ]}
             />
           </Card>

@@ -11,6 +11,7 @@ export interface ITEmployeePropertyCommon {
   address: string;
   assetStatus: string;
   pathImage: string;
+  nameOther?: string;
   createdAt: string; // หรือ Date ถ้า parse แล้ว
   updatedAt: string; // หรือ Date ถ้า parse แล้ว
   users: User;

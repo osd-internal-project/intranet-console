@@ -81,8 +81,14 @@ const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.React
       title: "ประเภททรัพย์สิน",
       dataIndex: "type",
       key: "type",
-      render: (value: string) =>
-        value === "computer_equipment" ? "อุปกรณ์คอมพิวเตอร์ " : value === "office_equipment" ? "อุปกรณ์สำนักงาน" : "อื่นๆ",
+      render: (value: string, record: ITEmployeePropertyCommon) => {
+        if (value === "computer_equipment") return "อุปกรณ์คอมพิวเตอร์";
+        if (value === "office_equipment") return "อุปกรณ์สำนักงาน";
+        if (value === "other_asset") {
+          return `อื่นๆ (${record.nameOther || "-"})`;
+        }
+        return "-";
+      },
     },
     {
       title: "ชื่อทรัพย์สิน",

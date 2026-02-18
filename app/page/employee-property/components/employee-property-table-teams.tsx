@@ -4,7 +4,7 @@ import { UserContext, type UserContectType } from "@/app/config/userContext";
 import employeePropertyService from "@/app/services/employee-property.service";
 import UserServices from "@/app/services/user.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
-import { Button, Form, Input, message, Popover, Select, Table, Image } from "antd";
+import { Button, Form, Input, message, Popover, Select, Table, Image, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 import React, { useContext, useEffect, useState } from "react";
@@ -89,6 +89,12 @@ const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.React
         }
         return "-";
       },
+    },
+    {
+      title: "ทรัพย์สินส่วนกลาง",
+      dataIndex: "common",
+      key: "common",
+      render: (value: boolean) => (value ? <Tag color="green">{`ใช่`}</Tag> : <Tag>{`ไม่ใช่`}</Tag>),
     },
     {
       title: "ชื่อทรัพย์สิน",

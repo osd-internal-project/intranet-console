@@ -3,7 +3,7 @@ import { loadAppConfig } from "@/app/config/app-config";
 import { UserContext, type UserContectType } from "@/app/config/userContext";
 import employeePropertyService from "@/app/services/employee-property.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
-import { Button, Form, Input, message, Modal, Popover, Select, Space, Table, Typography, type MenuProps, Image, Upload } from "antd";
+import { Button, Form, Input, message, Modal, Popover, Select, Space, Table, Typography, type MenuProps, Image, Upload, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 import React, { useContext, useEffect, useState, type Dispatch, type SetStateAction } from "react";
@@ -73,6 +73,12 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey, setReloadKey }): Re
         }
         return "-";
       },
+    },
+    {
+      title: "ทรัพย์สินส่วนกลาง",
+      dataIndex: "common",
+      key: "common",
+      render: (value: boolean) => (value ? <Tag color="green">{`ใช่`}</Tag> : <Tag>{`ไม่ใช่`}</Tag>),
     },
     {
       title: "ชื่อทรัพย์สิน",

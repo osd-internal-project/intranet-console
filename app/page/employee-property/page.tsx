@@ -4,7 +4,25 @@ import { loadAppConfig } from "@/app/config/app-config";
 import { UserContext, type UserContectType } from "@/app/config/userContext";
 import employeePropertyService from "@/app/services/employee-property.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
-import { Breadcrumb, Button, Card, Col, Divider, Form, Input, message, Modal, Row, Select, Tabs, Upload, type GetProp, type UploadProps } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Card,
+  Checkbox,
+  Col,
+  Divider,
+  Form,
+  Input,
+  message,
+  Modal,
+  notification,
+  Row,
+  Select,
+  Tabs,
+  Upload,
+  type GetProp,
+  type UploadProps,
+} from "antd";
 import { useContext, useState } from "react";
 import EmployeePropertyTable from "./components/employee-property-table";
 import EmployeePropertyTeamsTable from "./components/employee-property-table-teams";
@@ -12,8 +30,14 @@ import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import type { UploadFile } from "antd/es/upload/interface";
 import { handleCompress } from "@/app/utils";
 import type { RcFile } from "antd/es/upload";
-import { intersection } from "lodash";
 import EmployeePropertyAllUsersTable from "./components/employee-property-table-all";
+
+import type { NotificationArgsProps } from "antd";
+import React from "react";
+
+type NotificationPlacement = NotificationArgsProps["placement"];
+
+const Context = React.createContext({ name: "Default" });
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -24,7 +48,6 @@ const nameOptions = [
   { label: "Keyboard", value: "Keyboard", type: "computer_equipment" },
   { label: "Mouse", value: "Mouse", type: "computer_equipment" },
   { label: "Other", value: "Other", type: "computer_equipment" },
-
   { label: "IP Phone", value: "IP Phone", type: "office_equipment" },
   { label: "Hard Phone", value: "Hard Phone", type: "office_equipment" },
   { label: "Adapter", value: "Adapter", type: "office_equipment" },
@@ -39,7 +62,6 @@ const nameOptions = [
   { label: "เครื่องฟอกอากาศ", value: "เครื่องฟอกอากาศ", type: "office_equipment" },
   { label: "TV", value: "TV", type: "office_equipment" },
   { label: "Other", value: "Other", type: "office_equipment" },
-
   { label: "Mobile Phone", value: "Mobile Phone", type: "other_asset" },
   { label: "Sim Moblie", value: "Sim Moblie", type: "other_asset" },
   { label: "Pocket Wifi", value: "Pocket Wifi", type: "other_asset" },
@@ -50,12 +72,8 @@ export default function Page() {
   const { user } = (useContext(UserContext) as UserContectType) || {
     user: null,
   };
-  const { id24Axios, tokenAccess } = useId24();
-  // const sideMenuGroups =
-  //   tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
-  // console.log(sideMenuGroups);
-
-  // const isHr = intersection(sideMenuGroups, ["hr"]).length > 0;
+  const { id24Axios } = useId24();
+  const [api, contextHolder] = notification.useNotification();
   const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const employeepropertyservice = employeePropertyService(baseUrIntranet);
   const [openModal, setOpen] = useState<boolean>(false);
@@ -85,6 +103,11 @@ export default function Page() {
       });
       const response = await employeepropertyservice.create(formData);
       console.log(response);
+      api.success({
+        message: "บันทึกสำเร็จ",
+        description: "เพิ่มข้อมูลทรัพย์สินเรียบร้อยแล้ว",
+        placement: "topRight",
+      });
       setOpen(false);
       form.resetFields();
       setReloadKey((prev) => prev + 1);
@@ -129,27 +152,28 @@ export default function Page() {
 
   return (
     <div>
+      {contextHolder}
       <Row>
         <Col span={24}>
           <Breadcrumb
             items={[
               {
                 href: "/page/home",
-                title: <span>หน้าหลัก</span>,
+                title: <span>{`หน้าหลัก`}</span>,
               },
               {
-                title: <span>ข้อมูลการจัดการทรัพย์สินพนักงาน</span>,
+                title: <span>{`ข้อมูลการจัดการทรัพย์สินพนักงาน`}</span>,
               },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
           <div className="title-page-font" style={{ display: "flex", alignItems: "left" }}>
-            <span style={{ marginRight: "8px" }}>ข้อมูลการจัดการทรัพย์สินพนักงาน</span>
+            <span style={{ marginRight: "8px" }}>{`ข้อมูลการจัดการทรัพย์สินพนักงาน`}</span>
           </div>
         </Divider>
         <div className="flex justify-end w-full mb-2">
-          <Button onClick={handleOpen}>เพิ่มข้อมูล</Button>
+          <Button onClick={handleOpen}>{`เพิ่มข้อมูล`}</Button>
         </div>
         <Col span={24}>
           <Card>
@@ -238,7 +262,7 @@ export default function Page() {
                           <Input />
                         </Form.Item>
                         <Row gutter={[8, 8]}>
-                          <Col span={6}>
+                          <Col span={8}>
                             <Form.Item {...restField} name={[name, "type"]} label="ประเภททรัพย์สิน" rules={[{ required: true }]}>
                               <Select
                                 showSearch
@@ -256,7 +280,7 @@ export default function Page() {
                               />
                             </Form.Item>
                           </Col>
-                          <Col span={6}>
+                          <Col span={8}>
                             <Form.Item
                               noStyle
                               shouldUpdate={(prev, cur) =>
@@ -267,7 +291,6 @@ export default function Page() {
                                 const selectedType = getFieldValue(["items", name, "type"]);
                                 const selectedName = getFieldValue(["items", name, "name"]);
 
-                                // ถ้าเลือก Other → แสดง input
                                 if (selectedName === "Other") {
                                   return (
                                     <Form.Item {...restField} name={[name, "nameOther"]} label="ชื่อทรัพย์สินอื่นๆ" rules={[{ required: true }]}>
@@ -276,7 +299,6 @@ export default function Page() {
                                   );
                                 }
 
-                                // ปกติ → แสดง Select
                                 return (
                                   <Form.Item {...restField} name={[name, "name"]} label="ชื่อทรัพย์สิน">
                                     <Select
@@ -296,37 +318,32 @@ export default function Page() {
                               }}
                             </Form.Item>
                           </Col>
-                          {/* <Col span={6}>
-                            <Form.Item {...restField} name={[name, "nameOther"]} label="ชื่อทรัพย์สินอื่นๆ" rules={[{ required: true }]}>
-                              <Input placeholder="คีย์บอร์ด" />
-                            </Form.Item>
-                          </Col> */}
-                          <Col span={6}>
+                          <Col span={8}>
                             <Form.Item {...restField} name={[name, "brand"]} label="ยี่ห้อ">
                               <Input placeholder="Please Input" />
                             </Form.Item>
                           </Col>
-                          <Col span={6}>
+                          <Col span={8}>
                             <Form.Item {...restField} name={[name, "serial"]} label="Serial">
                               <Input placeholder="SN-20240201-001" />
                             </Form.Item>
                           </Col>
-                          <Col span={6}>
+                          <Col span={8}>
                             <Form.Item {...restField} name={[name, "assetNumber"]} label="Asset Number">
                               <Input placeholder="Please Input" />
                             </Form.Item>
                           </Col>
-                          <Col span={6}>
+                          <Col span={8}>
                             <Form.Item {...restField} name={[name, "address"]} label="ที่ตั้ง">
                               <Input placeholder="ห้องประชุม Alpha " />
                             </Form.Item>
                           </Col>
-                          <Col span={6}>
+                          <Col span={8}>
                             <Form.Item {...restField} name={[name, "assetStatus"]} label="สถานะ">
                               <Input placeholder="ชำรุด หรือ ใช้งานได้ปกติ" />
                             </Form.Item>
                           </Col>
-                          <Col span={6}>
+                          <Col span={8}>
                             <Form.Item {...restField} name={[name, "pathImage"]} label="Image">
                               <Upload
                                 {...getUploadProps(name)}
@@ -337,6 +354,11 @@ export default function Page() {
                               >
                                 {(attendFiles[name]?.length || 0) < 1 && "+ Upload"}
                               </Upload>
+                            </Form.Item>
+                          </Col>
+                          <Col span={8}>
+                            <Form.Item {...restField} name={[name, "common"]} label="อุปกรณ์ส่วนกลาง" valuePropName="checked">
+                              <Checkbox>{`ใช่`}</Checkbox>
                             </Form.Item>
                           </Col>
                         </Row>

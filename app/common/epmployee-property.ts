@@ -12,11 +12,12 @@ export interface ITEmployeePropertyCommon {
   assetStatus: string;
   pathImage: string;
   nameOther?: string;
-  createdAt: string; // หรือ Date ถ้า parse แล้ว
-  updatedAt: string; // หรือ Date ถ้า parse แล้ว
+  createdAt: string;
+  updatedAt: string;
   users: User;
   mistakesType: ITMistakesType[];
   imageUrl: string;
+  common?: boolean;
 }
 
 export interface User {

@@ -3,7 +3,25 @@ import { loadAppConfig } from "@/app/config/app-config";
 import { UserContext, type UserContectType } from "@/app/config/userContext";
 import employeePropertyService from "@/app/services/employee-property.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
-import { Button, Form, Input, message, Modal, Popover, Select, Space, Table, Typography, type MenuProps, Image, Upload, Tag } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  message,
+  Modal,
+  Popover,
+  Select,
+  Space,
+  Table,
+  Typography,
+  type MenuProps,
+  Image,
+  Upload,
+  Tag,
+  Checkbox,
+  Row,
+  Col,
+} from "antd";
 import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 import React, { useContext, useEffect, useState, type Dispatch, type SetStateAction } from "react";
@@ -381,6 +399,7 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey, setReloadKey }): Re
             editForm.resetFields();
           }}
           footer={null}
+          width={900}
         >
           <Form
             form={editForm}
@@ -399,44 +418,76 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey, setReloadKey }): Re
               }
             }}
           >
-            <Form.Item label="รูปภาพ">
-              <Upload
-                listType="picture-card"
-                maxCount={1}
-                fileList={editFiles}
-                beforeUpload={() => false} // ไม่ auto upload
-                onChange={(info) => setEditFiles(info.fileList)}
-              >
-                {editFiles.length < 1 && "+ Upload"}
-              </Upload>
-            </Form.Item>
-            <Form.Item name="type" label="ประเภททรัพย์สิน" rules={[{ required: true }]}>
-              <Select
-                options={[
-                  { label: "อุปกรณ์คอมพิวเตอร์", value: "computer_equipment" },
-                  { label: "อุปกรณ์สำนักงาน", value: "office_equipment" },
-                  { label: "อื่นๆ", value: "other_asset" },
-                ]}
-              />
-            </Form.Item>
-            <Form.Item name="name" label="ชื่อทรัพย์สิน" rules={[{ required: true }]}>
-              <Input />
-            </Form.Item>
-            <Form.Item name="brand" label="ยี่ห้อ">
-              <Input />
-            </Form.Item>
-            <Form.Item name="serial" label="Serial">
-              <Input />
-            </Form.Item>
-            <Form.Item name="assetNumber" label="Asset Number">
-              <Input />
-            </Form.Item>
-            <Form.Item name="address" label="ที่ตั้ง">
-              <Input />
-            </Form.Item>
-            <Form.Item name="assetStatus" label="สถานะ">
-              <Input />
-            </Form.Item>
+            <Row gutter={[16, 16]}>
+              <Col span={8}>
+                <Form.Item label="รูปภาพ">
+                  <Upload
+                    listType="picture-card"
+                    maxCount={1}
+                    fileList={editFiles}
+                    beforeUpload={() => false} // ไม่ auto upload
+                    onChange={(info) => setEditFiles(info.fileList)}
+                  >
+                    {editFiles.length < 1 && "+ Upload"}
+                  </Upload>
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                {" "}
+                <Form.Item name="type" label="ประเภททรัพย์สิน" rules={[{ required: true }]}>
+                  <Select
+                    options={[
+                      { label: "อุปกรณ์คอมพิวเตอร์", value: "computer_equipment" },
+                      { label: "อุปกรณ์สำนักงาน", value: "office_equipment" },
+                      { label: "อื่นๆ", value: "other_asset" },
+                    ]}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                {" "}
+                <Form.Item name="name" label="ชื่อทรัพย์สิน" rules={[{ required: true }]}>
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                {" "}
+                <Form.Item name="brand" label="ยี่ห้อ">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                {" "}
+                <Form.Item name="serial" label="Serial">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                {" "}
+                <Form.Item name="assetNumber" label="Asset Number">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                {" "}
+                <Form.Item name="address" label="ที่ตั้ง">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                {" "}
+                <Form.Item name="assetStatus" label="สถานะ">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                {" "}
+                <Form.Item name="common" label="อุปกรณ์ส่วนกลาง" valuePropName="checked">
+                  <Checkbox>ใช่</Checkbox>
+                </Form.Item>
+              </Col>
+            </Row>
+
             <Form.Item className="flex justify-end">
               <Button onClick={() => setOpenEdit(false)} style={{ marginRight: 8 }}>
                 ยกเลิก

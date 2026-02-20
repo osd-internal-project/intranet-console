@@ -12,9 +12,10 @@ import { saveAs } from "file-saver";
 
 export interface props {
   reloadKey: number;
+  dropdownUser: { value: string; label: string }[];
 }
 
-const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.ReactElement => {
+const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey, dropdownUser }): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || {
     user: null,
   };
@@ -143,6 +144,21 @@ const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.React
       title: "ที่ตั้ง",
       dataIndex: "address",
       key: "address",
+    },
+    {
+      title: "รายละเอียด",
+      dataIndex: "spec",
+      key: "spec",
+      width: 300,
+    },
+    {
+      title: "คนสร้าง",
+      dataIndex: "createdBy",
+      key: "createdBy",
+      render: (_, record) => {
+        const name = dropdown.filter((item) => item.value === record.createdBy)?.[0]?.label;
+        return name;
+      },
     },
     {
       title: "วันที่สร้าง",

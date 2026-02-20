@@ -28,13 +28,15 @@ import React, { useContext, useEffect, useState, type Dispatch, type SetStateAct
 import { saveAs } from "file-saver";
 import type { ITMistakesType } from "@/app/common/mistakes-type";
 import type { UploadFile } from "antd/es/upload/interface";
+import { nameOptions } from "../page";
 
 export interface props {
   reloadKey: number;
   setReloadKey: Dispatch<SetStateAction<number>>;
+  dropdownUser: { value: string; label: string }[];
 }
 
-const EmployeePropertyTable: React.FC<props> = ({ reloadKey, setReloadKey }): React.ReactElement => {
+const EmployeePropertyTable: React.FC<props> = ({ reloadKey, setReloadKey, dropdownUser }): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || {
     user: null,
   };
@@ -140,6 +142,12 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey, setReloadKey }): Re
       title: "ที่ตั้ง",
       dataIndex: "address",
       key: "address",
+    },
+    {
+      title: "รายละเอียด",
+      dataIndex: "spec",
+      key: "spec",
+      width: 300,
     },
     {
       title: "วันที่สร้าง",
@@ -419,13 +427,13 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey, setReloadKey }): Re
             }}
           >
             <Row gutter={[16, 16]}>
-              <Col span={8}>
+              <Col span={24}>
                 <Form.Item label="รูปภาพ">
                   <Upload
                     listType="picture-card"
                     maxCount={1}
                     fileList={editFiles}
-                    beforeUpload={() => false} // ไม่ auto upload
+                    beforeUpload={() => false}
                     onChange={(info) => setEditFiles(info.fileList)}
                   >
                     {editFiles.length < 1 && "+ Upload"}
@@ -433,7 +441,11 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey, setReloadKey }): Re
                 </Form.Item>
               </Col>
               <Col span={8}>
-                {" "}
+                <Form.Item name={"userId"} label="เจ้าของทรัพย์สิน" rules={[{ required: true }]}>
+                  <Select showSearch allowClear optionFilterProp="label" placeholder="Please Select" options={dropdownUser} />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
                 <Form.Item name="type" label="ประเภททรัพย์สิน" rules={[{ required: true }]}>
                   <Select
                     options={[
@@ -444,46 +456,76 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey, setReloadKey }): Re
                   />
                 </Form.Item>
               </Col>
-              <Col span={8}>
-                {" "}
+              {/* <Col span={8}>
                 <Form.Item name="name" label="ชื่อทรัพย์สิน" rules={[{ required: true }]}>
                   <Input />
                 </Form.Item>
+              </Col> */}
+              <Col span={8}>
+                <Form.Item noStyle shouldUpdate={(prev, cur) => prev.type !== cur.type || prev.name !== cur.name}>
+                  {({ getFieldValue }) => {
+                    const selectedType = getFieldValue("type");
+                    const selectedName = getFieldValue("name");
+
+                    if (selectedName === "Other") {
+                      return (
+                        <Form.Item name={"nameOther"} label="ชื่อทรัพย์สินอื่นๆ" rules={[{ required: true }]}>
+                          <Input placeholder="คีย์บอร์ด" />
+                        </Form.Item>
+                      );
+                    }
+                    return (
+                      <Form.Item name={"name"} label="ชื่อทรัพย์สิน">
+                        <Select
+                          showSearch
+                          allowClear
+                          optionFilterProp="label"
+                          placeholder="Please Select"
+                          options={nameOptions.filter((opt) => opt.type === selectedType)}
+                          onChange={(val) => {
+                            if (val !== "Other") {
+                              editForm.setFieldValue("nameOther", undefined);
+                            }
+                          }}
+                        />
+                      </Form.Item>
+                    );
+                  }}
+                </Form.Item>
               </Col>
               <Col span={8}>
-                {" "}
                 <Form.Item name="brand" label="ยี่ห้อ">
                   <Input />
                 </Form.Item>
               </Col>
               <Col span={8}>
-                {" "}
                 <Form.Item name="serial" label="Serial">
                   <Input />
                 </Form.Item>
               </Col>
               <Col span={8}>
-                {" "}
                 <Form.Item name="assetNumber" label="Asset Number">
                   <Input />
                 </Form.Item>
               </Col>
               <Col span={8}>
-                {" "}
                 <Form.Item name="address" label="ที่ตั้ง">
                   <Input />
                 </Form.Item>
               </Col>
               <Col span={8}>
-                {" "}
                 <Form.Item name="assetStatus" label="สถานะ">
                   <Input />
                 </Form.Item>
               </Col>
               <Col span={8}>
-                {" "}
                 <Form.Item name="common" label="อุปกรณ์ส่วนกลาง" valuePropName="checked">
                   <Checkbox>ใช่</Checkbox>
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item name={"spec"} label="รายละเอียด">
+                  <Input.TextArea placeholder="Please Input" showCount maxLength={500} />
                 </Form.Item>
               </Col>
             </Row>

@@ -18,6 +18,8 @@ export interface ITEmployeePropertyCommon {
   mistakesType: ITMistakesType[];
   imageUrl: string;
   common?: boolean;
+  createdBy: string;
+  spec?: string;
 }
 
 export interface User {

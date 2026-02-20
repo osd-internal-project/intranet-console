@@ -23,7 +23,7 @@ import {
   type GetProp,
   type UploadProps,
 } from "antd";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import EmployeePropertyTable from "./components/employee-property-table";
 import EmployeePropertyTeamsTable from "./components/employee-property-table-teams";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
@@ -31,17 +31,12 @@ import type { UploadFile } from "antd/es/upload/interface";
 import { handleCompress } from "@/app/utils";
 import type { RcFile } from "antd/es/upload";
 import EmployeePropertyAllUsersTable from "./components/employee-property-table-all";
-
-import type { NotificationArgsProps } from "antd";
 import React from "react";
-
-type NotificationPlacement = NotificationArgsProps["placement"];
-
-const Context = React.createContext({ name: "Default" });
+import UserServices from "@/app/services/user.service";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
-const nameOptions = [
+export const nameOptions = [
   { label: "Notebook", value: "Notebook", type: "computer_equipment" },
   { label: "PC", value: "PC", type: "computer_equipment" },
   { label: "Monitor", value: "Monitor", type: "computer_equipment" },
@@ -75,11 +70,29 @@ export default function Page() {
   const { id24Axios } = useId24();
   const [api, contextHolder] = notification.useNotification();
   const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const employeepropertyservice = employeePropertyService(baseUrIntranet);
+  const userservices = UserServices(baseUrlUser);
   const [openModal, setOpen] = useState<boolean>(false);
   const [reloadKey, setReloadKey] = useState(0);
   const [form] = Form.useForm();
   const [attendFiles, setAttendFiles] = useState<UploadFile[][]>([]);
+  const [dropdownUser, setDropdownUser] = useState<{ value: string; label: string }[]>([]);
+
+  useEffect(() => {
+    fecthMasterData();
+  }, []);
+
+  const fecthMasterData = async () => {
+    const masterData = await userservices.getUsersAllDropdown();
+    const mappedNameOptions = masterData.map((option: ITUser) => {
+      return {
+        value: option.userId,
+        label: `${option.firstNameTh} ${option.lastNameTh}`,
+      };
+    });
+    setDropdownUser(mappedNameOptions);
+  };
 
   const handleOpen = () => {
     setOpen(true);
@@ -101,8 +114,7 @@ export default function Page() {
           formData.append("files", file.originFileObj as RcFile);
         }
       });
-      const response = await employeepropertyservice.create(formData);
-      console.log(response);
+      await employeepropertyservice.create(formData);
       api.success({
         message: "บันทึกสำเร็จ",
         description: "เพิ่มข้อมูลทรัพย์สินเรียบร้อยแล้ว",
@@ -187,7 +199,7 @@ export default function Page() {
                   label: "อุปกรณ์ของตนเอง",
                   children: (
                     <>
-                      <EmployeePropertyTable reloadKey={reloadKey} setReloadKey={setReloadKey} />
+                      <EmployeePropertyTable reloadKey={reloadKey} setReloadKey={setReloadKey} dropdownUser={dropdownUser} />
                     </>
                   ),
                 },
@@ -196,7 +208,7 @@ export default function Page() {
                   label: "อุปกรณ์ของทีม",
                   children: (
                     <>
-                      <EmployeePropertyTeamsTable reloadKey={reloadKey} />
+                      <EmployeePropertyTeamsTable reloadKey={reloadKey} dropdownUser={dropdownUser} />
                     </>
                   ),
                 },
@@ -205,7 +217,7 @@ export default function Page() {
                   label: "อุปกรณ์ของทุกคน",
                   children: (
                     <>
-                      <EmployeePropertyAllUsersTable reloadKey={reloadKey} />
+                      <EmployeePropertyAllUsersTable reloadKey={reloadKey} dropdownUser={dropdownUser} />
                     </>
                   ),
                 },
@@ -222,13 +234,14 @@ export default function Page() {
             items: [
               {
                 userId: user?.userId,
+                createdBy: user?.userId,
               },
             ],
           }}
           onFinish={onFinish}
           className="w-full"
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
+          labelCol={{ span: 9 }}
+          wrapperCol={{ span: 15 }}
           autoComplete="off"
         >
           <Form.List name="items">
@@ -258,10 +271,23 @@ export default function Page() {
                           </div>
                         }
                       >
-                        <Form.Item {...restField} name={[name, "userId"]} hidden initialValue={user?.userId}>
+                        <Form.Item {...restField} name={[name, "createdBy"]} hidden initialValue={user?.userId}>
                           <Input />
                         </Form.Item>
                         <Row gutter={[8, 8]}>
+                          <Col span={24}>
+                            <Form.Item {...restField} name={[name, "pathImage"]} label="Image" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
+                              <Upload
+                                {...getUploadProps(name)}
+                                fileList={attendFiles[name] || []}
+                                listType="picture-card"
+                                maxCount={1}
+                                onPreview={onPreview}
+                              >
+                                {(attendFiles[name]?.length || 0) < 1 && "+ Upload"}
+                              </Upload>
+                            </Form.Item>
+                          </Col>
                           <Col span={8}>
                             <Form.Item {...restField} name={[name, "type"]} label="ประเภททรัพย์สิน" rules={[{ required: true }]}>
                               <Select
@@ -298,7 +324,6 @@ export default function Page() {
                                     </Form.Item>
                                   );
                                 }
-
                                 return (
                                   <Form.Item {...restField} name={[name, "name"]} label="ชื่อทรัพย์สิน">
                                     <Select
@@ -316,6 +341,11 @@ export default function Page() {
                                   </Form.Item>
                                 );
                               }}
+                            </Form.Item>
+                          </Col>
+                          <Col span={8}>
+                            <Form.Item {...restField} name={[name, "userId"]} label="เจ้าของทรัพย์สิน" rules={[{ required: true }]}>
+                              <Select showSearch allowClear optionFilterProp="label" placeholder="Please Select" options={dropdownUser} />
                             </Form.Item>
                           </Col>
                           <Col span={8}>
@@ -344,21 +374,13 @@ export default function Page() {
                             </Form.Item>
                           </Col>
                           <Col span={8}>
-                            <Form.Item {...restField} name={[name, "pathImage"]} label="Image">
-                              <Upload
-                                {...getUploadProps(name)}
-                                fileList={attendFiles[name] || []}
-                                listType="picture-card"
-                                maxCount={1}
-                                onPreview={onPreview}
-                              >
-                                {(attendFiles[name]?.length || 0) < 1 && "+ Upload"}
-                              </Upload>
-                            </Form.Item>
-                          </Col>
-                          <Col span={8}>
                             <Form.Item {...restField} name={[name, "common"]} label="อุปกรณ์ส่วนกลาง" valuePropName="checked">
                               <Checkbox>{`ใช่`}</Checkbox>
+                            </Form.Item>
+                          </Col>
+                          <Col span={24}>
+                            <Form.Item {...restField} name={[name, "spec"]} label="รายละเอียด" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
+                              <Input.TextArea placeholder="Please Input" showCount maxLength={500} />
                             </Form.Item>
                           </Col>
                         </Row>

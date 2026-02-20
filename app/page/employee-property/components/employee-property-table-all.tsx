@@ -13,7 +13,6 @@ import type { ITMistakesType } from "@/app/common/mistakes-type";
 
 export interface props {
   reloadKey: number;
-  dropdownUser: { value: string; label: string }[];
 }
 
 const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.ReactElement => {

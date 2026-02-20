@@ -28,13 +28,39 @@ import React, { useContext, useEffect, useState, type Dispatch, type SetStateAct
 import { saveAs } from "file-saver";
 import type { ITMistakesType } from "@/app/common/mistakes-type";
 import type { UploadFile } from "antd/es/upload/interface";
-import { nameOptions } from "../page";
 
 export interface props {
   reloadKey: number;
   setReloadKey: Dispatch<SetStateAction<number>>;
   dropdownUser: { value: string; label: string }[];
 }
+
+const nameOptions = [
+  { label: "Notebook", value: "Notebook", type: "computer_equipment" },
+  { label: "PC", value: "PC", type: "computer_equipment" },
+  { label: "Monitor", value: "Monitor", type: "computer_equipment" },
+  { label: "Keyboard", value: "Keyboard", type: "computer_equipment" },
+  { label: "Mouse", value: "Mouse", type: "computer_equipment" },
+  { label: "Other", value: "Other", type: "computer_equipment" },
+  { label: "IP Phone", value: "IP Phone", type: "office_equipment" },
+  { label: "Hard Phone", value: "Hard Phone", type: "office_equipment" },
+  { label: "Adapter", value: "Adapter", type: "office_equipment" },
+  { label: "Charger", value: "Charger", type: "office_equipment" },
+  { label: "โต๊ะประชุม", value: "โต๊ะประชุม", type: "office_equipment" },
+  { label: "โต๊ะทำงานส่วนตัว", value: "โต๊ะทำงานส่วนตัว", type: "office_equipment" },
+  { label: "เก้าอี้ส่วนกลาง", value: "เก้าอี้ส่วนกลาง", type: "office_equipment" },
+  { label: "เก้าอี้ทำงานส่วนตัว", value: "เก้าอี้ทำงานส่วนตัว", type: "office_equipment" },
+  { label: "ตู้เก็บเอกสาร", value: "ตู้เก็บเอกสาร", type: "office_equipment" },
+  { label: "เครื่องถ่ายเอกสาร", value: "เครื่องถ่ายเอกสาร", type: "office_equipment" },
+  { label: "เครื่องย่อยกระดาษ", value: "เครื่องย่อยกระดาษ", type: "office_equipment" },
+  { label: "เครื่องฟอกอากาศ", value: "เครื่องฟอกอากาศ", type: "office_equipment" },
+  { label: "TV", value: "TV", type: "office_equipment" },
+  { label: "Other", value: "Other", type: "office_equipment" },
+  { label: "Mobile Phone", value: "Mobile Phone", type: "other_asset" },
+  { label: "Sim Moblie", value: "Sim Moblie", type: "other_asset" },
+  { label: "Pocket Wifi", value: "Pocket Wifi", type: "other_asset" },
+  { label: "Other", value: "Other", type: "other_asset" },
+];
 
 const EmployeePropertyTable: React.FC<props> = ({ reloadKey, setReloadKey, dropdownUser }): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || {

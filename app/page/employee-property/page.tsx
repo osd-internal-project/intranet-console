@@ -36,7 +36,7 @@ import UserServices from "@/app/services/user.service";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
-export const nameOptions = [
+const nameOptions = [
   { label: "Notebook", value: "Notebook", type: "computer_equipment" },
   { label: "PC", value: "PC", type: "computer_equipment" },
   { label: "Monitor", value: "Monitor", type: "computer_equipment" },
@@ -217,7 +217,7 @@ export default function Page() {
                   label: "อุปกรณ์ของทุกคน",
                   children: (
                     <>
-                      <EmployeePropertyAllUsersTable reloadKey={reloadKey} dropdownUser={dropdownUser} />
+                      <EmployeePropertyAllUsersTable reloadKey={reloadKey} />
                     </>
                   ),
                 },

@@ -113,7 +113,7 @@ const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey, dropdownUser }
               )}
             </div>
             <div className="flex flex-col">
-              <span className="font-medium text-gray-800">{e}</span>
+              <span className="font-medium text-gray-800">{e === "Other" ? record.nameOther : e}</span>
               <span className="text-xs text-gray-500">{`${record.brand}`}</span>
             </div>
           </div>

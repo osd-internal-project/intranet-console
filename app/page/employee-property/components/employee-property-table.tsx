@@ -142,7 +142,7 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey, setReloadKey, dropd
               )}
             </div>
             <div className="flex flex-col">
-              <span className="font-medium text-gray-800">{e}</span>
+              <span className="font-medium text-gray-800">{e === "Other" ? record.nameOther : e}</span>
               <span className="text-xs text-gray-500">{`${record.brand}`}</span>
             </div>
           </div>
@@ -482,39 +482,39 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey, setReloadKey, dropd
                   />
                 </Form.Item>
               </Col>
-              {/* <Col span={8}>
-                <Form.Item name="name" label="ชื่อทรัพย์สิน" rules={[{ required: true }]}>
-                  <Input />
-                </Form.Item>
-              </Col> */}
               <Col span={8}>
-                <Form.Item noStyle shouldUpdate={(prev, cur) => prev.type !== cur.type || prev.name !== cur.name}>
+                <Form.Item noStyle shouldUpdate={(prev, cur) => prev?.type !== cur?.type || prev?.name !== cur?.name}>
                   {({ getFieldValue }) => {
                     const selectedType = getFieldValue("type");
                     const selectedName = getFieldValue("name");
 
-                    if (selectedName === "Other") {
-                      return (
-                        <Form.Item name={"nameOther"} label="ชื่อทรัพย์สินอื่นๆ" rules={[{ required: true }]}>
-                          <Input placeholder="คีย์บอร์ด" />
-                        </Form.Item>
-                      );
-                    }
                     return (
-                      <Form.Item name={"name"} label="ชื่อทรัพย์สิน">
-                        <Select
-                          showSearch
-                          allowClear
-                          optionFilterProp="label"
-                          placeholder="Please Select"
-                          options={nameOptions.filter((opt) => opt.type === selectedType)}
-                          onChange={(val) => {
-                            if (val !== "Other") {
-                              editForm.setFieldValue("nameOther", undefined);
-                            }
-                          }}
-                        />
-                      </Form.Item>
+                      <>
+                        <Form.Item name={"name"} label="ชื่อทรัพย์สิน">
+                          <Select
+                            showSearch
+                            allowClear
+                            optionFilterProp="label"
+                            placeholder="Please Select"
+                            options={nameOptions.filter((opt) => opt.type === selectedType)}
+                            onChange={(val) => {
+                              if (val !== "Other") {
+                                editForm.setFieldValue("nameOther", undefined);
+                              }
+                            }}
+                          />
+                        </Form.Item>
+
+                        {selectedName === "Other" && (
+                          <Form.Item
+                            name={"nameOther"}
+                            label="ชื่อทรัพย์สินอื่นๆ"
+                            rules={[{ required: true, message: "กรุณากรอกชื่อทรัพย์สินอื่นๆ" }]}
+                          >
+                            <Input placeholder="คีย์บอร์ด" />
+                          </Form.Item>
+                        )}
+                      </>
                     );
                   }}
                 </Form.Item>

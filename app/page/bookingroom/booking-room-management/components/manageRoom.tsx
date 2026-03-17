@@ -129,39 +129,57 @@ const ManageRoom: React.FC = () => {
       title: "สถานะ",
       key: "bookingStatus",
       dataIndex: "bookingStatus",
+      align: "center",
       render: (status: string) => (
         <Tag
           color={
             status === "process" ? "blue" : status === "Approve" ? "green" : status === "cancel" ? "red" : status === "Reject" ? "red" : undefined
-          }>
+          }
+        >
           {status === "process"
             ? "กำลังรออนุมัติ"
             : status === "Approve"
-            ? "อนุมัติสำเร็จ"
-            : status === "Reject"
-            ? "ไม่อนุมัติ"
-            : status === "cancel"
-            ? "ยกเลิกการจอง"
-            : ""}
+              ? "อนุมัติสำเร็จ"
+              : status === "Reject"
+                ? "ไม่อนุมัติ"
+                : status === "cancel"
+                  ? "ยกเลิกการจอง"
+                  : ""}
         </Tag>
       ),
+    },
+    {
+      title: "รายละเอียดการจอง",
+      key: "id",
+      dataIndex: "id",
+      align: "center",
+      render: (_, record) => {
+        return (
+          <Button size="small" onClick={() => showModalBookingDetails(record)}>
+            {`รายละเอียด`}
+          </Button>
+        );
+      },
     },
     {
       title: "จัดการ",
       key: "note",
       dataIndex: "note",
+      align: "center",
       render: (_, record) => {
         return (
           <Space>
-            {record.bookingStatus === "process" && <a onClick={() => showModalEditBooking(record)}>แก้ไข</a>}
+            <Button size="small" type="link" onClick={() => showModalEditBooking(record)} disabled={record.bookingStatus !== "process"}>
+              แก้ไข
+            </Button>
+            <Button size="small" type="link" onClick={() => showModalApproveBooking(record)} disabled={record.bookingStatus !== "process"}>
+              รออนุมัติ
+            </Button>
             <Popconfirm title="คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?" onConfirm={() => handleDeleteBooking(record.id)} okText="ใช่" cancelText="ไม่">
-              <a>ลบ</a>
+              <Button size="small" type="link" danger>
+                ลบ
+              </Button>
             </Popconfirm>
-            {record.bookingStatus === "process" && <a onClick={() => showModalApproveBooking(record)}>อนุมัติ</a>}
-            {/* {record.bookingStatus === "Approve" && <a onClick={() => showModalApproveBooking(record)}>ยกเลิกอนุมัติ</a>} */}
-            <a type="link" onClick={() => showModalBookingDetails(record)}>
-              รายละเอียด
-            </a>
           </Space>
         );
       },
@@ -305,7 +323,6 @@ const ManageRoom: React.FC = () => {
       setSubmitLoading(false);
     }
   };
-
   const onFinishApprove = async (status: "Approve" | "Reject" | "process") => {
     setSubmitLoading(true);
     const { bookerName, bookerPhone, roomName, roomType, title } = form.getFieldsValue(true);
@@ -351,7 +368,8 @@ const ManageRoom: React.FC = () => {
               <Form.Item<BookingType>
                 label="เบอร์โทรศัพท์ผู้จอง"
                 name="bookerPhone"
-                rules={[{ required: true, message: "กรุณากรอกเบอร์โทรศัพท์ผู้จอง!" }]}>
+                rules={[{ required: true, message: "กรุณากรอกเบอร์โทรศัพท์ผู้จอง!" }]}
+              >
                 <Input disabled placeholder="กรอกเบอร์โทรศัพท์ผู้จอง" />
               </Form.Item>
             </Col>
@@ -383,7 +401,8 @@ const ManageRoom: React.FC = () => {
               <Form.Item<BookingType>
                 label="วันที่สิ้นสุดการจอง"
                 name="endDate"
-                rules={[{ required: true, message: "กรุณากรอกวันที่สิ้นสุดการจอง!" }]}>
+                rules={[{ required: true, message: "กรุณากรอกวันที่สิ้นสุดการจอง!" }]}
+              >
                 <DatePicker showTime style={{ width: "100%" }} format={"DD-MM-YYYY HH:mm"} />
               </Form.Item>
             </Col>
@@ -538,7 +557,8 @@ const ManageRoom: React.FC = () => {
         title={bookingStatus === "Approve" ? "ยกเลิกอนุมัติจองห้องประชุม" : "อนุมัติการจองห้องประชุม"}
         open={modalApproveBooking}
         onCancel={handleApproveBookingCancel}
-        footer={null}>
+        footer={null}
+      >
         <p>{bookingStatus === "Approve" ? "ยกเลิกอนุมัติจองห้องประชุม" : "ยืนยันอนุมัติการจองห้องประชุม"}</p>
         <Form form={form} layout="vertical" name="edit_booking" initialValues={{ remember: true }} autoComplete="off">
           <Row justify="end">
@@ -566,18 +586,30 @@ const ManageRoom: React.FC = () => {
         footer={null}
         centered
         width={600}
-        style={{ top: 20 }}>
+        style={{ top: 20 }}
+      >
         {currentBookingDetails && (
           <>
             <Divider />
             <p>
-              <strong>ชื่อห้องประชุม : </strong> <span className="modal-content">{currentBookingDetails.roomName}</span>
+              <strong>หัวข้อการประชุม : </strong> <span className="modal-content">{currentBookingDetails.title}</span>
             </p>
             <p>
-              <strong>ประเภทการจอง : </strong> <span className="modal-content">{currentBookingDetails.roomType}</span>
+              <strong>ห้องประชุม : </strong> <span className="modal-content">{currentBookingDetails.roomName}</span>
             </p>
             <p>
-              <strong>รายละเอียดการจอง : </strong> <span className="modal-content">{currentBookingDetails.note}</span>
+              <strong>ประเภทการจอง : </strong>{" "}
+              <span className="modal-content">
+                {currentBookingDetails.roomType === "Meeting"
+                  ? "ประชุม (Meeting)"
+                  : currentBookingDetails.roomType === "Train"
+                    ? "อบรม (Train)"
+                    : "สัมมนา (Seminar)"}
+              </span>
+            </p>
+            <p>
+              <strong>รายละเอียดการจอง : </strong>{" "}
+              <span className="modal-content">{currentBookingDetails.note ? currentBookingDetails.note : "-"}</span>
             </p>
             <p>
               <strong>วันที่จอง : </strong>

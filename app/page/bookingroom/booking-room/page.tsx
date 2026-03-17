@@ -168,11 +168,11 @@ const BookingRoomPage: React.FC = () => {
       startDate: startDate,
       endDate: endDate,
       approveDate: null,
-      member: values.member ? values.member : "",
-      outSider: values.outSider,
-      note: values.note ? values.note : "",
+      member: values?.member,
+      outSider: values?.outSider,
+      note: values?.note,
       guest: values.guest ? guestData : undefined,
-      officer: values.officer,
+      officer: values?.officer,
     };
     try {
       const response = await BookingRoomServices(baseUrIntranet).createBookingRoom(data);
@@ -285,7 +285,8 @@ const BookingRoomPage: React.FC = () => {
               <Form.Item<BookingType>
                 label="วันที่สิ้นสุดการจอง"
                 name="endDate"
-                rules={[{ required: true, message: "กรุณาเลือกวันที่สิ้นสุดการจอง" }]}>
+                rules={[{ required: true, message: "กรุณาเลือกวันที่สิ้นสุดการจอง" }]}
+              >
                 <DatePicker allowClear placeholder="เลือกวันที่สิ้นสุดการจอง" showTime style={{ width: "100%" }} format={"DD-MM-YYYY HH:mm"} />
               </Form.Item>
             </Col>

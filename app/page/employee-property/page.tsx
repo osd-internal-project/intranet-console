@@ -317,28 +317,34 @@ export default function Page() {
                                 const selectedType = getFieldValue(["items", name, "type"]);
                                 const selectedName = getFieldValue(["items", name, "name"]);
 
-                                if (selectedName === "Other") {
-                                  return (
-                                    <Form.Item {...restField} name={[name, "nameOther"]} label="ชื่อทรัพย์สินอื่นๆ" rules={[{ required: true }]}>
-                                      <Input placeholder="คีย์บอร์ด" />
-                                    </Form.Item>
-                                  );
-                                }
                                 return (
-                                  <Form.Item {...restField} name={[name, "name"]} label="ชื่อทรัพย์สิน">
-                                    <Select
-                                      showSearch
-                                      allowClear
-                                      optionFilterProp="label"
-                                      placeholder="Please Select"
-                                      options={nameOptions.filter((opt) => opt.type === selectedType)}
-                                      onChange={(val) => {
-                                        if (val !== "Other") {
-                                          form.setFieldValue(["items", name, "nameOther"], undefined);
-                                        }
-                                      }}
-                                    />
-                                  </Form.Item>
+                                  <>
+                                    <Form.Item {...restField} name={[name, "name"]} label="ชื่อทรัพย์สิน">
+                                      <Select
+                                        showSearch
+                                        allowClear
+                                        optionFilterProp="label"
+                                        placeholder="Please Select"
+                                        options={nameOptions.filter((opt) => opt.type === selectedType)}
+                                        onChange={(val) => {
+                                          if (val !== "Other") {
+                                            form.setFieldValue(["items", name, "nameOther"], undefined);
+                                          }
+                                        }}
+                                      />
+                                    </Form.Item>
+
+                                    {selectedName === "Other" && (
+                                      <Form.Item
+                                        {...restField}
+                                        name={[name, "nameOther"]}
+                                        label="ชื่อทรัพย์สินอื่นๆ"
+                                        rules={[{ required: true, message: "กรุณากรอกชื่อทรัพย์สินอื่นๆ" }]}
+                                      >
+                                        <Input placeholder="คีย์บอร์ด" />
+                                      </Form.Item>
+                                    )}
+                                  </>
                                 );
                               }}
                             </Form.Item>

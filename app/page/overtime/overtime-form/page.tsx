@@ -30,13 +30,13 @@ export default function OverTimePage() {
   const [getCar, setCar] = useState<any[]>([]);
   const [getcarName, setCarName] = useState<string>("");
   const [getSelectCar, setSelectCar] = useState<boolean>(false);
-  const [getMasterOt, setMasterOt] = useState<number>(0);
   const [getTime, setTime] = useState<{ value: string; label: string; key: string }[]>([]);
 
   useEffect(() => {
     if (user && loading) {
+      const parsedDate = date && dayjs(date).isValid() ? dayjs(date).startOf("day") : dayjs().startOf("day");
       createForm.setFieldsValue({
-        startDate: date ? dayjs(date) : dayjs(new Date()),
+        startDate: parsedDate,
         startTime: "18:00",
         endTime: "19:00",
         fullname: `${user.firstNameTh} ${user.lastNameTh}`,
@@ -176,7 +176,8 @@ export default function OverTimePage() {
                 DatePicker: { colorBgContainerDisabled: "#fff" },
                 Form: { itemMarginBottom: 1 },
               },
-            }}>
+            }}
+          >
             <Form layout="vertical" size="small" form={createForm} onFinish={onFinish}>
               <div className=" w-full grid  grid-cols-1 md:grid-cols-4 gap-2">
                 <div className=" md:col-start-4">
@@ -188,7 +189,8 @@ export default function OverTimePage() {
                   <Form.Item
                     label={"เรียน"}
                     name={`ownerGroupId`}
-                    initialValue={getHeader.map((user: any) => `คุณ ${user.firstNameTh} ${user.lastNameTh}`).join(" , ")}>
+                    initialValue={getHeader.map((user: any) => `คุณ ${user.firstNameTh} ${user.lastNameTh}`).join(" , ")}
+                  >
                     <Input disabled multiple />
                   </Form.Item>
                 </div>
@@ -285,7 +287,8 @@ export default function OverTimePage() {
                     onClick={() => {
                       navigate.push(`${window.location.origin}/page/overtime/overtime-calendar`);
                       createForm.resetFields();
-                    }}>
+                    }}
+                  >
                     Back
                   </Button>
                   <Button htmlType="submit" type="primary">

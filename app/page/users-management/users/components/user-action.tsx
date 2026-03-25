@@ -48,20 +48,15 @@ interface Props {
   getImage: any;
 }
 
-const { RangePicker } = DatePicker;
-
 export const UserAction: React.FC<Props> = ({
   setManagePage,
   managePage,
   positionOption,
   treeData,
-  optionsOrganize,
-  treeListDepartment,
   filterForm,
   createForm,
   setSelectUserType,
   selectUserType,
-  getImage,
 }): React.ReactElement => {
   const { id24Axios, tokenAccess } = useId24();
   const sideMenuGroups =
@@ -78,7 +73,7 @@ export const UserAction: React.FC<Props> = ({
   };
 
   const onSearch = async (value: object) => {
-    setManagePage({ ...managePage, loading: true, search: value });
+    setManagePage({ ...managePage, loading: true, search: value, pagination: { current: 1, pageSize: 10 } });
     setOpenFilter(false);
   };
 
@@ -114,7 +109,6 @@ export const UserAction: React.FC<Props> = ({
         createForm.resetFields();
       }
     } else if (managePage.modalTitle === "update") {
-      console.log('test');
       const updateForm = value as TUpdateUserDto;
       if (updateForm.userId) {
         const { masterPositionId, ...formWithoutMasterPositionId } = updateForm;
@@ -222,30 +216,13 @@ export const UserAction: React.FC<Props> = ({
       reader.readAsDataURL(file);
     });
 
-  // const selectOrganize = async (organizeId: string) => {
-  //   setLoadTree(true);
-  //   setOrganizeId(organizeId);
-  //   const groups = await UserGroupServices(baseUrlUser).getUserGroupByOrganizedGroupId(organizeId);
-  //   const tree = createTree(groups.organizeMapGroup, null) as any;
-  //   createForm.setFieldsValue({ groupList: undefined });
-  //   // const assignGroup = await UsersServices(baseUrlUser).findAssignGroup(userid, organizeId);
-  //   // const assignOwnerGroup = await UsersServices(baseUrlUser).findOwnerGroupByOrganizeId(userid, organizeId);
-  //   // if (assignGroup.length > 0) {
-  //   //   const groupActiveIds = assignGroup.map((item: { id: number; usersId: string; organizedId: string; groupId: string }) => item.groupId);
-  //   //   createForm.setFieldsValue({ groupList: groupActiveIds });
-  //   // }
-  //   // createForm.setFieldsValue({ groupOwnerId: assignOwnerGroup.ownerGroupId });
-  //   setGroupOption(tree);
-  //   setLoadTree(false);
-  // };
-
   const createTree = (obj: any[], parentId: string | null) => {
     const tree: any[] = [];
     obj.forEach((item) => {
       if (item.group.parentGroupId === parentId) {
         const children = createTree(obj, item.group.groupId);
         if (children.length > 0) {
-          (item.group.icon = <CarryOutOutlined />), (item.group.children = children);
+          ((item.group.icon = <CarryOutOutlined />), (item.group.children = children));
         }
         tree.push({
           value: item.group.groupId,
@@ -278,7 +255,8 @@ export const UserAction: React.FC<Props> = ({
                   modalStatus: true,
                   modalTitle: "create",
                 })
-              }>
+              }
+            >
               สร้างผู้ใช้
             </Button>
           </div>
@@ -290,9 +268,10 @@ export const UserAction: React.FC<Props> = ({
         open={managePage.modalStatus}
         footer={[]}
         onCancel={() => {
-          setManagePage({ ...managePage, modalStatus: false }), createForm.resetFields();
+          (setManagePage({ ...managePage, modalStatus: false }), createForm.resetFields());
         }}
-        width={1200}>
+        width={1200}
+      >
         <Form form={createForm} name="create" wrapperCol={{ span: 24 }} onFinish={onFinishSave} autoComplete="off" layout="vertical">
           {imageFiles.length >= 1 ? (
             <div className=" flex justify-center">
@@ -304,7 +283,8 @@ export const UserAction: React.FC<Props> = ({
                   beforeUpload={beforeUploadImageFiles}
                   multiple={false}
                   maxCount={1}
-                  listType="picture">
+                  listType="picture"
+                >
                   <Button icon={<UploadOutlined />}>Click to upload</Button>
                 </Upload>
               </Form.Item>
@@ -326,7 +306,8 @@ export const UserAction: React.FC<Props> = ({
                     beforeUpload={beforeUploadImageFiles}
                     multiple={false}
                     maxCount={1}
-                    listType="picture">
+                    listType="picture"
+                  >
                     <Button className="w-full" icon={<UploadOutlined />}>
                       Click to upload
                     </Button>
@@ -367,7 +348,8 @@ export const UserAction: React.FC<Props> = ({
                     <Form.Item<TCreateUserDto>
                       name={"password"}
                       label="รหัสผ่าน"
-                      rules={managePage.modalTitle === "create" ? [{ required: true }] : undefined}>
+                      rules={managePage.modalTitle === "create" ? [{ required: true }] : undefined}
+                    >
                       <Input.Password autoComplete="new-password" />
                     </Form.Item>
                   </div>
@@ -388,7 +370,8 @@ export const UserAction: React.FC<Props> = ({
                             return Promise.reject(new Error("The new password that you entered do not match!"));
                           },
                         }),
-                      ]}>
+                      ]}
+                    >
                       <Input.Password />
                     </Form.Item>
                   </div>
@@ -475,7 +458,8 @@ export const UserAction: React.FC<Props> = ({
               onClick={() => {
                 setManagePage({ ...managePage, modalStatus: false });
                 createForm.resetFields();
-              }}>{`Cancel`}</Button>
+              }}
+            >{`Cancel`}</Button>
             <Button type={"primary"} htmlType="submit">
               {`Save`}
             </Button>

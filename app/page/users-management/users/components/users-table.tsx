@@ -95,10 +95,6 @@ const UserTable: React.FC<Props> = ({ setManagePage, managePage, createForm, set
   ].filter(Boolean);
 
   const onClickEdit = async (record: TUserAllDto) => {
-    // if (user) {
-    // const data = await UsersServices(baseUrlUser).getImage(user.userId);
-    // setImage(data);
-    // }
     createForm.setFieldsValue({
       ...record,
       masterPositionId: record.masterPosition?.posId,

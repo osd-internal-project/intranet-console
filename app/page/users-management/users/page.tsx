@@ -110,7 +110,7 @@ export default function UsermanagementPage() {
       if (item.parentPositionId === parentId) {
         const children = createTreeDepartMent(obj, item.positionId);
         if (children.length > 0) {
-          (item.icon = <CarryOutOutlined />), (item.children = children);
+          ((item.icon = <CarryOutOutlined />), (item.children = children));
         }
         tree.push({
           value: item.positionId,
@@ -127,7 +127,7 @@ export default function UsermanagementPage() {
       if (item.parentGroupId === parentId) {
         const children = createTree(obj, item.groupId);
         if (children.length > 0) {
-          (item.icon = <CarryOutOutlined />), (item.children = children);
+          ((item.icon = <CarryOutOutlined />), (item.children = children));
         }
         tree.push({
           value: item.groupId,

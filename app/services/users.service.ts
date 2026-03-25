@@ -11,7 +11,7 @@ export interface TUsersService {
   findByToken: () => Promise<any>;
   addUser: (formData: TCreateUserDto) => Promise<any>;
   updateUser: (userId: string, formData: any) => Promise<any>;
-  updateProfile: (userId: string, formData: { extension: string, phoneNumber: string }) => Promise<any>;
+  updateProfile: (userId: string, formData: { extension: string; phoneNumber: string }) => Promise<any>;
   uploadFiles: (userId: string, form: any) => Promise<any>;
   getImage: (userId: string) => Promise<any>;
   findAssignGroup: (userId: string, organizeId: string) => Promise<any>;
@@ -69,7 +69,7 @@ export const UsersServices = (axiosInstance: AxiosInstance): TUsersService => {
           return [];
         });
     },
-    updateProfile: async (userId, formData: { extension: string, phoneNumber: string }) => {
+    updateProfile: async (userId, formData: { extension: string; phoneNumber: string }) => {
       return await axiosInstance
         .patch(`${userurl}/${userId}`, formData)
         .then((res) => {

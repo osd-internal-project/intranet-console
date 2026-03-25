@@ -71,7 +71,7 @@ const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.React
       render: (_, record) => `${record.users.firstNameTh} ${record.users.lastNameTh}`,
     },
     {
-      title: "แผนก",
+      title: "ตำแหน่ง",
       dataIndex: ["users", "masterPosition", "nameTh"],
       key: "department",
     },

@@ -122,6 +122,7 @@ export default function Page() {
       });
       setOpen(false);
       form.resetFields();
+      setAttendFiles([]);
       setReloadKey((prev) => prev + 1);
     } catch (error) {
       console.error(error);

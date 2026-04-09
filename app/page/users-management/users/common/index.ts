@@ -7,6 +7,7 @@ export type TCreateUserDto = {
   extension: string;
   userType: string;
   username: string;
+  nickname: string;
   email: string;
   activeStatus: boolean;
   password: string;
@@ -45,6 +46,7 @@ export type TUserAllDto = {
   username: string;
   email: string;
   activeStatus: boolean;
+  nickname?: string;
   firstNameTh: string;
   lastNameTh: string;
   firstNameEn: string;

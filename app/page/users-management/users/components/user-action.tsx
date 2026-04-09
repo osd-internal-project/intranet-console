@@ -138,8 +138,11 @@ export const UserAction: React.FC<Props> = ({
 
   const searchContent = (
     <Form layout="vertical" form={filterForm} onFinish={onSearch} autoComplete="off">
-      <div className="grid grid-cols-1 md:gap-4 md:grid-cols-4">
+      <div className="grid grid-cols-1 md:gap-5 md:grid-cols-5">
         <Form.Item label="ยูสเซอร์เนม" name="username">
+          <Input placeholder="Search Text" />
+        </Form.Item>
+        <Form.Item label="ชื่อเล่น" name="nickname">
           <Input placeholder="Search Text" />
         </Form.Item>
         <Form.Item label="รหัสพนักงาน" name="empId">
@@ -166,26 +169,7 @@ export const UserAction: React.FC<Props> = ({
     createForm.setFieldValue("ldapQuery", null);
   };
 
-  const validateNumber = (rule: any, value: any, callback: any) => {
-    if (value === undefined) {
-      callback();
-    } else {
-      if (/\s/.test(value)) {
-        callback("Please do not enter space");
-      } else if (isNaN(value)) {
-        callback("Please enter numbers only");
-      } else {
-        callback();
-      }
-    }
-  };
-
   const beforeUploadImageFiles = async (file: RcFile) => {
-    // const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
-    // if (file.size > maxSizeInBytes) {
-    //   message.error(`ไฟล์ ${file.name} มีขนาดใหญ่เกิน 2MB`);
-    //   return false;
-    // }
     if (imageFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return false;
@@ -238,9 +222,17 @@ export const UserAction: React.FC<Props> = ({
     <>
       <div className=" col-span-4 flex justify-between pb-2">
         <div>
-          <Popover onOpenChange={handleOpenFilter} open={openFilter} content={searchContent} placement="bottomLeft" title="Search" trigger="click">
+          <Popover
+            onOpenChange={handleOpenFilter}
+            open={openFilter}
+            content={searchContent}
+            placement="bottomLeft"
+            title="Search"
+            trigger="click"
+            overlayStyle={{ width: 1200 }}
+          >
             <Button type="primary" icon={<FilterOutlined />}>
-              Filters
+              {`Filters`}
             </Button>
           </Popover>
         </div>
@@ -408,33 +400,24 @@ export const UserAction: React.FC<Props> = ({
             <Form.Item<TCreateUserDto> label="นามสกุล(ภาษาอังกฤษ)" name="lastNameEn" rules={[{ required: true }]} style={{ marginBottom: "2px" }}>
               <Input />
             </Form.Item>
-          </div>
-          <div className="grid grid-cols-4 gap-2">
-            <div className=" col-span-1">
-              <Form.Item<TCreateUserDto> label="เบอร์โทรติดต่อ" name="phoneNumber" style={{ marginBottom: "2px" }}>
-                <Input />
-              </Form.Item>
-            </div>
-            <div className=" col-span-1">
-              <Form.Item<TCreateUserDto> label="Extension" name={"extension"} style={{ marginBottom: "2px" }} rules={[{ required: true }]}>
-                <Input />
-              </Form.Item>
-            </div>
-            <div className=" col-span-1">
-              <Form.Item<TCreateUserDto> label="ตำแหน่ง" name="masterPositionId" rules={[{ required: true }]}>
-                <Select placeholder="กรุณาเลือก ตำแหน่ง" options={positionOption} allowClear showSearch optionFilterProp="label" />
-              </Form.Item>
-            </div>
-            <div className=" col-span-1">
-              <Form.Item<TCreateUserDto> label="วันที่เริ่มงาน" name="startWork" rules={[{ required: true }]}>
-                <DatePicker className="w-full" />
-              </Form.Item>
-            </div>
-            <div className=" col-span-1">
-              <Form.Item<TCreateUserDto> label="รหัสพนักงาน" name="empId" rules={[{ required: true }]}>
-                <Input />
-              </Form.Item>
-            </div>
+            <Form.Item<TCreateUserDto> label="ชื่อเล่น" name="nickname" rules={[{ required: true }]} style={{ marginBottom: "2px" }}>
+              <Input />
+            </Form.Item>
+            <Form.Item<TCreateUserDto> label="เบอร์โทรติดต่อ" name="phoneNumber" style={{ marginBottom: "2px" }}>
+              <Input />
+            </Form.Item>
+            <Form.Item<TCreateUserDto> label="Extension" name={"extension"} style={{ marginBottom: "2px" }} rules={[{ required: true }]}>
+              <Input />
+            </Form.Item>
+            <Form.Item<TCreateUserDto> label="ตำแหน่ง" name="masterPositionId" rules={[{ required: true }]}>
+              <Select placeholder="กรุณาเลือก ตำแหน่ง" options={positionOption} allowClear showSearch optionFilterProp="label" />
+            </Form.Item>
+            <Form.Item<TCreateUserDto> label="วันที่เริ่มงาน" name="startWork" rules={[{ required: true }]}>
+              <DatePicker className="w-full" />
+            </Form.Item>
+            <Form.Item<TCreateUserDto> label="รหัสพนักงาน" name="empId" rules={[{ required: true }]}>
+              <Input />
+            </Form.Item>
           </div>
           <div className=" col-span-3">
             <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-200" />

@@ -59,6 +59,11 @@ const UserTable: React.FC<Props> = ({ setManagePage, managePage, createForm, set
       },
     },
     {
+      title: "ชื่อเล่น",
+      dataIndex: "nickname",
+      key: "nickname",
+    },
+    {
       title: "ชื่อ - สกุล",
       dataIndex: "fullname",
       key: "fullname",

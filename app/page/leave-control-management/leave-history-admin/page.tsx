@@ -47,14 +47,13 @@ export default function Page() {
       const { data, count } = isHr
         ? await DataLeaveService(baseUrlIntranet).getdataLeaveHrfindBygroup(user.userId, params, skip, take)
         : await DataLeaveService(baseUrlIntranet).getdataLeavefindBygroup(user.userId, params, skip, take);
-      console.log("DataLeaveUser_data: ", data);
       setDataLeaveUser({ data, count });
       setLoading(false);
     }
   };
 
   const dataDetailLeaveHour = async (userId: string, typeId: number) => {
-    console.log(typeId);
+    // console.log(typeId);
     const resTableDeatilTypeLeave = await LeaveManagementServices(baseUrlIntranet).findDetailByTypeLeaveUserId(userId, typeId);
     //console.log("resTableDeatilTypeLeave: ",resTableDeatilTypeLeave);
     setTypeLeaveTableAll(resTableDeatilTypeLeave);
@@ -160,10 +159,6 @@ export default function Page() {
     message.success("สำเร็จ");
   };
 
-  // const onChange = (key: string) => {
-  //   console.log(key);
-  // };
-
   return (
     <>
       <Row>
@@ -182,7 +177,6 @@ export default function Page() {
         </Col>
         <div className="site-card-border-less-wrapper" style={{ width: "100%", marginTop: "10px" }}>
           <Tabs
-            // onChange={onChange}
             type="card"
             items={[
               {

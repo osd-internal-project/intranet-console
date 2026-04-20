@@ -66,6 +66,7 @@ export type TUserAllDto = {
   positionId: number;
   departmentId: number;
   startWork?: Date;
+  token: string;
 };
 
 export type TMasterPosition = {

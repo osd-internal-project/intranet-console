@@ -210,7 +210,7 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
     //       return;
     //     });
     // },
-    getHeaderByUserId: async () => {
+    getHeader: async () => {
       let url = `${baseUrlDataLeave}/leave-header`;
       return await axiosInstance
         .get(url)
@@ -221,7 +221,17 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           return;
         });
     },
-
+    getHeaderByUserId: async (token: string) => {
+      let url = `${baseUrlDataLeave}/leave-header-userId/${token}`;
+      return await axiosInstance
+        .get(url)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return;
+        });
+    },
     findUserByUserId: async (userId: string | undefined) => {
       let url = `${baseUrlDataLeave}/find-user-by-userId/${userId}`;
       return await axiosInstance

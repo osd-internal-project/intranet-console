@@ -48,7 +48,7 @@ export default function Page() {
       const options = res.map((event: ITypetypeleave) => {
         return { value: event.typeId, label: event.typeName };
       });
-      const HeaderGroup = await LeaveManagementServices(baseUrlIntranet).getHeaderByUserId();
+      const HeaderGroup = await LeaveManagementServices(baseUrlIntranet).getHeader();
       setHeader(HeaderGroup);
       setTypeLeaveTable(resTableDeatilTypeLeave);
       setTypeLeaveTableAll(resTableUserTypeLeave.typeLeaveDisabledMap);

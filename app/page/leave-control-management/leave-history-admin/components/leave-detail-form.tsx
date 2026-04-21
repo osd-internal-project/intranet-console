@@ -38,17 +38,7 @@ export const LeaveDetailForm: React.FC<props> = ({
   submitAction,
   typeLeavebyTypeId,
 }) => {
-  // console.log("typeLeavebyTypeId: ", typeLeavebyTypeId);
-  // console.log("formdetail: ", formdetail);
-  // console.log("formdetail.getFieldsValue(): ", formdetail.getFieldsValue());
-  // console.log("statusById: ", statusById);
-  const details = Form.useWatch([], formdetail) || {};
-  // console.log("details: ", details);
-
-  // console.log("formdetail.getFieldValue(\"id\"): ", formdetail.getFieldValue("id"));
-
-  // const userApproved = formdetail.getFieldValue("userApproved");
-  // const dataLeaveFiles = formdetail.getFieldValue("dataLeaveFiles");
+  const details = formdetail.getFieldsValue(true) || {};
 
   const getStatusTag = () => {
     if (statusById === "approved") {
@@ -74,7 +64,6 @@ export const LeaveDetailForm: React.FC<props> = ({
 
   return (
     <div className="max-w-3xl mx-auto p-5">
-      {/* Header */}
       <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-t-lg mb-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
@@ -85,21 +74,7 @@ export const LeaveDetailForm: React.FC<props> = ({
         </div>
       </div>
 
-      <Form
-        autoComplete="off"
-        form={formdetail}
-        //form={details}
-        layout="vertical"
-        onFinish={(e) =>
-          onFinishUpdate(
-            e,
-            submitAction,
-            //formdetail.getFieldValue("id") ? formdetail.getFieldValue("id") : 0
-            details.id ? details.id : 0,
-          )
-        }
-      >
-        {/* Basic Information Card */}
+      <Form autoComplete="off" form={formdetail} layout="vertical" onFinish={(e) => onFinishUpdate(e, submitAction, details.id ? details.id : 0)}>
         <Card
           className="mb-4 shadow-sm"
           title={
@@ -161,7 +136,6 @@ export const LeaveDetailForm: React.FC<props> = ({
           </Form.Item>
         </Card>
 
-        {/* Leave Details Card */}
         <Card
           className="mb-4 shadow-sm hover:shadow-md transition-shadow duration-200"
           title={
@@ -347,7 +321,6 @@ export const LeaveDetailForm: React.FC<props> = ({
           </Row>
         </Card>
 
-        {/* Files Section */}
         {Array.isArray(details?.dataLeaveFiles) && details?.dataLeaveFiles.length > 0 && (
           <Card
             className="mb-4 shadow-sm"
@@ -375,7 +348,6 @@ export const LeaveDetailForm: React.FC<props> = ({
           </Card>
         )}
 
-        {/* Approval Section */}
         {details.userApproved && (
           <Card
             className="mb-4 shadow-sm border-green-200"
@@ -407,7 +379,6 @@ export const LeaveDetailForm: React.FC<props> = ({
           </Card>
         )}
 
-        {/* Action Section */}
         <Card
           className="mb-4 shadow-sm border-orange-200"
           title={
@@ -475,6 +446,25 @@ export const LeaveDetailForm: React.FC<props> = ({
             </div>
           </div>
         </Card>
+        {details.updatedBy ? (
+          <Card
+            className="mb-4 shadow-sm border-orange-200"
+            title={
+              <div className="flex items-center">
+                <EditOutlined className="mr-2 " />
+                <span className=" font-medium">มีการเปลี่ยนแปลงข้อมูลการลา</span>
+              </div>
+            }
+          >
+            <div className="p-4 rounded-lg"></div>
+            <Form.Item label="ผู้ที่แก้ไขล่าสุด" name="updatedBy">
+              <Input disabled className="bg-gray-50 cursor-default border-gray-200" prefix={<UserOutlined className="text-gray-400" />} />
+            </Form.Item>
+            <Form.Item label="หมายเหตุการแก้ไข" name="commentUpdated">
+              <Input disabled className="bg-gray-50 cursor-default border-gray-200" prefix={<UserOutlined className="text-gray-400" />} />
+            </Form.Item>
+          </Card>
+        ) : null}
 
         <Form.Item hidden name="id">
           <Input />

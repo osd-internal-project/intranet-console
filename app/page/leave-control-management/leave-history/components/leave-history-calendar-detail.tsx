@@ -29,7 +29,8 @@ export const LeaveHistoryCalendarDetail: React.FC<props> = ({
         onCancel={() => onCancelModalDetail()}
         width={700}
         bodyStyle={{ padding: 0 }}
-        className="[&_.ant-modal-content]:!p-0">
+        className="[&_.ant-modal-content]:!p-0"
+      >
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-t-lg">
           <div className="flex items-center justify-center">
@@ -49,7 +50,8 @@ export const LeaveHistoryCalendarDetail: React.FC<props> = ({
                   <UserOutlined className="mr-2 text-blue-500" />
                   <span>ข้อมูลทั่วไป</span>
                 </div>
-              }>
+              }
+            >
               <Row gutter={16}>
                 <Col span={12}>
                   <Form.Item label="วันที่สร้าง" name="createAt">
@@ -110,7 +112,8 @@ export const LeaveHistoryCalendarDetail: React.FC<props> = ({
                   <CalendarOutlined className="mr-2 text-green-500" />
                   <span>รายละเอียดการลา</span>
                 </div>
-              }>
+              }
+            >
               <Row gutter={16}>
                 <Col span={12}>
                   <Form.Item label="ประเภทการลา" name="typeLeave">
@@ -159,7 +162,8 @@ export const LeaveHistoryCalendarDetail: React.FC<props> = ({
                     <PaperClipOutlined className="mr-2 text-purple-500" />
                     <span>ไฟล์แนบ</span>
                   </div>
-                }>
+                }
+              >
                 <div className="grid grid-cols-1 gap-2">
                   {dataLeaveFiles.map((file: any, index: number) => (
                     <div key={index} className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
@@ -186,7 +190,8 @@ export const LeaveHistoryCalendarDetail: React.FC<props> = ({
                     <CheckCircleOutlined className="mr-2 text-green-500" />
                     <span className="text-green-600">การอนุมัติ</span>
                   </div>
-                }>
+                }
+              >
                 <div className="bg-green-50 p-4 rounded-lg">
                   <Row gutter={16}>
                     <Col span={12}>
@@ -226,7 +231,8 @@ export const LeaveHistoryCalendarDetail: React.FC<props> = ({
             type="primary"
             size="large"
             onClick={() => onCancelModalDetail()}
-            className="px-8 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+            className="px-8 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+          >
             ปิด
           </Button>
         </div>

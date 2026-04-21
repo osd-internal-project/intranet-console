@@ -56,10 +56,12 @@ export const TableDetail: React.FC<props> = ({
   };
 
   const fecthDataDetail = async (record: ITypeDataLeave) => {
+    formdetail.resetFields();
     if (!record.userId || !record.typeId) {
       return false;
     }
     await dataDetailLeaveHour(record.userId, record.typeId);
+
     try {
       const base = {
         ...record,
@@ -78,7 +80,6 @@ export const TableDetail: React.FC<props> = ({
       };
       setStatusById(record.status);
       formdetail.setFieldsValue(base);
-      //console.log("base", base);
       setOpenModalDetail(true);
     } catch (err) {
       console.log(err);
@@ -135,11 +136,13 @@ export const TableDetail: React.FC<props> = ({
       dataIndex: "id",
       title: "...",
       align: "center",
-      render: (e, row) => (
-        <Button size="small" type="primary" ghost onClick={() => fecthDataDetail(row)}>
-          {`รายละเอียด`}
-        </Button>
-      ),
+      render: (e, row) => {
+        return (
+          <Button size="small" type="primary" ghost onClick={() => fecthDataDetail(row)}>
+            {`รายละเอียด`}
+          </Button>
+        );
+      },
     },
   ];
 

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, Form, Input, Space, Tooltip, Row, Col, Card, Tag, Divider, FormInstance, DatePicker, Select, Switch } from "antd";
+import { Button, Form, Input, Space, Tooltip, Row, Col, Card, Tag, FormInstance, DatePicker, Select, Switch } from "antd";
 import {
   PaperClipOutlined,
   CalendarOutlined,
@@ -12,7 +12,6 @@ import {
   EditOutlined,
 } from "@ant-design/icons";
 import { intersection } from "lodash";
-import { HourAmountToDateHourString } from "@/app/utils/format";
 import type { ISelect } from "../../common";
 import { timeOptions } from "@/app/utils/time-convertor";
 import dayjs from "dayjs";
@@ -31,6 +30,13 @@ interface props {
   optionsTypeleave: ISelect[];
 }
 
+const toDayjs = (val: any) => {
+  if (!val) return null;
+  if (dayjs.isDayjs(val)) return val;
+  const d = dayjs(val);
+  return d.isValid() ? d : null;
+};
+
 export const LeaveDetailFormEdit: React.FC<props> = ({
   formdetail,
   downloadFile,
@@ -41,7 +47,10 @@ export const LeaveDetailFormEdit: React.FC<props> = ({
   onFinishEdit,
   optionsTypeleave,
 }) => {
-  const details = Form.useWatch([], formdetail) || {};
+  // ✅ แก้: ใช้ Form.useWatch แทน getFieldsValue() ใน render body
+  const allValues = Form.useWatch([], formdetail) || {};
+
+  // watch แต่ละ field ที่ต้องใช้ reactive
   const startDate = Form.useWatch("startDate", formdetail);
   const endDate = Form.useWatch("endDate", formdetail);
   const startTime = Form.useWatch("startTime", formdetail);
@@ -49,8 +58,25 @@ export const LeaveDetailFormEdit: React.FC<props> = ({
   const isFullDay = Form.useWatch("time_start_check", formdetail);
   const initialLeaveHour = Form.useWatch("leaveHour", formdetail);
 
+  // watch fields ที่ใช้ใน JSX แทน details.xxx
+  const id = Form.useWatch("id", formdetail);
+  const userApproved = Form.useWatch("userApproved", formdetail);
+  const dataLeaveFiles = Form.useWatch("dataLeaveFiles", formdetail);
+
+  // useEffect(() => {
+  //   if (startDate && endDate && !dayjs(startDate).isSame(endDate, "day")) {
+  //     formdetail.setFieldsValue({
+  //       time_start_check: true,
+  //       startTime: undefined,
+  //       endTime: undefined,
+  //     });
+  //   }
+  // }, [startDate, endDate]);
+
   useEffect(() => {
-    if (startDate && endDate && !dayjs(startDate).isSame(endDate, "day")) {
+    const start = toDayjs(startDate);
+    const end = toDayjs(endDate);
+    if (start && end && !start.isSame(end, "day")) {
       formdetail.setFieldsValue({
         time_start_check: true,
         startTime: undefined,
@@ -66,37 +92,45 @@ export const LeaveDetailFormEdit: React.FC<props> = ({
 
   const HOURS_PER_DAY = 8;
 
+  // const calculateHours = () => {
+  //   if (!startDate || !endDate) return initialLeaveHour;
+  //   const sameDay = dayjs(startDate).isSame(endDate, "day");
+  //   // ✅ วันเดียว
+  //   if (sameDay) {
+  //     if (isFullDay) return HOURS_PER_DAY;
+  //     if (!startTime || !endTime) return initialLeaveHour;
+  //     const start = dayjs(`${dayjs(startDate).format("YYYY-MM-DD")} ${startTime}`);
+  //     const end = dayjs(`${dayjs(endDate).format("YYYY-MM-DD")} ${endTime}`);
+  //     const diff = end.diff(start, "hour", true);
+  //     return diff > 0 ? diff : initialLeaveHour;
+  //   }
+  //   // ✅ หลายวัน
+  //   const days = dayjs(endDate).diff(dayjs(startDate), "day") + 1;
+  //   return days * HOURS_PER_DAY;
+  // };
   const calculateHours = () => {
-    if (!startDate || !endDate) return initialLeaveHour;
+    const start = toDayjs(startDate);
+    const end = toDayjs(endDate);
+    if (!start || !end) return initialLeaveHour;
 
-    const sameDay = dayjs(startDate).isSame(endDate, "day");
-
-    // ✅ วันเดียว
+    const sameDay = start.isSame(end, "day");
     if (sameDay) {
       if (isFullDay) return HOURS_PER_DAY;
-
-      // ❗ ยังไม่เลือกเวลา → ใช้ค่าเดิม
       if (!startTime || !endTime) return initialLeaveHour;
-
-      const start = dayjs(`${dayjs(startDate).format("YYYY-MM-DD")} ${startTime}`);
-      const end = dayjs(`${dayjs(endDate).format("YYYY-MM-DD")} ${endTime}`);
-
-      const diff = end.diff(start, "hour", true);
+      const s = dayjs(`${start.format("YYYY-MM-DD")} ${startTime}`);
+      const e = dayjs(`${end.format("YYYY-MM-DD")} ${endTime}`);
+      const diff = e.diff(s, "hour", true);
       return diff > 0 ? diff : initialLeaveHour;
     }
-
-    // ✅ หลายวัน
-    const days = dayjs(endDate).diff(dayjs(startDate), "day") + 1;
+    const days = end.diff(start, "day") + 1;
     return days * HOURS_PER_DAY;
   };
 
   const calculatedHour = calculateHours();
-
   const finalLeaveHour = calculatedHour !== undefined ? calculatedHour : initialLeaveHour;
 
   useEffect(() => {
     const newHour = calculateHours();
-
     if (newHour !== undefined && Number(newHour) !== Number(initialLeaveHour)) {
       formdetail.setFieldsValue({ leaveHour: newHour });
     }
@@ -137,7 +171,8 @@ export const LeaveDetailFormEdit: React.FC<props> = ({
         </div>
       </div>
 
-      <Form autoComplete="off" form={formdetail} layout="vertical" onFinish={(e) => onFinishUpdate(e, submitAction, details.id ? details.id : 0)}>
+      {/* ✅ แก้: ใช้ id แทน details.id */}
+      <Form autoComplete="off" form={formdetail} layout="vertical" onFinish={(e) => onFinishUpdate(e, submitAction, id ?? 0)}>
         <Card
           className="mb-4 shadow-sm"
           title={
@@ -167,7 +202,6 @@ export const LeaveDetailFormEdit: React.FC<props> = ({
               </Form.Item>
             </Col>
           </Row>
-
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item label="ผู้ขอลา" name="name">
@@ -189,7 +223,7 @@ export const LeaveDetailFormEdit: React.FC<props> = ({
             </Col>
           </Row>
           <Form.Item label="เนื่องจาก" name="detail">
-            <Input.TextArea rows={2} className=" focus:shadow-none" placeholder="รายละเอียดเหตุผลการลา" />
+            <Input.TextArea rows={2} className="focus:shadow-none" placeholder="รายละเอียดเหตุผลการลา" />
           </Form.Item>
         </Card>
 
@@ -231,7 +265,7 @@ export const LeaveDetailFormEdit: React.FC<props> = ({
               </Form.Item>
             </Col>
             <>
-              {startDate && endDate && dayjs(startDate).isSame(endDate, "day") && (
+              {toDayjs(startDate) && toDayjs(endDate) && toDayjs(startDate)!.isSame(toDayjs(endDate)!, "day") && (
                 <div className="w-full grid grid-cols-4 gap-2">
                   <div className="col-span-3 md:col-span-1">
                     <Form.Item label="ลา 1 วัน" name="time_start_check" valuePropName="checked">
@@ -255,7 +289,6 @@ export const LeaveDetailFormEdit: React.FC<props> = ({
                           />
                         </Form.Item>
                       </div>
-
                       <div className="col-span-3 md:col-span-1">
                         <Form.Item label="เวลาสิ้นสุด :" name="endTime" rules={[{ required: true, message: "กรุณาเลือกเวลาที่สิ้นสุดการลา" }]}>
                           <Select
@@ -278,8 +311,9 @@ export const LeaveDetailFormEdit: React.FC<props> = ({
             </>
           </Row>
         </Card>
-        {/* Files Section */}
-        {Array.isArray(details?.dataLeaveFiles) && details?.dataLeaveFiles.length > 0 && (
+
+        {/* ✅ แก้: ใช้ dataLeaveFiles แทน details?.dataLeaveFiles */}
+        {Array.isArray(dataLeaveFiles) && dataLeaveFiles.length > 0 && (
           <Card
             className="mb-4 shadow-sm"
             title={
@@ -290,7 +324,7 @@ export const LeaveDetailFormEdit: React.FC<props> = ({
             }
           >
             <div className="grid grid-cols-1 gap-2">
-              {details?.dataLeaveFiles.map((file: any, index: number) => (
+              {dataLeaveFiles.map((file: any, index: number) => (
                 <div key={index} className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                   <PaperClipOutlined className="text-blue-500 mr-3" />
                   <div className="flex-1">
@@ -305,8 +339,9 @@ export const LeaveDetailFormEdit: React.FC<props> = ({
             </div>
           </Card>
         )}
-        {/* Approval Section */}
-        {details.userApproved && (
+
+        {/* ✅ แก้: ใช้ userApproved แทน details.userApproved */}
+        {userApproved && (
           <Card
             className="mb-4 shadow-sm border-green-200"
             title={
@@ -353,9 +388,11 @@ export const LeaveDetailFormEdit: React.FC<props> = ({
             <Tooltip title="แก้ไขข้อมูล">
               <Button
                 type="primary"
-                className="flex items-center justify-center  transition-all duration-300 hover:-translate-y-[1px] hover:shadow-lg"
+                className="flex items-center justify-center transition-all duration-300 hover:-translate-y-[1px] hover:shadow-lg"
                 onClick={() => {
-                  onFinishEdit("edit", details);
+                  formdetail.validateFields().then((values) => {
+                    onFinishEdit("edit", values);
+                  });
                 }}
               >
                 {`แก้ไขข้อมูล`}
@@ -363,10 +400,15 @@ export const LeaveDetailFormEdit: React.FC<props> = ({
             </Tooltip>
           )}
         </Space>
+
+        {/* Hidden fields */}
         <Form.Item hidden name="id">
           <Input />
         </Form.Item>
         <Form.Item hidden name="userId">
+          <Input />
+        </Form.Item>
+        <Form.Item hidden name="leaveHour">
           <Input />
         </Form.Item>
         <Form.Item hidden name="reqLeaveHour">

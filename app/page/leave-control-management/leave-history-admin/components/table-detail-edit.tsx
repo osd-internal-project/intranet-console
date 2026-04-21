@@ -66,6 +66,7 @@ export const TableDetailEdit: React.FC<props> = ({
   };
 
   const fecthDataDetail = async (record: ITypeDataLeave) => {
+    formdetail.resetFields();
     if (!record.userId || !record.typeId) {
       return false;
     }
@@ -76,8 +77,8 @@ export const TableDetailEdit: React.FC<props> = ({
         name: `${record.firstName} ${record.lastName}`,
         createAt: record.createdAt ? dateToStringThNoTime(record.createdAt) : "-",
         leaveHour: record.leaveHour,
-        startDate: record?.startDate ? dayjs(record?.startDate as any) : "-",
-        endDate: record?.endDate ? dayjs(record?.endDate as any) : "-",
+        startDate: record?.startDate ? dayjs(record?.startDate as any) : null,
+        endDate: record?.endDate ? dayjs(record?.endDate as any) : null,
         typeName: record.typeName,
         typeId: record.typeId,
         approvedDate: record.approvedDate ? dateToStringThNoTime(record?.approvedDate) : "-",

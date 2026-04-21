@@ -41,6 +41,7 @@ export default function Page() {
   const [typeLeaveTableAll, setTypeLeaveTableAll] = useState<ITypetypeleave>();
   const [optionsTypeleave, setOptionsTypeleave] = useState<ISelect[]>([]);
   const [formdetail] = Form.useForm();
+  const [formdetailEdit] = Form.useForm();
 
   useEffect(() => {
     if (loading) loadData();
@@ -81,6 +82,14 @@ export default function Page() {
   const changePagination = (page: TablePaginationConfig) => {
     setPagination({ ...page });
     setLoading(true);
+  };
+
+  const handleReloadData = (e: string) => {
+    if (e === "1" || e === "4") {
+      formdetail.resetFields();
+      formdetailEdit.resetFields();
+      setLoading(true);
+    }
   };
 
   const onFinishUpdate = (values: any, type: string, id: number) => {
@@ -312,6 +321,7 @@ export default function Page() {
         </Col>
         <div className="site-card-border-less-wrapper" style={{ width: "100%", marginTop: "10px" }}>
           <Tabs
+            onChange={handleReloadData}
             type="card"
             items={[
               {
@@ -400,7 +410,7 @@ export default function Page() {
                                 dataLeaveUser={dataLeaveUser}
                                 setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
                                 openModalDetail={openModalDetail}
-                                formdetail={formdetail}
+                                formdetail={formdetailEdit}
                                 onFinishUpdate={onFinishUpdate}
                                 onFinishDelete={onFinishDelete}
                                 downloadFile={downloadFile}

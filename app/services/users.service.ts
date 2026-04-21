@@ -9,6 +9,7 @@ export interface TUsersService {
   validatePassword: (password: string) => Promise<any>;
   findGroupsId24: () => Promise<any>;
   findByToken: () => Promise<any>;
+  findByUserId: (userId: string) => Promise<any>;
   addUser: (formData: TCreateUserDto) => Promise<any>;
   updateUser: (userId: string, formData: any) => Promise<any>;
   updateProfile: (userId: string, formData: { extension: string; phoneNumber: string }) => Promise<any>;
@@ -30,6 +31,10 @@ export const UsersServices = (axiosInstance: AxiosInstance): TUsersService => {
     },
     findAllUser: async (search) => {
       const result = await axiosInstance.get(`${baseUrl}`, { params: search });
+      return result?.data || [];
+    },
+    findByUserId: async (userId) => {
+      const result = await axiosInstance.get(`${baseUrl}/findbyUserId/${userId}`);
       return result?.data || [];
     },
     validateUsername: async (username, type) => {

@@ -1,17 +1,5 @@
 import React from "react";
-import {
-  Button,
-  Form,
-  Input,
-  Space,
-  Tooltip,
-  Row,
-  Col,
-  Card,
-  Tag,
-  Divider,
-  FormInstance,
-} from "antd";
+import { Button, Form, Input, Space, Tooltip, Row, Col, Card, Tag, Divider, FormInstance } from "antd";
 import {
   PaperClipOutlined,
   CalendarOutlined,
@@ -107,7 +95,7 @@ export const LeaveDetailForm: React.FC<props> = ({
             e,
             submitAction,
             //formdetail.getFieldValue("id") ? formdetail.getFieldValue("id") : 0
-            details.id ? details.id : 0
+            details.id ? details.id : 0,
           )
         }
       >
@@ -179,9 +167,7 @@ export const LeaveDetailForm: React.FC<props> = ({
           title={
             <div className="flex items-center">
               <CalendarOutlined className="mr-2 text-green-500" />
-              <span className="font-semibold text-gray-800">
-                รายละเอียดการลา
-              </span>
+              <span className="font-semibold text-gray-800">รายละเอียดการลา</span>
               <div className="ml-auto">{getStatusTag()}</div>
             </div>
           }
@@ -189,58 +175,129 @@ export const LeaveDetailForm: React.FC<props> = ({
         >
           <Row gutter={[5, 5]} className="mb-8">
             {/* typeId === 13 ลาอื่นๆ */}
-            {(typeLeavebyTypeId.typeId === 13 ?
-              [
-                { label: "สิทธิ์ทั้งหมด", value : "-", color: "text-gray-700", bg: "bg-gray-100", border: "border-gray-200", txtLabelSize: 15, txtValueSize: 13 },
-                { label: "ใช้ไปแล้ว", value: details.usedLeaveHour ? HourAmountToDateHourString(details.usedLeaveHour) : "0 วัน", color: "text-red-600", bg: "bg-red-50", border: "border-red-100", txtLabelSize: 15, txtValueSize: 13 },
-                { label: "คงเหลือเดิม", value : "-", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-100", txtLabelSize: 15, txtValueSize: 13 },
-                { label: "ขอลาครั้งนี้", value: details.reqLeaveHour ? HourAmountToDateHourString(details.reqLeaveHour) : "-", color: "text-blue-700", bg: "bg-blue-50", border: "border-blue-100", txtLabelSize: 15, txtValueSize: 13 },
-                { label: "คงเหลือใหม่", value: "-", color: "text-green-700", bg: "bg-green-50", border: "border-green-200", txtLabelSize: 15, txtValueSize: 13 },
-              ] : [
-                { label: "สิทธิ์ทั้งหมด", value: details.yearLeaveHour ? HourAmountToDateHourString(details.yearLeaveHour) : "-", color: "text-gray-700", bg: "bg-gray-100", border: "border-gray-200", txtLabelSize: 15, txtValueSize: 13 },
-                { label: "ใช้ไปแล้ว", value: details.usedLeaveHour ? HourAmountToDateHourString(details.usedLeaveHour) : "-", color: "text-red-600", bg: "bg-red-50", border: "border-red-100", txtLabelSize: 15, txtValueSize: 13 },
-                { label: "คงเหลือเดิม", value: details.beforeLeaveHour ? HourAmountToDateHourString(details.beforeLeaveHour) : "-", color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-100", txtLabelSize: 15, txtValueSize: 13 },
-                { label: "ขอลาครั้งนี้", value: details.reqLeaveHour ? HourAmountToDateHourString(details.reqLeaveHour) : "-", color: "text-blue-700", bg: "bg-blue-50", border: "border-blue-100", txtLabelSize: 15, txtValueSize: 13 },
-                { label: "คงเหลือใหม่", value: details.afterLeaveHour ? HourAmountToDateHourString(details.afterLeaveHour) : "-", color: "text-green-700", bg: "bg-green-50", border: "border-green-200", txtLabelSize: 15, txtValueSize: 13 },
-              ]).map((item, idx) => (
-                <Col key={idx} xs={12} style={{ flex: 1 }} className="flex-grow">
-                  <div className={`${item.bg} ${item.border} py-2 rounded-xl border shadow-md h-full flex flex-col transition-all hover:shadow-[0_0_5px_rgba(0,0,0,0.25)] overflow-hidden`}>
-                    <div className="w-full py-1 text-center items-center border-b border-black/5">
-                      <span
-                        className={`text-gray-600 font-bold leading-tight block`}
-                        style={{ fontSize: `${item.txtLabelSize}px` }}>
-                        {item.label}
-                      </span>
-                    </div>
+            {(typeLeavebyTypeId.typeId === 13
+              ? [
+                  {
+                    label: "สิทธิ์ทั้งหมด",
+                    value: "-",
+                    color: "text-gray-700",
+                    bg: "bg-gray-100",
+                    border: "border-gray-200",
+                    txtLabelSize: 15,
+                    txtValueSize: 13,
+                  },
+                  {
+                    label: "ใช้ไปแล้ว",
+                    value: details.usedLeaveHour ? HourAmountToDateHourString(details.usedLeaveHour) : "0 วัน",
+                    color: "text-red-600",
+                    bg: "bg-red-50",
+                    border: "border-red-100",
+                    txtLabelSize: 15,
+                    txtValueSize: 13,
+                  },
+                  {
+                    label: "คงเหลือเดิม",
+                    value: "-",
+                    color: "text-orange-600",
+                    bg: "bg-orange-50",
+                    border: "border-orange-100",
+                    txtLabelSize: 15,
+                    txtValueSize: 13,
+                  },
+                  {
+                    label: "ขอลาครั้งนี้",
+                    value: details.reqLeaveHour ? HourAmountToDateHourString(details.reqLeaveHour) : "-",
+                    color: "text-blue-700",
+                    bg: "bg-blue-50",
+                    border: "border-blue-100",
+                    txtLabelSize: 15,
+                    txtValueSize: 13,
+                  },
+                  {
+                    label: "คงเหลือใหม่",
+                    value: "-",
+                    color: "text-green-700",
+                    bg: "bg-green-50",
+                    border: "border-green-200",
+                    txtLabelSize: 15,
+                    txtValueSize: 13,
+                  },
+                ]
+              : [
+                  {
+                    label: "สิทธิ์ทั้งหมด",
+                    value: details.yearLeaveHour ? HourAmountToDateHourString(details.yearLeaveHour) : "-",
+                    color: "text-gray-700",
+                    bg: "bg-gray-100",
+                    border: "border-gray-200",
+                    txtLabelSize: 15,
+                    txtValueSize: 13,
+                  },
+                  {
+                    label: "ใช้ไปแล้ว",
+                    value: details.usedLeaveHour ? HourAmountToDateHourString(details.usedLeaveHour) : "-",
+                    color: "text-red-600",
+                    bg: "bg-red-50",
+                    border: "border-red-100",
+                    txtLabelSize: 15,
+                    txtValueSize: 13,
+                  },
+                  {
+                    label: "คงเหลือเดิม",
+                    value: details.beforeLeaveHour ? HourAmountToDateHourString(details.beforeLeaveHour) : "-",
+                    color: "text-orange-600",
+                    bg: "bg-orange-50",
+                    border: "border-orange-100",
+                    txtLabelSize: 15,
+                    txtValueSize: 13,
+                  },
+                  {
+                    label: "ขอลาครั้งนี้",
+                    value: details.reqLeaveHour ? HourAmountToDateHourString(details.reqLeaveHour) : "-",
+                    color: "text-blue-700",
+                    bg: "bg-blue-50",
+                    border: "border-blue-100",
+                    txtLabelSize: 15,
+                    txtValueSize: 13,
+                  },
+                  {
+                    label: "คงเหลือใหม่",
+                    value: details.afterLeaveHour ? HourAmountToDateHourString(details.afterLeaveHour) : "-",
+                    color: "text-green-700",
+                    bg: "bg-green-50",
+                    border: "border-green-200",
+                    txtLabelSize: 15,
+                    txtValueSize: 13,
+                  },
+                ]
+            ).map((item, idx) => (
+              <Col key={idx} xs={12} style={{ flex: 1 }} className="flex-grow">
+                <div
+                  className={`${item.bg} ${item.border} py-2 rounded-xl border shadow-md h-full flex flex-col transition-all hover:shadow-[0_0_5px_rgba(0,0,0,0.25)] overflow-hidden`}
+                >
+                  <div className="w-full py-1 text-center items-center border-b border-black/5">
+                    <span className={`text-gray-600 font-bold leading-tight block`} style={{ fontSize: `${item.txtLabelSize}px` }}>
+                      {item.label}
+                    </span>
+                  </div>
 
-                    <div className="flex items-center justify-center flex-col flex-grow">
-                      <span
-                        className={`font-black ${item.color} mb-1`}
-                        style={{ fontSize: `${item.txtValueSize}px` }}>
-                        {item.value}
-                      </span>
-                      {/* <span className={`text-[13px] font-medium ${item.color} opacity-80`}>
+                  <div className="flex items-center justify-center flex-col flex-grow">
+                    <span className={`font-black ${item.color} mb-1`} style={{ fontSize: `${item.txtValueSize}px` }}>
+                      {item.value}
+                    </span>
+                    {/* <span className={`text-[13px] font-medium ${item.color} opacity-80`}>
                       {item.unit}
                     </span> */}
-                    </div>
                   </div>
-                </Col>
-              ))}
+                </div>
+              </Col>
+            ))}
           </Row>
           <Row gutter={[16, 0]}>
             {/* ประเภทการลา */}
             <Col xs={24} md={12}>
-              <Form.Item
-                label={
-                  <span className="font-medium text-gray-700">ประเภทการลา</span>
-                }
-                name="typeLeave"
-              >
-                <Input
-                  disabled
-                  className="bg-gray-50 cursor-default border-gray-200"
-                  size="middle"
-                />
+              <Form.Item label={<span className="font-medium text-gray-700">ประเภทการลา</span>} name="typeLeave">
+                <Input disabled className="bg-gray-50 cursor-default border-gray-200" size="middle" />
               </Form.Item>
             </Col>
 
@@ -258,7 +315,7 @@ export const LeaveDetailForm: React.FC<props> = ({
                   disabled
                   className="bg-gray-50 cursor-default border-gray-200"
                   size="middle"
-                // suffix={<span className="text-gray-500 font-medium">ชั่วโมง</span>}
+                  // suffix={<span className="text-gray-500 font-medium">ชั่วโมง</span>}
                 />
               </Form.Item>
             </Col>
@@ -267,14 +324,7 @@ export const LeaveDetailForm: React.FC<props> = ({
           <Row gutter={[16, 16]}>
             {/* ตั้งแต่วันที่ */}
             <Col xs={24} md={12}>
-              <Form.Item
-                label={
-                  <span className="font-medium text-gray-700">
-                    ตั้งแต่วันที่
-                  </span>
-                }
-                name="startDate"
-              >
+              <Form.Item label={<span className="font-medium text-gray-700">ตั้งแต่วันที่</span>} name="startDate">
                 <Input
                   disabled
                   className="bg-gray-50 cursor-default border-gray-200"
@@ -285,12 +335,7 @@ export const LeaveDetailForm: React.FC<props> = ({
             </Col>
             {/* ถึงวันที่ */}
             <Col xs={24} md={12}>
-              <Form.Item
-                label={
-                  <span className="font-medium text-gray-700">ถึงวันที่</span>
-                }
-                name="endDate"
-              >
+              <Form.Item label={<span className="font-medium text-gray-700">ถึงวันที่</span>} name="endDate">
                 <Input
                   disabled
                   className="bg-gray-50 cursor-default border-gray-200"
@@ -315,21 +360,12 @@ export const LeaveDetailForm: React.FC<props> = ({
           >
             <div className="grid grid-cols-1 gap-2">
               {details?.dataLeaveFiles.map((file: any, index: number) => (
-                <div
-                  key={index}
-                  className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                >
+                <div key={index} className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                   <PaperClipOutlined className="text-blue-500 mr-3" />
                   <div className="flex-1">
                     <Tooltip title="คลิกเพื่อดาวน์โหลด">
-                      <Button
-                        type="link"
-                        onClick={() => downloadFile(file.id, file.fileName)}
-                        className="p-0 h-auto text-left"
-                      >
-                        <span className="text-blue-600 hover:text-blue-800 font-medium">
-                          {file.fileName}
-                        </span>
+                      <Button type="link" onClick={() => downloadFile(file.id, file.fileName)} className="p-0 h-auto text-left">
+                        <span className="text-blue-600 hover:text-blue-800 font-medium">{file.fileName}</span>
                       </Button>
                     </Tooltip>
                   </div>
@@ -353,24 +389,12 @@ export const LeaveDetailForm: React.FC<props> = ({
             <div className="bg-green-50 p-4 rounded-lg">
               <Row gutter={16}>
                 <Col span={12}>
-                  <Form.Item
-                    label="ผู้อนุมัติ"
-                    name="userApproved"
-                    className="mb-2"
-                  >
-                    <Input
-                      disabled
-                      className="bg-green-50 border-green-300 cursor-default"
-                      prefix={<UserOutlined className="text-green-500" />}
-                    />
+                  <Form.Item label="ผู้อนุมัติ" name="userApproved" className="mb-2">
+                    <Input disabled className="bg-green-50 border-green-300 cursor-default" prefix={<UserOutlined className="text-green-500" />} />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item
-                    label="วันที่อนุมัติ"
-                    name="approvedDate"
-                    className="mb-2"
-                  >
+                  <Form.Item label="วันที่อนุมัติ" name="approvedDate" className="mb-2">
                     <Input
                       disabled
                       className="bg-green-50 border-green-300 cursor-default"
@@ -395,10 +419,7 @@ export const LeaveDetailForm: React.FC<props> = ({
         >
           <div className="bg-orange-50 p-4 rounded-lg">
             <Form.Item label="เหตุผล/หมายเหตุ" name="detailApproved">
-              <Input.TextArea
-                rows={3}
-                placeholder="กรอกเหตุผลหรือหมายเหตุสำหรับการอนุมัติ/ยกเลิก"
-              />
+              <Input.TextArea rows={3} placeholder="กรอกเหตุผลหรือหมายเหตุสำหรับการอนุมัติ/ยกเลิก" />
             </Form.Item>
 
             <Divider className="my-4" />
@@ -412,9 +433,7 @@ export const LeaveDetailForm: React.FC<props> = ({
                     size="large"
                     className="flex items-center justify-center px-6 transition-all duration-300 hover:-translate-y-[1px] hover:shadow-lg"
                     onClick={() => setSubmitAction("approved")}
-                    disabled={
-                      statusById === "cancel" || statusById === "approved"
-                    }
+                    disabled={statusById === "cancel" || statusById === "approved"}
                     icon={<CheckCircleOutlined />}
                   >
                     อนุมัติ
@@ -444,12 +463,7 @@ export const LeaveDetailForm: React.FC<props> = ({
                       danger
                       className="flex items-center justify-center px-6 transition-all duration-300 hover:-translate-y-[1px] hover:shadow-lg"
                       onClick={() => {
-                        onFinishDelete(
-                          "delete",
-                          formdetail.getFieldValue("id")
-                            ? formdetail.getFieldValue("id")
-                            : 0
-                        );
+                        onFinishDelete("delete", formdetail.getFieldValue("id") ? formdetail.getFieldValue("id") : 0);
                       }}
                       icon={<DeleteOutlined />}
                     >

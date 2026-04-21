@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { TableDetail } from "./components/table-detail";
 import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, TablePaginationConfig, Tabs, message } from "antd";
 import DataLeaveService from "../../../services/leave-management.service";
-import { ITypeDataLeave, type ITypetypeleave } from "../common";
+import { ITypeDataLeave, type ISelect, type ITypeDataLeaveCreate, type ITypetypeleave } from "../common";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
@@ -14,14 +14,20 @@ import saveAs from "file-saver";
 import { TableTotalLeaveDetailPage } from "./components/table-leave-detail";
 import LeaveManagementServices from "../../../services/leave-management.service";
 import CreateLeaveAdminPage from "./components/create-leave-admin";
+import { TableDetailEdit } from "./components/table-detail-edit";
+import { getQuotaLeavePerYear, validateCheckLeaveDay, validateSumTotalLeave } from "@/app/utils/validatefield";
+import { UsersServices } from "@/app/services/users.service";
+import MasterHolidaysService from "../../setting/master-holidays/services/index.service";
 
 export default function Page() {
   const { id24Axios, tokenAccess } = useId24();
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const sideMenuGroups =
     tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
+  const isHr = intersection(sideMenuGroups, ["hr"]).length > 0;
   const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const baseUrlReport = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_REPORT);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const [loading, setLoading] = useState<boolean>(true);
   const [dataLeaveUser, setDataLeaveUser] = useState<{ data: ITypeDataLeave[]; count: number }>({ data: [], count: 0 });
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
@@ -33,11 +39,16 @@ export default function Page() {
     total: 0,
   });
   const [typeLeaveTableAll, setTypeLeaveTableAll] = useState<ITypetypeleave>();
+  const [optionsTypeleave, setOptionsTypeleave] = useState<ISelect[]>([]);
   const [formdetail] = Form.useForm();
 
   useEffect(() => {
     if (loading) loadData();
   }, [loading, user]);
+
+  useEffect(() => {
+    masterdata();
+  }, []);
 
   const loadData = async () => {
     if (user?.userId) {
@@ -50,6 +61,14 @@ export default function Page() {
       setDataLeaveUser({ data, count });
       setLoading(false);
     }
+  };
+
+  const masterdata = async () => {
+    const res = await LeaveManagementServices(baseUrlIntranet).getdataAll();
+    const options = res.map((event: ITypetypeleave) => {
+      return { value: event.typeId, label: event.typeName };
+    });
+    setOptionsTypeleave(options);
   };
 
   const dataDetailLeaveHour = async (userId: string, typeId: number) => {
@@ -129,6 +148,122 @@ export default function Page() {
           setOpenModalDetail(false);
         } catch (error) {
           message.error("Delete failed");
+        }
+      },
+      onCancel() {},
+    });
+  };
+
+  const validateLeavePermission = async (user: any, typeId: number) => {
+    const dataMasterType = await LeaveManagementServices(baseUrlIntranet).getdataMasterTypeLeaveByTypeId(typeId);
+    const datadisabledLeave = await LeaveManagementServices(baseUrlIntranet).getdataTypeLeaveMap(user.id, dataMasterType.typeId);
+    if (datadisabledLeave.length > 0) {
+      message.error(`ท่านไม่มีสิทธ์${dataMasterType.typeName}`);
+      return { valid: false, dataMasterType: null };
+    }
+
+    return { valid: true, dataMasterType };
+  };
+
+  const validateYearlyLeave = async (values: any, user: any, dataMasterType: any, startDate: any, endDate: any) => {
+    const yearNow = dayjs(new Date()).format("YYYY");
+    const dataResult = await MasterHolidaysService(baseUrlIntranet).getHolidayByYear(yearNow);
+    const sumDataLeave = await validateSumTotalLeave({ ...values, startDate, endDate }, dataResult);
+    const dataLeaveUserById = await LeaveManagementServices(baseUrlIntranet).getdataLeaveUserById({
+      userId: user.userId,
+      typeId: values.typeId,
+      startDate,
+    });
+
+    const remainingLeave = await validateCheckLeaveDay(dataLeaveUserById, dataMasterType, user.startWork);
+
+    const count = await LeaveManagementServices(baseUrlIntranet).countDataLeaveRange(
+      user.userId,
+      values.type_id,
+      startDate,
+      endDate,
+      values.startTime,
+      values.endTime,
+    );
+
+    const total = remainingLeave - sumDataLeave;
+    const currentYear = dayjs(startDate).year();
+
+    if (count.status === 200) {
+      message.error(`ช่วงเวลาที่คุณเลือก${currentYear ? `ในปี ${currentYear} ` : ""}มีการลาแล้ว กรุณาเลือกช่วงเวลาใหม่`);
+      return { valid: false, hours: 0 };
+    }
+
+    if (total < 0) {
+      message.error(`ไม่สามารถทำการลาได้เนื่องจากวันลาที่เหลืออยู่${currentYear ? `ในปี ${currentYear} ` : ""}หมด หรือไม่เพียงพอ`);
+      return { valid: false, hours: 0 };
+    }
+
+    return { valid: true, hours: sumDataLeave };
+  };
+
+  const onFinishEdit = async (type: string, data: any) => {
+    const startDateYear = dayjs(data.startDate).format("YYYY");
+    const endDateYear = dayjs(data.endDate).format("YYYY");
+    const isSameYear = startDateYear === endDateYear;
+    const resTableDeatilTypeLeave = await LeaveManagementServices(baseUrlIntranet).findDetailTypeLeaveByUserId(data?.userId);
+
+    const currentTypeLeaveData = resTableDeatilTypeLeave.find((item: any) => item.typeId === data.typeId);
+
+    const userInfo = await UsersServices(baseUrlUser).findByUserId(data?.userId);
+    if (!userInfo?.userId || !userInfo?.startWork) return false;
+    const { valid: hasPermission, dataMasterType } = await validateLeavePermission(userInfo, data?.typeId);
+    if (!hasPermission) return false;
+
+    let totalLeaveHours = 0;
+    if (isSameYear) {
+      const validation = await validateYearlyLeave(data, userInfo, dataMasterType, data.startDate, data.endDate);
+      if (!validation.valid) return false;
+      totalLeaveHours = validation.hours;
+    }
+
+    // โควตาวันลา(yearLeaveHour)
+    const { quotaLeaveHour, quotaLeaveDay } = getQuotaLeavePerYear(dataMasterType, userInfo.startWork);
+    console.log("โควตาวันลา(yearLeaveHour):", quotaLeaveHour);
+
+    // ลามาแล้ว(usedLeaveHour)
+    const usedDays = Number(currentTypeLeaveData?.haveLeaveDays || 0);
+    const usedHoursPart = Number(currentTypeLeaveData?.haveLeaveHours || 0);
+    const usedLeaveHour = usedDays * 8 + usedHoursPart;
+    console.log("ลามาแล้ว(usedLeaveHour):", usedLeaveHour);
+
+    // คงเหลือก่อนอนุมัติ(beforeLeaveHour)
+    const beforeLeaveHour = Number(currentTypeLeaveData?.limitLeaveLastResult || 0);
+    console.log("คงเหลือ(beforeLeaveHour):", beforeLeaveHour);
+    console.log("ลาครั้งนี้(leaveHour):", totalLeaveHours);
+    // คงเหลือหลังอนุมัติ(afterLeaveHour)
+    const afterLeaveHour = beforeLeaveHour - totalLeaveHours;
+    console.log("คงเหลือหลังอนุมัติ(afterLeaveHour):", afterLeaveHour);
+    Modal.confirm({
+      title: <>{"Edit"}</>,
+      icon: <ExclamationCircleFilled />,
+      content: "Are you sure you want to edit this ?",
+      okText: "Confirm",
+      cancelText: "Cancel",
+      cancelButtonProps: {
+        style: {
+          backgroundColor: "#f0f0f0",
+          borderColor: "#d9d9d9",
+          color: "#000",
+        },
+      },
+      onOk: async () => {
+        try {
+          const res = await DataLeaveService(baseUrlIntranet).updateDetailLeave(data.id, { ...data, typeName: dataMasterType?.typeName }, user);
+          if (res) {
+            message.success("Update success");
+          } else {
+            message.error("Update failed");
+          }
+          setLoading(true);
+          setOpenModalDetail(false);
+        } catch (error) {
+          message.error("Update failed");
         }
       },
       onCancel() {},
@@ -229,22 +364,66 @@ export default function Page() {
                   </div>
                 ),
               },
-              {
-                label: `จัดการการลาพนักงาน`,
-                key: "3",
-                children: (
-                  <div>
-                    <Divider orientation="left" orientationMargin="0" style={{ padding: "0px 0px 0px 0px", marginBottom: "0px", marginTop: "0px" }}>
-                      <div className="title-page-font">{`จัดการการลาพนักงาน`}</div>
-                    </Divider>
-                    <div className="w-full">
-                      <Card>
-                        <CreateLeaveAdminPage />
-                      </Card>
-                    </div>
-                  </div>
-                ),
-              },
+              ...(isHr
+                ? [
+                    {
+                      label: `สร้างข้อมูลการลาพนักงาน`,
+                      key: "3",
+                      children: (
+                        <div>
+                          <Divider orientation="left" orientationMargin="0" style={{ padding: 0, marginBottom: 0, marginTop: 0 }}>
+                            <div className="title-page-font">{`จัดการการลาพนักงาน`}</div>
+                          </Divider>
+                          <div className="w-full">
+                            <Card>
+                              <CreateLeaveAdminPage />
+                            </Card>
+                          </div>
+                        </div>
+                      ),
+                    },
+                  ]
+                : []),
+              ...(isHr
+                ? [
+                    {
+                      label: `แก้ไขข้อมูลการลาพนักงาน`,
+                      key: "4",
+                      children: (
+                        <div>
+                          <Divider orientation="left" orientationMargin="0" style={{ padding: 0, marginBottom: 0, marginTop: 0 }}>
+                            <div className="title-page-font">{`แก้ไขข้อมูลการลาพนักงาน`}</div>
+                          </Divider>
+                          <div className="w-full">
+                            <Card>
+                              <TableDetailEdit
+                                dataLeaveUser={dataLeaveUser}
+                                setOpenModalDetail={(e: boolean) => setOpenModalDetail(e)}
+                                openModalDetail={openModalDetail}
+                                formdetail={formdetail}
+                                onFinishUpdate={onFinishUpdate}
+                                onFinishDelete={onFinishDelete}
+                                downloadFile={downloadFile}
+                                sideMenuGroups={sideMenuGroups}
+                                setSubmitAction={setSubmitAction}
+                                submitAction={submitAction}
+                                setParams={setParams}
+                                setLoading={setLoading}
+                                handleExport={handleExport}
+                                pagination={pagination}
+                                changePagination={changePagination}
+                                dataDetailLeaveHour={dataDetailLeaveHour}
+                                typeLeavebyTypeId={typeLeaveTableAll}
+                                onFinishEdit={onFinishEdit}
+                                optionsTypeleave={optionsTypeleave}
+                              />
+                            </Card>
+                          </div>
+                        </div>
+                      ),
+                    },
+                  ]
+                : []),
             ]}
           />
         </div>

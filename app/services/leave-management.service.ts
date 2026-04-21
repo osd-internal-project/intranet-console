@@ -356,6 +356,26 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
         });
     },
 
+    updateDetailLeave: async (id: number, data: any, user: any) => {
+      const condition = {
+        where: {
+          id: id,
+        },
+        data: { ...data, updatedBy: `${user.firstNameTh} ${user.lastNameTh}` },
+      };
+
+      return await axiosInstance
+        .patch(`${baseUrlDataLeave}/update-detail/${id}`, {
+          condition: condition,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
+
     downloadFile: async (id: number) => {
       return await axiosInstance
         .get(`${baseUrlDataLeaveFile}/get-file/${id}`, { responseType: "blob" })

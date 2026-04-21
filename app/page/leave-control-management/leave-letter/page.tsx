@@ -236,7 +236,6 @@ export default function Page() {
       if (!validation.valid) return false;
       totalLeaveHours = validation.hours;
     } else {
-      // Cross-year selection is not allowed; set inline validation error on endDate and stop submission
       createdataleaveForm.setFields([{ name: "endDate", errors: ["ไม่สามารถเลือกวันที่ข้ามปีได้ กรุณาเลือกวันที่ภายในปีเดียวกัน"] }]);
 
       return false;

@@ -16,7 +16,7 @@ export interface MaCarType {
   maCarBook: MaCarBookType[];
   maCarName: string;
   maStatus: boolean;
-  maCarFiles: MaCarFile[]
+  maCarFiles: MaCarFile[];
 }
 
 export interface MaCarFile {
@@ -25,8 +25,8 @@ export interface MaCarFile {
   fileType?: string;
   filePath?: string;
   createdAt: string;
-  updatedAt?: string
-  carId?: string
+  updatedAt?: string;
+  carId?: string;
 }
 
 export interface MaCarBookType {

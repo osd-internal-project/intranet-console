@@ -104,14 +104,7 @@ const ManagementCarWrapupTable: React.FC<props> = ({ handleOpen, dataSource, loa
       dataIndex: "status",
       key: "status",
       align: "center",
-      render: (status: boolean) =>
-        status === null ? (
-          <Tag color="blue">รอตรวจสภาพ</Tag>
-        ) : status === true ? (
-          <Tag color="green">เช็คแล้ว</Tag>
-        ) : (
-          <Tag color="red">ยกเลิกการเช็ค</Tag>
-        ),
+      render: (status: boolean) => (status === true ? <Tag color="green">เช็คแล้ว</Tag> : <Tag color="red">รอตรวจสภาพ</Tag>),
     },
     {
       title: "ตัวเลือก",
@@ -122,8 +115,14 @@ const ManagementCarWrapupTable: React.FC<props> = ({ handleOpen, dataSource, loa
         return (
           <Space>
             <Button size="small" type="default" onClick={() => handleOpen("edit", record)}>{`Edit`}</Button>
-            <Button size="small" type="primary" onClick={() => handleOpen("delete", record)} danger>{`Delete`}</Button>
-            <Button size="small" type="primary" onClick={() => handleOpen("approved", record)}>{`Approved`}</Button>
+            <Button
+              size="small"
+              type="primary"
+              onClick={() => handleOpen("delete", record)}
+              danger
+              disabled={record.status === true}
+            >{`Delete`}</Button>
+            <Button size="small" type="primary" onClick={() => handleOpen("approved", record)} disabled={record.status === true}>{`Approved`}</Button>
           </Space>
         );
       },

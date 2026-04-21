@@ -1,5 +1,5 @@
 import { UploadOutlined } from "@ant-design/icons";
-import { Button, DatePicker, Form, Input, InputNumber, message, Modal, Select, Space, Upload, UploadFile, UploadProps, Image } from "antd";
+import { Button, DatePicker, Form, Input, InputNumber, message, Modal, Select, Space, Upload, UploadFile, UploadProps, Image, Switch } from "antd";
 import { FormInstance } from "antd/lib";
 import TextArea from "antd/lib/input/TextArea";
 import { RcFile } from "antd/lib/upload";
@@ -39,6 +39,8 @@ const ManagementCarWrapupManage: React.FC<props> = ({
   setCheckApprovedStatus,
   Files,
 }): React.ReactElement => {
+  const nextCheckDate = Form.useWatch("nextCheckDate", form) || {};
+
   const handleChangeAttendFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
     if (newFileList.length > 3) {
       message.warning("คุณไม่สามารถอัปโหลดภาพเกิน 3 ภาพ");
@@ -47,7 +49,6 @@ const ManagementCarWrapupManage: React.FC<props> = ({
     return setAttendFiles(newFileList);
   };
 
- 
   const beforeUploadAttendFiles = async (file: RcFile) => {
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
@@ -63,14 +64,16 @@ const ManagementCarWrapupManage: React.FC<props> = ({
         open={openModal}
         onCancel={handleClose}
         footer={null}
-        width={800}>
+        width={800}
+      >
         <Form
           name="formmanage"
           form={form}
           autoComplete="off"
           labelCol={{ span: 6 }}
           wrapperCol={{ span: 18 }}
-          onFinish={(e) => onFinish(checkType, e)}>
+          onFinish={(e) => onFinish(checkType, e)}
+        >
           <Form.Item name="carId" label="ชื่อรถ" rules={[{ required: true, message: "กรุณาเลือกชื่อรถ" }]}>
             <Select
               allowClear
@@ -83,7 +86,7 @@ const ManagementCarWrapupManage: React.FC<props> = ({
               disabled={checkType !== "create" ? true : false}
             />
           </Form.Item>
-          <Form.Item name="typeName" label="ประเภทการตรวจสภาพ" rules={[{ required: true, message: "กรุณาเลือกประเภทการตรวจสภาพ" }]}>
+          <Form.Item name="typeId" label="ประเภทการตรวจสภาพ" rules={[{ required: true, message: "กรุณาเลือกประเภทการตรวจสภาพ" }]}>
             <Select allowClear placeholder="โปรดเลือกประเภทการตรวจสภาพ" options={optionsType} disabled={checkType !== "create" ? true : false} />
           </Form.Item>
           <Form.Item
@@ -93,7 +96,8 @@ const ManagementCarWrapupManage: React.FC<props> = ({
               {
                 required: true,
               },
-            ]}>
+            ]}
+          >
             <InputNumber
               placeholder="กรอกจำนวนเลขไมล์"
               min={carMileage || 0}
@@ -130,14 +134,19 @@ const ManagementCarWrapupManage: React.FC<props> = ({
               format={"DD/MM/YYYY"}
             />
           </Form.Item>
-          <Form.Item name="dateEnd" label="วันที่่ตรวจสภาพครั้งถัดไป">
-            <DatePicker
-              style={{ width: "100%" }}
-              disabledDate={(current) => current && current < dayjs().startOf("day")}
-              disabled={checkType !== "create" && checkType !== "edit" ? true : false}
-              format={"DD/MM/YYYY"}
-            />
+          <Form.Item name="nextCheckDate" label="มีเช็คครั้งถัดไป?" valuePropName="checked">
+            <Switch unCheckedChildren="ไม่" checkedChildren="ใช่" />
           </Form.Item>
+          {nextCheckDate === true && (
+            <Form.Item name="dateEnd" label="วันที่่ตรวจสภาพครั้งถัดไป">
+              <DatePicker
+                style={{ width: "100%" }}
+                disabledDate={(current) => current && current < dayjs().startOf("day")}
+                disabled={checkType !== "create" && checkType !== "edit" ? true : false}
+                format={"DD/MM/YYYY"}
+              />
+            </Form.Item>
+          )}
           <Form.Item name="remark" label="หมายเหตุ">
             <Input.TextArea rows={2} showCount maxLength={150} disabled={checkType !== "create" && checkType !== "edit" ? true : false} />
           </Form.Item>
@@ -154,7 +163,8 @@ const ManagementCarWrapupManage: React.FC<props> = ({
                   showRemoveIcon: true,
                   showDownloadIcon: false,
                 }}
-                maxCount={1}>
+                maxCount={1}
+              >
                 <Button icon={<UploadOutlined />} disabled={checkType !== "create" && checkType !== "edit" ? true : false}>
                   อัปโหลดรูปภาพและเอกสาร
                 </Button>

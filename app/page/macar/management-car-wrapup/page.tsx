@@ -49,7 +49,7 @@ export default function ManagementCarWrapup() {
     const responseTypeOptions = await ManageCarServices(baseUrIntranet).getMaCarQueryType();
     const optionsType = responseTypeOptions.map((event: MaCarType, index: number) => {
       return {
-        value: event.typeName,
+        value: event.id,
         label: event.typeName,
         key: index,
       };
@@ -92,22 +92,25 @@ export default function ManagementCarWrapup() {
   };
 
   const onFinish = async (status: string, values: any) => {
+    const findCar = optionsType.find((option) => option.value === values.typeId);
     let base = {};
     let response;
     if (status === "create" || status === "edit") {
       base = {
         ...(status === "create" ? { carId: values.carId } : {}),
         vender: values?.vender,
-        typeName: values?.typeName,
+        typeName: findCar?.label,
+        typeId: findCar?.value,
         carName: form.getFieldValue("carName"),
         wrapupMiles: new String(values?.wrapupMiles),
         detail: values?.detail,
         cost: values?.cost ?? 0,
         dateStart: values.dateStart,
+        nextCheckDate: values.nextCheckDate,
         dateEnd: values.dateEnd,
         createbyName: `${user?.firstNameTh} ${user?.lastNameTh}`,
         remark: values?.remark,
-        status: null,
+        status: false,
       };
     } else if (status === "approved") {
       base = {
@@ -117,8 +120,8 @@ export default function ManagementCarWrapup() {
     status === "create"
       ? (response = await ManageCarServices(baseUrIntranet).createMaCarWarpup(base))
       : status === "delete"
-      ? (response = await ManageCarServices(baseUrIntranet).deleteMaCarWarpup(form.getFieldValue("carWrapupId")))
-      : (response = await ManageCarServices(baseUrIntranet).updateMaCarWarpup(form.getFieldValue("carWrapupId"), base));
+        ? (response = await ManageCarServices(baseUrIntranet).deleteMaCarWarpup(form.getFieldValue("carWrapupId")))
+        : (response = await ManageCarServices(baseUrIntranet).updateMaCarWarpup(form.getFieldValue("carWrapupId"), base));
     if (status === "create" || (status === "edit" && response && attendFiles.length > 0)) {
       await Promise.all(
         attendFiles.map(async (file) => {
@@ -132,8 +135,8 @@ export default function ManagementCarWrapup() {
       status === "create"
         ? message.success("เพิ่มการตรวจสภาพรถสำเร็จ")
         : status === "approved"
-        ? message.success("การตรวจสภาพรถสำเร็จ")
-        : message.success("แก้ไขข้อมูลการตรวจสภาพรถสำเร็จ");
+          ? message.success("การตรวจสภาพรถสำเร็จ")
+          : message.success("แก้ไขข้อมูลการตรวจสภาพรถสำเร็จ");
     } else {
       message.error("เพิ่มการตรวจสภาพรถไม่สำเร็จ");
     }

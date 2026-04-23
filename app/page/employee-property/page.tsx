@@ -131,11 +131,6 @@ export default function Page() {
 
   const getUploadProps = (name: number): UploadProps => ({
     beforeUpload: async (file) => {
-      const isImage = file.type.startsWith("image/");
-      if (!isImage) {
-        message.error(`${file.name} is not a png file`);
-        return Upload.LIST_IGNORE;
-      }
       const compressed = await handleCompress(file);
       return compressed;
     },

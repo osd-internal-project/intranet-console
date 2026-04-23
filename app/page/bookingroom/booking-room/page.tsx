@@ -198,7 +198,6 @@ const BookingRoomPage: React.FC = () => {
     try {
       const bookings = await BookingRoomServices(baseUrIntranet).findBookingRoom(skip, take);
       setBookingFetchData(bookings);
-
       const yearNow = dayjs().format("YYYY");
       const holidayData = await holidayService.getHolidayByYear(yearNow);
       const holidayMappedData: any = holidayData.map((item: any) => ({

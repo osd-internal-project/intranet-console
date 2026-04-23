@@ -59,7 +59,7 @@ export default function OverTimePage() {
   }, [getHeader]);
 
   const fetchData = async () => {
-    const HeaderGroup = await LeaveManagementServices(baseUrlIntranet).getHeaderByUserId();
+    const HeaderGroup = await LeaveManagementServices(baseUrlIntranet).getHeader();
     setHeader(HeaderGroup);
     const resCar: any = await MaCarServices(baseUrlIntranet).getMaCarQuery();
     setCar(resCar);

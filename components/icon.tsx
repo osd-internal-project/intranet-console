@@ -34,7 +34,8 @@ export const loadingIcon = (
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth="2"
-      d="M12 3c4.97 0 9 4.03 9 9">
+      d="M12 3c4.97 0 9 4.03 9 9"
+    >
       <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.2s" values="16;0" />
       <animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12" />
     </path>
@@ -198,7 +199,8 @@ export const editIcon = (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    className="ai ai-Edit">
+    className="ai ai-Edit"
+  >
     <path d="M16.474 5.408l2.118 2.117m-.756-3.982L12.109 9.27a2.118 2.118 0 0 0-.58 1.082L11 13l2.648-.53c.41-.082.786-.283 1.082-.579l5.727-5.727a1.853 1.853 0 1 0-2.621-2.621z" />
     <path d="M19 15v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h3" />
   </svg>
@@ -215,7 +217,8 @@ export const deleteIcon = (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    className="ai ai-TrashCan">
+    className="ai ai-TrashCan"
+  >
     <path d="M4 6h16l-1.58 14.22A2 2 0 0 1 16.432 22H7.568a2 2 0 0 1-1.988-1.78L4 6z" />
     <path d="M7.345 3.147A2 2 0 0 1 9.154 2h5.692a2 2 0 0 1 1.81 1.147L18 6H6l1.345-2.853z" />
     <path d="M2 6h20" />
@@ -235,7 +238,8 @@ export const deleteIconAddInventory = (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    className="ai ai-TrashCan">
+    className="ai ai-TrashCan"
+  >
     <path d="M4 6h16l-1.58 14.22A2 2 0 0 1 16.432 22H7.568a2 2 0 0 1-1.988-1.78L4 6z" />
     <path d="M7.345 3.147A2 2 0 0 1 9.154 2h5.692a2 2 0 0 1 1.81 1.147L18 6H6l1.345-2.853z" />
     <path d="M2 6h20" />
@@ -513,7 +517,8 @@ export const bookingIcon = (
   <svg width="15" height="15" viewBox="0 0 24 24">
     <path
       fill="currentColor"
-      d="M6.616 21q-.691 0-1.153-.462T5 19.385V4.615q0-.69.463-1.152T6.616 3h10.769q.69 0 1.153.463T19 4.616v14.769q0 .69-.462 1.153T17.384 21zm0-1h10.769q.23 0 .423-.192t.192-.424V4.616q0-.231-.192-.424T17.384 4H16v6.116l-2-1.193l-2 1.193V4H6.616q-.231 0-.424.192T6 4.615v14.77q0 .23.192.423t.423.192M6 20V4zm6-9.885l2-1.192l2 1.192l-2-1.192z"></path>
+      d="M6.616 21q-.691 0-1.153-.462T5 19.385V4.615q0-.69.463-1.152T6.616 3h10.769q.69 0 1.153.463T19 4.616v14.769q0 .69-.462 1.153T17.384 21zm0-1h10.769q.23 0 .423-.192t.192-.424V4.616q0-.231-.192-.424T17.384 4H16v6.116l-2-1.193l-2 1.193V4H6.616q-.231 0-.424.192T6 4.615v14.77q0 .23.192.423t.423.192M6 20V4zm6-9.885l2-1.192l2 1.192l-2-1.192z"
+    ></path>
   </svg>
 );
 
@@ -628,7 +633,8 @@ const ExcelIcon: React.FC<ExcelIconProps> = ({ strokeColor = "#000", width = "1.
         y1="-2092.086"
         y2="-2075.914"
         gradientTransform="translate(0 2100)"
-        gradientUnits="userSpaceOnUse">
+        gradientUnits="userSpaceOnUse"
+      >
         <stop offset="0" stopColor="#18884f" />
         <stop offset=".5" stopColor="#117e43" />
         <stop offset="1" stopColor="#0b6631" />
@@ -794,5 +800,29 @@ export const IconRingCall = (
 export const IconImport = (
   <svg width="24" height="24" viewBox="0 0 512 512" style={{ color: "white" }}>
     <path fill="currentColor" d="m14 12l-4-4v3H2v2h8v3m10 2V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3h2V6h12v12H6v-3H4v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2" />
+  </svg>
+);
+
+export const IconProperty = (
+  <svg width="18" height="18" viewBox="0 0 48 48">
+    <path
+      fill="none"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="4"
+      d="M25 6H9a3 3 0 0 0-3 3v22a3 3 0 0 0 3 3h30a3 3 0 0 0 3-3v-8M24 34v8m6-30h12m-6-6v12M14 42h20"
+    />
+  </svg>
+);
+
+export const IconParty = (
+  <svg width="18" height="18" viewBox="0 0 14 14">
+    <path
+      fill="currentColor"
+      fill-rule="evenodd"
+      d="M9.718.338a.62.62 0 0 0-.504.722a.63.63 0 0 0 .731.503q.198-.035.398-.067c.145-.022.257.046.305.14c.476.925.9 1.838 1.194 2.782c-.378.172-.801.368-1.223.573a16 16 0 0 1-.242 1.394v.004l-.003.009q-.158.723-.416 1.454c-.144.403-.47.787-.802 1.123c-.405.41-.208 1.09.363 1.01l.445 1.702q-.85.275-1.688.65a.737.737 0 0 0-.374.98c.17.372.614.538.991.37a14.8 14.8 0 0 1 4.444-1.217a.743.743 0 0 0 .658-.82a.75.75 0 0 0-.83-.652q-.898.103-1.756.295l-.443-1.691c1.727-.695 2.728-2.506 2.388-4.305c-.29-1.527-.915-2.913-1.588-4.222A1.55 1.55 0 0 0 10.14.267q-.212.033-.422.07M4.063.352a1.58 1.58 0 0 0-1.62.808C1.746 2.467 1.095 3.852.78 5.371a3.7 3.7 0 0 0 .323 2.434a3.8 3.8 0 0 0 1.983 1.811l-.471 1.678a17 17 0 0 0-1.793-.272a.75.75 0 0 0-.147 1.493a15 15 0 0 1 2.294.402c.735.188 1.453.434 2.172.742a.75.75 0 1 0 .59-1.38a17 17 0 0 0-1.663-.61l.47-1.674c1.842.25 3.625-.82 4.24-2.548c.156-.435.278-.873.376-1.312l.002-.01c.232-1.04.328-2.092.384-3.12a1.525 1.525 0 0 0-1-1.506A20.6 20.6 0 0 0 4.063.352m3.873 5.51l.001-.006c.21-.939.3-1.912.355-2.92c.006-.101-.055-.216-.194-.268a19.3 19.3 0 0 0-4.21-1.079a.33.33 0 0 0-.342.159c-.682 1.28-1.264 2.537-1.541 3.876a3 3 0 0 0-.044.308c.934-.084 2.113-.17 3.032-.167c.888.003 2.027.089 2.925.172z"
+      clip-rule="evenodd"
+    />
   </svg>
 );

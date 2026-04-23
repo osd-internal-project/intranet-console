@@ -2,7 +2,7 @@ import React from "react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
-import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, macarIcon, hrIcon, stockIcon } from "@/components/icon";
+import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, macarIcon, hrIcon, stockIcon, IconProperty, IconParty } from "@/components/icon";
 import { FieldTimeOutlined, HomeOutlined } from "@ant-design/icons";
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -43,28 +43,28 @@ export const MenuSider: MenuItem[] = [
   //     },
   //   ],
   // },
-  {
-    key: "housekeeper",
-    icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
-    label: "งานแม่บ้าน",
-    rule: ["admin"],
-    children: [
-      {
-        key: `housekeeper/housekeepers`,
-        label: `ข้อมูลการการทำงานของแม่บ้าน`,
-        rule: ["ma-user", "admin"],
-      },
-      {
-        key: `housekeeper/housekeeper-management`,
-        label: `จัดการข้อมูลแม่บ้าน`,
-        rule: ["ma-user", "admin"],
-      },
-    ],
-  },
+  // {
+  //   key: "housekeeper",
+  //   icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
+  //   label: "งานแม่บ้าน",
+  //   rule: ["admin"],
+  //   children: [
+  //     {
+  //       key: `housekeeper/housekeepers`,
+  //       label: `ข้อมูลการการทำงานของแม่บ้าน`,
+  //       rule: ["ma-user", "admin"],
+  //     },
+  //     {
+  //       key: `housekeeper/housekeeper-management`,
+  //       label: `จัดการข้อมูลแม่บ้าน`,
+  //       rule: ["ma-user", "admin"],
+  //     },
+  //   ],
+  // },
   {
     key: "leave-control-management",
     icon: IconDataLeave,
-    label: `ข้อมูลการลา`,
+    label: `ระบบลางาน`,
     rule: ["user", "admin", "header", "hr"],
     children: [
       {
@@ -90,68 +90,32 @@ export const MenuSider: MenuItem[] = [
     ],
   },
   {
-    key: "bookingroom",
-    icon: bookingIcon,
-    label: "ห้องประชุม",
-    rule: ["user", "admin", "ma-user"],
+    key: `overtime`,
+    icon: <FieldTimeOutlined />,
+    label: `ทำงานล่วงเวลา`,
+    rule: ["user", "admin", "hr"],
     children: [
       {
-        key: `bookingroom/booking-room`,
-        label: `จองห้องประชุม`,
-        rule: "user",
+        key: `overtime/overtime-calendar`,
+        label: `ตารางการเบิก OT`,
+        rule: ["user", "admin"],
       },
       {
-        key: `bookingroom/booking-room-management`,
-        label: `จัดการข้อมูลห้องประชุม`,
-        rule: ["admin", "hr", "ma-user"],
+        key: `overtime/overtime-form`,
+        label: `แบบฟอร์มขอเบิกค่าทำงานล่วงเวลา`,
+        rule: ["user", "admin"],
       },
       {
-        key: `bookingroom/booking-room-refreshment`,
-        label: `จัดการอาหารว่าง`,
-        rule: ["admin", "hr", "ma-user"],
-      },
-    ],
-  },
-  {
-    key: "stock",
-    icon: stockIcon,
-    label: "การจัดการสินค้า",
-    rule: ["admin"],
-    children: [
-      {
-        key: `stock/stock-request`,
-        label: `ขอเบิกสินค้า`,
-        rule: ["user", "admin", "ma-user"],
-      },
-      {
-        key: `stock/order`,
-        label: `นำเข้าสินค้า`,
-        rule: ["user", "admin", "ma-user"],
-      },
-      {
-        key: `stock/stock-management`,
-        label: `รายการสินค้า`,
-        rule: ["user", "admin", "ma-user"],
-      },
-    ],
-  },
-  {
-    key: "maintenance",
-    icon: maintenanceIcon,
-    label: "Maintenance",
-    rule: ["ma-user", "admin"],
-    children: [
-      {
-        key: `maintenance-management`,
-        label: `Maintenance Management`,
-        rule: ["ma-user", "admin"],
+        key: `overtime/overtime-history`,
+        label: `ตารางรายละเอียดการทำงานล่วงเวลา`,
+        rule: ["header", "admin", "hr"],
       },
     ],
   },
   {
     key: "macar",
     icon: macarIcon,
-    label: `ข้อมูลการจองรถยนต์`,
+    label: `จองใช้งานรถยนต์`,
     rule: ["user", "admin", "ma-user"],
     children: [
       {
@@ -182,25 +146,85 @@ export const MenuSider: MenuItem[] = [
     ],
   },
   {
-    key: `overtime`,
-    icon: <FieldTimeOutlined />,
-    label: `Overtime`,
-    rule: ["user", "admin", "hr"],
+    key: "bookingroom",
+    icon: bookingIcon,
+    label: "ห้องประชุม",
+    rule: ["user", "admin", "ma-user"],
     children: [
       {
-        key: `overtime/overtime-calendar`,
-        label: `ตารางการเบิก OT`,
-        rule: ["user", "admin"],
+        key: `bookingroom/booking-room`,
+        label: `จองห้องประชุม`,
+        rule: "user",
       },
       {
-        key: `overtime/overtime-form`,
-        label: `แบบฟอร์มขอเบิกค่าทำงานล่วงเวลา`,
-        rule: ["user", "admin"],
+        key: `bookingroom/booking-room-management`,
+        label: `จัดการข้อมูลห้องประชุม`,
+        rule: ["admin", "hr", "ma-user"],
       },
       {
-        key: `overtime/overtime-history`,
-        label: `ตารางรายละเอียดการทำงานล่วงเวลา`,
-        rule: ["header", "admin", "hr"],
+        key: `bookingroom/booking-room-refreshment`,
+        label: `จัดการอาหารว่าง`,
+        rule: ["admin", "hr", "ma-user"],
+      },
+    ],
+  },
+  // {
+  //   key: "stock",
+  //   icon: stockIcon,
+  //   label: "การจัดการสินค้า",
+  //   rule: ["admin"],
+  //   children: [
+  //     {
+  //       key: `stock/stock-request`,
+  //       label: `ขอเบิกสินค้า`,
+  //       rule: ["user", "admin", "ma-user"],
+  //     },
+  //     {
+  //       key: `stock/order`,
+  //       label: `นำเข้าสินค้า`,
+  //       rule: ["user", "admin", "ma-user"],
+  //     },
+  //     {
+  //       key: `stock/stock-management`,
+  //       label: `รายการสินค้า`,
+  //       rule: ["user", "admin", "ma-user"],
+  //     },
+  //   ],
+  // },
+  {
+    key: "maintenance",
+    icon: maintenanceIcon,
+    label: "บำรุงรักษาทรัพย์สิน",
+    rule: ["ma-user", "admin"],
+    children: [
+      {
+        key: `maintenance-management`,
+        label: `การจัดการการบำรุงรักษา`,
+        rule: ["ma-user", "admin"],
+      },
+    ],
+  },
+  {
+    key: `employee-property`,
+    icon: IconProperty,
+    label: `ทรัพย์สินพนักงาน`,
+    rule: ["admin", "hr", "user"],
+  },
+  {
+    key: `events-management`,
+    icon: IconParty,
+    label: `การจัดงานกิจกรรม`,
+    rule: ["admin", "hr", "user"],
+    children: [
+      {
+        key: `events-management/managements`,
+        label: `งานกิจกรรม`,
+        rule: ["admin", "hr", "user"],
+      },
+      {
+        key: `events-management/restaurants`,
+        label: `ร้านอาหาร`,
+        rule: ["admin", "hr"],
       },
     ],
   },
@@ -247,30 +271,24 @@ export const MenuSider: MenuItem[] = [
       },
     ],
   },
-  {
-    key: `employee-property`,
-    icon: gridIcon,
-    label: `ทรัพย์สิน`,
-    rule: ["admin", "hr", "user"],
-  },
-  {
-    key: `complain`,
-    icon: gridIcon,
-    label: `ร้องเรียนปัญหา`,
-    rule: ["admin", "user"],
-    children: [
-      {
-        key: `complain/complain-problem`,
-        label: `ร้องเรียนปัญหา`,
-        rule: ["admin", "user"],
-      },
-      {
-        key: `complain/complain-problem-hr`,
-        label: `ร้องเรียนปัญหา`,
-        rule: ["admin", "hr"],
-      },
-    ],
-  },
+  // {
+  //   key: `complain`,
+  //   icon: gridIcon,
+  //   label: `ร้องเรียนปัญหา`,
+  //   rule: ["admin", "user"],
+  //   children: [
+  //     {
+  //       key: `complain/complain-problem`,
+  //       label: `ร้องเรียนปัญหา`,
+  //       rule: ["admin", "user"],
+  //     },
+  //     {
+  //       key: `complain/complain-problem-hr`,
+  //       label: `ร้องเรียนปัญหา`,
+  //       rule: ["admin", "hr"],
+  //     },
+  //   ],
+  // },
   {
     key: `setting`,
     icon: <Icon icon="uil:setting" width="15" height="15" />,
@@ -282,41 +300,41 @@ export const MenuSider: MenuItem[] = [
         label: `การบำรุงรักษา`,
         rule: ["admin", "ma-user"],
       },
-      {
-        key: `setting/organize-chart`,
-        label: `Organize Chart`,
-        rule: "admin",
-      },
+      // {
+      //   key: `setting/organize-chart`,
+      //   label: `Organize Chart`,
+      //   rule: "admin",
+      // },
       {
         key: `setting/typeleave`,
-        label: `Type Leave`,
+        label: `ประเภทการลา`,
         rule: ["admin", "hr"],
       },
       {
         key: `setting/master-holidays`,
-        label: `Master Holidays`,
+        label: `วันหยุดประจำปี`,
         rule: ["admin", "hr"],
       },
       {
         key: `setting/masterdata-position`,
-        label: `Master Position`,
+        label: `ตำแหน่งงาน`,
         rule: ["admin", "hr"],
       },
       {
         key: `setting/manage-home`,
-        label: `Manage Home`,
+        label: `การจัดการหน้าหลัก`,
         rule: ["admin", "hr"],
       },
       {
         key: `setting/master-overtime-config`,
-        label: `Master Overtime Config`,
+        label: `การตั้งค่า OT`,
         rule: "admin",
       },
-      {
-        key: `setting/unit`,
-        label: `ประเภทยูนิตสินค้า`,
-        rule: ["admin", "ma-user"],
-      },
+      // {
+      //   key: `setting/unit`,
+      //   label: `ประเภทยูนิตสินค้า`,
+      //   rule: ["admin", "ma-user"],
+      // },
     ],
   },
 ].map((item) => {

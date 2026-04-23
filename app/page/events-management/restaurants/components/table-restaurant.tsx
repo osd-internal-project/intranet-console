@@ -1,0 +1,176 @@
+import type { ITypeMasterRestaurant } from "@/app/common/master-restaurant";
+import { Button, Card, Space, Table, TablePaginationConfig, Tag } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import React from "react";
+
+export interface props {
+  data: { data: ITypeMasterRestaurant[]; count: number };
+  pagination: TablePaginationConfig;
+  onChangePagination: (pagination: TablePaginationConfig) => void;
+  handleModalOpen: (status: boolean, type: "create" | "edit", data: any) => void;
+  downloadFile: (fileName: string) => void;
+}
+
+const TableRestaurant: React.FC<props> = ({ data, pagination, onChangePagination, handleModalOpen, downloadFile }): React.ReactElement => {
+  const columns: ColumnsType<ITypeMasterRestaurant> = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      width: 80,
+    },
+    {
+      title: "ชื่อร้าน",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "เมนู",
+      dataIndex: "menu",
+      key: "menu",
+      render: (menu) => {
+        const values = menu ? Object.values(menu) : [];
+        return (
+          <Space size={[4, 8]} wrap>
+            {values.map((item: any, index) => (
+              <Tag color="blue" key={index}>
+                {item}
+              </Tag>
+            ))}
+          </Space>
+        );
+      },
+    },
+    {
+      title: "ราคา",
+      dataIndex: "pricing",
+      key: "pricing",
+      render: (price) => (price ? `${price.toLocaleString()} ฿` : "-"),
+    },
+    {
+      title: "หมวดหมู่",
+      dataIndex: "category",
+      key: "category",
+      render: (category) => {
+        const values = category ? Object.values(category) : [];
+        return (
+          <Space size={[4, 8]} wrap>
+            {values.map((item: any, index) => (
+              <Tag color="blue" key={index}>
+                {item}
+              </Tag>
+            ))}
+          </Space>
+        );
+      },
+    },
+    {
+      title: "ติดต่อ",
+      dataIndex: "contact",
+      key: "contact",
+      render: (contact) => {
+        if (!contact) return "-";
+
+        const iconMap: Record<string, { icon: string; color: string; bg: string; label: string }> = {
+          line: {
+            icon: "💬",
+            color: "#06C755",
+            bg: "#E8F9EE",
+            label: "LINE",
+          },
+          phoneNumber: {
+            icon: "📞",
+            color: "#1677ff",
+            bg: "#E6F1FF",
+            label: "Phone",
+          },
+          facebook: {
+            icon: "👤",
+            color: "#1877F2",
+            bg: "#EBF2FD",
+            label: "Facebook",
+          },
+        };
+
+        const entries = Array.isArray(contact) ? contact : Object.entries(contact).map(([key, value]) => ({ type: key, userId: value }));
+
+        return (
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {entries.map((item: any, index: number) => {
+              const meta = iconMap[item.type] ?? {
+                icon: "🔗",
+                color: "#888",
+                bg: "#f5f5f5",
+                label: item.type,
+              };
+
+              return (
+                <div
+                  key={index}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: "3px 10px 3px 6px",
+                    borderRadius: 20,
+                    background: meta.bg,
+                    width: "fit-content",
+                    fontSize: 13,
+                  }}
+                >
+                  <span style={{ fontSize: 14 }}>{meta.icon}</span>
+                  <span style={{ color: meta.color, fontWeight: 500 }}>{meta.label}</span>
+                  <span style={{ color: "#555" }}>{item.userId}</span>
+                </div>
+              );
+            })}
+          </div>
+        );
+      },
+    },
+    {
+      title: "หมายเหตุ",
+      dataIndex: "remark",
+      key: "remark",
+      ellipsis: true,
+    },
+    {
+      title: "file",
+      dataIndex: "pathFIles",
+      key: "id",
+      render(i) {
+        console.log(i);
+
+        return (
+          <div>
+            <Button onClick={() => downloadFile(i)}>{`Download`}</Button>
+          </div>
+        );
+      },
+    },
+  ];
+  return (
+    <div>
+      <Card>
+        <div className="flex justify-end mb-2">
+          <Button type="primary" htmlType="button" onClick={() => handleModalOpen(true, "create", null)}>
+            {`เพิ่มร้านอาหาร`}
+          </Button>
+        </div>
+        <Table
+          rowKey={"id"}
+          scroll={{ x: "max-content" }}
+          size="small"
+          columns={columns}
+          dataSource={data.data}
+          pagination={{
+            total: data.count,
+          }}
+          onChange={onChangePagination}
+        />
+      </Card>
+    </div>
+  );
+};
+
+export default TableRestaurant;

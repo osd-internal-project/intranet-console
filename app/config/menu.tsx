@@ -224,7 +224,7 @@ export const MenuSider: MenuItem[] = [
       {
         key: `events-management/restaurants`,
         label: `ร้านอาหาร`,
-        rule: ["admin", "hr"],
+        rule: ["admin", "hr", "user"],
       },
     ],
   },

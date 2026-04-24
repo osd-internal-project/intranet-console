@@ -96,24 +96,36 @@ export default function Page() {
     setLoading(true);
   };
 
-  const downloadFile = async (filename: string) => {
-    try {
-      const res = await masterrestaurantServices.download(filename);
-      // สร้าง URL สำหรับ download
-      const url = window.URL.createObjectURL(new Blob([res.data]));
+  const handleDelete = async (id: number) => {
+    await masterrestaurantServices.delete(id);
+    api.success({
+      message: "ลบข้อมู,สำเร็จ",
+      description: "ลบข้อมูลเรียบร้อยแล้ว",
+      placement: "topRight",
+    });
+    ManageForm.resetFields();
+    setAttendFiles([]);
+    setHandleModal({
+      open: false,
+      type: "create",
+      data: null,
+    });
+    setLoading(true);
+  };
 
-      // สร้าง link ชั่วคราว
+  const downloadFile = async (fileName: string) => {
+    try {
+      const blob = await masterrestaurantServices.download(fileName);
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", filename); // 👈 ชื่อไฟล์
+      link.setAttribute("download", fileName);
       document.body.appendChild(link);
       link.click();
-
-      // cleanup
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      console.log(err);
+      console.error("Download error:", err);
     }
   };
 
@@ -146,6 +158,8 @@ export default function Page() {
             onChangePagination={handleTableChange}
             handleModalOpen={handleModalOpen}
             downloadFile={downloadFile}
+            handleDelete={handleDelete}
+            setLoading={setLoading}
           />
         </Col>
       </Row>

@@ -60,18 +60,16 @@ const MasterRestaurantServices = (axiosInstance: AxiosInstance): TMaServices => 
           return;
         });
     },
-    download: async (fileName) => {
-      return await axiosInstance
-        .get(`${baseUrl}/download/${fileName}`, {
-          responseType: "blob", // 👈 สำคัญมาก
-        })
-        .then((res) => {
-          return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return;
+    download: async (fileName: string) => {
+      try {
+        const res = await axiosInstance.get(`${baseUrl}/download/${fileName}`, {
+          responseType: "blob",
         });
+        return res.data;
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
     },
   };
 };

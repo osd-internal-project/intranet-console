@@ -1,5 +1,5 @@
 import type { ITypeMasterRestaurant } from "@/app/common/master-restaurant";
-import { Button, Card, Space, Table, TablePaginationConfig, Tag } from "antd";
+import { Button, Card, Popover, Space, Table, TablePaginationConfig, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import React from "react";
 
@@ -9,9 +9,20 @@ export interface props {
   onChangePagination: (pagination: TablePaginationConfig) => void;
   handleModalOpen: (status: boolean, type: "create" | "edit", data: any) => void;
   downloadFile: (fileName: string) => void;
+  handleDelete: (id: number) => void;
+  setLoading: (value: boolean) => void;
 }
 
-const TableRestaurant: React.FC<props> = ({ data, pagination, onChangePagination, handleModalOpen, downloadFile }): React.ReactElement => {
+const TableRestaurant: React.FC<props> = ({
+  data,
+  pagination,
+  onChangePagination,
+  handleModalOpen,
+  downloadFile,
+  handleDelete,
+  setLoading,
+}): React.ReactElement => {
+  const [open, setOpen] = React.useState<boolean>(false);
   const columns: ColumnsType<ITypeMasterRestaurant> = [
     {
       title: "ID",
@@ -135,15 +146,55 @@ const TableRestaurant: React.FC<props> = ({ data, pagination, onChangePagination
       ellipsis: true,
     },
     {
-      title: "file",
+      title: "File",
       dataIndex: "pathFIles",
       key: "id",
+      align: "center",
       render(i) {
-        console.log(i);
-
         return (
           <div>
-            <Button onClick={() => downloadFile(i)}>{`Download`}</Button>
+            <Button onClick={() => downloadFile(i)} type="link" size="small">{`Download`}</Button>
+          </div>
+        );
+      },
+    },
+    {
+      title: "...",
+      dataIndex: "id",
+      key: "id",
+      align: "center",
+      render(i) {
+        return (
+          <div>
+            <Button onClick={() => downloadFile(i)} type="link">{`edit`}</Button>
+            <Popover
+              onOpenChange={(openpopover) => setOpen(openpopover)}
+              open={open}
+              trigger="click"
+              placement="bottomRight"
+              content={
+                <div className="space-x-2">
+                  <Button type="primary" onClick={() => setOpen(false)} size="small" danger>
+                    cancel
+                  </Button>
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      handleDelete(i);
+                      setOpen(false);
+                      setLoading(true);
+                    }}
+                    size="small"
+                  >
+                    ok
+                  </Button>
+                </div>
+              }
+            >
+              <Button type="link" danger>
+                delete
+              </Button>
+            </Popover>
           </div>
         );
       },

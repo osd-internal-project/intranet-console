@@ -163,10 +163,10 @@ const TableRestaurant: React.FC<props> = ({
       dataIndex: "id",
       key: "id",
       align: "center",
-      render(i) {
+      render(i, record, index) {
         return (
           <div>
-            <Button onClick={() => downloadFile(i)} type="link">{`edit`}</Button>
+            <Button onClick={() => handleModalOpen(true, "edit", record)} type="link">{`edit`}</Button>
             <Popover
               onOpenChange={(openpopover) => setOpen(openpopover)}
               open={open}

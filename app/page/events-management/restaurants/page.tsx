@@ -16,7 +16,7 @@ export default function Page() {
   const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const masterrestaurantServices = MasterRestaurantServices(baseUrIntranet);
   const [ManageForm] = Form.useForm();
-  const [attendFiles, setAttendFiles] = useState<UploadFile[][]>([]);
+  const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [dataTable, setDataTable] = React.useState<{ data: ITypeMasterRestaurant[]; count: number }>({ data: [], count: 0 });
   const [pagination, setPagination] = React.useState<TablePaginationConfig>({
@@ -51,7 +51,20 @@ export default function Page() {
     setLoading(false);
   };
 
-  const handleModalOpen = (status: boolean, type: "create" | "edit" | "delete" | "close", data: any) => {
+  const handleModalOpen = (status: boolean, type: "create" | "edit" | "delete" | "close", data: ITypeMasterRestaurant) => {
+    if (type === "edit") {
+      ManageForm.setFieldsValue(data);
+      if (data.pathFIles) {
+        setAttendFiles([
+          {
+            uid: "-1",
+            name: data.pathFIles,
+            status: "done",
+            url: data.fileUrl,
+          },
+        ]);
+      }
+    }
     setHandleModal({ open: status, type, data });
   };
   const handleTableChange = (pagination: TablePaginationConfig) => {
@@ -66,7 +79,7 @@ export default function Page() {
     },
     onChange: (info) => {
       ManageForm.setFieldValue("files", info.fileList);
-      setAttendFiles([info.fileList]);
+      setAttendFiles(info.fileList);
     },
   });
   const onfinish = async (type: "create" | "edit" | "delete" | "close", values: any) => {
@@ -74,7 +87,7 @@ export default function Page() {
       const formData = new FormData();
       formData.append("items", JSON.stringify(values));
       attendFiles.forEach((fileList) => {
-        const file = fileList?.[0];
+        const file = fileList;
         if (file) {
           formData.append("files", file.originFileObj as RcFile);
         }
@@ -83,6 +96,28 @@ export default function Page() {
       api.success({
         message: "บันทึกสำเร็จ",
         description: "เพิ่มข้อมูลทรัพย์สินเรียบร้อยแล้ว",
+        placement: "topRight",
+      });
+      ManageForm.resetFields();
+      setAttendFiles([]);
+      setHandleModal({
+        open: false,
+        type: "create",
+        data: null,
+      });
+    } else {
+      const formData = new FormData();
+      formData.append("items", JSON.stringify(values));
+      attendFiles.forEach((fileList) => {
+        const file = fileList;
+        if (file) {
+          formData.append("files", file.originFileObj as RcFile);
+        }
+      });
+      await masterrestaurantServices.update(ManageForm.getFieldValue("id"), formData);
+      api.success({
+        message: "บันทึกสำเร็จ",
+        description: "แก้ไขข้อมูลทรัพย์สินเรียบร้อยแล้ว",
         placement: "topRight",
       });
       ManageForm.resetFields();
@@ -170,6 +205,8 @@ export default function Page() {
           ManageForm={ManageForm}
           onfinish={onfinish}
           getUploadProps={getUploadProps}
+          setAttendFiles={setAttendFiles}
+          attendFiles={attendFiles}
         />
       ) : null}
     </div>

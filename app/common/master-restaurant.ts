@@ -8,6 +8,7 @@ export type ITypeMasterRestaurant = {
   remark?: string;
   pathFIles?: string;
   createdAt: string; // หรือ Date (ขึ้นอยู่กับที่ API ส่งมา)
+  fileUrl?: string;
 };
 
 export type masterRestaurantConditons = {

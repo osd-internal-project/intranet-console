@@ -3,7 +3,7 @@ import type { ITypeMasterRestaurant, masterRestaurantConditons } from "../common
 export interface TMaServices {
   dataTable: (conditions: masterRestaurantConditons) => Promise<{ data: ITypeMasterRestaurant[]; count: number }>;
   create: (form: any) => Promise<ITypeMasterRestaurant>;
-  update: (id: number, form: ITypeMasterRestaurant) => Promise<ITypeMasterRestaurant>;
+  update: (id: number, form: any) => Promise<ITypeMasterRestaurant>;
   delete: (id: number) => Promise<ITypeMasterRestaurant>;
   download: (fileName: string) => Promise<any>;
 }
@@ -40,7 +40,7 @@ const MasterRestaurantServices = (axiosInstance: AxiosInstance): TMaServices => 
     },
     update: async (id, form) => {
       return await axiosInstance
-        .put(`${baseUrl}/${id}`, form)
+        .patch(`${baseUrl}/${id}`, form)
         .then((res) => {
           return res.data;
         })

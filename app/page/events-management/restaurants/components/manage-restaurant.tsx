@@ -1,5 +1,5 @@
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Card, Col, Form, FormInstance, Input, Modal, Row, Select, Upload, type SelectProps, type UploadProps } from "antd";
+import { Button, Card, Col, Form, FormInstance, Input, Modal, Row, Select, Upload, type SelectProps, type UploadFile, type UploadProps } from "antd";
 import React from "react";
 
 export interface props {
@@ -8,9 +8,19 @@ export interface props {
   ManageForm: FormInstance;
   onfinish: (type: "create" | "edit" | "delete" | "close", values: any) => void;
   getUploadProps: () => UploadProps;
+  setAttendFiles: (value: UploadFile[]) => void;
+  attendFiles: UploadFile[];
 }
 
-const ManageRestaurant: React.FC<props> = ({ handleModalOpen, handleModal, ManageForm, onfinish, getUploadProps }): React.ReactElement => {
+const ManageRestaurant: React.FC<props> = ({
+  handleModalOpen,
+  handleModal,
+  ManageForm,
+  onfinish,
+  getUploadProps,
+  setAttendFiles,
+  attendFiles,
+}): React.ReactElement => {
   return (
     <div>
       <Modal
@@ -98,8 +108,17 @@ const ManageRestaurant: React.FC<props> = ({ handleModalOpen, handleModal, Manag
             <Input.TextArea showCount maxLength={250} />
           </Form.Item>
           <Form.Item name={`files`} label={`ไฟล์ PDF`}>
-            <Upload {...getUploadProps()} listType="picture-card" maxCount={1}>
-              {"+ Upload"}
+            <Upload
+              fileList={attendFiles}
+              onChange={({ fileList }) => setAttendFiles(fileList)}
+              {...getUploadProps()}
+              listType="picture-card"
+              maxCount={1}
+              onPreview={(file) => {
+                window.open(file.url); // 👈 เปิด PDF
+              }}
+            >
+              {attendFiles.length < 1 && "+ Upload"}
             </Upload>
           </Form.Item>
           <Button htmlType="submit" type="primary">{`ยืนยัน`}</Button>

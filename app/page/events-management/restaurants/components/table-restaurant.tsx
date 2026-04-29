@@ -22,7 +22,7 @@ const TableRestaurant: React.FC<props> = ({
   handleDelete,
   setLoading,
 }): React.ReactElement => {
-  const [open, setOpen] = React.useState<boolean>(false);
+  const [openRowId, setOpenRowId] = React.useState<any>(null);
   const columns: ColumnsType<ITypeMasterRestaurant> = [
     {
       title: "ID",
@@ -163,28 +163,34 @@ const TableRestaurant: React.FC<props> = ({
       dataIndex: "id",
       key: "id",
       align: "center",
-      render(i, record, index) {
+      render(i, record) {
         return (
           <div>
-            <Button onClick={() => handleModalOpen(true, "edit", record)} type="link">{`edit`}</Button>
+            <Button onClick={() => handleModalOpen(true, "edit", record)} type="link">
+              edit
+            </Button>
+
             <Popover
-              onOpenChange={(openpopover) => setOpen(openpopover)}
-              open={open}
               trigger="click"
               placement="bottomRight"
+              open={openRowId === record.id}
+              onOpenChange={(visible) => {
+                setOpenRowId(visible ? record.id : null);
+              }}
               content={
                 <div className="space-x-2">
-                  <Button type="primary" onClick={() => setOpen(false)} size="small" danger>
+                  <Button size="small" danger onClick={() => setOpenRowId(null)}>
                     cancel
                   </Button>
+
                   <Button
+                    size="small"
                     type="primary"
                     onClick={() => {
-                      handleDelete(i);
-                      setOpen(false);
+                      handleDelete(record.id);
+                      setOpenRowId(null);
                       setLoading(true);
                     }}
-                    size="small"
                   >
                     ok
                   </Button>

@@ -1,20 +1,24 @@
 "use client";
-import React from "react";
-import { Breadcrumb, Col, Divider, Form, Row, TablePaginationConfig } from "antd";
-import ManageEvents from "./components/manage-events";
+import React, { useContext } from "react";
+import { Breadcrumb, Button, Col, DatePicker, Divider, Form, Input, Modal, notification, Row, TablePaginationConfig } from "antd";
 import TableEvents from "./components/table-events";
-import { organizeManagementCreateInput } from "@/app/common/organize-management";
+import { organizeManagementTaskCreateInput } from "@/app/common/organize-management-task";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
-import OrganizeManagementServices from "@/app/services/organize-management.service";
+import OrganizeManagementServices from "@/app/services/organize-management-task.service";
+import { UserContext, type UserContectType } from "@/app/config/userContext";
 
 export default function Page() {
   const { id24Axios } = useId24();
+  const { user } = (useContext(UserContext) as UserContectType) || {
+    user: null,
+  };
+  const [api, contextHolder] = notification.useNotification();
   const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const organizemanagementServices = OrganizeManagementServices(baseUrIntranet);
-  const [ManageForm] = Form.useForm();
+  const [FormManage] = Form.useForm();
   const [loading, setLoading] = React.useState<boolean>(true);
-  const [dataTable, setDataTable] = React.useState<{ data: organizeManagementCreateInput[]; count: number }>({ data: [], count: 0 });
+  const [dataTable, setDataTable] = React.useState<{ data: organizeManagementTaskCreateInput[]; count: number }>({ data: [], count: 0 });
   const [pagination, setPagination] = React.useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -43,8 +47,6 @@ export default function Page() {
       skip,
     };
     const res = await organizemanagementServices.dataTable(condition);
-    console.log(res);
-
     setDataTable({ data: res.data, count: res.count });
     setLoading(false);
   };
@@ -57,12 +59,24 @@ export default function Page() {
     setLoading(true);
   };
 
-  const onfinish = (type: "create" | "edit" | "delete" | "close", values: any) => {
-    // Handle form submission logic here
+  const onFinish = async (values: organizeManagementTaskCreateInput) => {
+    const base = {
+      ...values,
+      createdBy: `${user?.firstNameTh} ${user?.lastNameTh}`,
+      updatedBy: `${user?.firstNameTh} ${user?.lastNameTh}`,
+    } as organizeManagementTaskCreateInput;
+    await organizemanagementServices.create(base);
+    api.success({
+      message: "สร้าง Events สำเร็จ",
+    });
+    setHandleModal({ open: false, type: "create", data: null });
+    FormManage.resetFields();
+    setLoading(true);
   };
 
   return (
     <div>
+      {contextHolder}
       <Row>
         <Col span={24}>
           <Breadcrumb
@@ -87,7 +101,27 @@ export default function Page() {
         </Col>
       </Row>
       {handleModal.open ? (
-        <ManageEvents handleModalOpen={handleModalOpen} handleModal={handleModal} ManageForm={ManageForm} onfinish={onfinish} />
+        <>
+          <Modal
+            title="สร้างกิจกรรมใหม่"
+            closable={{ "aria-label": "Custom Close Button" }}
+            open={handleModal.open}
+            footer={false}
+            onCancel={() => handleModalOpen(false, "close", null)}
+          >
+            <Form form={FormManage} layout="vertical" autoComplete="off" onFinish={onFinish}>
+              <Form.Item name={"name"} label={`ชื่อกิจกรรม`}>
+                <Input />
+              </Form.Item>
+              <Form.Item name={"date"} label={`วันที่จัดกิจกรรม`}>
+                <DatePicker />
+              </Form.Item>
+              <div>
+                <Button htmlType="submit">{`ยืนยัน`}</Button>
+              </div>
+            </Form>
+          </Modal>
+        </>
       ) : null}
     </div>
   );

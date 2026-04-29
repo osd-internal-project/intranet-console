@@ -17,9 +17,9 @@ export const checkIcon = (
   <svg width="15" height="15" viewBox="0 0 24 24" style={{ color: "white" }}>
     <path
       fill="currentColor"
-      fill-rule="evenodd"
+      fillRule="evenodd"
       d="M12 21a9 9 0 1 0 0-18a9 9 0 0 0 0 18m-.232-5.36l5-6l-1.536-1.28l-4.3 5.159l-2.225-2.226l-1.414 1.414l3 3l.774.774z"
-      clip-rule="evenodd"
+      clipRule="evenodd"
     />
   </svg>
 );
@@ -448,22 +448,22 @@ export const IconTypeLeave = (
       <path
         fillRule="evenodd"
         d="M15.347 7.116a.5.5 0 0 1 .704.064l2.083 2.5a.5.5 0 0 1-.768.64l-2.083-2.5a.5.5 0 0 1 .064-.704"
-        clip-rule="evenodd"
+        clipRule="evenodd"
       />
       <path
         fillRule="evenodd"
         d="M15.347 12.884a.5.5 0 0 1-.064-.704l2.083-2.5a.5.5 0 1 1 .768.64l-2.083 2.5a.5.5 0 0 1-.704.064"
-        clip-rule="evenodd"
+        clipRule="evenodd"
       />
       <path
         fillRule="evenodd"
         d="M17.5 10a.5.5 0 0 1-.5.5H9.5a.5.5 0 0 1 0-1H17a.5.5 0 0 1 .5.5m-14-7a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.5-.5m0 14a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.5-.5"
-        clip-rule="evenodd"
+        clipRule="evenodd"
       />
       <path
         fillRule="evenodd"
         d="M13 2.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5m0 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 1 .5-.5m-9-10a.5.5 0 0 1 .5.5v14a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5"
-        clip-rule="evenodd"
+        clipRule="evenodd"
       />
       <path d="M1.15 1.878a.514.514 0 0 1 .728-.727l16.971 16.971a.514.514 0 0 1-.727.727z" />
     </g>
@@ -729,9 +729,9 @@ export const IconUserPause = (
     <path
       fill="none"
       stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
       d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0-8 0M6 21v-2a4 4 0 0 1 4-4h3.5m3.5 2v5m4-5v5"
     />
   </svg>
@@ -742,9 +742,9 @@ export const IconUserPlus = (
     <path
       fill="none"
       stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
       d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0-8 0m8 12h6m-3-3v6M6 21v-2a4 4 0 0 1 4-4h4"
     />
   </svg>
@@ -755,9 +755,9 @@ export const IconUserActive = (
     <path
       fill="none"
       stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
       d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0-8 0M6 21v-2a4 4 0 0 1 4-4h3m3 7l5-5m0 4.5V17h-4.5"
     />
   </svg>
@@ -768,9 +768,9 @@ export const IconUsers = (
     <path
       fill="none"
       stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
       d="M5 7a4 4 0 1 0 8 0a4 4 0 1 0-8 0M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2m1-17.87a4 4 0 0 1 0 7.75M21 21v-2a4 4 0 0 0-3-3.85"
     />
   </svg>
@@ -791,7 +791,7 @@ export const IconRingCall = (
       fill="none"
       stroke="currentColor"
       stroke-miterlimit="10"
-      stroke-width="32"
+      strokeWidth="32"
       d="M451 374c-15.88-16-54.34-39.35-73-48.76c-24.3-12.24-26.3-13.24-45.4.95c-12.74 9.47-21.21 17.93-36.12 14.75s-47.31-21.11-75.68-49.39s-47.34-61.62-50.53-76.48s5.41-23.23 14.79-36c13.22-18 12.22-21 .92-45.3c-8.81-18.9-32.84-57-48.9-72.8C119.9 44 119.9 47 108.83 51.6A160 160 0 0 0 83 65.37C67 76 58.12 84.83 51.91 98.1s-9 44.38 23.07 102.64s54.57 88.05 101.14 134.49S258.5 406.64 310.85 436c64.76 36.27 89.6 29.2 102.91 23s22.18-15 32.83-31a159 159 0 0 0 13.8-25.8C465 391.17 468 391.17 451 374Z"
     />
   </svg>
@@ -808,9 +808,9 @@ export const IconProperty = (
     <path
       fill="none"
       stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="4"
       d="M25 6H9a3 3 0 0 0-3 3v22a3 3 0 0 0 3 3h30a3 3 0 0 0 3-3v-8M24 34v8m6-30h12m-6-6v12M14 42h20"
     />
   </svg>
@@ -820,9 +820,9 @@ export const IconParty = (
   <svg width="18" height="18" viewBox="0 0 14 14">
     <path
       fill="currentColor"
-      fill-rule="evenodd"
+      fillRule="evenodd"
       d="M9.718.338a.62.62 0 0 0-.504.722a.63.63 0 0 0 .731.503q.198-.035.398-.067c.145-.022.257.046.305.14c.476.925.9 1.838 1.194 2.782c-.378.172-.801.368-1.223.573a16 16 0 0 1-.242 1.394v.004l-.003.009q-.158.723-.416 1.454c-.144.403-.47.787-.802 1.123c-.405.41-.208 1.09.363 1.01l.445 1.702q-.85.275-1.688.65a.737.737 0 0 0-.374.98c.17.372.614.538.991.37a14.8 14.8 0 0 1 4.444-1.217a.743.743 0 0 0 .658-.82a.75.75 0 0 0-.83-.652q-.898.103-1.756.295l-.443-1.691c1.727-.695 2.728-2.506 2.388-4.305c-.29-1.527-.915-2.913-1.588-4.222A1.55 1.55 0 0 0 10.14.267q-.212.033-.422.07M4.063.352a1.58 1.58 0 0 0-1.62.808C1.746 2.467 1.095 3.852.78 5.371a3.7 3.7 0 0 0 .323 2.434a3.8 3.8 0 0 0 1.983 1.811l-.471 1.678a17 17 0 0 0-1.793-.272a.75.75 0 0 0-.147 1.493a15 15 0 0 1 2.294.402c.735.188 1.453.434 2.172.742a.75.75 0 1 0 .59-1.38a17 17 0 0 0-1.663-.61l.47-1.674c1.842.25 3.625-.82 4.24-2.548c.156-.435.278-.873.376-1.312l.002-.01c.232-1.04.328-2.092.384-3.12a1.525 1.525 0 0 0-1-1.506A20.6 20.6 0 0 0 4.063.352m3.873 5.51l.001-.006c.21-.939.3-1.912.355-2.92c.006-.101-.055-.216-.194-.268a19.3 19.3 0 0 0-4.21-1.079a.33.33 0 0 0-.342.159c-.682 1.28-1.264 2.537-1.541 3.876a3 3 0 0 0-.044.308c.934-.084 2.113-.17 3.032-.167c.888.003 2.027.089 2.925.172z"
-      clip-rule="evenodd"
+      clipRule="evenodd"
     />
   </svg>
 );

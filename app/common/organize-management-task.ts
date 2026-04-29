@@ -1,11 +1,12 @@
-export type organizeManagementCreateInput = {
+export type organizeManagementTaskCreateInput = {
   id?: number;
   name: string;
+  type?: string;
   date?: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  createdBy: string;
-  updatedBy: string;
+  createdBy?: string;
+  updatedBy?: string;
   status?: string | null;
   organizeTasks?: organizeTaskCreateInput;
 };
@@ -16,7 +17,7 @@ export type organizeTaskCreateInput = {
   assigned: number;
   assignedDate?: Date | string;
   status?: string | null;
-  pathFIles?: string | null;
+  pathFiles?: string | null;
   remark?: string | null;
   dueDate?: Date | string | null;
   expenses?: number | null;

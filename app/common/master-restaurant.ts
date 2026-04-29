@@ -18,6 +18,6 @@ export type masterRestaurantConditons = {
     pricing?: number;
     category?: object;
   };
-  take: number;
-  skip: number;
+  take?: number;
+  skip?: number;
 };

@@ -2,6 +2,7 @@ import { AxiosInstance } from "axios";
 import type { ITypeMasterRestaurant, masterRestaurantConditons } from "../common/master-restaurant";
 export interface TMaServices {
   dataTable: (conditions: masterRestaurantConditons) => Promise<{ data: ITypeMasterRestaurant[]; count: number }>;
+  dataOptions: () => Promise<ITypeMasterRestaurant[]>;
   create: (form: any) => Promise<ITypeMasterRestaurant>;
   update: (id: number, form: any) => Promise<ITypeMasterRestaurant>;
   delete: (id: number) => Promise<ITypeMasterRestaurant>;
@@ -15,6 +16,17 @@ const MasterRestaurantServices = (axiosInstance: AxiosInstance): TMaServices => 
     dataTable: async (conditions) => {
       return await axiosInstance
         .post(`${baseUrl}/data-table`, conditions)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return;
+        });
+    },
+    dataOptions: async () => {
+      return await axiosInstance
+        .get(`${baseUrl}`)
         .then((res) => {
           return res.data;
         })

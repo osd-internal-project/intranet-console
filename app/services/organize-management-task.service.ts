@@ -8,6 +8,8 @@ export interface TMaServices {
   createTask: (form: any) => Promise<organizeTaskCreateInput>;
   createSubTask: (form: any) => Promise<organizeTaskCreateInput>;
   update: (id: number, form: any) => Promise<organizeManagementTaskCreateInput>;
+  updateTask: (id: number, form: any) => Promise<organizeTaskCreateInput>;
+  updateSubTask: (id: number, form: any) => Promise<organizeTaskCreateInput>;
   delete: (id: number) => Promise<organizeManagementTaskCreateInput>;
   deleteTask: (id: number) => Promise<organizeManagementTaskCreateInput>;
   deleteSubTask: (id: number) => Promise<organizeManagementTaskCreateInput>;
@@ -91,7 +93,33 @@ const OrganizeManagementServices = (axiosInstance: AxiosInstance): TMaServices =
     },
     update: async (id, form) => {
       return await axiosInstance
-        .put(`${baseUrl}/${id}`, form)
+        .patch(`${baseUrl}/${id}`, form)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return;
+        });
+    },
+    updateTask: async (id, form) => {
+      return await axiosInstance
+        .patch(`${baseUrlTask}/${id}`, form, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return;
+        });
+    },
+    updateSubTask: async (id, form) => {
+      return await axiosInstance
+        .patch(`${baseUrlSubTask}/${id}`, form, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
         .then((res) => {
           return res.data;
         })

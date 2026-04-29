@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Table, Input, Button, Space, Popconfirm, DatePicker, Select, Breadcrumb, notification, Upload, Spin } from "antd";
-import { PlusOutlined, DeleteOutlined, SubnodeOutlined, CheckCircleOutlined } from "@ant-design/icons";
+import { PlusOutlined, DeleteOutlined, CheckCircleOutlined, PlusCircleOutlined, EditOutlined } from "@ant-design/icons";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import UserServices from "@/app/services/user.service";
@@ -11,8 +11,8 @@ import { ColumnsType } from "antd/es/table";
 import { handleCompress } from "@/app/utils";
 import { statusOptions, ITSelect, TaskNode } from "./utils";
 import { useParams } from "next/navigation";
-import type { organizeManagementTaskCreateInput, organizeTaskCreateInput } from "@/app/common/organize-management-task";
-import type { RcFile } from "antd/es/upload";
+import { organizeManagementTaskCreateInput } from "@/app/common/organize-management-task";
+import { RcFile } from "antd/es/upload";
 import dayjs from "dayjs";
 
 export default function Page() {
@@ -118,19 +118,20 @@ export default function Page() {
     setData(newData);
   };
 
-  const deleteTask = (key: string, parentNode: string, record: any) => {
-    const { children, files, ...conditions } = record || {};
-    // const filterRecursive = (list: TaskNode[]): TaskNode[] => {
-    //   return list
-    //     .filter((item) => item.key !== key)
-    //     .map((item) => ({
-    //       ...item,
-    //       children: item.children ? filterRecursive(item.children) : undefined,
-    //     }));
-    // };
-    // setData(filterRecursive(data));
+  const deleteTask = async (key: string, parentNode: string, record: any) => {
+    const { id } = record || {};
     if (parentNode === "parent") {
+      await organizemanagementServices.deleteTask(id);
+      api.success({
+        message: "Delete Task success",
+      });
+      setLoading(true);
     } else {
+      await organizemanagementServices.deleteSubTask(id);
+      api.success({
+        message: "Delete Task success",
+      });
+      setLoading(true);
     }
   };
   const createTask = async (key: string, parentNode: string, record: any) => {
@@ -138,8 +139,7 @@ export default function Page() {
     if (parentNode === "parent") {
       const formData = new FormData();
       formData.append("record", JSON.stringify({ ...conditions, organizedId: params.organizeId }));
-      // formData.append("files", files[0].originFileObj as RcFile);
-      // 👇 file
+
       if (files?.[0]?.originFileObj) {
         formData.append("files", files[0].originFileObj as RcFile);
       }
@@ -156,6 +156,33 @@ export default function Page() {
         formData.append("files", files[0].originFileObj as RcFile);
       }
       await organizemanagementServices.createSubTask(formData);
+      api.success({
+        message: "create Sub Task success",
+      });
+      setLoading(true);
+    }
+  };
+  const editTask = async (key: string, parentNode: string, record: any) => {
+    const { children, files, ...conditions } = record || {};
+    if (parentNode === "parent") {
+      const formData = new FormData();
+      formData.append("record", JSON.stringify({ ...conditions, organizedId: params.organizeId }));
+      if (files?.[0]?.originFileObj) {
+        formData.append("files", files[0].originFileObj as RcFile);
+      }
+      await organizemanagementServices.updateTask(record.id, formData);
+      api.success({
+        message: "create Task success",
+      });
+      setLoading(true);
+    } else {
+      const parent = findParent(data, record.key);
+      const formData = new FormData();
+      formData.append("record", JSON.stringify({ ...conditions, organizedId: params.organizeId, organizeTaskId: parent ? parent?.id : undefined }));
+      if (files?.[0]?.originFileObj) {
+        formData.append("files", files[0].originFileObj as RcFile);
+      }
+      await organizemanagementServices.updateSubTask(record.id, formData);
       api.success({
         message: "create Sub Task success",
       });
@@ -223,6 +250,10 @@ export default function Page() {
     }));
   };
 
+  const isCreated = (record: TaskNode) => {
+    return !!record.id;
+  };
+
   const columns: ColumnsType<TaskNode> = [
     {
       title: "Task",
@@ -264,7 +295,7 @@ export default function Page() {
       title: "มอบหมายให้",
       dataIndex: "assigned",
       render: (_: any, record: TaskNode) => {
-        if (isParent(record) || !_) return null;
+        if (isParent(record)) return null;
         return (
           <Select
             value={_}
@@ -283,12 +314,12 @@ export default function Page() {
       title: "วันที่ได้รับมอบหมาย",
       dataIndex: "assignedDate",
       render: (_: any, record: TaskNode) => {
-        if (isParent(record) || !_) return null;
+        if (isParent(record)) return null;
         return (
           <DatePicker
             value={_ ? dayjs(_) : undefined}
             style={{ width: "100%" }}
-            onChange={(date) => handleManage(record.key, "assignedDate", date ? date.toISOString() : "")}
+            onChange={(date) => handleManage(record.key, "assignedDate", date ? date.toISOString() : undefined)}
           />
         );
       },
@@ -297,10 +328,10 @@ export default function Page() {
       title: "สถานะ",
       dataIndex: "status",
       render: (_: any, record: TaskNode) => {
-        if (isParent(record) || !_) return null;
+        if (isParent(record)) return null;
         return (
           <Select
-            value={_}
+            value={_ ? _ : undefined}
             showSearch
             optionFilterProp="label"
             allowClear
@@ -316,7 +347,7 @@ export default function Page() {
       title: "หมายเหตุ",
       dataIndex: "remark",
       render: (_: any, record: TaskNode) => {
-        if (isParent(record) || !_) return null;
+        if (isParent(record)) return null;
         return (
           <Input.TextArea
             value={_}
@@ -332,12 +363,12 @@ export default function Page() {
       title: "วันครบกำหนด",
       dataIndex: "dueDate",
       render: (_: any, record: TaskNode) => {
-        if (isParent(record) || !_) return null;
+        if (isParent(record)) return null;
         return (
           <DatePicker
             value={_ ? dayjs(_) : undefined}
             style={{ width: "100%" }}
-            onChange={(date) => handleManage(record.key, "dueDate", date ? date.toISOString() : "")}
+            onChange={(date) => handleManage(record.key, "dueDate", date ? date.toISOString() : undefined)}
           />
         );
       },
@@ -371,29 +402,33 @@ export default function Page() {
     {
       title: "...",
       render: (_: any, record: TaskNode) => {
-        if (isParent(record) === undefined)
-          return (
-            <>
-              <Space>
-                <Button type="text" icon={<SubnodeOutlined />} onClick={() => addSubTask(record.key)} />
-                <Popconfirm title="ลบ?" onConfirm={() => deleteTask(record.key, "children", record)}>
-                  <Button danger type="text" icon={<DeleteOutlined />} />
-                </Popconfirm>
-                <Popconfirm title="ยืนยัน ?" onConfirm={() => createTask(record.key, "children", record)}>
-                  <Button type="text" icon={<CheckCircleOutlined color="green" />} />
-                </Popconfirm>
-              </Space>
-            </>
-          );
+        const parent = findParent(data, record.key);
+        const isChild = !!parent;
+        const hasDetail = record.status;
+        const doneStatus = record.status === "done";
+
+        const created = isCreated(record);
+
         return (
           <Space>
-            <Button type="text" icon={<SubnodeOutlined />} onClick={() => addSubTask(record.key)} />
-            <Popconfirm title="ลบ ?" onConfirm={() => deleteTask(record.key, "parent", record)}>
+            {!isChild && !hasDetail && <Button type="text" icon={<PlusCircleOutlined />} onClick={() => addSubTask(record.key)} />}
+
+            <Popconfirm title="ลบ?" onConfirm={() => deleteTask(record.key, isChild ? "children" : "parent", record)}>
               <Button danger type="text" icon={<DeleteOutlined />} />
             </Popconfirm>
-            <Popconfirm title="ยืนยัน ?" onConfirm={() => createTask(record.key, "parent", record)}>
-              <Button type="text" icon={<CheckCircleOutlined color="green" />} />
-            </Popconfirm>
+
+            {/* ✅ CONFIRM */}
+            {!created && (
+              <Popconfirm title="ยืนยัน ?" onConfirm={() => createTask(record.key, isChild ? "children" : "parent", record)}>
+                <Button type="text" icon={<CheckCircleOutlined style={{ color: "green" }} />} />
+              </Popconfirm>
+            )}
+
+            {created && !doneStatus && (
+              <Popconfirm title="ยืนยัน ?" onConfirm={() => editTask(record.key, isChild ? "children" : "parent", record)}>
+                <Button type="text" icon={<EditOutlined style={{ color: "#1677ff" }} />} />
+              </Popconfirm>
+            )}
           </Space>
         );
       },

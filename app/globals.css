@@ -261,3 +261,58 @@ thead[class*="ant-table-thead"] th {
   position: relative;
   z-index: 1;
 }
+
+/*  */
+
+/* ── Parent row ── */
+.row-parent>td {
+  background: #f0f5ff !important;
+  border-bottom: 2px solid #d6e4ff !important;
+}
+
+.row-parent>td:first-child {
+  border-left: 4px solid #4096ff !important;
+}
+
+.row-parent>td:last-child {
+  border-right: 1px solid #d6e4ff !important;
+}
+
+/* ── Child row ── */
+.row-child>td {
+  background: #ffffff !important;
+  border-bottom: 1px dashed #e8e8e8 !important;
+}
+
+.row-child>td:first-child {
+  border-left: 4px solid #bae0ff !important;
+}
+
+/* ── Hover ── */
+.ant-table-tbody>tr.row-parent:hover>td {
+  background: #e6f0ff !important;
+}
+
+.ant-table-tbody>tr.row-child:hover>td {
+  background: #f5faff !important;
+}
+
+/* ── Header ── */
+.ant-table-thead>tr>th {
+  background: #1d2b4f !important;
+  color: #8ba3cc !important;
+  font-size: 11px !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  border-bottom: none !important;
+}
+
+.upload-small .ant-upload-select {
+  width: 58px !important;
+  height: 58px !important;
+}
+
+.upload-small .ant-upload-list-item-container {
+  width: 58px !important;
+  height: 58px !important;
+}

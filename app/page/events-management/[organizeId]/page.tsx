@@ -1,6 +1,22 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Table, Input, Button, Space, Popconfirm, DatePicker, Select, Breadcrumb, notification, Upload, Spin, type GetProp } from "antd";
+import {
+  Table,
+  Input,
+  Button,
+  Space,
+  Popconfirm,
+  DatePicker,
+  Select,
+  Breadcrumb,
+  notification,
+  Upload,
+  Spin,
+  type GetProp,
+  Tag,
+  Tooltip,
+  Modal,
+} from "antd";
 import { PlusOutlined, DeleteOutlined, CheckCircleOutlined, PlusCircleOutlined, EditOutlined } from "@ant-design/icons";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
@@ -31,6 +47,8 @@ export default function Page() {
   const [optionsUsers, setOptionsUsers] = useState<ITSelect[]>([]);
   const [optionsRestaurant, setOptionsRestaurant] = useState<ITSelect[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
 
   useEffect(() => {
     if (params.organizeId || loading) fecthData(params.organizeId);
@@ -310,10 +328,8 @@ export default function Page() {
         reader.onload = () => resolve(reader.result as string);
       });
     }
-    const image = new Image();
-    image.src = src;
-    const imgWindow = window.open(src);
-    imgWindow?.document.write(image.outerHTML);
+    setPreviewImage(src);
+    setPreviewOpen(true);
   };
 
   const downloadFile = async (data: { objectName: string; originalName: string }) => {
@@ -337,15 +353,23 @@ export default function Page() {
       title: "Task",
       dataIndex: "name",
       render: (text: string, record: TaskNode) => {
-        const style = {
-          paddingLeft: 0,
-          display: "flex",
-          gap: 8,
-          alignItems: "center",
-        };
+        const parent = findParent(data, record.key);
+        const isChild = !!parent;
         return (
-          <div style={style}>
-            <Input value={text} onChange={(e) => handleManage(record.key, "name", e.target.value)} placeholder={`Please Input`} />
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            {isChild && <span style={{ color: "#bae0ff", fontSize: 18, lineHeight: 1, flexShrink: 0 }}>└</span>}
+
+            <Input
+              size="small"
+              value={text}
+              onChange={(e) => handleManage(record.key, "name", e.target.value)}
+              placeholder="Please Input"
+              style={{
+                fontWeight: isChild ? 400 : 600,
+                borderColor: isChild ? undefined : "#4096ff",
+                background: isChild ? undefined : "#f0f5ff",
+              }}
+            />
           </div>
         );
       },
@@ -357,6 +381,7 @@ export default function Page() {
         // if (isParent(record)) return null;
         return (
           <Select
+            size="small"
             value={_}
             showSearch
             allowClear
@@ -376,6 +401,7 @@ export default function Page() {
         // if (isParent(record)) return null;
         return (
           <DatePicker
+            size="small"
             value={_ ? dayjs(_) : undefined}
             style={{ width: "100%" }}
             onChange={(date) => handleManage(record.key, "assignedDate", date ? date.toISOString() : undefined)}
@@ -390,6 +416,7 @@ export default function Page() {
         // if (isParent(record)) return null;
         return (
           <Select
+            size="small"
             value={_ ? _ : undefined}
             showSearch
             optionFilterProp="label"
@@ -409,6 +436,7 @@ export default function Page() {
         // if (isParent(record)) return null;
         return (
           <Input.TextArea
+            size="small"
             value={_}
             showCount
             maxLength={250}
@@ -421,18 +449,28 @@ export default function Page() {
     {
       title: "ค่าใช้จ่าย",
       dataIndex: "expenses",
+      width: "150px",
       render: (_: any, record: TaskNode) => {
-        // if (isParent(record)) return null;
-        return <Input type="number" value={_} placeholder={`Input number`} onChange={(e) => handleManage(record.key, "expenses", e.target.value)} />;
+        return (
+          <Input
+            size="small"
+            prefix="฿"
+            suffix="THB"
+            type="number"
+            value={_}
+            placeholder={`Input number`}
+            onChange={(e) => handleManage(record.key, "expenses", e.target.value)}
+          />
+        );
       },
     },
     {
       title: "วันครบกำหนด",
       dataIndex: "dueDate",
       render: (_: any, record: TaskNode) => {
-        // if (isParent(record)) return null;
         return (
           <DatePicker
+            size="small"
             value={_ ? dayjs(_) : undefined}
             style={{ width: "100%" }}
             onChange={(date) => handleManage(record.key, "dueDate", date ? date.toISOString() : undefined)}
@@ -445,11 +483,11 @@ export default function Page() {
       dataIndex: "files",
       align: "center",
       render: (_: any, record: TaskNode) => {
-        // if (isParent(record)) return null;
         return (
           <div className="grid grid-cols-1 text-center items-center w-full gap-2">
             <div className="flex justify-center">
               <Upload
+                className="upload-small"
                 fileList={record.files ? record.files : []}
                 listType="picture-card"
                 maxCount={1}
@@ -463,7 +501,6 @@ export default function Page() {
                 {(record.files?.length || 0) < 1 && "+ Upload"}
               </Upload>
             </div>
-
             <Button type="link" onClick={() => downloadFile(record.pathFiles)} disabled={record.files ? false : true}>{`ดาวน์โหลดไฟล์`}</Button>
           </div>
         );
@@ -471,22 +508,28 @@ export default function Page() {
     },
     {
       title: "...",
+      align: "center",
       render: (_: any, record: TaskNode) => {
         const parent = findParent(data, record.key);
         const isChild = !!parent;
-        const hasDetail = record.status;
         const doneStatus = record.status === "done";
         const created = isCreated(record);
+        const hasChildren = (record.children?.length ?? 0) > 0; // ← เพิ่ม
+
         return (
           <Space>
-            {!isChild && <Button type="text" icon={<PlusCircleOutlined />} onClick={() => addSubTask(record.key)} />}
+            {!isChild &&
+              !hasChildren && ( // ← ซ่อนถ้ายังไม่มี sub
+                <Tooltip title="เพิ่ม Sub Task">
+                  <Button type="text" icon={<PlusCircleOutlined style={{ color: "#4096ff" }} />} onClick={() => addSubTask(record.key)} />
+                </Tooltip>
+              )}
             <Popconfirm title="ลบ?" onConfirm={() => deleteTask(record.key, isChild ? "children" : "parent", record)}>
               <Button danger type="text" icon={<DeleteOutlined />} />
             </Popconfirm>
-            {/* ✅ CONFIRM */}
             {!created && (
               <Popconfirm title="ยืนยัน ?" onConfirm={() => createTask(record.key, isChild ? "children" : "parent", record)}>
-                <Button type="text" icon={<CheckCircleOutlined style={{ color: "green" }} />} />
+                <Button type="text" icon={<CheckCircleOutlined style={{ color: "#52c41a" }} />} />
               </Popconfirm>
             )}
             {created && !doneStatus && (
@@ -506,18 +549,32 @@ export default function Page() {
         {contextHolder}
         <Breadcrumb items={[{ title: "หน้าหลัก" }, { title: "รายละเอียดกิจกรรม" }, { title: `${dataDetail?.name}` }]} />
         <div style={{ marginTop: 10, display: "flex", justifyContent: "end" }}>
-          <Button type="primary" icon={<PlusOutlined />} onClick={addMainTask}>
+          <Button size="small" type="primary" icon={<PlusOutlined />} onClick={addMainTask}>
             เพิ่มหัวข้อ
           </Button>
         </div>
         <Table
+          onRow={() => ({ style: { verticalAlign: "top" } })}
+          size="small"
           style={{ marginTop: 10 }}
           columns={columns}
           dataSource={data}
           rowKey="key"
           pagination={false}
-          expandable={{ defaultExpandAllRows: true, indentSize: 30 }}
+          rowClassName={(record) => {
+            const parent = findParent(data, record.key);
+            return parent ? "row-child" : "row-parent";
+          }}
+          expandable={{
+            defaultExpandAllRows: true,
+            indentSize: 0,
+          }}
         />
+        {previewOpen ? (
+          <Modal open={previewOpen} footer={null} onCancel={() => setPreviewOpen(false)} centered width="fit-content">
+            <img src={previewImage} alt="preview" style={{ maxWidth: "80vw", maxHeight: "80vh", objectFit: "contain" }} />
+          </Modal>
+        ) : null}
       </div>
     </Spin>
   );

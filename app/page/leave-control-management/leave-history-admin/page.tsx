@@ -86,8 +86,6 @@ export default function Page() {
 
   const handleReloadData = (e: string) => {
     if (e === "1" || e === "4") {
-      formdetail.resetFields();
-      formdetailEdit.resetFields();
       setLoading(true);
     }
   };

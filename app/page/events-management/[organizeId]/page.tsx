@@ -514,16 +514,14 @@ export default function Page() {
         const isChild = !!parent;
         const doneStatus = record.status === "done";
         const created = isCreated(record);
-        const hasChildren = (record.children?.length ?? 0) > 0; // ← เพิ่ม
 
         return (
           <Space>
-            {!isChild &&
-              !hasChildren && ( // ← ซ่อนถ้ายังไม่มี sub
-                <Tooltip title="เพิ่ม Sub Task">
-                  <Button type="text" icon={<PlusCircleOutlined style={{ color: "#4096ff" }} />} onClick={() => addSubTask(record.key)} />
-                </Tooltip>
-              )}
+            {!isChild && ( // ← ซ่อนถ้ายังไม่มี sub
+              <Tooltip title="เพิ่ม Sub Task">
+                <Button type="text" icon={<PlusCircleOutlined style={{ color: "#4096ff" }} />} onClick={() => addSubTask(record.key)} />
+              </Tooltip>
+            )}
             <Popconfirm title="ลบ?" onConfirm={() => deleteTask(record.key, isChild ? "children" : "parent", record)}>
               <Button danger type="text" icon={<DeleteOutlined />} />
             </Popconfirm>

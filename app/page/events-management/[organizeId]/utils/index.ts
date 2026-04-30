@@ -31,6 +31,7 @@ export type TaskNode = {
   dueDate?: string;
   status?: string;
   remark?: string;
+  pathFiles?: any;
   children?: TaskNode[];
   files?: UploadFile[];
 };

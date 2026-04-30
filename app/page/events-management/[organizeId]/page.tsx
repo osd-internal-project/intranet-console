@@ -273,6 +273,22 @@ export default function Page() {
     imgWindow?.document.write(image.outerHTML);
   };
 
+  const downloadFile = async (data: { objectName: string; originalName: string }) => {
+    try {
+      const blob = await organizemanagementServices.download(data.objectName);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", data.originalName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Download error:", err);
+    }
+  };
+
   const columns: ColumnsType<TaskNode> = [
     {
       title: "Task",
@@ -395,22 +411,31 @@ export default function Page() {
     {
       title: "แนบไฟล์",
       dataIndex: "files",
+      align: "center",
       render: (_: any, record: TaskNode) => {
         if (isParent(record)) return null;
+        const parent = findParent(data, record.key);
+        const isChild = !!parent;
         return (
-          <Upload
-            fileList={record.files || []}
-            listType="picture-card"
-            maxCount={1}
-            beforeUpload={async (file) => {
-              const compressed = await handleCompress(file);
-              return compressed;
-            }}
-            onChange={({ fileList }) => handleManage(record.key, "files", fileList)}
-            onPreview={onPreview}
-          >
-            {(record.files?.length || 0) < 1 && "+ Upload"}
-          </Upload>
+          <div className="grid grid-cols-1 text-center items-center w-full gap-2">
+            <div className="flex justify-center">
+              <Upload
+                fileList={record.files || []}
+                listType="picture-card"
+                maxCount={1}
+                beforeUpload={async (file) => {
+                  const compressed = await handleCompress(file);
+                  return compressed;
+                }}
+                onChange={({ fileList }) => handleManage(record.key, "files", fileList)}
+                onPreview={onPreview}
+              >
+                {(record.files?.length || 0) < 1 && "+ Upload"}
+              </Upload>
+            </div>
+
+            <Button type="link" onClick={() => downloadFile(record.pathFiles)}>{`ดาวน์โหลดไฟล์`}</Button>
+          </div>
         );
       },
     },
@@ -421,7 +446,6 @@ export default function Page() {
         const isChild = !!parent;
         const hasDetail = record.status;
         const doneStatus = record.status === "done";
-
         const created = isCreated(record);
 
         return (

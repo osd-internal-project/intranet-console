@@ -59,6 +59,18 @@ export default function Page() {
     setLoading(true);
   };
 
+  const handleDelete = async (id: number) => {
+    const response = await organizemanagementServices.delete(id);
+    if (response) {
+      api.success({
+        message: "ลบ Events สำเร็จ",
+      });
+      setHandleModal({ open: false, type: "create", data: null });
+      FormManage.resetFields();
+      setLoading(true);
+    }
+  };
+
   const onFinish = async (values: organizeManagementTaskCreateInput) => {
     const base = {
       ...values,
@@ -83,21 +95,27 @@ export default function Page() {
             items={[
               {
                 href: "/page/home",
-                title: <span>หน้าหลัก</span>,
+                title: <span>{`หน้าหลัก`}</span>,
               },
               {
-                title: <span>การจัดการกิจกรรม</span>,
+                title: <span>{`การจัดการกิจกรรม`}</span>,
               },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
           <div className="title-page-font" style={{ display: "flex", alignItems: "left" }}>
-            <span style={{ marginRight: "8px" }}>การจัดการกิจกรรม</span>
+            <span style={{ marginRight: "8px" }}>{`การจัดการกิจกรรม`}</span>
           </div>
         </Divider>
         <Col span={24}>
-          <TableEvents data={dataTable} pagination={pagination} onChangePagination={handleTableChange} handleModalOpen={handleModalOpen} />
+          <TableEvents
+            data={dataTable}
+            pagination={pagination}
+            onChangePagination={handleTableChange}
+            handleModalOpen={handleModalOpen}
+            handleDelete={handleDelete}
+          />
         </Col>
       </Row>
       {handleModal.open ? (

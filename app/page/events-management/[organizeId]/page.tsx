@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Table, Input, Button, Space, Popconfirm, DatePicker, Select, Breadcrumb, notification, Upload, Spin } from "antd";
+import { Table, Input, Button, Space, Popconfirm, DatePicker, Select, Breadcrumb, notification, Upload, Spin, type GetProp } from "antd";
 import { PlusOutlined, DeleteOutlined, CheckCircleOutlined, PlusCircleOutlined, EditOutlined } from "@ant-design/icons";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
@@ -12,8 +12,10 @@ import { handleCompress } from "@/app/utils";
 import { statusOptions, ITSelect, TaskNode } from "./utils";
 import { useParams } from "next/navigation";
 import { organizeManagementTaskCreateInput } from "@/app/common/organize-management-task";
-import { RcFile } from "antd/es/upload";
+import { RcFile, type UploadFile, type UploadProps } from "antd/es/upload";
 import dayjs from "dayjs";
+
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 export default function Page() {
   const params = useParams<{ organizeId: string }>();
@@ -204,6 +206,8 @@ export default function Page() {
   };
 
   const mapApiToTaskNode = (tasks: any[]): TaskNode[] => {
+    console.log(tasks);
+
     return tasks.map((task) => ({
       key: `main-${task.id}`, // 👈 สำคัญ (ต้อง unique)
       id: task.id,
@@ -252,6 +256,21 @@ export default function Page() {
 
   const isCreated = (record: TaskNode) => {
     return !!record.id;
+  };
+
+  const onPreview = async (file: UploadFile) => {
+    let src = file.url as string;
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj as FileType);
+        reader.onload = () => resolve(reader.result as string);
+      });
+    }
+    const image = new Image();
+    image.src = src;
+    const imgWindow = window.open(src);
+    imgWindow?.document.write(image.outerHTML);
   };
 
   const columns: ColumnsType<TaskNode> = [
@@ -388,11 +407,7 @@ export default function Page() {
               return compressed;
             }}
             onChange={({ fileList }) => handleManage(record.key, "files", fileList)}
-            onPreview={(file) => {
-              if (file.url) {
-                window.open(file.url);
-              }
-            }}
+            onPreview={onPreview}
           >
             {(record.files?.length || 0) < 1 && "+ Upload"}
           </Upload>

@@ -1,6 +1,6 @@
 import type { organizeManagementTaskCreateInput } from "@/app/common/organize-management-task";
 import { dateToStringThNoTime } from "@/app/utils/format";
-import { Button, Card, Table, TablePaginationConfig } from "antd";
+import { Button, Card, Popover, Table, TablePaginationConfig, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import Link from "next/link";
 import React from "react";
@@ -10,9 +10,10 @@ export interface props {
   pagination: TablePaginationConfig;
   onChangePagination: (pagination: TablePaginationConfig) => void;
   handleModalOpen: (status: boolean, type: "create" | "edit" | "delete" | "close", data: any) => void;
+  handleDelete: (id: number) => void;
 }
 
-const TableEvents: React.FC<props> = ({ data, pagination, onChangePagination, handleModalOpen }): React.ReactElement => {
+const TableEvents: React.FC<props> = ({ data, pagination, onChangePagination, handleModalOpen, handleDelete }): React.ReactElement => {
   const columns: ColumnsType<organizeManagementTaskCreateInput> = [
     {
       title: "ชื่อกิจกรรม",
@@ -36,6 +37,28 @@ const TableEvents: React.FC<props> = ({ data, pagination, onChangePagination, ha
       key: "createdBy",
     },
     {
+      title: "สถานะ",
+      dataIndex: "status",
+      width: "10%",
+      align: "center",
+      key: "date",
+      render: (_: string) => {
+        let color = "";
+        let text = "";
+        if (_ === "inprocess") {
+          color = "processing";
+          text = "In Progress";
+        } else if (_ === "done") {
+          color = "success";
+          text = "Done";
+        } else {
+          color = "default";
+          text = _;
+        }
+        return <Tag color={color}>{text}</Tag>;
+      },
+    },
+    {
       title: "...",
       key: "id",
       dataIndex: "id",
@@ -45,6 +68,29 @@ const TableEvents: React.FC<props> = ({ data, pagination, onChangePagination, ha
           <Link href={`/page/events-management/${id}`}>
             <Button type="link">รายละเอียด</Button>
           </Link>
+        );
+      },
+    },
+    {
+      title: "จัดการ",
+      key: "id",
+      dataIndex: "id",
+      align: "center",
+      render: (id) => {
+        return (
+          <Popover
+            trigger="click"
+            placement="bottomRight"
+            content={
+              <Button type="primary" onClick={() => handleDelete(id)} size="small">
+                ยืนยัน
+              </Button>
+            }
+          >
+            <Button type="link" danger>
+              ลบ
+            </Button>
+          </Popover>
         );
       },
     },

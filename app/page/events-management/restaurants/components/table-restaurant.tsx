@@ -204,7 +204,7 @@ const TableRestaurant: React.FC<props> = ({
       <Card>
         <div className="flex justify-end mb-2">
           <Button type="primary" htmlType="button" onClick={() => handleModalOpen(true, "create", null)}>
-            {`เพิ่มร้านอาหาร`}
+            {`เพิ่มผู้ให้บริการ (Vendors)`}
           </Button>
         </div>
         <Table

@@ -176,14 +176,14 @@ export default function Page() {
                 title: <span>หน้าหลัก</span>,
               },
               {
-                title: <span>ร้านอาหาร</span>,
+                title: <span>ผู้ให้บริการ(Vendors)</span>,
               },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
           <div className="title-page-font" style={{ display: "flex", alignItems: "left" }}>
-            <span style={{ marginRight: "8px" }}>การจัดการร้านอาหาร</span>
+            <span style={{ marginRight: "8px" }}>การจัดการผู้ให้บริการ (Vendors)</span>
           </div>
         </Divider>
         <Col span={24}>

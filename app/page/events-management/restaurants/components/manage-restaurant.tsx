@@ -24,7 +24,7 @@ const ManageRestaurant: React.FC<props> = ({
   return (
     <div>
       <Modal
-        title="เพิ่มร้านอาหาร"
+        title="เพิ่มผู้ให้บริการ (Vendors)"
         closable={{ "aria-label": "Custom Close Button" }}
         open={handleModal.open}
         onCancel={() => handleModalOpen(false, "close", null)}
@@ -33,7 +33,7 @@ const ManageRestaurant: React.FC<props> = ({
         style={{ top: 10 }}
       >
         <Form form={ManageForm} autoComplete="off" layout={"vertical"} onFinish={(e) => onfinish(handleModal.type, e)}>
-          <Form.Item name={`name`} label={`ชื่อร้านอาหาร`}>
+          <Form.Item name={`name`} label={`ชื่อร้าน`}>
             <Input />
           </Form.Item>
           <Form.List name="menu">
@@ -44,7 +44,7 @@ const ManageRestaurant: React.FC<props> = ({
                     <div key={key}>
                       <Row gutter={[8, 8]}>
                         <Col span={8}>
-                          <Form.Item {...restField} name={[name, "name"]} label="รายการอาหาร" rules={[{ required: true }]}>
+                          <Form.Item {...restField} name={[name, "name"]} label="รายการ" rules={[{ required: true }]}>
                             <Input placeholder="Please Input" />
                           </Form.Item>
                         </Col>
@@ -68,7 +68,7 @@ const ManageRestaurant: React.FC<props> = ({
                   );
                 })}
                 <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />} className="w-full my-2">
-                  เพิ่มรายการอาหาร
+                  เพิ่มรายการ
                 </Button>
               </>
             )}

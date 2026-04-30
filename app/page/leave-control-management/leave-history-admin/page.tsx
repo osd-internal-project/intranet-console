@@ -183,17 +183,13 @@ export default function Page() {
       typeId: values.typeId,
       startDate,
     });
-
     const remainingLeave = await validateCheckLeaveDay(dataLeaveUserById, dataMasterType, user.startWork);
-
     const total = remainingLeave - sumDataLeave;
     const currentYear = dayjs(startDate).year();
-
     if (total < 0) {
       message.error(`ไม่สามารถทำการลาได้เนื่องจากวันลาที่เหลืออยู่${currentYear ? `ในปี ${currentYear} ` : ""}หมด หรือไม่เพียงพอ`);
       return { valid: false, hours: 0 };
     }
-
     return { valid: true, hours: sumDataLeave };
   };
 

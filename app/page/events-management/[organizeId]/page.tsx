@@ -120,20 +120,61 @@ export default function Page() {
     setData(newData);
   };
 
+  // const deleteTask = async (key: string, parentNode: string, record: any) => {
+  //   const { children, files, id, ...conditions } = record || {};
+  //   const filterRecursive = (list: TaskNode[]): TaskNode[] => {
+  //     return list
+  //       .filter((item) => item.key !== key)
+  //       .map((item) => ({
+  //         ...item,
+  //         children: item.children ? filterRecursive(item.children) : undefined,
+  //       }));
+  //   };
+  //   setData(filterRecursive(data));
+  //   if (parentNode === "parent") {
+  //     await organizemanagementServices.deleteTask(id);
+  //     api.success({
+  //       message: "Delete Task success",
+  //     });
+  //     setLoading(true);
+  //   } else {
+  //     await organizemanagementServices.deleteSubTask(id);
+  //     api.success({
+  //       message: "Delete Task success",
+  //     });
+  //     setLoading(true);
+  //   }
+  // };
+
   const deleteTask = async (key: string, parentNode: string, record: any) => {
     const { id } = record || {};
-    if (parentNode === "parent") {
-      await organizemanagementServices.deleteTask(id);
+    const filterRecursive = (list: TaskNode[]): TaskNode[] => {
+      return list
+        .filter((item) => item.key !== key)
+        .map((item) => ({
+          ...item,
+          children: item.children ? filterRecursive(item.children) : undefined,
+        }));
+    };
+    setData(filterRecursive(data));
+    if (!id) {
+      return;
+    }
+
+    try {
+      if (parentNode === "parent") {
+        await organizemanagementServices.deleteTask(id);
+      } else {
+        await organizemanagementServices.deleteSubTask(id);
+      }
       api.success({
         message: "Delete Task success",
       });
       setLoading(true);
-    } else {
-      await organizemanagementServices.deleteSubTask(id);
-      api.success({
-        message: "Delete Task success",
+    } catch (error) {
+      api.error({
+        message: "Delete failed",
       });
-      setLoading(true);
     }
   };
   const createTask = async (key: string, parentNode: string, record: any) => {
@@ -218,7 +259,8 @@ export default function Page() {
       status: task.status,
       remark: task.remark,
       pathFiles: task.pathFiles,
-      files: task.pathFiles
+      expenses: task.expenses,
+      files: task.pathFiles.objectName
         ? [
             {
               uid: "-1",
@@ -227,7 +269,7 @@ export default function Page() {
               url: task.fileUrl,
             },
           ]
-        : [],
+        : undefined,
       children: task.organizeSubTasks?.map((sub: any) => {
         return {
           key: `sub-${sub.id}`,
@@ -239,7 +281,8 @@ export default function Page() {
           status: sub.status,
           remark: sub.remark,
           pathFiles: sub.pathFiles,
-          files: sub.pathFiles
+          expenses: sub.expenses,
+          files: sub.pathFiles.objectName
             ? [
                 {
                   uid: "-1",
@@ -248,7 +291,7 @@ export default function Page() {
                   url: sub.fileUrl,
                 },
               ]
-            : [],
+            : undefined,
         };
       }),
     }));
@@ -294,31 +337,12 @@ export default function Page() {
       title: "Task",
       dataIndex: "name",
       render: (text: string, record: TaskNode) => {
-        const parent = findParent(data, record.key);
-        const isSubtask = !!parent;
-        const isRestaurantSubtask = (isSubtask && parent?.name === "restaurant") || (isSubtask && parent?.name === "ร้านอาหาร");
         const style = {
-          paddingLeft: isSubtask ? 24 : 0,
+          paddingLeft: 0,
           display: "flex",
           gap: 8,
           alignItems: "center",
         };
-        if (isRestaurantSubtask) {
-          return (
-            <div style={style}>
-              <Select
-                value={text}
-                showSearch
-                optionFilterProp="label"
-                allowClear
-                style={{ width: "100%" }}
-                options={optionsRestaurant}
-                onChange={(value) => handleManage(record.key, "name", value)}
-                placeholder={`Please Select`}
-              />
-            </div>
-          );
-        }
         return (
           <div style={style}>
             <Input value={text} onChange={(e) => handleManage(record.key, "name", e.target.value)} placeholder={`Please Input`} />
@@ -330,7 +354,7 @@ export default function Page() {
       title: "มอบหมายให้",
       dataIndex: "assigned",
       render: (_: any, record: TaskNode) => {
-        if (isParent(record)) return null;
+        // if (isParent(record)) return null;
         return (
           <Select
             value={_}
@@ -349,7 +373,7 @@ export default function Page() {
       title: "วันที่ได้รับมอบหมาย",
       dataIndex: "assignedDate",
       render: (_: any, record: TaskNode) => {
-        if (isParent(record)) return null;
+        // if (isParent(record)) return null;
         return (
           <DatePicker
             value={_ ? dayjs(_) : undefined}
@@ -363,7 +387,7 @@ export default function Page() {
       title: "สถานะ",
       dataIndex: "status",
       render: (_: any, record: TaskNode) => {
-        if (isParent(record)) return null;
+        // if (isParent(record)) return null;
         return (
           <Select
             value={_ ? _ : undefined}
@@ -382,7 +406,7 @@ export default function Page() {
       title: "หมายเหตุ",
       dataIndex: "remark",
       render: (_: any, record: TaskNode) => {
-        if (isParent(record)) return null;
+        // if (isParent(record)) return null;
         return (
           <Input.TextArea
             value={_}
@@ -395,10 +419,18 @@ export default function Page() {
       },
     },
     {
+      title: "ค่าใช้จ่าย",
+      dataIndex: "expenses",
+      render: (_: any, record: TaskNode) => {
+        // if (isParent(record)) return null;
+        return <Input type="number" value={_} placeholder={`Input number`} onChange={(e) => handleManage(record.key, "expenses", e.target.value)} />;
+      },
+    },
+    {
       title: "วันครบกำหนด",
       dataIndex: "dueDate",
       render: (_: any, record: TaskNode) => {
-        if (isParent(record)) return null;
+        // if (isParent(record)) return null;
         return (
           <DatePicker
             value={_ ? dayjs(_) : undefined}
@@ -413,14 +445,12 @@ export default function Page() {
       dataIndex: "files",
       align: "center",
       render: (_: any, record: TaskNode) => {
-        if (isParent(record)) return null;
-        const parent = findParent(data, record.key);
-        const isChild = !!parent;
+        // if (isParent(record)) return null;
         return (
           <div className="grid grid-cols-1 text-center items-center w-full gap-2">
             <div className="flex justify-center">
               <Upload
-                fileList={record.files || []}
+                fileList={record.files ? record.files : []}
                 listType="picture-card"
                 maxCount={1}
                 beforeUpload={async (file) => {
@@ -434,7 +464,7 @@ export default function Page() {
               </Upload>
             </div>
 
-            <Button type="link" onClick={() => downloadFile(record.pathFiles)}>{`ดาวน์โหลดไฟล์`}</Button>
+            <Button type="link" onClick={() => downloadFile(record.pathFiles)} disabled={record.files ? false : true}>{`ดาวน์โหลดไฟล์`}</Button>
           </div>
         );
       },
@@ -447,22 +477,18 @@ export default function Page() {
         const hasDetail = record.status;
         const doneStatus = record.status === "done";
         const created = isCreated(record);
-
         return (
           <Space>
-            {!isChild && !hasDetail && <Button type="text" icon={<PlusCircleOutlined />} onClick={() => addSubTask(record.key)} />}
-
+            {!isChild && <Button type="text" icon={<PlusCircleOutlined />} onClick={() => addSubTask(record.key)} />}
             <Popconfirm title="ลบ?" onConfirm={() => deleteTask(record.key, isChild ? "children" : "parent", record)}>
               <Button danger type="text" icon={<DeleteOutlined />} />
             </Popconfirm>
-
             {/* ✅ CONFIRM */}
             {!created && (
               <Popconfirm title="ยืนยัน ?" onConfirm={() => createTask(record.key, isChild ? "children" : "parent", record)}>
                 <Button type="text" icon={<CheckCircleOutlined style={{ color: "green" }} />} />
               </Popconfirm>
             )}
-
             {created && !doneStatus && (
               <Popconfirm title="ยืนยัน ?" onConfirm={() => editTask(record.key, isChild ? "children" : "parent", record)}>
                 <Button type="text" icon={<EditOutlined style={{ color: "#1677ff" }} />} />

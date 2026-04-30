@@ -34,4 +34,5 @@ export type TaskNode = {
   pathFiles?: any;
   children?: TaskNode[];
   files?: UploadFile[];
+  expenses?: number;
 };

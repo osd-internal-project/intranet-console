@@ -186,22 +186,8 @@ export default function Page() {
 
     const remainingLeave = await validateCheckLeaveDay(dataLeaveUserById, dataMasterType, user.startWork);
 
-    const count = await LeaveManagementServices(baseUrlIntranet).countDataLeaveRange(
-      user.userId,
-      values.type_id,
-      startDate,
-      endDate,
-      values.startTime,
-      values.endTime,
-    );
-
     const total = remainingLeave - sumDataLeave;
     const currentYear = dayjs(startDate).year();
-
-    if (count.status === 200) {
-      message.error(`ช่วงเวลาที่คุณเลือก${currentYear ? `ในปี ${currentYear} ` : ""}มีการลาแล้ว กรุณาเลือกช่วงเวลาใหม่`);
-      return { valid: false, hours: 0 };
-    }
 
     if (total < 0) {
       message.error(`ไม่สามารถทำการลาได้เนื่องจากวันลาที่เหลืออยู่${currentYear ? `ในปี ${currentYear} ` : ""}หมด หรือไม่เพียงพอ`);

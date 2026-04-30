@@ -39,24 +39,17 @@ const TableRestaurant: React.FC<props> = ({
       title: "เมนู",
       dataIndex: "menu",
       key: "menu",
-      render: (menu) => {
-        const values = menu ? Object.values(menu) : [];
+      render: (menu: any[]) => {
         return (
           <Space size={[4, 8]} wrap>
-            {values.map((item: any, index) => (
+            {menu?.map((item, index) => (
               <Tag color="blue" key={index}>
-                {item}
+                {`${item.name} (${item.pricing} บ.)`}
               </Tag>
             ))}
           </Space>
         );
       },
-    },
-    {
-      title: "ราคา",
-      dataIndex: "pricing",
-      key: "pricing",
-      render: (price) => (price ? `${price.toLocaleString()} ฿` : "-"),
     },
     {
       title: "หมวดหมู่",
@@ -153,7 +146,7 @@ const TableRestaurant: React.FC<props> = ({
       render(i) {
         return (
           <div>
-            <Button onClick={() => downloadFile(i)} type="link" size="small">{`Download`}</Button>
+            <Button onClick={() => downloadFile(i)} type="link" size="small" disabled={!i ? true : false}>{`Download`}</Button>
           </div>
         );
       },

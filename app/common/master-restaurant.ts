@@ -2,7 +2,6 @@ export type ITypeMasterRestaurant = {
   id: number;
   name: string;
   menu?: object; // หรือกำหนด type ชัดเจนถ้ารู้โครงสร้าง
-  pricing?: number;
   category?: object;
   contact?: object;
   remark?: string;
@@ -15,7 +14,6 @@ export type masterRestaurantConditons = {
   where: {
     name?: string;
     menu?: object; // หรือกำหนด type ชัดเจนถ้ารู้โครงสร้าง
-    pricing?: number;
     category?: object;
   };
   take?: number;

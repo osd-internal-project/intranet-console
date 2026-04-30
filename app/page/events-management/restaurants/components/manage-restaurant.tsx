@@ -36,7 +36,44 @@ const ManageRestaurant: React.FC<props> = ({
           <Form.Item name={`name`} label={`ชื่อร้านอาหาร`}>
             <Input />
           </Form.Item>
-          <Form.Item name={`menu`} label={`รายการอาหาร`}>
+          <Form.List name="menu">
+            {(fields, { add, remove }) => (
+              <>
+                {fields.map(({ key, name, ...restField }) => {
+                  return (
+                    <div key={key}>
+                      <Row gutter={[8, 8]}>
+                        <Col span={8}>
+                          <Form.Item {...restField} name={[name, "name"]} label="รายการอาหาร" rules={[{ required: true }]}>
+                            <Input placeholder="Please Input" />
+                          </Form.Item>
+                        </Col>
+                        <Col span={8}>
+                          <Form.Item {...restField} name={[name, "pricing"]} label="ราคา" rules={[{ required: true }]}>
+                            <Input />
+                          </Form.Item>
+                        </Col>
+                        <div className="flex justify-end items-center ">
+                          <Button
+                            danger
+                            type="link"
+                            icon={<MinusCircleOutlined />}
+                            onClick={() => {
+                              remove(name);
+                            }}
+                          />
+                        </div>
+                      </Row>
+                    </div>
+                  );
+                })}
+                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />} className="w-full my-2">
+                  เพิ่มรายการอาหาร
+                </Button>
+              </>
+            )}
+          </Form.List>
+          {/* <Form.Item name={`menu`} label={`รายการอาหาร`}>
             <Select
               mode="tags"
               style={{ width: "100%" }}
@@ -47,7 +84,7 @@ const ManageRestaurant: React.FC<props> = ({
           </Form.Item>
           <Form.Item name={`pricing`} label={`ราคา`}>
             <Input />
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item name={`category`} label={`หมวดหมู่`}>
             <Select
               mode="tags"

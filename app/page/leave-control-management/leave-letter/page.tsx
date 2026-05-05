@@ -161,7 +161,7 @@ export default function Page() {
   };
 
   const validateYearlyLeave = async (values: ITypeDataLeaveCreate, user: any, dataMasterType: any, startDate: any, endDate: any) => {
-    const sumDataLeave = await validateSumTotalLeave({ ...values, startDate, endDate }, dataHolidayDay);
+    const sumDataLeave = await validateSumTotalLeave({ ...values, startDate, endDate }, dataHolidayDay, values.type_id);
 
     const dataLeaveUserById = await LeaveManagementServices(baseUrlIntranet).getdataLeaveUserById({
       userId: user.userId,
@@ -196,33 +196,12 @@ export default function Page() {
     return { valid: true, hours: sumDataLeave };
   };
 
-  // ตรวจสอบเลือกวันที่เริ่มต้น และถึงวันที่ โดยให้อยู่ในปีเดียวกัน
-  const checkDate = (startDate: any, endDate: any) => {
-    // If either date is missing, let form validators handle required behavior
-    if (!startDate || !endDate) return Promise.resolve(true);
-    const start = dayjs(startDate);
-    const end = dayjs(endDate);
-
-    // End date must not be before start date
-    // if (end.isBefore(start, "day")) {
-    //   return Promise.reject(new Error("วันที่สิ้นสุดต้องไม่อยู่ก่อนวันที่เริ่มต้น"));
-    // }
-
-    // Enforce both dates to be within the same calendar year
-    if (start.year() !== end.year()) {
-      return Promise.reject(new Error("ไม่สามารถเลือกวันที่ข้ามปีได้ กรุณาเลือกวันที่ภายในปีเดียวกัน"));
-    }
-
-    return Promise.resolve(true);
-  };
-
   // Main function
   const onfinishCreate = async (values: ITypeDataLeaveCreate) => {
     const startDateYear = dayjs(values.startDate).format("YYYY");
     const endDateYear = dayjs(values.endDate).format("YYYY");
     const isSameYear = startDateYear === endDateYear;
 
-    // Check leave status permission
     const checkStatusLeave = await checkStatusTypeLeave(values);
     if (checkStatusLeave.status === 500) return false;
 
@@ -242,28 +221,17 @@ export default function Page() {
     }
     const currentTypeLeaveData = typeLeaveTable.find((item) => item.typeId === values.type_id);
 
-    // โควตาวันลา(yearLeaveHour)
     const { quotaLeaveHour, quotaLeaveDay } = getQuotaLeavePerYear(dataMasterType, user.startWork);
-    // console.log("โควตาวันลา(yearLeaveHour):", quotaLeaveHour);
-
-    // ลามาแล้ว(usedLeaveHour)
     const usedDays = Number(currentTypeLeaveData?.haveLeaveDays || 0);
     const usedHoursPart = Number(currentTypeLeaveData?.haveLeaveHours || 0);
     const usedLeaveHour = usedDays * 8 + usedHoursPart;
-    // console.log("ลามาแล้ว(usedLeaveHour):", usedLeaveHour);
-
-    // คงเหลือก่อนอนุมัติ(beforeLeaveHour)
     const beforeLeaveHour = Number(currentTypeLeaveData?.limitLeaveLastResult || 0);
-    // console.log("คงเหลือ(beforeLeaveHour):", beforeLeaveHour);
 
-    // console.log("ลาครั้งนี้(leaveHour):", totalLeaveHours);
-
-    // คงเหลือหลังอนุมัติ(afterLeaveHour)
     const afterLeaveHour = beforeLeaveHour - totalLeaveHours;
     // console.log("คงเหลือหลังอนุมัติ(afterLeaveHour):", afterLeaveHour);
 
     const base = createLeaveBase(values, user, dataMasterType, totalLeaveHours, quotaLeaveHour, usedLeaveHour, beforeLeaveHour, afterLeaveHour);
-    // console.log("base:", base);
+
     showConfirmModal(base, !isSameYear);
   };
 
@@ -298,7 +266,6 @@ export default function Page() {
               getUser={user}
               getTypeLeaveOption={getTypeLeaveOption}
               onfinishCreate={(e: ITypeDataLeaveCreate) => {
-                // checkDate(e.startDate, e.endDate)
                 onfinishCreate(e);
               }}
               createdataleaveForm={createdataleaveForm}

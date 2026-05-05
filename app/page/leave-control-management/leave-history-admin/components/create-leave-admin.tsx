@@ -100,7 +100,7 @@ const CreateLeaveAdminPage: React.FC = (): React.ReactElement => {
   };
 
   const validateYearlyLeave = async (values: ITypeDataLeaveCreate, user: any, dataMasterType: any, startDate: any, endDate: any) => {
-    const sumDataLeave = await validateSumTotalLeave({ ...values, startDate, endDate }, dataHolidayDay);
+    const sumDataLeave = await validateSumTotalLeave({ ...values, startDate, endDate }, dataHolidayDay, values.type_id);
 
     const dataLeaveUserById = await LeaveManagementServices(baseUrlIntranet).getdataLeaveUserById({
       userId: user.userId,

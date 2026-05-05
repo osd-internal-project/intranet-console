@@ -175,7 +175,7 @@ export default function Page() {
   const validateYearlyLeave = async (values: any, user: any, dataMasterType: any, startDate: any, endDate: any) => {
     const yearNow = dayjs(new Date()).format("YYYY");
     const dataResult = await MasterHolidaysService(baseUrlIntranet).getHolidayByYear(yearNow);
-    const sumDataLeave = await validateSumTotalLeave({ ...values, startDate, endDate }, dataResult);
+    const sumDataLeave = await validateSumTotalLeave({ ...values, startDate, endDate }, dataResult, values.typeId);
     const dataLeaveUserById = await LeaveManagementServices(baseUrlIntranet).getdataLeaveUserById({
       userId: user.userId,
       typeId: values.typeId,

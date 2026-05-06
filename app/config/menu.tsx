@@ -226,6 +226,11 @@ export const MenuSider: MenuItem[] = [
         label: `ผู้ให้บริการ(Vendors)`,
         rule: ["admin", "hr", "user"],
       },
+      {
+        key: `events-management/master-type-events`,
+        label: `ประเภทของการจัดงาน`,
+        rule: ["admin", "hr", "user"],
+      },
     ],
   },
   {

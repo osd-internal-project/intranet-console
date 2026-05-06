@@ -32,6 +32,7 @@ export type organizeManagementConditons = {
     createdBy?: string;
     updatedBy?: string;
     status?: string | null;
+    typeId: string;
   };
   take: number;
   skip: number;

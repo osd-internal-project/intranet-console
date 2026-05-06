@@ -2,7 +2,7 @@ import { AxiosInstance } from "axios";
 import { ITMasterTypeEvents } from "../common/master-type-events";
 export interface TMServices {
   dataTable: (conditions: ITMasterTypeEvents | {}, take: number, skip: number) => Promise<{ data: ITMasterTypeEvents[]; count: number }>;
-
+  dataOption: () => Promise<ITMasterTypeEvents[]>;
   create: (form: any) => Promise<ITMasterTypeEvents>;
   update: (id: number, form: any) => Promise<ITMasterTypeEvents>;
   delete: (id: number) => Promise<ITMasterTypeEvents>;
@@ -15,6 +15,17 @@ const MasterTypeEventsServices = (axiosInstance: AxiosInstance): TMServices => {
     dataTable: async (conditions, take, skip) => {
       return await axiosInstance
         .get(`${baseUrl}?take=${take}&skip=${skip}`, { params: conditions })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return;
+        });
+    },
+    dataOption: async () => {
+      return await axiosInstance
+        .get(`${baseUrl}/options`)
         .then((res) => {
           return res.data;
         })

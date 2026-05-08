@@ -146,15 +146,19 @@ export default function Page() {
         >
           <Form form={FormManage} layout="vertical" autoComplete="off" onFinish={onFinish}>
             <Form.Item name="name" label="ชื่อกิจกรรม">
-              <Input />
+              <Input placeholder="Please Input" />
             </Form.Item>
             <Form.Item name="typeId" label="ประเภทของงานกิจกรรม">
               <Select
+                placeholder="Please Select"
                 options={masterTypes.map((type) => ({
-                  value: type.id,
+                  value: type.typeId,
                   label: type.name,
                 }))}
               />
+            </Form.Item>
+            <Form.Item name="location" label="สถานที่จัดงาน">
+              <Input placeholder="Please Input" />
             </Form.Item>
             <Form.Item name="date" label="วันที่จัดกิจกรรม">
               <DatePicker />

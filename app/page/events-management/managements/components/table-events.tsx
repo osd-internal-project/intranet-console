@@ -19,7 +19,14 @@ const TableEvents: React.FC<props> = ({ data, pagination, onChangePagination, ha
       title: "ชื่อกิจกรรม",
       dataIndex: "name",
       key: "name",
-      width: "80%",
+      width: "70%",
+    },
+    {
+      title: "สถานที่",
+      dataIndex: "location",
+      width: "10%",
+      align: "center",
+      key: "location",
     },
     {
       title: "วันที่จัดกิจกรรม",

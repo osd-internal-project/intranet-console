@@ -28,14 +28,14 @@ jobs:
   
         - name: Build and push Docker image
           run: |
-            docker build --platform linux/amd64 -t osd-intranet-fe:v1.1.1 .
-            docker tag osd-intranet-fe:v1.1.1 ${{ secrets.DOCKER_USERNAME }}/osd-intranet-fe:v1.1.1
-            docker push ${{ secrets.DOCKER_USERNAME }}/osd-intranet-fe:v1.1.1
+            docker build --platform linux/amd64 -t osd-intranet-fe:v1.2.37 .
+            docker tag osd-intranet-fe:v1.2.37 ${{ secrets.DOCKER_USERNAME }}/osd-intranet-fe:v1.2.37
+            docker push ${{ secrets.DOCKER_USERNAME }}/osd-intranet-fe:v1.2.37
 
         - name: Deploy on Server
           run: |
-            docker rmi -f ${{ secrets.DOCKER_USERNAME }}/osd-intranet-fe:v1.1.1|| true
-            docker pull ${{ secrets.DOCKER_USERNAME }}/osd-intranet-fe:v1.1.1
+            docker rmi -f ${{ secrets.DOCKER_USERNAME }}/osd-intranet-fe:v1.2.37|| true
+            docker pull ${{ secrets.DOCKER_USERNAME }}/osd-intranet-fe:v1.2.37
             docker stop osd-intranet-fe || true
             docker rm osd-intranet-fe || true
-            docker run -d --restart=always -p 8800:80 --name osd-intranet-fe ${{ secrets.DOCKER_USERNAME }}/osd-intranet-fe:v1.1.1
+            docker run -d --restart=always -p 8800:80 --name osd-intranet-fe ${{ secrets.DOCKER_USERNAME }}/osd-intranet-fe:v1.2.37

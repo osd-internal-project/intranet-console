@@ -4,34 +4,83 @@ import { UserContext, type UserContectType } from "@/app/config/userContext";
 import employeePropertyService from "@/app/services/employee-property.service";
 import UserServices from "@/app/services/user.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
-import { Button, Form, Input, message, Popover, Select, Table, Image, Tag } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  message,
+  Modal,
+  Popover,
+  Select,
+  Space,
+  Table,
+  Image,
+  Upload,
+  Tag,
+  Checkbox,
+  Row,
+  Col,
+} from "antd";
 import type { ColumnsType } from "antd/es/table";
+import type { UploadFile } from "antd/es/upload/interface";
 import dayjs from "dayjs";
 import React, { useContext, useEffect, useState } from "react";
 import { saveAs } from "file-saver";
 import type { ITMistakesType } from "@/app/common/mistakes-type";
+import { intersection } from "lodash";
 
 export interface props {
   reloadKey: number;
 }
 
-const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.ReactElement => {
+const EmployeePropertyTeamsTable: React.FC<props> = ({
+  reloadKey,
+}): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || {
     user: null,
   };
-  const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
+
+  const { id24Axios, tokenAccess } = useId24();
+
+  const baseUrIntranet = id24Axios(
+    loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET,
+  );
   const baseUrUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
-  const baseUrlReport = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_REPORT);
+  const baseUrlReport = id24Axios(
+    loadAppConfig().NEXT_PUBLIC_API_BASE_URL_REPORT,
+  );
   const employeepropertyservice = employeePropertyService(baseUrIntranet);
   const employeepropertyserviceReprot = employeePropertyService(baseUrlReport);
   const userservices = UserServices(baseUrUser);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [dataTableTeams, setDataTableTeams] = useState<ITEmployeePropertyCommon[]>([]);
-  const [dropdown, setDropdown] = useState<{ value: string; label: string }[]>([]);
 
-  const [params, setParams] = useState<{ type: string; name: string; userId: string }>({ type: "", name: "", userId: "" });
+  const sideMenuGroups =
+    tokenAccess && tokenAccess.userAccess.length > 0
+      ? Array.from(
+          new Set(tokenAccess?.userAccess.map((item) => item.roles).flat()),
+        )
+      : [];
+  const isHr = intersection(sideMenuGroups, ["hr", "admin"]).length > 0;
+
+  const [loading, setLoading] = useState<boolean>(true);
+  const [dataTableTeams, setDataTableTeams] = useState<
+    ITEmployeePropertyCommon[]
+  >([]);
+  const [dropdown, setDropdown] = useState<{ value: string; label: string }[]>(
+    [],
+  );
+
+  const [params, setParams] = useState<{
+    type: string;
+    name: string;
+    userId: string;
+  }>({ type: "", name: "", userId: "" });
   const [filterForm] = Form.useForm();
+  const [editForm] = Form.useForm();
+  const [openEdit, setOpenEdit] = useState<boolean>(false);
+  const [editFiles, setEditFiles] = useState<UploadFile[]>([]);
+  const [selectedRecord, setSelectedRecord] =
+    useState<ITEmployeePropertyCommon | null>(null);
+
   useEffect(() => {
     if (loading) {
       fetchData();
@@ -54,7 +103,42 @@ const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.React
       return false;
     }
     const userInOwnerGroup = await userservices.getUsersAllDropdown();
-    setDropdown(userInOwnerGroup.map((item: any) => ({ value: item.userId, label: `${item.firstNameTh} ${item.lastNameTh}` })));
+    setDropdown(
+      userInOwnerGroup.map((item: any) => ({
+        value: item.userId,
+        label: `${item.firstNameTh} ${item.lastNameTh}`,
+      })),
+    );
+  };
+
+  const handleEdit = (record: ITEmployeePropertyCommon) => {
+    setSelectedRecord(record);
+    setOpenEdit(true);
+    if (record.imageUrl) {
+      setEditFiles([
+        {
+          uid: "-1",
+          name: "image.png",
+          status: "done",
+          url: record.imageUrl,
+        },
+      ]);
+    } else {
+      setEditFiles([]);
+    }
+    editForm.setFieldsValue({
+      ...record,
+    });
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await employeepropertyservice.delete(id);
+      message.success("ลบข้อมูลสำเร็จ");
+      setLoading(true);
+    } catch {
+      message.error("ไม่สามารถลบข้อมูลได้");
+    }
   };
 
   const employeePropertyColumns: ColumnsType<ITEmployeePropertyCommon> = [
@@ -63,12 +147,17 @@ const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.React
       dataIndex: "id",
       key: "id",
       width: 80,
-      render: (value: string, record: ITEmployeePropertyCommon, index: number) => index + 1,
+      render: (
+        value: string,
+        record: ITEmployeePropertyCommon,
+        index: number,
+      ) => index + 1,
     },
     {
       title: "ชื่อพนักงาน",
       key: "employeeName",
-      render: (_, record) => `${record.users.firstNameTh} ${record.users.lastNameTh}`,
+      render: (_, record) =>
+        `${record.users.firstNameTh} ${record.users.lastNameTh}`,
     },
     {
       title: "ตำแหน่ง",
@@ -92,7 +181,8 @@ const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.React
       title: "ทรัพย์สินส่วนกลาง",
       dataIndex: "common",
       key: "common",
-      render: (value: boolean) => (value ? <Tag color="green">{`ใช่`}</Tag> : <Tag>{`ไม่ใช่`}</Tag>),
+      render: (value: boolean) =>
+        value ? <Tag color="green">{`ใช่`}</Tag> : <Tag>{`ไม่ใช่`}</Tag>,
     },
     {
       title: "ชื่อทรัพย์สิน",
@@ -104,13 +194,21 @@ const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.React
             {/* Image */}
             <div className="w-[50px] h-[50px] rounded-lg overflow-hidden border bg-gray-100 flex items-center justify-center">
               {record.imageUrl ? (
-                <Image src={record.imageUrl} alt={e} width={50} height={50} className="object-cover" />
+                <Image
+                  src={record.imageUrl}
+                  alt={e}
+                  width={50}
+                  height={50}
+                  className="object-cover"
+                />
               ) : (
                 <span className="text-xs text-gray-400">No Image</span>
               )}
             </div>
             <div className="flex flex-col">
-              <span className="font-medium text-gray-800">{e === "Other" ? record.nameOther : e}</span>
+              <span className="font-medium text-gray-800">
+                {e === "Other" ? record.nameOther : e}
+              </span>
               <span className="text-xs text-gray-500">{`${record.brand}`}</span>
             </div>
           </div>
@@ -153,7 +251,9 @@ const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.React
       dataIndex: "createdBy",
       key: "createdBy",
       render: (_, record) => {
-        const name = dropdown.filter((item) => item.value === record.createdBy)?.[0]?.label;
+        const name = dropdown.filter(
+          (item) => item.value === record.createdBy,
+        )?.[0]?.label;
         return name;
       },
     },
@@ -162,6 +262,37 @@ const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.React
       dataIndex: "createdAt",
       key: "createdAt",
       render: (value: string) => new Date(value).toLocaleDateString("en-GB"),
+    },
+    {
+      hidden: !isHr,
+      title: "แก้ไขข้อมูล",
+      dataIndex: "id",
+      key: "actions",
+      render: (value: number, record: ITEmployeePropertyCommon) => (
+        <Space>
+          <Button type="link" onClick={() => handleEdit(record)}>
+            แก้ไข
+          </Button>
+          <Popover
+            trigger="click"
+            placement="left"
+            content={
+              <Button
+                danger
+                type="primary"
+                block
+                onClick={() => handleDelete(value)}
+              >
+                Delete
+              </Button>
+            }
+          >
+            <Button type="link" danger>
+              ลบ
+            </Button>
+          </Popover>
+        </Space>
+      ),
     },
   ];
 
@@ -198,7 +329,10 @@ const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.React
       const blob = new Blob([data], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
-      saveAs(blob, `รายงานอุปกรณ์-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`);
+      saveAs(
+        blob,
+        `รายงานอุปกรณ์-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`,
+      );
       message.success("สำเร็จ");
     }
   };
@@ -215,7 +349,13 @@ const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.React
         onFinish={onFinish}
       >
         <Form.Item label="รายชื่อ" name="userId">
-          <Select showSearch allowClear optionFilterProp="label" placeholder="Please Select" options={dropdown} />
+          <Select
+            showSearch
+            allowClear
+            optionFilterProp="label"
+            placeholder="Please Select"
+            options={dropdown}
+          />
         </Form.Item>
         <Form.Item label="ประเภททรัพย์สิน" name="type">
           <Select
@@ -244,7 +384,12 @@ const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.React
   return (
     <div>
       <div className="flex justify-between mb-2 w-full">
-        <Popover placement="bottomLeft" content={content} trigger="click" overlayStyle={{ width: 500 }}>
+        <Popover
+          placement="bottomLeft"
+          content={content}
+          trigger="click"
+          overlayStyle={{ width: 500 }}
+        >
           <Button type="primary">Filters</Button>
         </Popover>
         <Button onClick={() => handleExport()}>Export</Button>
@@ -257,13 +402,333 @@ const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey }): React.React
         expandable={{
           expandedRowRender: (record) => {
             console.log(record);
-            return <Table columns={mistakeColumns} dataSource={record.mistakesType} rowKey="id" pagination={false} size="small" />;
+            return (
+              <Table
+                columns={mistakeColumns}
+                dataSource={record.mistakesType}
+                rowKey="id"
+                pagination={false}
+                size="small"
+              />
+            );
           },
           rowExpandable: (record) => {
             return record.mistakesType && record.mistakesType.length > 0;
           },
         }}
       />
+      <Modal
+        title="แก้ไขข้อมูลทรัพย์สิน"
+        open={openEdit}
+        onCancel={() => {
+          setOpenEdit(false);
+          editForm.resetFields();
+          setSelectedRecord(null);
+          setEditFiles([]);
+        }}
+        footer={null}
+        width={900}
+      >
+        <Form
+          form={editForm}
+          layout="vertical"
+          onFinish={async (values) => {
+            if (!selectedRecord) return;
+            try {
+              await employeepropertyservice.update(
+                selectedRecord.id,
+                values,
+                editFiles,
+              );
+              message.success("แก้ไขข้อมูลสำเร็จ");
+              setOpenEdit(false);
+              editForm.resetFields();
+              setEditFiles([]);
+              setSelectedRecord(null);
+              setLoading(true);
+            } catch {
+              message.error("เกิดข้อผิดพลาด");
+            }
+          }}
+        >
+          <Row gutter={[16, 16]}>
+            <Col span={24}>
+              <Form.Item label="รูปภาพ">
+                <Upload
+                  listType="picture-card"
+                  maxCount={1}
+                  fileList={editFiles}
+                  beforeUpload={() => false}
+                  onChange={(info) => setEditFiles(info.fileList)}
+                >
+                  {editFiles.length < 1 && "+ Upload"}
+                </Upload>
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                name={"userId"}
+                label="เจ้าของทรัพย์สิน"
+                rules={[{ required: true }]}
+              >
+                <Select
+                  showSearch
+                  allowClear
+                  optionFilterProp="label"
+                  placeholder="Please Select"
+                  options={dropdown}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                name="type"
+                label="ประเภททรัพย์สิน"
+                rules={[{ required: true }]}
+              >
+                <Select
+                  options={[
+                    {
+                      label: "อุปกรณ์คอมพิวเตอร์",
+                      value: "computer_equipment",
+                    },
+                    { label: "อุปกรณ์สำนักงาน", value: "office_equipment" },
+                    { label: "อื่นๆ", value: "other_asset" },
+                  ]}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                noStyle
+                shouldUpdate={(prev, cur) =>
+                  prev?.type !== cur?.type || prev?.name !== cur?.name
+                }
+              >
+                {({ getFieldValue }) => {
+                  const selectedType = getFieldValue("type");
+                  const selectedName = getFieldValue("name");
+
+                  return (
+                    <>
+                      <Form.Item name={"name"} label="ชื่อทรัพย์สิน">
+                        <Select
+                          showSearch
+                          allowClear
+                          optionFilterProp="label"
+                          placeholder="Please Select"
+                          options={[
+                            {
+                              label: "Notebook",
+                              value: "Notebook",
+                              type: "computer_equipment",
+                            },
+                            {
+                              label: "PC",
+                              value: "PC",
+                              type: "computer_equipment",
+                            },
+                            {
+                              label: "Monitor",
+                              value: "Monitor",
+                              type: "computer_equipment",
+                            },
+                            {
+                              label: "Keyboard",
+                              value: "Keyboard",
+                              type: "computer_equipment",
+                            },
+                            {
+                              label: "Mouse",
+                              value: "Mouse",
+                              type: "computer_equipment",
+                            },
+                            {
+                              label: "Other",
+                              value: "Other",
+                              type: "computer_equipment",
+                            },
+                            {
+                              label: "IP Phone",
+                              value: "IP Phone",
+                              type: "office_equipment",
+                            },
+                            {
+                              label: "Hard Phone",
+                              value: "Hard Phone",
+                              type: "office_equipment",
+                            },
+                            {
+                              label: "Adapter",
+                              value: "Adapter",
+                              type: "office_equipment",
+                            },
+                            {
+                              label: "Charger",
+                              value: "Charger",
+                              type: "office_equipment",
+                            },
+                            {
+                              label: "โต๊ะประชุม",
+                              value: "โต๊ะประชุม",
+                              type: "office_equipment",
+                            },
+                            {
+                              label: "โต๊ะทำงานส่วนตัว",
+                              value: "โต๊ะทำงานส่วนตัว",
+                              type: "office_equipment",
+                            },
+                            {
+                              label: "เก้าอี้ส่วนกลาง",
+                              value: "เก้าอี้ส่วนกลาง",
+                              type: "office_equipment",
+                            },
+                            {
+                              label: "เก้าอี้ทำงานส่วนตัว",
+                              value: "เก้าอี้ทำงานส่วนตัว",
+                              type: "office_equipment",
+                            },
+                            {
+                              label: "ตู้เก็บเอกสาร",
+                              value: "ตู้เก็บเอกสาร",
+                              type: "office_equipment",
+                            },
+                            {
+                              label: "เครื่องถ่ายเอกสาร",
+                              value: "เครื่องถ่ายเอกสาร",
+                              type: "office_equipment",
+                            },
+                            {
+                              label: "เครื่องย่อยกระดาษ",
+                              value: "เครื่องย่อยกระดาษ",
+                              type: "office_equipment",
+                            },
+                            {
+                              label: "เครื่องฟอกอากาศ",
+                              value: "เครื่องฟอกอากาศ",
+                              type: "office_equipment",
+                            },
+                            {
+                              label: "TV",
+                              value: "TV",
+                              type: "office_equipment",
+                            },
+                            {
+                              label: "Other",
+                              value: "Other",
+                              type: "office_equipment",
+                            },
+                            {
+                              label: "Mobile Phone",
+                              value: "Mobile Phone",
+                              type: "other_asset",
+                            },
+                            {
+                              label: "Sim Moblie",
+                              value: "Sim Moblie",
+                              type: "other_asset",
+                            },
+                            {
+                              label: "Pocket Wifi",
+                              value: "Pocket Wifi",
+                              type: "other_asset",
+                            },
+                            {
+                              label: "Other",
+                              value: "Other",
+                              type: "other_asset",
+                            },
+                          ].filter((opt) => opt.type === selectedType)}
+                          onChange={(val) => {
+                            if (val !== "Other") {
+                              editForm.setFieldValue("nameOther", undefined);
+                            }
+                          }}
+                        />
+                      </Form.Item>
+
+                      {selectedName === "Other" && (
+                        <Form.Item
+                          name={"nameOther"}
+                          label="ชื่อทรัพย์สินอื่นๆ"
+                          rules={[
+                            {
+                              required: true,
+                              message: "กรุณากรอกชื่อทรัพย์สินอื่นๆ",
+                            },
+                          ]}
+                        >
+                          <Input placeholder="คีย์บอร์ด" />
+                        </Form.Item>
+                      )}
+                    </>
+                  );
+                }}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item name="brand" label="ยี่ห้อ">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item name="serial" label="Serial">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item name="assetNumber" label="Asset Number">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item name="address" label="ที่ตั้ง">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item name="assetStatus" label="สถานะ">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                name="common"
+                label="อุปกรณ์ส่วนกลาง"
+                valuePropName="checked"
+              >
+                <Checkbox>ใช่</Checkbox>
+              </Form.Item>
+            </Col>
+            <Col span={24}>
+              <Form.Item name={"spec"} label="รายละเอียด">
+                <Input.TextArea
+                  placeholder="Please Input"
+                  showCount
+                  maxLength={500}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Form.Item className="flex justify-end">
+            <Button
+              onClick={() => {
+                setOpenEdit(false);
+                editForm.resetFields();
+                setSelectedRecord(null);
+                setEditFiles([]);
+              }}
+              style={{ marginRight: 8 }}
+            >
+              ยกเลิก
+            </Button>
+            <Button type="primary" htmlType="submit">
+              บันทึก
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

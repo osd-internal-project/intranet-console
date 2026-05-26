@@ -1,8 +1,9 @@
-import { Button, Col, Form, Input, InputNumber, Modal, Row, Select } from "antd";
+import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, Upload } from "antd";
 import React from "react";
 import { FormInstance } from "antd/lib";
 import { MaCarType } from "@/app/page/macar/common";
 import TextArea from "antd/lib/input/TextArea";
+import { UploadOutlined } from "@ant-design/icons";
 
 export interface props {
   form: FormInstance;
@@ -10,9 +11,21 @@ export interface props {
   openModal: boolean;
   checkType: string;
   onFinish: (status: string, values: any) => void;
+  handleChangeAttendFiles: (info: any) => void;
+  beforeUploadAttendFiles: (file: any) => Promise<any>;
+  attendFiles: any[];
 }
 
-const ManagementCarAvailableManage: React.FC<props> = ({ form, handleCloseModal, openModal, checkType, onFinish }): React.ReactElement => {
+const ManagementCarAvailableManage: React.FC<props> = ({
+  form,
+  handleCloseModal,
+  openModal,
+  checkType,
+  onFinish,
+  handleChangeAttendFiles,
+  beforeUploadAttendFiles,
+  attendFiles,
+}): React.ReactElement => {
   return (
     <div>
       <Modal
@@ -62,6 +75,20 @@ const ManagementCarAvailableManage: React.FC<props> = ({ form, handleCloseModal,
               <TextArea rows={4} placeholder="รายละเอียด" disabled={checkType === "delete" ? true : false} />
             </Form.Item>
           </Col>
+          {checkType === "edit" ? (
+            <div className="flex justify-end">
+              <Upload
+                accept=".pdf"
+                showUploadList={true}
+                fileList={attendFiles}
+                onChange={handleChangeAttendFiles}
+                beforeUpload={beforeUploadAttendFiles}
+                multiple={true}
+                maxCount={10}>
+                <Button icon={<UploadOutlined />} type="primary">{`อัปโหลดไฟล์`}</Button>
+              </Upload>
+            </div>
+          ) : null}
           <Row className="flex justify-center" gutter={[8, 8]}>
             {checkType !== "delete" ? (
               <>

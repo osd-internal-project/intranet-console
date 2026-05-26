@@ -18,7 +18,7 @@ export interface props {
 
 export const CreateMasterHolidays: React.FC<props> = ({ onFinishCreate, setManageStatusYear, manageStatusYear, formCreate }): React.ReactElement => {
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const masterholidaysService = MasterHolidaysService(baseUrIntranet);
   const validateName = (name: string): Promise<string | undefined> => masterholidaysService.validateNameYear(name);
   return (

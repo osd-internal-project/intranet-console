@@ -12,7 +12,7 @@ import { loadAppConfig } from "@/app/config/app-config";
 
 export default function MasterdataHolidays() {
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const masterholidaysService = MasterHolidaysService(baseUrIntranet);
   const [loading, setLoading] = useState<boolean>(true);
   const [manageStatusYear, setManageStatusYear] = useState<IManagePageYear>({

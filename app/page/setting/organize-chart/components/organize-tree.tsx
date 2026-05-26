@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, Tree } from "antd";
 
-import "../style.css";
+// import "../style.css";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { CarryOutOutlined, PlusOutlined } from "@ant-design/icons";
 import OrganizeServices from "../../../../services/organize-chart.service";

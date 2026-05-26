@@ -17,7 +17,7 @@ const MaServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
   const taskUrl = "/ma-task";
   const filesUrl = "/ma-task-files";
   const typeUrl = "/ma-type";
-  const reportUrl = "/report-ma-task";
+  const reportUrl = "/report-ma";
 
   return {
     //   findMaTaskAll: async () => {
@@ -101,11 +101,7 @@ const MaServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
     },
     uploadFiles: async (id: number, form: any) => {
       return await axiosInstance
-        .post(`${filesUrl}/${id}`, form, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+        .post(`${filesUrl}/${id}`, form)
         .then((result) => result.data)
         .catch((err) => err);
     },
@@ -130,7 +126,7 @@ const MaServices = (axiosInstance: AxiosInstance): TMaTaskServices => {
     },
     exportMaReport: async (req: { search: object }) => {
       return await axiosInstance
-        .post(`${reportUrl}/export`, { body: req.search }, { responseType: "arraybuffer" })
+        .get(`${reportUrl}/export`, { params: req.search, responseType: "blob" })
         .then((res) => {
           return res.data;
         })

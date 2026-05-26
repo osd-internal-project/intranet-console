@@ -26,7 +26,6 @@ interface Prop {
 
 const Navigation: React.FC<Prop> = ({ profileDetail, collapsed, setCollapsed, currentPath, menulist, logOut }) => {
   const [open, setOpen] = useState(false);
-  const navigate = useRouter();
   const MenuNav: MenuProps["items"] = [
     {
       key: "1",
@@ -65,18 +64,28 @@ const Navigation: React.FC<Prop> = ({ profileDetail, collapsed, setCollapsed, cu
             />
           </div>
         </div>
-        <div className="pr-8 space-x-4">
-          <Dropdown menu={{ items: MenuNav }} className="text-black hover:text-zinc-300">
+        <div className="pr-6 space-x-4 items-center flex">
+          <Dropdown menu={{ items: MenuNav }} className="text-black hover:text-zinc-300 items-center flex">
             <a onClick={(e) => e.preventDefault()}>
-              <Space className="text-base">
-                {profileDetail?.firstNameTh
-                  ? `คุณ ${profileDetail?.firstNameTh} ${profileDetail?.lastNameTh && profileDetail.lastNameTh}`
-                  : profileDetail?.username}
-                {/* {avatar && avatar instanceof Blob ? (
-                  <Avatar size={40} src={avatar instanceof Blob ? URL.createObjectURL(avatar) : ""} />
-                ) : ( */}
-                <Avatar icon={<UserOutlined />} />
-                {/* )} */}
+              <Space className="text-base ">
+                <div className="gird grid-cols-1 justify-items-end text-end mr-2">
+                  <div className="col col-span-1">
+                    <span>
+                      {profileDetail?.firstNameTh
+                        ?<div className="font-bold">{`${profileDetail?.firstNameTh} ${profileDetail?.lastNameTh && profileDetail.lastNameTh}`}</div> 
+                        : profileDetail?.username}
+                    </span>
+                  </div>
+                  <div className="col col-span-1">
+                    <span className="text-gray-400 text-sm">{profileDetail?.masterPosition?.nameTh}</span>
+                  </div>
+                </div>
+                <Avatar
+                  style={{ width: "45px", height: "45px" }}
+                  src={
+                    profileDetail?.imageId ? `${process.env.NEXT_PUBLIC_API_BASE_URL_USER}/id24users/get-image-user/${profileDetail?.imageId}` : ""
+                  }
+                />
               </Space>
             </a>
           </Dropdown>

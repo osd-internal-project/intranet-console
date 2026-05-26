@@ -20,7 +20,7 @@ const DocumentComponent: React.FC<props> = ({ handbookFile, downloadFile }): Rea
         textAlign: "left",
         padding: "5px",
         background: "#f0f2f5",
-        height: "370px",
+        height: "410px",
         overflowY: "auto",
       }}>
       {handbookFile.map((file, index) => (
@@ -28,7 +28,6 @@ const DocumentComponent: React.FC<props> = ({ handbookFile, downloadFile }): Rea
           key={file.fileId}
           hoverable
           style={{
-            width: "98%",
             margin: "5px",
             borderRadius: "8px",
             boxShadow: "0 6px 12px rgba(0, 0, 0, 0.1)",
@@ -36,7 +35,7 @@ const DocumentComponent: React.FC<props> = ({ handbookFile, downloadFile }): Rea
           }}
           size="small"
           type="inner">
-          <div style={{ marginBottom: "8px" }}>
+          <div>
             <h2
               style={{
                 overflow: "hidden",
@@ -99,7 +98,6 @@ const DocumentComponent: React.FC<props> = ({ handbookFile, downloadFile }): Rea
                         whiteSpace: "nowrap",
                         textOverflow: "ellipsis",
                         display: "inline-block",
-                        maxWidth: "180px",
                       }}>
                       <div style={{ display: "flex", alignItems: "center" }}>
                         <span style={{ marginRight: "8px" }}>{file.fileName}</span>

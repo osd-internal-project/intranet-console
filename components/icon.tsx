@@ -13,6 +13,45 @@ export const buldingIcon = (
   </svg>
 );
 
+export const checkIcon = (
+  <svg width="15" height="15" viewBox="0 0 24 24" style={{ color: "white" }}>
+    <path
+      fill="currentColor"
+      fillRule="evenodd"
+      d="M12 21a9 9 0 1 0 0-18a9 9 0 0 0 0 18m-.232-5.36l5-6l-1.536-1.28l-4.3 5.159l-2.225-2.226l-1.414 1.414l3 3l.774.774z"
+      clipRule="evenodd"
+    />
+  </svg>
+);
+
+export const loadingIcon = (
+  <svg width="15" height="15" viewBox="0 0 24 24" style={{ color: "white" }}>
+    <path
+      fill="none"
+      stroke="currentColor"
+      strokeDasharray="16"
+      strokeDashoffset="16"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      d="M12 3c4.97 0 9 4.03 9 9"
+    >
+      <animate fill="freeze" attributeName="stroke-dashoffset" dur="0.2s" values="16;0" />
+      <animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12" />
+    </path>
+  </svg>
+);
+
+export const holidayIcon = (
+  <svg width="15" height="15" viewBox="0 0 24 24" style={{ color: "white" }}>
+    <path fill="currentColor" d="M20.912 18.228h2.091v2.091h-2.091zm7.228 0h2.091v2.091H28.14zm-1.754-7.416v-2.09h-2.898V9.74l1.081 1.073z" />
+    <path
+      fill="currentColor"
+      d="M33.552 22.112v-4.409h.665l.618-.611l-7.322-7.322h-.909v1.269h-2.13L23.205 9.77h-3.516l-7.314 7.314l.618.618h.979v4.409h-1.911C9.203 19.377 8.443 13.176 8.71 8.563l.047-.094h.023c1.25 0 2.358.606 3.048 1.54l.007.01c.52.703.833 1.588.833 2.545c0 .66-.148 1.285-.414 1.844l.011-.026a3.84 3.84 0 0 0 1.518-.78l-.006.005a4.25 4.25 0 0 0 1.461-3.213c0-.955-.314-1.836-.844-2.546l.008.011A3.71 3.71 0 0 0 10.28 6.48l.026-.007c.265-.165.57-.311.891-.422l.032-.01a3.9 3.9 0 0 1 1.363-.241c1.083 0 2.064.433 2.781 1.134l-.001-.001a3.5 3.5 0 0 0-.093-1.685l.007.025a3.786 3.786 0 0 0-4.991-2.293l.025-.009a5 5 0 0 0-.702.303l.029-.014a4.6 4.6 0 0 0-.301-.909l.012.029C8.478.407 6.46-.525 4.847.29a3 3 0 0 0-1.09.95l-.006.01A3.66 3.66 0 0 1 6.53 3.003l.009.016a5 5 0 0 0-1.179-.417l-.034-.006C2.846 2.063.486 3.41.063 5.611a3.74 3.74 0 0 0 .109 1.812l-.007-.026a4.55 4.55 0 0 1 4.543-1.402l-.032-.007c.409.086.771.21 1.11.373l-.029-.013a4.11 4.11 0 0 0-4.117 2.04l-.011.02a4.6 4.6 0 0 0-.643 2.357c0 1.568.777 2.954 1.968 3.794l.015.01a4 4 0 0 0 1.709.648l.021.002a4.67 4.67 0 0 1-.671-2.423c0-.873.237-1.691.651-2.392l-.012.022a4.2 4.2 0 0 1 2.927-2.048l.025-.004c-1.417 6.453-1.809 10.949-.64 13.736H3.573v1.88h32.148v-1.88h-2.169zm-7.95-4.307h7.166v4.307h-7.166zm-10.861-.854l4.95-4.95l4.95 4.95v5.161h-5.435v-3.884h-2.749v3.884h-1.722v-5.161z"
+    />
+  </svg>
+);
+
 export const cubeIcon = (
   <svg width="15" height="15" viewBox="0 0 24 24">
     <path
@@ -160,7 +199,8 @@ export const editIcon = (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    className="ai ai-Edit">
+    className="ai ai-Edit"
+  >
     <path d="M16.474 5.408l2.118 2.117m-.756-3.982L12.109 9.27a2.118 2.118 0 0 0-.58 1.082L11 13l2.648-.53c.41-.082.786-.283 1.082-.579l5.727-5.727a1.853 1.853 0 1 0-2.621-2.621z" />
     <path d="M19 15v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h3" />
   </svg>
@@ -177,7 +217,8 @@ export const deleteIcon = (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    className="ai ai-TrashCan">
+    className="ai ai-TrashCan"
+  >
     <path d="M4 6h16l-1.58 14.22A2 2 0 0 1 16.432 22H7.568a2 2 0 0 1-1.988-1.78L4 6z" />
     <path d="M7.345 3.147A2 2 0 0 1 9.154 2h5.692a2 2 0 0 1 1.81 1.147L18 6H6l1.345-2.853z" />
     <path d="M2 6h20" />
@@ -197,7 +238,8 @@ export const deleteIconAddInventory = (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    className="ai ai-TrashCan">
+    className="ai ai-TrashCan"
+  >
     <path d="M4 6h16l-1.58 14.22A2 2 0 0 1 16.432 22H7.568a2 2 0 0 1-1.988-1.78L4 6z" />
     <path d="M7.345 3.147A2 2 0 0 1 9.154 2h5.692a2 2 0 0 1 1.81 1.147L18 6H6l1.345-2.853z" />
     <path d="M2 6h20" />
@@ -406,22 +448,22 @@ export const IconTypeLeave = (
       <path
         fillRule="evenodd"
         d="M15.347 7.116a.5.5 0 0 1 .704.064l2.083 2.5a.5.5 0 0 1-.768.64l-2.083-2.5a.5.5 0 0 1 .064-.704"
-        clip-rule="evenodd"
+        clipRule="evenodd"
       />
       <path
         fillRule="evenodd"
         d="M15.347 12.884a.5.5 0 0 1-.064-.704l2.083-2.5a.5.5 0 1 1 .768.64l-2.083 2.5a.5.5 0 0 1-.704.064"
-        clip-rule="evenodd"
+        clipRule="evenodd"
       />
       <path
         fillRule="evenodd"
         d="M17.5 10a.5.5 0 0 1-.5.5H9.5a.5.5 0 0 1 0-1H17a.5.5 0 0 1 .5.5m-14-7a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.5-.5m0 14a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.5-.5"
-        clip-rule="evenodd"
+        clipRule="evenodd"
       />
       <path
         fillRule="evenodd"
         d="M13 2.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5m0 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 1 .5-.5m-9-10a.5.5 0 0 1 .5.5v14a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5"
-        clip-rule="evenodd"
+        clipRule="evenodd"
       />
       <path d="M1.15 1.878a.514.514 0 0 1 .728-.727l16.971 16.971a.514.514 0 0 1-.727.727z" />
     </g>
@@ -475,7 +517,8 @@ export const bookingIcon = (
   <svg width="15" height="15" viewBox="0 0 24 24">
     <path
       fill="currentColor"
-      d="M6.616 21q-.691 0-1.153-.462T5 19.385V4.615q0-.69.463-1.152T6.616 3h10.769q.69 0 1.153.463T19 4.616v14.769q0 .69-.462 1.153T17.384 21zm0-1h10.769q.23 0 .423-.192t.192-.424V4.616q0-.231-.192-.424T17.384 4H16v6.116l-2-1.193l-2 1.193V4H6.616q-.231 0-.424.192T6 4.615v14.77q0 .23.192.423t.423.192M6 20V4zm6-9.885l2-1.192l2 1.192l-2-1.192z"></path>
+      d="M6.616 21q-.691 0-1.153-.462T5 19.385V4.615q0-.69.463-1.152T6.616 3h10.769q.69 0 1.153.463T19 4.616v14.769q0 .69-.462 1.153T17.384 21zm0-1h10.769q.23 0 .423-.192t.192-.424V4.616q0-.231-.192-.424T17.384 4H16v6.116l-2-1.193l-2 1.193V4H6.616q-.231 0-.424.192T6 4.615v14.77q0 .23.192.423t.423.192M6 20V4zm6-9.885l2-1.192l2 1.192l-2-1.192z"
+    ></path>
   </svg>
 );
 
@@ -590,7 +633,8 @@ const ExcelIcon: React.FC<ExcelIconProps> = ({ strokeColor = "#000", width = "1.
         y1="-2092.086"
         y2="-2075.914"
         gradientTransform="translate(0 2100)"
-        gradientUnits="userSpaceOnUse">
+        gradientUnits="userSpaceOnUse"
+      >
         <stop offset="0" stopColor="#18884f" />
         <stop offset=".5" stopColor="#117e43" />
         <stop offset="1" stopColor="#0b6631" />
@@ -685,9 +729,9 @@ export const IconUserPause = (
     <path
       fill="none"
       stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
       d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0-8 0M6 21v-2a4 4 0 0 1 4-4h3.5m3.5 2v5m4-5v5"
     />
   </svg>
@@ -698,9 +742,9 @@ export const IconUserPlus = (
     <path
       fill="none"
       stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
       d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0-8 0m8 12h6m-3-3v6M6 21v-2a4 4 0 0 1 4-4h4"
     />
   </svg>
@@ -711,9 +755,9 @@ export const IconUserActive = (
     <path
       fill="none"
       stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
       d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0-8 0M6 21v-2a4 4 0 0 1 4-4h3m3 7l5-5m0 4.5V17h-4.5"
     />
   </svg>
@@ -724,9 +768,9 @@ export const IconUsers = (
     <path
       fill="none"
       stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
       d="M5 7a4 4 0 1 0 8 0a4 4 0 1 0-8 0M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2m1-17.87a4 4 0 0 1 0 7.75M21 21v-2a4 4 0 0 0-3-3.85"
     />
   </svg>
@@ -747,8 +791,38 @@ export const IconRingCall = (
       fill="none"
       stroke="currentColor"
       stroke-miterlimit="10"
-      stroke-width="32"
+      strokeWidth="32"
       d="M451 374c-15.88-16-54.34-39.35-73-48.76c-24.3-12.24-26.3-13.24-45.4.95c-12.74 9.47-21.21 17.93-36.12 14.75s-47.31-21.11-75.68-49.39s-47.34-61.62-50.53-76.48s5.41-23.23 14.79-36c13.22-18 12.22-21 .92-45.3c-8.81-18.9-32.84-57-48.9-72.8C119.9 44 119.9 47 108.83 51.6A160 160 0 0 0 83 65.37C67 76 58.12 84.83 51.91 98.1s-9 44.38 23.07 102.64s54.57 88.05 101.14 134.49S258.5 406.64 310.85 436c64.76 36.27 89.6 29.2 102.91 23s22.18-15 32.83-31a159 159 0 0 0 13.8-25.8C465 391.17 468 391.17 451 374Z"
+    />
+  </svg>
+);
+
+export const IconImport = (
+  <svg width="24" height="24" viewBox="0 0 512 512" style={{ color: "white" }}>
+    <path fill="currentColor" d="m14 12l-4-4v3H2v2h8v3m10 2V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3h2V6h12v12H6v-3H4v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2" />
+  </svg>
+);
+
+export const IconProperty = (
+  <svg width="18" height="18" viewBox="0 0 48 48">
+    <path
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="4"
+      d="M25 6H9a3 3 0 0 0-3 3v22a3 3 0 0 0 3 3h30a3 3 0 0 0 3-3v-8M24 34v8m6-30h12m-6-6v12M14 42h20"
+    />
+  </svg>
+);
+
+export const IconParty = (
+  <svg width="18" height="18" viewBox="0 0 14 14">
+    <path
+      fill="currentColor"
+      fillRule="evenodd"
+      d="M9.718.338a.62.62 0 0 0-.504.722a.63.63 0 0 0 .731.503q.198-.035.398-.067c.145-.022.257.046.305.14c.476.925.9 1.838 1.194 2.782c-.378.172-.801.368-1.223.573a16 16 0 0 1-.242 1.394v.004l-.003.009q-.158.723-.416 1.454c-.144.403-.47.787-.802 1.123c-.405.41-.208 1.09.363 1.01l.445 1.702q-.85.275-1.688.65a.737.737 0 0 0-.374.98c.17.372.614.538.991.37a14.8 14.8 0 0 1 4.444-1.217a.743.743 0 0 0 .658-.82a.75.75 0 0 0-.83-.652q-.898.103-1.756.295l-.443-1.691c1.727-.695 2.728-2.506 2.388-4.305c-.29-1.527-.915-2.913-1.588-4.222A1.55 1.55 0 0 0 10.14.267q-.212.033-.422.07M4.063.352a1.58 1.58 0 0 0-1.62.808C1.746 2.467 1.095 3.852.78 5.371a3.7 3.7 0 0 0 .323 2.434a3.8 3.8 0 0 0 1.983 1.811l-.471 1.678a17 17 0 0 0-1.793-.272a.75.75 0 0 0-.147 1.493a15 15 0 0 1 2.294.402c.735.188 1.453.434 2.172.742a.75.75 0 1 0 .59-1.38a17 17 0 0 0-1.663-.61l.47-1.674c1.842.25 3.625-.82 4.24-2.548c.156-.435.278-.873.376-1.312l.002-.01c.232-1.04.328-2.092.384-3.12a1.525 1.525 0 0 0-1-1.506A20.6 20.6 0 0 0 4.063.352m3.873 5.51l.001-.006c.21-.939.3-1.912.355-2.92c.006-.101-.055-.216-.194-.268a19.3 19.3 0 0 0-4.21-1.079a.33.33 0 0 0-.342.159c-.682 1.28-1.264 2.537-1.541 3.876a3 3 0 0 0-.044.308c.934-.084 2.113-.17 3.032-.167c.888.003 2.027.089 2.925.172z"
+      clipRule="evenodd"
     />
   </svg>
 );

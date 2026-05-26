@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { ITypeOption, TCreateUserDto, TManageUserPageDto, TUpdateUserDto } from "../common";
 import {
-  Avatar,
   Button,
   DatePicker,
   Form,
@@ -17,6 +16,7 @@ import {
   Upload,
   UploadFile,
   UploadProps,
+  Image,
 } from "antd";
 import { CarryOutOutlined, CheckOutlined, CloseOutlined, FilterOutlined, PlusCircleOutlined, UploadOutlined } from "@ant-design/icons";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
@@ -26,6 +26,8 @@ import React from "react";
 import { DataNode } from "antd/es/tree";
 import { RcFile } from "antd/es/upload";
 import { FormInstance } from "antd/lib";
+import { intersection } from "lodash";
+import { handleCompress } from "@/app/utils";
 
 type TabType = {
   label: string;
@@ -46,33 +48,32 @@ interface Props {
   getImage: any;
 }
 
-const { RangePicker } = DatePicker;
-
 export const UserAction: React.FC<Props> = ({
   setManagePage,
   managePage,
   positionOption,
   treeData,
-  optionsOrganize,
-  treeListDepartment,
   filterForm,
   createForm,
   setSelectUserType,
   selectUserType,
-  getImage,
 }): React.ReactElement => {
-  const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const { id24Axios, tokenAccess } = useId24();
+  const sideMenuGroups =
+    tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
+  const isHr = intersection(sideMenuGroups, ["hr", "admin"]).length > 0;
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const [openFilter, setOpenFilter] = useState<boolean>(false);
   const [imageFiles, setImageFiles] = useState<UploadFile[]>([]);
   const [image, setImage] = useState<any>();
+  const value = createForm.getFieldsValue(true);
 
   const handleOpenFilter = (state: boolean) => {
     setOpenFilter(state);
   };
 
   const onSearch = async (value: object) => {
-    setManagePage({ ...managePage, loading: true, search: value });
+    setManagePage({ ...managePage, loading: true, search: value, pagination: { current: 1, pageSize: 10 } });
     setOpenFilter(false);
   };
 
@@ -94,15 +95,28 @@ export const UserAction: React.FC<Props> = ({
       const validateUsername = { ...value, username: value.username.toLowerCase(), password: "P@ssw0rd" } as TCreateUserDto;
       const resCreate = await UsersServices(baseUrlUser).addUser(validateUsername);
       if (resCreate) {
+        if (resCreate && imageFiles.length > 0) {
+          imageFiles.forEach(async (file) => {
+            const formData: any = new FormData();
+            formData.append("type", "create-attend");
+            formData.append("files", file.originFileObj);
+            await UsersServices(baseUrlUser).uploadFiles(resCreate.userId, formData);
+          });
+        }
         message.success("Add Success");
+        setImageFiles([]);
         setManagePage({ ...managePage, loading: true, modalStatus: false });
         createForm.resetFields();
       }
     } else if (managePage.modalTitle === "update") {
       const updateForm = value as TUpdateUserDto;
       if (updateForm.userId) {
+        const { masterPositionId, ...formWithoutMasterPositionId } = updateForm;
         const userId = updateForm.userId;
-        const resUpdate = await UsersServices(baseUrlUser).updateUser(userId, updateForm);
+        const resUpdate = await UsersServices(baseUrlUser).updateUser(userId, {
+          ...formWithoutMasterPositionId,
+          positionId: updateForm.masterPositionId,
+        });
         if (resUpdate) {
           if (resUpdate && imageFiles.length > 0) {
             console.log(resUpdate && imageFiles.length > 0);
@@ -114,6 +128,7 @@ export const UserAction: React.FC<Props> = ({
             });
           }
           message.success("Update Success");
+          setImageFiles([]);
           createForm.resetFields();
           setManagePage({ ...managePage, loading: true, modalStatus: false });
         }
@@ -123,39 +138,23 @@ export const UserAction: React.FC<Props> = ({
 
   const searchContent = (
     <Form layout="vertical" form={filterForm} onFinish={onSearch} autoComplete="off">
-      <div className="grid grid-cols-1 md:gap-4 md:grid-cols-4">
-        <Form.Item label="User Id" name="userId">
+      <div className="grid grid-cols-1 md:gap-5 md:grid-cols-5">
+        <Form.Item label="ยูสเซอร์เนม" name="username">
           <Input placeholder="Search Text" />
         </Form.Item>
-        <Form.Item label="Name" name="userName">
+        <Form.Item label="ชื่อเล่น" name="nickname">
           <Input placeholder="Search Text" />
         </Form.Item>
-        <Form.Item label="Email" name="email">
+        <Form.Item label="รหัสพนักงาน" name="empId">
           <Input placeholder="Search Text" />
         </Form.Item>
-        <Form.Item label="First Name" name="firstNameTh">
+        <Form.Item label="ชื่อ - สกุล" name="fullname">
           <Input placeholder="Search Text" />
         </Form.Item>
-        <Form.Item label="Last Name" name="lastNameTh">
-          <Input placeholder="Search Text" />
+        <Form.Item label="ตำแหน่ง" name="positionName">
+          <Select placeholder="กรุณาเลือก ตำแหน่ง" options={positionOption} allowClear showSearch optionFilterProp="label" />
         </Form.Item>
-        <Form.Item label="Phone Number" name="phoneNumber">
-          <Input placeholder="Search Text" />
-        </Form.Item>
-        <Form.Item label="Status" name="activeStatus">
-          <Select
-            placeholder="All"
-            allowClear
-            options={[
-              { value: true, label: <Tag color="green">Active</Tag> },
-              { value: false, label: <Tag color="red">Inactive</Tag> },
-            ]}
-          />
-        </Form.Item>
-        <Form.Item label="Created" name="created">
-          <RangePicker className=" w-full" />
-        </Form.Item>
-        <Form.Item className=" md:col-span-4  text-right">
+        <Form.Item className=" md:col-span-4  text-left">
           <Button type="primary" htmlType="submit">
             Search
           </Button>
@@ -170,31 +169,13 @@ export const UserAction: React.FC<Props> = ({
     createForm.setFieldValue("ldapQuery", null);
   };
 
-  const validateNumber = (rule: any, value: any, callback: any) => {
-    if (value === undefined) {
-      callback();
-    } else {
-      if (/\s/.test(value)) {
-        callback("Please do not enter space");
-      } else if (isNaN(value)) {
-        callback("Please enter numbers only");
-      } else {
-        callback();
-      }
-    }
-  };
-
-  const beforeUploadImageFiles = (file: RcFile) => {
-    const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
-    if (file.size > maxSizeInBytes) {
-      message.error(`ไฟล์ ${file.name} มีขนาดใหญ่เกิน 2MB`);
-      return false;
-    }
+  const beforeUploadImageFiles = async (file: RcFile) => {
     if (imageFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return false;
     }
-    return false;
+    const compressed = await handleCompress(file);
+    return compressed;
   };
 
   const handleChangeImageFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
@@ -219,30 +200,13 @@ export const UserAction: React.FC<Props> = ({
       reader.readAsDataURL(file);
     });
 
-  // const selectOrganize = async (organizeId: string) => {
-  //   setLoadTree(true);
-  //   setOrganizeId(organizeId);
-  //   const groups = await UserGroupServices(baseUrlUser).getUserGroupByOrganizedGroupId(organizeId);
-  //   const tree = createTree(groups.organizeMapGroup, null) as any;
-  //   createForm.setFieldsValue({ groupList: undefined });
-  //   // const assignGroup = await UsersServices(baseUrlUser).findAssignGroup(userid, organizeId);
-  //   // const assignOwnerGroup = await UsersServices(baseUrlUser).findOwnerGroupByOrganizeId(userid, organizeId);
-  //   // if (assignGroup.length > 0) {
-  //   //   const groupActiveIds = assignGroup.map((item: { id: number; usersId: string; organizedId: string; groupId: string }) => item.groupId);
-  //   //   createForm.setFieldsValue({ groupList: groupActiveIds });
-  //   // }
-  //   // createForm.setFieldsValue({ groupOwnerId: assignOwnerGroup.ownerGroupId });
-  //   setGroupOption(tree);
-  //   setLoadTree(false);
-  // };
-
   const createTree = (obj: any[], parentId: string | null) => {
     const tree: any[] = [];
     obj.forEach((item) => {
       if (item.group.parentGroupId === parentId) {
         const children = createTree(obj, item.group.groupId);
         if (children.length > 0) {
-          (item.group.icon = <CarryOutOutlined />), (item.group.children = children);
+          ((item.group.icon = <CarryOutOutlined />), (item.group.children = children));
         }
         tree.push({
           value: item.group.groupId,
@@ -258,26 +222,37 @@ export const UserAction: React.FC<Props> = ({
     <>
       <div className=" col-span-4 flex justify-between pb-2">
         <div>
-          <Popover onOpenChange={handleOpenFilter} open={openFilter} content={searchContent} placement="bottomLeft" title="Search" trigger="click">
+          <Popover
+            onOpenChange={handleOpenFilter}
+            open={openFilter}
+            content={searchContent}
+            placement="bottomLeft"
+            title="Search"
+            trigger="click"
+            overlayStyle={{ width: 1200 }}
+          >
             <Button type="primary" icon={<FilterOutlined />}>
-              Filters
+              {`Filters`}
             </Button>
           </Popover>
         </div>
-        <div className=" space-x-2">
-          <Button
-            icon={<PlusCircleOutlined />}
-            className="button-blue"
-            onClick={() =>
-              setManagePage({
-                ...managePage,
-                modalStatus: true,
-                modalTitle: "create",
-              })
-            }>
-            สร้างผู้ใช้
-          </Button>
-        </div>
+        {isHr ? (
+          <div className=" space-x-2">
+            <Button
+              icon={<PlusCircleOutlined />}
+              className="button-blue"
+              onClick={() =>
+                setManagePage({
+                  ...managePage,
+                  modalStatus: true,
+                  modalTitle: "create",
+                })
+              }
+            >
+              สร้างผู้ใช้
+            </Button>
+          </div>
+        ) : null}
       </div>
 
       <Modal
@@ -285,27 +260,55 @@ export const UserAction: React.FC<Props> = ({
         open={managePage.modalStatus}
         footer={[]}
         onCancel={() => {
-          setManagePage({ ...managePage, modalStatus: false }), createForm.resetFields();
+          (setManagePage({ ...managePage, modalStatus: false }), createForm.resetFields());
         }}
-        width={1200}>
+        width={1200}
+      >
         <Form form={createForm} name="create" wrapperCol={{ span: 24 }} onFinish={onFinishSave} autoComplete="off" layout="vertical">
-          <div className=" flex justify-center p-1">
-            <Avatar size={128} src={image && getImage ? image : getImage ? URL.createObjectURL(getImage) : ""} />
-          </div>
-          <div className=" flex justify-center">
-            <Form.Item name="image">
-              <Upload
-                accept="image/png, image/jpeg"
-                fileList={imageFiles}
-                onChange={handleChangeImageFiles}
-                beforeUpload={beforeUploadImageFiles}
-                multiple={false}
-                maxCount={1}
-                listType="picture">
-                <Button icon={<UploadOutlined />}>Click to upload</Button>
-              </Upload>
-            </Form.Item>
-          </div>
+          {imageFiles.length >= 1 ? (
+            <div className=" flex justify-center">
+              <Form.Item name="image">
+                <Upload
+                  accept="image/png, image/jpeg"
+                  fileList={imageFiles}
+                  onChange={handleChangeImageFiles}
+                  beforeUpload={beforeUploadImageFiles}
+                  multiple={false}
+                  maxCount={1}
+                  listType="picture"
+                >
+                  <Button icon={<UploadOutlined />}>Click to upload</Button>
+                </Upload>
+              </Form.Item>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 justify-center p-1 gap-2 space-y-2">
+              <div className="grid col-span-1 justify-center items-center">
+                <Image
+                  rootClassName="w-[100px] h-[100px] object-cover"
+                  src={value.imageId ? `${process.env.NEXT_PUBLIC_API_BASE_URL_USER}/id24users/get-image-user/${value.imageId}` : ""}
+                />
+              </div>
+              <div className="grid col-span-1 justify-center items-center">
+                <Form.Item name="image">
+                  <Upload
+                    accept="image/png, image/jpeg"
+                    fileList={imageFiles}
+                    onChange={handleChangeImageFiles}
+                    beforeUpload={beforeUploadImageFiles}
+                    multiple={false}
+                    maxCount={1}
+                    listType="picture"
+                  >
+                    <Button className="w-full" icon={<UploadOutlined />}>
+                      Click to upload
+                    </Button>
+                  </Upload>
+                </Form.Item>
+              </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-3 gap-2">
             {managePage.modalTitle === "update" && (
               <Form.Item label="userId" name="userId" hidden>
@@ -337,7 +340,8 @@ export const UserAction: React.FC<Props> = ({
                     <Form.Item<TCreateUserDto>
                       name={"password"}
                       label="รหัสผ่าน"
-                      rules={managePage.modalTitle === "create" ? [{ required: true }] : undefined}>
+                      rules={managePage.modalTitle === "create" ? [{ required: true }] : undefined}
+                    >
                       <Input.Password autoComplete="new-password" />
                     </Form.Item>
                   </div>
@@ -358,7 +362,8 @@ export const UserAction: React.FC<Props> = ({
                             return Promise.reject(new Error("The new password that you entered do not match!"));
                           },
                         }),
-                      ]}>
+                      ]}
+                    >
                       <Input.Password />
                     </Form.Item>
                   </div>
@@ -395,28 +400,24 @@ export const UserAction: React.FC<Props> = ({
             <Form.Item<TCreateUserDto> label="นามสกุล(ภาษาอังกฤษ)" name="lastNameEn" rules={[{ required: true }]} style={{ marginBottom: "2px" }}>
               <Input />
             </Form.Item>
-          </div>
-          <div className="grid grid-cols-4 gap-2">
-            <div className=" col-span-1">
-              <Form.Item<TCreateUserDto> label="เบอร์โทรติดต่อ" name="phoneNumber" style={{ marginBottom: "2px" }}>
-                <Input />
-              </Form.Item>
-            </div>
-            <div className=" col-span-1">
-              <Form.Item<TCreateUserDto> label="ตำแหน่ง" name="masterPositionId" rules={[{ required: true }]}>
-                <Select placeholder="กรุณาเลือก ตำแหน่ง" options={positionOption} allowClear showSearch optionFilterProp="label" />
-              </Form.Item>
-            </div>
-            <div className=" col-span-1">
-              <Form.Item<TCreateUserDto> label="วันที่เริ่มงาน" name="startWork" rules={[{ required: true }]}>
-                <DatePicker className="w-full" />
-              </Form.Item>
-            </div>
-            <div className=" col-span-1">
-              <Form.Item<TCreateUserDto> label="รหัสพนักงาน" name="empId" rules={[{ required: true }]}>
-                <Input />
-              </Form.Item>
-            </div>
+            <Form.Item<TCreateUserDto> label="ชื่อเล่น" name="nickname" rules={[{ required: true }]} style={{ marginBottom: "2px" }}>
+              <Input />
+            </Form.Item>
+            <Form.Item<TCreateUserDto> label="เบอร์โทรติดต่อ" name="phoneNumber" style={{ marginBottom: "2px" }}>
+              <Input />
+            </Form.Item>
+            <Form.Item<TCreateUserDto> label="Extension" name={"extension"} style={{ marginBottom: "2px" }} rules={[{ required: true }]}>
+              <Input />
+            </Form.Item>
+            <Form.Item<TCreateUserDto> label="ตำแหน่ง" name="masterPositionId" rules={[{ required: true }]}>
+              <Select placeholder="กรุณาเลือก ตำแหน่ง" options={positionOption} allowClear showSearch optionFilterProp="label" />
+            </Form.Item>
+            <Form.Item<TCreateUserDto> label="วันที่เริ่มงาน" name="startWork" rules={[{ required: true }]}>
+              <DatePicker className="w-full" />
+            </Form.Item>
+            <Form.Item<TCreateUserDto> label="รหัสพนักงาน" name="empId" rules={[{ required: true }]}>
+              <Input />
+            </Form.Item>
           </div>
           <div className=" col-span-3">
             <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-200" />
@@ -440,7 +441,8 @@ export const UserAction: React.FC<Props> = ({
               onClick={() => {
                 setManagePage({ ...managePage, modalStatus: false });
                 createForm.resetFields();
-              }}>{`Cancel`}</Button>
+              }}
+            >{`Cancel`}</Button>
             <Button type={"primary"} htmlType="submit">
               {`Save`}
             </Button>

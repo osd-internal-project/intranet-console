@@ -13,16 +13,17 @@ import { MasterRoomType, HandbookFileType, InformationNewsType } from "./common"
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
-const baseImageUrl = process.env.REACT_APP_API_BASE_URL_INTRANET;
+const baseImageUrl = process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET;
 
 export default function HomePage() {
   const { id24Axios, tokenAccess } = useId24();
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [loading, setLoading] = useState<boolean>(true);
   const [slideImage, setSlideImage] = useState<any[]>([]);
   const [masterBookingRoom, setMasterBookingRoom] = useState<MasterRoomType[]>([]);
   const [handbookFile, setHandbookFile] = useState<HandbookFileType[]>([]);
   const [informationNews, setInformationNews] = useState<InformationNewsType[]>([]);
+  
   useEffect(() => {}, [tokenAccess?.userAccess]);
 
   const fetchData = async () => {
@@ -46,9 +47,6 @@ export default function HomePage() {
   }, [loading]);
 
   async function downloadFile(id: string, name: string): Promise<void> {
-    console.log(id);
-    console.log(name);
-
     if (id && name) {
       const fileUrl = `${baseImageUrl}/public/handbook-file/${id}?fileName=${encodeURIComponent(name)}`;
       try {
@@ -72,26 +70,12 @@ export default function HomePage() {
     } else {
       message.error("ไม่มีไฟล์ให้ดาวน์โหลด");
     }
-    // if (id) {
-    //   const response = await SlideImageService(baseUrlIntranet).downloadFile(id);
-    //   if (response) {
-    //     const url = URL.createObjectURL(response);
-    //     const a = document.createElement("a");
-    //     a.href = url;
-    //     a.download = name;
-    //     document.body.appendChild(a);
-    //     a.click();
-    //     document.body.removeChild(a);
-    //   }
-    // }
   }
-
   return (
     <>
       {slideImage.length > 0 ? <BigCarouselComponent slideImage={slideImage} /> : null}
-      <div className="my-2" />
-      <div className="grid md:grid-cols-3">
-        <div className="px-2 mb-4">
+      <div className="grid md:grid-cols-3 my-2">
+        <div className="px-2">
           <Card className="text-center">
             <a href="/page/leave-control-management/leave-letter">
               <FileFilled className="text-5xl text-blue-500" />
@@ -100,7 +84,7 @@ export default function HomePage() {
             </a>
           </Card>
         </div>
-        <div className="px-2 mb-4">
+        <div className="px-2 ">
           <Card className="text-center">
             <a href="/page/bookingroom/booking-room">
               <TeamOutlined className="text-5xl text-blue-500" />
@@ -109,7 +93,7 @@ export default function HomePage() {
             </a>
           </Card>
         </div>
-        <div className="px-2 mb-4">
+        <div className="px-2 ">
           <Card className="text-center">
             <a href="/page/macar/ma-car">
               <CarFilled className="text-5xl text-blue-500" />
@@ -121,19 +105,21 @@ export default function HomePage() {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h">
         <div className="lg:col-span-2">
-          <Card title="กิจกรรมและข่าวสาร" bordered={false} className="text-center" style={{ height: "500px" }}>
+          <Card title="กิจกรรมและข่าวสาร" bordered={false} className="text-center" style={{ height: "492px" }}>
             <NewsCarouselComponent informationNews={informationNews} />
           </Card>
-          <div className="my-4"></div>
-          <Card title="เอกสาร" bordered={false} className="text-center" style={{ minHeight: "550px" }}>
-            <DocumentComponent handbookFile={handbookFile} downloadFile={(id: string, filename: string) => downloadFile(id, filename)} />
+          <div className="my-2"></div>
+          <Card title="เอกสาร" bordered={false} className="text-center" style={{ height: "518px" }}>
+            <div style={{ height: "100%", overflowY: "hidden" }}>
+              <DocumentComponent handbookFile={handbookFile} downloadFile={(id: string, filename: string) => downloadFile(id, filename)} />
+            </div>
           </Card>
         </div>
         <div className="lg:col-span-1">
           <Card title="ห้องประชุม" className="text-center ">
             <MeetingRoomTableComponent pagination={false} masterBookingRoom={masterBookingRoom} />
           </Card>
-          <div className="my-4"></div>
+          <div className="my-2"></div>
           <Card title="วันหยุดประจำปี" className="text-center">
             <HolidaysCalendarComponent />
           </Card>

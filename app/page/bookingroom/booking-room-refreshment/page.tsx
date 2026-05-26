@@ -26,7 +26,7 @@ import { loadAppConfig } from "@/app/config/app-config";
 
 const ManageBookingRoom = () => {
   const { id24Axios } = useId24();
-  const baseUrlIntra = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntra = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [form] = useForm();
   const [submitLoading, setSubmitLoading] = useState(false);
   const [modalAddRefreshment, setModalAddRefreshment] = useState(false);
@@ -64,22 +64,22 @@ const ManageBookingRoom = () => {
     }
   };
 
-  const items: TabsProps["items"] = [
-    {
-      key: "1",
-      label: "อาหารว่าง",
-      children: (
-        <ManageRefreshmentComponent
-          refreshmentData={refreshmentData}
-          setRefreshmentData={setRefreshmentData}
-          pagination={pagination}
-          refreshmentTotal={refreshmentTotal}
-          changePagination={changePagination}
-          fetchData={fetchData}
-        />
-      ),
-    },
-  ];
+  // const items: TabsProps["items"] = [
+  //   {
+  //     key: "1",
+  //     label: "อาหารว่าง",
+  //     children: (
+  //       <ManageRefreshmentComponent
+  //         refreshmentData={refreshmentData}
+  //         setRefreshmentData={setRefreshmentData}
+  //         pagination={pagination}
+  //         refreshmentTotal={refreshmentTotal}
+  //         changePagination={changePagination}
+  //         fetchData={fetchData}
+  //       />
+  //     ),
+  //   },
+  // ];
 
   const showModalAddRefreahment = () => {
     setModalAddRefreshment(true);
@@ -156,18 +156,26 @@ const ManageBookingRoom = () => {
             ]}
           />
         </Col>
-        <Divider orientation="left" orientationMargin="0">
+        <Divider orientation="left" orientationMargin="0" style={{ padding: "0px 0px 0px 0px", marginBottom: "0px", marginTop: "0px" }}>
           <div className="title-page-font">{`Booking Room Refreshment`}</div>
         </Divider>
         <Col span={24}>
-          <div className=" grid-span-1 space-y-2">
-            <Card>
+          <div>
+            <Card styles={{ body: { padding: "10px" } }}>
               <div className="flex justify-end">
-                <Button type="primary" onClick={showModalAddRefreahment}>
+                <Button type="primary" onClick={showModalAddRefreahment} size="small" style={{ marginBottom: "10px" }}>
                   เพิ่มอาหารว่าง
                 </Button>
               </div>
-              <Tabs defaultActiveKey="1" items={items} />
+              {/* <Tabs defaultActiveKey="1" items={items} /> */}
+              <ManageRefreshmentComponent
+                refreshmentData={refreshmentData}
+                setRefreshmentData={setRefreshmentData}
+                pagination={pagination}
+                refreshmentTotal={refreshmentTotal}
+                changePagination={changePagination}
+                fetchData={fetchData}
+              />
             </Card>
           </div>
         </Col>

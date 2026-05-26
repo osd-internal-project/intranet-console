@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import ShareMaCarBook from "../../common/export-excel";
 import { MaCarServices } from "../../../../services/ma-car.service";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { MaCarBookType, MaCarType, dataMaCarbook, ProvincesType } from "../../common/index";
+import { MaCarBookType, MaCarType, dataMaCarbook, ProvincesType, MaCarBookCalendarType } from "../../common/index";
 import { checkStatus, CheckStatusMaCarBookType, isSelectDisabled, showStatus } from "@/app/utils/validatefield";
 import { dateFormatTime } from "@/app/utils";
 import { CarForm } from "./car-form";
@@ -20,9 +20,8 @@ interface props {
   pagination: TablePaginationConfig;
   changePagination: (pagination: TablePaginationConfig) => void;
   maCarData: MaCarType[];
-  maCarBookById: MaCarBookType[];
-  dataProvinces: ProvincesType[];
-  maFetchCalendar: MaCarBookType[];
+  dataProvinces: { value: string; label: string }[];
+  maFetchCalendar: MaCarBookCalendarType[];
 }
 
 const MaCarBookTable: React.FC<props> = ({
@@ -32,16 +31,15 @@ const MaCarBookTable: React.FC<props> = ({
   setLoading,
   loading,
   maCarData,
-  maCarBookById,
   dataProvinces,
   maFetchCalendar,
 }: any): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const [form] = Form.useForm();
   const [formCancel] = Form.useForm();
-  const { id24Axios, tokenAccess } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const { id24Axios } = useId24();
+  // const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const intraAuthService = MaCarServices(baseUrlIntranet);
   const [modalEditMaCarBook, setModalEditMa] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -103,7 +101,7 @@ const MaCarBookTable: React.FC<props> = ({
         setSubmitLoading(false);
         return;
       }
-      const selectedOptionProvinces = dataProvinces.find((option: ProvincesType) => option.value === values.carBookProvince);
+      const selectedOptionProvinces = dataProvinces.find((option: { value: string; label: string }) => option.value === values.carBookProvince);
       const maCarBookData = {
         id: currentMaCarBookId,
         carName: carSelected.carName,
@@ -170,16 +168,11 @@ const MaCarBookTable: React.FC<props> = ({
     {
       key: "carBookStartDate",
       dataIndex: "carBookStartDate",
-      title: "วันที่เริ่มจอง",
+      title: "เวลาที่ใช้งาน",
       align: "center",
-      render: (value) => dateFormatTime(value),
-    },
-    {
-      key: "carBookEndDate",
-      dataIndex: "carBookEndDate",
-      title: "วันที่สิ้นสุดการจอง",
-      align: "center",
-      render: (value) => dateFormatTime(value),
+      render: (event: number, row: MaCarBookType, index: number) => {
+        return `${dateFormatTime(String(row.carBookStartDate))} ถึง ${dateFormatTime(String(row.carBookEndDate))}`;
+      },
     },
     {
       key: "createdByName",
@@ -201,37 +194,37 @@ const MaCarBookTable: React.FC<props> = ({
       align: "center",
       render: (value: string) => (value ? value : "-"),
     },
-    {
-      title: "จัดการ",
-      key: "note",
-      dataIndex: "note",
-      align: "center",
-      render: (_, record) => (
-        <Space>
-          <Tooltip title="แก้ไข">
-            <Button
-              disabled={record.carBookApprovedStatus !== "Process" ? true : false}
-              type="link"
-              onClick={() => {
-                onModalEdit(record);
-              }}>
-              {`แก้ไข`}
-            </Button>
-          </Tooltip>
-          <Tooltip title="ยกเลิก">
-            <Button
-              type="link"
-              disabled={record.carBookApprovedStatus !== "Process" ? true : false}
-              onClick={() => {
-                onModalCancel(record);
-              }}
-              danger>
-              {`ยกเลิก`}
-            </Button>
-          </Tooltip>
-        </Space>
-      ),
-    },
+    // {
+    //   title: "จัดการ",
+    //   key: "note",
+    //   dataIndex: "note",
+    //   align: "center",
+    //   render: (_, record) => (
+    //     <Space>
+    //       <Tooltip title="แก้ไข">
+    //         <Button
+    //           disabled={record.carBookApprovedStatus !== "Process" ? true : false}
+    //           type="link"
+    //           onClick={() => {
+    //             onModalEdit(record);
+    //           }}>
+    //           {`แก้ไข`}
+    //         </Button>
+    //       </Tooltip>
+    //       <Tooltip title="ยกเลิก">
+    //         <Button
+    //           type="link"
+    //           disabled={record.carBookApprovedStatus !== "Process" ? true : false}
+    //           onClick={() => {
+    //             onModalCancel(record);
+    //           }}
+    //           danger>
+    //           {`ยกเลิก`}
+    //         </Button>
+    //       </Tooltip>
+    //     </Space>
+    //   ),
+    // },
   ];
 
   return (

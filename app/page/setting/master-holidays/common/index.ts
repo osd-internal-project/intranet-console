@@ -27,6 +27,7 @@ export interface IFindAllDayDto {
   holidaysDate: string;
   createdAt: string;
   updatedAt: string;
+  typeEveryDay: boolean;
 }
 export interface IManagePageDay {
   statusModal: boolean;

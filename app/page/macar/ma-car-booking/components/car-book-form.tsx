@@ -3,8 +3,6 @@ import { Button, Row, Col, Form, Input, Divider, Select, DatePicker, FormInstanc
 import { MaCarBookType, MaCarType, ProvincesType } from "../../common/index";
 import TextArea from "antd/es/input/TextArea";
 import { RangePickerProps } from "antd/es/date-picker";
-import dayjs, { Dayjs } from "dayjs";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { MaCarServices } from "../../../../services/ma-car.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
@@ -12,45 +10,20 @@ import { loadAppConfig } from "@/app/config/app-config";
 interface props {
   formUser: FormInstance<MaCarBookType>;
   createMaCarBook: (e: MaCarBookType) => void;
-  carName: MaCarType[];
-  dataoptionsProvinces: ProvincesType[];
+  maCarData: MaCarType[];
+  masterDataProvinces: { value: string; label: string }[];
   disabledDate: RangePickerProps["disabledDate"];
-  submitLoading: boolean;
-  setStartDate: (date: Dayjs | null) => void;
-  setEndDate: (date: Dayjs | null) => void;
 }
 
-export const CarBookForm: React.FC<props> = ({
-  formUser,
-  createMaCarBook,
-  carName,
-  dataoptionsProvinces,
-  disabledDate,
-  submitLoading,
-  setStartDate,
-  setEndDate,
-}) => {
+export const CarBookForm: React.FC<props> = ({ formUser, createMaCarBook, maCarData, masterDataProvinces, disabledDate }) => {
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const macarervices = MaCarServices(baseUrIntranet);
-  const handleStartDateChange = (date: dayjs.Dayjs | null) => {
-    if (date) {
-      const startDate = date.startOf("day");
-      setStartDate(startDate);
-    }
-  };
-
-  const handleEndDateChange = (date: dayjs.Dayjs | null) => {
-    if (date) {
-      const endDate = date.endOf("day");
-      setEndDate(endDate);
-    }
-  };
 
   const validateCarSelect = async (rule: any, value: string) => {
     const dataCar = await macarervices.getMaCarById(value);
     if (dataCar.status === false) {
-      throw new Error("ขณะนี้รถมีการใช้งานอยู่");
+      throw new Error("รถคันนี้ไม่พร้อมใช้งาน");
     }
   };
 
@@ -83,7 +56,7 @@ export const CarBookForm: React.FC<props> = ({
                 optionFilterProp="label"
                 placeholder="โปรดเลือกรถ"
                 style={{ width: "100%" }}
-                options={carName.map((car, index) => {
+                options={maCarData.map((car, index) => {
                   return { value: car.carId, label: car.carName, key: index };
                 })}
               />
@@ -104,7 +77,7 @@ export const CarBookForm: React.FC<props> = ({
           </Col>
           <Col span={6}>
             <Form.Item<MaCarBookType> name="idProvinces" label="จังหวัด" rules={[{ required: true, message: "กรุณาเลือกจังหวัด" }]}>
-              <Select allowClear placeholder={`เลือกจังหวัด`} options={dataoptionsProvinces} showSearch optionFilterProp="label" />
+              <Select allowClear placeholder={`เลือกจังหวัด`} options={masterDataProvinces} showSearch optionFilterProp="label" />
             </Form.Item>
           </Col>
         </Row>
@@ -129,19 +102,21 @@ export const CarBookForm: React.FC<props> = ({
               label="วันที่เริ่มการจอง"
               rules={[{ required: true, message: "กรุณาเลือกวันที่เริ่มการจอง" }]}>
               <DatePicker
-                onChange={handleStartDateChange}
                 disabledDate={disabledDate}
                 placeholder="เลือกวันที่เริ่มการจอง"
+                showTime
                 style={{ width: "100%" }}
+                format={"YYYY-MM-DD HH:mm"}
               />
             </Form.Item>
           </Col>
           <Col span={6}>
             <Form.Item name="carBookEndDate" label="วันที่สิ้นสุดการจอง" rules={[{ required: true, message: "กรุณาเลือกวันที่สิ้นสุดการจอง" }]}>
               <DatePicker
-                onChange={handleEndDateChange}
                 placeholder="เลือกวันที่สิ้นสุดการจอง"
                 disabledDate={disabledDate}
+                showTime
+                format={"YYYY-MM-DD HH:mm"}
                 style={{ width: "100%" }}
               />
             </Form.Item>
@@ -150,18 +125,13 @@ export const CarBookForm: React.FC<props> = ({
         <Row gutter={24}>
           <Col span={8}>
             <Form.Item name="detail" label="รายละเอียด">
-              <TextArea placeholder="กรอกรายละเอียด" rows={2} />
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item name="remark" label="หมายเหตุการจองรถ">
-              <TextArea placeholder="หมายเหตุการจองรถ" />
+              <TextArea placeholder="กรอกรายละเอียด" rows={2} showCount maxLength={250} />
             </Form.Item>
           </Col>
         </Row>
         <Col span={24} style={{ textAlign: "center" }}>
           <Form.Item>
-            <Button type="primary" htmlType="submit" loading={submitLoading} size="middle">
+            <Button type="primary" htmlType="submit" size="middle">
               {`ทำการจองรถ`}
             </Button>
           </Form.Item>

@@ -13,8 +13,8 @@ import { loadAppConfig } from "@/app/config/app-config";
 const page = () => {
   const [formcreate] = Form.useForm();
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   // const AuthIntra = useAxiosIntranet();
   // const AuthUser = useAxiosUser();
   // const dataleaveserviceIntra = DataLeaveService(AuthIntra);
@@ -166,7 +166,7 @@ const page = () => {
             ]}
           />
         </Col>
-        <Divider orientation="left" orientationMargin="0">
+        <Divider orientation="left" orientationMargin="0" style={{ padding: "0px 0px 0px 0px", marginBottom: "0px", marginTop: "0px" }}>
           <div className="title-page-font">{`จัดการสิทธ์การลา`}</div>
         </Divider>
         <div className="w-full">

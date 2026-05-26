@@ -1,6 +1,6 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, Tabs, Divider, Form, Modal, Row, TabsProps, message } from "antd";
+import { Breadcrumb, Card, Col, Tabs, Divider, Form, Modal, Row, TabsProps, message, TablePaginationConfig } from "antd";
 import { DepartmentCalendarDetail } from "./components/leave-history-calendar";
 import DataLeaveService from "../../../services/leave-management.service";
 import { ITypeDataLeave } from "../common";
@@ -9,32 +9,81 @@ import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import { TableDetail } from "./components/table-detail";
+import { IFindAllDayDto } from "../../setting/master-holidays/common";
+import dayjs, { Dayjs } from "dayjs";
+import MasterHolidaysService from "../../setting/master-holidays/services/index.service";
 
 export default function Page() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const { id24Axios } = useId24();
-  // const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [loading, setLoading] = useState<boolean>(true);
-  const [dataSource, setDataSource] = useState<ITypeDataLeave[]>([]);
-  const [dataLeaveGroup, setDataLeaveGroup] = useState<ITypeDataLeave[]>([]);
+  const [month, setMonth] = useState<Dayjs | string>(dayjs());
+  const [monthGroup, setMonthGroup] = useState<Dayjs | string>(dayjs());
+  const [dataSource, setDataSource] = useState<{ data: ITypeDataLeave[]; count: number }>({ data: [], count: 0 });
+  const [dataCalendarUser, setDataCalendar๊User] = useState<ITypeDataLeave[]>([]);
+  const [dataCalendarGroup, setDataCalendarGroup] = useState<ITypeDataLeave[]>([]);
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
   const [formdetail] = Form.useForm();
-
+  const [pagination, setPagination] = useState<TablePaginationConfig>({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
   useEffect(() => {
     if (loading) loadData();
   }, [loading, user]);
 
   const loadData = async () => {
-    if (user) {
-      const result = await DataLeaveService(baseUrlIntranet).getdataLeaveUserById({ userId: user?.userId });
-      const resDataLeaveByGrouptId = await DataLeaveService(baseUrlIntranet).getdataLeavefindBygroup(user?.userId);
-      setDataLeaveGroup(resDataLeaveByGrouptId);
-      setDataSource(result);
+    if (!user) return;
+    const skip = (Number(pagination.current) - 1) * Number(pagination.pageSize);
+    const take = Number(pagination.pageSize);
+    try {
+      const yearNow = dayjs().format("YYYY");
+      const holidayService = MasterHolidaysService(baseUrlIntranet);
+      const leaveService = DataLeaveService(baseUrlIntranet);
+      const [holidayData, calendarTeams, calendarUser, { data, count }] = await Promise.all([
+        holidayService.getHolidayByYear(yearNow),
+        leaveService.getdataLeaveCalendarTeamsByMonth(monthGroup),
+        leaveService.getdataLeaveCalendarByMonth(month),
+        leaveService.getdataLeaveAll(user.userId, skip, take),
+      ]);
+      const holidayMappedData = holidayData.map((item: IFindAllDayDto) => ({
+        id: item.id,
+        firstName: item.holidaysName,
+        lastName: "",
+        startDate: item.holidaysDate,
+        endDate: item.holidaysDate,
+        description: "",
+        typeName: "วันหยุด",
+        status: "holiday",
+      }));
+      const mergedUserData = [...calendarUser, ...holidayMappedData];
+      const mergedGroupData = [...calendarTeams, ...holidayMappedData];
+      setDataCalendarGroup(mergedGroupData);
+      setDataCalendar๊User(mergedUserData);
+      setDataSource({ data, count });
+    } catch (error) {
+      console.error("Failed to load calendar data:", error);
+    } finally {
       setLoading(false);
     }
   };
 
+  const handleChangemonth = (month: Dayjs | string) => {
+    setMonth(month);
+    setLoading(true);
+  };
+
+  const handleChangemonthGroup = (month: Dayjs | string) => {
+    setMonthGroup(month);
+    setLoading(true);
+  };
+
+  const changePagination = (page: TablePaginationConfig) => {
+    setPagination({ ...page });
+    setLoading(true);
+  };
   const onFinishUpdate = async (type: string, id: number) => {
     Modal.confirm({
       title: <>{type === "cancel" ? "Cancel" : "Approved"}</>,
@@ -44,7 +93,7 @@ export default function Page() {
       okButtonProps: { type: "primary", danger: true },
       cancelText: "Cancel",
       onOk: async () => {
-        const res = await DataLeaveService(baseUrlIntranet).approvedDataLeave("", type, id, user);
+        const res = await DataLeaveService(baseUrlIntranet).approvedDataLeave("", type, id, user, "");
         if (res) {
           type === "cancel" ? message.error("cancel success") : message.success("approved success");
           setLoading(true);
@@ -72,12 +121,24 @@ export default function Page() {
     {
       key: "1",
       label: "ปฏิทินการลา",
-      children: <DepartmentCalendarDetail dataSource={dataSource} downloadFile={(id: number, filename: string) => downloadFile(id, filename)} />,
+      children: (
+        <DepartmentCalendarDetail
+          handleChangemonth={handleChangemonth}
+          dataSource={dataCalendarUser}
+          downloadFile={(id: number, filename: string) => downloadFile(id, filename)}
+        />
+      ),
     },
     {
       key: "2",
       label: "ปฏิทินการลาทีม",
-      children: <DepartmentCalendarDetail dataSource={dataLeaveGroup} downloadFile={(id: number, filename: string) => downloadFile(id, filename)} />,
+      children: (
+        <DepartmentCalendarDetail
+          handleChangemonth={handleChangemonthGroup}
+          dataSource={dataCalendarGroup}
+          downloadFile={(id: number, filename: string) => downloadFile(id, filename)}
+        />
+      ),
     },
     {
       key: "3",
@@ -90,12 +151,15 @@ export default function Page() {
           formdetail={formdetail}
           onFinishUpdate={onFinishUpdate}
           downloadFile={(id: number, filename: string) => downloadFile(id, filename)}
+          pagination={pagination}
+          changePagination={changePagination}
         />
       ),
     },
   ];
 
-  const onChange = () => {
+  const onChange = (value: string) => {
+    loadData();
     setLoading(true);
   };
 
@@ -120,7 +184,7 @@ export default function Page() {
         </Divider>
         <div className="w-full">
           <Card>
-            <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+            <Tabs defaultActiveKey="1" items={items} onChange={(value) => onChange(value)} />
           </Card>
         </div>
       </Row>

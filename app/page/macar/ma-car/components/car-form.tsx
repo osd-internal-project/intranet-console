@@ -113,19 +113,23 @@ export const CarForm: React.FC<props> = ({
                 rows={2}
                 disabled={isSelectDisabled(carBookApprovedStatus)}
                 className={editState ? "read-only-input" : ""}
+                showCount
+                maxLength={250}
               />
             </Form.Item>
           </Col>
-          <Col span={8}>
+          {/* <Col span={8}>
             <Form.Item name="remark" label="หมายเหตุการจองรถ :">
               <TextArea
                 placeholder={!editState ? "กรอกหมายเหตุการจองรถ" : ""}
                 rows={2}
                 disabled={isSelectDisabled(carBookApprovedStatus)}
                 className={editState ? "read-only-input" : ""}
+                showCount
+                maxLength={250}
               />
             </Form.Item>
-          </Col>
+          </Col> */}
         </Row>
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>

@@ -44,7 +44,7 @@ export interface handbook {
 const HandBookOption: React.FC = () => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const { id24Axios } = useId24();
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const managehandbookFileServices = ManagehandbookFileServices(baseUrlIntranet);
   const [handbooktype, sethandbooktype] = useState<handbooktype[]>([]);
   const [handbook, sethandbook] = useState<handbook[]>([]);

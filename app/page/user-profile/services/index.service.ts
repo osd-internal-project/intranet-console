@@ -91,6 +91,8 @@ const ProfileServices = (axiosInstance: AxiosInstance) => {
           startWork: true,
           empId: true,
           masterPosition: true,
+          extension: true,
+          imageId: true,
         },
       };
       return await axiosInstance

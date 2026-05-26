@@ -9,6 +9,7 @@ import MasterPositionServices from "../services/position.service";
 import { ITypeOption } from "../common";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import { validateOnlyNumbers } from "@/app/utils/validatefield";
 interface detailType {
   username: string;
   password: string;
@@ -25,7 +26,7 @@ const AddDetailComponent: React.FC = (): React.ReactElement => {
   // const userAuth = useAxiosUser();
 
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const userServices = UserServices(baseUrlUser);
   const masterPositionServices = MasterPositionServices(baseUrlUser);
   const [detailForm] = useForm();
@@ -115,19 +116,6 @@ const AddDetailComponent: React.FC = (): React.ReactElement => {
     }
     callback();
   };
-  const validateOnlyNumbers = (rule: any, value: any, callback: any) => {
-    if (value === undefined) {
-      callback();
-    } else {
-      if (/\s/.test(value)) {
-        callback("Please do not enter space");
-      } else if (isNaN(value)) {
-        callback("Please enter numbers only");
-      } else {
-        callback();
-      }
-    }
-  };
   const validateConfirmPassword = (_: any, value: any) => {
     const firstPassword = detailForm.getFieldValue("password");
     if (value && value !== firstPassword) {
@@ -141,16 +129,16 @@ const AddDetailComponent: React.FC = (): React.ReactElement => {
         <Breadcrumb
           items={[
             {
-              href: "/page",
+              href: "/page/home",
               title: <span>หน้าหลัก</span>,
             },
 
             {
               href: "/page/users-management/users",
-              title: <span>User Management</span>,
+              title: <span>การจัดการบุคคล</span>,
             },
             {
-              title: <span>Add User</span>,
+              title: <span>เพิ่ม บุคลากร</span>,
             },
           ]}
         />

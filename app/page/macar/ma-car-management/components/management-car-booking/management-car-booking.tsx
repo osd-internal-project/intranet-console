@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Form, message } from "antd";
-import type { TablePaginationConfig } from "antd";
+import type { FormInstance, TablePaginationConfig } from "antd";
 import { dataMaCarbook } from "../../../common";
 import { showStatus } from "@/app/utils/validatefield";
 import { ManageCarServices } from "../../services/manage-car.service";
@@ -11,6 +11,7 @@ import dayjs from "dayjs";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import ManagementCarFilterPage from "./components/management-car-filter";
 
 export interface props {
   loading: boolean;
@@ -18,14 +19,28 @@ export interface props {
   maCarBookData: dataMaCarbook;
   pagination: any;
   changePagination: (pagination: TablePaginationConfig) => void;
+  handleOpenFilter: (value: boolean) => void;
+  openFilter: boolean;
+  filterForm: FormInstance;
+  onSearch: (values: { carBookApprovedStatus?: string; carBookStartDate?: Date | string; createdByName?: string }) => void;
 }
 
-const managementCarBooking: React.FC<props> = ({ setLoading, loading, maCarBookData, pagination, changePagination }): React.ReactElement => {
-  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const showStatusBox = showStatus();
-  const [form] = Form.useForm();
+const managementCarBooking: React.FC<props> = ({
+  setLoading,
+  loading,
+  maCarBookData,
+  pagination,
+  changePagination,
+  handleOpenFilter,
+  openFilter,
+  filterForm,
+  onSearch,
+}): React.ReactElement => {
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const [form] = Form.useForm();
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
+  const showStatusBox = showStatus();
   const [checkType, setCheckType] = useState<string>("");
   const [checkStatusApproved, setCheckStatusApproved] = useState<string>("");
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -40,7 +55,13 @@ const managementCarBooking: React.FC<props> = ({ setLoading, loading, maCarBookD
     } else {
       setCheckType(status);
     }
-    form.setFieldsValue({ ...record, carBookStartDate: dayjs(record.carBookStartDate), carBookEndDate: dayjs(record.carBookEndDate) });
+    form.setFieldsValue({
+      ...record,
+      carBookStartDate: dayjs(record.carBookStartDate),
+      carBookEndDate: dayjs(record.carBookEndDate),
+      carMile: record.maCar.carMile,
+      carPetrol: record.maCar.carPetrol,
+    });
     setOpenModal(true);
   };
 
@@ -50,10 +71,17 @@ const managementCarBooking: React.FC<props> = ({ setLoading, loading, maCarBookD
   };
 
   const onFinish = async (status: string, values: any) => {
+    const { createdById, carName, detail, carBookPlace, carBookStartDate, carBookEndDate } = form.getFieldsValue(true) || {};
     let updatedApproveMa: any = {};
     try {
       if (status === "approved") {
         updatedApproveMa = {
+          carName,
+          createdById,
+          detail,
+          carBookPlace,
+          carBookStartDate: dayjs(carBookStartDate).toISOString(),
+          carBookEndDate: dayjs(carBookEndDate).toISOString(),
           id: form.getFieldValue("id"),
           carBookApprovedById: user?.userId,
           carBookApprovedByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
@@ -64,6 +92,12 @@ const managementCarBooking: React.FC<props> = ({ setLoading, loading, maCarBookD
       }
       if (status === "return") {
         updatedApproveMa = {
+          carName,
+          createdById,
+          detail,
+          carBookPlace,
+          carBookStartDate,
+          carBookEndDate,
           id: form.getFieldValue("id"),
           recipientId: user?.userId,
           recipientName: `${user?.firstNameTh} ${user?.lastNameTh}`,
@@ -96,7 +130,12 @@ const managementCarBooking: React.FC<props> = ({ setLoading, loading, maCarBookD
 
   return (
     <div>
-      <div style={{ marginTop: "14px", display: "flex", justifyContent: "space-between" }}>{showStatusBox}</div>
+      <div style={{ marginTop: "14px", display: "flex", justifyContent: "space-between" }}>
+        <> {showStatusBox}</>
+        <>
+          <ManagementCarFilterPage handleOpenFilter={handleOpenFilter} openFilter={openFilter} filterForm={filterForm} onSearch={onSearch} />
+        </>
+      </div>
       {maCarBookData.docs ? (
         <ManagementCarBookingTable
           dataSource={maCarBookData.docs}

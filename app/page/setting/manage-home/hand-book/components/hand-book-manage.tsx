@@ -13,6 +13,8 @@ import { useForm } from "antd/es/form/Form";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import imageCompression from "browser-image-compression";
+import { handleCompress } from "@/app/utils";
 export interface handbookFile {
   [x: string]: any;
   handbookid?: Number | null;
@@ -33,7 +35,7 @@ export interface handbooktype {
 const HandBookManage: React.FC = () => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const { id24Axios } = useId24();
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const managehandbookFileServices = ManagehandbookFileServices(baseUrlIntranet);
   const [handbooktype, sethandbooktype] = useState<handbooktype[]>([]);
   const [handbookFile, sethandbookFile] = useState<handbookFile[]>([]);
@@ -46,7 +48,7 @@ const HandBookManage: React.FC = () => {
   const [form] = useForm();
   const [searchFileName, setSearchFileName] = useState("");
   const [searchFileType, setSearchFileType] = useState("");
-  const baseImageUrl = process.env.REACT_APP_API_BASE_URL_INTRANET;
+  const baseImageUrl = process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET;
   const [handbooktypeOptions, sethandbooktypeOptions] = useState<
     {
       value: number;
@@ -185,16 +187,22 @@ const HandBookManage: React.FC = () => {
     return setAttendFiles(newFileList);
   };
 
-  const beforeUploadAttendFiles = (file: RcFile) => {
+  const beforeUploadAttendFiles = async (file: RcFile) => {
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return Upload.LIST_IGNORE;
     }
-    return true;
+    try {
+      const compressed = await handleCompress(file);
+      return compressed ?? true; // ✅ ถ้า compress สำเร็จ หรือ undefined → upload ปกติ
+    } catch (err) {
+      console.error("❌ Compress error:", err);
+      message.error(`ไฟล์ ${file.name} ขนาดใหญ่เกินไปหรือ compress ล้มเหลว`);
+      return true; 
+    }
   };
 
   const handleDownload = async (record: handbookFile) => {
-
     if (record && record.fileId) {
       const fileUrl = `${baseImageUrl}/public/handbook-file/${record.fileId}?fileName=${encodeURIComponent(String(record.fileName))}`;
       try {

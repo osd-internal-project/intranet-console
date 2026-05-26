@@ -2,7 +2,7 @@ import React from "react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
-import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, macarIcon, hrIcon } from "@/components/icon";
+import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, macarIcon, hrIcon, stockIcon, IconProperty, IconParty } from "@/components/icon";
 import { FieldTimeOutlined, HomeOutlined } from "@ant-design/icons";
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -43,29 +43,29 @@ export const MenuSider: MenuItem[] = [
   //     },
   //   ],
   // },
-  {
-    key: "housekeeper",
-    icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
-    label: "งานแม่บ้าน",
-    rule: ["ma-user", "admin"],
-    children: [
-      {
-        key: `housekeeper/housekeepers`,
-        label: `ข้อมูลการการทำงานของแม่บ้าน`,
-        rule: ["ma-user", "admin"],
-      },
-      {
-        key: `housekeeper/housekeeper-management`,
-        label: `จัดการข้อมูลแม่บ้าน`,
-        rule: ["ma-user", "admin"],
-      },
-    ],
-  },
+  // {
+  //   key: "housekeeper",
+  //   icon: <Icon icon="tabler:clipboard-list" width="15" height="15" />,
+  //   label: "งานแม่บ้าน",
+  //   rule: ["admin"],
+  //   children: [
+  //     {
+  //       key: `housekeeper/housekeepers`,
+  //       label: `ข้อมูลการการทำงานของแม่บ้าน`,
+  //       rule: ["ma-user", "admin"],
+  //     },
+  //     {
+  //       key: `housekeeper/housekeeper-management`,
+  //       label: `จัดการข้อมูลแม่บ้าน`,
+  //       rule: ["ma-user", "admin"],
+  //     },
+  //   ],
+  // },
   {
     key: "leave-control-management",
     icon: IconDataLeave,
-    label: `ข้อมูลการลา`,
-    rule: ["user", "admin", "header"],
+    label: `ระบบลางาน`,
+    rule: ["user", "admin", "header", "hr"],
     children: [
       {
         key: `leave-control-management/leave-letter`,
@@ -80,7 +80,7 @@ export const MenuSider: MenuItem[] = [
       {
         key: `leave-control-management/leave-history-admin`,
         label: `จัดการการลา`,
-        rule: ["admin", "header"],
+        rule: ["admin", "header", "hr"],
       },
       {
         key: `leave-control-management/leave-disabled-management`,
@@ -90,68 +90,9 @@ export const MenuSider: MenuItem[] = [
     ],
   },
   {
-    key: "bookingroom",
-    icon: bookingIcon,
-    label: "ห้องประชุม",
-    rule: ["user", "admin"],
-    children: [
-      {
-        key: `bookingroom/booking-room`,
-        label: `จองห้องประชุม`,
-        rule: "user",
-      },
-      {
-        key: `bookingroom/booking-room-management`,
-        label: `จัดการข้อมูลห้องประชุม`,
-        rule: ["admin", "hr"],
-      },
-      {
-        key: `bookingroom/booking-room-refreshment`,
-        label: `จัดการอาหารว่าง`,
-        rule: ["admin", "hr"],
-      },
-    ],
-  },
-  {
-    key: "maintenance",
-    icon: maintenanceIcon,
-    label: "Maintenance",
-    rule: ["ma-user", "admin"],
-    children: [
-      {
-        key: `maintenance-management`,
-        label: `Maintenance Management`,
-        rule: ["ma-user", "admin"],
-      },
-    ],
-  },
-  {
-    key: "macar",
-    icon: macarIcon,
-    label: `ข้อมูลการจองรถยนต์`,
-    rule: ["user", "admin"],
-    children: [
-      {
-        key: `macar/ma-car`,
-        label: `ข้อมูลการจองรถยนต์`,
-        rule: ["user", "admin"],
-      },
-      {
-        key: `macar/ma-car-booking`,
-        label: `Ma car Booking`,
-        rule: ["user", "admin"],
-      },
-      {
-        key: `macar/ma-car-management`,
-        label: `ข้อมูลการจองรถยนต์`,
-        rule: ["user", "admin", "ma-user"],
-      },
-    ],
-  },
-  {
     key: `overtime`,
     icon: <FieldTimeOutlined />,
-    label: `Overtime`,
+    label: `ทำงานล่วงเวลา`,
     rule: ["user", "admin", "hr"],
     children: [
       {
@@ -172,15 +113,136 @@ export const MenuSider: MenuItem[] = [
     ],
   },
   {
+    key: "macar",
+    icon: macarIcon,
+    label: `จองใช้งานรถยนต์`,
+    rule: ["user", "admin", "ma-user"],
+    children: [
+      {
+        key: `macar/ma-car`,
+        label: `การจองรถยนต์`,
+        rule: ["user", "admin"],
+      },
+      {
+        key: `macar/ma-car-booking`,
+        label: `แบบฟอร์มการจองรถ`,
+        rule: ["admin"],
+      },
+      {
+        key: `macar/management-car-wrapup`,
+        label: `เช็คสภาพรถยนต์`,
+        rule: ["admin", "ma-user"],
+      },
+      // {
+      //   key: `macar/management-car-wrapup`,
+      //   label: `ต่อประกันรถยนต์`,
+      //   rule: ["admin", "ma-user"],
+      // },
+      {
+        key: `macar/ma-car-management`,
+        label: `การจัดการรถยนต์`,
+        rule: ["admin", "ma-user"],
+      },
+    ],
+  },
+  {
+    key: "bookingroom",
+    icon: bookingIcon,
+    label: "ห้องประชุม",
+    rule: ["user", "admin", "ma-user"],
+    children: [
+      {
+        key: `bookingroom/booking-room`,
+        label: `จองห้องประชุม`,
+        rule: "user",
+      },
+      {
+        key: `bookingroom/booking-room-management`,
+        label: `จัดการข้อมูลห้องประชุม`,
+        rule: ["admin", "hr", "ma-user"],
+      },
+      {
+        key: `bookingroom/booking-room-refreshment`,
+        label: `จัดการอาหารว่าง`,
+        rule: ["admin", "hr", "ma-user"],
+      },
+    ],
+  },
+  // {
+  //   key: "stock",
+  //   icon: stockIcon,
+  //   label: "การจัดการสินค้า",
+  //   rule: ["admin"],
+  //   children: [
+  //     {
+  //       key: `stock/stock-request`,
+  //       label: `ขอเบิกสินค้า`,
+  //       rule: ["user", "admin", "ma-user"],
+  //     },
+  //     {
+  //       key: `stock/order`,
+  //       label: `นำเข้าสินค้า`,
+  //       rule: ["user", "admin", "ma-user"],
+  //     },
+  //     {
+  //       key: `stock/stock-management`,
+  //       label: `รายการสินค้า`,
+  //       rule: ["user", "admin", "ma-user"],
+  //     },
+  //   ],
+  // },
+  {
+    key: "maintenance",
+    icon: maintenanceIcon,
+    label: "บำรุงรักษาทรัพย์สิน",
+    rule: ["ma-user", "admin"],
+    children: [
+      {
+        key: `maintenance-management`,
+        label: `การจัดการการบำรุงรักษา`,
+        rule: ["ma-user", "admin"],
+      },
+    ],
+  },
+  {
+    key: `employee-property`,
+    icon: IconProperty,
+    label: `ทรัพย์สินพนักงาน`,
+    rule: ["admin", "hr", "user"],
+  },
+  {
+    key: `events-management`,
+    icon: IconParty,
+    label: `การจัดงานกิจกรรม`,
+    rule: ["admin", "hr", "user"],
+    children: [
+      {
+        key: `events-management/managements`,
+        label: `งานกิจกรรม`,
+        rule: ["admin", "hr", "user"],
+      },
+      {
+        key: `events-management/restaurants`,
+        label: `ผู้ให้บริการ(Vendors)`,
+        rule: ["admin", "hr", "user"],
+      },
+      {
+        key: `events-management/master-type-events`,
+        label: `ประเภทของการจัดงาน`,
+        rule: ["admin", "hr", "user"],
+      },
+    ],
+  },
+  {
     key: `users-management`,
     icon: gridIcon,
-    label: `User Management`,
-    rule: ["admin", "hr"],
+    label: `การจัดการบุคคล`,
+    rule: ["admin", "hr", "user"],
     children: [
       {
         key: `users-management/users`,
-        label: `Users`,
-        rule: ["admin", "hr"],
+        label: `บุคลากร`,
+        rule: ["admin", "hr", "user"],
       },
       {
         key: `users-management/user-organization`,
@@ -192,21 +254,21 @@ export const MenuSider: MenuItem[] = [
         label: `Groups`,
         rule: "admin",
       },
-      {
-        key: `users-management/user-role`,
-        label: `Roles`,
-        rule: "admin",
-      },
-      {
-        key: `users-management/user-rule`,
-        label: `Rules`,
-        rule: "admin",
-      },
-      {
-        key: `users-management/user-module`,
-        label: `Module`,
-        rule: "admin",
-      },
+      // {
+      //   key: `users-management/user-role`,
+      //   label: `Roles`,
+      //   rule: "admin",
+      // },
+      // {
+      //   key: `users-management/user-rule`,
+      //   label: `Rules`,
+      //   rule: "admin",
+      // },
+      // {
+      //   key: `users-management/user-module`,
+      //   label: `Module`,
+      //   rule: "admin",
+      // },
       {
         key: `users-management/user-group-permission`,
         label: `Group Permission`,
@@ -214,6 +276,24 @@ export const MenuSider: MenuItem[] = [
       },
     ],
   },
+  // {
+  //   key: `complain`,
+  //   icon: gridIcon,
+  //   label: `ร้องเรียนปัญหา`,
+  //   rule: ["admin", "user"],
+  //   children: [
+  //     {
+  //       key: `complain/complain-problem`,
+  //       label: `ร้องเรียนปัญหา`,
+  //       rule: ["admin", "user"],
+  //     },
+  //     {
+  //       key: `complain/complain-problem-hr`,
+  //       label: `ร้องเรียนปัญหา`,
+  //       rule: ["admin", "hr"],
+  //     },
+  //   ],
+  // },
   {
     key: `setting`,
     icon: <Icon icon="uil:setting" width="15" height="15" />,
@@ -225,36 +305,41 @@ export const MenuSider: MenuItem[] = [
         label: `การบำรุงรักษา`,
         rule: ["admin", "ma-user"],
       },
-      {
-        key: `setting/organize-chart`,
-        label: `Organize Chart`,
-        rule: "admin",
-      },
+      // {
+      //   key: `setting/organize-chart`,
+      //   label: `Organize Chart`,
+      //   rule: "admin",
+      // },
       {
         key: `setting/typeleave`,
-        label: `Type Leave`,
+        label: `ประเภทการลา`,
         rule: ["admin", "hr"],
       },
       {
         key: `setting/master-holidays`,
-        label: `Master Holidays`,
+        label: `วันหยุดประจำปี`,
         rule: ["admin", "hr"],
       },
       {
         key: `setting/masterdata-position`,
-        label: `Master Position`,
+        label: `ตำแหน่งงาน`,
         rule: ["admin", "hr"],
       },
       {
         key: `setting/manage-home`,
-        label: `Manage Home`,
+        label: `การจัดการหน้าหลัก`,
         rule: ["admin", "hr"],
       },
       {
         key: `setting/master-overtime-config`,
-        label: `Master Overtime Config`,
+        label: `การตั้งค่า OT`,
         rule: "admin",
       },
+      // {
+      //   key: `setting/unit`,
+      //   label: `ประเภทยูนิตสินค้า`,
+      //   rule: ["admin", "ma-user"],
+      // },
     ],
   },
 ].map((item) => {

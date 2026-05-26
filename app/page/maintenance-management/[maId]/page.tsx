@@ -1,6 +1,6 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, message, Row, UploadFile } from "antd";
+import { Breadcrumb, Card, Col, Divider, message, Row, UploadFile } from "antd";
 import MaDescriptionComponent from "./components/MaDescription";
 import { ITMaTask, ITMaType, ITMaUpdateForm, ITPagination } from "../common";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -14,7 +14,7 @@ export default function MaTaskPage() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   // const intranetAuth = useAxiosIntranet();
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const maServices = MaServices(baseUrIntranet);
   const params = useParams<{ maId: string }>();
   const [loading, setloading] = useState<boolean>(true);
@@ -118,9 +118,9 @@ export default function MaTaskPage() {
             ]}
           />
         </Col>
-        <Col span={24}>
+        <Divider orientation="left" orientationMargin="0" style={{ padding: "0px 0px 0px 0px", marginBottom: "0px", marginTop: "0px" }}>
           <div className="title-page-font">{`MAINTENANCE DESCRIPTION`}</div>
-        </Col>
+        </Divider>
         <Col span={24}>
           <div className="grid grid-cols-1 ">
             <MaDescriptionComponent

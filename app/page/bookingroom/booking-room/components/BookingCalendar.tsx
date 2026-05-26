@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import { Modal, Tag, Form, Input, DatePicker, Collapse } from "antd";
+import { Modal, Tag, Form, Input, DatePicker, Collapse, message } from "antd";
 import moment from "moment";
 import { Calendar, momentLocalizer, Event as RbcEvent } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useForm } from "antd/es/form/Form";
 import { CaretRightOutlined } from "@ant-design/icons";
+import { checkIcon, loadingIcon } from "@/components/icon";
+import dayjs, { Dayjs } from "dayjs";
+import { dateToStringThWithTime } from "@/app/utils/format";
 
 const localizer = momentLocalizer(moment);
 const { TextArea } = Input;
@@ -22,10 +25,12 @@ interface BookingType {
   approveDate: string;
   endDate: string;
   updatedAt: string;
+  note: string;
 }
 
 interface Props {
   bookingFetchCalendar: BookingType[];
+  handleChangeMonth: (month: Dayjs | string) => void;
 }
 
 interface CustomEvent extends RbcEvent {
@@ -35,7 +40,7 @@ interface CustomEvent extends RbcEvent {
   userName: string;
 }
 
-const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar }) => {
+const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar, handleChangeMonth }) => {
   const [selectedBooking, setSelectedBooking] = useState<BookingType | null>(null);
   const [statusModalDetail, setStatusModalDetail] = useState(false);
   const [formUpdate] = useForm();
@@ -46,8 +51,6 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar }) => {
   };
 
   const renderStatusTag = (status: string) => {
-    console.log(status);
-
     switch (status) {
       case "Approve":
         return <Tag color="green">อนุมัติสำเร็จ</Tag>;
@@ -60,37 +63,101 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar }) => {
     }
   };
 
+  const CustomEventComponent = ({ event }: { event: CustomEvent }) => {
+    const icon = event.status === "Approve" ? checkIcon : event.status === "holiday" ? null : loadingIcon;
+    return (
+      <span className="flex justify-start items-center gap-1 text-[10px] text-white overflow-hidden">
+        {icon && <span className="flex-shrink-0">{icon}</span>}
+        <span className="truncate">
+          {event.start ? dateToStringThWithTime(event.start) : ""}-{event.end ? dateToStringThWithTime(event.end) : ""}, {event.title}
+        </span>
+      </span>
+    );
+  };
+
   const onSelectEventCalendar = (event: CustomEvent) => {
+    console.log(event);
+
+    if (event.status === "holiday") {
+      message.info(event.title);
+      return false;
+    }
     const booking = bookingFetchCalendar.find((b) => b.id === event.id);
     if (booking) {
       setSelectedBooking(booking);
       formUpdate.setFieldsValue({
         ...booking,
-        startDate: moment(booking.startDate),
-        endDate: moment(booking.endDate),
-        approveDate: moment(booking.approveDate).format("DD-MM-YYYY HH:mm"),
+        startDate: dayjs(booking.startDate),
+        endDate: dayjs(booking.endDate),
+        approveDate: dayjs(booking.approveDate).format("DD-MM-YYYY HH:mm"),
       });
       setStatusModalDetail(true);
     }
   };
 
+  const dayPropGetter = (date: any) => {
+    const day = date.getDay();
+    if (day === 0 || day === 6) {
+      return {
+        className: "weekend-day",
+      };
+    }
+    return {};
+  };
+
+  // function reduceEventsToOnePerDay(events: CustomEvent[]) {
+  //   const grouped: Record<string, CustomEvent[]> = {};
+
+  //   // group events by day
+  //   events.forEach((ev) => {
+  //     const dayKey = dayjs(ev.start).format("YYYY-MM-DD");
+  //     if (!grouped[dayKey]) {
+  //       grouped[dayKey] = [];
+  //     }
+  //     grouped[dayKey].push(ev);
+  //   });
+
+  //   // keep only the first event in each day
+  //   return Object.values(grouped).map((evts) => evts[0]);
+  // }
+
   return (
     <>
       <Calendar<CustomEvent>
         localizer={localizer}
-        events={bookingFetchCalendar.map((booking: BookingType) => ({
+        messages={{
+          next: ">",
+          previous: "<",
+          showMore: (total: number) => `+${total} more`,
+        }}
+        dayLayoutAlgorithm="no-overlap"
+        events={bookingFetchCalendar.map((booking: BookingType, idx: number) => ({
           id: booking.id,
           title: booking.roomName,
           start: new Date(booking.startDate),
           end: new Date(booking.endDate),
           status: booking.bookingStatus,
-          description: booking.description,
+          description: booking.note,
           userName: booking.bookerName,
+          isHidden: idx > 0,
         }))}
+        onNavigate={(newDate, view, action) => {
+          handleChangeMonth(dayjs(newDate));
+        }}
+        popup
+        startAccessor="start"
+        endAccessor="end"
+        defaultView="month"
+        views={["month"]}
+        components={{
+          event: CustomEventComponent,
+        }}
+        dayPropGetter={dayPropGetter}
         style={{ height: 500 }}
         onSelectEvent={onSelectEventCalendar}
         eventPropGetter={(event: CustomEvent) => {
-          const backgroundColor = event.status === "Approve" ? "#4CAF50" : event.status === "cancel" ? "#D24545" : "#2196F3";
+          let backgroundColor = "#FFA500";
+          backgroundColor = event.status === "Approve" ? "#4CAF50" : event.status === "cancel" ? "#D24545" : "#FFA500";
           return {
             style: { backgroundColor, color: "#fff", fontSize: 10 },
           };
@@ -107,6 +174,7 @@ const BookingCalendar: React.FC<Props> = ({ bookingFetchCalendar }) => {
                 <Form.Item label="ห้อง" name="roomName">
                   <Input className="read-only-input" disabled />
                 </Form.Item>
+
                 <Form.Item label="เริ่มวันที่" name="startDate">
                   <DatePicker showTime={false} format="DD-MM-YYYY HH:mm" disabled className="read-only-input" />
                 </Form.Item>

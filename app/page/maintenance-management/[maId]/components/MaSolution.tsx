@@ -43,7 +43,7 @@ const MaDescriptionComponent: React.FC<props> = ({ data, downloadFile, getImageB
           <div className=" col-span-2"> {data.updatedAt ? dateToStringThNoTime(data.updatedAt) : ""}</div>
         </div>
         <div className="grid  grid-cols-3 mb-2">
-          <div className=" col-span-1 font-bold">ผู้อัปเดท :</div>
+          <div className=" col-span-1 font-bold">ผู้อัปเดต :</div>
           <div className=" col-span-2"> {data.updatedByName}</div>
         </div>
         <div>
@@ -52,7 +52,7 @@ const MaDescriptionComponent: React.FC<props> = ({ data, downloadFile, getImageB
         </div>
       </div>
       {imagePreview.length > 0 ? (
-        <div className="mt-2">
+        <div className="mt-4">
           <div className="font-bold">Images :</div>
           <div className=" flex gap-2">
             {imagePreview.map((image, index) => (
@@ -62,11 +62,13 @@ const MaDescriptionComponent: React.FC<props> = ({ data, downloadFile, getImageB
             ))}
           </div>
         </div>
-      ) : null}
+      ) : (
+        <div className="mt-2">{`Images : -`}</div>
+      )}
       {data.fileList.length > 0 ? (
-        <div className="mt-2">
+        <div className="mt-4">
           <div className="font-extrabold">Files :</div>
-          <div className="  ">
+          <div>
             {data.fileList.map((file, index) => (
               <div key={index}>
                 <Button type="link" onClick={() => downloadFile(file.id, file.fileName)}>
@@ -79,7 +81,9 @@ const MaDescriptionComponent: React.FC<props> = ({ data, downloadFile, getImageB
             ))}
           </div>
         </div>
-      ) : null}
+      ) : (
+        <div className="mt-2">{`-`}</div>
+      )}
     </>
   );
 };

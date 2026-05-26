@@ -23,7 +23,7 @@ type profileType = {
 const { RangePicker } = DatePicker;
 const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   // const userAuth = useAxiosUser();
   // const profileRuleServices = ProfileServices(baseUrlUser);
   // const rulesServices = RulesServices(baseUrlUser);

@@ -1,14 +1,13 @@
-import "../../styles/style.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from "moment";
-// import "moment/locale/TH";
 import React, { useState } from "react";
-import { Form } from "antd";
+import { Form, message } from "antd";
 import { Calendar, momentLocalizer, Event as RbcEvent } from "react-big-calendar";
 import { ITypeDataLeave } from "../../common";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { LeaveHistoryCalendarDetail } from "./leave-history-calendar-detail";
-// moment.locale("TH");
+import { checkIcon, loadingIcon } from "@/components/icon";
+import dayjs, { Dayjs } from "dayjs";
 
 interface CustomEvent extends RbcEvent {
   id: number | undefined;
@@ -18,14 +17,32 @@ interface CustomEvent extends RbcEvent {
   end: Date;
   description: string;
   userName: string | undefined;
+  typeId: string | undefined;
 }
 
+const colorOfType = [
+  { bgcolor: "#A8D5BA", id: 1, text: "#000000" },
+  { bgcolor: "#B0AFAF", id: 2, text: "#000000" },
+  { bgcolor: "#AEDFF7", id: 3, text: "#000000" },
+  { bgcolor: "#FF5E5E", id: 4, text: "#FFFFFF" },
+  { bgcolor: "#4A90E2", id: 5, text: "#FFFFFF" },
+  { bgcolor: "#F7C8E0", id: 6, text: "#000000" },
+  { bgcolor: "#FAD6A5", id: 7, text: "#000000" },
+  { bgcolor: "#5A5A5A", id: 8, text: "#FFFFFF" },
+  { bgcolor: "#F4A261", id: 9, text: "#000000" },
+  { bgcolor: "#DDB892", id: 10, text: "#000000" },
+  { bgcolor: "#007A3D", id: 11, text: "#FFFFFF" },
+  { bgcolor: "#4B5320", id: 12, text: "#FFFFFF" },
+  { bgcolor: "#9D7CBF", id: 13, text: "#FFFFFF" },
+];
+
 export interface Props {
+  handleChangemonth: (value: Dayjs) => void;
   dataSource: ITypeDataLeave[];
   downloadFile: (id: number, filename: string) => void;
 }
 
-export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, downloadFile }: any) => {
+export const DepartmentCalendarDetail: React.FC<Props> = ({ handleChangemonth, dataSource, downloadFile }: any) => {
   const [formDetail] = Form.useForm();
   const localizer = momentLocalizer(moment);
   const [modalDataLeaveDetail, setModalDataLeaveDetail] = useState(false);
@@ -35,6 +52,10 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, download
   };
 
   const onSelectEventCalendar = (event: CustomEvent) => {
+    if (event.status === "holiday") {
+      message.info(event.title);
+      return false;
+    }
     const dataLeaveCalendar = dataSource.find((b: any) => b.id === event.id);
     if (dataLeaveCalendar) {
       formDetail.setFieldsValue({
@@ -61,6 +82,35 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, download
     }
   };
 
+  const CustomEventComponent = ({ event }: { event: CustomEvent }) => {
+    const icon = event.status === "approved" ? checkIcon : event.status === "holiday" ? null : loadingIcon;
+    return (
+      <span className="flex justify-start items-center gap-1 text-[10px] text-white overflow-hidden">
+        {icon && <span className="flex-shrink-0">{icon}</span>}
+        <span className="truncate">{event.title}</span>
+      </span>
+    );
+  };
+
+  const getBgColorByTypeId = (TypeId: any) => {
+    const matchedColor = colorOfType.find((item) => item.id === Number(TypeId));
+    return matchedColor ? matchedColor.bgcolor : "#FFA500";
+  };
+  const getColorByTypeId = (TypeId: any) => {
+    const matchedColor = colorOfType.find((item) => item.id === Number(TypeId));
+    return matchedColor ? matchedColor.text : "#ffff";
+  };
+
+  const dayPropGetter = (date: any) => {
+    const day = date.getDay();
+    if (day === 0 || day === 6) {
+      return {
+        className: "weekend-day",
+      };
+    }
+    return {};
+  };
+
   return (
     <div>
       {modalDataLeaveDetail ? (
@@ -72,32 +122,54 @@ export const DepartmentCalendarDetail: React.FC<Props> = ({ dataSource, download
         />
       ) : null}
       <Calendar<CustomEvent>
-        localizer={localizer}
-        events={dataSource.map((dataLeaveCalendar: ITypeDataLeave) => ({
-          id: dataLeaveCalendar.id,
-          title: dataLeaveCalendar.firstName,
-          start: dataLeaveCalendar.startDate ? new Date(dataLeaveCalendar.startDate) : null,
-          end: dataLeaveCalendar.endDate ? new Date(dataLeaveCalendar.endDate) : null,
-          status: dataLeaveCalendar.status,
-          description: dataLeaveCalendar?.description || "",
-          userName: dataLeaveCalendar.typeName,
-        }))}
-        messages={{
-          next: "เดือนถัดไป",
-          previous: "เดือนที่แล้ว",
-          today: "วันนี้",
-          month: "เดือน",
-          week: "สัปดาห์",
-          day: "วัน",
-          agenda: "กำหนดการ",
-        }}
         style={{ height: 500 }}
-        onSelectEvent={onSelectEventCalendar}
-        eventPropGetter={(event: CustomEvent) => {
-          const backgroundColor = event.status === "approved" ? "DodgerBlue" : event.status === "cancel" ? "silver" : "DodgerBlue";
+        localizer={localizer}
+        popup
+        startAccessor="start"
+        endAccessor="end"
+        defaultView="month"
+        views={["month"]}
+        events={dataSource.map((dataLeaveCalendar: ITypeDataLeave) => {
           return {
-            style: { backgroundColor, color: "#fff", fontSize: 10 },
+            id: dataLeaveCalendar.id,
+            title: `${dataLeaveCalendar.firstName} ${dataLeaveCalendar.lastName} (${dataLeaveCalendar.typeName}) `,
+            start: dataLeaveCalendar.startDate ? new Date(dataLeaveCalendar.startDate as any) : null,
+            end: dataLeaveCalendar.endDate ? new Date(dataLeaveCalendar.endDate as any) : null,
+            status: dataLeaveCalendar.status,
+            description: dataLeaveCalendar?.description || "",
+            userName: dataLeaveCalendar.typeName,
+            typeId: dataLeaveCalendar.typeId,
           };
+        })}
+        messages={{
+          next: ">",
+          previous: "<",
+        }}
+        onSelectEvent={onSelectEventCalendar}
+        components={{
+          event: CustomEventComponent,
+        }}
+        dayPropGetter={dayPropGetter}
+        eventPropGetter={(event: CustomEvent) => {
+          let backgroundColor = "#FFA500";
+          let color = "#ffff";
+          if (event.status === "approved") {
+            backgroundColor = getBgColorByTypeId(event.typeId?.toString());
+            color = getColorByTypeId(event.typeId?.toString());
+          } else {
+            backgroundColor = getBgColorByTypeId(event.typeId?.toString());
+            color = getColorByTypeId(event.typeId?.toString());
+          }
+          return {
+            style: {
+              backgroundColor,
+              color,
+              fontSize: 10,
+            },
+          };
+        }}
+        onNavigate={(newDate, view, action) => {
+          handleChangemonth(dayjs(newDate));
         }}
       />
     </div>

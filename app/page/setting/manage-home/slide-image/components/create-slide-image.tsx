@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { UploadOutlined } from "@ant-design/icons";
-import { Button, Form, message, Modal, Upload } from "antd";
+import { Button, Form, Modal, Upload } from "antd";
 import { SlideImageType } from "../common";
 import { RcFile, UploadProps } from "antd/es/upload";
 
@@ -15,6 +15,7 @@ export interface props {
   setImageFiles: any;
   imageFiles: any;
   slideImage: any;
+  beforeUploadAddFiles: (file: RcFile) => void;
 }
 
 export const CreateSlideImage: React.FC<props> = ({
@@ -26,87 +27,49 @@ export const CreateSlideImage: React.FC<props> = ({
   showModal,
   setImageFiles,
   imageFiles,
-  slideImage,
+  beforeUploadAddFiles,
 }): React.ReactElement => {
-  const [messages, messageHeader] = message.useMessage();
-
-  const beforeUploadImageFiles = (file: RcFile) => {
-    if (slideImage.find((oneFile: any) => oneFile.fileName === file.name)) {
-      messages.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
-      return false;
-    }
-    return false;
-  };
-
-  const handleChangeImageFiles: UploadProps["onChange"] = async ({
-    fileList: newFileList,
-  }) => {
+  const handleChangeImageFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
     return setImageFiles(newFileList);
   };
   return (
     <>
-      {messageHeader}
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-        }}
-      >
-        <p style={{ margin: 0 }}>
-          หมายเหตุ : สามารถอัปโหลดรูปภาพได้สูงสุด 10 รูป
-        </p>
+        }}>
         <Button
           style={{ marginBottom: "20px" }}
           type="primary"
           onClick={() => {
             showModal();
             setImageFiles([]);
-          }}
-        >
+          }}>
           {`Add Slide`}
         </Button>
       </div>
 
-      <Modal
-        title="Add Slide"
-        open={modalAddSlide}
-        onCancel={() => setModalAddSlide(false)}
-        width={400}
-        footer={false}
-      >
+      <Modal title="Add Slide" open={modalAddSlide} onCancel={() => setModalAddSlide(false)} width={400} footer={false}>
         <div className=" col-span-3 md:col-span-1 ml-5">
           <p>หมายเหตุ: อัปโหลดรูปภาพได้ครั้งละ 1 รูปเท่านั้น</p>
-          <Form
-            form={createSlideImageForm}
-            name="create"
-            onFinish={onfinishCreateSlide}
-            autoComplete="off"
-          >
-            <Form.Item
-              label={`แนบไฟล์ :`}
-              name={"addFile"}
-              rules={[{ required: true, message: "กรุณาแนบไฟล์" }]}
-            >
+          <Form form={createSlideImageForm} name="create" onFinish={onfinishCreateSlide} autoComplete="off">
+            <Form.Item label={`แนบไฟล์ :`} name={"addFile"} rules={[{ required: true, message: "กรุณาแนบไฟล์" }]}>
               <Upload
-                accept="image/png, image/jpeg"
-                fileList={imageFiles}
+                accept="image/png,image/jpeg"
+                beforeUpload={beforeUploadAddFiles}
                 onChange={handleChangeImageFiles}
-                beforeUpload={beforeUploadImageFiles}
+                fileList={imageFiles}
                 multiple={false}
                 maxCount={1}
-                listType="picture"
-              >
+                listType="picture">
                 <Button icon={<UploadOutlined />}>Click to upload</Button>
               </Upload>
             </Form.Item>
             <Form.Item name={"addFile"}>
               <div style={{ textAlign: "right" }}>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={submitLoading}
-                >
+                <Button type="primary" htmlType="submit" loading={submitLoading}>
                   ตกลง
                 </Button>
               </div>

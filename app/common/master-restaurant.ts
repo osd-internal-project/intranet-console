@@ -1,0 +1,21 @@
+export type ITypeMasterRestaurant = {
+  id: number;
+  name: string;
+  menu?: object; // หรือกำหนด type ชัดเจนถ้ารู้โครงสร้าง
+  category?: object;
+  contact?: object;
+  remark?: string;
+  pathFIles?: string;
+  createdAt: string; // หรือ Date (ขึ้นอยู่กับที่ API ส่งมา)
+  fileUrl?: string;
+};
+
+export type masterRestaurantConditons = {
+  where: {
+    name?: string;
+    menu?: object; // หรือกำหนด type ชัดเจนถ้ารู้โครงสร้าง
+    category?: object;
+  };
+  take?: number;
+  skip?: number;
+};

@@ -19,6 +19,20 @@ export const BookingRoomServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    getBookingRoomCarlendar: async (month: Date | Dayjs | string) => {
+      const condition = {
+        month,
+      };
+      return await axiosInstance
+        .get(`${baseUrlApiBookingRoom}/calendar`, { params: condition })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
     findBookingRoom: async (skip: number, take: number) => {
       return await axiosInstance
         .get(`${baseUrlApiBookingRoom}?take=${take}&skip=${skip}`)

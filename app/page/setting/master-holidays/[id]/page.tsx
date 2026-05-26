@@ -21,7 +21,7 @@ interface THoliday {
 
 export default function MasterdataHolidaysByYear() {
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const masterholidaysService = MasterHolidaysService(baseUrIntranet);
   const params = useParams();
   const year = params.id as string;

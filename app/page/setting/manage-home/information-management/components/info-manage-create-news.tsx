@@ -10,6 +10,8 @@ import { ManageinformationNewsServices } from "../services/information.service";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import imageCompression from "browser-image-compression";
+import { handleCompress } from "@/app/utils";
 export interface informationNews {
   newsId: Number;
   newsName: String;
@@ -40,8 +42,8 @@ export interface newsType {
 
 const InfoCreateNews: React.FC<newsImage> = ({}) => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const { id24Axios} = useId24();
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const { id24Axios } = useId24();
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [submitLoading, setSubmitLoading] = useState(true);
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [informationNews, setinformationNews] = useState<informationNews[]>([]);
@@ -167,12 +169,13 @@ const InfoCreateNews: React.FC<newsImage> = ({}) => {
     return setAttendFiles(newFileList);
   };
 
-  const beforeUploadAttendFiles = (file: RcFile) => {
+  const beforeUploadAttendFiles = async (file: RcFile) => {
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return Upload.LIST_IGNORE;
     }
-    return true;
+    const compressed = await handleCompress(file);
+    return compressed;
   };
 
   return (

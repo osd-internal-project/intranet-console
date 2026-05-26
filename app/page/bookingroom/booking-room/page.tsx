@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useContext } from "react";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import {
   Breadcrumb,
   Card,
@@ -31,6 +30,7 @@ import { loadAppConfig } from "@/app/config/app-config";
 import { MasterDepartmentServices } from "@/app/services/department.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import dayjs, { Dayjs } from "dayjs";
+import MasterHolidaysService from "../../setting/master-holidays/services/index.service";
 
 type BookingType = {
   roomId: string;
@@ -71,14 +71,16 @@ const BookingRoomPage: React.FC = () => {
     user: null,
   };
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
+  const holidayService = MasterHolidaysService(baseUrIntranet);
+  const [month, setMonth] = useState<Dayjs | string>(dayjs());
   const [isModalBooking, setIsModalBooking] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [masterRoomData, setMasterRoomData] = useState<MasterRoomType[]>([]);
-  const [bookingFetchData, setBookingFetchData] = useState([]);
+  const [bookingFetchData, setBookingFetchData] = useState<{ data: any[]; count: number }>({ data: [], count: 0 });
   const [refreshmentData, setRefreshmentData] = useState([]);
   const [bookingFetchCalendar, setBookingFetchCalendar] = useState([]);
-  const [department, setDepartment] = useState<{ createdAt: string; departId: number; departName: string; id: number; updatedAt: string }[]>([]);
+  // const [department, setDepartment] = useState<{ createdAt: string; departId: number; departName: string; id: number; updatedAt: string }[]>([]);
   const [loading, setloading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -91,11 +93,16 @@ const BookingRoomPage: React.FC = () => {
     setloading(true);
   };
 
+  const handleChangeMonth = (month: Dayjs | string) => {
+    setMonth(month);
+    setloading(true);
+  };
+
   const items: TabsProps["items"] = [
     {
       key: "1",
       label: "แสดงข้อมูลแบบปฎิทิน",
-      children: <CalendarComponent bookingFetchCalendar={bookingFetchCalendar} />,
+      children: <CalendarComponent bookingFetchCalendar={bookingFetchCalendar} handleChangeMonth={handleChangeMonth} />,
     },
     {
       key: "2",
@@ -111,7 +118,7 @@ const BookingRoomPage: React.FC = () => {
 
   const showModal = () => {
     form.setFieldsValue({
-      bookerName: `${user?.firstNameTh}`,
+      bookerName: `${user?.firstNameTh} ${user?.lastNameTh}`,
       bookerPhone: user?.phoneNumber,
       bookerDepartment: user?.masterPosition?.nameEn,
     });
@@ -125,42 +132,34 @@ const BookingRoomPage: React.FC = () => {
 
   const createBooking: FormProps<BookingType>["onFinish"] = async (values) => {
     setSubmitLoading(true);
-    const roomName = values.roomName as string;
     const startDate = values.startDate;
     const endDate = values.endDate;
     const selectedOption = masterRoomData.find((option) => option.value === values.roomId);
-
     const today = dayjs();
-    console.log(today);
-
     if (startDate < today) {
       message.error("ไม่สามารถจองในเวลาที่ผ่านมาแล้วได้");
       setSubmitLoading(false);
       return;
     }
-
     if (endDate < startDate) {
       message.error("วันที่สิ้นสุดการจองต้องหลังวันที่เริ่มการจอง");
       setSubmitLoading(false);
       return;
     }
-
     const count = await BookingRoomServices(baseUrIntranet).countBookingRoomCountByRoomAndRange(values.roomId, startDate, endDate);
     if (count > 0) {
       message.error("ห้องนี้ถูกจองแล้วในช่วงเวลาที่คุณเลือก กรุณาเลือกช่วงเวลาใหม่.");
       setSubmitLoading(false);
       return;
     }
-
     const guestData = values.guest ? JSON.stringify(values.guest) : "";
-
     const data = {
       userId: user?.userId,
       token: user?.token,
       roomId: values.roomId,
       roomName: selectedOption ? selectedOption.label : undefined,
       roomType: values.roomType,
-      bookerName: user?.firstNameTh,
+      bookerName: `${user?.firstNameTh} ${user?.lastNameTh}`,
       bookerPhone: user?.phoneNumber,
       title: values.title,
       bookerDepartment: values.bookerDepartment.toString(),
@@ -169,14 +168,12 @@ const BookingRoomPage: React.FC = () => {
       startDate: startDate,
       endDate: endDate,
       approveDate: null,
-      member: values.member ? values.member : "",
-      outSider: values.outSider,
-      note: values.note ? values.note : "",
+      member: values?.member,
+      outSider: values?.outSider,
+      note: values?.note,
       guest: values.guest ? guestData : undefined,
-      officer: values.officer,
+      officer: values?.officer,
     };
-    console.log(data);
-
     try {
       const response = await BookingRoomServices(baseUrIntranet).createBookingRoom(data);
       if (response) {
@@ -199,23 +196,24 @@ const BookingRoomPage: React.FC = () => {
     const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
     const take: number = Number(pagination.pageSize);
     try {
-      const bookingRoom = await BookingRoomServices(baseUrIntranet).getMasterRoomQuery();
-      const options = bookingRoom
-        .filter((filtersroom: any) => filtersroom.roomsStatus === true)
-        .map((event: any) => {
-          return { value: event.roomId, label: event.roomName };
-        });
-      setMasterRoomData(options);
-      const bookingCalendar = await BookingRoomServices(baseUrIntranet).getBookingRoomQuery();
-      const refreshment = await BookingRoomServices(baseUrIntranet).getMasterRefreshmentQuery();
       const bookings = await BookingRoomServices(baseUrIntranet).findBookingRoom(skip, take);
-      setBookingFetchData(bookings.data);
-      setRefreshmentData(refreshment);
-      const dataFilterCalendar = bookingCalendar.data.filter((events: any) => events.bookingStatus !== "Reject");
-      setBookingFetchCalendar(dataFilterCalendar);
+      setBookingFetchData(bookings);
+      const yearNow = dayjs().format("YYYY");
+      const holidayData = await holidayService.getHolidayByYear(yearNow);
+      const holidayMappedData: any = holidayData.map((item: any) => ({
+        id: item.id,
+        roomName: item.holidaysName,
+        lastName: "",
+        startDate: item.holidaysDate,
+        endDate: item.holidaysDate,
+        description: "",
+        bookerName: "วันหยุด",
+        bookingStatus: "holiday",
+      }));
+      const bookingCalendar = await BookingRoomServices(baseUrIntranet).getBookingRoomCarlendar(month);
+      const mapCalendar: any = [...bookingCalendar, ...holidayMappedData];
+      setBookingFetchCalendar(mapCalendar);
       setPagination({ ...pagination, total: bookings.count });
-      const department = await MasterDepartmentServices(baseUrIntranet).findAllDepartment();
-      setDepartment(department);
       setloading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -223,8 +221,23 @@ const BookingRoomPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (loading === true) fetchData();
+    if (loading === true) {
+      fetchData();
+    }
+    fecthMasterData();
   }, [loading]);
+
+  const fecthMasterData = async () => {
+    const bookingRoom = await BookingRoomServices(baseUrIntranet).getMasterRoomQuery();
+    const options = bookingRoom
+      .filter((filtersroom: any) => filtersroom.roomsStatus === true)
+      .map((event: any) => {
+        return { value: event.roomId, label: event.roomName };
+      });
+    setMasterRoomData(options);
+    const refreshment = await BookingRoomServices(baseUrIntranet).getMasterRefreshmentQuery();
+    setRefreshmentData(refreshment);
+  };
 
   return (
     <>
@@ -243,7 +256,7 @@ const BookingRoomPage: React.FC = () => {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item<BookingType> label="ชื่อแผนก" name="bookerDepartment">
+              <Form.Item<BookingType> label="ตำแหน่ง" name="bookerDepartment">
                 <Input disabled />
               </Form.Item>
             </Col>
@@ -271,7 +284,8 @@ const BookingRoomPage: React.FC = () => {
               <Form.Item<BookingType>
                 label="วันที่สิ้นสุดการจอง"
                 name="endDate"
-                rules={[{ required: true, message: "กรุณาเลือกวันที่สิ้นสุดการจอง" }]}>
+                rules={[{ required: true, message: "กรุณาเลือกวันที่สิ้นสุดการจอง" }]}
+              >
                 <DatePicker allowClear placeholder="เลือกวันที่สิ้นสุดการจอง" showTime style={{ width: "100%" }} format={"DD-MM-YYYY HH:mm"} />
               </Form.Item>
             </Col>
@@ -302,7 +316,7 @@ const BookingRoomPage: React.FC = () => {
                   max={100}
                   min={1}
                   onKeyDown={(event) => {
-                    if (!/[1-9]/.test(event.key) && event.key !== "Backspace") {
+                    if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
                       event.preventDefault();
                     }
                   }}
@@ -377,7 +391,7 @@ const BookingRoomPage: React.FC = () => {
           )}
           {outSider === "มี" && (
             <>
-              <Divider orientation="left">ข้อมูลบุคคลภายนอก</Divider>
+              <Divider orientation="left">{`ข้อมูลบุคคลภายนอก`}</Divider>
               <Form.List name="guest">
                 {(fields, { add, remove }) => (
                   <>
@@ -396,9 +410,9 @@ const BookingRoomPage: React.FC = () => {
                         <Col span={5}>
                           <Form.Item {...restField} label="ลำดับความสำคัญ" name={[name, "guestpriority"]}>
                             <Select placeholder="เลือกความสำคัญ">
-                              <Select.Option value="1">สูง</Select.Option>
-                              <Select.Option value="2">กลาง</Select.Option>
-                              <Select.Option value="3">ต่ำ</Select.Option>
+                              <Select.Option value="1">{`สูง`}</Select.Option>
+                              <Select.Option value="2">{`กลาง`}</Select.Option>
+                              <Select.Option value="3">{`ต่ำ`}</Select.Option>
                             </Select>
                           </Form.Item>
                         </Col>
@@ -420,7 +434,7 @@ const BookingRoomPage: React.FC = () => {
                     ))}
                     <Form.Item>
                       <Button type="dashed" onClick={() => add()} block>
-                        เพิ่มบุคคลภายนอก
+                        {`เพิ่มบุคคลภายนอก`}
                       </Button>
                     </Form.Item>
                   </>
@@ -431,10 +445,10 @@ const BookingRoomPage: React.FC = () => {
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Row justify="end">
               <Button type="default" onClick={handleCancel} style={{ marginRight: 8 }}>
-                ยกเลิก
+                {`ยกเลิก`}
               </Button>
               <Button type="primary" htmlType="submit" loading={submitLoading}>
-                ตกลง
+                {`ตกลง`}
               </Button>
             </Row>
           </Form.Item>
@@ -446,26 +460,26 @@ const BookingRoomPage: React.FC = () => {
             items={[
               {
                 href: "/page/home",
-                title: <span>หน้าหลัก</span>,
+                title: <span>{`หน้าหลัก`}</span>,
               },
               {
-                title: <span>Booking Room Details</span>,
+                title: <span>{`Booking Room Details`}</span>,
               },
             ]}
           />
         </Col>
-        <Divider orientation="left" orientationMargin="0">
+        <Divider orientation="left" orientationMargin="0" style={{ padding: "0px 0px 0px 0px", marginBottom: "0px", marginTop: "0px" }}>
           <div className="title-page-font">{`Booking Room Details`}</div>
         </Divider>
         <Col span={24}>
           <div className="grid-span-1 space-y-2">
-            <Card>
+            <Card styles={{ body: { padding: "10px" } }}>
               <div className="flex justify-end">
                 <Button type="primary" onClick={showModal}>
-                  จองห้องประชุม
+                  {`จองห้องประชุม`}
                 </Button>
               </div>
-              <Tabs defaultActiveKey="1" items={items} />
+              <Tabs defaultActiveKey="1" items={items} type="card" />
             </Card>
           </div>
         </Col>

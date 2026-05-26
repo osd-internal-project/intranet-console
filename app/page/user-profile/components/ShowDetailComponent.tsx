@@ -1,21 +1,38 @@
 "use client";
-import "../style.css";
-import { Button, Card, Form, Input, Modal, Select, Switch, message } from "antd";
+import { Button, Card, Form, Input, Modal, Select, Switch, message, Image, Upload, type UploadFile, type UploadProps } from "antd";
 import React, { useState, useEffect } from "react";
 import UserServices from "../services/index.service";
 import { useForm } from "antd/es/form/Form";
-import { dateToStringTh, dateToStringThNoTime } from "@/app/utils/format";
+import { dateToStringThNoTime } from "@/app/utils/format";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { validateOnlyNumbers } from "@/app/utils/validatefield";
+import { UploadOutlined } from "@ant-design/icons";
+import type { RcFile } from "antd/es/upload";
+import { handleCompress } from "@/app/utils";
+import type { TUpdateUserDto } from "../../users-management/users/common";
+import { UsersServices } from "@/app/services/users.service";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
+
+const customInputStyle = {
+  border: "none",
+  borderRadius: "0",
+  boxShadow: "none",
+  background: "transparent",
+  padding: "4px 0",
+  borderBottom: "1px solid #e5e7eb",
+  fontSize: "14px",
+};
+
 export interface props {
   userid: string;
 }
+
 type detailType = {
   userId: string | null;
   username: string | null;
@@ -32,26 +49,30 @@ type detailType = {
   empId: string | null;
   startWork: Date | null;
 };
+
 type option = {
   label: number;
   value: string;
 };
+
 const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement => {
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const userServices = UserServices(baseUrlUser);
   const [detailForm] = useForm();
-  const [repasswordForm] = Form.useForm();
+  const [imageFiles, setImageFiles] = useState<UploadFile[]>([]);
   const [loading, setLoading] = useState(true);
-  const [openChangePassword, setOpenChangePassword] = useState(false);
-  const [checkedActiveStatus, setCheckedActiveStatus] = useState<boolean>(false);
   const [dateWork, setDateWork] = useState<string>("");
   const [positionOption, setPositionOption] = useState<option[]>([]);
+  const [clickUpdate, setClickUpdate] = React.useState(false);
+  const image = detailForm.getFieldsValue(true);
+
   useEffect(() => {
     if (loading) {
       loadingDetail();
     }
   }, [loading]);
+
   const loadingDetail = async () => {
     if (userid) {
       const data = (await userServices.getUsersByUserId(userid)) as detailType;
@@ -63,6 +84,7 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
       const formattedDuration = `${years} ปี ${months} เดือน ${days} วัน`;
       setDateWork(formattedDuration);
       const formdata = {
+        ...data,
         empId: data.empId,
         startWork: data.startWork ? dateToStringThNoTime(data.startWork) : "",
         userId: data.userId,
@@ -75,7 +97,6 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
         updatedAt: data.updatedAt ? dateToStringThNoTime(data.updatedAt) : "",
         masterPositionId: data.masterPosition.posId,
       };
-      setCheckedActiveStatus(data.activeStatus);
       detailForm.setFieldsValue(formdata);
       const positions = await userServices.getMasterPositionAll();
       const positionOption: option[] = positions.map((d: any) => ({ label: d.nameTh, value: d.id }));
@@ -84,210 +105,202 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
     setLoading(false);
   };
 
-  const validateNoSpaces = (rule: any, value: string, callback: any) => {
-    if (/\s/.test(value)) {
-      callback("ห้ามใช้เว้นวรรค");
-    } else {
-      callback();
-    }
+  const getBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
+
+  const handleChangeImageFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
+    return setImageFiles(newFileList);
   };
-  const validatePassword = (rule: any, value: string, callback: any) => {
-    const lowerCaseMatches = value.match(/[a-z]/g);
-    const upperCaseMatches = value.match(/[A-Z]/g);
-    if (/\s/.test(value)) {
-      callback("ห้ามใช้เว้นวรรค");
-    } else if (!lowerCaseMatches) {
-      callback("รหัสต้องมีตัวพิมพ์เล็ก");
-    } else if (!upperCaseMatches) {
-      callback("รหัสต้องมีตัวพิมพ์ใหญ่");
-    } else if (!/^[a-zA-Z0-9]+$/.test(value)) {
-      callback("รหัสต้องมีเฉพาะตัวอักษรภาษาอังกฤษและตัวเลข");
+
+  const beforeUploadImageFiles = async (file: RcFile) => {
+    // const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
+    // if (file.size > maxSizeInBytes) {
+    //   message.error(`ไฟล์ ${file.name} มีขนาดใหญ่เกิน 2MB`);
+    //   return false;
+    // }
+    if (imageFiles.find((oneFile) => oneFile.name === file.name)) {
+      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
+      return false;
     }
-    callback();
+    const compressed = await handleCompress(file);
+    return compressed;
   };
-  const validateConfirmPassword = (_: any, value: any) => {
-    const firstPassword = repasswordForm.getFieldValue("newPassword");
-    if (value && value !== firstPassword) {
-      return Promise.reject(new Error("กรุณากรอก Password ทั้ง 2 ช่องให้ตรงกัน"));
-    }
-    return Promise.resolve();
-  };
-  const validateOnlyNumbers = (rule: any, value: any, callback: any) => {
-    if (value === undefined) {
-      callback();
-    } else {
-      if (/\s/.test(value)) {
-        callback("ห้ามใช้เว้นวรรค");
-      } else if (isNaN(value)) {
-        callback("กรุณากรอกเฉพาะตัวเลข");
-      } else {
-        callback();
+
+  const handleUpdate = async (values: { extension: string; phoneNumber: string }) => {
+    const base = {
+      extension: values.extension,
+      phoneNumber: values.phoneNumber,
+    };
+
+    if (userid) {
+      const resUpdate = await UsersServices(baseUrlUser).updateUser(userid, base);
+      if (resUpdate) {
+        if (resUpdate && imageFiles.length > 0) {
+          console.log(resUpdate && imageFiles.length > 0);
+          imageFiles.forEach(async (file) => {
+            const formData: any = new FormData();
+            formData.append("type", "create-attend");
+            formData.append("files", file.originFileObj);
+            await UsersServices(baseUrlUser).uploadFiles(resUpdate.userId, formData);
+          });
+        }
+        message.success("Update Success");
+        setImageFiles([]);
+        detailForm.resetFields();
+        setLoading(true);
+        setClickUpdate(false);
       }
     }
   };
 
-  const changeUserPassword = async (value: any) => {
-    if (value.newPassword !== value.rePassword) {
-      message.error("กรุณากรอกรหัสผ่านให้ถูกต้อง");
-    } else {
-      if (confirm("ยืนยันการรีเซ็ตรหัสผ่าน ?")) {
-        await userServices
-          .changeUserPassword(userid, value.newPassword)
-          .then(() => {
-            message.success("Success");
-            repasswordForm.resetFields();
-            setOpenChangePassword(false);
-          })
-          .catch((err) => {
-            message.error("ผิดพลาด");
-            console.log(err);
-          });
-      }
-    }
-    setOpenChangePassword(false);
-  };
   return (
     <>
-      <Card>
-        <div className="flex justify-end ">
-          <div className="text-red-500">*</div>
-          <div className="text-lg font-bold">{`อายุงาน ${dateWork}`}</div>
-        </div>
-        <Form form={detailForm} name="basic" wrapperCol={{ span: 16 }} autoComplete="off" layout="vertical">
-          <div className="grid grid-cols-1 md:grid-cols-3 space-y-0">
-            <div>
-              <Form.Item label="User Id :" name="userId" style={{ marginBottom: "2px" }}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item
-                label="Username"
-                name="username"
-                style={{ marginBottom: "2px" }}
-                rules={[{ required: true, message: "กรุณากรอก  Username" }, { validator: validateNoSpaces }]}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item label="Email :" name="email" rules={[{ required: true, message: "กรุณากรอก Email" }]} style={{ marginBottom: "2px" }}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item label="Status :" name="activeStatus" style={{ marginBottom: "2px" }}>
-                <Switch
-                  disabled={true}
-                  checkedChildren="Active"
-                  unCheckedChildren="Inactive"
-                  checked={checkedActiveStatus}
-                  onChange={() => setCheckedActiveStatus(!checkedActiveStatus)}
-                  className={checkedActiveStatus === true ? "active-switch" : "inactive-switch"}
-                />
-              </Form.Item>
-            </div>
-            <Form.Item label="Change Password :">
-              <div className=" flex w-full space-x-2">
-                <div className=" w-2/3">
-                  <Input.Password disabled value={"1234"} className="read-only-input2" />
-                </div>
+      <Form form={detailForm} name="basic" autoComplete="off" layout="vertical" onFinish={handleUpdate}>
+        <div className="p-4">
+          <Card
+            className="shadow-sm border border-gray-200"
+            bodyStyle={{ padding: "20px" }}
+            title={`🫵 ข้อมูลส่วนตัว`}
+            extra={
+              <Button size="small" type="primary" onClick={() => (clickUpdate ? setClickUpdate(false) : setClickUpdate(true))}>
+                {clickUpdate ? `ยกเลิก` : `แก้ไข`}
+              </Button>
+            }>
+            {/* Header Section */}
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 space-y-4 lg:space-y-0">
+              <div className="flex items-center space-x-3">
+                {clickUpdate ? (
+                  <>
+                    <Upload
+                      accept="image/png, image/jpeg"
+                      fileList={imageFiles}
+                      onChange={handleChangeImageFiles}
+                      beforeUpload={beforeUploadImageFiles}
+                      multiple={false}
+                      maxCount={1}
+                      listType="picture">
+                      <Button className="w-full" icon={<UploadOutlined />}>
+                        upload
+                      </Button>
+                    </Upload>
+                  </>
+                ) : (
+                  <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200">
+                    <Image
+                      className="w-full h-full object-cover"
+                      src={image.imageId ? `${process.env.NEXT_PUBLIC_API_BASE_URL_USER}/id24users/get-image-user/${image.imageId}` : ""}
+                      preview={true}
+                    />
+                  </div>
+                )}
+
                 <div>
-                  <Button
-                    onClick={() => {
-                      setOpenChangePassword(true);
-                      repasswordForm.resetFields();
-                    }}>
-                    Change Password
-                  </Button>
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    {detailForm.getFieldValue("firstNameTh")} {detailForm.getFieldValue("lastNameTh")}
+                  </h2>
+                  <p className="text-sm text-gray-600">
+                    {detailForm.getFieldValue("firstNameEn")} {detailForm.getFieldValue("lastNameEn")}
+                  </p>
+                  <p className="text-sm text-gray-500">@{detailForm.getFieldValue("username")}</p>
                 </div>
               </div>
-            </Form.Item>
-            <div></div>
-
-            <div className=" col-span-3">
-              <hr className="h-px my-3 bg-gray-200 border-0 dark:bg-gray-200" />
+              <div className="text-right">
+                <div className="flex items-center space-x-1">
+                  <span className="text-red-500 text-xs">*</span>
+                  <span className="text-sm font-medium text-gray-700">อายุงาน {dateWork}</span>
+                </div>
+              </div>
             </div>
 
-            <div>
-              <Form.Item label="First Name :" name="firstNameTh" rules={[{ required: true, message: "กรุณากรอก  Username" }]}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
+            {/* Account Information Section */}
+            <div className="mb-6">
+              <h3 className="text-base font-medium text-gray-800 mb-3 pb-1 border-b border-blue-200">ข้อมูลบัญชีผู้ใช้</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Form.Item label="รหัสพนักงาน" name="empId" className="mb-2">
+                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
+                </Form.Item>
+                <Form.Item label="Username" name="username" className="mb-2">
+                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
+                </Form.Item>
+                <Form.Item label="Email" name="email" className="mb-2">
+                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
+                </Form.Item>
+              </div>
             </div>
-            <div>
-              <Form.Item
-                label="Last Name :"
-                name="lastNameTh"
-                rules={[{ required: true, message: "กรุณากรอก Last Name" }]}
-                style={{ marginBottom: "2px" }}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item label="EMP ID :" name="empId" style={{ marginBottom: "2px" }}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item label="Phone Number :" name="phoneNumber" rules={[{ validator: validateOnlyNumbers }]} style={{ marginBottom: "2px" }}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item label="Position :" name="masterPositionId" style={{ marginBottom: "2px" }}>
-                <Select options={positionOption} disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item label="Created Date :" name="createdAt" style={{ marginBottom: "2px" }}>
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item label="Updated Date :" name="updatedAt">
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item label="Start Date :" name="startWork">
-                <Input disabled className="read-only-input" />
-              </Form.Item>
-            </div>
-          </div>
-        </Form>
-      </Card>
 
-      <Modal open={openChangePassword} onCancel={() => setOpenChangePassword(false)} footer={null} title="Change Password">
-        <Form form={repasswordForm} wrapperCol={{ span: 16 }} labelCol={{ span: 8 }} onFinish={changeUserPassword} autoComplete="off">
-          <Form.Item
-            label="New Password"
-            name="newPassword"
-            rules={[{ required: true, message: "กรุณากรอกรหัสผ่านใหม่" }, { validator: validatePassword }]}>
-            <Input.Password type="password" />
-          </Form.Item>
-          <Form.Item
-            label="Confirm Password"
-            name="rePassword"
-            rules={[
-              { required: true, message: "กรุณากรอกรหัสผ่านใหม่อีกครั้ง" },
-              { validator: validateNoSpaces },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  return validateConfirmPassword(_, value);
-                },
-              }),
-            ]}>
-            <Input.Password type="password" />
-          </Form.Item>
-          <div className="flex justify-end">
-            <Form.Item style={{ marginBottom: 0 }}>
-              <Button type="primary" htmlType="submit">
-                Save
-              </Button>
-            </Form.Item>
-          </div>
-        </Form>
-      </Modal>
+            {/* Personal Information Section */}
+            <div className="mb-6">
+              <h3 className="text-base font-medium text-gray-800 mb-3 pb-1 border-b border-green-200">ข้อมูลส่วนตัว</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Form.Item label="ชื่อจริง" name="firstNameTh" className="mb-2">
+                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
+                </Form.Item>
+
+                <Form.Item label="นามสกุล" name="lastNameTh" className="mb-2">
+                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
+                </Form.Item>
+                <Form.Item label="ตำแหน่ง" name="masterPositionId" className="mb-2">
+                  <Select
+                    options={positionOption}
+                    disabled
+                    className="text-sm text-gray-700"
+                    style={{
+                      ...customInputStyle,
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  />
+                </Form.Item>
+                <Form.Item label="เบอร์โต๊ะทำงาน" name="extension" className="mb-2" rules={[{ required: clickUpdate }]}>
+                  <Input
+                    disabled={clickUpdate ? false : true}
+                    style={clickUpdate ? {} : customInputStyle}
+                    className={clickUpdate ? "" : "text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none"}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label="เบอร์โทรศัพท์"
+                  name="phoneNumber"
+                  className="mb-2"
+                  rules={[{ required: clickUpdate, validator: validateOnlyNumbers }]}>
+                  <Input
+                    disabled={clickUpdate ? false : true}
+                    style={clickUpdate ? {} : customInputStyle}
+                    className={clickUpdate ? "" : "text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none"}
+                  />
+                </Form.Item>
+              </div>
+            </div>
+
+            {/* System Information Section */}
+            <div>
+              <h3 className="text-base font-medium text-gray-800 mb-3 pb-1 border-b border-purple-200">ข้อมูลระบบ</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Form.Item label="วันที่สร้างบัญชี" name="createdAt" className="mb-2">
+                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
+                </Form.Item>
+                <Form.Item label="วันที่เริ่มงาน" name="startWork" className="mb-2">
+                  <Input disabled style={customInputStyle} className="text-sm text-gray-700 bg-transparent border-0 shadow-none focus:shadow-none" />
+                </Form.Item>
+                {clickUpdate ? (
+                  <div className="flex justify-end items-end">
+                    <Button htmlType="submit" type="primary">
+                      ยืนยัน
+                    </Button>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          </Card>
+        </div>
+      </Form>
     </>
   );
 };
+
 export default ShowDetailComponent;

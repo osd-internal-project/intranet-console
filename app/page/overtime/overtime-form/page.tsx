@@ -6,11 +6,9 @@ import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
 import LeaveManagementServices from "../../../services/leave-management.service";
-// import UserServices from "@/app/services/user.service";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
-import { optionsTimes, optionsTimesNormall } from "./common";
 import { OvertimeShowDetail } from "./components/overtime-show-detail";
 import OverTimeServices from "@/app/services/overtime.service";
 import { ExclamationCircleFilled } from "@ant-design/icons";
@@ -21,25 +19,24 @@ export default function OverTimePage() {
   const [createForm] = useForm();
   const navigate = useRouter();
   const searchParams = useSearchParams();
+  const date = searchParams.get("date") as string;
   const { user } = useContext(UserContext) as UserContectType;
   const { id24Axios } = useId24();
-  // const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [loading, setLoading] = useState<boolean>(true);
-
-  const date = searchParams.get("date") as string;
   const [getHeader, setHeader] = useState<any[]>([]);
   const [getStartTime, setStartTime] = useState<number>(18);
   const [getEndTime, setEndTime] = useState<number>(19);
   const [getCar, setCar] = useState<any[]>([]);
   const [getcarName, setCarName] = useState<string>("");
   const [getSelectCar, setSelectCar] = useState<boolean>(false);
-  const [getMasterOt, setMasterOt] = useState<number>(0);
+  const [getTime, setTime] = useState<{ value: string; label: string; key: string }[]>([]);
 
   useEffect(() => {
     if (user && loading) {
+      const parsedDate = date && dayjs(date).isValid() ? dayjs(date).startOf("day") : dayjs().startOf("day");
       createForm.setFieldsValue({
-        startDate: date ? dayjs(date) : dayjs(new Date()),
+        startDate: parsedDate,
         startTime: "18:00",
         endTime: "19:00",
         fullname: `${user.firstNameTh} ${user.lastNameTh}`,
@@ -50,6 +47,7 @@ export default function OverTimePage() {
     if (user && user.userId && loading) {
       fetchData();
     }
+    TimeOptions();
   }, [user, loading]);
 
   useEffect(() => {
@@ -61,14 +59,10 @@ export default function OverTimePage() {
   }, [getHeader]);
 
   const fetchData = async () => {
-    if (!user) return;
-    if (!date) return;
-    const HeaderGroup = await LeaveManagementServices(baseUrlIntranet).getHeaderByUserId();
-    const masterConfigTime = await OverTimeServices(baseUrlIntranet).findMasterOt(date);
-    const resCar: any = await MaCarServices(baseUrlIntranet).getMaCarQuery();
-    setMasterOt(masterConfigTime);
-    setCar(resCar);
+    const HeaderGroup = await LeaveManagementServices(baseUrlIntranet).getHeader();
     setHeader(HeaderGroup);
+    const resCar: any = await MaCarServices(baseUrlIntranet).getMaCarQuery();
+    setCar(resCar);
     setLoading(false);
   };
 
@@ -77,6 +71,7 @@ export default function OverTimePage() {
     if (value) {
       data = value.split(":");
     }
+
     setStartTime(data ? (data[1][0] === "3" ? Number(data[0]) + 0.5 : Number(data[0])) : 18);
   };
   const handleEndTime = (value: string) => {
@@ -89,7 +84,7 @@ export default function OverTimePage() {
 
   const onFinish = async (values: any) => {
     const res = {
-      dateStart: values.startDate,
+      dateStart: dayjs(values.startDate).toISOString(),
       startTime: values.startTime,
       endTime: values.endTime,
       fullname: values.fullname,
@@ -107,7 +102,7 @@ export default function OverTimePage() {
     };
 
     Modal.confirm({
-      title: "Do you want to delete these items?",
+      title: "Do you want to create these items?",
       icon: <ExclamationCircleFilled />,
       content: "Some descriptions",
       onOk: async () => {
@@ -136,6 +131,19 @@ export default function OverTimePage() {
     setCarName("");
     const data = getCar.find((events: any) => (events.carId = value));
     setCarName(data.carName);
+  };
+
+  const TimeOptions = () => {
+    const timeOptions = [];
+    for (let h = 0; h < 24; h++) {
+      for (let m = 0; m < 60; m += 30) {
+        const hour = h.toString().padStart(2, "0");
+        const minute = m.toString().padStart(2, "0");
+        const time = `${hour}:${minute}`;
+        timeOptions.push({ value: time, label: time, key: time });
+      }
+    }
+    setTime(timeOptions);
   };
 
   return (
@@ -168,7 +176,8 @@ export default function OverTimePage() {
                 DatePicker: { colorBgContainerDisabled: "#fff" },
                 Form: { itemMarginBottom: 1 },
               },
-            }}>
+            }}
+          >
             <Form layout="vertical" size="small" form={createForm} onFinish={onFinish}>
               <div className=" w-full grid  grid-cols-1 md:grid-cols-4 gap-2">
                 <div className=" md:col-start-4">
@@ -180,7 +189,8 @@ export default function OverTimePage() {
                   <Form.Item
                     label={"เรียน"}
                     name={`ownerGroupId`}
-                    initialValue={getHeader.map((user: any) => `คุณ ${user.firstNameTh} ${user.lastNameTh}`).join(" , ")}>
+                    initialValue={getHeader.map((user: any) => `คุณ ${user.firstNameTh} ${user.lastNameTh}`).join(" , ")}
+                  >
                     <Input disabled multiple />
                   </Form.Item>
                 </div>
@@ -217,22 +227,12 @@ export default function OverTimePage() {
                 </div>
                 <div>
                   <Form.Item name={"startTime"} label={"เวลาเข้า"} rules={[{ required: true, message: "กรุณาเลือกเวลาเข้า" }]}>
-                    <Select
-                      allowClear
-                      placeholder={`Please Select`}
-                      options={getMasterOt === 1 ? optionsTimes : optionsTimesNormall}
-                      onChange={(value) => handleStartTime(value)}
-                    />
+                    <Select allowClear placeholder={`Please Select`} options={getTime} onChange={(value) => handleStartTime(value)} />
                   </Form.Item>
                 </div>
                 <div>
                   <Form.Item name={"endTime"} label={"เวลาออก"} rules={[{ required: true, message: "กรุณาเลือกเวลาออก" }]}>
-                    <Select
-                      allowClear
-                      placeholder={`Please Select`}
-                      options={getMasterOt === 1 ? optionsTimes : optionsTimesNormall}
-                      onChange={(value) => handleEndTime(value)}
-                    />
+                    <Select allowClear placeholder={`Please Select`} options={getTime} onChange={(value) => handleEndTime(value)} />
                   </Form.Item>
                 </div>
                 <div>
@@ -287,7 +287,8 @@ export default function OverTimePage() {
                     onClick={() => {
                       navigate.push(`${window.location.origin}/page/overtime/overtime-calendar`);
                       createForm.resetFields();
-                    }}>
+                    }}
+                  >
                     Back
                   </Button>
                   <Button htmlType="submit" type="primary">

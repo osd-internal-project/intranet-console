@@ -1,4 +1,5 @@
 import { AxiosInstance } from "axios";
+import { Dayjs } from "dayjs";
 
 export const MaCarServices = (axiosInstance: AxiosInstance) => {
   const baseUrlApiMaCarBook = "/ma-car-book";
@@ -9,6 +10,20 @@ export const MaCarServices = (axiosInstance: AxiosInstance) => {
     getMaCarBookQuery: async () => {
       return await axiosInstance
         .get(`${baseUrlApiMaCarBook}/findbytoken`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    getMaCarBookCalendar: async (month: Date | Dayjs | string) => {
+      const condition = {
+        month,
+      };
+      return await axiosInstance
+        .get(`${baseUrlApiMaCarBook}/calendar`, { params: condition })
         .then((res) => {
           return res.data;
         })

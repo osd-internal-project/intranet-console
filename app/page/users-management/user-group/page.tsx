@@ -19,7 +19,7 @@ export default function UsergroupPage() {
     setGroupSelect(e.groupSelect);
     setLoading(e.loading);
   };
-  const onSetPermission = () => {};
+  // const onSetPermission = () => {};
   return (
     <>
       <Row gutter={[8, 8]}>

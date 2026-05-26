@@ -16,6 +16,17 @@ export interface MaCarType {
   maCarBook: MaCarBookType[];
   maCarName: string;
   maStatus: boolean;
+  maCarFiles: MaCarFile[];
+}
+
+export interface MaCarFile {
+  id: number;
+  fileName?: string;
+  fileType?: string;
+  filePath?: string;
+  createdAt: string;
+  updatedAt?: string;
+  carId?: string;
 }
 
 export interface MaCarBookType {
@@ -119,9 +130,10 @@ export interface MaCarWrapupImage {
 
 export interface ProvincesType {
   id: number;
-  name_th: string;
-  value: string;
-  label: string;
+  provinceId: string;
+  nameProvinceTH: string;
+  createdAt: string | Date;
+  updatedAt: string | Date;
 }
 
 export type ITPagination = {
@@ -138,5 +150,5 @@ export interface MaCarType {
   createdAt: Date;
   createdById: string;
   createdByName: string;
+  remark?: string;
 }
-

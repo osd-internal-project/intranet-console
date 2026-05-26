@@ -19,6 +19,7 @@ import {
   Image,
   Row,
   Col,
+  Switch,
 } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageCarServices } from "../services/manage-car.service";
@@ -35,6 +36,8 @@ import { UploadFileStatus } from "antd/es/upload/interface";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import imageCompression from "browser-image-compression";
+import { handleCompress } from "@/app/utils";
 export interface MaCarType {
   id: number;
   typeName: string;
@@ -43,6 +46,7 @@ export interface MaCarType {
   createdAt: string;
   createdById: string;
   createdByName: string;
+  maCarFiles: [];
 }
 
 export interface MaCar {
@@ -98,7 +102,7 @@ const WrapupCar: React.FC = () => {
   const [formchange] = useForm();
   const [formdetail] = useForm();
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const manageCarServices = ManageCarServices(baseUrIntranet);
   const [maData, setMaData] = useState<MaCar[]>([]);
   const [maDataType, setMaDataType] = useState<MaCarType[]>([]);
@@ -128,6 +132,8 @@ const WrapupCar: React.FC = () => {
   const [mileage, setMileage] = useState<number | undefined>(undefined);
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [existingFiles, setExistingFiles] = useState<UploadFile[]>([]);
+
+  const nextCheckDate = Form.useWatch("nextCheckDate", formdetail) || {};
 
   useEffect(() => {
     fetchData();
@@ -414,12 +420,13 @@ const WrapupCar: React.FC = () => {
     return setAttendFiles(newFileList);
   };
 
-  const beforeUploadAttendFiles = (file: RcFile) => {
+  const beforeUploadAttendFiles = async (file: RcFile) => {
     if (attendFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return Upload.LIST_IGNORE;
     }
-    return true;
+    const compressed = await handleCompress(file);
+    return compressed;
   };
 
   const columns: TableProps<MaCarwarpup>["columns"] = [
@@ -534,7 +541,8 @@ const WrapupCar: React.FC = () => {
                   pointerEvents: isEditable ? "auto" : "none",
                   visibility: isEditable ? "visible" : "hidden",
                   color: isEditable ? "inherit" : "gray",
-                }}>
+                }}
+              >
                 {EditIcon}
               </a>
             </Tooltip>
@@ -542,7 +550,8 @@ const WrapupCar: React.FC = () => {
               title="คุณแน่ใจหรือไม่ว่าต้องการลบการตรวจสภาพนี้ ?"
               onConfirm={() => handleDeletemaCarWarpup(record.carWrapupId)}
               okText="ยืนยัน"
-              cancelText="ยกเลิก">
+              cancelText="ยกเลิก"
+            >
               <Tooltip title="ลบ">
                 <a>
                   <DeleteIcon width="20" height="20" />
@@ -556,7 +565,8 @@ const WrapupCar: React.FC = () => {
                   pointerEvents: isEditable ? "auto" : "none",
                   visibility: isEditable ? "visible" : "hidden",
                   color: isEditable ? "inherit" : "gray",
-                }}>
+                }}
+              >
                 {ApproveIcon}
               </a>
             </Tooltip>
@@ -633,7 +643,8 @@ const WrapupCar: React.FC = () => {
                   return Promise.resolve();
                 },
               },
-            ]}>
+            ]}
+          >
             <InputNumber value={mileage} min={mileage || 0} />
           </Form.Item>
           <Form.Item name="vender" label="สถานที่การตรวจสภาพ" rules={[{ required: true, message: "กรุณากรอกสถานที่การตรวจสภาพ" }]}>
@@ -654,6 +665,9 @@ const WrapupCar: React.FC = () => {
           <Form.Item name="dateStart" label="วันที่ตรวจสภาพ" rules={[{ required: true, message: "กรุณาเลือกเวลาเริ่มต้น" }]}>
             <DatePicker style={{ width: "100%" }} disabledDate={(current) => current && current < dayjs().startOf("day")} />
           </Form.Item>
+          <Form.Item name="nextCheckDate" label="มีการตรวจสภาพครั้งถัดไปหรือไม่?" valuePropName="checked">
+            <Switch unCheckedChildren="ไม่" checkedChildren="ใช่" />
+          </Form.Item>
           <Form.Item name="dateEnd" label="วันที่่ตรวจสภาพครั้งถัดไป ( ** สามารถแก้ไขย้อนหลังได้ )">
             <DatePicker style={{ width: "100%" }} disabledDate={(current) => current && current < dayjs().startOf("day")} />
           </Form.Item>
@@ -667,7 +681,8 @@ const WrapupCar: React.FC = () => {
                 alignItems: "center",
                 marginTop: "10px",
                 width: "150px",
-              }}>
+              }}
+            >
               <Upload
                 listType="picture"
                 fileList={attendFiles}
@@ -679,7 +694,8 @@ const WrapupCar: React.FC = () => {
                   showPreviewIcon: false,
                   showRemoveIcon: true,
                   showDownloadIcon: false,
-                }}>
+                }}
+              >
                 <Button icon={<UploadOutlined />}>อัปโหลดรูปภาพและเอกสาร</Button>
               </Upload>
             </div>
@@ -703,7 +719,8 @@ const WrapupCar: React.FC = () => {
           initialValues={{
             wrapupMiles: 0,
             cost: 0,
-          }}>
+          }}
+        >
           <Form.Item name="carName" label="ชื่อรถ" rules={[{ required: true, message: "กรุณาเลือกชื่อรถ" }]}>
             <Select options={maDataOptions} disabled />
           </Form.Item>
@@ -750,7 +767,8 @@ const WrapupCar: React.FC = () => {
                   return Promise.resolve();
                 },
               },
-            ]}>
+            ]}
+          >
             <InputNumber value={mileage} min={mileage || 0} />
           </Form.Item>
 
@@ -779,7 +797,8 @@ const WrapupCar: React.FC = () => {
                 required: true,
                 message: "กรุณาเลือกวันที่่ตรวจสภาพครั้งถัดไป",
               },
-            ]}>
+            ]}
+          >
             <DatePicker style={{ width: "100%" }} format={"DD/MM/YYYY"} />
           </Form.Item>
           <Form.Item name="remark" label="หมายเหตุ">
@@ -788,7 +807,7 @@ const WrapupCar: React.FC = () => {
           <Form.Item label="รูปภาพปัจจุบัน:">
             {existingFiles.map((file, index) => (
               <div key={index} style={{ marginBottom: "20px", position: "relative" }}>
-                <Image preview={false} crossOrigin="anonymous" src={file.url} style={{ width: "470px", height: "460px" }} alt="news" />
+                <Image preview={true} crossOrigin="anonymous" src={file.url} style={{ width: "470px", height: "460px" }} alt="news" />
                 <Button
                   type="primary"
                   danger
@@ -797,7 +816,8 @@ const WrapupCar: React.FC = () => {
                     top: 20,
                     right: 20,
                   }}
-                  onClick={() => handleDeleteImage(file)}>
+                  onClick={() => handleDeleteImage(file)}
+                >
                   ลบรูปภาพ
                 </Button>
               </div>
@@ -810,14 +830,16 @@ const WrapupCar: React.FC = () => {
                 alignItems: "center",
                 marginTop: "10px",
                 width: "150px",
-              }}>
+              }}
+            >
               <Upload
                 listType="picture"
                 fileList={attendFiles}
                 onChange={handleChangeAttendFiles}
                 beforeUpload={beforeUploadAttendFiles}
                 multiple={true}
-                accept=".png,.jpg,.jpeg,.pdf">
+                accept=".png,.jpg,.jpeg,.pdf"
+              >
                 <Button icon={<UploadOutlined />}>อัปโหลดรูปภาพและเอกสาร</Button>
               </Upload>
             </div>
@@ -839,7 +861,8 @@ const WrapupCar: React.FC = () => {
         onCancel={handleclosesubmit}
         footer={null}
         destroyOnClose
-        style={{ textAlign: "center" }}>
+        style={{ textAlign: "center" }}
+      >
         <div style={{ fontSize: "18px", textAlign: "center" }}>โปรดเลือกการตรวจเช็คสภาพรถ</div>
         <Form form={formchange} onFinish={updatedchecksubmit}>
           <Form.Item name="carWrapupId" noStyle>
@@ -853,7 +876,8 @@ const WrapupCar: React.FC = () => {
                 padding: "10px 0 0 0",
                 display: "flex",
                 justifyContent: "center",
-              }}>
+              }}
+            >
               <Button danger type="primary" onClick={() => handleSubmit(false)}>
                 ยกเลิกการตรวจ
               </Button>
@@ -871,7 +895,8 @@ const WrapupCar: React.FC = () => {
         onCancel={handledetail}
         footer={null}
         destroyOnClose
-        style={{ textAlign: "center" }}>
+        style={{ textAlign: "center" }}
+      >
         <Form form={formdetail}>
           <Form.Item<MaCarwarpup> name="remark" label="">
             <Input.TextArea

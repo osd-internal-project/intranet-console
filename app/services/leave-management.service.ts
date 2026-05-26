@@ -1,5 +1,6 @@
 import { AxiosInstance } from "axios";
 import { ITpyeUser, ITypeDataLeave } from "../page/leave-control-management/common";
+import { Dayjs } from "dayjs";
 
 const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
   const baseUrlTypeleave = "/master-type-leave";
@@ -8,9 +9,17 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
   const baseUrlDataLeave = "/data-leave";
   const baseUrlDataLeaveFile = "/data-leave-file";
   const basrUrIDepartment = "/department";
+  const baseReportDataleave = "report-data-leave";
 
   return {
-    countDataLeaveRange: async (userId: string, TypeId: number, startDate: Date, endDate: Date, startTime: string, endTime: string) => {
+    countDataLeaveRange: async (
+      userId: string,
+      TypeId: number,
+      startDate: Date | Dayjs,
+      endDate: Date | Dayjs,
+      startTime: string,
+      endTime: string,
+    ) => {
       const url = `${baseUrlDataLeave}/check-data-range`;
       const params = {
         userId,
@@ -40,9 +49,6 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
         });
     },
     getdataUserAll: async () => {
-      // const condition = {
-      //   orderBy: { id: "asc" },
-      // };
       return await axiosInstance
         .get(`${baseUrlUser}`)
         .then((res) => {
@@ -67,9 +73,14 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getdataLeaveAll: async (userId: string) => {
+    getdataLeaveCalendarTeamsByMonth: async (month: Date | string | Dayjs) => {
+      const condition = {
+        month,
+      };
       return await axiosInstance
-        .get(`${baseUrlDataLeave}/${userId}`)
+        .get(`${baseUrlDataLeave}/calendar-teams`, {
+          params: condition,
+        })
         .then((res) => {
           return res.data;
         })
@@ -77,9 +88,14 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getdataLeavefindBygroup: async (userId: string) => {
+    getdataLeaveCalendarByMonth: async (month: Date | string | Dayjs) => {
+      const condition = {
+        month,
+      };
       return await axiosInstance
-        .get(`${baseUrlDataLeave}/findGroup/${userId}`)
+        .get(`${baseUrlDataLeave}/calendar`, {
+          params: condition,
+        })
         .then((res) => {
           return res.data;
         })
@@ -87,9 +103,47 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-     getdataLeaveHrfindBygroup: async (userId: string) => {
+    getdataLeaveAll: async (userId: string, skip: number, take: number) => {
       return await axiosInstance
-        .get(`${baseUrlDataLeave}/findGroup-hr/${userId}`)
+        .get(`${baseUrlDataLeave}/${userId}?take=${take}&skip=${skip}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
+    getdataLeavefindBygroup: async (userId: string, params: any, skip: number | null, take: number | null) => {
+      let filter = "";
+      if (skip && take) {
+        filter = `?take=${take}&skip=${skip}`;
+      }
+      return await axiosInstance
+        .get(`${baseUrlDataLeave}/findGroup/${userId}`, { params: params })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
+    getdataLeaveHrfindBygroup: async (userId: string, params: any, skip: number, take: number) => {
+      return await axiosInstance
+        .get(`${baseUrlDataLeave}/findGroup-hr/${userId}?take=${take}&skip=${skip}`, { params: params })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
+    getdataLeaveDetailBygroup: async (params: any, skip?: number, take?: number) => {
+      let filter = "";
+      if (skip && take) {
+        filter = `?take=${take}&skip=${skip}`;
+      }
+      return await axiosInstance
+        .get(`${baseUrlDataLeave}/find-total-leave-by-group`, { params: params })
         .then((res) => {
           return res.data;
         })
@@ -156,7 +210,7 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
     //       return;
     //     });
     // },
-    getHeaderByUserId: async () => {
+    getHeader: async () => {
       let url = `${baseUrlDataLeave}/leave-header`;
       return await axiosInstance
         .get(url)
@@ -167,7 +221,17 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
           return;
         });
     },
-
+    getHeaderByUserId: async (token: string) => {
+      let url = `${baseUrlDataLeave}/leave-header-userId/${token}`;
+      return await axiosInstance
+        .get(url)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return;
+        });
+    },
     findUserByUserId: async (userId: string | undefined) => {
       let url = `${baseUrlDataLeave}/find-user-by-userId/${userId}`;
       return await axiosInstance
@@ -182,6 +246,17 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
 
     findDetailTypeLeaveByUserId: async (userId: string | undefined) => {
       let url = `${baseUrlDataLeave}/find-detail-type-leave-by-userId/${userId}`;
+      return await axiosInstance
+        .get(url)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
+    findDetailByTypeLeaveUserId: async (userId: string | undefined, typeId: number) => {
+      let url = `${baseUrlDataLeave}/find-detail-by-type-leave-userId/${userId}/${typeId}`;
       return await axiosInstance
         .get(url)
         .then((res) => {
@@ -256,12 +331,13 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
         .catch((err) => err);
     },
 
-    approvedDataLeave: async (detailApproved: string, event: string, id: number, data: any) => {
+    approvedDataLeave: async (detailApproved: string, event: string, id: number, data: any, typeLeave: string) => {
       const condition = {
         where: {
           id: id,
         },
         data: {
+          typeLeave,
           status: event,
           userApproved: `${data.firstNameTh} ${data.lastNameTh}`,
           approvedDate: new Date(),
@@ -270,6 +346,26 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
       };
       return await axiosInstance
         .patch(`${baseUrlDataLeave}/${id}`, {
+          condition: condition,
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          return [];
+        });
+    },
+
+    updateDetailLeave: async (id: number, data: any, user: any) => {
+      const condition = {
+        where: {
+          id: id,
+        },
+        data: { ...data, updatedBy: `${user.firstNameTh} ${user.lastNameTh}` },
+      };
+
+      return await axiosInstance
+        .patch(`${baseUrlDataLeave}/update-detail/${id}`, {
           condition: condition,
         })
         .then((res) => {
@@ -395,6 +491,17 @@ const LeaveManagementServices = (axiosInstance: AxiosInstance) => {
     getUserGroupMapPermission: async () => {
       return await axiosInstance
         .get(`/user-group-map-permission/`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    exportReport: async (req: { search: object }) => {
+      return await axiosInstance
+        .get(`${baseReportDataleave}/export`, { params: req.search, responseType: "blob" })
         .then((res) => {
           return res.data;
         })

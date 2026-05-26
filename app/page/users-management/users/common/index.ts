@@ -4,8 +4,10 @@ export type ITypeOption = {
 };
 
 export type TCreateUserDto = {
+  extension: string;
   userType: string;
   username: string;
+  nickname: string;
   email: string;
   activeStatus: boolean;
   password: string;
@@ -44,6 +46,7 @@ export type TUserAllDto = {
   username: string;
   email: string;
   activeStatus: boolean;
+  nickname?: string;
   firstNameTh: string;
   lastNameTh: string;
   firstNameEn: string;
@@ -51,6 +54,7 @@ export type TUserAllDto = {
   ldapQuery: string;
   phoneNumber: string;
   masterPosition?: TMasterPosition;
+  imageId: string;
   userMapOrganizeChart: {
     id: number;
     positionId: string;
@@ -62,6 +66,7 @@ export type TUserAllDto = {
   positionId: number;
   departmentId: number;
   startWork?: Date;
+  token: string;
 };
 
 export type TMasterPosition = {

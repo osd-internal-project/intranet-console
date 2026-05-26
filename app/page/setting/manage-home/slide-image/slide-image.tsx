@@ -10,11 +10,12 @@ import { RcFile } from "antd/es/upload";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import { handleCompress } from "@/app/utils";
 
 export default function SlideImageSetting() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const { id24Axios } = useId24();
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const intraAuthService = ManageHomeService(baseUrlIntranet);
   const [slideImage, setSlideImage] = useState<SlideImageType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -35,7 +36,7 @@ export default function SlideImageSetting() {
 
   const showModal = () => {
     createSlideImageForm.setFieldsValue({
-      createByName: `${user?.firstNameTh || ""} ${user?.lastNameTh || ""}`,
+      createByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
     });
     setModalAddSlide(true);
   };
@@ -52,31 +53,28 @@ export default function SlideImageSetting() {
     }
   };
 
-  const beforeUploadAddFiles = (file: RcFile) => {
-    if (slideImage.find((oneFile) => oneFile.fileName === file.name)) {
-      message.warning(`ชื่อไฟล์นี้ซ้ำ ${file.name} `);
+  const beforeUploadAddFiles = async (file: RcFile) => {
+    // const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
+    // if (file.size > maxSizeInBytes) {
+    //   message.error(`ไฟล์ ${file.name} มีขนาดใหญ่เกิน 2MB`);
+    //   return false;
+    // }
+    if (imageFiles.find((oneFile) => oneFile.name === file.name)) {
+      message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return false;
     }
-    return false;
+    const compressed = await handleCompress(file);
+    return compressed;
   };
 
   const onfinishCreateSlide = async (values: any) => {
     try {
-      if (slideImage && slideImage.length >= 10) {
-        message.error("ไม่สามารถอัปโหลดได้ เนื่องจากรูปภาพครบ 10 รูปแล้ว !");
-        return;
-      }
-      const newFileName = values.addFile.fileList[0].name;
-      const isDuplicate = slideImage.some((image) => image.fileName === newFileName);
-      if (isDuplicate) {
-        message.error("ไม่สามารถอัปโหลดไฟล์ที่มีชื่อซ้ำกันได้");
-        return;
-      }
       if (imageFiles.length > 0) {
-        let createdByName = user?.firstNameTh && user?.lastNameTh ? `${user?.firstNameTh} ${user?.lastNameTh}` : "";
-        let createdById = user?.userId;
-        let formData: any = new FormData();
-        formData.append("files", imageFiles[0].originFileObj);
+        const createdByName = user?.firstNameTh && user?.lastNameTh ? `${user?.firstNameTh} ${user?.lastNameTh}` : "";
+        const createdById = user?.userId as string;
+        const file = imageFiles[0].originFileObj;
+        const formData = new FormData();
+        formData.append("files", file);
         formData.append("createdByName", createdByName);
         formData.append("createdById", createdById);
         await intraAuthService.uploadImage(formData);
@@ -106,6 +104,7 @@ export default function SlideImageSetting() {
             setImageFiles={setImageFiles}
             imageFiles={imageFiles}
             slideImage={slideImage}
+            beforeUploadAddFiles={beforeUploadAddFiles}
           />
           <TableSlideImage slideImage={slideImage} handleDeleteSlideImage={handleDeleteSlideImage} />
         </Card>

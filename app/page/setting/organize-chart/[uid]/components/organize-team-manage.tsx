@@ -26,7 +26,6 @@ import { editIcon } from "@/components/icon";
 import { TcreateOrganizeDto, TfindAllOrganizeDto, TupdateOrganizeDto } from "../../common";
 import OrganizeServices from "../../../../../services/organize-chart.service";
 import UserServices from "@/app/page/users-management/users/services/user.service";
-import { render } from "react-dom";
 
 export interface props {
   propDataManage: (res: { organizeSelect: string | null; loading: boolean }) => void;

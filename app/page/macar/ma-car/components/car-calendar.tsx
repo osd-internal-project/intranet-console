@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { Modal, Form, Input, DatePicker, Collapse } from "antd";
+import { Modal, Form, Input, DatePicker, Collapse, message } from "antd";
 import moment from "moment";
 import { Calendar, momentLocalizer, Event as RbcEvent } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useForm } from "antd/es/form/Form";
 import { CaretRightOutlined } from "@ant-design/icons";
 import { MaCarBookCalendarType } from "../../common/index";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { dateFormatTime } from "@/app/utils";
-import { CheckStatusMaCarBookType } from "@/app/utils/validatefield";
-import "../../common/style.css";
+import { CheckStatusMaCarBookType, showStatus } from "@/app/utils/validatefield";
+import { checkIcon, loadingIcon } from "@/components/icon";
 interface CustomEvent extends RbcEvent {
   id: number;
   carBookApprovedStatus: string;
@@ -18,9 +18,10 @@ interface CustomEvent extends RbcEvent {
 }
 interface Props {
   maFetchCalendar: MaCarBookCalendarType[];
+  handleChangeMonth: (month: Dayjs | string) => void;
 }
 
-const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
+const CalendarComponent: React.FC<Props> = ({ maFetchCalendar, handleChangeMonth }) => {
   const [formUpdate] = useForm();
   const [modalMaCarBookDetail, setModalMaCarBookDetail] = useState(false);
   const [selectedMa, setSelectedMa] = useState<MaCarBookCalendarType | null>(null);
@@ -33,6 +34,10 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
   };
 
   const onSelectEventCalendar = (event: CustomEvent) => {
+    if (event.carBookApprovedStatus === "holiday") {
+      message.info(event.title);
+      return false;
+    }
     const maCarCalendar = maFetchCalendar.find((b) => b.id === event.id);
     if (maCarCalendar) {
       setSelectedMa(maCarCalendar);
@@ -46,29 +51,81 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
     }
   };
 
+  const CustomEventComponent = ({ event }: { event: CustomEvent }) => {
+    const icon =
+      event.carBookApprovedStatus === "Approve" || event.carBookApprovedStatus === "Return" || event.carBookApprovedStatus === "Completed"
+        ? checkIcon
+        : event.carBookApprovedStatus === "holiday"
+        ? null
+        : loadingIcon;
+    return (
+      <span className="flex justify-start items-center gap-1 text-[10px] text-white overflow-hidden">
+        {icon && <span className="flex-shrink-0">{icon}</span>}
+        <span className="truncate">{event.title}</span>
+      </span>
+    );
+  };
+
+  const dayPropGetter = (date: any) => {
+    const day = date.getDay();
+    if (day === 0 || day === 6) {
+      return {
+        className: "weekend-day",
+      };
+    }
+    return {};
+  };
   return (
     <>
+      <div style={{ justifyContent: "start", display: "flex", alignItems: "center", marginBottom: "10px" }}>{showStatus()}</div>
       <Calendar<CustomEvent>
-        localizer={localizer}
-        events={maFetchCalendar
-          .filter(
-            (maCarCalendar: MaCarBookCalendarType) =>
-              maCarCalendar.carBookApprovedStatus === "Approve" || maCarCalendar.carBookApprovedStatus === "Process",
-          )
-          .map((maCarCalendar: MaCarBookCalendarType) => ({
-            id: maCarCalendar.id,
-            title: maCarCalendar.carName,
-            start: new Date(maCarCalendar.carBookStartDate),
-            end: new Date(maCarCalendar.carBookEndDate),
-            carBookApprovedStatus: maCarCalendar.carBookApprovedStatus,
-            description: maCarCalendar.description,
-            userName: maCarCalendar.userName,
-          }))}
         style={{ height: 500 }}
-        messages={{ next: "เดือนถัดไป", previous: "เดือนที่แล้ว", today: "วันนี้", month: "เดือน", week: "สัปดาห์", day: "วัน", agenda: "กำหนดการ" }}
+        localizer={localizer}
+        popup
+        startAccessor="start"
+        endAccessor="end"
+        defaultView="month"
+        views={["month"]}
+        events={maFetchCalendar
+          .filter((maCarCalendar: MaCarBookCalendarType) => maCarCalendar.carBookApprovedStatus !== "Cancel")
+          .map((maCarCalendar: MaCarBookCalendarType) => {
+            const isAllDay = dayjs(maCarCalendar.carBookStartDate).hour() === 0 && dayjs(maCarCalendar.carBookEndDate).hour() === 0;
+            return {
+              id: maCarCalendar.id,
+              title: `${maCarCalendar.carName} ${maCarCalendar.createdByName ? `(${maCarCalendar.createdByName})` : ""}`,
+              start: new Date(maCarCalendar.carBookStartDate),
+              end: isAllDay ? dayjs(maCarCalendar.carBookEndDate).add(1, "day").toDate() : new Date(maCarCalendar.carBookEndDate),
+              carBookApprovedStatus: maCarCalendar.carBookApprovedStatus,
+              description: maCarCalendar.description,
+              userName: maCarCalendar.userName,
+            };
+          })}
+        messages={{
+          next: ">",
+          previous: "<",
+        }}
+        onNavigate={(newDate, view, action) => {
+          handleChangeMonth(dayjs(newDate));
+        }}
         onSelectEvent={onSelectEventCalendar}
+        components={{
+          event: CustomEventComponent,
+        }}
+        dayPropGetter={dayPropGetter}
         eventPropGetter={(event: CustomEvent) => {
-          const backgroundColor = event.carBookApprovedStatus === "Approve" ? "#4CAF50" : "#2196F3";
+          console.log(event);
+
+          let backgroundColor = "#FFA500";
+          backgroundColor =
+            event.carBookApprovedStatus === "Approve"
+              ? "#4CAF50"
+              : event.carBookApprovedStatus === "holiday"
+              ? "#FFA500"
+              : event.carBookApprovedStatus === "Return"
+              ? "#ffbf00"
+              : event.carBookApprovedStatus === "Completed"
+              ? "#9370db"
+              : "#2196F3";
           return {
             style: { backgroundColor, color: "#fff", fontSize: 10 },
           };
@@ -81,7 +138,8 @@ const CalendarComponent: React.FC<Props> = ({ maFetchCalendar }) => {
             <Collapse
               bordered={false}
               defaultActiveKey={["1", "2", "3"]}
-              expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}>
+              expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
+            >
               <Collapse.Panel header="ข้อมูลการจอง" key="1">
                 <Form.Item label="ชื่อรถ" name="carName">
                   <Input className="read-only-input-calendar" disabled />

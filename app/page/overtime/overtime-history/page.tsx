@@ -10,14 +10,19 @@ import TableOvertimeHistory from "./components/table";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { intersection } from "lodash";
+import { saveAs } from "file-saver";
+import dayjs from "dayjs";
+import { ModalOvertimeHistory } from "./components/modal";
 
 const OvertimeHistory = () => {
   const { id24Axios, tokenAccess } = useId24();
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const sideMenuGroups =
     tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
-  const baseUrlIntra = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlIntra = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
+  const baseUrlReport = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_REPORT);
   const [filterForm] = Form.useForm();
+  const [formDetail] = Form.useForm();
   const [openFilter, setOpenFilter] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [params, setParams] = useState<any>({});
@@ -27,12 +32,14 @@ const OvertimeHistory = () => {
     total: 0,
   });
   const [dataResource, setDataResource] = useState<{ data: IOverTimeForm[]; total: number }>({ data: [], total: 0 });
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openModalApproved, setOpenModalApproved] = useState<{ status: boolean; type: string }>({ status: false, type: "create" });
 
   useEffect(() => {
     if (loading) {
       fecthData();
     }
-  }, [params, loading]);
+  }, [loading]);
 
   const fecthData = async () => {
     try {
@@ -43,10 +50,6 @@ const OvertimeHistory = () => {
         ? await OverTimeServices(baseUrlIntra).findManyHr(skip, take, params)
         : await OverTimeServices(baseUrlIntra).findMany(skip, take, params);
       setDataResource({ data: overtime.data, total: overtime.total });
-      setPagination({
-        current: 1,
-        pageSize: 10,
-      });
       setLoading(false);
     } catch (error) {
       console.error("Error fetching overtime data:", error);
@@ -56,10 +59,21 @@ const OvertimeHistory = () => {
     }
   };
 
+  const handleExport = async () => {
+    const response = await OverTimeServices(baseUrlReport).exportReport({
+      search: params,
+    });
+    const blob = new Blob([response], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    saveAs(blob, `รายงานการดำเนินการMA-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`);
+    message.success("สำเร็จ");
+  };
+
   const onSearch = async (value: object) => {
     setParams({ ...value });
     setLoading(true);
-    // setPagination({ pageSize: 10, current: 1 });
+    setPagination({ pageSize: 10, current: 1 });
     setOpenFilter(false);
   };
 
@@ -75,15 +89,15 @@ const OvertimeHistory = () => {
   const onFinishUpdate = (values: IOverTimeForm, type: string) => {
     if (!values.overTimeID) return;
     Modal.confirm({
-      title: <>{type === "cancel" ? "Cancel " : "Approved"}</>,
+      title: <>{type === "cancel" ? "Cancel " : type === "reject" ? "Not Approved" : "Approved"}</>,
       icon: <ExclamationCircleFilled />,
       content: <>{type === "cancel" ? "Are you sure you want to cancel this ?" : "Are you sure you want to Approved this ?"}</>,
       okText: "Confirm",
       okButtonProps: {
         type: "primary",
         style: {
-          backgroundColor: type === "cancel" ? "#ff4d4f" : "#1890ff",
-          borderColor: type === "cancel" ? "#ff4d4f" : "#1890ff",
+          backgroundColor: type === "cancel" || type === "reject" ? "#ff4d4f" : "#1890ff",
+          borderColor: type === "cancel" || type === "reject" ? "#ff4d4f" : "#1890ff",
           color: "white",
         },
       },
@@ -97,9 +111,16 @@ const OvertimeHistory = () => {
       },
       onOk: async () => {
         const detailUser = { userId: user?.userId, fullName: `${user?.firstNameTh} ${user?.lastNameTh}` };
-        const res = await OverTimeServices(baseUrlIntra).update(values?.overTimeID ? values?.overTimeID : "", type, detailUser);
+        const res = await OverTimeServices(baseUrlIntra).update(values?.overTimeID as string, type, values.approvedDetail as string, detailUser);
         if (res) {
-          type === "cancel" ? message.error("cancel success") : message.success("approved success");
+          type === "cancel"
+            ? message.error("cancel success")
+            : type === "reject"
+            ? message.success("reject success")
+            : message.success("approved success");
+
+          setOpenModal(false);
+          setOpenModalApproved({ status: false, type: "create" });
           setLoading(true);
         }
       },
@@ -125,6 +146,22 @@ const OvertimeHistory = () => {
     });
   };
 
+  const handleOpenModal = (status: boolean, data: IOverTimeForm | null) => {
+    if (status === false) {
+      formDetail.resetFields();
+    }
+    formDetail.setFieldsValue({
+      ...data,
+      dateStart: data?.dateStart ? dayjs(data?.dateStart) : null,
+      startTime: data?.startTime,
+      endTime: data?.endTime,
+      approvedDate: data?.approvedDate ? dayjs(data?.approvedDate) : null,
+      createdAt: data?.createdAt ? dayjs(data?.createdAt) : null,
+      updatedAt: data?.updatedAt ? dayjs(data?.updatedAt) : null,
+    });
+    setOpenModal(status);
+  };
+
   return (
     <div>
       <div className="mb-4">
@@ -148,7 +185,14 @@ const OvertimeHistory = () => {
       </Divider>
       <div>
         <Card>
-          <FilterOverTimeHistory handleOpenFilter={handleOpenFilter} openFilter={openFilter} filterForm={filterForm} onSearch={onSearch} />
+          <FilterOverTimeHistory
+            handleOpenFilter={handleOpenFilter}
+            openFilter={openFilter}
+            filterForm={filterForm}
+            onSearch={onSearch}
+            handleExport={handleExport}
+            dataResource={dataResource}
+          />
           <TableOvertimeHistory
             dataResource={dataResource}
             pagination={pagination}
@@ -156,9 +200,13 @@ const OvertimeHistory = () => {
             onFinishUpdate={onFinishUpdate}
             onFinishDelete={onFinishDelete}
             sideMenuGroups={sideMenuGroups}
+            handleOpenModal={handleOpenModal}
+            setOpenModal={setOpenModalApproved}
+            openModal={openModalApproved}
           />
         </Card>
       </div>
+      {openModal ? <ModalOvertimeHistory formDetail={formDetail} openModal={openModal} handleOpenModal={handleOpenModal} /> : null}
     </div>
   );
 };

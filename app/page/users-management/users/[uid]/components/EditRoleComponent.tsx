@@ -4,7 +4,7 @@ import RolesServices from "../../services/role.service";
 import { Button, Card, Form, Select, Tag, Tree, message } from "antd";
 import type { DataNode } from "antd/es/tree";
 
-import "../../style.css";
+// import "../../style.css";
 import TextArea from "antd/es/input/TextArea";
 import UserServices from "../../services/user.service";
 import { useForm } from "antd/es/form/Form";
@@ -23,7 +23,7 @@ const EditRoleComponent: React.FC<props> = ({ userid }): React.ReactElement => {
   // const useAuth = useAxiosUser();
 
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const rolesServices = RolesServices(baseUrlUser);
   const userServices = UserServices(baseUrlUser);
   const [roleForm] = useForm();

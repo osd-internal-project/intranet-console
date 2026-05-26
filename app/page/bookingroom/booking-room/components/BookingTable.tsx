@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Table, Tag, Button, Modal, Divider, TablePaginationConfig, Collapse } from "antd";
 import type { TableProps } from "antd";
 import { CaretRightOutlined } from "@ant-design/icons";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { BookingRoomServices } from "../services/booking-room.service";
 import dayjs from "dayjs";
 
 interface DataType {
@@ -20,10 +18,11 @@ interface DataType {
   guest: string;
   created_at: string;
   officer: string;
+  note: string;
 }
 
 export interface props {
-  bookingFetchData: any[];
+  bookingFetchData: { data: any[]; count: number };
   pagination: TablePaginationConfig;
   changePagination: (pagination: TablePaginationConfig) => void;
 }
@@ -143,8 +142,6 @@ const BookingTable: React.FC<props> = ({ bookingFetchData, pagination, changePag
     setCurrentBookingDetails(null);
   };
 
-  useEffect(() => {}, []);
-
   return (
     <>
       <Modal
@@ -170,6 +167,9 @@ const BookingTable: React.FC<props> = ({ bookingFetchData, pagination, changePag
                   ? "อบรม (Train)"
                   : "สัมมนา (Seminar)"}
               </span>
+            </p>
+            <p>
+              <strong>รายละเอียดการจอง : </strong> <span className="modal-content">{currentBookingDetails.note}</span>
             </p>
             <p>
               <strong>วันที่จอง : </strong>{" "}
@@ -263,11 +263,12 @@ const BookingTable: React.FC<props> = ({ bookingFetchData, pagination, changePag
         )}
       </Modal>
       <Table
+        size="small"
         columns={columns}
-        dataSource={bookingFetchData}
+        dataSource={bookingFetchData.data}
         rowKey="id"
         onChange={changePagination}
-        pagination={pagination}
+        pagination={{ ...pagination, total: bookingFetchData.count }}
         scroll={{ x: "max-content" }}
       />
     </>

@@ -1,5 +1,5 @@
 "use client";
-import "../../style.css";
+// import "../../style.css";
 import React, { useState, useEffect } from "react";
 import { Button, Card, Image, Form, Input, Modal, Select, Switch, message, Avatar, Upload, UploadFile, SelectProps } from "antd";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -12,6 +12,8 @@ import UserServices from "../../services/user.service";
 import MasterPositionServices from "../../services/position.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import { handleCompress } from "@/app/utils";
+import { validateOnlyNumbers } from "@/app/utils/validatefield";
 export interface props {
   userid: string;
 }
@@ -39,7 +41,7 @@ type option = {
 const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement => {
   const router = useRouter();
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const userServices = UserServices(baseUrlUser);
   const masterPositionServices = MasterPositionServices(baseUrlUser);
   const [detailForm] = useForm();
@@ -172,19 +174,7 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
     }
     return Promise.resolve();
   };
-  const validateOnlyNumbers = (rule: any, value: any, callback: any) => {
-    if (value === undefined) {
-      callback();
-    } else {
-      if (/\s/.test(value)) {
-        callback("Please do not enter space");
-      } else if (isNaN(value)) {
-        callback("Please enter numbers only");
-      } else {
-        callback();
-      }
-    }
-  };
+
 
   const changeUserPassword = async (value: any) => {
     if (value.newPassword !== value.rePassword) {
@@ -207,12 +197,13 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
     setOpenChangePassword(false);
   };
 
-  const beforeUploadImageFiles = (file: RcFile) => {
+  const beforeUploadImageFiles = async (file: RcFile) => {
     if (imageFiles.find((oneFile) => oneFile.name === file.name)) {
       message.warning(`ชื่อไฟล์ ${file.name} ซ้ำ`);
       return false;
     }
-    return false;
+    const compressed = await handleCompress(file);
+    return compressed;
   };
 
   const handleChangeImageFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {

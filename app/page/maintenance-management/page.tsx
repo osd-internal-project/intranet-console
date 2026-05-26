@@ -6,15 +6,18 @@ import MaFilterComponent from "./components/MaFilter";
 import MaTableComponent from "./components/MaTable";
 import { ITMaTask, ITMaType } from "./common";
 import Link from "next/link";
+import { saveAs } from "file-saver";
 import MaServices from "./services/ma.service";
 import dayjs from "dayjs";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import MasterHolidaysService from "../setting/master-holidays/services/index.service";
 export default function MaTaskPage() {
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
+  const baseUrlReport = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_REPORT);
   const maServices = MaServices(baseUrIntranet);
-  const reportServices = MaServices(baseUrIntranet);
+  const reportServices = MaServices(baseUrlReport);
   const [search, setSearch] = useState<object>({});
   const [loading, setloading] = useState<boolean>(true);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -48,7 +51,18 @@ export default function MaTaskPage() {
   const getEventData = async () => {
     if (rangeCalendar?.start && rangeCalendar?.end) {
       const event = await maServices.findMaTaskByRange(rangeCalendar.start, rangeCalendar.end);
-      setCalendarEvents(event);
+      const yearNow = dayjs().format("YYYY");
+      const holidayService = MasterHolidaysService(baseUrIntranet);
+      const holidayData = await holidayService.getHolidayByYear(yearNow);
+      const holidayMappedData: any = holidayData.map((item: any) => ({
+        id: item.id,
+        maName: item.holidaysName,
+        maDate: item.holidaysDate,
+        detail: "",
+        maStatus: "holiday",
+      }));
+      const allEvents = [...event, ...holidayMappedData];
+      setCalendarEvents(allEvents);
     }
   };
   const fetchData = async () => {
@@ -59,6 +73,7 @@ export default function MaTaskPage() {
       skip: skip,
       search: search,
     });
+
     setDataTable(res.data);
     setPagination({ ...pagination, total: res.count });
     setloading(false);
@@ -84,10 +99,7 @@ export default function MaTaskPage() {
     const blob = new Blob([response], {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
-    const link = document.createElement("a");
-    link.href = window.URL.createObjectURL(blob);
-    link.download = `รายงานการดำเนินการMA-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`;
-    link.click();
+    saveAs(blob, `รายงานการดำเนินการMA-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`);
     message.success("สำเร็จ");
   }
   function searchMa(filter: any): void {
@@ -114,11 +126,11 @@ export default function MaTaskPage() {
             ]}
           />
         </Col>
-        <Divider orientation="left" orientationMargin="0">
+        <Divider orientation="left" orientationMargin="0" style={{ padding: "0px 0px 0px 0px", marginBottom: "0px", marginTop: "0px" }}>
           <div className="title-page-font">{`Maintenance Mangement`}</div>
         </Divider>
         <Col span={24}>
-          <Card>
+          <Card styles={{ body: { padding: "10px" } }}>
             <Tabs
               tabBarExtraContent={
                 <Link href={"/page/maintenance-management/create"}>

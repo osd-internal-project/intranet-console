@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Navigation from "@/components/Navigation";
 import { useRouter } from "next/navigation";
@@ -11,17 +11,18 @@ import { loadAppConfig } from "../config/app-config";
 import { UsersServices } from "../services/users.service";
 import { UserContectType, UserContext } from "../config/userContext";
 
+import Script from "next/script";
 const { Content, Sider } = Layout;
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const navigate = useRouter();
   const { tokenAccess, authenticated, login, logout, id24Axios } = useId24();
   const { saveUser, saveRoles } = useContext(UserContext) as UserContectType;
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const [loading, setLoading] = useState<boolean>(true);
   const [collapsed, setCollapsed] = useState(false);
   const [profileDetail, setProfileDetail] = useState<any>();
-
+  const [isCheckingProfile, setIsCheckingProfile] = useState(false);
   const [userRequestedLogout, setUserRequestedLogout] = useState(false);
   const pathname = usePathname();
   const defaultPath = `${window.location.origin}/page/home`;
@@ -33,34 +34,33 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     saveRoles(sideMenuGroups);
   }, [tokenAccess?.userAccess]);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
+      setIsCheckingProfile(true);
       const profileUser = await UsersServices(baseUrlUser).processAfterLoginAuth();
-      console.time(profileUser);
+
       if (profileUser) {
         setProfileDetail(profileUser);
         saveUser(profileUser);
+      } else {
+        // ถ้าไม่มีข้อมูล redirect ทันที
+        navigate.push("/permission-access");
       }
     } catch (error) {
       console.error("Error fetching user data:", error);
+      // อาจจะ redirect ไปหน้า error หรือ permission-access
+      navigate.push("/permission-access");
     } finally {
       setLoading(false);
+      setIsCheckingProfile(false);
     }
-  };
-  useEffect(() => {
-    if (authenticated && loading) {
-      fetchData();
-    }
-  }, [authenticated, loading]);
+  }, [baseUrlUser, navigate, saveUser]);
 
   useEffect(() => {
-    if (authenticated && !loading) {
-      if (profileDetail === undefined) {
-        const pathLocation = `${window.location.origin}/permission-access`;
-        navigate.push(pathLocation);
-      }
+    if (authenticated && loading && !isCheckingProfile) {
+      fetchData();
     }
-  }, [authenticated, loading, profileDetail, navigate]);
+  }, [authenticated, loading, isCheckingProfile, fetchData]);
 
   if (!authenticated) {
     if (userRequestedLogout) {
@@ -92,14 +92,17 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           collapsible
           collapsed={collapsed}
           style={{ backgroundColor: "#ffff" }}
-          className=" min-h-screen  hidden  md:block bg ">
+          className=" min-h-screen  hidden  md:block bg "
+        >
           <div className="flex justify-center py-4 ">
             {!collapsed ? (
-              <>
-                <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : " w-32"}`} />
-              </>
+              <div onClick={() => navigate.push(`${window.location.origin}/page/home`)} className="cursor-pointer">
+                <img src="/images/logo_osd.png" alt="logo-page" className={`${collapsed ? "w-14 " : " w-32"}`} />
+              </div>
             ) : (
-              <img src="/images/osd-logo.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
+              <div onClick={() => navigate.push(`${window.location.origin}/page/home`)} className="cursor-pointer">
+                <img src="/images/logo_osd.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
+              </div>
             )}
           </div>
           <Menu
@@ -123,14 +126,32 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <Content
             className=" mb-10"
             style={{
-              padding: 20,
+              padding: 10,
               margin: 0,
               marginBottom: 20,
-            }}>
+            }}
+          >
             {children}
           </Content>
           <Footer style={{ textAlign: "center" }}>Intranet ©{new Date().getFullYear()} Created by OSD</Footer>
         </Layout>
+        <Script
+          src="https://agenza.osd.co.th/resources/product/llm/public/sdk/embedLite.js"
+          onLoad={() => {
+            const HiagentWebSDK = (window as any).HiagentWebSDK;
+            if (HiagentWebSDK) {
+              new HiagentWebSDK.WebLiteClient({
+                appKey: "d5djgcqkjaps72qt4g7g",
+                baseUrl: "https://agenza.osd.co.th",
+              });
+            }
+          }}
+        />
+        <style>
+          {`.hiagent-conversation {
+          z-index: 3;
+          }`}
+        </style>
       </Layout>
     </Spin>
   );

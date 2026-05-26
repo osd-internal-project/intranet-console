@@ -40,13 +40,13 @@ type TabType = {
 
 export default function UsermanagementPage() {
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
-  const baseUrlIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
+  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const [positionOption, setPositionOption] = useState<ITypeOption[]>([]);
   const [getImage, setImage] = useState<any>();
   const [filterForm] = Form.useForm();
   const [createForm] = Form.useForm();
-  const [selectUserType, setSelectUserType] = useState<"ldap" | "local">("local");
+  const [selectUserType, setSelectUserType] = useState<"ldap" | "local">("ldap");
   const [managePage, setManagePage] = useState<TManageUserPageDto>({
     loading: true,
     pagination: { current: 1, pageSize: 10 },
@@ -56,43 +56,24 @@ export default function UsermanagementPage() {
     modalTitle: "create",
   });
   const [optionsOrganize, setOptionsOrganize] = useState<TabType[]>([]);
-  const [groupDetailData, setGroupDetailData] = useState<GroupDetailData>({
-    loading: true,
-    group: {
-      name: "Loading...",
-      description: "",
-      notes: "",
-      subGroups: [
-        {
-          name: "subGroup",
-          id: "234",
-          description: "",
-          notes: "",
-          subGroups: [],
-        },
-      ],
-      id: "123",
-    },
-  });
   const [treeData, setTreeData] = useState<DataNode[]>([]);
   const [treeListDepartment, setTreeListDepartment] = useState<any[] | null>(null);
 
   useEffect(() => {
     if (managePage.loading) {
-      featchData();
+      fetchData();
       loaddata();
     }
+    masterFecthData();
   }, [managePage.loading]);
 
   const loaddata = async () => {
     const resOrganize = await OrganizeServices(baseUrlIntranet).getOrganizeByType("department");
     const tree = createTreeDepartMent(resOrganize, null);
     setTreeListDepartment(tree);
-
-    // }
   };
 
-  const featchData = async () => {
+  const fetchData = async () => {
     const skip = (Number(managePage.pagination.current) - 1) * Number(managePage.pagination.pageSize);
     const take = Number(managePage.pagination.pageSize);
     const resultUsers = await UsersServices(baseUrlUser).findAllUser({
@@ -100,7 +81,9 @@ export default function UsermanagementPage() {
       skip: skip,
       take: take,
     });
-
+    setManagePage({ ...managePage, loading: false, dataUsers: resultUsers });
+  };
+  const masterFecthData = async () => {
     const resultMasterPosition = await MasterPositionServices(baseUrlUser).findAllPosition();
     const groupResponse = await UserGroupServices(baseUrlUser).getUserGroupAll();
     const tree = createTree(groupResponse, null) as any;
@@ -115,12 +98,11 @@ export default function UsermanagementPage() {
       value: d.id,
     }));
     setPositionOption(positionOption);
-    setGroupDetailData({
-      loading: false,
-      group: groupResponse,
-    });
+    // setGroupDetailData({
+    //   loading: false,
+    //   group: groupResponse,
+    // });
     setOptionsOrganize([...orgList]);
-    setManagePage({ ...managePage, loading: false, dataUsers: resultUsers });
   };
   const createTreeDepartMent = (obj: TfindAllOrganizeDto[], parentId: string | null) => {
     const tree: any[] = [];
@@ -128,7 +110,7 @@ export default function UsermanagementPage() {
       if (item.parentPositionId === parentId) {
         const children = createTreeDepartMent(obj, item.positionId);
         if (children.length > 0) {
-          (item.icon = <CarryOutOutlined />), (item.children = children);
+          ((item.icon = <CarryOutOutlined />), (item.children = children));
         }
         tree.push({
           value: item.positionId,
@@ -145,7 +127,7 @@ export default function UsermanagementPage() {
       if (item.parentGroupId === parentId) {
         const children = createTree(obj, item.groupId);
         if (children.length > 0) {
-          (item.icon = <CarryOutOutlined />), (item.children = children);
+          ((item.icon = <CarryOutOutlined />), (item.children = children));
         }
         tree.push({
           value: item.groupId,
@@ -163,21 +145,21 @@ export default function UsermanagementPage() {
         <Breadcrumb
           items={[
             {
-              href: "/page",
+              href: "/page/home",
               title: <span>หน้าหลัก</span>,
             },
             {
-              title: <span>User Management</span>,
+              title: <span>การจัดการบุคคล</span>,
             },
             {
-              title: <span>Users</span>,
+              title: <span>บุคลากร</span>,
             },
           ]}
         />
       </Col>
 
       <Divider orientation="left" orientationMargin="0">
-        <div className="title-page-font">{`Users`}</div>
+        <div className="title-page-font">{`บุคลากร`}</div>
       </Divider>
       <Col span={24}>
         <UserAction

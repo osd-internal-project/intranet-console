@@ -6,7 +6,7 @@ import { Button, Card, Form, Select, Spin, Tree, TreeSelect, message } from "ant
 import type { DataNode, TreeProps } from "antd/es/tree";
 import Title from "antd/es/skeleton/Title";
 
-import "../../style.css";
+// import "../../style.css";
 import { useForm } from "antd/es/form/Form";
 import UserGroupServices from "../../../../../services/usergroup.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
@@ -23,7 +23,7 @@ const EditTreeComponent: React.FC<props> = ({ userid }): React.ReactElement => {
   // const userAuth = useAxiosUser();
 
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const userGroupServices = UserGroupServices(baseUrlUser);
   const userServices = UserServices(baseUrlUser);
   const [treeform] = useForm();

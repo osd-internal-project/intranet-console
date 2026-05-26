@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { createStyles } from "antd-style";
-import { Alert, Calendar, CalendarProps } from "antd";
+import { Alert, Button, Calendar, CalendarProps, Select, Space } from "antd";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import classNames from "classnames";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import SlideImageService from "../services/index.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
@@ -123,7 +122,7 @@ interface THoliday {
 
 const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const intraAuthService = SlideImageService(baseUrIntranet);
   const { styles } = useStyle({ test: true });
   const [selectDate, setSelectDate] = useState<Dayjs>(dayjs());
@@ -165,37 +164,44 @@ const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
         : false;
 
     if (info.type === "date") {
-      return React.cloneElement(info.originNode, {
-        ...info.originNode.props,
-        className: classNames(styles.dateCell, {
-          [styles.current]: selectDate.isSame(date, "date"),
-          [styles.today]: date.isSame(dayjs(), "date"),
-        }),
-        children: (
-          <div
-            className={classNames({
-              [styles.text]: true,
-              [styles.holiday]: isHoliday,
-            })}>
-            <span
+      return React.cloneElement(
+        info.originNode as React.ReactElement<{
+          className?: string;
+          children?: React.ReactNode;
+        }>,
+        {
+          className: classNames(styles.dateCell, {
+            [styles.current]: selectDate.isSame(date, "date"),
+            [styles.today]: date.isSame(dayjs(), "date"),
+          }),
+          children: (
+            <div
               className={classNames({
-                [styles.weekend]: isWeekend,
-                // [styles.holiday]: isHoliday,
-                gray: !panelDateDate.isSame(date, "month"),
-              })}>
-              {date.get("date")}
-            </span>
-            {info.type === "date" && <div className={styles.lunar}>-</div>}
-          </div>
-        ),
-      });
+                [styles.text]: true,
+                [styles.holiday]: isHoliday,
+              })}
+            >
+              <span
+                className={classNames({
+                  [styles.weekend]: isWeekend,
+                  gray: !panelDateDate.isSame(date, "month"),
+                })}
+              >
+                {date.get("date")}
+              </span>
+              <div className={styles.lunar}>-</div>
+            </div>
+          ),
+        },
+      );
     }
     if (info.type === "month") {
       return (
         <div
           className={classNames(styles.monthCell, {
             [styles.monthCellCurrent]: selectDate.isSame(date, "month"),
-          })}>
+          })}
+        >
           {dayjs(date).format("MMM")}
         </div>
       );
@@ -204,7 +210,75 @@ const HolidaysCalendarComponent: React.FC<props> = (): React.ReactElement => {
   return (
     <>
       <div className={` max-w-full ${styles.wrapper}`}>
-        <Calendar fullCellRender={cellRender} fullscreen={false} onPanelChange={onPanelChange} onSelect={onDateChange} />
+        <Calendar
+          value={panelDateDate}
+          fullCellRender={cellRender}
+          fullscreen={false}
+          onPanelChange={onPanelChange}
+          onSelect={onDateChange}
+          headerRender={({ value, type, onChange }) => {
+            const prevMonth = () => {
+              const newDate = value.subtract(1, "month");
+              setPanelDate(newDate);
+              onChange?.(newDate);
+            };
+            const nextMonth = () => {
+              const newDate = value.add(1, "month");
+              setPanelDate(newDate);
+              onChange?.(newDate);
+            };
+
+            // Generate year and month options
+            const years = Array.from({ length: 10 }, (_, i) => dayjs().year() - 5 + i);
+            const months = Array.from({ length: 12 }, (_, i) => ({
+              value: i,
+              label: dayjs().month(i).format("MMM"),
+            }));
+
+            return (
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 8px", marginBottom: 8 }}>
+                <div style={{ display: "flex", gap: 4 }}>
+                  <Space>
+                    <Button onClick={prevMonth}>←</Button>
+                    <Button onClick={nextMonth}>→</Button>
+                  </Space>
+                </div>
+                <div style={{ display: "flex", gap: 4 }}>
+                  <Select
+                    value={value.year()}
+                    onChange={(year) => {
+                      const newDate = value.year(year);
+                      setPanelDate(newDate);
+                      onChange?.(newDate);
+                    }}
+                    style={{ width: 100 }}
+                  >
+                    {years.map((year) => (
+                      <Select.Option key={year} value={year}>
+                        {year}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  <Select
+                    value={value.month()}
+                    onChange={(month) => {
+                      const newDate = value.month(month);
+                      setPanelDate(newDate);
+                      onChange?.(newDate);
+                    }}
+                    style={{ width: 100 }}
+                  >
+                    {months.map((month) => (
+                      <Select.Option key={month.value} value={month.value}>
+                        {month.label}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </div>
+              </div>
+            );
+          }}
+        />
         {resultHoliday[0] ? <Alert type="warning" message={`${resultHoliday.map((item: string) => `${item}`)}`} /> : <></>}
       </div>
     </>

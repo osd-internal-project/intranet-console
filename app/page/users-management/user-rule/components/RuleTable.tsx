@@ -28,7 +28,7 @@ const RuleTable: React.FC<props> = ({
   paginationConfig,
 }): React.ReactElement => {
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const [currentPage, setCurrentPage] = useState(1);
   const [openFilter, setOpenFilter] = useState<boolean>(false);
   const [search, setSearch] = useState<object>({});

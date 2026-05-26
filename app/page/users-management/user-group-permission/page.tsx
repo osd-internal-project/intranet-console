@@ -16,7 +16,7 @@ export default function UserModulePage() {
     user: null,
   };
   const { id24Axios } = useId24();
-  const baseUrlUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const [form] = useForm();
   const [loading, setLoading] = useState<boolean>(true);
   const [moduleSelected, setModuleSelected] = useState<string | undefined>(undefined);

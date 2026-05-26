@@ -1,5 +1,9 @@
+import { Dayjs } from "dayjs";
+
 export interface ITypetypeleave {
   haveLeftHours: number;
+  haveLeaveDays: number;
+  haveLeaveHours: number;
   limitLeaveHours: number;
   limitLeaveLastResult: number;
   haveLeft: any;
@@ -69,6 +73,8 @@ export interface IDataUser {
 export interface ISelect {
   value: string | number;
   label: string;
+  unit?: string;
+  balance?: number;
 }
 export interface ISelectDepartment {
   value: string | number;
@@ -141,9 +147,9 @@ export interface ITypeDataLeave {
   departName?: string;
   typeId?: number;
   typeName?: string;
-  startDate?: Date;
+  startDate?: Date | Dayjs | string;
   startTime?: string;
-  endDate?: Date;
+  endDate?: Date | Dayjs | string;
   endTime?: string;
   leaveHour?: number;
   detail?: string;
@@ -159,6 +165,12 @@ export interface ITypeDataLeave {
   description?: string;
   groupId?: string;
   detailApproved?: string;
+  updatedBy?: string;
+  commentUpdated?: string;
+  yearLeaveHour?: number; // จำนวนวันลาที่ได้ขอในปีนั้น
+  usedLeaveHour?: number; // จำนวนวันลาที่ใช้ไปในปีนั้น
+  beforeLeaveHour?: number; // จำนวนวันลาคงเหลือก่อนขอลา(อนุมัติ)
+  afterLeaveHour?: number; // จำนวนวันลาคงเหลือหลังขอลา(อนุมัติ)
 }
 
 export interface ITypeDataLeaveCreate {
@@ -171,9 +183,9 @@ export interface ITypeDataLeaveCreate {
   departName: string;
   type_id: number;
   typeName: string;
-  startDate: Date;
+  startDate: Date | Dayjs;
   startTime: string;
-  endDate: Date;
+  endDate: Date | Dayjs;
   endTime: string;
   leaveHour: number;
   detail: string;
@@ -188,6 +200,8 @@ export interface ITypeDataLeaveCreate {
   ownerId?: string;
   ownerName?: string;
   groupName: string;
+  updatedBy?: string;
+  commentUpdated?: string;
 }
 
 export interface ITypeDataleaveMap {

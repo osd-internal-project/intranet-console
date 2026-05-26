@@ -34,12 +34,12 @@ const ManageBookingRoom = () => {
             ]}
           />
         </Col>
-        <Divider orientation="left" orientationMargin="0">
+        <Divider orientation="left" orientationMargin="0" style={{ padding: "0px 0px 0px 0px", marginBottom: "0px", marginTop: "0px" }}>
           <div className="title-page-font">{`Booking Room Management`}</div>
         </Divider>
         <Col span={24}>
           <div className=" grid-span-1 space-y-2">
-            <Card>
+            <Card styles={{ body: { padding: "10px" } }}>
               <Tabs defaultActiveKey="1" items={items} />
             </Card>
           </div>

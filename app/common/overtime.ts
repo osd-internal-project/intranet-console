@@ -26,4 +26,7 @@ export interface IOverTimeForm {
   approvedUser?: string | null;
   approvedDetail?: string | null;
   calculate?: string | null;
+  createdAt?: Date | string | null;
+  updatedAt?: Date | string | null;
+  type?: string;
 }

@@ -1,0 +1,574 @@
+import type { ITEmployeePropertyCommon } from "@/app/common/epmployee-property";
+import { loadAppConfig } from "@/app/config/app-config";
+import { UserContext, type UserContectType } from "@/app/config/userContext";
+import employeePropertyService from "@/app/services/employee-property.service";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import {
+  Button,
+  Form,
+  Input,
+  message,
+  Modal,
+  Popover,
+  Select,
+  Space,
+  Table,
+  Typography,
+  type MenuProps,
+  Image,
+  Upload,
+  Tag,
+  Checkbox,
+  Row,
+  Col,
+} from "antd";
+import type { ColumnsType } from "antd/es/table";
+import dayjs from "dayjs";
+import React, { useContext, useEffect, useState, type Dispatch, type SetStateAction } from "react";
+import { saveAs } from "file-saver";
+import type { ITMistakesType } from "@/app/common/mistakes-type";
+import type { UploadFile } from "antd/es/upload/interface";
+
+export interface props {
+  reloadKey: number;
+  setReloadKey: Dispatch<SetStateAction<number>>;
+  dropdownUser: { value: string; label: string }[];
+}
+
+const nameOptions = [
+  { label: "Notebook", value: "Notebook", type: "computer_equipment" },
+  { label: "PC", value: "PC", type: "computer_equipment" },
+  { label: "Monitor", value: "Monitor", type: "computer_equipment" },
+  { label: "Keyboard", value: "Keyboard", type: "computer_equipment" },
+  { label: "Mouse", value: "Mouse", type: "computer_equipment" },
+  { label: "Other", value: "Other", type: "computer_equipment" },
+  { label: "IP Phone", value: "IP Phone", type: "office_equipment" },
+  { label: "Hard Phone", value: "Hard Phone", type: "office_equipment" },
+  { label: "Adapter", value: "Adapter", type: "office_equipment" },
+  { label: "Charger", value: "Charger", type: "office_equipment" },
+  { label: "โต๊ะประชุม", value: "โต๊ะประชุม", type: "office_equipment" },
+  { label: "โต๊ะทำงานส่วนตัว", value: "โต๊ะทำงานส่วนตัว", type: "office_equipment" },
+  { label: "เก้าอี้ส่วนกลาง", value: "เก้าอี้ส่วนกลาง", type: "office_equipment" },
+  { label: "เก้าอี้ทำงานส่วนตัว", value: "เก้าอี้ทำงานส่วนตัว", type: "office_equipment" },
+  { label: "ตู้เก็บเอกสาร", value: "ตู้เก็บเอกสาร", type: "office_equipment" },
+  { label: "เครื่องถ่ายเอกสาร", value: "เครื่องถ่ายเอกสาร", type: "office_equipment" },
+  { label: "เครื่องย่อยกระดาษ", value: "เครื่องย่อยกระดาษ", type: "office_equipment" },
+  { label: "เครื่องฟอกอากาศ", value: "เครื่องฟอกอากาศ", type: "office_equipment" },
+  { label: "TV", value: "TV", type: "office_equipment" },
+  { label: "Other", value: "Other", type: "office_equipment" },
+  { label: "Mobile Phone", value: "Mobile Phone", type: "other_asset" },
+  { label: "Sim Moblie", value: "Sim Moblie", type: "other_asset" },
+  { label: "Pocket Wifi", value: "Pocket Wifi", type: "other_asset" },
+  { label: "Other", value: "Other", type: "other_asset" },
+];
+
+const EmployeePropertyTable: React.FC<props> = ({ reloadKey, setReloadKey, dropdownUser }): React.ReactElement => {
+  const { user } = (useContext(UserContext) as UserContectType) || {
+    user: null,
+  };
+  const { id24Axios } = useId24();
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
+  const baseUrlReport = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_REPORT);
+  const employeepropertyservice = employeePropertyService(baseUrIntranet);
+  const employeepropertyserviceReprot = employeePropertyService(baseUrlReport);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [dataTable, setDataTable] = useState<ITEmployeePropertyCommon[]>([]);
+  const [params, setParams] = useState<{ type: string; name: string }>({ type: "", name: "" });
+  const [filterForm] = Form.useForm();
+  const [editForm] = Form.useForm();
+  const [mistakesForm] = Form.useForm();
+  const [openEdit, setOpenEdit] = useState<boolean>(false);
+  const [openModalMistake, setOpenModalMistake] = useState<boolean>(false);
+  const [editFiles, setEditFiles] = useState<UploadFile[]>([]);
+
+  useEffect(() => {
+    if (loading) {
+      fetchData();
+    }
+  }, [loading, user, params]);
+
+  useEffect(() => {
+    fetchData();
+  }, [reloadKey]);
+
+  const fetchData = async () => {
+    if (!user) {
+      return false;
+    }
+    const data = await employeepropertyservice.findByUserId(user?.userId, params);
+    setDataTable(data);
+    setLoading(false);
+  };
+  const employeePropertyColumns: ColumnsType<ITEmployeePropertyCommon> = [
+    {
+      title: "ลำดับ",
+      dataIndex: "id",
+      key: "id",
+      width: 80,
+      render: (value: string, record: ITEmployeePropertyCommon, index: number) => index + 1,
+    },
+    {
+      title: "ประเภททรัพย์สิน",
+      dataIndex: "type",
+      key: "type",
+      render: (value: string, record: ITEmployeePropertyCommon) => {
+        if (value === "computer_equipment") return "อุปกรณ์คอมพิวเตอร์";
+        if (value === "office_equipment") return "อุปกรณ์สำนักงาน";
+        if (value === "other_asset") {
+          return `อื่นๆ (${record.nameOther || "-"})`;
+        }
+        return "-";
+      },
+    },
+    {
+      title: "ทรัพย์สินส่วนกลาง",
+      dataIndex: "common",
+      key: "common",
+      render: (value: boolean) => (value ? <Tag color="green">{`ใช่`}</Tag> : <Tag>{`ไม่ใช่`}</Tag>),
+    },
+    {
+      title: "ชื่อทรัพย์สิน",
+      dataIndex: "name",
+      key: "name",
+      render: (e: string, record: ITEmployeePropertyCommon) => {
+        return (
+          <div className="flex items-center gap-3">
+            {/* Image */}
+            <div className="w-[50px] h-[50px] rounded-lg overflow-hidden border bg-gray-100 flex items-center justify-center">
+              {record.imageUrl ? (
+                <Image src={record.imageUrl} alt={e} width={50} height={50} className="object-cover" />
+              ) : (
+                <span className="text-xs text-gray-400">No Image</span>
+              )}
+            </div>
+            <div className="flex flex-col">
+              <span className="font-medium text-gray-800">{e === "Other" ? record.nameOther : e}</span>
+              <span className="text-xs text-gray-500">{`${record.brand}`}</span>
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      title: "Serial",
+      dataIndex: "serial",
+      key: "serial",
+    },
+    {
+      title: "Asset No.",
+      dataIndex: "assetNumber",
+      key: "assetNumber",
+    },
+    {
+      title: "สถานะ",
+      dataIndex: "assetStatus",
+      key: "assetStatus",
+    },
+    {
+      title: "ที่ตั้ง",
+      dataIndex: "address",
+      key: "address",
+    },
+    {
+      title: "รายละเอียด",
+      dataIndex: "spec",
+      key: "spec",
+      width: 300,
+    },
+    {
+      title: "วันที่สร้าง",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (value: string) => new Date(value).toLocaleDateString("en-GB"),
+    },
+    {
+      title: "แก้ไขข้อมูล",
+      dataIndex: "id",
+      key: "id",
+      render: (value: number, record: ITEmployeePropertyCommon) => (
+        <Space>
+          <Button type="link" onClick={() => handleEdit(record)}>
+            แก้ไข
+          </Button>
+          <Popover
+            trigger="click"
+            placement="left"
+            content={
+              <Button danger type="primary" block onClick={() => handleDelete(value)}>
+                Delete
+              </Button>
+            }
+          >
+            <Button type="link" danger>
+              ลบ
+            </Button>
+          </Popover>
+        </Space>
+      ),
+    },
+    {
+      title: "แจ้งปัญหา",
+      dataIndex: "id",
+      key: "id",
+      render: (value: number, record: ITEmployeePropertyCommon) => (
+        <a onClick={() => handleMistakes(record)} className="text-red-700">
+          รายงาน
+        </a>
+      ),
+    },
+  ];
+
+  const handleEdit = (record: ITEmployeePropertyCommon) => {
+    setOpenEdit(true);
+    // set รูปเดิม
+    if (record.imageUrl) {
+      setEditFiles([
+        {
+          uid: "-1",
+          name: "image.png",
+          status: "done",
+          url: record.imageUrl,
+        },
+      ]);
+    } else {
+      setEditFiles([]);
+    }
+    editForm.setFieldsValue({
+      ...record,
+    });
+  };
+
+  const onFinish = (values: { type: string; name: string }) => {
+    setParams(values);
+    setLoading(true);
+  };
+
+  const handleMistakes = (record: ITEmployeePropertyCommon) => {
+    setOpenModalMistake(true);
+    mistakesForm.setFieldsValue({
+      ...record,
+    });
+  };
+
+  const content = (
+    <div className="w-full">
+      <Form<ITEmployeePropertyCommon>
+        name="filters"
+        form={filterForm}
+        layout="horizontal"
+        className="w-full"
+        labelCol={{ span: 10 }}
+        wrapperCol={{ span: 14 }}
+        onFinish={onFinish}
+      >
+        <Form.Item label="ประเภททรัพย์สิน" name="type">
+          <Select
+            showSearch
+            allowClear
+            optionFilterProp="label"
+            placeholder="Please Select"
+            options={[
+              { label: "อุปกรณ์คอมพิวเตอร์", value: "computer_equipment" },
+              { label: "อุปกรณ์สำนักงาน", value: "office_equipment" },
+              { label: "อื่นๆ", value: "other_asset" },
+            ]}
+          />
+        </Form.Item>
+        <Form.Item label="สถานะทรัพย์สิน" name="name">
+          <Input placeholder="Please Input" />
+        </Form.Item>
+        <Form.Item className="flex justify-end">
+          <Button htmlType="submit" type="primary">
+            {`ค้นหา`}
+          </Button>
+        </Form.Item>
+      </Form>
+    </div>
+  );
+
+  const handleDelete = async (id: number) => {
+    try {
+      await employeepropertyservice.delete(id);
+      message.success("ลบข้อมูลสำเร็จ");
+      setReloadKey((prev) => prev + 1);
+      setLoading(true);
+    } catch {
+      message.error("ไม่สามารถลบข้อมูลได้");
+    } finally {
+    }
+  };
+
+  const handleExport = async () => {
+    if (!user) {
+      return false;
+    }
+    const data = await employeepropertyserviceReprot.export(user?.userId, params);
+    if (data) {
+      const blob = new Blob([data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      saveAs(blob, `รายงานอุปกรณ์ของตนเอง-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`);
+      message.success("สำเร็จ");
+    }
+  };
+
+  const mistakeColumns: ColumnsType<ITMistakesType> = [
+    {
+      title: "ประเภทปัญหา",
+      dataIndex: "typeName",
+      key: "typeName",
+    },
+    {
+      title: "รายละเอียด",
+      dataIndex: "detail",
+      key: "detail",
+    },
+    {
+      title: "วันที่แจ้ง",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (date) => dayjs(date).format("DD/MM/YYYY HH:mm"),
+    },
+  ];
+
+  return (
+    <div>
+      <div>
+        <Modal
+          title="แจ้งปัญหาทรัพย์สิน"
+          open={openModalMistake}
+          onCancel={() => {
+            setOpenModalMistake(false);
+            mistakesForm.resetFields();
+          }}
+          width={1000}
+          footer={null}
+        >
+          <Form
+            form={mistakesForm}
+            layout="vertical"
+            onFinish={async (values) => {
+              const editingRecord = mistakesForm.getFieldsValue(true) as ITEmployeePropertyCommon;
+              try {
+                const base = {
+                  ...values,
+                  typeId: values.typeId.value,
+                  typeName: values.typeId.label,
+                };
+                delete base.typeId;
+                await employeepropertyservice.createMistakesType(editingRecord!.id, base);
+                message.success("แก้ไขข้อมูลสำเร็จ");
+                setLoading(true);
+                setReloadKey((prev) => prev + 1);
+                setOpenModalMistake(false);
+                mistakesForm.resetFields();
+              } catch {
+                message.error("เกิดข้อผิดพลาด");
+              } finally {
+                setLoading(true);
+              }
+            }}
+          >
+            <div className="w-full mb-1">
+              <Typography className="font-bold underline text-lg">{`ชื่ออุปกรณ์: ${mistakesForm.getFieldValue("name")}`}</Typography>
+            </div>
+            <Form.Item name="typeId" label="ประเภทปัญหา" rules={[{ required: true }]}>
+              <Select
+                allowClear
+                labelInValue
+                placeholder="เลือกประเภทปัญหา"
+                optionFilterProp="label"
+                showSearch
+                options={[
+                  { label: "ไม่พบปัญหาใดๆในการทำงาน", value: "NO_ISSUE" },
+                  { label: "ปัญหาจากอุปกรณ์คอมพิวเตอร์", value: "COMPUTER_EQUIPMENT" },
+                  { label: "ปัญหาจากเครื่องใช้สำนักงาน", value: "OFFICE_EQUIPMENT" },
+                  { label: "ปัญหาจากอินเตอร์เน็ต", value: "INTERNET" },
+                  { label: "ปัญหาจากสิ่งแวดล้อม เช่น ได้รับแสงไม่เพียงพอ เป็นต้น", value: "ENVIRONMENT" },
+                  { label: "Other", value: "OTHER" },
+                ]}
+              />
+            </Form.Item>
+            <Form.Item name="detail" label="รายละเอียด" rules={[{ required: true }]}>
+              <Input.TextArea rows={4} showCount maxLength={250} placeholder="รายละเอียดปัญหา" />
+            </Form.Item>
+            <Form.Item className="flex justify-end">
+              <Button onClick={() => setOpenModalMistake(false)} style={{ marginRight: 8 }}>
+                {`ยกเลิก`}
+              </Button>
+              <Button type="primary" htmlType="submit">
+                {`แจ้งปัญหา`}
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
+      </div>
+      <div className="flex justify-between mb-2 w-full">
+        <Popover placement="bottomLeft" content={content} trigger="click">
+          <Button type="primary">Filters</Button>
+        </Popover>
+        <Button onClick={() => handleExport()}>Export</Button>
+      </div>
+      <Table
+        dataSource={dataTable}
+        columns={employeePropertyColumns}
+        rowKey={"id"}
+        scroll={{ x: "max-content" }}
+        expandable={{
+          expandedRowRender: (record) => {
+            console.log(record);
+            return <Table columns={mistakeColumns} dataSource={record.mistakesType} rowKey="id" pagination={false} size="small" />;
+          },
+          rowExpandable: (record) => {
+            return record.mistakesType && record.mistakesType.length > 0;
+          },
+        }}
+      />
+      <div>
+        <Modal
+          title="แก้ไขข้อมูลทรัพย์สิน"
+          open={openEdit}
+          onCancel={() => {
+            setOpenEdit(false);
+            editForm.resetFields();
+          }}
+          footer={null}
+          width={900}
+        >
+          <Form
+            form={editForm}
+            layout="vertical"
+            onFinish={async (values) => {
+              const editingRecord = editForm.getFieldsValue(true) as ITEmployeePropertyCommon;
+              try {
+                await employeepropertyservice.update(editingRecord.id, values, editFiles);
+                message.success("แก้ไขข้อมูลสำเร็จ");
+                setReloadKey((prev) => prev + 1);
+                setOpenEdit(false);
+                editForm.resetFields();
+                setEditFiles([]);
+              } catch {
+                message.error("เกิดข้อผิดพลาด");
+              }
+            }}
+          >
+            <Row gutter={[16, 16]}>
+              <Col span={24}>
+                <Form.Item label="รูปภาพ">
+                  <Upload
+                    listType="picture-card"
+                    maxCount={1}
+                    fileList={editFiles}
+                    beforeUpload={() => false}
+                    onChange={(info) => setEditFiles(info.fileList)}
+                  >
+                    {editFiles.length < 1 && "+ Upload"}
+                  </Upload>
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item name={"userId"} label="เจ้าของทรัพย์สิน" rules={[{ required: true }]}>
+                  <Select showSearch allowClear optionFilterProp="label" placeholder="Please Select" options={dropdownUser} />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item name="type" label="ประเภททรัพย์สิน" rules={[{ required: true }]}>
+                  <Select
+                    options={[
+                      { label: "อุปกรณ์คอมพิวเตอร์", value: "computer_equipment" },
+                      { label: "อุปกรณ์สำนักงาน", value: "office_equipment" },
+                      { label: "อื่นๆ", value: "other_asset" },
+                    ]}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item noStyle shouldUpdate={(prev, cur) => prev?.type !== cur?.type || prev?.name !== cur?.name}>
+                  {({ getFieldValue }) => {
+                    const selectedType = getFieldValue("type");
+                    const selectedName = getFieldValue("name");
+
+                    return (
+                      <>
+                        <Form.Item name={"name"} label="ชื่อทรัพย์สิน">
+                          <Select
+                            showSearch
+                            allowClear
+                            optionFilterProp="label"
+                            placeholder="Please Select"
+                            options={nameOptions.filter((opt) => opt.type === selectedType)}
+                            onChange={(val) => {
+                              if (val !== "Other") {
+                                editForm.setFieldValue("nameOther", undefined);
+                              }
+                            }}
+                          />
+                        </Form.Item>
+
+                        {selectedName === "Other" && (
+                          <Form.Item
+                            name={"nameOther"}
+                            label="ชื่อทรัพย์สินอื่นๆ"
+                            rules={[{ required: true, message: "กรุณากรอกชื่อทรัพย์สินอื่นๆ" }]}
+                          >
+                            <Input placeholder="คีย์บอร์ด" />
+                          </Form.Item>
+                        )}
+                      </>
+                    );
+                  }}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item name="brand" label="ยี่ห้อ">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item name="serial" label="Serial">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item name="assetNumber" label="Asset Number">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item name="address" label="ที่ตั้ง">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item name="assetStatus" label="สถานะ">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item name="common" label="อุปกรณ์ส่วนกลาง" valuePropName="checked">
+                  <Checkbox>ใช่</Checkbox>
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item name={"spec"} label="รายละเอียด">
+                  <Input.TextArea placeholder="Please Input" showCount maxLength={500} />
+                </Form.Item>
+              </Col>
+            </Row>
+
+            <Form.Item className="flex justify-end">
+              <Button onClick={() => setOpenEdit(false)} style={{ marginRight: 8 }}>
+                ยกเลิก
+              </Button>
+              <Button type="primary" htmlType="submit" loading={loading}>
+                บันทึก
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
+      </div>
+    </div>
+  );
+};
+
+export default EmployeePropertyTable;

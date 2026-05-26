@@ -1,20 +1,24 @@
 import { AxiosInstance } from "axios";
 import { IOverTimeForm } from "../common/overtime";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 export interface TServices {
   findAll: () => Promise<IOverTimeForm[]>;
   findMany: (skip: number, take: number, params: any) => Promise<{ data: IOverTimeForm[]; total: number }>;
   findManyHr: (skip: number, take: number, params: any) => Promise<{ data: IOverTimeForm[]; total: number }>;
-  findById: (skip: number, take: number) => Promise<any[]>;
+  findById: (skip: number, take: number) => Promise<{ data: IOverTimeForm[]; count: number }>;
+  findCalendar: (month: Date | Dayjs | string) => Promise<IOverTimeForm[]>;
   findMasterOt: (date: any) => Promise<number>;
   create: (condition: any) => Promise<any[]>;
-  update: (overTimeID: string, type: string, user: { userId?: string; fullName?: string }) => Promise<any[]>;
+  update: (overTimeID: string, type: string, description: string, user: { userId?: string; fullName?: string }) => Promise<any[]>;
   delete: (overTimeID: string) => Promise<any[]>;
+  exportReport: (page: { search: object }) => Promise<ArrayBuffer>;
 }
 const OverTimeServices = (axiosInstance: AxiosInstance): TServices => {
   const baseUrl = "/overtime";
   const baseMasterOtUrl = "/master-config-ot";
+  const baseReportOt = "/report-ot";
+
   return {
     findAll: async () => {
       return await axiosInstance
@@ -60,6 +64,18 @@ const OverTimeServices = (axiosInstance: AxiosInstance): TServices => {
           return [];
         });
     },
+    findCalendar: async (month) => {
+      const condition = { month };
+      return await axiosInstance
+        .get(`${baseUrl}/calendar`, { params: condition })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
     findMasterOt: async (date) => {
       return await axiosInstance
         .get(`${baseMasterOtUrl}/by-date/${date}`)
@@ -82,9 +98,14 @@ const OverTimeServices = (axiosInstance: AxiosInstance): TServices => {
           return [];
         });
     },
-    update: async (overTimeID: string, type: string, user: { userId?: string; fullName?: string }) => {
+    update: async (overTimeID: string, type: string, description: string, user: { userId?: string; fullName?: string }) => {
       return await axiosInstance
-        .patch(`${baseUrl}/${overTimeID}`, { status: type, approvedUser: user.fullName, approvedDate: dayjs(new Date()) })
+        .patch(`${baseUrl}/${overTimeID}`, {
+          status: type,
+          approvedUser: user.fullName,
+          approvedDate: dayjs(new Date()),
+          approvedDetail: description,
+        })
         .then((res) => {
           return res.data;
         })
@@ -96,6 +117,17 @@ const OverTimeServices = (axiosInstance: AxiosInstance): TServices => {
     delete: async (overTimeID: string) => {
       return await axiosInstance
         .delete(`${baseUrl}/${overTimeID}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    exportReport: async (req: { search: object }) => {
+      return await axiosInstance
+        .get(`${baseReportOt}/export`, { params: req.search, responseType: "blob" })
         .then((res) => {
           return res.data;
         })

@@ -1,10 +1,9 @@
-import { Card, Modal, Space, Table, TableColumnsType, Tag, Tooltip, Typography } from "antd";
-import React, { useEffect, useState } from "react";
+import { Card, Modal, Space, Table, TableColumnsType, Tooltip, Typography } from "antd";
+import React, { useState } from "react";
 import dayjs from "dayjs";
 import { ITypetypeleave } from "../../common";
-import "../../styles/style.css";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import { showDataLeave, validateCheckNumberLeave, validateSgowAllHourLeave } from "@/app/utils/validatefield";
+import { showDataHaveLeave, showDataLeave, validateCheckNumberLeave, validateSgowAllHourLeave } from "@/app/utils/validatefield";
 import { FormInstance } from "antd/lib";
 export interface props {
   typeLeaveTable: ITypetypeleave[];
@@ -17,96 +16,111 @@ export interface props {
 
 export const TableOnlineDetailLeave: React.FC<props> = ({
   typeLeaveTable,
-  createdataleaveForm,
   rowClassName,
   createdataleaveFormValues,
   dataHolidayDay,
 }): React.ReactElement => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const columns: TableColumnsType<ITypetypeleave> = [
     {
       key: "typeName",
       dataIndex: "typeName",
       title: "ประเภทการลา",
+      align: "left",
+      className: "font-bold ",
+      render: (_, rows) => {
+        return (
+          <Tooltip
+            overlayInnerStyle={{
+              width: 600,
+              whiteSpace: "pre-wrap",
+              backgroundColor: "#ED9121",
+              color: "white",
+            }}
+            title={<div dangerouslySetInnerHTML={{ __html: rows.descriptionLeave }} />}>
+            {_}
+          </Tooltip>
+        );
+      },
     },
     {
-      key: "haveLeave",
-      dataIndex: "haveLeave",
+      key: "haveLeaveDays",
+      dataIndex: "haveLeaveDays",
       title: "ลามาแล้ว",
-      render: (value: number, row: ITypetypeleave) => showDataLeave(value),
+      align: "center",
+      render: (value, row) => showDataLeave(row),
     },
     {
       key: "limitLeaveLastResult",
       dataIndex: "limitLeaveLastResult",
       title: "คงเหลือ",
-      render: (value: number, row: ITypetypeleave) => showDataLeave(value),
+      align: "center",
+      render: (value, row) => showDataHaveLeave(row),
     },
     {
       key: "id",
       dataIndex: "id",
       title: "ลาครั้งนี้",
-      render: (value: string, row: ITypetypeleave) => validateCheckNumberLeave(row, createdataleaveFormValues, dataHolidayDay),
+      align: "center",
+      render: (value, row) => validateCheckNumberLeave(row, createdataleaveFormValues, dataHolidayDay),
     },
     {
-      key: "haveLeave",
-      dataIndex: "haveLeave",
+      key: "haveLeaveDays",
+      dataIndex: "haveLeaveDays",
       title: "รวม",
-      render: (value: number, row: ITypetypeleave) => validateSgowAllHourLeave(value, row, createdataleaveFormValues, rowClassName, dataHolidayDay),
+      align: "center",
+      render: (value, row) => validateSgowAllHourLeave(row, createdataleaveFormValues, rowClassName, dataHolidayDay),
     },
   ];
-
   const columnsDetail: TableColumnsType<ITypetypeleave> = [
     {
       key: "id",
       dataIndex: "id",
       title: "ลำดับ",
-      render: (values: string, row: ITypetypeleave, index: number) => index + 1,
+      render: (values, row, index) => index + 1,
     },
     { key: "typeName", dataIndex: "typeName", title: "ประเภทการลา" },
     {
       key: "limitLeave",
       dataIndex: "limitLeave",
       title: "ระยะเวลาในการลา",
-      render: (values: string, row: ITypetypeleave, index: number) => {
-        return <Typography style={{ textAlign: "center" }}>{row.typeId === 3 ? "3,6,10,12 วัน (ตามอายุงาน)" : `${values} วัน`}</Typography>;
+      render: (values, row) => {
+        return <Typography style={{ textAlign: "center" }}>{`${values} วัน`}</Typography>;
       },
     },
     {
       key: "forwardLeave",
       dataIndex: "forwardLeave",
       title: "เงื่อนไขการลา",
-      render: (values: number, row: ITypetypeleave, index: number) => {
+      render: (values, row) => {
         const isSpecialType = [6, 9, 11, 12].includes(row.typeId);
         return (
           <Typography>
             {values ? `ลาล่วงหน้า ${values} วัน` : "สามารถลาย้อนหลังได้"}
-            {isSpecialType && <span style={{ color: "red" }}> *</span>}{" "}
+            {isSpecialType && <span style={{ color: "red" }}> *</span>}
           </Typography>
         );
       },
     },
   ];
-
   return (
     <>
-      <Card
-        className="w-full grid grid-cols-1 gap-y-2 mt-2"
-        title={
-          <div className="flex justify-center w-full">
-            <Space>
-              {`ประวัติการลาปี ${dayjs(new Date()).format("YYYY")}`}
-              <Tooltip title={`เงื่อนไขในการลาตามแต่ละประเภท`}>
-                <a onClick={() => setIsModalOpen(true)} style={{ color: "red" }}>
-                  <ExclamationCircleOutlined />
-                </a>
-              </Tooltip>
-            </Space>
-          </div>
-        }
-        styles={{ body: { padding: 10 } }}>
+      <Card className="w-full grid grid-cols-1 gap-2" styles={{ body: { padding: 5 } }}>
+        <div className="flex justify-center w-full mb-2">
+          <Space>
+            {`ประวัติการลาปี ${dayjs(new Date()).format("YYYY")}`}
+            <Tooltip title={`เงื่อนไขในการลาตามแต่ละประเภท`}>
+              <a onClick={() => setIsModalOpen(true)} style={{ color: "red" }}>
+                <ExclamationCircleOutlined />
+              </a>
+            </Tooltip>
+          </Space>
+        </div>
         <Table
           size="small"
+          sticky
+          bordered
           columns={columns}
           dataSource={typeLeaveTable}
           rowKey={(e: ITypetypeleave) => e.id}
@@ -117,7 +131,14 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       </Card>
       {isModalOpen ? (
         <Modal
-          title="ระยะเวลาในการลาแต่ละประเภท"
+          title={
+            <>
+              {`ระยะเวลาในการลาแต่ละประเภท`}{" "}
+              <div style={{ textAlign: "left", fontWeight: "bold" }}>
+                <span style={{ color: "red", fontSize: "12px" }}>ลาพักผ่อนประจำปี จำนวนวันลาตามอายุงาน</span>
+              </div>
+            </>
+          }
           open={isModalOpen}
           onOk={() => setIsModalOpen(true)}
           onCancel={() => setIsModalOpen(false)}

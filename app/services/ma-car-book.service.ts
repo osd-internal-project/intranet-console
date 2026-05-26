@@ -5,6 +5,7 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
   const baseUrlApiMaCar = "/ma-car";
   const baseUrlApiMaCarType = "/ma-car-type";
   const baseUrlApiMaCarWrapup = "/ma-car-wrapup";
+  const baseUrlmaCarBookingImages = "/ma-car-booking-images";
   return {
     getMaCarQuery: async () => {
       return await axiosInstance
@@ -18,9 +19,9 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
         });
     },
 
-    getMaCarBookQuery: async (body: any) => {
+    getMaCarBookQuery: async (userId: string) => {
       return await axiosInstance
-        .get(`${baseUrlApiMaCarBook}/${body}`)
+        .get(`${baseUrlApiMaCarBook}/car-booking/${userId}`)
         .then((res) => {
           return res.data;
         })
@@ -29,9 +30,9 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    getMaCarBookCheck: async (carId: string) => {
+    getMaCarBookCheck: async (carId: string, carBookStartDate: Date, carBookEndDate: Date) => {
       return await axiosInstance
-        .get(`${baseUrlApiMaCarBook}/carId/${carId}`)
+        .get(`${baseUrlApiMaCarBook}/carId/${carId}`, { params: { carBookStartDate, carBookEndDate } })
         .then((res) => {
           return res.data;
         })
@@ -66,6 +67,32 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
     updateMaCarBook: async (bookId: number, body: any) => {
       return await axiosInstance
         .patch(`${baseUrlApiMaCarBook}/${bookId}`, body)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    updateMaCarBookingImages: async (bookId: number, body: any) => {
+      return await axiosInstance
+        .post(`${baseUrlmaCarBookingImages}/upload-images/${bookId}`, body, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    getMaCarBookingImages: async (carBookingId: number) => {
+      return await axiosInstance
+        .get(`${baseUrlmaCarBookingImages}/${carBookingId}`)
         .then((res) => {
           return res.data;
         })

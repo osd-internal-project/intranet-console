@@ -1,22 +1,24 @@
-import { Table, TablePaginationConfig, TableProps, Tag } from "antd";
+import { Button, Table, TablePaginationConfig, TableProps, Tag, Tooltip } from "antd";
 import React from "react";
-import { THoliday } from "../page";
 import { dateFormatTimeNoTIme } from "@/app/utils";
+import { IOverTimeForm } from "@/app/common/overtime";
+import { StopOutlined } from "@ant-design/icons";
 
 export interface props {
-  holiday: THoliday[];
+  dataTable: { data: IOverTimeForm[]; count: number };
   changePagination: (page: TablePaginationConfig) => void;
   pagination: TablePaginationConfig;
+  handleOpenModal: (status: boolean, data: IOverTimeForm) => void;
+  onFinishUpdate: (type: string, id: string) => void;
 }
 
-export const TableOvertime: React.FC<props> = ({ holiday, changePagination, pagination }): React.ReactElement => {
-  const columns: TableProps<any>["columns"] = [
+export const TableOvertime: React.FC<props> = ({ dataTable, changePagination, pagination, handleOpenModal, onFinishUpdate }): React.ReactElement => {
+  const columns: TableProps<IOverTimeForm>["columns"] = [
     {
       key: "no",
       title: "ลำดับ",
       dataIndex: "no",
-      render: (id: number, record: any, index: number) =>
-        pagination.current && pagination.pageSize ? (pagination.current - 1) * pagination.pageSize + (index + 1) : "",
+      render: (id, record, index) => (pagination.current && pagination.pageSize ? (pagination.current - 1) * pagination.pageSize + (index + 1) : ""),
     },
     {
       key: "dateStart",
@@ -43,7 +45,7 @@ export const TableOvertime: React.FC<props> = ({ holiday, changePagination, pagi
       key: "typeDate",
       title: "วันที่ทำการ",
       dataIndex: "typeDate",
-      render: (_, record) => <span>{_ === "normall" ? "วันปกติ" : "วันหยุด"}</span>,
+      render: (_) => <span>{_ === "normall" ? "วันปกติ" : "วันหยุด"}</span>,
     },
 
     {
@@ -62,10 +64,18 @@ export const TableOvertime: React.FC<props> = ({ holiday, changePagination, pagi
       dataIndex: "breakTime",
     },
     {
+      key: "id",
+      title: "รายละเอียด",
+      dataIndex: "id",
+      render: (status, record) => {
+        return <Button type="primary" size="small" onClick={() => handleOpenModal(true, record)}>{`รายละเอียด`}</Button>;
+      },
+    },
+    {
       key: "status",
       title: "สถานะ",
       dataIndex: "status",
-      render: (status: string) => {
+      render: (status) => {
         let color = "";
         let text = "";
         switch (status) {
@@ -102,6 +112,30 @@ export const TableOvertime: React.FC<props> = ({ holiday, changePagination, pagi
       key: "approvedDate",
       title: "วันที่อนุมัติ",
       dataIndex: "approvedDate",
+      render: (_) => dateFormatTimeNoTIme(_),
+    },
+    {
+      fixed: "right",
+      key: "id",
+      title: "...",
+      dataIndex: "id",
+      render: (_, record) => {
+        return (
+          <div className="flex justify-center gap-1">
+            <Tooltip title="ยกเลิก">
+              <Button
+                size="small"
+                type="link"
+                danger
+                icon={<StopOutlined />}
+                onClick={() => onFinishUpdate("cancel", record?.overTimeID as string)}
+                disabled={record.status !== "waiting"}>{`ยกเลิก`}</Button>
+            </Tooltip>
+          </div>
+        );
+      },
+      // width: 150,
+      align: "center",
     },
   ];
   return (
@@ -109,10 +143,10 @@ export const TableOvertime: React.FC<props> = ({ holiday, changePagination, pagi
       <Table
         columns={columns}
         size="small"
-        dataSource={holiday.filter((e) => e.type)}
+        dataSource={dataTable.data}
         rowKey="id"
         onChange={changePagination}
-        pagination={pagination}
+        pagination={{ ...pagination, total: dataTable.count }}
         scroll={{ x: "max-content" }}
       />
     </div>

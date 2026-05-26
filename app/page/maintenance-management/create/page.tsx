@@ -18,8 +18,8 @@ export default function MaTaskCreatePage() {
   const router = useRouter();
   // const intranetAuth = useAxiosIntranet();
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_INTRANET);
-  const baseUrUser = id24Axios(loadAppConfig().REACT_APP_API_BASE_URL_USER);
+  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
+  const baseUrUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const maServices = MaServices(baseUrIntranet);
   const userservices = UsersServices(baseUrUser);
   const [loading, setloading] = useState<boolean>(true);

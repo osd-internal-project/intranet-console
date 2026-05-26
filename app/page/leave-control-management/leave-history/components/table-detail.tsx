@@ -1,20 +1,20 @@
 import React, { useState } from "react";
-import { Button, Table } from "antd";
+import { Button, Table, TablePaginationConfig } from "antd";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { ITypeDataLeave } from "../../common";
-import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import DataLeaveService from "../../../../services/leave-management.service";
 import { CheckStatusLeaveType, showStatus, showStatusLeave } from "@/app/utils/validatefield";
 import { dateFormatTime } from "@/app/utils";
 import { LeaveHistoryDetail } from "./leave-history-detail";
 
 export interface props {
-  dataSource: ITypeDataLeave[];
+  dataSource: { data: ITypeDataLeave[]; count: number };
   setOpenModalDetail: (e: boolean) => void;
   openModalDetail: boolean;
   formdetail: any;
   onFinishUpdate: (type: string, id: number) => void;
   downloadFile: (id: number, filename: string) => void;
+  pagination: TablePaginationConfig;
+  changePagination: (pagination: TablePaginationConfig) => void;
 }
 
 export const TableDetail: React.FC<props> = ({
@@ -24,10 +24,10 @@ export const TableDetail: React.FC<props> = ({
   formdetail,
   onFinishUpdate,
   downloadFile,
+  pagination,
+  changePagination,
 }): React.ReactElement => {
   const ShowStatusLeaves = showStatusLeave();
-  const Auth = useAxiosIntranet();
-  const dataleaveservice = DataLeaveService(Auth);
   const [statusById, setStatusById] = useState<any | null>(null);
   const [dataById, setDataById] = useState<number | undefined>(undefined);
 
@@ -39,8 +39,8 @@ export const TableDetail: React.FC<props> = ({
         createdAt: record.createdAt ? dateToStringThNoTime(record.createdAt) : "-",
         detail: record.detail,
         leaveHour: record.leaveHour ? (record.leaveHour % 8 === 0 ? `${record.leaveHour / 8} วัน` : `${record.leaveHour} ชม.`) : "ไม่มีข้อมูล",
-        startDate: record?.startDate ? dateToStringThNoTime(record?.startDate) : "-",
-        endDate: record?.endDate ? dateToStringThNoTime(record?.endDate) : "-",
+        startDate: record?.startDate ? dateToStringThNoTime(record?.startDate as any) : "-",
+        endDate: record?.endDate ? dateToStringThNoTime(record?.endDate as any) : "-",
         phoneNumber: record.phoneNumber,
         typeLeave: record.typeName,
         approvedDate: record.approvedDate ? dateToStringThNoTime(record?.approvedDate) : "-",
@@ -73,7 +73,9 @@ export const TableDetail: React.FC<props> = ({
       dataIndex: "id",
       title: "วันลา",
       render: (e: string, row: ITypeDataLeave) => {
-        return row?.startDate && row?.endDate ? `${dateToStringThNoTime(row?.startDate)} ถึง ${dateToStringThNoTime(row?.endDate)}` : "-";
+        return row?.startDate && row?.endDate
+          ? `${dateToStringThNoTime(row?.startDate as any)} ถึง ${dateToStringThNoTime(row?.endDate as any)}`
+          : "-";
       },
     },
     {
@@ -114,8 +116,16 @@ export const TableDetail: React.FC<props> = ({
 
   return (
     <div>
-      {ShowStatusLeaves}
-      <Table dataSource={dataSource} columns={columns} size="small" scroll={{ x: "max-content" }} rowKey={(e: any) => e.id} />
+      <div className="mb-3">{ShowStatusLeaves}</div>
+      <Table
+        dataSource={dataSource.data}
+        columns={columns}
+        size="small"
+        scroll={{ x: "max-content" }}
+        rowKey={(e: any) => e.id}
+        onChange={changePagination}
+        pagination={{ ...pagination, total: dataSource.count }}
+      />
       {openModalDetail ? (
         <LeaveHistoryDetail
           openModalDetail={openModalDetail}

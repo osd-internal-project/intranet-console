@@ -16,15 +16,15 @@ export default function UserDetailPage() {
         <Breadcrumb
           items={[
             {
-              href: "/page",
+              href: "/page/home",
               title: <span>หน้าหลัก</span>,
             },
             {
-              title: <span>User Management</span>,
+              title: <span>การจัดการบุคคล</span>,
             },
             {
               href: "/page/users-management/users",
-              title: <span>Users</span>,
+              title: <span>บุคลากร</span>,
             },
             {
               title: <span>{userid}</span>,

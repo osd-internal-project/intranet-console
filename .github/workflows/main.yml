@@ -51,8 +51,7 @@ jobs:
       - name: Deploy
         run: |
           docker pull swr.ap-southeast-2.myhuaweicloud.com/osd-internal/${{ needs.build-and-push.outputs.name }}:v${{ needs.build-and-push.outputs.version }}
-          # docker stop ${{ needs.build-and-push.outputs.name }} || true
-          # docker rm ${{ needs.build-and-push.outputs.name }} || true
-          # docker run -d --restart=always -p 8800:80 --name ${{ needs.build-and-push.outputs.name }} \
-          #   swr.ap-southeast-2.myhuaweicloud.com/osd-internal/${{ needs.build-and-push.outputs.name }}:v${{ needs.build-and-push.outputs.version }}
-          # DEPLOY
+          docker stop ${{ needs.build-and-push.outputs.name }} || true
+          docker rm ${{ needs.build-and-push.outputs.name }} || true
+          docker run -d --restart=always -p 8800:80 --name ${{ needs.build-and-push.outputs.name }} \
+             swr.ap-southeast-2.myhuaweicloud.com/osd-internal/${{ needs.build-and-push.outputs.name }}:v${{ needs.build-and-push.outputs.version }}

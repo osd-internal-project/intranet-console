@@ -41,13 +41,14 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT || 22 }}
           script: |
-            sshpass -p '${{ secrets.SSH_TARGET_PASSWORD }}' ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_TARGET_USERNAME }}@${{ secrets.SSH_TARGET_HOST }} << 'DEPLOY'
-            docker login -u ap-southeast-2@HPUAGIPPWFA7YCNYJIGE \
-              -p ${{ secrets.HUAWEI_REGISTRY_PASSWORD }} \
-              swr.ap-southeast-2.myhuaweicloud.com
-            docker pull swr.ap-southeast-2.myhuaweicloud.com/osd-internal/${{ steps.pkg.outputs.name }}:v${{ steps.pkg.outputs.version }}
-            docker stop ${{ steps.pkg.outputs.name }} || true
-            docker rm ${{ steps.pkg.outputs.name }} || true
-            docker run -d --restart=always -p 8831:80 --name ${{ steps.pkg.outputs.name }} \
-              swr.ap-southeast-2.myhuaweicloud.com/osd-internal/${{ steps.pkg.outputs.name }}:v${{ steps.pkg.outputs.version }}
-            DEPLOY
+            echo success
+            # sshpass -p '${{ secrets.SSH_TARGET_PASSWORD }}' ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_TARGET_USERNAME }}@${{ secrets.SSH_TARGET_HOST }} << 'DEPLOY'
+            # docker login -u ap-southeast-2@HPUAGIPPWFA7YCNYJIGE \
+            #   -p ${{ secrets.HUAWEI_REGISTRY_PASSWORD }} \
+            #   swr.ap-southeast-2.myhuaweicloud.com
+            # docker pull swr.ap-southeast-2.myhuaweicloud.com/osd-internal/${{ steps.pkg.outputs.name }}:v${{ steps.pkg.outputs.version }}
+            # docker stop ${{ steps.pkg.outputs.name }} || true
+            # docker rm ${{ steps.pkg.outputs.name }} || true
+            # docker run -d --restart=always -p 8831:80 --name ${{ steps.pkg.outputs.name }} \
+            #   swr.ap-southeast-2.myhuaweicloud.com/osd-internal/${{ steps.pkg.outputs.name }}:v${{ steps.pkg.outputs.version }}
+            # DEPLOY

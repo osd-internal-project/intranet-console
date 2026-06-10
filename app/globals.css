@@ -289,23 +289,23 @@ thead[class*="ant-table-thead"] th {
 }
 
 /* ── Hover ── */
-.ant-table-tbody>tr.row-parent:hover>td {
+/* .ant-table-tbody>tr.row-parent:hover>td {
   background: #e6f0ff !important;
 }
 
 .ant-table-tbody>tr.row-child:hover>td {
   background: #f5faff !important;
-}
+} */
 
 /* ── Header ── */
-.ant-table-thead>tr>th {
+/* .ant-table-thead>tr>th {
   background: #1d2b4f !important;
   color: #8ba3cc !important;
   font-size: 11px !important;
   letter-spacing: 0.05em !important;
   text-transform: uppercase !important;
   border-bottom: none !important;
-}
+} */
 
 .upload-small .ant-upload-select {
   width: 58px !important;

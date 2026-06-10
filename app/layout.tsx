@@ -26,6 +26,24 @@ export default function RootLayout({
                   fontSize: 14,
                   colorPrimary: "#00a1df",
                 },
+                components: {
+                  Table: {
+                    // headerBg: "transparent",
+                    headerColor: "#185FA5",
+                    colorBorder: "#B5D4F4",
+                    rowHoverBg: "#F4F9FE",
+                    borderColor: "#EAF2FB",
+                    // colorText: colorTextPrimary
+                    // ไม่มี stripe · ไม่มี pill
+                    // headerBg: "#0C447C",
+                    // headerColor: "#fff",
+                    // colorBgHeader: "#1d2b4f",
+                    // colorTextHeading: "#8ba3cc",
+                    // colorBgRowHover: "#e6f0ff",
+                    // colorBgRowHoverSecondary: "#f5faff",
+                    fontSize: 12,
+                  },
+                },
               }}
             >
               {children}

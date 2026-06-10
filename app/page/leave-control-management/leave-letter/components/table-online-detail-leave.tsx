@@ -1,9 +1,30 @@
-import { Card, Modal, Space, Table, TableColumnsType, Tooltip, Typography } from "antd";
+import {
+  Button,
+  Card,
+  Modal,
+  Popover,
+  Space,
+  Table,
+  TableColumnsType,
+  Tooltip,
+  Typography,
+} from "antd";
 import React, { useState } from "react";
 import dayjs from "dayjs";
 import { ITypetypeleave } from "../../common";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
-import { showDataHaveLeave, showDataLeave, validateCheckNumberLeave, validateSgowAllHourLeave } from "@/app/utils/validatefield";
+import {
+  ExclamationCircleOutlined,
+  EyeFilled,
+  EyeOutlined,
+  QuestionCircleOutlined,
+  QuestionOutlined,
+} from "@ant-design/icons";
+import {
+  showDataHaveLeave,
+  showDataLeave,
+  validateCheckNumberLeave,
+  validateSgowAllHourLeave,
+} from "@/app/utils/validatefield";
 import { FormInstance } from "antd/lib";
 export interface props {
   typeLeaveTable: ITypetypeleave[];
@@ -29,18 +50,51 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       title: "ประเภทการลา",
       align: "left",
       className: "font-bold ",
-      render: (_, rows) => {
+      render: (data, rows) => {
         return (
-          <Tooltip
-            overlayInnerStyle={{
-              width: 600,
-              whiteSpace: "pre-wrap",
-              backgroundColor: "#ED9121",
-              color: "white",
-            }}
-            title={<div dangerouslySetInnerHTML={{ __html: rows.descriptionLeave }} />}>
-            {_}
-          </Tooltip>
+          <>
+            {data}
+            <Popover
+              // maxWidth={600}
+              overlayInnerStyle={{
+                backgroundColor: "#F0F6FD",
+                color: "#0C447C",
+                borderRadius: 7,
+                maxWidth: 600,
+              }}
+              overlayStyle={{
+                maxWidth: 600,
+              }}
+              content={
+                <div
+                  dangerouslySetInnerHTML={{ __html: rows.descriptionLeave }}
+                />
+              }
+              title={"รายละเอียดการลา"}
+              // trigger="click"
+            >
+              <QuestionCircleOutlined className=" text-[10px] text-blue-500 ml-1" />
+            </Popover>
+          </>
+
+          // <Tooltip
+          //   overlayInnerStyle={{
+          //     width: 600,
+          //     whiteSpace: "pre-wrap",
+          //     // backgroundColor: "#ED9121",
+          //     // color: "white",
+          //     backgroundColor: "#F0F6FD",
+          //     color: "#0C447C",
+          //     borderRadius: 7,
+          //   }}
+          //   title={
+          //     <div
+          //       dangerouslySetInnerHTML={{ __html: rows.descriptionLeave }}
+          //     />
+          //   }
+          // >
+          //   {_}
+          // </Tooltip>
         );
       },
     },
@@ -63,14 +117,25 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       dataIndex: "id",
       title: "ลาครั้งนี้",
       align: "center",
-      render: (value, row) => validateCheckNumberLeave(row, createdataleaveFormValues, dataHolidayDay),
+      render: (value, row) =>
+        validateCheckNumberLeave(
+          row,
+          createdataleaveFormValues,
+          dataHolidayDay,
+        ),
     },
     {
       key: "haveLeaveDays",
       dataIndex: "haveLeaveDays",
       title: "รวม",
       align: "center",
-      render: (value, row) => validateSgowAllHourLeave(row, createdataleaveFormValues, rowClassName, dataHolidayDay),
+      render: (value, row) =>
+        validateSgowAllHourLeave(
+          row,
+          createdataleaveFormValues,
+          rowClassName,
+          dataHolidayDay,
+        ),
     },
   ];
   const columnsDetail: TableColumnsType<ITypetypeleave> = [
@@ -86,7 +151,11 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
       dataIndex: "limitLeave",
       title: "ระยะเวลาในการลา",
       render: (values, row) => {
-        return <Typography style={{ textAlign: "center" }}>{`${values} วัน`}</Typography>;
+        return (
+          <Typography
+            style={{ textAlign: "center" }}
+          >{`${values} วัน`}</Typography>
+        );
       },
     },
     {
@@ -106,7 +175,10 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
   ];
   return (
     <>
-      <Card className="w-full grid grid-cols-1 gap-2" styles={{ body: { padding: 5 } }}>
+      <Card
+        className="w-full grid grid-cols-1 gap-2"
+        styles={{ body: { padding: 5 } }}
+      >
         <div className="flex justify-center w-full mb-2">
           <Space>
             {`ประวัติการลาปี ${dayjs(new Date()).format("YYYY")}`}
@@ -124,7 +196,8 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
           columns={columns}
           dataSource={typeLeaveTable}
           rowKey={(e: ITypetypeleave) => e.id}
-          pagination={{ pageSize: 13, position: ["none"] }}
+          // pagination={{ pageSize: 13, position: ["none"] }}
+          pagination={false}
           scroll={{ x: "max-content" }}
           rowClassName={rowClassName}
         />
@@ -135,7 +208,9 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
             <>
               {`ระยะเวลาในการลาแต่ละประเภท`}{" "}
               <div style={{ textAlign: "left", fontWeight: "bold" }}>
-                <span style={{ color: "red", fontSize: "12px" }}>ลาพักผ่อนประจำปี จำนวนวันลาตามอายุงาน</span>
+                <span style={{ color: "red", fontSize: "12px" }}>
+                  ลาพักผ่อนประจำปี จำนวนวันลาตามอายุงาน
+                </span>
               </div>
             </>
           }
@@ -143,23 +218,29 @@ export const TableOnlineDetailLeave: React.FC<props> = ({
           onOk={() => setIsModalOpen(true)}
           onCancel={() => setIsModalOpen(false)}
           footer={false}
-          width={700}>
+          width={700}
+        >
           <Table
             size="small"
             columns={columnsDetail}
             dataSource={typeLeaveTable}
             rowKey={(e: ITypetypeleave) => e.id}
-            pagination={{ pageSize: 13, position: ["none"] }}
-            summary={() => (
-              <Table.Summary.Row>
-                <Table.Summary.Cell index={0} colSpan={columnsDetail.length}>
-                  <div style={{ textAlign: "left", fontWeight: "bold" }}>
-                    หมายเหตุ : <span style={{ color: "red" }}>*</span> ประเภทการลาที่รวมวันหยุด !
-                  </div>
-                </Table.Summary.Cell>
-              </Table.Summary.Row>
-            )}
+            // pagination={{ pageSize: 13, position: ["none"] }}
+            pagination={false}
+            scroll={{ y: 500 }}
+            // summary={() => (
+            //   <Table.Summary.Row>
+            //     <Table.Summary.Cell index={0} colSpan={columnsDetail.length}>
+            //       <div style={{ textAlign: "left", fontWeight: "bold" }}>
+            //         หมายเหตุ : <span style={{ color: "red" }}>*</span> ประเภทการลาที่รวมวันหยุด !
+            //       </div>
+            //     </Table.Summary.Cell>
+            //   </Table.Summary.Row>
+            // )}
           />
+          <p>
+            <b> หมายเหตุ : </b>* ประเภทการลาที่รวมวันหยุด !
+          </p>
         </Modal>
       ) : null}
     </>

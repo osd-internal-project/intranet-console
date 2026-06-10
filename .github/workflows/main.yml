@@ -42,9 +42,14 @@ jobs:
     needs: build-and-push
 
     steps:
+      - name: Login to Huawei SWR
+        run: |
+          docker login -u ap-southeast-2@HPUAGIPPWFA7YCNYJIGE \
+            -p ${{ secrets.HUAWEI_REGISTRY_PASSWORD }} \
+            swr.ap-southeast-2.myhuaweicloud.com
+
       - name: Deploy
         run: |
-          echo success
           docker pull swr.ap-southeast-2.myhuaweicloud.com/osd-internal/${{ needs.build-and-push.outputs.name }}:v${{ needs.build-and-push.outputs.version }}
           # docker stop ${{ needs.build-and-push.outputs.name }} || true
           # docker rm ${{ needs.build-and-push.outputs.name }} || true

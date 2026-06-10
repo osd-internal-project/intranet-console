@@ -1,13 +1,13 @@
 {
   "name": "osd-intranet",
-  "version": "1.2.37",
+  "version": "1.2.38",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start ",
     "lint": "next lint",
-    "docker:buildx:intra": "docker build --no-cache --platform linux/amd64 -t 'osd-intranet-fe:v1.2.35' -f ./Dockerfile .",
+    "docker:buildx:intra": "docker build --no-cache --platform linux/amd64 -t 'osd-intranet-fe:v1.2.37' -f ./Dockerfile .",
     "docker:buildx:lextect": "docker build --no-cache --platform linux/amd64 -t 'lextect-intranet-fe:v1.0.0' -f ./Dockerfile ."
   },
   "dependencies": {

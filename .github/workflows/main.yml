@@ -1,41 +1,53 @@
-name: Deploy Next.js Project Intranet to On-Prem Server
+name: Build, Push & Deploy
 
 on:
-  push:
-    branches:
-      - main # Adjust this to match your deployment branch
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
 
     steps:
-        - name: Checkout repository
-          uses: actions/checkout@v4
-          
-        - name: Fix Docker permissions
-          run: |
-            echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S chmod 666 /var/run/docker.sock
-            
-        - name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v3
-  
-        - name: Log in to Docker Hub (if using Docker Hub)
-          uses: docker/login-action@v2
-          with:
-            username: ${{ secrets.DOCKER_USERNAME }}
-            password: ${{ secrets.DOCKER_PASSWORD }}
-  
-        - name: Build and push Docker image
-          run: |
-            docker build --platform linux/amd64 -t osd-intranet-fe:v1.2.37 .
-            docker tag osd-intranet-fe:v1.2.37 ${{ secrets.DOCKER_USERNAME }}/osd-intranet-fe:v1.2.37
-            docker push ${{ secrets.DOCKER_USERNAME }}/osd-intranet-fe:v1.2.37
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-        - name: Deploy on Server
-          run: |
-            docker rmi -f ${{ secrets.DOCKER_USERNAME }}/osd-intranet-fe:v1.2.37|| true
-            docker pull ${{ secrets.DOCKER_USERNAME }}/osd-intranet-fe:v1.2.37
-            docker stop osd-intranet-fe || true
-            docker rm osd-intranet-fe || true
-            docker run -d --restart=always -p 8800:80 --name osd-intranet-fe ${{ secrets.DOCKER_USERNAME }}/osd-intranet-fe:v1.2.37
+      - name: Get version from package.json
+        id: pkg
+        run: |
+          echo "version=$(node -p 'require("./package.json").version')" >> $GITHUB_OUTPUT
+          echo "name=$(node -p 'require("./package.json").name')" >> $GITHUB_OUTPUT
+
+      - name: Login to Huawei SWR
+        run: |
+          docker login -u ap-southeast-2@HPUAGIPPWFA7YCNYJIGE \
+            -p ${{ secrets.HUAWEI_REGISTRY_PASSWORD }} \
+            swr.ap-southeast-2.myhuaweicloud.com
+
+      - name: Build Docker image
+        run: |
+          docker build --no-cache --platform linux/amd64 \
+            -t swr.ap-southeast-2.myhuaweicloud.com/osd-internal/${{ steps.pkg.outputs.name }}:v${{ steps.pkg.outputs.version }} \
+            -f Dockerfile .
+
+      - name: Push Docker image
+        run: |
+          docker push swr.ap-southeast-2.myhuaweicloud.com/osd-internal/${{ steps.pkg.outputs.name }}:v${{ steps.pkg.outputs.version }}
+
+      - name: Deploy via jump host
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            sshpass -p '${{ secrets.SSH_TARGET_PASSWORD }}' ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_TARGET_USERNAME }}@${{ secrets.SSH_TARGET_HOST }} << 'DEPLOY'
+            docker login -u ap-southeast-2@HPUAGIPPWFA7YCNYJIGE \
+              -p ${{ secrets.HUAWEI_REGISTRY_PASSWORD }} \
+              swr.ap-southeast-2.myhuaweicloud.com
+            docker pull swr.ap-southeast-2.myhuaweicloud.com/osd-internal/${{ steps.pkg.outputs.name }}:v${{ steps.pkg.outputs.version }}
+            docker stop ${{ steps.pkg.outputs.name }} || true
+            docker rm ${{ steps.pkg.outputs.name }} || true
+            docker run -d --restart=always -p 8831:80 --name ${{ steps.pkg.outputs.name }} \
+              swr.ap-southeast-2.myhuaweicloud.com/osd-internal/${{ steps.pkg.outputs.name }}:v${{ steps.pkg.outputs.version }}
+            DEPLOY

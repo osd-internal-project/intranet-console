@@ -41,7 +41,7 @@ export default function RootLayout({
                     // colorTextHeading: "#8ba3cc",
                     // colorBgRowHover: "#e6f0ff",
                     // colorBgRowHoverSecondary: "#f5faff",
-                    fontSize: 12,
+                    fontSize: 14,
                   },
                 },
               }}

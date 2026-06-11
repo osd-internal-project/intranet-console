@@ -1,5 +1,5 @@
 {
-  "name": "osd-intranet",
+  "name": "osd-intranet-fe",
   "version": "1.2.39",
   "private": true,
   "scripts": {

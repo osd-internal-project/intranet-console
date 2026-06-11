@@ -4,8 +4,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
+
+    outputs:
+      name: ${{ steps.pkg.outputs.name }}
+      version: ${{ steps.pkg.outputs.version }}
 
     steps:
       - name: Checkout code
@@ -33,21 +37,21 @@ jobs:
         run: |
           docker push swr.ap-southeast-2.myhuaweicloud.com/osd-internal/${{ steps.pkg.outputs.name }}:v${{ steps.pkg.outputs.version }}
 
-      - name: Deploy via jump host
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: ${{ secrets.SSH_PORT || 22 }}
-          script: |
-            sshpass -p '${{ secrets.SSH_TARGET_PASSWORD }}' ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_TARGET_USERNAME }}@${{ secrets.SSH_TARGET_HOST }} << 'DEPLOY'
-            docker login -u ap-southeast-2@HPUAGIPPWFA7YCNYJIGE \
-              -p ${{ secrets.HUAWEI_REGISTRY_PASSWORD }} \
-              swr.ap-southeast-2.myhuaweicloud.com
-            docker pull swr.ap-southeast-2.myhuaweicloud.com/osd-internal/${{ steps.pkg.outputs.name }}:v${{ steps.pkg.outputs.version }}
-            docker stop ${{ steps.pkg.outputs.name }} || true
-            docker rm ${{ steps.pkg.outputs.name }} || true
-            docker run -d --restart=always -p 8831:80 --name ${{ steps.pkg.outputs.name }} \
-              swr.ap-southeast-2.myhuaweicloud.com/osd-internal/${{ steps.pkg.outputs.name }}:v${{ steps.pkg.outputs.version }}
-            DEPLOY
+  deploy:
+    runs-on: self-hosted
+    needs: build-and-push
+
+    steps:
+      - name: Login to Huawei SWR
+        run: |
+          docker login -u ap-southeast-2@HPUAGIPPWFA7YCNYJIGE \
+            -p ${{ secrets.HUAWEI_REGISTRY_PASSWORD }} \
+            swr.ap-southeast-2.myhuaweicloud.com
+
+      - name: Deploy
+        run: |
+          docker pull swr.ap-southeast-2.myhuaweicloud.com/osd-internal/${{ needs.build-and-push.outputs.name }}:v${{ needs.build-and-push.outputs.version }}
+          docker stop ${{ needs.build-and-push.outputs.name }} || true
+          docker rm ${{ needs.build-and-push.outputs.name }} || true
+          docker run -d --restart=always -p 8800:80 --name ${{ needs.build-and-push.outputs.name }} \
+             swr.ap-southeast-2.myhuaweicloud.com/osd-internal/${{ needs.build-and-push.outputs.name }}:v${{ needs.build-and-push.outputs.version }}

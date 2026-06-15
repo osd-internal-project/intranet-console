@@ -1,6 +1,13 @@
 import React from "react";
-import { Button, Space, Table, TablePaginationConfig, TableProps, Tag } from "antd";
-import { MaCarType } from "../../wrapup-car";
+import {
+  Button,
+  Space,
+  Table,
+  TablePaginationConfig,
+  TableProps,
+  Tag,
+} from "antd";
+import { MaCarType } from "../../../../common/index";
 
 export interface props {
   dataSource: any;
@@ -9,6 +16,7 @@ export interface props {
   changePagination: (pagination: TablePaginationConfig) => void;
   handleOpenModal: (status: string, a: any) => void;
   handleCloseModalFiles: (status: string, a: any) => void;
+  handleOpenFuelCardModal: (record: any) => void;
 }
 
 const ManagementCarAvailableTable: React.FC<props> = ({
@@ -18,6 +26,7 @@ const ManagementCarAvailableTable: React.FC<props> = ({
   changePagination,
   handleOpenModal,
   handleCloseModalFiles,
+  handleOpenFuelCardModal,
 }): React.ReactElement => {
   const columns: TableProps<MaCarType>["columns"] = [
     {
@@ -26,7 +35,9 @@ const ManagementCarAvailableTable: React.FC<props> = ({
       key: "carId",
       align: "center",
       render: (id: number, record: any, index: number) =>
-        pagination.current && pagination.pageSize ? (pagination.current - 1) * pagination.pageSize + (index + 1) : "",
+        pagination.current && pagination.pageSize
+          ? (pagination.current - 1) * pagination.pageSize + (index + 1)
+          : "",
     },
     {
       title: "ชื่อรถ",
@@ -53,13 +64,34 @@ const ManagementCarAvailableTable: React.FC<props> = ({
       dataIndex: "status",
       key: "status",
       align: "center",
-      render: (status: boolean) => (status ? <Tag color="green">ใช้งานได้ปกติ</Tag> : <Tag color="red">ไม่สามารถใช้งานได้</Tag>),
+      render: (status: boolean) =>
+        status ? (
+          <Tag color="green">ใช้งานได้ปกติ</Tag>
+        ) : (
+          <Tag color="red">ไม่สามารถใช้งานได้</Tag>
+        ),
     },
     {
       title: "เลขไมล์รถ",
       dataIndex: "carMile",
       key: "carMile",
       align: "center",
+    },
+    {
+      title: "วงเงินรายเดือน",
+      dataIndex: "fuelMonthlyLimit",
+      key: "fuelMonthlyLimit",
+      align: "center",
+      render: (_, record) =>
+        !record.fuelCardStatus ? (
+          <Tag color="red">ไม่มีบัตรเชื้อเพลิง</Tag>
+        ) : record.fuelCardStatus === "active" ? (
+          <>
+            {record.fuelMonthlyRemaining}/{record.fuelMonthlyLimit}
+          </>
+        ) : (
+          <Tag color="red">ไม่มีบัตรเชื้อเพลิง</Tag>
+        ),
     },
     {
       title: <div style={{ textAlign: "center" }}>รายละเอียด</div>,
@@ -74,8 +106,18 @@ const ManagementCarAvailableTable: React.FC<props> = ({
           <Button type="link" onClick={() => handleOpenModal("edit", record)}>
             {`แก้ไข`}
           </Button>
-
-          <Button type="link" onClick={() => handleOpenModal("delete", record)} danger>{`ลบ`}</Button>
+          <Button
+            type="link"
+            onClick={() => handleOpenFuelCardModal(record)}
+            // danger={!record?.fuelCardNumber ? true : false}
+          >
+            {`Fuel Card`}
+          </Button>
+          <Button
+            type="link"
+            onClick={() => handleOpenModal("delete", record)}
+            danger
+          >{`ลบ`}</Button>
         </Space>
       ),
     },
@@ -85,7 +127,11 @@ const ManagementCarAvailableTable: React.FC<props> = ({
       key: "carId",
       align: "center",
       render: (_, record) => (
-        <Button type="primary" onClick={() => handleCloseModalFiles("open", record)} disabled={record.maCarFiles.length > 0 ? false : true}>
+        <Button
+          type="primary"
+          onClick={() => handleCloseModalFiles("open", record)}
+          disabled={record.maCarFiles.length > 0 ? false : true}
+        >
           {`ไฟล์ทั้งหมด`}
         </Button>
       ),

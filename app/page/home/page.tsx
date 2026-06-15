@@ -9,7 +9,11 @@ import DocumentComponent from "./components/Document";
 import "antd/dist/reset.css";
 import { CarFilled, FileFilled, TeamOutlined } from "@ant-design/icons";
 import SlideImageService from "./services/index.service";
-import { MasterRoomType, HandbookFileType, InformationNewsType } from "./common";
+import {
+  MasterRoomType,
+  HandbookFileType,
+  InformationNewsType,
+} from "./common";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
@@ -17,21 +21,31 @@ const baseImageUrl = process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET;
 
 export default function HomePage() {
   const { id24Axios, tokenAccess } = useId24();
-  const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
+  const baseUrlIntranet = id24Axios(
+    loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET,
+  );
   const [loading, setLoading] = useState<boolean>(true);
   const [slideImage, setSlideImage] = useState<any[]>([]);
-  const [masterBookingRoom, setMasterBookingRoom] = useState<MasterRoomType[]>([]);
+  const [masterBookingRoom, setMasterBookingRoom] = useState<MasterRoomType[]>(
+    [],
+  );
   const [handbookFile, setHandbookFile] = useState<HandbookFileType[]>([]);
-  const [informationNews, setInformationNews] = useState<InformationNewsType[]>([]);
-  
+  const [informationNews, setInformationNews] = useState<InformationNewsType[]>(
+    [],
+  );
+
   useEffect(() => {}, [tokenAccess?.userAccess]);
 
   const fetchData = async () => {
     try {
-      const dataSlideImage = await SlideImageService(baseUrlIntranet).getSlideImageByOrder();
-      const MasterBookingresponse = await SlideImageService(baseUrlIntranet).getMasterRoomQuery();
-      const dataHandbookFileQuery = await SlideImageService(baseUrlIntranet).getHandbookFileQuery();
-      const dataInformationNews = await SlideImageService(baseUrlIntranet).getinformationNewsQuery();
+      const dataSlideImage =
+        await SlideImageService(baseUrlIntranet).getSlideImageByOrder();
+      const MasterBookingresponse =
+        await SlideImageService(baseUrlIntranet).getMasterRoomQuery();
+      const dataHandbookFileQuery =
+        await SlideImageService(baseUrlIntranet).getHandbookFileQuery();
+      const dataInformationNews =
+        await SlideImageService(baseUrlIntranet).getinformationNewsQuery();
       setInformationNews(dataInformationNews);
       setHandbookFile(dataHandbookFileQuery);
       setMasterBookingRoom(MasterBookingresponse);
@@ -73,7 +87,9 @@ export default function HomePage() {
   }
   return (
     <>
-      {slideImage.length > 0 ? <BigCarouselComponent slideImage={slideImage} /> : null}
+      {(slideImage && slideImage.length) > 0 ? (
+        <BigCarouselComponent slideImage={slideImage} />
+      ) : null}
       <div className="grid md:grid-cols-3 my-2">
         <div className="px-2">
           <Card className="text-center">
@@ -105,19 +121,37 @@ export default function HomePage() {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h">
         <div className="lg:col-span-2">
-          <Card title="กิจกรรมและข่าวสาร" bordered={false} className="text-center" style={{ height: "492px" }}>
+          <Card
+            title="กิจกรรมและข่าวสาร"
+            bordered={false}
+            className="text-center"
+            style={{ height: "492px" }}
+          >
             <NewsCarouselComponent informationNews={informationNews} />
           </Card>
           <div className="my-2"></div>
-          <Card title="เอกสาร" bordered={false} className="text-center" style={{ height: "518px" }}>
+          <Card
+            title="เอกสาร"
+            bordered={false}
+            className="text-center"
+            style={{ height: "518px" }}
+          >
             <div style={{ height: "100%", overflowY: "hidden" }}>
-              <DocumentComponent handbookFile={handbookFile} downloadFile={(id: string, filename: string) => downloadFile(id, filename)} />
+              <DocumentComponent
+                handbookFile={handbookFile}
+                downloadFile={(id: string, filename: string) =>
+                  downloadFile(id, filename)
+                }
+              />
             </div>
           </Card>
         </div>
         <div className="lg:col-span-1">
           <Card title="ห้องประชุม" className="text-center ">
-            <MeetingRoomTableComponent pagination={false} masterBookingRoom={masterBookingRoom} />
+            <MeetingRoomTableComponent
+              pagination={false}
+              masterBookingRoom={masterBookingRoom}
+            />
           </Card>
           <div className="my-2"></div>
           <Card title="วันหยุดประจำปี" className="text-center">

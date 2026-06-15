@@ -1,49 +1,104 @@
 import React, { useContext, useState } from "react";
-import { Table, Button, Row, Col, Space, Select, Modal, Form, Input, Divider, message, InputNumber, Tag, Upload, Image } from "antd";
+import {
+  Table,
+  Button,
+  Row,
+  Col,
+  Space,
+  Select,
+  Modal,
+  Form,
+  Input,
+  Divider,
+  message,
+  InputNumber,
+  Tag,
+  Upload,
+  Image,
+} from "antd";
 import type { TableProps, FormProps, UploadProps, UploadFile } from "antd";
 import dayjs from "dayjs";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { MaCarBookServices } from "../../../../services/ma-car-book.service";
 import { MaCarType, MaCarBookType } from "../../common/index";
-import { checkApprovedStatus, checkStatusReturn, CheckStatusMaCarBookType, showStatus } from "@/app/utils/validatefield";
+import {
+  checkApprovedStatus,
+  checkStatusReturn,
+  CheckStatusMaCarBookType,
+  showStatus,
+} from "@/app/utils/validatefield";
 import { dateFormatTime, handleCompress } from "@/app/utils";
 import { CarReturnForm } from "./car-return-form";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import imageCompression from "browser-image-compression";
-import { CameraOutlined, CarOutlined, CheckOutlined, InfoCircleOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
+import {
+  CameraOutlined,
+  CarOutlined,
+  CheckOutlined,
+  InfoCircleOutlined,
+  PlusOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import { RcFile } from "antd/es/upload";
+import { MaCarServices } from "@/app/services/ma-car.service";
+import { MaCarFuelTransactionServices } from "@/app/services/ma-car-fuel-transaction.service";
 export interface props {
   maCarBookData: MaCarBookType[];
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: any): React.ReactElement => {
+const MaCarReturn: React.FC<props> = ({
+  maCarBookData,
+  setLoading,
+  loading,
+}: any): React.ReactElement => {
   const baseImageUrl = process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET;
-  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
+  const { user } = (useContext(UserContext) as UserContectType) || {
+    user: null,
+  };
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(
+    loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET,
+  );
+  const maCarBookServices = MaCarBookServices(baseUrIntranet);
+  const maCarServices = MaCarServices(baseUrIntranet);
+  const maCarFuelTransactionServices = MaCarFuelTransactionServices(baseUrIntranet);
+
   const [formBookData] = Form.useForm();
   const [formReturn] = Form.useForm();
   const [currentMaId, setCurrentMaId] = useState<string | null>(null);
   const [currentMaBookId, setCurrentMaBookId] = useState<number | null>(null);
   const [modalEditReturn, setModalEditReturn] = useState(false);
   const [modalEditDetail, setModalEditDetail] = useState(false);
-  const maCarBookServices = MaCarBookServices(baseUrIntranet);
+
   const [submitLoading, setSubmitLoading] = useState(false);
   const [statusApprove, setStatusApprove] = useState("");
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [messages, messageHeader] = message.useMessage();
+  const [selectedCar, setSelectedCar] = useState<MaCarType | undefined>(
+    undefined,
+  );
+
   const values = formReturn.getFieldsValue(true);
 
-  const showModalReturn = (record: MaCarBookType) => {
+  const showModalReturn = async (record: MaCarBookType) => {
     checkStatusReturn(record);
     setCurrentMaId(record.carId);
     setCurrentMaBookId(record.id);
-    formReturn.setFieldsValue({ ...record, carName: record.maCar.carName, status: record.maCar.status, carMile: record.maCar.carMile });
-    record.carBookApprovedStatus === "Approve" ? setModalEditReturn(true) : null;
+    const car = await maCarServices.getMaCarById(record.carId);
+    setSelectedCar(car);
+    formReturn.setFieldsValue({
+      ...record,
+      carName: record.maCar.carName,
+      status: record.maCar.status,
+      carMile: record.maCar.carMile,
+    });
+    record.carBookApprovedStatus === "Approve"
+      ? setModalEditReturn(true)
+      : null;
   };
 
   const handleModalReturn = () => {
@@ -78,11 +133,21 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
     setModalEditDetail(false);
   };
 
-  const updatedMaCarReturn: FormProps<MaCarType>["onFinish"] = async (values) => {
-    const { carName, detail, carBookPlace, carBookStartDate, carBookEndDate } = formReturn.getFieldsValue(true);
+  const updatedMaCarReturn: FormProps<MaCarType>["onFinish"] = async (
+    values,
+  ) => {
+    const { carName, detail, carBookPlace, carBookStartDate, carBookEndDate, amount } =
+      formReturn.getFieldsValue(true);
+
+    const isFuelCardActive =
+      selectedCar?.fuelCardStatus === "active" &&
+      !!selectedCar?.fuelCardExpiredDate &&
+      dayjs(selectedCar.fuelCardExpiredDate).isAfter(dayjs());
+    const fuelAmount = typeof amount === "number" && amount > 0 ? amount : null;
+
     if (currentMaId && currentMaBookId) {
       try {
-        const updatedMaCar = {
+        const updatedMaCar: Record<string, unknown> = {
           carName: values.carName,
           carMile: values.carMile,
           carPetrol: values.carPetrol,
@@ -90,29 +155,54 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
           updatedById: user?.userId,
           updatedByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
         };
+
+        if (isFuelCardActive && fuelAmount !== null) {
+          const remaining = (selectedCar?.fuelMonthlyRemaining ?? 0) - fuelAmount;
+          updatedMaCar.fuelMonthlyRemaining = remaining;
+        }
+
         const maCarBook = {
           remark: values.remark,
           carName,
           detail,
           carBookPlace,
-          carBookStartDate: dayjs(carBookStartDate).startOf("date").toISOString(),
+          carBookStartDate: dayjs(carBookStartDate)
+            .startOf("date")
+            .toISOString(),
           carBookEndDate: dayjs(carBookEndDate).endOf("date").toISOString(),
           createdById: user?.userId,
           carBookApprovedStatus: "Return",
           returnNotifAt: dayjs().toISOString(),
         };
-        const updateCarBooikng = await maCarBookServices.updateMaCarBook(currentMaBookId, maCarBook);
+        const updateCarBooikng = await maCarBookServices.updateMaCarBook(
+          currentMaBookId,
+          maCarBook,
+        );
         if (updateCarBooikng) {
           if (attendFiles.length > 0) {
             attendFiles.forEach(async (file) => {
               const formData: any = new FormData();
               formData.append("type", "create-attend");
               formData.append("files", file.originFileObj);
-              await maCarBookServices.updateMaCarBookingImages(updateCarBooikng.id, formData);
+              await maCarBookServices.updateMaCarBookingImages(
+                updateCarBooikng.id,
+                formData,
+              );
             });
           }
         }
         await maCarBookServices.updateMaCar(currentMaId, updatedMaCar);
+
+        if (isFuelCardActive && fuelAmount !== null) {
+          const remaining = (selectedCar?.fuelMonthlyRemaining ?? 0) - fuelAmount;
+          await maCarFuelTransactionServices.create({
+            carId: currentMaId,
+            action: "use",
+            amount: fuelAmount,
+            remaining,
+          });
+        }
+
         messages.success("คืนรถสำเร็จ");
         handleModalReturn();
         setSubmitLoading(false);
@@ -183,7 +273,8 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
               type="link"
               onClick={() => {
                 showModalDetail(record);
-              }}>
+              }}
+            >
               รายละเอียด
             </Button>
           </Space>
@@ -219,7 +310,9 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
     const compressed = await handleCompress(file);
     return compressed;
   };
-  const handleChangeAttendFiles: UploadProps["onChange"] = async ({ fileList: newFileList }) => {
+  const handleChangeAttendFiles: UploadProps["onChange"] = async ({
+    fileList: newFileList,
+  }) => {
     return setAttendFiles(newFileList);
   };
 
@@ -237,8 +330,15 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
         onCancel={handleModalReturn}
         footer={null}
         width={600}
-        style={{ top: 20 }}>
-        <Form form={formReturn} layout="vertical" onFinish={updatedMaCarReturn} autoComplete="off" size="middle">
+        style={{ top: 20 }}
+      >
+        <Form
+          form={formReturn}
+          layout="vertical"
+          onFinish={updatedMaCarReturn}
+          autoComplete="off"
+          size="middle"
+        >
           <div
             style={{
               background: "#f8f9fa",
@@ -246,7 +346,8 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
               borderRadius: "8px",
               marginBottom: "24px",
               border: "1px solid #e8e8e8",
-            }}>
+            }}
+          >
             <div
               style={{
                 display: "flex",
@@ -255,7 +356,8 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
                 marginBottom: "16px",
                 color: "#1890ff",
                 fontWeight: 500,
-              }}>
+              }}
+            >
               <InfoCircleOutlined />
               <span>ข้อมูลการคืนรถ</span>
             </div>
@@ -280,10 +382,15 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
                   <InputNumber
                     placeholder="กรอกเลขไมล์รถ"
                     style={{ width: "100%" }}
-                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    formatter={(value) =>
+                      `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
                     parser={(value: any) => value.replace(/\$\s?|(,*)/g, "")}
                     onKeyDown={(event) => {
-                      if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
+                      if (
+                        !/[0-9]/.test(event.key) &&
+                        event.key !== "Backspace"
+                      ) {
                         event.preventDefault();
                       }
                     }}
@@ -293,10 +400,22 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
               </Col>
 
               <Col span={12}>
-                <Form.Item label="ระดับน้ำมันรถ" name="carPetrol" rules={[{ required: true, message: "กรุณาเลือกระดับน้ำมัน!" }]}>
+                <Form.Item
+                  label="ระดับน้ำมันรถ"
+                  name="carPetrol"
+                  rules={[
+                    { required: true, message: "กรุณาเลือกระดับน้ำมัน!" },
+                  ]}
+                >
                   <Select placeholder="เลือกระดับน้ำมัน">
                     <Select.Option value="high">
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                        }}
+                      >
                         <div
                           style={{
                             width: "12px",
@@ -309,7 +428,13 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
                       </div>
                     </Select.Option>
                     <Select.Option value="medium">
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                        }}
+                      >
                         <div
                           style={{
                             width: "12px",
@@ -322,7 +447,13 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
                       </div>
                     </Select.Option>
                     <Select.Option value="low">
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                        }}
+                      >
                         <div
                           style={{
                             width: "12px",
@@ -338,35 +469,68 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
                 </Form.Item>
               </Col>
             </Row>
+
+            {selectedCar?.fuelCardStatus &&
+              selectedCar?.fuelCardStatus === "active" &&
+              selectedCar?.fuelCardExpiredDate && (
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Form.Item name="amount" label="ราคาน้ำมันรถ">
+                      <InputNumber
+                        min={0}
+                        max={selectedCar?.fuelMonthlyRemaining || 0}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    คงเหลือ: {selectedCar?.fuelMonthlyRemaining || 0} จาก{" "}
+                    {selectedCar?.fuelMonthlyLimit || 0} บาท
+                  </Col>
+                </Row>
+              )}
           </div>
 
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item label="หมายเหตุ" name="remark">
-                <Input.TextArea placeholder="แจ้งเรื่องอื่นๆ เช่น ปัญหาหรือข้อสังเกต" showCount maxLength={250} rows={4} style={{ resize: "none" }} />
+                <Input.TextArea
+                  placeholder="แจ้งเรื่องอื่นๆ เช่น ปัญหาหรือข้อสังเกต"
+                  showCount
+                  maxLength={250}
+                  rows={4}
+                  style={{ resize: "none" }}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
               {values.maCarBookImage && values.maCarBookImage.length > 0 ? (
                 <>
-                  {formReturn.getFieldsValue(true).maCarBookImage.map((e: any, index: number) => {
-                    <Image
-                      alt="news"
-                      preview={true}
-                      crossOrigin="anonymous"
-                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET}/get-image/${e.idCarBookImage}`}
-                      style={{
-                        width: "100%",
-                        height: "150px",
-                        objectFit: "cover",
-                      }}
-                    />;
-                  })}
+                  {formReturn
+                    .getFieldsValue(true)
+                    .maCarBookImage.map((e: any, index: number) => {
+                      <Image
+                        alt="news"
+                        preview={true}
+                        crossOrigin="anonymous"
+                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET}/get-image/${e.idCarBookImage}`}
+                        style={{
+                          width: "100%",
+                          height: "150px",
+                          objectFit: "cover",
+                        }}
+                      />;
+                    })}
                 </>
               ) : (
                 <Form.Item
                   label={
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
                       <CameraOutlined />
                       <span>อัปโหลดรูปภาพ</span>
                     </div>
@@ -378,10 +542,12 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
                         color: "#8c8c8c",
                         fontSize: "12px",
                         marginTop: "4px",
-                      }}>
+                      }}
+                    >
                       เฉพาะไฟล์ PNG และ JPEG
                     </div>
-                  }>
+                  }
+                >
                   <Upload
                     fileList={attendFiles}
                     onChange={handleChangeAttendFiles}
@@ -390,7 +556,8 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
                     // maxCount={10}
                     onPreview={() => {}}
                     listType="picture-card"
-                    style={{ width: "100%" }}>
+                    style={{ width: "100%" }}
+                  >
                     {attendFiles.length >= 10 ? null : (
                       <div
                         style={{
@@ -398,8 +565,11 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
                           flexDirection: "column",
                           alignItems: "center",
                           padding: "8px",
-                        }}>
-                        <PlusOutlined style={{ fontSize: "16px", marginBottom: "8px" }} />
+                        }}
+                      >
+                        <PlusOutlined
+                          style={{ fontSize: "16px", marginBottom: "8px" }}
+                        />
                         <div style={{ fontSize: "12px" }}>อัปโหลด</div>
                       </div>
                     )}
@@ -420,7 +590,8 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
                 style={{
                   minWidth: "100px",
                   borderRadius: "6px",
-                }}>
+                }}
+              >
                 ยกเลิก
               </Button>
             </Col>
@@ -435,7 +606,8 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
                   borderRadius: "6px",
                   background: "#1890ff",
                 }}
-                icon={<CheckOutlined />}>
+                icon={<CheckOutlined />}
+              >
                 คืนรถ
               </Button>
             </Col>
@@ -443,8 +615,17 @@ const MaCarReturn: React.FC<props> = ({ maCarBookData, setLoading, loading }: an
         </Form>
       </Modal>
 
-      <Modal style={{ top: 10 }} open={modalEditDetail} onCancel={handleModalDetail} footer={null} width={1200}>
-        <CarReturnForm formBookData={formBookData} statusApprove={statusApprove} />
+      <Modal
+        style={{ top: 10 }}
+        open={modalEditDetail}
+        onCancel={handleModalDetail}
+        footer={null}
+        width={1200}
+      >
+        <CarReturnForm
+          formBookData={formBookData}
+          statusApprove={statusApprove}
+        />
       </Modal>
 
       <div>{showStatus()}</div>

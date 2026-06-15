@@ -17,8 +17,24 @@ export interface MaCarType {
   maCarName: string;
   maStatus: boolean;
   maCarFiles: MaCarFile[];
+
+  fuelCardStatus?: "active" | "inactive";
+  fuelCardNumber?: string;
+  fuelCardExpiredDate?: Date;
+  fuelMonthlyLimit?: number;
+  fuelMonthlyRemaining?: number;
+  fuelResetDayOfMonth?: number;
 }
 
+export interface MaCarFuelTransactionType {
+  id: number;
+  carId: string;
+  date: Date;
+  amount: number;
+  remaining: number;
+  description?: string;
+  actionStatus: "use" | "adjust" | "reset";
+}
 export interface MaCarFile {
   id: number;
   fileName?: string;

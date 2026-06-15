@@ -1,13 +1,30 @@
 "use client";
 import React, { useState } from "react";
-import { Button, Form, FormInstance, Input, Modal, Select, Table } from "antd";
+import type { Dayjs } from "dayjs";
+import {
+  Button,
+  DatePicker,
+  Form,
+  FormInstance,
+  Input,
+  Modal,
+  Popover,
+  Select,
+  Table,
+} from "antd";
 import { dateToStringThNoTime } from "@/app/utils/format";
 import { ExcelIcon } from "@/components/icon";
 import { ITypeDataLeave, type ITypetypeleave } from "../../common";
-import { CheckStatusLeaveType, showStatusLeave } from "@/app/utils/validatefield";
+import {
+  CheckStatusLeaveType,
+  showStatusLeave,
+} from "@/app/utils/validatefield";
 import { dateFormatTimeNoTIme } from "@/app/utils";
 import { LeaveDetailForm } from "./leave-detail-form";
 import { ColumnsType, TablePaginationConfig } from "antd/es/table";
+
+const { RangePicker } = DatePicker;
+
 export interface props {
   dataLeaveUser: { data: ITypeDataLeave[]; count: number };
   setOpenModalDetail: (e: boolean) => void;
@@ -19,7 +36,7 @@ export interface props {
   sideMenuGroups: string[];
   setSubmitAction: (value: "approved" | "cancel") => void;
   submitAction: string;
-  setParams: (data: { type: string; value: string }) => void;
+  setParams: (data: object) => void;
   setLoading: (value: boolean) => void;
   handleExport: () => void;
   pagination: TablePaginationConfig;
@@ -50,8 +67,21 @@ export const TableDetail: React.FC<props> = ({
   const [form] = Form.useForm();
   const [statusById, setStatusById] = useState<string | null>(null);
 
-  const dataLeaveSearch = (value: any) => {
-    setParams(value);
+  interface LeaveSearchFormValues {
+    fullname?: string;
+    typeName?: string;
+    leaveAt?: [Dayjs, Dayjs];
+    createdAt?: [Dayjs, Dayjs];
+    status?: string;
+  }
+
+  const dataLeaveSearch = (value: LeaveSearchFormValues) => {
+    const params = {
+      ...value,
+      leaveAt: value.leaveAt?.map((d) => d.format("YYYY-MM-DD")),
+      createdAt: value.createdAt?.map((d) => d.format("YYYY-MM-DD")),
+    };
+    setParams(params);
     setLoading(true);
   };
 
@@ -66,12 +96,24 @@ export const TableDetail: React.FC<props> = ({
       const base = {
         ...record,
         name: `${record.firstName} ${record.lastName}`,
-        createAt: record.createdAt ? dateToStringThNoTime(record.createdAt) : "-",
-        leaveHour: record.leaveHour ? (record.leaveHour % 8 === 0 ? `${record.leaveHour / 8} วัน` : `${record.leaveHour} ชม.`) : "ไม่มีข้อมูล",
-        startDate: record?.startDate ? dateToStringThNoTime(record?.startDate as any) : "-",
-        endDate: record?.endDate ? dateToStringThNoTime(record?.endDate as any) : "-",
+        createAt: record.createdAt
+          ? dateToStringThNoTime(record.createdAt)
+          : "-",
+        leaveHour: record.leaveHour
+          ? record.leaveHour % 8 === 0
+            ? `${record.leaveHour / 8} วัน`
+            : `${record.leaveHour} ชม.`
+          : "ไม่มีข้อมูล",
+        startDate: record?.startDate
+          ? dateToStringThNoTime(record?.startDate as any)
+          : "-",
+        endDate: record?.endDate
+          ? dateToStringThNoTime(record?.endDate as any)
+          : "-",
         typeLeave: record.typeName,
-        approvedDate: record.approvedDate ? dateToStringThNoTime(record?.approvedDate) : "-",
+        approvedDate: record.approvedDate
+          ? dateToStringThNoTime(record?.approvedDate)
+          : "-",
         reqLeaveHour: record.leaveHour,
         yearLeaveHour: record.yearLeaveHour,
         usedLeaveHour: record.usedLeaveHour,
@@ -106,7 +148,9 @@ export const TableDetail: React.FC<props> = ({
       dataIndex: "id",
       title: "วันที่ลา",
       render: (e, row) =>
-        row?.startDate && row?.endDate ? `${dateToStringThNoTime(row?.startDate as any)} ถึง ${dateToStringThNoTime(row?.endDate as any)}` : "-",
+        row?.startDate && row?.endDate
+          ? `${dateToStringThNoTime(row?.startDate as any)} ถึง ${dateToStringThNoTime(row?.endDate as any)}`
+          : "-",
     },
     {
       key: "leaveHour",
@@ -138,7 +182,12 @@ export const TableDetail: React.FC<props> = ({
       align: "center",
       render: (e, row) => {
         return (
-          <Button size="small" type="primary" ghost onClick={() => fecthDataDetail(row)}>
+          <Button
+            size="small"
+            type="primary"
+            ghost
+            onClick={() => fecthDataDetail(row)}
+          >
             {`รายละเอียด`}
           </Button>
         );
@@ -149,56 +198,112 @@ export const TableDetail: React.FC<props> = ({
   return (
     <div>
       <div style={{ justifyContent: "space-between", display: "flex" }}>
-        <div style={{ justifyContent: "start", display: "flex", alignItems: "center" }}>{showStatusLeave()}</div>
-        <div style={{ display: "flex", justifyContent: "end", alignItems: "center" }}>
-          <div>
-            <Form layout="inline" onFinish={dataLeaveSearch} form={form}>
-              <Form.Item label={`Type`} name={`type`} rules={[{ required: true }]} className="w-48">
-                <Select
-                  className="w-full"
-                  allowClear
-                  placeholder={`Select`}
-                  options={[
-                    { value: "fullname", label: "ชื่อ - สกุล" },
-                    { value: "status", label: "สถานะ" },
-                    { value: "type_name", label: "ประเภทการลา" },
-                  ]}
-                />
-              </Form.Item>
-              <Form.Item shouldUpdate>
-                {() => {
-                  const type = form.getFieldValue("type");
-                  if (type === "status") {
-                    return (
-                      <Form.Item name="value" noStyle>
-                        <Select
-                          placeholder="เลือกสถานะ"
-                          options={[
-                            { value: "approved", label: `อนุมัติ` },
-                            { value: "waiting", label: `รอการอนุมัติ` },
-                            { value: "cancel", label: `ไม่อนุมัติ` },
-                          ]}
-                          allowClear
-                        />
-                      </Form.Item>
-                    );
-                  } else {
-                    return (
-                      <Form.Item name="value" noStyle>
-                        <Input placeholder="ค้นหา" />
-                      </Form.Item>
-                    );
-                  }
-                }}
-              </Form.Item>
-              <Form.Item>
-                <Button type="primary" htmlType="submit">
-                  Search
-                </Button>
-              </Form.Item>
-            </Form>
-          </div>
-          <Button type="default" onClick={handleExport} icon={<ExcelIcon width="1.5rem" height="1.5rem" />}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "start",
+            alignItems: "center",
+          }}
+        >
+          <Popover
+            trigger={"click"}
+            placement="bottomLeft"
+            title={"Filters"}
+            content={
+              <Form layout="vertical" onFinish={dataLeaveSearch} form={form}>
+                {/* <Form.Item
+                  label={`Type`}
+                  name={`type`}
+                  rules={[{ required: true }]}
+                  className="w-48"
+                >
+                  <Select
+                    className="w-full"
+                    allowClear
+                    placeholder={`Select`}
+                    options={[
+                      { value: "fullname", label: "ชื่อ - สกุล" },
+                      { value: "status", label: "สถานะ" },
+                      { value: "type_name", label: "ประเภทการลา" },
+                    ]}
+                  />
+                </Form.Item> */}
+                {/* <Form.Item shouldUpdate>
+                  {() => {
+                    const type = form.getFieldValue("type");
+                    if (type === "status") {
+                      return (
+                        <Form.Item name="value" noStyle>
+                          <Select
+                            placeholder="เลือกสถานะ"
+                            options={[
+                              { value: "approved", label: `อนุมัติ` },
+                              { value: "waiting", label: `รอการอนุมัติ` },
+                              { value: "cancel", label: `ไม่อนุมัติ` },
+                            ]}
+                            allowClear
+                          />
+                        </Form.Item>
+                      );
+                    } else {
+                      return (
+                        <Form.Item name="value" noStyle>
+                          <Input placeholder="ค้นหา" />
+                        </Form.Item>
+                      );
+                    }
+                  }}
+                </Form.Item> */}
+                <div className=" grid grid-cols-4  gap-4">
+                  <Form.Item name={"fullname"} label="ชื่อพนักงาน">
+                    <Input placeholder="Full Name" />
+                  </Form.Item>
+                  <Form.Item name={"typeName"} label="ประเภทการลา">
+                    <Input placeholder="ประเภทการลา" />
+                  </Form.Item>
+                  <Form.Item name={"leaveAt"} label="วันที่ลา">
+                    <RangePicker format="YYYY-MM-DD" />
+                  </Form.Item>
+                  <Form.Item name={"createdAt"} label="วันที่ทำรายการ">
+                    <RangePicker format="YYYY-MM-DD"  />
+                  </Form.Item>
+                  <Form.Item name="status" label="สถานะการลา">
+                    <Select
+                      placeholder="เลือกสถานะ"
+                      options={[
+                        { value: "approved", label: `อนุมัติ` },
+                        { value: "waiting", label: `รอการอนุมัติ` },
+                        { value: "cancel", label: `ไม่อนุมัติ` },
+                      ]}
+                      allowClear
+                    />
+                  </Form.Item>
+                </div>{" "}
+                <Form.Item>
+                  <Button type="primary" htmlType="submit">
+                    Search
+                  </Button>
+                </Form.Item>
+              </Form>
+            }
+          >
+            <Button type="primary">Filters</Button>
+          </Popover>
+        </div>
+        <div
+          className=" space-x-2"
+          style={{
+            justifyContent: "end",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          {showStatusLeave()}
+          <Button
+            type="default"
+            onClick={handleExport}
+            icon={<ExcelIcon width="1.5rem" height="1.5rem" />}
+          >
             {`ดาวน์โหลดไฟล์`}
           </Button>
         </div>
@@ -215,10 +320,18 @@ export const TableDetail: React.FC<props> = ({
         />
       </div>
       {openModalDetail ? (
-        <Modal forceRender open={openModalDetail} footer={false} onCancel={() => setOpenModalDetail(false)} width={600}>
+        <Modal
+          forceRender
+          open={openModalDetail}
+          footer={false}
+          onCancel={() => setOpenModalDetail(false)}
+          width={600}
+        >
           <LeaveDetailForm
             formdetail={formdetail}
-            downloadFile={(id: number, filename: string) => downloadFile(id, filename)}
+            downloadFile={(id: number, filename: string) =>
+              downloadFile(id, filename)
+            }
             statusById={statusById as string}
             sideMenuGroups={sideMenuGroups}
             onFinishUpdate={onFinishUpdate}

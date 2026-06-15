@@ -139,7 +139,7 @@ const ManagementCarAvailable: React.FC<props> = ({
         if (res) {
           await maCarFuelTransactionServices.create(fuelTransactionData);
         }
-        message.success("บันทึก Fuel Card สำเร็จ");
+        message.success("บันทึก Fleet Card สำเร็จ");
         formFuelCard.resetFields();
         setOpenFuelCardModal(false);
         setSelectedCar(undefined);

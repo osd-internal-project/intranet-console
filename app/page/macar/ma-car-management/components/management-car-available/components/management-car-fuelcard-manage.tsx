@@ -36,7 +36,7 @@ const ManagementCarFuelcardManage: React.FC<props> = ({
 }): React.ReactElement => {
   return (
     <Modal
-      title="จัดการ Fuel Card"
+      title="จัดการ Fleet Card"
       open={openModal}
       onCancel={handleCloseModal}
       footer={null}

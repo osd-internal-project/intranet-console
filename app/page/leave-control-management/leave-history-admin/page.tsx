@@ -32,7 +32,7 @@ export default function Page() {
   const [dataLeaveUser, setDataLeaveUser] = useState<{ data: ITypeDataLeave[]; count: number }>({ data: [], count: 0 });
   const [openModalDetail, setOpenModalDetail] = useState<boolean>(false);
   const [submitAction, setSubmitAction] = useState<"approved" | "cancel">("approved");
-  const [params, setParams] = useState<{ type: string; value: string }>({ type: "", value: "" });
+  const [params, setParams] = useState<object>({});
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -302,7 +302,7 @@ export default function Page() {
         <div className="site-card-border-less-wrapper" style={{ width: "100%", marginTop: "10px" }}>
           <Tabs
             onChange={handleReloadData}
-            type="card"
+            // type="card" 
             items={[
               {
                 label: `จัดการการลา`,

@@ -111,7 +111,7 @@ const ManagementCarAvailableTable: React.FC<props> = ({
             onClick={() => handleOpenFuelCardModal(record)}
             // danger={!record?.fuelCardNumber ? true : false}
           >
-            {`Fuel Card`}
+            {`Fleet Card`}
           </Button>
           <Button
             type="link"

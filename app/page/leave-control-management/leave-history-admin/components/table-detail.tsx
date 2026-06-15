@@ -66,7 +66,7 @@ export const TableDetail: React.FC<props> = ({
 }): React.ReactElement => {
   const [form] = Form.useForm();
   const [statusById, setStatusById] = useState<string | null>(null);
-
+  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   interface LeaveSearchFormValues {
     fullname?: string;
     typeName?: string;
@@ -81,6 +81,7 @@ export const TableDetail: React.FC<props> = ({
       leaveAt: value.leaveAt?.map((d) => d.format("YYYY-MM-DD")),
       createdAt: value.createdAt?.map((d) => d.format("YYYY-MM-DD")),
     };
+    setIsFilterOpen(false);
     setParams(params);
     setLoading(true);
   };
@@ -206,9 +207,11 @@ export const TableDetail: React.FC<props> = ({
           }}
         >
           <Popover
+            onOpenChange={setIsFilterOpen}
             trigger={"click"}
             placement="bottomLeft"
             title={"Filters"}
+            open={isFilterOpen}
             content={
               <Form layout="vertical" onFinish={dataLeaveSearch} form={form}>
                 {/* <Form.Item
@@ -265,7 +268,7 @@ export const TableDetail: React.FC<props> = ({
                     <RangePicker format="YYYY-MM-DD" />
                   </Form.Item>
                   <Form.Item name={"createdAt"} label="วันที่ทำรายการ">
-                    <RangePicker format="YYYY-MM-DD"  />
+                    <RangePicker format="YYYY-MM-DD" />
                   </Form.Item>
                   <Form.Item name="status" label="สถานะการลา">
                     <Select

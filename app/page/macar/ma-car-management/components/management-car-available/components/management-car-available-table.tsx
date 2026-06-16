@@ -8,6 +8,7 @@ import {
   Tag,
 } from "antd";
 import { MaCarType } from "../../../../common/index";
+import { numberWithCommas } from "@/app/utils/format";
 
 export interface props {
   dataSource: any;
@@ -84,13 +85,14 @@ const ManagementCarAvailableTable: React.FC<props> = ({
       align: "center",
       render: (_, record) =>
         !record.fuelCardStatus ? (
-          <Tag color="red">ไม่มีบัตรเชื้อเพลิง</Tag>
+          <Tag color="red">ไม่มี Fleet Card</Tag>
         ) : record.fuelCardStatus === "active" ? (
           <>
-            {record.fuelMonthlyRemaining}/{record.fuelMonthlyLimit}
+            {numberWithCommas(record.fuelMonthlyRemaining || 0)}/
+            {numberWithCommas(record.fuelMonthlyLimit || 0)}
           </>
         ) : (
-          <Tag color="red">ไม่มีบัตรเชื้อเพลิง</Tag>
+          <Tag color="red">ไม่มี Fleet Card</Tag>
         ),
     },
     {

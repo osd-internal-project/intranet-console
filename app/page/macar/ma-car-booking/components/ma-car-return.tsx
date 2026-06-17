@@ -78,7 +78,10 @@ const MaCarReturn: React.FC<props> = ({
   const [modalEditDetail, setModalEditDetail] = useState(false);
 
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [useFleetCard, setUseFleetCard] = useState(false);
+  const useFleetCard = Form.useWatch<boolean | undefined>(
+    "useFleetCard",
+    formReturn,
+  );
 
   const [statusApprove, setStatusApprove] = useState("");
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
@@ -90,7 +93,7 @@ const MaCarReturn: React.FC<props> = ({
   const values = formReturn.getFieldsValue(true);
 
   const showModalReturn = async (record: MaCarBookType) => {
-    // checkStatusReturn(record);
+    checkStatusReturn(record);
     setCurrentMaId(record.carId);
     setCurrentMaBookId(record.id);
     const car = await maCarServices.getMaCarById(record.carId);
@@ -300,9 +303,9 @@ const MaCarReturn: React.FC<props> = ({
       align: "center",
       render: (record: MaCarBookType) => (
         <Space>
-          <Button type="link" onClick={() => showModalReturn(record)}>
+          {/* <Button type="link" onClick={() => showModalReturn(record)}>
             แจ้งคืนรถ
-          </Button>
+          </Button> */}
           {record.carBookApprovedStatus === "Approve" ? (
             <Button type="link" onClick={() => showModalReturn(record)}>
               แจ้งคืนรถ
@@ -492,16 +495,35 @@ const MaCarReturn: React.FC<props> = ({
               selectedCar?.fuelCardExpiredDate && (
                 <Row gutter={16}>
                   <Col span={12}>
-                    <Form.Item label={"เติมน้ำมัน (ใช้ Fleet Card)"}>
-                      <Switch
-                        checkedChildren="เติม"
-                        unCheckedChildren="ไม่เติม"
-                        value={useFleetCard}
-                        onChange={(check) => setUseFleetCard(check)}
-                      />{" "}
-                      คงเหลือ{" "}
-                      {numberWithCommas(selectedCar?.fuelMonthlyRemaining || 0)}{" "}
-                      บาท
+                    <Form.Item
+                      name="useFleetCard"
+                      label={"เติมน้ำมัน (ใช้ Fleet Card)"}
+                      rules={[{ required: true, message: "กรุณาเลือก" }]}
+                      extra={`คงเหลือ ${numberWithCommas(
+                        selectedCar?.fuelMonthlyRemaining || 0,
+                      )} บาท`}
+                    >
+                      <Select
+                        placeholder="กรุณากรอก"
+                        options={[
+                          {
+                            value: true,
+                            label: (
+                              <div className=" font-bold text-green-500">
+                                เติม
+                              </div>
+                            ),
+                          },
+                          {
+                            value: false,
+                            label: (
+                              <div className=" font-bold text-gray-700">
+                                ไม่เติม
+                              </div>
+                            ),
+                          },
+                        ]}
+                      />
                     </Form.Item>
                   </Col>
                   {useFleetCard && (
@@ -514,7 +536,7 @@ const MaCarReturn: React.FC<props> = ({
                         ]}
                       >
                         <InputNumber
-                        className=" w-full"
+                          className=" w-full"
                           min={0}
                           max={selectedCar?.fuelMonthlyRemaining || 0}
                         />

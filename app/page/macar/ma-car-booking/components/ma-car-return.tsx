@@ -15,6 +15,7 @@ import {
   Tag,
   Upload,
   Image,
+  Switch,
 } from "antd";
 import type { TableProps, FormProps, UploadProps, UploadFile } from "antd";
 import dayjs from "dayjs";
@@ -44,6 +45,7 @@ import {
 import { RcFile } from "antd/es/upload";
 import { MaCarServices } from "@/app/services/ma-car.service";
 import { MaCarFuelTransactionServices } from "@/app/services/ma-car-fuel-transaction.service";
+import { numberWithCommas } from "@/app/utils/format";
 export interface props {
   maCarBookData: MaCarBookType[];
   loading: boolean;
@@ -65,7 +67,8 @@ const MaCarReturn: React.FC<props> = ({
   );
   const maCarBookServices = MaCarBookServices(baseUrIntranet);
   const maCarServices = MaCarServices(baseUrIntranet);
-  const maCarFuelTransactionServices = MaCarFuelTransactionServices(baseUrIntranet);
+  const maCarFuelTransactionServices =
+    MaCarFuelTransactionServices(baseUrIntranet);
 
   const [formBookData] = Form.useForm();
   const [formReturn] = Form.useForm();
@@ -75,6 +78,8 @@ const MaCarReturn: React.FC<props> = ({
   const [modalEditDetail, setModalEditDetail] = useState(false);
 
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [useFleetCard, setUseFleetCard] = useState(false);
+
   const [statusApprove, setStatusApprove] = useState("");
   const [attendFiles, setAttendFiles] = useState<UploadFile[]>([]);
   const [messages, messageHeader] = message.useMessage();
@@ -85,7 +90,7 @@ const MaCarReturn: React.FC<props> = ({
   const values = formReturn.getFieldsValue(true);
 
   const showModalReturn = async (record: MaCarBookType) => {
-    checkStatusReturn(record);
+    // checkStatusReturn(record);
     setCurrentMaId(record.carId);
     setCurrentMaBookId(record.id);
     const car = await maCarServices.getMaCarById(record.carId);
@@ -96,9 +101,10 @@ const MaCarReturn: React.FC<props> = ({
       status: record.maCar.status,
       carMile: record.maCar.carMile,
     });
-    record.carBookApprovedStatus === "Approve"
-      ? setModalEditReturn(true)
-      : null;
+    setModalEditReturn(true);
+    // record.carBookApprovedStatus === "Approve"
+    //   ? setModalEditReturn(true)
+    //   : null;
   };
 
   const handleModalReturn = () => {
@@ -136,8 +142,14 @@ const MaCarReturn: React.FC<props> = ({
   const updatedMaCarReturn: FormProps<MaCarType>["onFinish"] = async (
     values,
   ) => {
-    const { carName, detail, carBookPlace, carBookStartDate, carBookEndDate, amount } =
-      formReturn.getFieldsValue(true);
+    const {
+      carName,
+      detail,
+      carBookPlace,
+      carBookStartDate,
+      carBookEndDate,
+      amount,
+    } = formReturn.getFieldsValue(true);
 
     const isFuelCardActive =
       selectedCar?.fuelCardStatus === "active" &&
@@ -157,7 +169,8 @@ const MaCarReturn: React.FC<props> = ({
         };
 
         if (isFuelCardActive && fuelAmount !== null) {
-          const remaining = (selectedCar?.fuelMonthlyRemaining ?? 0) - fuelAmount;
+          const remaining =
+            (selectedCar?.fuelMonthlyRemaining ?? 0) - fuelAmount;
           updatedMaCar.fuelMonthlyRemaining = remaining;
         }
 
@@ -194,7 +207,8 @@ const MaCarReturn: React.FC<props> = ({
         await maCarBookServices.updateMaCar(currentMaId, updatedMaCar);
 
         if (isFuelCardActive && fuelAmount !== null) {
-          const remaining = (selectedCar?.fuelMonthlyRemaining ?? 0) - fuelAmount;
+          const remaining =
+            (selectedCar?.fuelMonthlyRemaining ?? 0) - fuelAmount;
           await maCarFuelTransactionServices.create({
             carId: currentMaId,
             action: "use",
@@ -286,6 +300,9 @@ const MaCarReturn: React.FC<props> = ({
       align: "center",
       render: (record: MaCarBookType) => (
         <Space>
+          <Button type="link" onClick={() => showModalReturn(record)}>
+            แจ้งคืนรถ
+          </Button>
           {record.carBookApprovedStatus === "Approve" ? (
             <Button type="link" onClick={() => showModalReturn(record)}>
               แจ้งคืนรถ
@@ -475,17 +492,35 @@ const MaCarReturn: React.FC<props> = ({
               selectedCar?.fuelCardExpiredDate && (
                 <Row gutter={16}>
                   <Col span={12}>
-                    <Form.Item name="amount" label="ราคาน้ำมันรถ">
-                      <InputNumber
-                        min={0}
-                        max={selectedCar?.fuelMonthlyRemaining || 0}
-                      />
+                    <Form.Item label={"เติมน้ำมัน (ใช้ Fleet Card)"}>
+                      <Switch
+                        checkedChildren="เติม"
+                        unCheckedChildren="ไม่เติม"
+                        value={useFleetCard}
+                        onChange={(check) => setUseFleetCard(check)}
+                      />{" "}
+                      คงเหลือ{" "}
+                      {numberWithCommas(selectedCar?.fuelMonthlyRemaining || 0)}{" "}
+                      บาท
                     </Form.Item>
                   </Col>
-                  <Col span={12}>
-                    คงเหลือ: {selectedCar?.fuelMonthlyRemaining || 0} จาก{" "}
-                    {selectedCar?.fuelMonthlyLimit || 0} บาท
-                  </Col>
+                  {useFleetCard && (
+                    <Col span={12}>
+                      <Form.Item
+                        name="amount"
+                        label={`ราคาน้ำมันรถ  `}
+                        rules={[
+                          { required: true, message: "กรุณากรอกราคาน้ำมันรถ" },
+                        ]}
+                      >
+                        <InputNumber
+                        className=" w-full"
+                          min={0}
+                          max={selectedCar?.fuelMonthlyRemaining || 0}
+                        />
+                      </Form.Item>
+                    </Col>
+                  )}
                 </Row>
               )}
           </div>

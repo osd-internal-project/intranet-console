@@ -1,6 +1,16 @@
 "use client";
 import React, { useState, useEffect, useContext } from "react";
-import { Breadcrumb, Card, Col, Divider, Row, Tabs, TabsProps, Form, TablePaginationConfig } from "antd";
+import {
+  Breadcrumb,
+  Card,
+  Col,
+  Divider,
+  Row,
+  Tabs,
+  TabsProps,
+  Form,
+  TablePaginationConfig,
+} from "antd";
 import MaCarBook from "./components/ma-car-book";
 import MaCarReturn from "./components/ma-car-return";
 import { MaCarBookServices } from "../../../services/ma-car-book.service";
@@ -19,13 +29,18 @@ const MaCarBooking: React.FC = () => {
     user: null,
   };
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(
+    loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET,
+  );
   const intraAuthService = MaCarBookServices(baseUrIntranet);
-  const masterprovincethailandServices = MasterProvinceThailandServices(baseUrIntranet);
+  const masterprovincethailandServices =
+    MasterProvinceThailandServices(baseUrIntranet);
   const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
   const [maCarBookData, setMaCarBookData] = useState<MaCarBookType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [masterDataProvinces, setMasterDataProvinces] = useState<{ value: string; label: string }[]>([]);
+  const [masterDataProvinces, setMasterDataProvinces] = useState<
+    { value: string; label: string }[]
+  >([]);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -70,13 +85,25 @@ const MaCarBooking: React.FC = () => {
     {
       key: "1",
       label: "การจองรถ",
-      children: <MaCarBook maCarData={maCarData} masterDataProvinces={masterDataProvinces} />,
+      children: (
+        <MaCarBook
+          maCarData={maCarData}
+          masterDataProvinces={masterDataProvinces}
+        />
+      ),
     },
     {
       key: "2",
       label: "การคืนรถ",
-      children: <MaCarReturn maCarBookData={maCarBookData} loading={loading} setLoading={setLoading} />,
+      children: (
+        <MaCarReturn
+          maCarBookData={maCarBookData}
+          loading={loading}
+          setLoading={setLoading}
+        />
+      ),
     },
+     
   ];
 
   return (
@@ -96,7 +123,10 @@ const MaCarBooking: React.FC = () => {
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
-          <div className="title-page-font" style={{ display: "flex", alignItems: "left" }}>
+          <div
+            className="title-page-font"
+            style={{ display: "flex", alignItems: "left" }}
+          >
             <span style={{ marginRight: "8px" }}>แบบฟอร์มการจองรถ</span>
           </div>
         </Divider>

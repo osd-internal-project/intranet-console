@@ -6,6 +6,7 @@ import { ManageCarServices } from "./services/manage-car.service";
 import { MaCarBookType, MaCarType, dataMaCarbook } from "../common/index";
 import ManagementCarAvailable from "./components/management-car-available/management-car-available.tsx";
 import ManagementCarMasterdataType from "./components/management-car-masterdata-type/management-car-masterdata-type";
+import ReportFeulCard from "./components/report-fuelcard/report-fuelcard";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
@@ -111,6 +112,11 @@ const ManageMaCar = () => {
       key: "3",
       label: "ประเภทการตรวจสภาพ",
       children: <ManagementCarMasterdataType />,
+    },
+    {
+      key: "4",
+      label: "การเติมน้ำมัน",
+      children: <ReportFeulCard />,
     },
     // {
     //   key: "4",

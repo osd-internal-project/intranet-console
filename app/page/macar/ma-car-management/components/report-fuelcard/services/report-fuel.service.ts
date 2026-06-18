@@ -65,10 +65,19 @@ export const ReportFuelService = (axiosInstance: AxiosInstance) => {
         });
     },
 
-    /** Monthly fuel-usage buckets (last 6 months, `use` only). */
-    getChart: async (carId?: string): Promise<FuelChartBucket[]> => {
+    /**
+     * Monthly fuel-usage buckets (`use` only) for the given car and month range.
+     * Omitting the range lets the backend fall back to the last 6 months.
+     */
+    getChart: async (carId?: string, startDate?: string, endDate?: string): Promise<FuelChartBucket[]> => {
       return await axiosInstance
-        .get(`${baseUrl}/chart`, { params: carId ? { carId } : {} })
+        .get(`${baseUrl}/chart`, {
+          params: {
+            ...(carId && { carId }),
+            ...(startDate && { startDate }),
+            ...(endDate && { endDate }),
+          },
+        })
         .then((res) => res.data)
         .catch((err) => {
           console.log(err);

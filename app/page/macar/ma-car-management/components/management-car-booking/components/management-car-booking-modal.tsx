@@ -1,6 +1,27 @@
 import { MaCarBookType } from "@/app/page/macar/common";
-import { Button, Col, DatePicker, Form, FormInstance, Input, InputNumber, Modal, Row, Select, Space, Card, Image } from "antd";
-import { CarOutlined, UserOutlined, CalendarOutlined, EnvironmentOutlined, FileTextOutlined, DashboardOutlined } from "@ant-design/icons";
+import {
+  Button,
+  Col,
+  DatePicker,
+  Form,
+  FormInstance,
+  Input,
+  InputNumber,
+  Modal,
+  Row,
+  Select,
+  Space,
+  Card,
+  Image,
+} from "antd";
+import {
+  CarOutlined,
+  UserOutlined,
+  CalendarOutlined,
+  EnvironmentOutlined,
+  FileTextOutlined,
+  DashboardOutlined,
+} from "@ant-design/icons";
 import TextArea from "antd/lib/input/TextArea";
 import React from "react";
 
@@ -13,7 +34,14 @@ interface props {
   setCheckStatusApproved: (values: string) => void;
 }
 
-const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, openModal, closeModalFecthStatus, setCheckStatusApproved }) => {
+const ManagementCarBookingModal: React.FC<props> = ({
+  form,
+  status,
+  onFinish,
+  openModal,
+  closeModalFecthStatus,
+  setCheckStatusApproved,
+}) => {
   const values = form.getFieldsValue(true);
 
   const getModalTitle = () => {
@@ -42,8 +70,15 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
           paddingBottom: 16,
           marginBottom: 16,
         },
-      }}>
-      <Form form={form} onFinish={(e) => onFinish(status, e)} layout="vertical" size="middle" autoComplete="off">
+      }}
+    >
+      <Form
+        form={form}
+        onFinish={(e) => onFinish(status, e)}
+        layout="vertical"
+        size="middle"
+        autoComplete="off"
+      >
         {/* ส่วนข้อมูลผู้จอง */}
         <Card
           size="small"
@@ -53,7 +88,8 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
               <span>ข้อมูลผู้จอง</span>
             </div>
           }
-          style={{ marginBottom: 16 }}>
+          style={{ marginBottom: 16 }}
+        >
           <Row gutter={24}>
             <Col span={8}>
               <Form.Item<MaCarBookType> name="createdByName" label="ชื่อผู้จอง">
@@ -72,7 +108,8 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
               <span>ข้อมูลการจองรถ</span>
             </div>
           }
-          style={{ marginBottom: 16 }}>
+          style={{ marginBottom: 16 }}
+        >
           <Row gutter={24}>
             <Col span={8}>
               <Form.Item<MaCarBookType> name="carName" label="ชื่อรถ">
@@ -81,20 +118,38 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
             </Col>
             <Col span={8}>
               <Form.Item<MaCarBookType> name="carBookUsers" label="จำนวนผู้ใช้">
-                <InputNumber style={{ width: "100%" }} placeholder="กรอกจำนวนผู้ใช้" min={1} max={12} disabled prefix={<UserOutlined />} />
+                <InputNumber
+                  style={{ width: "100%" }}
+                  placeholder="กรอกจำนวนผู้ใช้"
+                  min={1}
+                  max={12}
+                  disabled
+                  prefix={<UserOutlined />}
+                />
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item<MaCarBookType> name="carBookProvince" label="จังหวัด">
-                <Input placeholder="กรอกจังหวัด" disabled prefix={<EnvironmentOutlined />} />
+                <Input
+                  placeholder="กรอกจังหวัด"
+                  disabled
+                  prefix={<EnvironmentOutlined />}
+                />
               </Form.Item>
             </Col>
           </Row>
 
           <Row gutter={24}>
             <Col span={12}>
-              <Form.Item<MaCarBookType> name="carBookTitle" label="วัตถุประสงค์การใช้งาน">
-                <Input.TextArea placeholder="กรอกวัตถุประสงค์การใช้งาน" disabled rows={2} />
+              <Form.Item<MaCarBookType>
+                name="carBookTitle"
+                label="วัตถุประสงค์การใช้งาน"
+              >
+                <Input.TextArea
+                  placeholder="กรอกวัตถุประสงค์การใช้งาน"
+                  disabled
+                  rows={2}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -140,7 +195,8 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
                 <span>ข้อมูลการคืนรถ</span>
               </div>
             }
-            style={{ marginBottom: 16 }}>
+            style={{ marginBottom: 16 }}
+          >
             <Row gutter={24}>
               <Col span={12}>
                 <Form.Item name="carMile" label="เลขไมล์รถ">
@@ -148,7 +204,9 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
                     disabled
                     style={{ width: "100%" }}
                     placeholder="กรอกเลขไมล์รถ"
-                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    formatter={(value) =>
+                      `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
                     parser={(value) => value!.replace(/\$\s?|(,*)/g, "")}
                   />
                 </Form.Item>
@@ -165,6 +223,19 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
                     ]}
                   />
                 </Form.Item>
+              </Col>{" "}
+              <Col span={12}>
+                <Form.Item label="ราคาน้ำมันรถ" name="amount">
+                  <InputNumber
+                    disabled
+                    style={{ width: "100%" }}
+                    placeholder="ไม่ได้เติมน้ำมัน"
+                    formatter={(value) =>
+                      `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    parser={(value) => value!.replace(/\$\s?|(,*)/g, "")}
+                  />
+                </Form.Item> 
               </Col>
               <Col span={24}>
                 {values.maCarBookImage && values.maCarBookImage.length > 0 ? (
@@ -201,7 +272,8 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
               <span>รายละเอียดเพิ่มเติม</span>
             </div>
           }
-          style={{ marginBottom: 24 }}>
+          style={{ marginBottom: 24 }}
+        >
           <Row gutter={24}>
             <Col span={12}>
               <Form.Item name="detail" label="รายละเอียด">
@@ -211,14 +283,25 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
             {form.getFieldValue("carBookApprovedStatus") !== "Cancel" ? (
               <Col span={12}>
                 <Form.Item name={"remarkApproved"} label={"หมายเหตุ"}>
-                  <TextArea placeholder={"กรอกหมายเหตุ"} rows={3} disabled={true} />
+                  <TextArea
+                    placeholder={"กรอกหมายเหตุ"}
+                    rows={3}
+                    disabled={true}
+                  />
                 </Form.Item>
               </Col>
             ) : null}
             {form.getFieldValue("carBookApprovedStatus") === "Cancel" ? (
               <Col span={12}>
-                <Form.Item name={"remarkCancel"} label={"หมายเหตุยกเลิกการจองรถ"}>
-                  <TextArea placeholder={"กรอกหมายเหตุการยกเลิก"} rows={3} disabled={true} />
+                <Form.Item
+                  name={"remarkCancel"}
+                  label={"หมายเหตุยกเลิกการจองรถ"}
+                >
+                  <TextArea
+                    placeholder={"กรอกหมายเหตุการยกเลิก"}
+                    rows={3}
+                    disabled={true}
+                  />
                 </Form.Item>
               </Col>
             ) : null}
@@ -226,13 +309,30 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
         </Card>
 
         {/* ส่วนปุ่มต่างๆ */}
-        <div style={{ textAlign: "center", paddingTop: 16, borderTop: "1px solid #f0f0f0" }}>
+        <div
+          style={{
+            textAlign: "center",
+            paddingTop: 16,
+            borderTop: "1px solid #f0f0f0",
+          }}
+        >
           {status === "approved" && (
             <Space size="middle">
-              <Button type="default" size="large" htmlType="submit" onClick={() => setCheckStatusApproved("disable")} danger>
+              <Button
+                type="default"
+                size="large"
+                htmlType="submit"
+                onClick={() => setCheckStatusApproved("disable")}
+                danger
+              >
                 ไม่อนุมัติ
               </Button>
-              <Button type="primary" size="large" htmlType="submit" onClick={() => setCheckStatusApproved("approved")}>
+              <Button
+                type="primary"
+                size="large"
+                htmlType="submit"
+                onClick={() => setCheckStatusApproved("approved")}
+              >
                 อนุมัติ
               </Button>
             </Space>
@@ -240,7 +340,11 @@ const ManagementCarBookingModal: React.FC<props> = ({ form, status, onFinish, op
 
           {status === "return" && (
             <Space size="middle">
-              <Button type="default" size="large" onClick={() => closeModalFecthStatus()}>
+              <Button
+                type="default"
+                size="large"
+                onClick={() => closeModalFecthStatus()}
+              >
                 ยกเลิก
               </Button>
               <Button type="primary" size="large" htmlType="submit">

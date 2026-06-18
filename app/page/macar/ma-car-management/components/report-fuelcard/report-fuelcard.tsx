@@ -4,7 +4,9 @@ import { Form, message, TablePaginationConfig } from "antd";
 import dayjs from "dayjs";
 import { saveAs } from "file-saver";
 import React, { useEffect, useState } from "react";
+import type { Dayjs } from "dayjs";
 import ReportFuelCardChart from "./components/report-fuelcard-chart";
+import ReportFuelCardChartFilter from "./components/report-fuelcard-chart-filter";
 import ReportFuelCardFilter, { FilterFormValues } from "./components/report-fuelcard-filter";
 import ReportFuelCardTable from "./components/report-fuelcard-table";
 import {
@@ -16,9 +18,9 @@ import {
 } from "./services/report-fuel.service";
 
 /**
- * Fuel-transaction report tab: bar chart of the last 6 months above a
- * filterable, paginated table with Excel export. All data comes from the
- * report service.
+ * Fuel-transaction report tab: a monthly bar chart with its own car/month-range
+ * filter, above a separately filterable, paginated table with Excel export.
+ * All data comes from the report service.
  */
 const ReportFeulCard: React.FC = (): React.ReactElement => {
   const { id24Axios } = useId24();
@@ -36,6 +38,12 @@ const ReportFeulCard: React.FC = (): React.ReactElement => {
 
   const [chartData, setChartData] = useState<FuelChartBucket[]>([]);
   const [chartLoading, setChartLoading] = useState<boolean>(true);
+  // Chart filters are independent of the table filters above.
+  const [chartCarId, setChartCarId] = useState<string | undefined>(undefined);
+  const [chartMonthRange, setChartMonthRange] = useState<[Dayjs, Dayjs]>([
+    dayjs().subtract(5, "month").startOf("month"),
+    dayjs().endOf("month"),
+  ]);
 
   const [exporting, setExporting] = useState<boolean>(false);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -71,17 +79,22 @@ const ReportFeulCard: React.FC = (): React.ReactElement => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, pagination]);
 
-  // Reload the chart whenever the car filter changes (chart ignores date range).
+  // Reload the chart whenever its own car/month-range filter changes.
   useEffect(() => {
     const fetchChart = async () => {
       setChartLoading(true);
-      const result = await reportFuelService.getChart(filters.carId);
+      const [start, end] = chartMonthRange;
+      const result = await reportFuelService.getChart(
+        chartCarId,
+        start.startOf("month").toISOString(),
+        end.endOf("month").toISOString(),
+      );
       setChartData(result);
       setChartLoading(false);
     };
     fetchChart();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters.carId]);
+  }, [chartCarId, chartMonthRange]);
 
   const changePagination = (page: TablePaginationConfig) => {
     setPagination({ ...page });
@@ -125,6 +138,13 @@ const ReportFeulCard: React.FC = (): React.ReactElement => {
 
   return (
     <div>
+      <ReportFuelCardChartFilter
+        carOptions={carOptions}
+        carId={chartCarId}
+        monthRange={chartMonthRange}
+        onCarChange={setChartCarId}
+        onMonthRangeChange={setChartMonthRange}
+      />
       <ReportFuelCardChart data={chartData} loading={chartLoading} />
       <ReportFuelCardFilter
         filterForm={filterForm}

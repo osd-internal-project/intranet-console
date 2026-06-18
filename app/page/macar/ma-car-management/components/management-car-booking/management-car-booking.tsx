@@ -22,7 +22,11 @@ export interface props {
   handleOpenFilter: (value: boolean) => void;
   openFilter: boolean;
   filterForm: FormInstance;
-  onSearch: (values: { carBookApprovedStatus?: string; carBookStartDate?: Date | string; createdByName?: string }) => void;
+  onSearch: (values: {
+    carBookApprovedStatus?: string;
+    carBookStartDate?: Date | string;
+    createdByName?: string;
+  }) => void;
 }
 
 const managementCarBooking: React.FC<props> = ({
@@ -38,8 +42,12 @@ const managementCarBooking: React.FC<props> = ({
 }): React.ReactElement => {
   const { id24Axios } = useId24();
   const [form] = Form.useForm();
-  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
+  const { user } = (useContext(UserContext) as UserContectType) || {
+    user: null,
+  };
+  const baseUrIntranet = id24Axios(
+    loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET,
+  );
   const showStatusBox = showStatus();
   const [checkType, setCheckType] = useState<string>("");
   const [checkStatusApproved, setCheckStatusApproved] = useState<string>("");
@@ -61,6 +69,7 @@ const managementCarBooking: React.FC<props> = ({
       carBookEndDate: dayjs(record.carBookEndDate),
       carMile: record.maCar.carMile,
       carPetrol: record.maCar.carPetrol,
+      amount: record?.fuelTransaction?.amount,
     });
     setOpenModal(true);
   };
@@ -71,7 +80,14 @@ const managementCarBooking: React.FC<props> = ({
   };
 
   const onFinish = async (status: string, values: any) => {
-    const { createdById, carName, detail, carBookPlace, carBookStartDate, carBookEndDate } = form.getFieldsValue(true) || {};
+    const {
+      createdById,
+      carName,
+      detail,
+      carBookPlace,
+      carBookStartDate,
+      carBookEndDate,
+    } = form.getFieldsValue(true) || {};
     let updatedApproveMa: any = {};
     try {
       if (status === "approved") {
@@ -85,9 +101,12 @@ const managementCarBooking: React.FC<props> = ({
           id: form.getFieldValue("id"),
           carBookApprovedById: user?.userId,
           carBookApprovedByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
-          carBookApprovedStatus: checkStatusApproved === "approved" ? "Approve" : "DisapProved",
+          carBookApprovedStatus:
+            checkStatusApproved === "approved" ? "Approve" : "DisapProved",
           carBookApprovedDate: dayjs(),
-          ...(checkStatusApproved !== "disable" && { remarkApproved: values.remarkApproved }),
+          ...(checkStatusApproved !== "disable" && {
+            remarkApproved: values.remarkApproved,
+          }),
         };
       }
       if (status === "return") {
@@ -106,18 +125,34 @@ const managementCarBooking: React.FC<props> = ({
         };
       }
       if (status === "cancel") {
-        updatedApproveMa = { id: form.getFieldValue("id"), carBookApprovedStatus: "Cancel", remarkCancel: values.remarkCancel };
+        updatedApproveMa = {
+          id: form.getFieldValue("id"),
+          carBookApprovedStatus: "Cancel",
+          remarkCancel: values.remarkCancel,
+        };
       }
       if (status === "delete") {
-        await ManageCarServices(baseUrIntranet).deleteMaCarBook(form.getFieldValue("id"));
+        await ManageCarServices(baseUrIntranet).deleteMaCarBook(
+          form.getFieldValue("id"),
+        );
       }
       let result;
       if (status !== "delete") {
-        result = await ManageCarServices(baseUrIntranet).updateMaCarBook(updatedApproveMa);
+        result =
+          await ManageCarServices(baseUrIntranet).updateMaCarBook(
+            updatedApproveMa,
+          );
       }
-      if (result && status !== "approved" && checkStatusApproved !== "approved") {
+      if (
+        result &&
+        status !== "approved" &&
+        checkStatusApproved !== "approved"
+      ) {
         const updataStatusCar = { status: true };
-        await MaCarServices(baseUrIntranet).updateMaCar(form.getFieldValue("carId"), updataStatusCar);
+        await MaCarServices(baseUrIntranet).updateMaCar(
+          form.getFieldValue("carId"),
+          updataStatusCar,
+        );
       }
       setCheckType("");
       setCheckStatusApproved("");
@@ -130,10 +165,21 @@ const managementCarBooking: React.FC<props> = ({
 
   return (
     <div>
-      <div style={{ marginTop: "14px", display: "flex", justifyContent: "space-between" }}>
+      <div
+        style={{
+          marginTop: "14px",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
         <> {showStatusBox}</>
         <>
-          <ManagementCarFilterPage handleOpenFilter={handleOpenFilter} openFilter={openFilter} filterForm={filterForm} onSearch={onSearch} />
+          <ManagementCarFilterPage
+            handleOpenFilter={handleOpenFilter}
+            openFilter={openFilter}
+            filterForm={filterForm}
+            onSearch={onSearch}
+          />
         </>
       </div>
       {maCarBookData.docs ? (

@@ -10,13 +10,14 @@ export interface props {
 }
 
 /**
- * Bar chart of monthly fuel-usage amount (last 6 months, `use` only).
+ * Bar chart of monthly fuel-usage amount over the selected month range
+ * (`use` only).
  */
 const ReportFuelCardChart: React.FC<props> = ({ data, loading }): React.ReactElement => {
   const hasData = data.some((bucket) => bucket.amount > 0);
 
   return (
-    <Card title="ยอดการเติมน้ำมันย้อนหลัง 6 เดือน" size="small" style={{ marginBottom: 16 }}>
+    <Card title="ยอดการเติมน้ำมันรายเดือน" size="small" style={{ marginBottom: 16 }}>
       <Spin spinning={loading}>
         <div style={{ width: "100%", height: 300 }}>
           {hasData ? (

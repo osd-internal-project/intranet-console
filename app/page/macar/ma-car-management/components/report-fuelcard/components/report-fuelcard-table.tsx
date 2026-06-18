@@ -1,4 +1,4 @@
-import { dateFormatTimeNoTIme, numberFormat } from "@/app/utils";
+import { dateFormatTime, dateFormatTimeNoTIme, numberFormat } from "@/app/utils";
 import { Table, Tag, TablePaginationConfig, TableProps } from "antd";
 import React from "react";
 import { FuelTransactionRow } from "../services/report-fuel.service";
@@ -41,7 +41,7 @@ const ReportFuelCardTable: React.FC<props> = ({
       dataIndex: "date",
       key: "date",
       align: "center",
-      render: (value: string) => dateFormatTimeNoTIme(value),
+      render: (value: string) => dateFormatTime(value),
     },
     {
       title: "ชื่อรถ",
@@ -92,7 +92,7 @@ const ReportFuelCardTable: React.FC<props> = ({
       align: "center",
       render: (_: unknown, record: FuelTransactionRow) =>
         record.carBookStartDate || record.carBookEndDate
-          ? `${dateFormatTimeNoTIme(record.carBookStartDate ?? "")} - ${dateFormatTimeNoTIme(record.carBookEndDate ?? "")}`
+          ? `${dateFormatTime(record.carBookStartDate ?? "")} - ${dateFormatTime(record.carBookEndDate ?? "")}`
           : "-",
     },
     {

@@ -77,6 +77,7 @@ export interface MaCarBookType {
   idProvinces: string;
   remarkApproved: string;
   remarkCancel: string;
+  fuelTransaction?: MaCarFuelTransactionType;
   // docs: dataMaCarbook[];
 }
 

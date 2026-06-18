@@ -135,6 +135,9 @@ const MaCarReturn: React.FC<props> = ({
       carName1: record.carName,
       statusApprove: approvedStatus,
       phoneNumber: user?.phoneNumber,
+      // fuelState:record?.fuelTransaction ?'เติม'
+      amount: record?.fuelTransaction?.amount,
+
     });
   };
 
@@ -214,9 +217,10 @@ const MaCarReturn: React.FC<props> = ({
             (selectedCar?.fuelMonthlyRemaining ?? 0) - fuelAmount;
           await maCarFuelTransactionServices.create({
             carId: currentMaId,
-            action: "use",
+            actionStatus: "use",
             amount: fuelAmount,
             remaining,
+            maCarBookId: updateCarBooikng.id,
           });
         }
 
@@ -530,7 +534,7 @@ const MaCarReturn: React.FC<props> = ({
                     <Col span={12}>
                       <Form.Item
                         name="amount"
-                        label={`ราคาน้ำมันรถ  `}
+                        label={`ราคาน้ำมันรถ`}
                         rules={[
                           { required: true, message: "กรุณากรอกราคาน้ำมันรถ" },
                         ]}

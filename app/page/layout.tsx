@@ -14,7 +14,11 @@ import { UserContectType, UserContext } from "../config/userContext";
 import Script from "next/script";
 const { Content, Sider } = Layout;
 
-export default function MainLayout({ children }: { children: React.ReactNode }) {
+export default function MainLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const navigate = useRouter();
   const { tokenAccess, authenticated, login, logout, id24Axios } = useId24();
   const { saveUser, saveRoles } = useContext(UserContext) as UserContectType;
@@ -29,7 +33,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
   useEffect(() => {
     const sideMenuGroups =
-      tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
+      tokenAccess && tokenAccess.userAccess.length > 0
+        ? Array.from(
+            new Set(tokenAccess?.userAccess.map((item) => item.roles).flat()),
+          )
+        : [];
 
     saveRoles(sideMenuGroups);
   }, [tokenAccess?.userAccess]);
@@ -37,7 +45,8 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const fetchData = useCallback(async () => {
     try {
       setIsCheckingProfile(true);
-      const profileUser = await UsersServices(baseUrlUser).processAfterLoginAuth();
+      const profileUser =
+        await UsersServices(baseUrlUser).processAfterLoginAuth();
 
       if (profileUser) {
         setProfileDetail(profileUser);
@@ -77,7 +86,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   };
 
   const sideMenuGroups =
-    tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
+    tokenAccess && tokenAccess.userAccess.length > 0
+      ? Array.from(
+          new Set(tokenAccess?.userAccess.map((item) => item.roles).flat()),
+        )
+      : [];
 
   const menulist = MenuSiderWithModule(sideMenuGroups);
   const currentPath = pathname.split("/")[2];
@@ -86,54 +99,80 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   return (
     <Spin percent={"auto"} size="large" spinning={loading}>
       <Layout className=" min-h-screen  overflow-auto ">
-        <Sider
-          width={200}
-          trigger={null}
-          collapsible
-          collapsed={collapsed}
-          style={{ backgroundColor: "#ffff" }}
-          className=" min-h-screen  hidden  md:block bg "
-        >
-          <div className="flex justify-center py-4 ">
-            {!collapsed ? (
-              <div onClick={() => navigate.push(`${window.location.origin}/page/home`)} className="cursor-pointer">
-                <img src="/images/logo_osd.png" alt="logo-page" className={`${collapsed ? "w-14 " : " w-32"}`} />
-              </div>
-            ) : (
-              <div onClick={() => navigate.push(`${window.location.origin}/page/home`)} className="cursor-pointer">
-                <img src="/images/logo_osd.png" alt="logo-page" className={`${collapsed ? "w-14 " : "w-28 "}`} />
-              </div>
-            )}
-          </div>
-          <Menu
-            mode="inline"
-            selectedKeys={[currentPath, `${currentPath}/${currentPathSub}`]}
-            defaultSelectedKeys={[currentPath, `${currentPath}/${currentPathSub}`]}
-            items={menulist}
+        <div className="w-full">
+          <Navigation
+            logOut={logOut}
+            profileDetail={profileDetail}
+            collapsed={collapsed}
+            setCollapsed={setCollapsed}
+            currentPath={currentPath}
+            menulist={menulist}
           />
-        </Sider>
+        </div>
         <Layout>
-          <div className="w-full">
-            <Navigation
-              logOut={logOut}
-              profileDetail={profileDetail}
-              collapsed={collapsed}
-              setCollapsed={setCollapsed}
-              currentPath={currentPath}
-              menulist={menulist}
-            />
-          </div>
-          <Content
-            className=" mb-10"
-            style={{
-              padding: 10,
-              margin: 0,
-              marginBottom: 20,
-            }}
+          <Sider
+            width={200}
+            trigger={null}
+            collapsible
+            collapsed={collapsed}
+            style={{ backgroundColor: "#ffff" }}
+            className=" min-h-screen  hidden  md:block bg "
           >
-            {children}
-          </Content>
-          <Footer style={{ textAlign: "center" }}>Intranet ©{new Date().getFullYear()} Created by OSD</Footer>
+            {/* <div className="flex justify-center py-4 ">
+              {!collapsed ? (
+                <div
+                  onClick={() =>
+                    navigate.push(`${window.location.origin}/page/home`)
+                  }
+                  className="cursor-pointer"
+                >
+                  <img
+                    src="/images/logo_osd.png"
+                    alt="logo-page"
+                    className={`${collapsed ? "w-14 " : " w-32"}`}
+                  />
+                </div>
+              ) : (
+                <div
+                  onClick={() =>
+                    navigate.push(`${window.location.origin}/page/home`)
+                  }
+                  className="cursor-pointer"
+                >
+                  <img
+                    src="/images/logo_osd.png"
+                    alt="logo-page"
+                    className={`${collapsed ? "w-14 " : "w-28 "}`}
+                  />
+                </div>
+              )}
+            </div> */}
+            <Menu
+              className="app-side-menu"
+              mode="inline"
+              selectedKeys={[currentPath, `${currentPath}/${currentPathSub}`]}
+              defaultSelectedKeys={[
+                currentPath,
+                `${currentPath}/${currentPathSub}`,
+              ]}
+              items={menulist}
+            />
+          </Sider>
+          <Layout>
+            <Content
+              className=" mb-10"
+              style={{
+                padding: 10,
+                margin: 0,
+                marginBottom: 20,
+              }}
+            >
+              {children}
+            </Content>
+            <Footer style={{ textAlign: "center" }}>
+              Intranet ©{new Date().getFullYear()} Created by OSD
+            </Footer>
+          </Layout>
         </Layout>
         <Script
           src="https://agenza.osd.co.th/resources/product/llm/public/sdk/embedLite.js"

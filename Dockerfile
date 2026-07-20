@@ -6,7 +6,7 @@ WORKDIR /app
 
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 
-RUN npm ci --ignore-scripts
+RUN yarn install --frozen-lockfile --ignore-scripts
 
 FROM base AS builder
 WORKDIR /app

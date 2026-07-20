@@ -9,6 +9,7 @@ import {
 } from "antd";
 import { MaCarType } from "../../../../common/index";
 import { numberWithCommas } from "@/app/utils/format";
+import Link from "next/link";
 
 export interface props {
   dataSource: any;
@@ -41,10 +42,22 @@ const ManagementCarAvailableTable: React.FC<props> = ({
           : "",
     },
     {
+      title: "ทะเบียน",
+      dataIndex: "licensePlate",
+      key: "licensePlate",
+      align: "center",
+      render: (licensePlate: string) => licensePlate || "-",
+    },
+    {
       title: "ชื่อรถ",
       dataIndex: "carName",
       key: "carName",
       align: "center",
+      render: (value, record, index) => (
+        <Link href={`/page/macar/ma-car-management/car/${record.carId}`}>
+          <Button type="link">{value}</Button>
+        </Link>
+      ),
     },
     {
       title: "ระดับน้ำมัน",

@@ -38,6 +38,7 @@ import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import imageCompression from "browser-image-compression";
 import { handleCompress } from "@/app/utils";
+import { macarFileUrl } from "../../common/macar-file";
 export interface MaCarType {
   id: number;
   typeName: string;
@@ -88,16 +89,20 @@ export interface MaCarwarpup {
 export interface MaCarWrapupImage {
   [x: string]: any;
   idwarpupImage?: number;
-  maName: String;
-  mafileNameImage?: String;
-  mafilePart?: String;
+  /** ชื่อไฟล์เดิม (ใช้แสดงผล) */
+  fileName?: string;
+  /** object key ใน MinIO */
+  filePath?: string;
+  fileType?: string;
   createdAt?: String;
   updatedAt?: String;
   carWrapupId: string | undefined;
 }
 
 const WrapupCar: React.FC = () => {
-  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
+  const { user, accessRole } = (useContext(UserContext) as UserContectType) || { user: null, accessRole: () => false };
+  // สิทธิ์ลบไฟล์ของโมดูล macar — เฉพาะ admin หรือ ma-user
+  const canDelete = accessRole(["admin", "maUser"]);
   const [form] = useForm();
   const [formchange] = useForm();
   const [formdetail] = useForm();
@@ -228,7 +233,7 @@ const WrapupCar: React.FC = () => {
           attendFiles.map(async (file) => {
             const formData = new FormData();
             formData.append("file", file.originFileObj as RcFile);
-            await manageCarServices.uploadFiles(response.idwarpupImage, formData);
+            await manageCarServices.uploadFiles(response.carWrapupId, formData);
           }),
         );
       }
@@ -349,9 +354,9 @@ const WrapupCar: React.FC = () => {
     });
     const existingFilesList: UploadFile[] = record.maCarWrapupImage.map((image) => ({
       uid: String(image.idwarpupImage),
-      name: image.maName as string,
+      name: image.fileName as string,
       status: "done" as UploadFileStatus,
-      url: `http://localhost:4003/api/public/ma-car-wrapup-image/${image.maName}`,
+      url: macarFileUrl(image.filePath, image.fileName, "inline"),
     }));
     setExistingFiles(existingFilesList);
     setSelectedMaCarwarpup(record);
@@ -366,9 +371,9 @@ const WrapupCar: React.FC = () => {
     });
     const existingFilesListedit: UploadFile[] = record.maCarWrapupImage.map((image) => ({
       uid: String(image.idwarpupImage),
-      name: image.maName as string,
+      name: image.fileName as string,
       status: "done" as UploadFileStatus,
-      url: `http://localhost:4003/api/public/ma-car-wrapup-image/${image.maName}`,
+      url: macarFileUrl(image.filePath, image.fileName, "inline"),
     }));
     setExistingFiles(existingFilesListedit);
     setSelectedMaCarwarpup(record);
@@ -808,18 +813,20 @@ const WrapupCar: React.FC = () => {
             {existingFiles.map((file, index) => (
               <div key={index} style={{ marginBottom: "20px", position: "relative" }}>
                 <Image preview={true} crossOrigin="anonymous" src={file.url} style={{ width: "470px", height: "460px" }} alt="news" />
-                <Button
-                  type="primary"
-                  danger
-                  style={{
-                    position: "absolute",
-                    top: 20,
-                    right: 20,
-                  }}
-                  onClick={() => handleDeleteImage(file)}
-                >
-                  ลบรูปภาพ
-                </Button>
+                {canDelete && (
+                  <Button
+                    type="primary"
+                    danger
+                    style={{
+                      position: "absolute",
+                      top: 20,
+                      right: 20,
+                    }}
+                    onClick={() => handleDeleteImage(file)}
+                  >
+                    ลบรูปภาพ
+                  </Button>
+                )}
               </div>
             ))}
           </Form.Item>

@@ -1,4 +1,17 @@
 import { AxiosInstance } from "axios";
+import { MaCarBookType, MaCarWrapupType } from "../../common";
+
+/** ผลลัพธ์ตารางแบ่งหน้าของการจองรถต่อคัน — docs = แถวหน้าปัจจุบัน, total = จำนวนทั้งหมด */
+export interface MaCarBookByCarResult {
+  docs: MaCarBookType[];
+  total: number;
+}
+
+/** ผลลัพธ์ตารางแบ่งหน้าของประวัติตรวจสภาพต่อคัน — data = แถวหน้าปัจจุบัน, count = จำนวนทั้งหมด */
+export interface MaCarWrapupByCarResult {
+  data: MaCarWrapupType[];
+  count: number;
+}
 
 export const ManageCarServices = (axiosInstance: AxiosInstance) => {
   const baseUrlApiMaCarBook = "/ma-car-book";
@@ -6,7 +19,7 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
   const baseUrlApiMaCarTpye = "/ma-car-type";
   const baseUrlApiMaCarwarpup = "/ma-car-wrapup";
   const baseUrlApiMaCarwarpupimage = "/ma-car-wrapup-image";
-  const baseUrlApiMaCarFiles = '/ma-car-files'
+  const baseUrlApiMaCarFiles = "/ma-car-files";
 
   return {
     getMaCarBookQuery: async () => {
@@ -22,12 +35,18 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
     },
 
     findMaCarBookForApprove: async (
-      filters: { carBookApprovedStatus?: string; carBookStartDate?: Date | string; createdByName?: string },
+      filters: {
+        carBookApprovedStatus?: string;
+        carBookStartDate?: Date | string;
+        createdByName?: string;
+      },
       skip: number,
       take: number,
     ) => {
       return await axiosInstance
-        .get(`${baseUrlApiMaCarBook}/approve/${skip}/${take}`, { params: filters })
+        .get(`${baseUrlApiMaCarBook}/approve/${skip}/${take}`, {
+          params: filters,
+        })
         .then((res) => {
           return res.data;
         })
@@ -45,6 +64,26 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         .catch((err) => {
           console.log(err);
           return [];
+        });
+    },
+    /**
+     * รายการจองแบ่งหน้าของรถ 1 คัน — ส่ง skip/take เป็น query param เพื่อ query ใหม่ทุกครั้งที่เปลี่ยนหน้า/ขนาดหน้า
+     * @param carId รหัสรถ
+     * @param skip จำนวนแถวที่ข้าม = (หน้า-1) * ขนาดหน้า
+     * @param take จำนวนแถวต่อหน้า
+     * @returns { docs, total } — คืนค่าว่างเมื่อเรียกไม่สำเร็จ
+     */
+    findMaCarBookByCarId: async (
+      carId: string,
+      skip: number,
+      take: number,
+    ): Promise<MaCarBookByCarResult> => {
+      return await axiosInstance
+        .get(`${baseUrlApiMaCarBook}/car/${carId}`, { params: { skip, take } })
+        .then((res) => res.data as MaCarBookByCarResult)
+        .catch((err) => {
+          console.log(err);
+          return { docs: [], total: 0 };
         });
     },
     findOneMaCarBook: async (body: any) => {
@@ -213,6 +252,26 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    /**
+     * ประวัติตรวจสภาพแบ่งหน้าของรถ 1 คัน — ส่ง skip/take เป็น query param เพื่อ query ใหม่ทุกครั้งที่เปลี่ยนหน้า/ขนาดหน้า
+     * @param carId รหัสรถ
+     * @param skip จำนวนแถวที่ข้าม = (หน้า-1) * ขนาดหน้า
+     * @param take จำนวนแถวต่อหน้า
+     * @returns { data, count } — คืนค่าว่างเมื่อเรียกไม่สำเร็จ
+     */
+    findMaCarWrapupByCarId: async (
+      carId: string,
+      skip: number,
+      take: number,
+    ): Promise<MaCarWrapupByCarResult> => {
+      return await axiosInstance
+        .get(`${baseUrlApiMaCarwarpup}/car/${carId}`, { params: { skip, take } })
+        .then((res) => res.data as MaCarWrapupByCarResult)
+        .catch((err) => {
+          console.log(err);
+          return { data: [], count: 0 };
+        });
+    },
     updateMaCarWarpup: async (carWrapupId: string, body: any) => {
       return await axiosInstance
         .patch(`${baseUrlApiMaCarwarpup}/${carWrapupId}`, body)
@@ -271,11 +330,15 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         });
     },
     uploadFiles: async (carWrapupId: string, formData: FormData) => {
-      return axiosInstance.post(`${baseUrlApiMaCarwarpupimage}/${carWrapupId}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
+      return axiosInstance.post(
+        `${baseUrlApiMaCarwarpupimage}/${carWrapupId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         },
-      });
+      );
     },
 
     createMaCarWarpupimage: async (body: any) => {

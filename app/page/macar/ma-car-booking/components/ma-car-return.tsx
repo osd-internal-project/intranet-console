@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import BookImageList from "@/app/page/macar/common/book-image-list";
 import {
   Table,
   Button,
@@ -14,7 +15,6 @@ import {
   InputNumber,
   Tag,
   Upload,
-  Image,
   Switch,
 } from "antd";
 import type { TableProps, FormProps, UploadProps, UploadFile } from "antd";
@@ -565,23 +565,9 @@ const MaCarReturn: React.FC<props> = ({
             </Col>
             <Col span={12}>
               {values.maCarBookImage && values.maCarBookImage.length > 0 ? (
-                <>
-                  {formReturn
-                    .getFieldsValue(true)
-                    .maCarBookImage.map((e: any, index: number) => {
-                      <Image
-                        alt="news"
-                        preview={true}
-                        crossOrigin="anonymous"
-                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET}/get-image/${e.idCarBookImage}`}
-                        style={{
-                          width: "100%",
-                          height: "150px",
-                          objectFit: "cover",
-                        }}
-                      />;
-                    })}
-                </>
+                <BookImageList
+                  images={formReturn.getFieldsValue(true).maCarBookImage}
+                />
               ) : (
                 <Form.Item
                   label={

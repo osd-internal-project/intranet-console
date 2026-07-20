@@ -34,7 +34,11 @@ export interface MaCarwarpup {
   maCarWrapupImage: MaCarWrapupImage[];
 }
 
-const ManagementCarWrapupTable: React.FC<props> = ({ handleOpen, dataSource, loading }): React.ReactElement => {
+const ManagementCarWrapupTable: React.FC<props> = ({
+  handleOpen,
+  dataSource,
+  loading,
+}): React.ReactElement => {
   const columns: TableProps<MaCarwarpup>["columns"] = [
     {
       title: "ลำดับ",
@@ -59,6 +63,12 @@ const ManagementCarWrapupTable: React.FC<props> = ({ handleOpen, dataSource, loa
       title: "รายละเอียดการตรวจ",
       dataIndex: "detail",
       key: "detail",
+    },
+    {
+      title: "วัตถุประสงค์",
+      dataIndex: "objective",
+      key: "objective",
+      render: (objective: string | undefined) => objective || "-",
     },
     {
       title: "สถานที่เช็คสภาพ",
@@ -104,7 +114,12 @@ const ManagementCarWrapupTable: React.FC<props> = ({ handleOpen, dataSource, loa
       dataIndex: "status",
       key: "status",
       align: "center",
-      render: (status: boolean) => (status === true ? <Tag color="green">เช็คแล้ว</Tag> : <Tag color="red">รอตรวจสภาพ</Tag>),
+      render: (status: boolean) =>
+        status === true ? (
+          <Tag color="green">เช็คแล้ว</Tag>
+        ) : (
+          <Tag color="red">รอตรวจสภาพ</Tag>
+        ),
     },
     {
       title: "ตัวเลือก",
@@ -114,7 +129,14 @@ const ManagementCarWrapupTable: React.FC<props> = ({ handleOpen, dataSource, loa
       render: (_: any, record: MaCarwarpup) => {
         return (
           <Space>
-            <Button size="small" type="default" onClick={() => handleOpen("edit", record)}>{`Edit`}</Button>
+            <Button
+              size="small"
+              type="default"
+              onClick={() => {
+                console.log(record);
+                handleOpen("edit", record);
+              }}
+            >{`Edit`}</Button>
             <Button
               size="small"
               type="primary"
@@ -122,7 +144,15 @@ const ManagementCarWrapupTable: React.FC<props> = ({ handleOpen, dataSource, loa
               danger
               disabled={record.status === true}
             >{`Delete`}</Button>
-            <Button size="small" type="primary" onClick={() => handleOpen("approved", record)} disabled={record.status === true}>{`Approved`}</Button>
+            <Button
+              size="small"
+              type="primary"
+              onClick={() => {
+                console.log(record);
+                handleOpen("approved", record);
+              }}
+              disabled={record.status === true}
+            >{`Approved`}</Button>
           </Space>
         );
       },
@@ -130,7 +160,14 @@ const ManagementCarWrapupTable: React.FC<props> = ({ handleOpen, dataSource, loa
   ];
   return (
     <div>
-      <Table size="small" loading={loading} dataSource={dataSource} columns={columns} scroll={{ x: "max-content" }} rowKey="id" />
+      <Table
+        size="small"
+        loading={loading}
+        dataSource={dataSource}
+        columns={columns}
+        scroll={{ x: "max-content" }}
+        rowKey="id"
+      />
     </div>
   );
 };

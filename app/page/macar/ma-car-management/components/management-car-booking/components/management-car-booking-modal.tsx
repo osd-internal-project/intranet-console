@@ -12,7 +12,6 @@ import {
   Select,
   Space,
   Card,
-  Image,
 } from "antd";
 import {
   CarOutlined,
@@ -24,6 +23,7 @@ import {
 } from "@ant-design/icons";
 import TextArea from "antd/lib/input/TextArea";
 import React from "react";
+import BookImageList from "@/app/page/macar/common/book-image-list";
 
 interface props {
   form: FormInstance<MaCarBookType>;
@@ -239,23 +239,9 @@ const ManagementCarBookingModal: React.FC<props> = ({
               </Col>
               <Col span={24}>
                 {values.maCarBookImage && values.maCarBookImage.length > 0 ? (
-                  <div className="grid justify-center  gap-3 mt-2 mb-2">
-                    <div className="flex justify-center">{`รูปภาพ`}</div>
-                    {values.maCarBookImage.map((e: any, index: number) => {
-                      return (
-                        <Image
-                          alt="news"
-                          preview={true}
-                          crossOrigin="anonymous"
-                          src={`${process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET}/ma-car-booking-images/get-image/${e.idCarBookImage}`}
-                          style={{
-                            width: "100%",
-                            height: "150px",
-                            objectFit: "cover",
-                          }}
-                        />
-                      );
-                    })}
+                  <div className="mt-2 mb-2">
+                    <div className="mb-1 flex justify-center">{`รูปภาพ`}</div>
+                    <BookImageList images={values.maCarBookImage} />
                   </div>
                 ) : null}
               </Col>

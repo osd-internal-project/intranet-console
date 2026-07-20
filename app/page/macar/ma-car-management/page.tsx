@@ -5,7 +5,6 @@ import ManageCar from "./components/management-car-booking/management-car-bookin
 import { ManageCarServices } from "./services/manage-car.service";
 import { MaCarBookType, MaCarType, dataMaCarbook } from "../common/index";
 import ManagementCarAvailable from "./components/management-car-available/management-car-available.tsx";
-import ManagementCarMasterdataType from "./components/management-car-masterdata-type/management-car-masterdata-type";
 import ReportFeulCard from "./components/report-fuelcard/report-fuelcard";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
@@ -107,11 +106,6 @@ const ManageMaCar = () => {
           changePagination={changePagination}
         />
       ),
-    },
-    {
-      key: "3",
-      label: "ประเภทการตรวจสภาพ",
-      children: <ManagementCarMasterdataType />,
     },
     {
       key: "4",

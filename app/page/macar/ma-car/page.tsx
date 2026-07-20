@@ -1,13 +1,31 @@
 "use client";
-import axios from "axios";
-import Link from "next/link";
 import React, { useState, useEffect, useContext } from "react";
-import { Breadcrumb, Card, Col, Row, TabsProps, Tabs, Button, Divider, TablePaginationConfig } from "antd";
+import {
+  Breadcrumb,
+  Card,
+  Col,
+  Row,
+  TabsProps,
+  Tabs,
+  Divider,
+  TablePaginationConfig,
+} from "antd";
+import { CalendarDays, Plus } from "lucide-react";
 import { MaCarServices } from "../../../services/ma-car.service";
-import { MaCarType, MaCarBookType, dataMaCarbook, ProvincesType, MaCarBookCalendarType } from "../common/index";
+import { MaCarBookServices } from "../../../services/ma-car-book.service";
+import {
+  MaCarType,
+  MaCarBookType,
+  dataMaCarbook,
+  ProvincesType,
+  MaCarBookCalendarType,
+} from "../common/index";
+
 import CalendarComponent from "./components/car-calendar";
 import MaCarTable from "./components/car-table";
 import CarStatus from "./components/car-status";
+import CarBookNew from "./components/car-book-new";
+import MaCarReturn from "../ma-car-booking/components/ma-car-return";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
@@ -20,16 +38,26 @@ const MaCar: React.FC = () => {
     user: null,
   };
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
-  const masterprovincethailandServices = MasterProvinceThailandServices(baseUrIntranet);
+  const baseUrIntranet = id24Axios(
+    loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET,
+  );
+  const masterprovincethailandServices =
+    MasterProvinceThailandServices(baseUrIntranet);
   const intraAuthService = MaCarServices(baseUrIntranet);
+  const bookService = MaCarBookServices(baseUrIntranet);
   const holidayService = MasterHolidaysService(baseUrIntranet);
   const [maCarBookData, setMaCarBookData] = useState<dataMaCarbook[]>([]);
-  const [maFetchCalendar, setMaFetchCalendar] = useState<MaCarBookCalendarType[]>([]);
+  const [maFetchCalendar, setMaFetchCalendar] = useState<
+    MaCarBookCalendarType[]
+  >([]);
   const [maCarData, setMaCarData] = useState<MaCarType[]>([]);
+  const [myBookings, setMyBookings] = useState<MaCarBookType[]>([]);
   const [month, setMonth] = useState<Dayjs | string>(dayjs());
   const [loading, setLoading] = useState<boolean>(true);
-  const [dataProvinces, setDataProvinces] = useState<{ value: string; label: string }[]>([]);
+  const [activeKey, setActiveKey] = useState<string>("1");
+  const [dataProvinces, setDataProvinces] = useState<
+    { value: string; label: string }[]
+  >([]);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
     pageSize: 10,
@@ -44,7 +72,8 @@ const MaCar: React.FC = () => {
   }, [loading, user]);
 
   const fetchData = async () => {
-    const skip: number = (Number(pagination.current) - 1) * Number(pagination.pageSize);
+    const skip: number =
+      (Number(pagination.current) - 1) * Number(pagination.pageSize);
     const take: number = Number(pagination.pageSize);
     try {
       if (user) {
@@ -52,21 +81,29 @@ const MaCar: React.FC = () => {
         setMaCarBookData(maCarBook);
         const yearNow = dayjs().format("YYYY");
         const holidayData = await holidayService.getHolidayByYear(yearNow);
-        const mapHoliday: MaCarBookCalendarType[] = holidayData.map((events: any) => {
-          const mapData = {
-            id: events.id,
-            carName: events.holidaysName,
-            carBookStartDate: events.holidaysDate,
-            carBookEndDate: events.holidaysDate,
-            carBookApprovedStatus: "holiday",
-            description: "",
-            userName: "",
-          };
-          return mapData;
-        });
+        const mapHoliday: MaCarBookCalendarType[] = holidayData.map(
+          (events: any) => {
+            const mapData = {
+              id: events.id,
+              carName: events.holidaysName,
+              carBookStartDate: events.holidaysDate,
+              carBookEndDate: events.holidaysDate,
+              carBookApprovedStatus: "holiday",
+              description: "",
+              userName: "",
+            };
+            return mapData;
+          },
+        );
         const maCalender = await intraAuthService.getMaCarBookCalendar(month);
-        const mergeCalendar: MaCarBookCalendarType[] = [...maCalender, ...mapHoliday];
+        const mergeCalendar: MaCarBookCalendarType[] = [
+          ...maCalender,
+          ...mapHoliday,
+        ];
         setMaFetchCalendar(mergeCalendar);
+        // รายการจองของ user เอง — เลี้ยงแท็บคืนรถ
+        const myBooks = await bookService.getMaCarBookQuery(user.userId);
+        setMyBookings(myBooks ?? []);
         setPagination({ ...pagination, total: maCarBook.count });
         setLoading(false);
       }
@@ -77,7 +114,7 @@ const MaCar: React.FC = () => {
     const maCar = await intraAuthService.getMaCarQuery();
     setMaCarData(maCar);
     const masterdataProvince = await masterprovincethailandServices.findAll();
-    console.log(masterdataProvince);
+    // console.log(masterdataProvince);
 
     const optionsProvinces = masterdataProvince.map((event: ProvincesType) => ({
       value: event.nameProvinceTH,
@@ -98,11 +135,42 @@ const MaCar: React.FC = () => {
   const items: TabsProps["items"] = [
     {
       key: "1",
-      label: "แสดงข้อมูลแบบปฎิทิน",
-      children: <CalendarComponent maFetchCalendar={maFetchCalendar} handleChangeMonth={handleChangeMonth} />,
+      label: "จองรถ",
+      icon: <Plus size={12}/>,
+      children: (
+        <CarBookNew
+          dataProvinces={dataProvinces}
+          onBooked={() => {
+            setActiveKey("1");
+            setLoading(true);
+          }}
+        />
+      ),
     },
     {
       key: "2",
+      label: "คืนรถ",
+      children: (
+        <MaCarReturn
+          maCarBookData={myBookings}
+          loading={loading}
+          setLoading={setLoading}
+        />
+      ),
+    },
+    {
+      key: "3",
+      label: "แสดงข้อมูลแบบปฎิทิน",
+      icon:<CalendarDays size={12}/>,
+      children: (
+        <CalendarComponent
+          maFetchCalendar={maFetchCalendar}
+          handleChangeMonth={handleChangeMonth}
+        />
+      ),
+    },
+    {
+      key: "4",
       label: "แสดงข้อมูลแบบตาราง",
       children: (
         <MaCarTable
@@ -118,7 +186,7 @@ const MaCar: React.FC = () => {
       ),
     },
     {
-      key: "3",
+      key: "5",
       label: "สถานะรถ",
       children: <CarStatus maCarData={maCarData} />,
     },
@@ -141,7 +209,10 @@ const MaCar: React.FC = () => {
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
-          <div className="title-page-font" style={{ display: "flex", alignItems: "left" }}>
+          <div
+            className="title-page-font"
+            style={{ display: "flex", alignItems: "left" }}
+          >
             <span style={{ marginRight: "8px" }}>ข้อมูลการจองรถยนต์</span>
           </div>
         </Divider>
@@ -150,22 +221,9 @@ const MaCar: React.FC = () => {
             <Card styles={{ body: { padding: "0px 10px 10px 10px" } }}>
               <div className=" mt-2">
                 <Tabs
-                  defaultActiveKey="1"
+                  activeKey={activeKey}
+                  onChange={setActiveKey}
                   items={items}
-                  tabBarExtraContent={
-                    <div className="flex justify-end space-x-1">
-                      <Link href="/page/macar/ma-car-booking?action=1">
-                        <Button type="primary" size="middle">
-                          {`ทำการจองรถ`}
-                        </Button>
-                      </Link>
-                      <Link href="/page/macar/ma-car-booking?action=2">
-                        <Button type="primary" size="middle" danger>
-                          {`คืนรถ`}
-                        </Button>
-                      </Link>
-                    </div>
-                  }
                 />
               </div>
             </Card>

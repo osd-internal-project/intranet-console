@@ -1,4 +1,5 @@
 import React from "react";
+import BookImageList from "@/app/page/macar/common/book-image-list";
 import {
   Row,
   Col,
@@ -14,7 +15,6 @@ import {
   Typography,
   Badge,
   Space,
-  Image,
 } from "antd";
 import {
   UserOutlined,
@@ -485,22 +485,8 @@ export const CarReturnForm: React.FC<Props> = ({
                 </Col>
               </Row>
               {values.maCarBookImage && values.maCarBookImage.length > 0 ? (
-                <div className="flex justify-center gap-3 mt-2 mb-2">
-                  {values.maCarBookImage.map((e: any, index: number) => {
-                    return (
-                      <Image
-                        alt="news"
-                        preview={true}
-                        crossOrigin="anonymous"
-                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET}/ma-car-booking-images/get-image/${e.idCarBookImage}`}
-                        style={{
-                          width: "100%",
-                          height: "150px",
-                          objectFit: "cover",
-                        }}
-                      />
-                    );
-                  })}
+                <div className="mt-2 mb-2">
+                  <BookImageList images={values.maCarBookImage} />
                 </div>
               ) : null}
               <Row gutter={[24, 16]}>

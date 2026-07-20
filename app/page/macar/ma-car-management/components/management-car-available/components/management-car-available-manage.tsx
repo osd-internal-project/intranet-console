@@ -24,6 +24,8 @@ export interface props {
   handleChangeAttendFiles: (info: any) => void;
   beforeUploadAttendFiles: (file: any) => Promise<any>;
   attendFiles: any[];
+  /** ตัวเลือกประเภทรถจาก master maVehicleType (รถ 4 ล้อ/2 ล้อ) */
+  vehicleTypeOptions?: { label: string; value: string }[];
 }
 
 const ManagementCarAvailableManage: React.FC<props> = ({
@@ -35,6 +37,7 @@ const ManagementCarAvailableManage: React.FC<props> = ({
   handleChangeAttendFiles,
   beforeUploadAttendFiles,
   attendFiles,
+  vehicleTypeOptions = [],
 }): React.ReactElement => {
   return (
     <div>
@@ -49,7 +52,7 @@ const ManagementCarAvailableManage: React.FC<props> = ({
         open={openModal}
         onCancel={handleCloseModal}
         footer={null}
-        width={500}
+        width={640}
       >
         <Form
           form={form}
@@ -68,6 +71,94 @@ const ManagementCarAvailableManage: React.FC<props> = ({
               >
                 <Input
                   placeholder="กรอกชื่อรถ"
+                  disabled={checkType === "delete" ? true : false}
+                />
+              </Form.Item>
+            </Col>
+            {/* ทะเบียน + รายละเอียดรถ — ใช้อ้างอิงในหน้าเอกสารรถยนต์ (ประกัน/พรบ./ภาษี) */}
+            <Col span={12}>
+              <Form.Item label="ทะเบียนรถ" name="licensePlate">
+                <Input
+                  placeholder="เช่น 2ฒร 424"
+                  disabled={checkType === "delete" ? true : false}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              {/* ประเภทรถ = master (รถ 4 ล้อ/2 ล้อ) จัดการในหน้าตั้งค่าระบบรถ */}
+              <Form.Item label="ประเภทรถ" name="carType">
+                <Select
+                  placeholder="เลือกประเภทรถ"
+                  options={vehicleTypeOptions}
+                  allowClear
+                  showSearch
+                  optionFilterProp="label"
+                  disabled={checkType === "delete" ? true : false}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              {/* ลักษณะ/ตัวถัง = free-text แยกจากประเภทรถ */}
+              <Form.Item label="ลักษณะ/ตัวถัง" name="carCategory">
+                <Input
+                  placeholder="เช่น กระบะ, เก๋ง, ตู้"
+                  disabled={checkType === "delete" ? true : false}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="ยี่ห้อ" name="brand">
+                <Input
+                  placeholder="เช่น Toyota"
+                  disabled={checkType === "delete" ? true : false}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="รุ่น" name="model">
+                <Input
+                  placeholder="เช่น Revo"
+                  disabled={checkType === "delete" ? true : false}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              {/* คนละเรื่องกับ "ระดับของน้ำมัน" ด้านล่าง ซึ่งเก็บว่าน้ำมันในถังเหลือมาก/น้อย */}
+              <Form.Item label="เชื้อเพลิง" name="fuelType">
+                <Input
+                  placeholder="เช่น ดีเซล"
+                  disabled={checkType === "delete" ? true : false}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="ผู้ถือกรรมสิทธิ์" name="ownerName">
+                <Input
+                  placeholder="เช่น CDN"
+                  disabled={checkType === "delete" ? true : false}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="เลขตัวถัง" name="chassisNumber">
+                <Input
+                  placeholder="เลขตัวถัง / VIN"
+                  disabled={checkType === "delete" ? true : false}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="สี" name="color">
+                <Input
+                  placeholder="เช่น ขาว"
+                  disabled={checkType === "delete" ? true : false}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="ปีรุ่น" name="modelYear">
+                <Input
+                  placeholder="เช่น 2020"
                   disabled={checkType === "delete" ? true : false}
                 />
               </Form.Item>

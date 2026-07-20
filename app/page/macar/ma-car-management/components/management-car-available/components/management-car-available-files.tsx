@@ -41,9 +41,9 @@ const ManagementCarAvailableFilesPage: React.FC<props> = ({ formfiles, handleClo
                         </div>
                         <div className="flex-1 min-w-0">
                           <a
-                            onClick={() => downloadFile(item.fileName, item.fileName)}
+                            onClick={() => downloadFile(item.filePath, item.name ?? item.fileName)}
                             className="text-gray-800 hover:text-blue-600 font-medium truncate block">
-                            {item.name}
+                            {item.name ?? item.fileName}
                           </a>
                         </div>
                       </div>

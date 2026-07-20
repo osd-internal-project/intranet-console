@@ -42,6 +42,17 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
         });
     },
 
+    /** รถที่ว่างในช่วงเวลา (ISO string) */
+    getMaCarBookAvailable: async (startDate: string, endDate: string) => {
+      return await axiosInstance
+        .get(`${baseUrlApiMaCarBook}/available`, { params: { startDate, endDate } })
+        .then((res) => res.data)
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+
     findMaCarBook: async (skip: number, take: number) => {
       return await axiosInstance
         .get(`${baseUrlApiMaCarBook}?take=${take}&skip=${skip}`)
@@ -99,6 +110,16 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
         .catch((err) => {
           console.log(err);
           return [];
+        });
+    },
+    /** ลบรูปการรับ-คืนรถ (MinIO + DB) ตาม idCarBookImage */
+    deleteMaCarBookingImage: async (idCarBookImage: number) => {
+      return await axiosInstance
+        .delete(`${baseUrlmaCarBookingImages}/${idCarBookImage}`)
+        .then((res) => res.data)
+        .catch((err) => {
+          console.log(err);
+          return null;
         });
     },
     getOrganizeChartQuery: async () => {

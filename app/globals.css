@@ -307,6 +307,71 @@ thead[class*="ant-table-thead"] th {
   border-bottom: none !important;
 } */
 
+/* ── Side navigation menu (Sider + mobile Drawer) ── */
+/* Class is scoped so the app's other Menus (dropdowns) keep antd defaults. */
+.ant-menu.app-side-menu {
+  border-inline-end: 0;
+}
+
+.ant-menu.app-side-menu .ant-menu-item,
+.ant-menu.app-side-menu .ant-menu-submenu-title {
+  border-radius: 10px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  /* ตัวหนังสือใหญ่ขึ้น + แถวสูงขึ้น ให้อ่านง่ายตามดีไซน์ */
+  font-size: 12px;
+  height: 46px;
+  line-height: 46px;
+  margin-block: 6px;
+}
+
+/* ป้ายเมนูหนาปานกลาง */
+.ant-menu.app-side-menu .ant-menu-title-content {
+  font-weight: 500;
+}
+
+/* ไอคอนเป็น inline svg ขนาด 15px — ขยายด้วย CSS (ทับ attribute width/height ของ svg) */
+.ant-menu.app-side-menu .ant-menu-item .ant-menu-item-icon,
+.ant-menu.app-side-menu .ant-menu-submenu-title .ant-menu-item-icon {
+  min-width: 22px;
+  font-size: 14px;
+}
+.ant-menu.app-side-menu .ant-menu-item svg,
+.ant-menu.app-side-menu .ant-menu-submenu-title svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Active item: soft blue pill with blue label + icon */
+.ant-menu.app-side-menu .ant-menu-item-selected {
+  position: relative;
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.ant-menu.app-side-menu .ant-menu-item-selected .ant-menu-item-icon,
+.ant-menu.app-side-menu .ant-menu-item-selected a {
+  color: #1d4ed8;
+}
+
+/* Rounded indicator bar hugging the left edge of the active pill */
+.ant-menu.app-side-menu .ant-menu-item-selected::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 60%;
+  border-radius: 0 4px 4px 0;
+  background-color: #1d4ed8;
+}
+
+/* antd's own indicator sits on the right edge and would compete with the bar above */
+.ant-menu.app-side-menu .ant-menu-item::after {
+  display: none;
+}
+
 .upload-small .ant-upload-select {
   width: 58px !important;
   height: 58px !important;

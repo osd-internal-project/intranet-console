@@ -111,7 +111,7 @@ export default function MainLayout({
         </div>
         <Layout>
           <Sider
-            width={200}
+            width={230}
             trigger={null}
             collapsible
             collapsed={collapsed}

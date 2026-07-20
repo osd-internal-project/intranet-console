@@ -115,7 +115,7 @@ export const MenuSider: MenuItem[] = [
   {
     key: "macar",
     icon: macarIcon,
-    label: `จองใช้งานรถยนต์`,
+    label: `ระบบรถ`,
     rule: ["user", "admin", "ma-user"],
     children: [
       {
@@ -124,23 +124,23 @@ export const MenuSider: MenuItem[] = [
         rule: ["user", "admin"],
       },
       {
-        key: `macar/ma-car-booking`,
-        label: `แบบฟอร์มการจองรถ`,
-        rule: ["admin"],
-      },
-      {
         key: `macar/management-car-wrapup`,
         label: `เช็คสภาพรถยนต์`,
         rule: ["admin", "ma-user"],
       },
-      // {
-      //   key: `macar/management-car-wrapup`,
-      //   label: `ต่อประกันรถยนต์`,
-      //   rule: ["admin", "ma-user"],
-      // },
+      {
+        key: `macar/ma-car-insurance`,
+        label: `เอกสารรถยนต์`,
+        rule: ["admin", "ma-user"],
+      },
       {
         key: `macar/ma-car-management`,
         label: `การจัดการรถยนต์`,
+        rule: ["admin", "ma-user"],
+      },
+      {
+        key: `macar/ma-car-config`,
+        label: `ตั้งค่าระบบรถ`,
         rule: ["admin", "ma-user"],
       },
     ],
@@ -374,7 +374,14 @@ export const MenuSiderWithModule = (modules: string[]) => {
                 ...item,
                 label: (
                   <Tooltip placement="right" title={item.label}>
-                    <div style={{ width: 140 }}>
+                    <div
+                      style={{
+                        width: 168,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       <Link href={`/page/${item.key}`}>{item.label}</Link>
                     </div>
                   </Tooltip>

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Button,
   message,
@@ -20,10 +20,12 @@ import type { RcFile } from "antd/es/upload";
 import { handleCompress } from "@/app/utils";
 import ManagementCarAvailableFilesPage from "./components/management-car-available-files";
 import { MaCarFuelTransactionServices } from "@/app/services/ma-car-fuel-transaction.service";
+import { MaVehicleTypeServices } from "../../../ma-car-config/services/ma-vehicle-type.service";
 import ManagementCarFuelcardManage, {
   FuelCardFormValues,
 } from "./components/management-car-fuelcard-manage";
 import { MaCarType } from "../../../common";
+import { macarFileUrl } from "../../../common/macar-file";
 
 const baseImageUrl = process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET;
 
@@ -54,6 +56,22 @@ const ManagementCarAvailable: React.FC<props> = ({
   const manageCarServices = ManageCarServices(baseUrIntranet);
   const maCarFuelTransactionServices =
     MaCarFuelTransactionServices(baseUrIntranet);
+  const vehicleTypeServices = MaVehicleTypeServices(baseUrIntranet);
+
+  // ตัวเลือกประเภทรถจาก master — เลี้ยง dropdown ในฟอร์มเพิ่ม/แก้รถ
+  const [vehicleTypeOptions, setVehicleTypeOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
+  useEffect(() => {
+    vehicleTypeServices.getMaVehicleTypeQuery().then((res: any[]) => {
+      setVehicleTypeOptions(
+        (res ?? [])
+          .filter((t) => t?.status !== false)
+          .map((t) => ({ label: t.typeName, value: t.typeName })),
+      );
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [openModalFiles, setOpenModalFiles] = useState<boolean>(false);
@@ -168,6 +186,16 @@ const ManagementCarAvailable: React.FC<props> = ({
         carMile: values.carMile,
         detail: values.detail,
         status: values.status,
+        licensePlate: values.licensePlate,
+        carType: values.carType,
+        carCategory: values.carCategory,
+        brand: values.brand,
+        model: values.model,
+        fuelType: values.fuelType,
+        ownerName: values.ownerName,
+        chassisNumber: values.chassisNumber,
+        color: values.color,
+        modelYear: values.modelYear,
         createdById: user?.userId,
         createdByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
       };
@@ -237,9 +265,9 @@ const ManagementCarAvailable: React.FC<props> = ({
     return compressed;
   };
 
-  async function downloadFile(id: string, name: string): Promise<void> {
-    if (id && name) {
-      const fileUrl = `${baseImageUrl}/public/car-file/${id}?fileName=${encodeURIComponent(name)}`;
+  async function downloadFile(key: string, name: string): Promise<void> {
+    if (key && name) {
+      const fileUrl = macarFileUrl(key, name, "attachment");
       try {
         const response = await fetch(fileUrl);
 
@@ -296,6 +324,7 @@ const ManagementCarAvailable: React.FC<props> = ({
           handleChangeAttendFiles={handleChangeAttendFiles}
           beforeUploadAttendFiles={beforeUploadAttendFiles}
           attendFiles={attendFiles}
+          vehicleTypeOptions={vehicleTypeOptions}
         />
       ) : null}
       {openModalFiles ? (

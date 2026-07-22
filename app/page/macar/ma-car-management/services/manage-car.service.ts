@@ -13,6 +13,27 @@ export interface MaCarWrapupByCarResult {
   count: number;
 }
 
+/** 1 แถวของ log กิจกรรมรถ */
+export interface TCarActivityLog {
+  id: number;
+  carId: string;
+  carName?: string | null;
+  type: string;
+  action: string;
+  refId?: string | null;
+  description?: string | null;
+  detail?: unknown;
+  actorId?: string | null;
+  actorName?: string | null;
+  createdAt: string;
+}
+
+/** ผลลัพธ์ประวัติกิจกรรมรถแบ่งหน้า */
+export interface CarActivityByCarResult {
+  data: TCarActivityLog[];
+  count: number;
+}
+
 export const ManageCarServices = (axiosInstance: AxiosInstance) => {
   const baseUrlApiMaCarBook = "/ma-car-book";
   const baseUrlApiMaCar = "/ma-car";
@@ -20,8 +41,23 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
   const baseUrlApiMaCarwarpup = "/ma-car-wrapup";
   const baseUrlApiMaCarwarpupimage = "/ma-car-wrapup-image";
   const baseUrlApiMaCarFiles = "/ma-car-files";
+  const baseUrlApiCarActivity = "/car-activity-log";
 
   return {
+    /** ประวัติกิจกรรมของรถ 1 คัน แบบแบ่งหน้า → { data, count } */
+    getCarActivity: async (
+      carId: string,
+      skip: number,
+      take: number,
+    ): Promise<CarActivityByCarResult> =>
+      await axiosInstance
+        .get(`${baseUrlApiCarActivity}/car/${carId}`, { params: { skip, take } })
+        .then((res) => res.data as CarActivityByCarResult)
+        .catch((err) => {
+          console.log(err);
+          return { data: [], count: 0 };
+        }),
+
     getMaCarBookQuery: async () => {
       return await axiosInstance
         .get(`${baseUrlApiMaCarBook}`)

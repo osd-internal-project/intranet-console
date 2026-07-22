@@ -23,6 +23,7 @@ import CarDocumentsPanel from "./components/car-documents-panel";
 import CarMaTable from "./components/car-ma-table";
 import CarBookingTable from "./components/car-booking-table";
 import CarInfoPanel from "./components/car-info-panel";
+import CarActivityTimeline from "./components/car-activity-timeline";
 
 /** ตรวจว่าเป็นข้อมูลรถจริง (service คืน [] เมื่อ error จึงต้องกันกรณีไม่ใช่ object) */
 const isValidCar = (data: unknown): data is MaCarType =>
@@ -92,6 +93,11 @@ export default function CarDetailPage(): React.ReactElement {
           key: "booking",
           label: "การจองรถ",
           children: <CarBookingTable carId={car.carId} />,
+        },
+        {
+          key: "activity",
+          label: "ประวัติกิจกรรม",
+          children: <CarActivityTimeline carId={car.carId} />,
         },
         {
           key: "info",

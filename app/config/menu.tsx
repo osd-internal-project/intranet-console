@@ -335,6 +335,11 @@ export const MenuSider: MenuItem[] = [
         label: `การตั้งค่า OT`,
         rule: "admin",
       },
+      {
+        key: `setting/notification`,
+        label: `การแจ้งเตือน`,
+        rule: "admin",
+      },
       // {
       //   key: `setting/unit`,
       //   label: `ประเภทยูนิตสินค้า`,

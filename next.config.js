@@ -8,10 +8,19 @@ const nextConfig = {
     NEXT_PUBLIC_AUTH_URL: "https://osd-auth.osd.co.th",
     NEXT_PUBLIC_ID24_CLIENT_ID: "b7f34680-2d41-42a7-8e96-3752626c0054",
     NEXT_PUBLIC_CLIENT_ID: "b7f34680-2d41-42a7-8e96-3752626c0054",
-    NEXT_PUBLIC_API_BASE_URL_INTRANET: "https://intra.osd.co.th/public/api/intranet",
-    NEXT_PUBLIC_API_BASE_URL_REPORT: "https://intra.osd.co.th/public/api/report",
+    NEXT_PUBLIC_API_BASE_URL_INTRANET:
+      "https://intra.osd.co.th/public/api/intranet",
+    // NEXT_PUBLIC_API_BASE_URL_INTRANET: "http://localhost:4003/api",
+    // NEXT_PUBLIC_API_BASE_URL_NOTIFICATION: "http://localhost:4010/api",
+    NEXT_PUBLIC_API_BASE_URL_INTRANET:
+      "https://intra.osd.co.th/public/api/notification",
+
+    NEXT_PUBLIC_API_BASE_URL_REPORT:
+      "https://intra.osd.co.th/public/api/report",
+    // NEXT_PUBLIC_API_BASE_URL_REPORT: "http://localhost:4001/api",
     NEXT_PUBLIC_API_BASE_URL_USER: "https://intra.osd.co.th/public/api/user",
-    NEXT_PUBLIC_API_BASE_URL_INVENTORY: "https://intra.osd.co.th/public/api/inventory",
+    NEXT_PUBLIC_API_BASE_URL_INVENTORY:
+      "https://intra.osd.co.th/public/api/inventory",
     AUTH_BACKEND_URL: "https://intra.osd.co.th/public/api/user",
     NEXTAUTH_URL: "https://intra.osd.co.th",
     REACT_APP_USE_AUTH: "https://osd-auth.osd.co.th",
@@ -44,7 +53,7 @@ const nextConfig = {
 //     NEXT_PUBLIC_API_BASE_URL: "http://localhost:3000",
 //     NEXT_PUBLIC_API_BASE_URL_USER: "http://localhost:4000/api",
 //     NEXT_PUBLIC_API_BASE_URL_REPORT: "http://localhost:4001/api",
-//     NEXT_PUBLIC_API_BASE_URL_INTRANET: "http://localhost:4003/api",
+// NEXT_PUBLIC_API_BASE_URL_INTRANET: "http://localhost:4003/api",
 //     NEXT_PUBLIC_API_BASE_URL_HR_MANAGEMENT: "http://localhost:4005/api",
 //     NEXT_PUBLIC_API_BASE_URL_INVENTORY: "http://localhost:4002/api",
 //     REACT_APP_USE_AUTH: "https://osd-auth.osd.co.th",

@@ -23,6 +23,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import Image from "next/image";
+import NotificationBell from "@/components/Notification/NotificationBell";
 
 interface Prop {
   collapsed: boolean;
@@ -87,6 +88,7 @@ const Navigation: React.FC<Prop> = ({
           </div>
         </div> */}
         <div className="pr-6 space-x-4 items-center flex">
+          <NotificationBell userId={profileDetail?.userId} />
           <Dropdown
             menu={{ items: MenuNav }}
             className="text-black hover:text-zinc-300 items-center flex"

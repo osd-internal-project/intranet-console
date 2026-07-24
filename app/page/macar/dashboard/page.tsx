@@ -124,12 +124,12 @@ export default function MacarDashboardPage() {
             items={[
               { href: "/page/home", title: <span>หน้าหลัก</span> },
               { title: <span>ระบบรถ</span> },
-              { title: <span>แดชบอร์ด</span> },
+              { title: <span>Dashboard</span> },
             ]}
           />
         </Col>
         <Divider orientation="left" orientationMargin="0">
-          <div className="title-page-font">แดชบอร์ดฟลีต</div>
+          <div className="title-page-font">Dashboard</div>
         </Divider>
       </Row>
 

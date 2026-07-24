@@ -56,7 +56,7 @@ const ManagementCarMasterdataTable: React.FC<props> = ({ dataSource, handleOpen,
       align: "center",
       render: (value: string, record: any, index: number) => (
         <Space>
-          <Button type="default" onClick={() => handleOpen(`edit`, record)}>{`แก้ไข`}</Button>
+          {/* <Button type="default" onClick={() => handleOpen(`edit`, record)}>{`แก้ไข`}</Button> */}
           <Button type="primary" onClick={() => handleOpen(`delete`, record)} danger>{`ลบ`}</Button>
         </Space>
       ),

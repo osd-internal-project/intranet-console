@@ -318,7 +318,7 @@ thead[class*="ant-table-thead"] th {
   border-radius: 10px;
   transition: background-color 0.2s ease, color 0.2s ease;
   /* ตัวหนังสือใหญ่ขึ้น + แถวสูงขึ้น ให้อ่านง่ายตามดีไซน์ */
-  font-size: 12px;
+  font-size: 14px;
   height: 46px;
   line-height: 46px;
   margin-block: 6px;

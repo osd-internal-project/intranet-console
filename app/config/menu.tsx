@@ -119,6 +119,11 @@ export const MenuSider: MenuItem[] = [
     rule: ["user", "admin", "ma-user"],
     children: [
       {
+        key: `macar/dashboard`,
+        label: `Dashboard`,
+        rule: ["admin"],
+      },
+      {
         key: `macar/ma-car`,
         label: `การจองรถยนต์`,
         rule: ["user", "admin"],

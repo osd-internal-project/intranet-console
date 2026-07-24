@@ -49,3 +49,38 @@ export type TNotificationRecipient = {
   alertType?: string | null;
   createdAt: string;
 };
+
+// ==============================
+// ทดสอบส่งอีเมล (test-send email)
+// ==============================
+
+/** ชนิดของช่องกรอกในฟอร์มทดสอบส่งอีเมล */
+export type TTestFieldType =
+  | "text"
+  | "textarea"
+  | "datetime"
+  | "boolean"
+  | "select";
+
+/** นิยาม 1 ช่องกรอกของ template (มาจาก backend) */
+export type TTestTemplateField = {
+  name: string;
+  label: string;
+  type: TTestFieldType;
+  options?: { label: string; value: string }[];
+  sample?: unknown;
+  required?: boolean;
+};
+
+/** metadata ของ 1 template อีเมลที่ทดสอบส่งได้ (มาจาก backend) */
+export type TTestTemplateMeta = {
+  key: string;
+  label: string;
+  subject: string;
+  fields: TTestTemplateField[];
+};
+
+/** template พร้อม tag ว่ามาจาก service ไหน (ใช้เลือก base URL ตอนส่ง) */
+export type TTestTemplate = TTestTemplateMeta & {
+  origin: "notification" | "intranet";
+};

@@ -15,6 +15,7 @@ import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import AlertTypesConfig from "./components/alert-types-config";
+import TestSendMail from "./components/test-send-mail";
 import { NotificationSettingServices } from "./services/notification-setting.service";
 
 /** หน้าตั้งค่าการแจ้งเตือน (แอดมิน) — ตั้งค่าประเภท + จัดการผู้รับ */
@@ -68,6 +69,10 @@ const NotificationSettingPage: React.FC = () => {
                 </Space>
               </Row>
               <AlertTypesConfig />
+              <Divider orientation="left" orientationMargin="0">
+                <div className="title-page-font">🧪 ทดสอบส่งอีเมล</div>
+              </Divider>
+              <TestSendMail />
             </>
           ) : (
             <Result

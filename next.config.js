@@ -8,12 +8,11 @@ const nextConfig = {
     NEXT_PUBLIC_AUTH_URL: "https://osd-auth.osd.co.th",
     NEXT_PUBLIC_ID24_CLIENT_ID: "b7f34680-2d41-42a7-8e96-3752626c0054",
     NEXT_PUBLIC_CLIENT_ID: "b7f34680-2d41-42a7-8e96-3752626c0054",
-    NEXT_PUBLIC_API_BASE_URL_INTRANET:
-      "https://intra.osd.co.th/public/api/intranet",
+    NEXT_PUBLIC_API_BASE_URL_INTRANET:"https://intra.osd.co.th/public/api/intranet",
     // NEXT_PUBLIC_API_BASE_URL_INTRANET: "http://localhost:4003/api",
+    NEXT_PUBLIC_API_BASE_URL_NOTIFICATION:"https://intra.osd.co.th/public/api/notification",
     // NEXT_PUBLIC_API_BASE_URL_NOTIFICATION: "http://localhost:4010/api",
-    NEXT_PUBLIC_API_BASE_URL_INTRANET:
-      "https://intra.osd.co.th/public/api/notification",
+    
 
     NEXT_PUBLIC_API_BASE_URL_REPORT:
       "https://intra.osd.co.th/public/api/report",

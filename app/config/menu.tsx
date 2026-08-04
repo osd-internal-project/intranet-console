@@ -2,7 +2,17 @@ import React from "react";
 import { MenuProps, Tooltip } from "antd";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
-import { gridIcon, IconDataLeave, bookingIcon, maintenanceIcon, macarIcon, hrIcon, stockIcon, IconProperty, IconParty } from "@/components/icon";
+import {
+  gridIcon,
+  IconDataLeave,
+  bookingIcon,
+  maintenanceIcon,
+  macarIcon,
+  hrIcon,
+  stockIcon,
+  IconProperty,
+  IconParty,
+} from "@/components/icon";
 import { FieldTimeOutlined, HomeOutlined } from "@ant-design/icons";
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -116,17 +126,22 @@ export const MenuSider: MenuItem[] = [
     key: "macar",
     icon: macarIcon,
     label: `ระบบรถ`,
-    rule: ["user", "admin", "ma-user"],
+    rule: ["user", "admin", "ma-user", "account"],
     children: [
       {
         key: `macar/dashboard`,
         label: `Dashboard`,
-        rule: ["admin"],
+        rule: ["admin", "ma-user", "account"],
+      },
+      {
+        key: `macar/report`,
+        label: `รายงานค่าใช้จ่าย`,
+        rule: ["admin", "account", "ma-user", "account"],
       },
       {
         key: `macar/ma-car`,
         label: `การจองรถยนต์`,
-        rule: ["user", "admin"],
+        rule: ["user", "admin", "ma-user", "account"],
       },
       {
         key: `macar/management-car-wrapup`,
@@ -141,7 +156,7 @@ export const MenuSider: MenuItem[] = [
       {
         key: `macar/ma-car-management`,
         label: `การจัดการรถยนต์`,
-        rule: ["admin", "ma-user"],
+        rule: ["admin", "ma-user", "account"],
       },
       {
         key: `macar/ma-car-config`,

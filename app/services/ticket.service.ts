@@ -130,9 +130,6 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
         .post(`${projectTicketUrl}/`, formData)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          return err;
         });
     },
     createTicketHistoryLogs: async (form) => {
@@ -143,9 +140,6 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
         .post(`${ticketHistoryLogsUrl}/`, formData)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          return err;
         });
     },
     updateStatusProjectTicket: async (ticketId, status, form) => {
@@ -173,8 +167,7 @@ const CrmServices = (axiosInstance: AxiosInstance): TMaServices => {
             "Content-Type": "multipart/form-data",
           },
         })
-        .then((result) => result.data)
-        .catch((err) => err);
+        .then((result) => result.data);
     },
     downloadFile: async (id: number) => {
       return await axiosInstance

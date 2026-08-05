@@ -3,6 +3,7 @@ import { useId24Instance } from "./Id24InstanceProvider";
 import { OrganizationUserAccess } from "./models/organization-user-access";
 import axios, { AxiosInstance } from "axios";
 import { Id24State } from "./Id24";
+import { attachApiErrorInterceptor } from "@/app/lib/axios/error-interceptor";
 
 type Id24ProviderConfig = {
   refreshTokenIntervalInSeconds: number;
@@ -25,7 +26,7 @@ type UseId24Context = {
 const defaultContext: UseId24Context = {
   authenticated: false,
   tokenAccess: null,
-  id24Axios: (baseURL?: string) => axios.create({ baseURL }),
+  id24Axios: (baseURL?: string) => attachApiErrorInterceptor(axios.create({ baseURL })),
   login: (redirectUrl: string, autoLogin: boolean) => {
     throw new Error("Cannot log in now");
   },
@@ -42,16 +43,18 @@ export const Id24Provider: React.FC<ProviderProps> = ({ children, config }): Rea
     ...defaultContext,
     authenticated: id24Instance.state === Id24State.Authorized,
     id24Axios: (baseURL?: string) =>
-      axios.create({
-        baseURL: baseURL || config.resourceApiBaseUrl,
-        ...(id24Instance.state === Id24State.Authorized
-          ? {
-              headers: {
-                Authorization: `Bearer ${id24Instance.rawAccessToken}`,
-              },
-            }
-          : {}),
-      }),
+      attachApiErrorInterceptor(
+        axios.create({
+          baseURL: baseURL || config.resourceApiBaseUrl,
+          ...(id24Instance.state === Id24State.Authorized
+            ? {
+                headers: {
+                  Authorization: `Bearer ${id24Instance.rawAccessToken}`,
+                },
+              }
+            : {}),
+        }),
+      ),
     tokenAccess: (id24Instance.state === Id24State.Authorized && id24Instance.tokenAccess) || null,
     login: authenticationHelper.authorize,
     logout: async () => {
@@ -70,12 +73,14 @@ export const Id24Provider: React.FC<ProviderProps> = ({ children, config }): Rea
               ...id24ContextValue,
               tokenAccess: tokenInfo.tokenAccess,
               id24Axios: (baseURL?: string) =>
-                axios.create({
-                  baseURL: baseURL || config.resourceApiBaseUrl,
-                  headers: {
-                    Authorization: `Bearer ${tokenInfo.rawAccessToken}`,
-                  },
-                }),
+                attachApiErrorInterceptor(
+                  axios.create({
+                    baseURL: baseURL || config.resourceApiBaseUrl,
+                    headers: {
+                      Authorization: `Bearer ${tokenInfo.rawAccessToken}`,
+                    },
+                  }),
+                ),
             });
           } else {
             setId24ContextValue({

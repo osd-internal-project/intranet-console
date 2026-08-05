@@ -55,8 +55,7 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
             "Content-Type": "multipart/form-data",
           },
         })
-        .then((result) => result.data)
-        .catch((err) => err);
+        .then((result) => result.data);
     },
 
     deleteSlideImage: async (id: any) => {
@@ -64,9 +63,6 @@ const SlideImageService = (axiosInstance: AxiosInstance) => {
         .delete(`${baseUrlSlideImage}/${id}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          return;
         });
     },
 

@@ -77,10 +77,6 @@ const MasterProductServices = (axiosInstance: AxiosInstance): TServices => {
         .post(`${masterproductUrl}`, req)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return err;
         });
     },
     update: async (id: number, data: ITMasterProductCreateInput) => {
@@ -91,9 +87,6 @@ const MasterProductServices = (axiosInstance: AxiosInstance): TServices => {
         .patch(`${masterproductUrl}/${id}`, req)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          return err;
         });
     },
     updateQty: async (id: number, data: { totalQty: number }) => {
@@ -104,9 +97,6 @@ const MasterProductServices = (axiosInstance: AxiosInstance): TServices => {
         .patch(`${masterproductUrl}/total-qty/${id}`, req)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          return err;
         });
     },
     delete: async (id: number) => {
@@ -121,10 +111,6 @@ const MasterProductServices = (axiosInstance: AxiosInstance): TServices => {
         })
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
   };

@@ -227,7 +227,8 @@ const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
               setDeleteId(null);
               setOpenDeleteProfileModel(false);
               setbuttonLoading(false);
-            });
+            })
+            .catch((err) => message.error(err.message));
         } else {
           message.error(`ผิดพลาด กรุณาลองใหม่`);
           setDeleteId(null);

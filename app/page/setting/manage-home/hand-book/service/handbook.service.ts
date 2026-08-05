@@ -54,10 +54,6 @@ export const ManagehandbookFileServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrlApihandbookFile}/${body.handbookid}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     deletehandbookFile: async (handbookid: any) => {
@@ -65,10 +61,6 @@ export const ManagehandbookFileServices = (axiosInstance: AxiosInstance) => {
         .delete(`${baseUrlApihandbookFile}/${handbookid}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     gethandbooktypeQuery: async () => {
@@ -109,10 +101,6 @@ export const ManagehandbookFileServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrlApihandbooktype}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     updatehandbooktype: async (body: any) => {
@@ -120,10 +108,6 @@ export const ManagehandbookFileServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrlApihandbooktype}/${body.idhandtype}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     deletehandbooktype: async (idhandtype: any) => {
@@ -131,10 +115,6 @@ export const ManagehandbookFileServices = (axiosInstance: AxiosInstance) => {
         .delete(`${baseUrlApihandbooktype}/${idhandtype}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
   };

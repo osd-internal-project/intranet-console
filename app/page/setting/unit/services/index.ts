@@ -49,10 +49,6 @@ const UnitServices = (axiosInstance: AxiosInstance): TServices => {
         .post(`${unitUrl}`, req)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return err;
         });
     },
     update: async (id: number, data: ITUnitCreateInput) => {
@@ -63,9 +59,6 @@ const UnitServices = (axiosInstance: AxiosInstance): TServices => {
         .patch(`${unitUrl}/${id}`, req)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          return err;
         });
     },
     delete: async (id: number) => {

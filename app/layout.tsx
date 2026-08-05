@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 // const sarabun = Sarabun({ weight: "400", subsets: ["thai"] });
 import { ConfigProvider } from "antd";
 import AuthProviderId24 from "./provider/AuthProvider";
+import UnhandledRejectionProvider from "./provider/UnhandledRejectionProvider";
 import TodoProvider from "./config/userContext";
 export const metadata: Metadata = {
   title: "Intranet - OSD",
@@ -46,7 +47,7 @@ export default function RootLayout({
                 },
               }}
             >
-              {children}
+              <UnhandledRejectionProvider>{children}</UnhandledRejectionProvider>
             </ConfigProvider>
           </TodoProvider>
         </AuthProviderId24>

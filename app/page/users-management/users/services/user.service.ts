@@ -135,10 +135,6 @@ const UserServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrl}`, { data: value })
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     updateUser: async (userId: string, data: Object) => {
@@ -187,10 +183,6 @@ const UserServices = (axiosInstance: AxiosInstance) => {
         })
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     getImage: async (userId: string) => {
@@ -214,8 +206,7 @@ const UserServices = (axiosInstance: AxiosInstance) => {
           organizeId: organizeId,
           groups: groups,
         })
-        .then((result) => result.data)
-        .catch((err) => err);
+        .then((result) => result.data);
     },
     assignOwnerGroups: async (
       userId: string,
@@ -227,8 +218,7 @@ const UserServices = (axiosInstance: AxiosInstance) => {
           organizeId: organizeId,
           groupOwnerId: groupOwnerId,
         })
-        .then((result) => result.data)
-        .catch((err) => err);
+        .then((result) => result.data);
     },
     findAssignGroup: async (userId: string, organizeId: string) => {
       return await axiosInstance

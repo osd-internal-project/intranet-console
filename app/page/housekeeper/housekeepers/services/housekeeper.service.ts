@@ -12,10 +12,6 @@ export const HouseKeeperStockServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrlApiResultCleanlines}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return 500;
         });
     },
     updateEvent: async (id: number, body: any) => {
@@ -23,10 +19,6 @@ export const HouseKeeperStockServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrlApiResultCleanlines}/${id}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return 500;
         });
     },
     getEventByMonth: async (param: any) => {
@@ -92,10 +84,6 @@ export const HouseKeeperStockServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrlApiHousekeeper}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     updateHousekeeper: async (body: any) => {
@@ -103,10 +91,6 @@ export const HouseKeeperStockServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrlApiHousekeeper}/${body.houseKeeperId}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     getFloorQuery: async (param: any) => {
@@ -138,10 +122,6 @@ export const HouseKeeperStockServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrlApiFloor}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     updateFloor: async (body: any) => {
@@ -149,10 +129,6 @@ export const HouseKeeperStockServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrlApiFloor}/${body.floorId}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     getReport: async (param: any) => {

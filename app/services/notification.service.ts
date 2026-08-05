@@ -37,20 +37,12 @@ export const NotificationServices = (axiosInstance: AxiosInstance) => {
     markRead: async (id: number) =>
       await axiosInstance
         .patch(`${baseUrl}/${id}/read`)
-        .then((res) => res.data)
-        .catch((err) => {
-          console.log(err);
-          return null;
-        }),
+        .then((res) => res.data),
 
     /** ทำเครื่องหมายอ่านแล้วทั้งหมด */
     markAllRead: async (userId: string) =>
       await axiosInstance
         .patch(`${baseUrl}/user/${userId}/read-all`)
-        .then((res) => res.data)
-        .catch((err) => {
-          console.log(err);
-          return null;
-        }),
+        .then((res) => res.data),
   };
 };

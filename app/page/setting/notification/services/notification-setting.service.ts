@@ -36,11 +36,7 @@ export const NotificationSettingServices = (axiosInstance: AxiosInstance) => {
     ) =>
       await axiosInstance
         .put(`${baseUrl}/setting/${alertType}`, body)
-        .then((res) => res.data)
-        .catch((err) => {
-          console.log(err);
-          return null;
-        }),
+        .then((res) => res.data),
 
     /** รายชื่อผู้รับ — ระบุ alertType เพื่อดูของประเภทนั้น (รวม global) */
     getRecipients: async (
@@ -65,21 +61,13 @@ export const NotificationSettingServices = (axiosInstance: AxiosInstance) => {
     }) =>
       await axiosInstance
         .post(`${baseUrl}/recipient`, body)
-        .then((res) => res.data)
-        .catch((err) => {
-          console.log(err);
-          return null;
-        }),
+        .then((res) => res.data),
 
     /** ลบผู้รับ */
     removeRecipient: async (id: number) =>
       await axiosInstance
         .delete(`${baseUrl}/recipient/${id}`)
-        .then((res) => res.data)
-        .catch((err) => {
-          console.log(err);
-          return null;
-        }),
+        .then((res) => res.data),
 
     /** รันการแจ้งเตือนทันที (ทดสอบ) — force = ยิงทุกรายการปัจจุบันไม่สนใจ threshold */
     runNow: async (
@@ -87,10 +75,6 @@ export const NotificationSettingServices = (axiosInstance: AxiosInstance) => {
     ): Promise<{ created: number; emailed: number } | null> =>
       await axiosInstance
         .post(`${baseUrl}/run-now`, null, { params: { force } })
-        .then((res) => res.data)
-        .catch((err) => {
-          console.log(err);
-          return null;
-        }),
+        .then((res) => res.data),
   };
 };

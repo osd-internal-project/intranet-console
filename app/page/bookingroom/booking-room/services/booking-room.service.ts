@@ -49,10 +49,6 @@ export const BookingRoomServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrlApiBookingRoom}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     getMasterRoomQuery: async () => {

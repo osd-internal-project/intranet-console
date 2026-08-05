@@ -79,10 +79,6 @@ const OrderServices = (axiosInstance: AxiosInstance): TServices => {
         .post(`${orderUrl}`, req)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return err;
         });
     },
     updateOrder: async (id: number, data) => {
@@ -93,9 +89,6 @@ const OrderServices = (axiosInstance: AxiosInstance): TServices => {
         .patch(`${orderUrl}/${id}`, req)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          return err;
         });
     },
     deleteOrder: async (id: number) => {
@@ -109,10 +102,6 @@ const OrderServices = (axiosInstance: AxiosInstance): TServices => {
         .post(`${orderLotUrl}`, req)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return err;
         });
     },
     updateOrderLot: async (id, data) => {
@@ -123,9 +112,6 @@ const OrderServices = (axiosInstance: AxiosInstance): TServices => {
         .patch(`${orderLotUrl}/${id}`, req)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          return err;
         });
     },
     deleteOrderLot: async (id: number) => {

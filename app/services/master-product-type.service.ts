@@ -49,10 +49,6 @@ const MasterProductTypeServices = (axiosInstance: AxiosInstance): TServices => {
         .post(`${masterProductCategoriesUrl}/`, req)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return err;
         });
     },
     update: async (id: number, data: ITMasterProductTypeForm) => {
@@ -63,9 +59,6 @@ const MasterProductTypeServices = (axiosInstance: AxiosInstance): TServices => {
         .patch(`${masterProductCategoriesUrl}/${id}`, req)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          return err;
         });
     },
     delete: async (id: number) => {

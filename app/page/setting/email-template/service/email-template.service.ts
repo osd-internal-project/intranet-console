@@ -78,10 +78,6 @@ export const ManageemailTemplateServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrl}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
 
@@ -90,10 +86,6 @@ export const ManageemailTemplateServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrl}/${id}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     updateType: async (body: any) => {
@@ -101,10 +93,6 @@ export const ManageemailTemplateServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseTemplateTypeUrl}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     delete: async (id: string) => {
@@ -112,10 +100,6 @@ export const ManageemailTemplateServices = (axiosInstance: AxiosInstance) => {
         .delete(`${baseUrl}/${id}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
   };

@@ -46,10 +46,6 @@ const EmployeeProfileDetail = (axiosInstance: AxiosInstance) => {
         .post(`${baseHrUrl}`, values)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     createImageProfile: async (userId: string, formdata: any) => {
@@ -61,10 +57,6 @@ const EmployeeProfileDetail = (axiosInstance: AxiosInstance) => {
         })
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
   };

@@ -71,10 +71,6 @@ export const MaCarServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrlApiMaCarBook}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
 
@@ -83,10 +79,6 @@ export const MaCarServices = (axiosInstance: AxiosInstance) => {
         .delete(`${baseUrlApiMaCarBook}/${carId}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
 
@@ -95,10 +87,6 @@ export const MaCarServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrlApiMaCarBook}/${body.id}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
 
@@ -107,10 +95,6 @@ export const MaCarServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrlApiMaCar}/${carId}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
 

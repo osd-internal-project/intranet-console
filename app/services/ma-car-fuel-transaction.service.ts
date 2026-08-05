@@ -38,11 +38,7 @@ export const MaCarFuelTransactionServices = (axiosInstance: AxiosInstance) => {
     create: async (body: any) => {
       return await axiosInstance
         .post(baseUrl, body)
-        .then((res) => res.data)
-        .catch((err) => {
-          console.log(err);
-          return null;
-        });
+        .then((res) => res.data);
     },
 
     /**
@@ -53,11 +49,7 @@ export const MaCarFuelTransactionServices = (axiosInstance: AxiosInstance) => {
     update: async (carId: string, body: any) => {
       return await axiosInstance
         .patch(`${baseUrl}/${carId}`, body)
-        .then((res) => res.data)
-        .catch((err) => {
-          console.log(err);
-          return null;
-        });
+        .then((res) => res.data);
     },
 
     /**
@@ -67,11 +59,7 @@ export const MaCarFuelTransactionServices = (axiosInstance: AxiosInstance) => {
     remove: async (carId: string) => {
       return await axiosInstance
         .delete(`${baseUrl}/${carId}`)
-        .then((res) => res.data)
-        .catch((err) => {
-          console.log(err);
-          return null;
-        });
+        .then((res) => res.data);
     },
   };
 };

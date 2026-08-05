@@ -76,10 +76,6 @@ const CrmServices = (axiosInstance: AxiosInstance): TServices => {
         .patch(`${baseUrl}/${id}`, { data: form })
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     delete: async (id) => {
@@ -87,10 +83,6 @@ const CrmServices = (axiosInstance: AxiosInstance): TServices => {
         .delete(`${baseUrl}/${id}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
   };

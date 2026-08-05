@@ -148,10 +148,6 @@ const ProfileServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrl}`, { data: value })
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     updateUser: async (userId: string, data: Object) => {

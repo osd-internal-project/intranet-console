@@ -36,12 +36,5 @@ export const TestMailServices = (
   }): Promise<TestSendResult> =>
     await axiosInstance
       .post(paths.send, body)
-      .then(() => ({ ok: true }) as TestSendResult)
-      .catch((err) => {
-        const error =
-          err?.response?.data?.message ??
-          err?.message ??
-          "ส่งอีเมลทดสอบไม่สำเร็จ";
-        return { ok: false, error: String(error) };
-      }),
+      .then(() => ({ ok: true }) as TestSendResult),
 });

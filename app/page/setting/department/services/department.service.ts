@@ -25,10 +25,6 @@ const DepartmentServices = (axiosInstance: AxiosInstance): TMaServices => {
         .post(`${departmentUrl}/`, form)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     update: async (id, form) => {
@@ -36,10 +32,6 @@ const DepartmentServices = (axiosInstance: AxiosInstance): TMaServices => {
         .patch(`${departmentUrl}/${id}`, form)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     delete: async (id) => {
@@ -47,10 +39,6 @@ const DepartmentServices = (axiosInstance: AxiosInstance): TMaServices => {
         .delete(`${departmentUrl}/${id}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
   };

@@ -74,10 +74,6 @@ const EmployeePropertySerivce = (axiosInstance: AxiosInstance): TServices => {
         })
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     createMistakesType: async (id, form) => {
@@ -86,10 +82,6 @@ const EmployeePropertySerivce = (axiosInstance: AxiosInstance): TServices => {
         .post(`${baseUrlMistakesType}`, data)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     update: async (id: number, form, files) => {
@@ -108,10 +100,6 @@ const EmployeePropertySerivce = (axiosInstance: AxiosInstance): TServices => {
         .patch(`${baseUrl}/${id}`, formData)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     delete: async (id: number) => {
@@ -119,10 +107,6 @@ const EmployeePropertySerivce = (axiosInstance: AxiosInstance): TServices => {
         .delete(`${baseUrl}/${id}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     exportAll: async (values: { type: string; name: string }) => {

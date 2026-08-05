@@ -39,10 +39,6 @@ const MasterTypeEventsServices = (axiosInstance: AxiosInstance): TMServices => {
         .post(`${baseUrl}`, form)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return;
         });
     },
     update: async (id, form) => {
@@ -50,10 +46,6 @@ const MasterTypeEventsServices = (axiosInstance: AxiosInstance): TMServices => {
         .patch(`${baseUrl}/${id}`, form)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return;
         });
     },
     delete: async (id) => {
@@ -61,10 +53,6 @@ const MasterTypeEventsServices = (axiosInstance: AxiosInstance): TMServices => {
         .delete(`${baseUrl}/${id}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return;
         });
     },
     download: async (fileName: string) => {

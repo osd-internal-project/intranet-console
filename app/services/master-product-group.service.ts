@@ -51,10 +51,6 @@ const MasterProductGroupServices = (
         .post(`${masterProductCategoriesUrl}/`, req)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return err;
         });
     },
     update: async (id: number, data: ITMasterProductGroupForm) => {
@@ -65,9 +61,6 @@ const MasterProductGroupServices = (
         .patch(`${masterProductCategoriesUrl}/${id}`, req)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          return err;
         });
     },
     delete: async (id: number) => {

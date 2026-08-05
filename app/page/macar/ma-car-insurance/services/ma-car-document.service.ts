@@ -109,32 +109,20 @@ export const MaCarDocumentServices = (axiosInstance: AxiosInstance) => {
     createDocument: async (body: any) => {
       return await axiosInstance
         .post(`${baseUrl}`, body)
-        .then((res) => res.data)
-        .catch((err) => {
-          console.log(err);
-          return null;
-        });
+        .then((res) => res.data);
     },
 
     updateDocument: async (documentId: string, body: any) => {
       return await axiosInstance
         .patch(`${baseUrl}/${documentId}`, body)
-        .then((res) => res.data)
-        .catch((err) => {
-          console.log(err);
-          return null;
-        });
+        .then((res) => res.data);
     },
 
     /** ยกเลิกเอกสาร (soft-void) — หายจากตาราง แต่ยังอยู่ในประวัติ */
     voidDocument: async (documentId: string, body: any) => {
       return await axiosInstance
         .patch(`${baseUrl}/${documentId}/void`, body)
-        .then((res) => res.data)
-        .catch((err) => {
-          console.log(err);
-          return null;
-        });
+        .then((res) => res.data);
     },
 
     uploadFiles: async (documentId: string, formData: FormData) => {
@@ -142,21 +130,13 @@ export const MaCarDocumentServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrl}/${documentId}/files`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         })
-        .then((res) => res.data)
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
+        .then((res) => res.data);
     },
 
     deleteFile: async (id: number) => {
       return await axiosInstance
         .delete(`${baseUrl}/files/${id}`)
-        .then((res) => res.data)
-        .catch((err) => {
-          console.log(err);
-          return null;
-        });
+        .then((res) => res.data);
     },
   };
 };

@@ -87,11 +87,17 @@ export const TableMasterdataPosition: React.FC<props> = ({
         updatedAt: new Date().toISOString(),
       },
     };
-    const dataResult = await positionServices.update(dataUpdate);
-    if (dataResult) {
-      message.success(`Edit success`);
-      setLoading(true);
-      setOpenEdit(false);
+    try {
+      const dataResult = await positionServices.update(dataUpdate);
+      if (dataResult) {
+        message.success(`Edit success`);
+        setLoading(true);
+        setOpenEdit(false);
+      }
+    } catch (error) {
+      message.error(`Edit failed`);
+    } finally {
+      // ปลดสถานะปุ่มเสมอ ไม่ว่าจะสำเร็จหรือ error เพื่อไม่ให้ปุ่มค้าง loading
       setbuttonLoading(false);
     }
   };

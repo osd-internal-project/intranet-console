@@ -44,10 +44,6 @@ const MasterRestaurantServices = (axiosInstance: AxiosInstance): TMaServices => 
         })
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return;
         });
     },
     update: async (id, form) => {
@@ -55,10 +51,6 @@ const MasterRestaurantServices = (axiosInstance: AxiosInstance): TMaServices => 
         .patch(`${baseUrl}/${id}`, form)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return;
         });
     },
     delete: async (id) => {
@@ -66,10 +58,6 @@ const MasterRestaurantServices = (axiosInstance: AxiosInstance): TMaServices => 
         .delete(`${baseUrl}/${id}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return;
         });
     },
     download: async (fileName: string) => {

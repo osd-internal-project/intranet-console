@@ -43,10 +43,6 @@ const UserModuleServices = (axiosInstance: AxiosInstance): TServices => {
         .post(`${baseUrl}/`, req)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return undefined;
         });
     },
     update: async (id: number, data: ITUserModuleForm) => {
@@ -57,9 +53,6 @@ const UserModuleServices = (axiosInstance: AxiosInstance): TServices => {
         .patch(`${baseUrl}/${id}`, req)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          return undefined;
         });
     },
     delete: async (id: number) => {

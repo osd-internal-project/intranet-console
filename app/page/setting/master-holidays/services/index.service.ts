@@ -35,21 +35,13 @@ const MasterHolidaysService = (axiosInstance: AxiosInstance) => {
     deleteMasterHoliday: async (id: number) => {
       return await axiosInstance
         .delete(`${baseUrl}/${id}`)
-        .then((res) => res.data)
-        .catch((err) => {
-          console.log(err);
-          return [];
-        });
+        .then((res) => res.data);
     },
     createMasterHolidaysYear: async (event: ICreateMasterHolidayYearDto) => {
       return await axiosInstance
         .post(`${baseUrlYear}`, event)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     createMasterHolidays: async (event: ICreateMasterHolidayDto) => {
@@ -57,10 +49,6 @@ const MasterHolidaysService = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrl}`, event)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     validateNameYear: async (holidaysYear: string) => {

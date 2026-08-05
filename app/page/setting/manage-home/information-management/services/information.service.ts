@@ -22,10 +22,6 @@ export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrlApiinformationNews}/${body.newsId}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     createinformationNews: async (body: any) => {
@@ -33,10 +29,6 @@ export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrlApiinformationNews}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     deleteinformationNews: async (newsId: any) => {
@@ -44,10 +36,6 @@ export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
         .delete(`${baseUrlApiinformationNews}/${newsId}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
 
@@ -67,10 +55,6 @@ export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrlApinewsImage}/${body.id}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     createnewsImage: async (body: any) => {
@@ -78,10 +62,6 @@ export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrlApinewsImage}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     uploadFiles: async (newsId: number, formData: FormData) => {
@@ -97,10 +77,6 @@ export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
         .delete(`${baseUrlApinewsImage}/${imageId}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     getnewsTypeQuery: async () => {
@@ -119,10 +95,6 @@ export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrlApinewsType}/${body.idType}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     createnewsType: async (body: any) => {
@@ -130,10 +102,6 @@ export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrlApinewsType}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     deletenewsType: async (idType: any) => {
@@ -142,10 +110,6 @@ export const ManageinformationNewsServices = (axiosInstance: AxiosInstance) => {
         .delete(`${baseUrlApinewsType}/${idType}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
   };

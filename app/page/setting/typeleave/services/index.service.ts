@@ -26,10 +26,6 @@ const MasterTypeLeaveService = (axiosInstance: AxiosInstance) => {
         })
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     updateTypeleave: async (event: ITypetypeleaveUpadte) => {
@@ -39,10 +35,6 @@ const MasterTypeLeaveService = (axiosInstance: AxiosInstance) => {
         })
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     deleteTypeleave: async (event: number) => {
@@ -50,10 +42,6 @@ const MasterTypeLeaveService = (axiosInstance: AxiosInstance) => {
         .delete(`${baseUrl}/${event}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
   };

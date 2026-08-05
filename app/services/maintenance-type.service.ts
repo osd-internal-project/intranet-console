@@ -25,10 +25,6 @@ const MaintenanceTypeServices = (axiosInstance: AxiosInstance): TMaServices => {
         .post(`${userUrl}/`, form)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     update: async (id, form) => {
@@ -36,10 +32,6 @@ const MaintenanceTypeServices = (axiosInstance: AxiosInstance): TMaServices => {
         .patch(`${userUrl}/${id}`, form)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     delete: async (id) => {
@@ -47,10 +39,6 @@ const MaintenanceTypeServices = (axiosInstance: AxiosInstance): TMaServices => {
         .delete(`${userUrl}/${id}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
   };

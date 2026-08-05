@@ -92,10 +92,6 @@ const OverTimeServices = (axiosInstance: AxiosInstance): TServices => {
         .post(`${baseUrl}`, { ...condition })
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     update: async (overTimeID: string, type: string, description: string, user: { userId?: string; fullName?: string }) => {
@@ -108,10 +104,6 @@ const OverTimeServices = (axiosInstance: AxiosInstance): TServices => {
         })
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     delete: async (overTimeID: string) => {
@@ -119,10 +111,6 @@ const OverTimeServices = (axiosInstance: AxiosInstance): TServices => {
         .delete(`${baseUrl}/${overTimeID}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     exportReport: async (req: { search: object }) => {

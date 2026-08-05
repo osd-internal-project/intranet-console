@@ -32,10 +32,6 @@ export const ManageRoomServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrlApiBookingRoom}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     updateBooking: async (body: any) => {
@@ -43,10 +39,6 @@ export const ManageRoomServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrlApiBookingRoom}/${body.id}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
 
@@ -55,10 +47,6 @@ export const ManageRoomServices = (axiosInstance: AxiosInstance) => {
         .delete(`${baseUrlApiBookingRoom}/${id}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
 
@@ -79,10 +67,6 @@ export const ManageRoomServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrlApiMasterRoom}/${body.id}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     deleteMasterRoom: async (id: any) => {
@@ -91,10 +75,6 @@ export const ManageRoomServices = (axiosInstance: AxiosInstance) => {
         .delete(`${baseUrlApiMasterRoom}/${id}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
   };

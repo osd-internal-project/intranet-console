@@ -36,8 +36,7 @@ const ManageHomeService = (axiosInstance: AxiosInstance) => {
             "Content-Type": "multipart/form-data",
           },
         })
-        .then((result) => result.data)
-        .catch((err) => err);
+        .then((result) => result.data);
     },
 
     uploadImage: async (formData: any) => {
@@ -49,10 +48,6 @@ const ManageHomeService = (axiosInstance: AxiosInstance) => {
         })
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
 
@@ -61,9 +56,6 @@ const ManageHomeService = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrlSlideImage}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          return;
         });
     },
 
@@ -72,10 +64,6 @@ const ManageHomeService = (axiosInstance: AxiosInstance) => {
         .delete(`${baseUrlSlideImage}/${id}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     updateTebleSlide: async (fileId: string, data: any) => {
@@ -83,10 +71,6 @@ const ManageHomeService = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrlSlideImage}/order/${fileId}`, data)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
   };

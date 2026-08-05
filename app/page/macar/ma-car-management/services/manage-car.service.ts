@@ -139,10 +139,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrlApiMaCarBook}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
 
@@ -151,10 +147,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrlApiMaCarBook}/${body.id}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     deleteMaCarBook: async (carId: any) => {
@@ -162,10 +154,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         .delete(`${baseUrlApiMaCarBook}/${carId}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     getMaCarQuery: async () => {
@@ -195,10 +183,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrlApiMaCar}/${carId}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     createMaCar: async (body: any) => {
@@ -206,10 +190,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrlApiMaCar}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     deleteMaCar: async (carId: string) => {
@@ -217,10 +197,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         .delete(`${baseUrlApiMaCar}/${carId}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     // ma car type
@@ -248,10 +224,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrlApiMaCarTpye}/${id}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     createMaCarType: async (body: any) => {
@@ -259,10 +231,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrlApiMaCarTpye}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     deleteMaCarType: async (carId: any) => {
@@ -271,10 +239,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         .delete(`${baseUrlApiMaCarTpye}/${carId}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     getMaCarQueryWarpup: async () => {
@@ -313,10 +277,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrlApiMaCarwarpup}/${carWrapupId}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     createMaCarWarpup: async (body: any) => {
@@ -324,10 +284,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrlApiMaCarwarpup}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     deleteMaCarWarpup: async (carId: any) => {
@@ -336,10 +292,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         .delete(`${baseUrlApiMaCarwarpup}/${carId}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
 
@@ -359,10 +311,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrlApiMaCarwarpupimage}/${carWrapupId}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     uploadFiles: async (carWrapupId: string, formData: FormData) => {
@@ -382,10 +330,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrlApiMaCarwarpupimage}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     deleteMaCarWarpupimage: async (idwarpupImage: any) => {
@@ -394,10 +338,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         .delete(`${baseUrlApiMaCarwarpupimage}/${idwarpupImage}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     uploadFilesDoc: async (carId: number, body: any) => {
@@ -409,10 +349,6 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         })
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
   };

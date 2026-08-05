@@ -26,14 +26,12 @@ export const PositionServices = (axiosInstance: AxiosInstance) => {
     create: async (data: TCreatePositionDto) => {
       return await axiosInstance
         .post(`${apiListMasterPosition}`, data)
-        .then((result) => result.data)
-        .catch((err) => err);
+        .then((result) => result.data);
     },
     update: async (condition: any) => {
       return await axiosInstance
         .patch(`${apiListMasterPosition}`, condition)
-        .then((result) => result.data)
-        .catch((err) => err);
+        .then((result) => result.data);
     },
     remove: async (res: number) => {
       const dataResult = {
@@ -41,8 +39,7 @@ export const PositionServices = (axiosInstance: AxiosInstance) => {
       };
       return await axiosInstance
         .delete(`${apiListMasterPosition}`, { data: dataResult })
-        .then((result) => result.data)
-        .catch((err) => err);
+        .then((result) => result.data);
     },
   };
 };

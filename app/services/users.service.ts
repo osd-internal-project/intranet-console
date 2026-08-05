@@ -57,10 +57,6 @@ export const UsersServices = (axiosInstance: AxiosInstance): TUsersService => {
         .post(`${baseUrl}`, formData)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     updateUser: async (userId, formData: TCreateUserDto) => {
@@ -68,10 +64,6 @@ export const UsersServices = (axiosInstance: AxiosInstance): TUsersService => {
         .patch(`${baseUrl}/${userId}`, formData)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     updateProfile: async (userId, formData: { extension: string; phoneNumber: string }) => {
@@ -79,10 +71,6 @@ export const UsersServices = (axiosInstance: AxiosInstance): TUsersService => {
         .patch(`${userurl}/${userId}`, formData)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     uploadFiles: async (UserId: string, form: any) => {
@@ -92,8 +80,7 @@ export const UsersServices = (axiosInstance: AxiosInstance): TUsersService => {
             "Content-Type": "multipart/form-data",
           },
         })
-        .then((result) => result.data)
-        .catch((err) => err);
+        .then((result) => result.data);
     },
     getImage: async (userId) => {
       try {

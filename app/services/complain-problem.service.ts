@@ -43,10 +43,6 @@ const ComplainProblemServices = (axiosInstance: AxiosInstance): TServices => {
         .post(`${baseUrl}`, form)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     update: async (id: number, form) => {
@@ -54,10 +50,6 @@ const ComplainProblemServices = (axiosInstance: AxiosInstance): TServices => {
         .patch(`${baseUrl}/${id}`, form)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     delete: async (id: number) => {
@@ -65,10 +57,6 @@ const ComplainProblemServices = (axiosInstance: AxiosInstance): TServices => {
         .delete(`${baseUrl}/${id}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     export: async (userId: string, values: { type: string; name: string }) => {

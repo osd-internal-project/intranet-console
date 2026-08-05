@@ -75,10 +75,6 @@ const OrganizeServices = (axiosInstance: AxiosInstance) => {
         .post(`${organizeUrl}`, data)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     updateOrganize: async (organizeId: string, data: any) => {
@@ -86,10 +82,6 @@ const OrganizeServices = (axiosInstance: AxiosInstance) => {
         .patch(`${organizeUrl}/${organizeId}`, data)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     deleteOrganize: async (organizeId: string) => {
@@ -97,10 +89,6 @@ const OrganizeServices = (axiosInstance: AxiosInstance) => {
         .delete(`${organizeUrl}/${organizeId}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return 500;
         });
     },
     createUserMapOrganizeUrl: async (data: any) => {
@@ -108,10 +96,6 @@ const OrganizeServices = (axiosInstance: AxiosInstance) => {
         .post(`${userMapOrganizeUrl}`, data)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return 500;
         });
     },
     findUserMapOrganizeUrl: async (positionId: any) => {
@@ -130,10 +114,6 @@ const OrganizeServices = (axiosInstance: AxiosInstance) => {
         .delete(`${userMapOrganizeUrl}/${userId}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return 500;
         });
     },
   };

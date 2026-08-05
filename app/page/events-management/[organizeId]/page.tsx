@@ -197,57 +197,67 @@ export default function Page() {
   };
   const createTask = async (key: string, parentNode: string, record: any) => {
     const { children, files, ...conditions } = record || {};
-    if (parentNode === "parent") {
-      const formData = new FormData();
-      formData.append("record", JSON.stringify({ ...conditions, organizedId: params.organizeId }));
+    try {
+      if (parentNode === "parent") {
+        const formData = new FormData();
+        formData.append("record", JSON.stringify({ ...conditions, organizedId: params.organizeId }));
 
-      if (files?.[0]?.originFileObj) {
-        formData.append("files", files[0].originFileObj as RcFile);
+        if (files?.[0]?.originFileObj) {
+          formData.append("files", files[0].originFileObj as RcFile);
+        }
+        await organizemanagementServices.createTask(formData);
+        api.success({
+          message: "create Task success",
+        });
+      } else {
+        const parent = findParent(data, record.key);
+        const formData = new FormData();
+        formData.append("record", JSON.stringify({ ...conditions, organizedId: params.organizeId, organizeTaskId: parent ? parent?.id : undefined }));
+        if (files?.[0]?.originFileObj) {
+          formData.append("files", files[0].originFileObj as RcFile);
+        }
+        await organizemanagementServices.createSubTask(formData);
+        api.success({
+          message: "create Sub Task success",
+        });
       }
-      await organizemanagementServices.createTask(formData);
-      api.success({
-        message: "create Task success",
-      });
       setLoading(true);
-    } else {
-      const parent = findParent(data, record.key);
-      const formData = new FormData();
-      formData.append("record", JSON.stringify({ ...conditions, organizedId: params.organizeId, organizeTaskId: parent ? parent?.id : undefined }));
-      if (files?.[0]?.originFileObj) {
-        formData.append("files", files[0].originFileObj as RcFile);
-      }
-      await organizemanagementServices.createSubTask(formData);
-      api.success({
-        message: "create Sub Task success",
+    } catch (error) {
+      api.error({
+        message: "create Task failed",
       });
-      setLoading(true);
     }
   };
   const editTask = async (key: string, parentNode: string, record: any) => {
     const { children, files, ...conditions } = record || {};
-    if (parentNode === "parent") {
-      const formData = new FormData();
-      formData.append("record", JSON.stringify({ ...conditions, organizedId: params.organizeId }));
-      if (files?.[0]?.originFileObj) {
-        formData.append("files", files[0].originFileObj as RcFile);
+    try {
+      if (parentNode === "parent") {
+        const formData = new FormData();
+        formData.append("record", JSON.stringify({ ...conditions, organizedId: params.organizeId }));
+        if (files?.[0]?.originFileObj) {
+          formData.append("files", files[0].originFileObj as RcFile);
+        }
+        await organizemanagementServices.updateTask(record.id, formData);
+        api.success({
+          message: "create Task success",
+        });
+      } else {
+        const parent = findParent(data, record.key);
+        const formData = new FormData();
+        formData.append("record", JSON.stringify({ ...conditions, organizedId: params.organizeId, organizeTaskId: parent ? parent?.id : undefined }));
+        if (files?.[0]?.originFileObj) {
+          formData.append("files", files[0].originFileObj as RcFile);
+        }
+        await organizemanagementServices.updateSubTask(record.id, formData);
+        api.success({
+          message: "create Sub Task success",
+        });
       }
-      await organizemanagementServices.updateTask(record.id, formData);
-      api.success({
-        message: "create Task success",
-      });
       setLoading(true);
-    } else {
-      const parent = findParent(data, record.key);
-      const formData = new FormData();
-      formData.append("record", JSON.stringify({ ...conditions, organizedId: params.organizeId, organizeTaskId: parent ? parent?.id : undefined }));
-      if (files?.[0]?.originFileObj) {
-        formData.append("files", files[0].originFileObj as RcFile);
-      }
-      await organizemanagementServices.updateSubTask(record.id, formData);
-      api.success({
-        message: "create Sub Task success",
+    } catch (error) {
+      api.error({
+        message: "update Task failed",
       });
-      setLoading(true);
     }
   };
   const isParent = (record: TaskNode) => record.children && record.children.length > 0;

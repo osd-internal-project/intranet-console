@@ -18,31 +18,19 @@ export const MaVehicleTypeGroupServices = (axiosInstance: AxiosInstance) => {
     createMaVehicleTypeGroup: async (body: any) => {
       return await axiosInstance
         .post(`${baseUrl}`, body)
-        .then((res) => res.data)
-        .catch((err) => {
-          console.log(err);
-          return null;
-        });
+        .then((res) => res.data);
     },
 
     updateMaVehicleTypeGroup: async (id: number, body: any) => {
       return await axiosInstance
         .patch(`${baseUrl}/${id}`, body)
-        .then((res) => res.data)
-        .catch((err) => {
-          console.log(err);
-          return null;
-        });
+        .then((res) => res.data);
     },
 
     deleteMaVehicleTypeGroup: async (id: number) => {
       return await axiosInstance
         .delete(`${baseUrl}/${id}`)
-        .then((res) => res.data)
-        .catch((err) => {
-          console.log(err);
-          return null;
-        });
+        .then((res) => res.data);
     },
   };
 };

@@ -20,10 +20,6 @@ export const ManageRefreshmentServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrlApiMasterRefreshment}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     updateMasterRefreshment: async (body: any) => {
@@ -31,10 +27,6 @@ export const ManageRefreshmentServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrlApiMasterRefreshment}/${body.id}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
 
@@ -43,10 +35,6 @@ export const ManageRefreshmentServices = (axiosInstance: AxiosInstance) => {
         .delete(`${baseUrlApiMasterRefreshment}/${id}`)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
 

@@ -69,10 +69,6 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
         .post(`${baseUrlApiMaCarBook}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     updateMaCarBook: async (bookId: number, body: any) => {
@@ -80,10 +76,6 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrlApiMaCarBook}/${bookId}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     updateMaCarBookingImages: async (bookId: number, body: any) => {
@@ -95,10 +87,6 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
         })
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     getMaCarBookingImages: async (carBookingId: number) => {
@@ -116,11 +104,7 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
     deleteMaCarBookingImage: async (idCarBookImage: number) => {
       return await axiosInstance
         .delete(`${baseUrlmaCarBookingImages}/${idCarBookImage}`)
-        .then((res) => res.data)
-        .catch((err) => {
-          console.log(err);
-          return null;
-        });
+        .then((res) => res.data);
     },
     getOrganizeChartQuery: async () => {
       return await axiosInstance
@@ -162,10 +146,6 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
         .patch(`${baseUrlApiMaCar}/${carId}`, body)
         .then((res) => {
           return res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-          return [];
         });
     },
     getMaCarWrapupQuery: async () => {

@@ -15,6 +15,7 @@ import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import imageCompression from "browser-image-compression";
 import { handleCompress } from "@/app/utils";
+import { notifyError, notifySuccess } from "@/app/utils/message";
 export interface handbookFile {
   [x: string]: any;
   handbookid?: Number | null;
@@ -70,7 +71,7 @@ const HandBookManage: React.FC = () => {
       sethandbookFile(handbookFile);
       setSubmitLoading(false);
     } catch (error) {
-      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
+      notifyError(error, "car.document.load");
     }
   };
   const fetchDataType = async () => {
@@ -85,7 +86,7 @@ const HandBookManage: React.FC = () => {
       sethandbooktypeOptions(handoptionsmaResponse);
       sethandbooktype(handbookoption);
     } catch (error) {
-      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
+      notifyError(error, "car.document.load");
     }
   };
 
@@ -103,9 +104,9 @@ const HandBookManage: React.FC = () => {
         const response = await managehandbookFileServices.uploadFiles(formData);
         if (response) {
           formupload.resetFields();
-          message.success("เพิ่มเอกสารสำเร็จ");
+          notifySuccess("setting.document.create");
         } else {
-          message.error("เพิ่มเอกสารไม่สำเร็จ");
+          notifyError(undefined, "setting.document.create");
         }
 
         fetchDataHandbookfile();
@@ -119,7 +120,7 @@ const HandBookManage: React.FC = () => {
       setSubmitLoading(false);
       return true;
     } catch (error) {
-      message.error("อัปโหลดเอกสารไม่สำเร็จ");
+      notifyError(error, "setting.document.upload");
       setSubmitLoading(false);
     }
   };
@@ -139,16 +140,16 @@ const HandBookManage: React.FC = () => {
 
       if (response !== undefined) {
         formupload.resetFields();
-        message.success("อัปเดตไฟล์สำเร็จ");
+        notifySuccess("setting.file.update");
       } else {
-        message.error("อัปเดตไฟล์ไม่สำเร็จ");
+        notifyError(undefined, "setting.file.update");
       }
 
       fetchDataHandbookfile();
       setshowmodalupdate(false);
       setAttendFiles([]);
     } catch (error) {
-      message.error("อัปเดตไฟล์ไม่สำเร็จ");
+      notifyError(error, "setting.file.update");
       setSubmitLoading(false);
     }
   };
@@ -159,11 +160,11 @@ const HandBookManage: React.FC = () => {
 
       await managehandbookFileServices.deletehandbookFile(record.handbookid);
 
-      message.success("ลบไฟล์สำเร็จ");
+      notifySuccess("setting.file.delete");
 
       fetchDataHandbookfile();
     } catch (error) {
-      message.error("ลบไฟล์ไม่สำเร็จ");
+      notifyError(error, "setting.file.delete");
     } finally {
       setSubmitLoading(false);
     }
@@ -221,7 +222,7 @@ const HandBookManage: React.FC = () => {
           message.error("ไม่มีไฟล์ให้ดาวน์โหลด");
         }
       } catch (error) {
-        message.error("เกิดข้อผิดพลาดในการดาวน์โหลดไฟล์");
+        notifyError(error, "file.download");
       }
     } else {
       message.error("ไม่มีไฟล์ให้ดาวน์โหลด");

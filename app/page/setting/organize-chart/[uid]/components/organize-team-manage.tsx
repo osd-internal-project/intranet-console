@@ -27,6 +27,7 @@ import { TcreateOrganizeDto, TfindAllOrganizeDto, TupdateOrganizeDto } from "../
 import OrganizeServices from "../../../../../services/organize-chart.service";
 import UserServices from "@/app/page/users-management/users/services/user.service";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 export interface props {
   propDataManage: (res: { organizeSelect: string | null; loading: boolean }) => void;
   organizeSelect: string | null;
@@ -98,9 +99,9 @@ const OrganizeTeamManage: React.FC<props> = ({ propDataManage, organizeSelect })
             onConfirm={async () => {
               const resDelete = await organizeServices.deleteUserMapOrganizeByUserId(value);
               if (resDelete.status === 500) {
-                message.error("Fail!!");
+                notifyError(undefined, "setting.organize.user.remove");
               } else {
-                message.success("success!!");
+                notifySuccess("setting.organize.user.remove");
                 propDataManage({
                   loading: true,
                   organizeSelect: null,
@@ -145,14 +146,14 @@ const OrganizeTeamManage: React.FC<props> = ({ propDataManage, organizeSelect })
     await organizeServices
       .updateOrganize(values.positionId, values)
       .then(() => {
-        message.success(`Edit success`);
+        notifySuccess("setting.organize.update");
         setOpenAddModel(false);
         propDataManage({
           loading: true,
           organizeSelect: values.positionId,
         });
       })
-      .catch((err) => message.error(err));
+      .catch((err) => notifyError(err, "setting.organize.update"));
     setbuttonLoading(false);
   };
 
@@ -174,14 +175,14 @@ const OrganizeTeamManage: React.FC<props> = ({ propDataManage, organizeSelect })
           if (resDelete.status === 500) {
             message.error(resDelete.message);
           } else {
-            message.success("Delete Success");
+            notifySuccess("setting.organize.delete");
             propDataManage({
               loading: true,
               organizeSelect: null,
             });
           }
         } else {
-          message.error(`ผิดพลาด กรุณาลองใหม่`);
+          notifyError(undefined, "setting.organize.delete");
         }
         setbuttonLoading(false);
       },
@@ -196,10 +197,10 @@ const OrganizeTeamManage: React.FC<props> = ({ propDataManage, organizeSelect })
     await organizeServices
       .createOrganize(values)
       .then(() => {
-        message.success(`Add success`);
+        notifySuccess("setting.organize.create");
         setOpenAddModel(false);
       })
-      .catch((err) => message.error(err));
+      .catch((err) => notifyError(err, "setting.organize.create"));
     propDataManage({
       loading: true,
       organizeSelect: null,
@@ -220,9 +221,9 @@ const OrganizeTeamManage: React.FC<props> = ({ propDataManage, organizeSelect })
   const finishAddUser = async (value: { userId: string }) => {
     const resCreateUserMapOrganize = await organizeServices.createUserMapOrganizeUrl({ ...value, positionId: organizeSelect });
     if (resCreateUserMapOrganize === 500) {
-      message.error("Fail");
+      notifyError(undefined, "setting.organize.user.add");
     } else {
-      message.success("success");
+      notifySuccess("setting.organize.user.add");
       propDataManage({
         loading: true,
         organizeSelect: null,

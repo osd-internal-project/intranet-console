@@ -31,6 +31,7 @@ import { organizeManagementTaskCreateInput } from "@/app/common/organize-managem
 import { RcFile, type UploadFile, type UploadProps } from "antd/es/upload";
 import dayjs from "dayjs";
 
+import { errorText, successText } from "@/app/utils/message";
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 export default function Page() {
@@ -186,12 +187,12 @@ export default function Page() {
         await organizemanagementServices.deleteSubTask(id);
       }
       api.success({
-        message: "Delete Task success",
+        message: successText("events.task.delete"),
       });
       setLoading(true);
     } catch (error) {
       api.error({
-        message: "Delete failed",
+        message: errorText(error, "events.task.delete"),
       });
     }
   };
@@ -207,7 +208,7 @@ export default function Page() {
         }
         await organizemanagementServices.createTask(formData);
         api.success({
-          message: "create Task success",
+          message: successText("events.task.create"),
         });
       } else {
         const parent = findParent(data, record.key);
@@ -218,13 +219,13 @@ export default function Page() {
         }
         await organizemanagementServices.createSubTask(formData);
         api.success({
-          message: "create Sub Task success",
+          message: successText("events.task.create"),
         });
       }
       setLoading(true);
     } catch (error) {
       api.error({
-        message: "create Task failed",
+        message: errorText(error, "events.task.create"),
       });
     }
   };
@@ -239,7 +240,7 @@ export default function Page() {
         }
         await organizemanagementServices.updateTask(record.id, formData);
         api.success({
-          message: "create Task success",
+          message: successText("events.task.update"),
         });
       } else {
         const parent = findParent(data, record.key);
@@ -250,13 +251,13 @@ export default function Page() {
         }
         await organizemanagementServices.updateSubTask(record.id, formData);
         api.success({
-          message: "create Sub Task success",
+          message: successText("events.task.update"),
         });
       }
       setLoading(true);
     } catch (error) {
       api.error({
-        message: "update Task failed",
+        message: errorText(error, "events.task.update"),
       });
     }
   };

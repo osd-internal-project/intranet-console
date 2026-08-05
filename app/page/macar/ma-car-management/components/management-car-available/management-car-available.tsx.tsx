@@ -27,6 +27,7 @@ import ManagementCarFuelcardManage, {
 import { MaCarType } from "../../../common";
 import { macarFileUrl } from "../../../common/macar-file";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 const baseImageUrl = process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET;
 
 export interface props {
@@ -157,13 +158,13 @@ const ManagementCarAvailable: React.FC<props> = ({
         if (res) {
           await maCarFuelTransactionServices.create(fuelTransactionData);
         }
-        message.success("บันทึก Fleet Card สำเร็จ");
+        notifySuccess("car.fuel.save");
         formFuelCard.resetFields();
         setOpenFuelCardModal(false);
         setSelectedCar(undefined);
         setLoading(true);
       } catch {
-        message.error("ไม่สำเร็จ");
+        notifyError(undefined, "car.fuel.save");
       }
   };
 
@@ -229,12 +230,12 @@ const ManagementCarAvailable: React.FC<props> = ({
         manageCarServices.deleteMaCar(form.getFieldValue("carId"));
       }
       status === "create"
-        ? message.success("เพิ่มรถสำเร็จ")
+        ? notifySuccess("car.create")
         : status === "edit"
-          ? message.success("แก้ไขสำเร็จ")
-          : message.success("ลบสำเร็จ");
+          ? notifySuccess("car.update")
+          : notifySuccess("car.delete");
     } catch (error) {
-      message.error("ไม่สำเร็จ");
+      notifyError(error, "data.save");
     }
     form.resetFields();
     setOpenModal(false);
@@ -284,7 +285,7 @@ const ManagementCarAvailable: React.FC<props> = ({
           message.error("ไม่มีไฟล์ให้ดาวน์โหลด");
         }
       } catch (error) {
-        message.error("เกิดข้อผิดพลาดในการดาวน์โหลดไฟล์");
+        notifyError(error, "file.download");
       }
     } else {
       message.error("ไม่มีไฟล์ให้ดาวน์โหลด");

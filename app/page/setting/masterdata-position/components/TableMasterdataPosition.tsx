@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Card, Col, DatePicker, Form, Input, Modal, Popover, Row, Spin, Switch, Table, Tag, message } from "antd";
+import { Button, Card, Col, DatePicker, Form, Input, Modal, Popover, Row, Spin, Switch, Table, Tag } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import { ExclamationCircleFilled, FilterOutlined } from "@ant-design/icons";
 import { PositionServices } from "../services/position.service";
@@ -10,6 +10,7 @@ import { dateToStringTh } from "@/app/utils/format";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 export interface props {
   getloading: boolean;
   getdataAll: any[];
@@ -90,12 +91,12 @@ export const TableMasterdataPosition: React.FC<props> = ({
     try {
       const dataResult = await positionServices.update(dataUpdate);
       if (dataResult) {
-        message.success(`Edit success`);
+        notifySuccess("setting.position.update");
         setLoading(true);
         setOpenEdit(false);
       }
     } catch (error) {
-      message.error(`Edit failed`);
+      notifyError(error, "setting.position.update");
     } finally {
       // ปลดสถานะปุ่มเสมอ ไม่ว่าจะสำเร็จหรือ error เพื่อไม่ให้ปุ่มค้าง loading
       setbuttonLoading(false);
@@ -158,7 +159,7 @@ export const TableMasterdataPosition: React.FC<props> = ({
       onOk: async () => {
         const dataResult = await positionServices.remove(event);
         if (dataResult) {
-          message.success(`Delete success`);
+          notifySuccess("setting.position.delete");
           setLoading(true);
           setbuttonLoading(false);
         }

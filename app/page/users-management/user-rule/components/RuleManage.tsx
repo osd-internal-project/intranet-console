@@ -4,6 +4,7 @@ import { Button, Form, Input, Modal, message } from "antd";
 import RuleServices from "../services/rule.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import { notifyError, notifySuccess } from "@/app/utils/message";
 export interface props {
   propDataManage: (res: { loading: boolean }) => void;
   manageStatus: {
@@ -108,9 +109,9 @@ const GroupManage: React.FC<props> = ({ propDataManage, manageStatus }): React.R
   const finishAdd = async (values: ruleForm) => {
     await RuleServices(baseUrlUser)
       .addMasterRule(values)
-      .then((res) => message.success(`สำเร็จ`))
+      .then((res) => notifySuccess("userrule.create"))
       .catch((err) => {
-        message.error(err);
+        notifyError(err, "userrule.create");
       });
     cancelModal();
   };
@@ -118,9 +119,9 @@ const GroupManage: React.FC<props> = ({ propDataManage, manageStatus }): React.R
     if (manageStatus.ruleCode) {
       await RuleServices(baseUrlUser)
         .updateMasterRule(manageStatus.ruleCode, values)
-        .then((res) => message.success(`สำเร็จ`))
+        .then((res) => notifySuccess("userrule.update"))
         .catch((err) => {
-          message.error(err);
+          notifyError(err, "userrule.update");
         });
       cancelModal();
     }
@@ -133,11 +134,11 @@ const GroupManage: React.FC<props> = ({ propDataManage, manageStatus }): React.R
           if (res.data.status === 401) {
             message.error(res.data.message);
           } else {
-            message.success(`สำเร็จ`);
+            notifySuccess("userrule.delete");
             propDataManage({ loading: true });
           }
         })
-        .catch((err) => message.error(err));
+        .catch((err) => notifyError(err, "userrule.delete"));
       setOpen(false);
     }
   };

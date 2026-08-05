@@ -1,6 +1,6 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, Tabs, Divider, Form, Modal, Row, TabsProps, message, TablePaginationConfig } from "antd";
+import { Breadcrumb, Card, Col, Tabs, Divider, Form, Modal, Row, TabsProps, TablePaginationConfig } from "antd";
 import { DepartmentCalendarDetail } from "./components/leave-history-calendar";
 import DataLeaveService from "../../../services/leave-management.service";
 import { ITypeDataLeave } from "../common";
@@ -13,6 +13,7 @@ import { IFindAllDayDto } from "../../setting/master-holidays/common";
 import dayjs, { Dayjs } from "dayjs";
 import MasterHolidaysService from "../../setting/master-holidays/services/index.service";
 
+import { notifySuccess } from "@/app/utils/message";
 export default function Page() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const { id24Axios } = useId24();
@@ -95,7 +96,7 @@ export default function Page() {
       onOk: async () => {
         const res = await DataLeaveService(baseUrlIntranet).approvedDataLeave("", type, id, user, "");
         if (res) {
-          type === "cancel" ? message.error("cancel success") : message.success("approved success");
+          notifySuccess(type === "cancel" ? "leave.cancel" : "leave.approve");
           setLoading(true);
           setOpenModalDetail(false);
         }

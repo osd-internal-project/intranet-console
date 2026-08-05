@@ -1,6 +1,6 @@
 "use client";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { Button, Card, Col, Divider, Form, Input, Modal, Row, Select, Typography, message } from "antd";
+import { Button, Card, Col, Divider, Form, Input, Modal, Row, Select, Typography } from "antd";
 // import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { PositionServices } from "../services/position.service";
@@ -11,6 +11,7 @@ import { TdepartmentFindMany } from "../../department/common";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifySuccess } from "@/app/utils/message";
 export interface props {
   departMent: TdepartmentFindMany[];
   setLoading: (value: boolean) => void;
@@ -41,7 +42,7 @@ export const AddMasterdataPosition: React.FC<props> = ({ departMent, setLoading 
       onOk: async () => {
         const result = await positionServices.create(event);
         if (result) {
-          message.success(`Add success`);
+          notifySuccess("setting.position.create");
           FORM.resetFields();
           setLoading(true);
           setbuttonLoading(false);

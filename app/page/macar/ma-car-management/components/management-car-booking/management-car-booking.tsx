@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Form, message } from "antd";
+import { Form } from "antd";
 import type { FormInstance, TablePaginationConfig } from "antd";
 import { dataMaCarbook } from "../../../common";
 import { showStatus } from "@/app/utils/validatefield";
@@ -13,6 +13,7 @@ import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import ManagementCarFilterPage from "./components/management-car-filter";
 
+import { notifyError } from "@/app/utils/message";
 export interface props {
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -159,7 +160,7 @@ const managementCarBooking: React.FC<props> = ({
       setLoading(true);
       setOpenModal(false);
     } catch (e) {
-      message.error(`${e}`);
+      notifyError(e, "booking.car.update");
     }
   };
 

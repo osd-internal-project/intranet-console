@@ -1,6 +1,6 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, Divider, message, Row, UploadFile } from "antd";
+import { Breadcrumb, Card, Col, Divider, Row, UploadFile } from "antd";
 import MaDescriptionComponent from "./components/MaDescription";
 import { ITMaTask, ITMaType, ITMaUpdateForm, ITPagination } from "../common";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -10,6 +10,7 @@ import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 export default function MaTaskPage() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   // const intranetAuth = useAxiosIntranet();
@@ -72,10 +73,10 @@ export default function MaTaskPage() {
             await maServices.uploadFiles(response.id, formData);
           });
         }
-        message.success("อัพเดท MA สำเร็จ");
+        notifySuccess("maintenance.update");
       })
       .catch(() => {
-        message.error("ไม่สามารถสร้าง MA ได้");
+        notifyError(undefined, "maintenance.create");
       });
     setloading(true);
   }

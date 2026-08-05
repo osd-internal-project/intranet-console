@@ -32,6 +32,7 @@ import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import dayjs, { Dayjs } from "dayjs";
 import MasterHolidaysService from "../../setting/master-holidays/services/index.service";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 type BookingType = {
   roomId: string;
   roomName: string;
@@ -177,17 +178,17 @@ const BookingRoomPage: React.FC = () => {
     try {
       const response = await BookingRoomServices(baseUrIntranet).createBookingRoom(data);
       if (response) {
-        message.success("จองห้องสำเร็จ");
+        notifySuccess("booking.room.create");
         form.resetFields();
         setIsModalBooking(false);
       } else {
-        message.error("จองห้องไม่สำเร็จ");
+        notifyError(undefined, "booking.room.create");
       }
 
       setSubmitLoading(false);
       fetchData();
     } catch (error) {
-      message.error("จองห้องไม่สำเร็จ");
+      notifyError(error, "booking.room.create");
       setSubmitLoading(false);
     }
   };

@@ -4,25 +4,7 @@ import { loadAppConfig } from "@/app/config/app-config";
 import { UserContext, type UserContectType } from "@/app/config/userContext";
 import employeePropertyService from "@/app/services/employee-property.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
-import {
-  Breadcrumb,
-  Button,
-  Card,
-  Checkbox,
-  Col,
-  Divider,
-  Form,
-  Input,
-  message,
-  Modal,
-  notification,
-  Row,
-  Select,
-  Tabs,
-  Upload,
-  type GetProp,
-  type UploadProps,
-} from "antd";
+import { Breadcrumb, Button, Card, Checkbox, Col, Divider, Form, Input, Modal, notification, Row, Select, Tabs, Upload, type GetProp, type UploadProps } from "antd";
 import { useContext, useEffect, useState } from "react";
 import EmployeePropertyTable from "./components/employee-property-table";
 import EmployeePropertyTeamsTable from "./components/employee-property-table-teams";
@@ -34,6 +16,7 @@ import EmployeePropertyAllUsersTable from "./components/employee-property-table-
 import React from "react";
 import UserServices from "@/app/services/user.service";
 
+import { successText } from "@/app/utils/message";
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const nameOptions = [
@@ -116,8 +99,7 @@ export default function Page() {
       });
       await employeepropertyservice.create(formData);
       api.success({
-        message: "บันทึกสำเร็จ",
-        description: "เพิ่มข้อมูลทรัพย์สินเรียบร้อยแล้ว",
+        message: successText("employee.property.create"),
         placement: "topRight",
       });
       setOpen(false);

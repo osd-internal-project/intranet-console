@@ -8,6 +8,7 @@ import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 export interface props {
   propDataManage: (res: { selectOrganize: string | null; groupSelect: string | null; loading: boolean }) => void;
   groupSelect: string | null;
@@ -150,7 +151,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
     await UserGroupServices(baseUrlUser)
       .updateUserGroup(values.groupId, values)
       .then(() => {
-        message.success(`Edit success`);
+        notifySuccess("usergroup.update");
         setOpenAddModel(false);
         propDataManage({
           selectOrganize: selectOrganize,
@@ -158,7 +159,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
           groupSelect: values.groupId,
         });
       })
-      .catch((err) => message.error(err));
+      .catch((err) => notifyError(err, "usergroup.update"));
     setbuttonLoading(false);
   };
 
@@ -178,7 +179,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
               if (res.data.status === 401) {
                 message.error(res.data.message);
               } else {
-                message.success("Delete Success");
+                notifySuccess("usergroup.delete");
                 propDataManage({
                   selectOrganize: selectOrganize,
                   loading: true,
@@ -187,7 +188,7 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
               }
             });
         } else {
-          message.error(`ผิดพลาด กรุณาลองใหม่`);
+          notifyError(undefined, "usergroup.delete");
         }
         setbuttonLoading(false);
       },
@@ -208,10 +209,10 @@ const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrgan
     await UserGroupServices(baseUrlUser)
       .addUserGroup(form)
       .then(() => {
-        message.success(`Add success`);
+        notifySuccess("usergroup.create");
         setOpenAddModel(false);
       })
-      .catch((err) => message.error(err));
+      .catch((err) => notifyError(err, "usergroup.create"));
     propDataManage({
       selectOrganize: selectOrganize,
       loading: true,

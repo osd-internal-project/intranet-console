@@ -7,6 +7,7 @@ import OrganizedServices from "../services/organized.service";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import { notifyError, notifySuccess } from "@/app/utils/message";
 export interface props {
   propDataManage: (res: { loading: boolean }) => void;
   manageStatus: {
@@ -112,36 +113,16 @@ const OrgenizationManage: React.FC<props> = ({ propDataManage, manageStatus }): 
   const finishAdd = async (values: organizedForm) => {
     await OrganizedServices(baseUrlUser)
       .addOrganized(values)
-      .then((res) =>
-        messageApi.open({
-          type: "success",
-          content: "สำเร็จ",
-        }),
-      )
-      .catch((err) => {
-        messageApi.open({
-          type: "error",
-          content: err,
-        });
-      });
+      .then(() => notifySuccess("userorganize.create"))
+      .catch((err) => notifyError(err, "userorganize.create"));
     cancelModal();
   };
   const finishEdit = async (values: organizedForm) => {
     if (manageStatus.organizedId) {
       await OrganizedServices(baseUrlUser)
         .updateOrganized(manageStatus.organizedId, values)
-        .then((res) =>
-          messageApi.open({
-            type: "success",
-            content: "สำเร็จ",
-          }),
-        )
-        .catch((err) => {
-          messageApi.open({
-            type: "error",
-            content: err,
-          });
-        });
+        .then(() => notifySuccess("userorganize.update"))
+        .catch((err) => notifyError(err, "userorganize.update"));
       cancelModal();
     }
   };
@@ -151,24 +132,13 @@ const OrgenizationManage: React.FC<props> = ({ propDataManage, manageStatus }): 
         .deleteOrganized(manageStatus.organizedId)
         .then((res) => {
           if (res.data.status === 401) {
-            messageApi.open({
-              type: "error",
-              content: res.data.status,
-            });
+            notifyError(undefined, "userorganize.delete");
           } else {
-            messageApi.open({
-              type: "success",
-              content: "สำเร็จ",
-            });
+            notifySuccess("userorganize.delete");
             propDataManage({ loading: true });
           }
         })
-        .catch((err) =>
-          messageApi.open({
-            type: "error",
-            content: err,
-          }),
-        );
+        .catch((err) => notifyError(err, "userorganize.delete"));
       setOpen(false);
     }
   };

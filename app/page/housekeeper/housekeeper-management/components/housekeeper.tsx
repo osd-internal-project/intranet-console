@@ -1,5 +1,5 @@
 "use client";
-import { Button, DatePicker, Form, Input, message, Modal, Popover, Row, Space, Switch, Table, Tag } from "antd";
+import { Button, DatePicker, Form, Input, Modal, Popover, Row, Space, Switch, Table, Tag } from "antd";
 import React, { useState, useEffect } from "react";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useForm } from "antd/es/form/Form";
@@ -7,6 +7,7 @@ import { FilterOutlined } from "@ant-design/icons";
 import { HouseKeeperStockServices } from "../../housekeepers/services/housekeeper.service";
 import dayjs from "dayjs";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 type FieldType = {
   type: string;
   houseKeeperId?: number;
@@ -110,12 +111,12 @@ export default function Housekeeper() {
       resultCreate = await houseKeeperStockServices.updateHousekeeper(value);
     }
     if (resultCreate === 200) {
-      message.error("Fault !!");
+      notifyError(undefined, "housekeeper.create");
       setOpenModal(false);
       return;
     } else {
       form.resetFields();
-      message.success("Success !!");
+      notifySuccess("housekeeper.create");
       featData();
       setOpenModal(false);
     }

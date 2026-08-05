@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, message } from "antd";
+import { Breadcrumb, Card, Col, Divider, Form, Modal, Row } from "antd";
 import { CreateTypeLeave } from "./components/create-type-leave";
 import { TableTypeLeave } from "./components/table-type-leave";
 import MasterTypeLeaveService from "./services/index.service";
@@ -10,6 +10,7 @@ import { dateToEndofDay, dateToStartofDay } from "@/app/utils/format";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifySuccess } from "@/app/utils/message";
 export default function TypeLeave() {
   const { id24Axios, tokenAccess } = useId24();
   const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
@@ -52,7 +53,7 @@ export default function TypeLeave() {
       onOk: async () => {
         const result = await mastertypeleaveService.createTypeleave(event);
         if (result) {
-          message.success(`Add success`);
+          notifySuccess("setting.typeleave.create");
           formcreate.resetFields();
           setOpenModal(false);
           setSwitch(false);
@@ -100,7 +101,7 @@ export default function TypeLeave() {
       onOk: async () => {
         const result = await mastertypeleaveService.updateTypeleave(condition);
         if (result) {
-          message.success(`Edit success`);
+          notifySuccess("setting.typeleave.update");
           formedit.resetFields();
           setOpenModalEdit(false);
           setLoading(true);
@@ -123,7 +124,7 @@ export default function TypeLeave() {
       onOk: async () => {
         const dataResult = await mastertypeleaveService.deleteTypeleave(event);
         if (dataResult) {
-          message.success(`Delete success`);
+          notifySuccess("setting.typeleave.delete");
           setLoading(true);
         }
       },

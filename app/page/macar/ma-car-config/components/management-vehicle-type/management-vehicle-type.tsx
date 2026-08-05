@@ -10,6 +10,7 @@ import { MaVehicleTypeGroupServices } from "../../services/ma-vehicle-type-group
 import ManagementVehicleTypeManage from "./components/management-vehicle-type-manage";
 import ManagementVehicleTypeTable from "./components/management-vehicle-type-table";
 
+import { notifyError } from "@/app/utils/message";
 /** จัดการ master "ประเภทรถ" (รถ 4 ล้อ / 2 ล้อ ฯลฯ) — clone จาก ประเภทการตรวจสภาพ */
 const ManagementVehicleType: React.FC = (): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
@@ -89,7 +90,7 @@ const ManagementVehicleType: React.FC = (): React.ReactElement => {
       setLoading(true);
       setOpenModal(false);
     } catch (error) {
-      message.error("ดำเนินการประเภทรถไม่สำเร็จ");
+      notifyError(error, "car.type.manage");
     }
   };
 

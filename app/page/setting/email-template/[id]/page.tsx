@@ -1,11 +1,12 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { Button, Card, Col, Divider, Form, Input, message, Row, Select, Switch } from "antd";
+import { Button, Card, Col, Divider, Form, Input, Row, Select, Switch } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageemailTemplateServices } from "../service/email-template.service";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
+import { notifySuccess } from "@/app/utils/message";
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
 });
@@ -59,7 +60,7 @@ export default function editEmailTemplatePage() {
     };
     const onFinish = await manageemailtemplateservices.update(params.id, base);
     if (onFinish) {
-      message.success(`Edit success`);
+      notifySuccess("setting.emailtemplate.update");
       router.push("/page/setting/email-template");
     }
   };

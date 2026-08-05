@@ -1,25 +1,6 @@
 "use client";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import {
-  Breadcrumb,
-  Button,
-  Card,
-  Checkbox,
-  Col,
-  DatePicker,
-  Form,
-  Input,
-  InputNumber,
-  message,
-  Modal,
-  Popover,
-  Row,
-  Space,
-  Table,
-  Tabs,
-  TabsProps,
-  Tag,
-} from "antd";
+import { Breadcrumb, Button, Card, Checkbox, Col, DatePicker, Form, Input, InputNumber, Modal, Popover, Row, Space, Table, Tabs, TabsProps, Tag } from "antd";
 import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { useForm } from "antd/es/form/Form";
@@ -27,6 +8,7 @@ import { FilterOutlined } from "@ant-design/icons";
 import { HouseKeeperStockServices } from "../../housekeepers/services/housekeeper.service";
 import dayjs from "dayjs";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 type FieldType = {
   type: string;
   floorId?: number;
@@ -128,13 +110,14 @@ export default function Floor() {
     } else {
       resultCreate = await houseKeeperStockServices.updateFloor(value);
     }
+    const action = value.type === "create" ? "housekeeper.floor.create" : "housekeeper.floor.update";
     if (resultCreate === 200) {
-      message.error("Fault !!");
+      notifyError(undefined, action);
       setOpenModal(false);
       return;
     } else {
       form.resetFields();
-      message.success("Success !!");
+      notifySuccess(action);
       featData();
       setOpenModal(false);
     }

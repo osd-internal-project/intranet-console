@@ -1,17 +1,6 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import {
-  Button,
-  Card,
-  Col,
-  Form,
-  Input,
-  InputNumber,
-  Row,
-  Select,
-  Tag,
-  message,
-} from "antd";
+import { Button, Card, Col, Form, Input, InputNumber, Row, Select, Tag } from "antd";
 import { useForm } from "antd/es/form/Form";
 import dayjs from "dayjs";
 import { MaCarType } from "../../../../common";
@@ -21,6 +10,7 @@ import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import { numberWithCommas } from "@/app/utils/format";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 /** สไตล์ช่องแบบอ่านอย่างเดียว (เส้นใต้บาง) ใช้ตอนยังไม่กดแก้ไข — เลียนแบบ ShowDetailComponent */
 const readOnlyInputStyle: React.CSSProperties = {
   border: "none",
@@ -99,15 +89,15 @@ const CarDetailCard: React.FC<CarDetailCardProps> = ({
       };
       const result = await manageCarServices.updateMaCar(car.carId, payload);
       if (result) {
-        message.success("แก้ไขข้อมูลรถสำเร็จ");
+        notifySuccess("car.update");
         setEditing(false);
         onSaved();
       } else {
-        message.error("แก้ไขข้อมูลรถไม่สำเร็จ");
+        notifyError(undefined, "car.update");
       }
     } catch (error) {
       console.error("Failed to update car", error);
-      message.error("แก้ไขข้อมูลรถไม่สำเร็จ");
+      notifyError(error, "car.update");
     } finally {
       setSaving(false);
     }

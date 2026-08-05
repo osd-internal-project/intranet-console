@@ -17,6 +17,7 @@ import type { IFindAllDayDto } from "@/app/page/setting/master-holidays/common";
 import { fetchData } from "next-auth/client/_utils";
 import MasterHolidaysService from "@/app/page/setting/master-holidays/services/index.service";
 
+import { notifySuccess } from "@/app/utils/message";
 const CreateLeaveAdminPage: React.FC = (): React.ReactElement => {
   const [createForm] = Form.useForm();
   const router = useRouter();
@@ -237,7 +238,7 @@ const CreateLeaveAdminPage: React.FC = (): React.ReactElement => {
               await LeaveManagementServices(baseUrlIntranet).uploadFiles(result.id, formData);
             });
           }
-          message.success("Add success");
+          notifySuccess("leave.create");
           setStartDate(undefined);
           setEndDate(undefined);
           setCheckSwitch(false);

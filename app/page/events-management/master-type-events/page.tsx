@@ -8,6 +8,7 @@ import React from "react";
 import TableMasterTypeEvents from "./components/table-master-type-events";
 import ManageMasterTypeEvents from "./components/manage-master-type-events";
 
+import { successText } from "@/app/utils/message";
 const Page = () => {
   const [api, contextHolder] = notification.useNotification();
   const { id24Axios } = useId24();
@@ -61,8 +62,7 @@ const Page = () => {
     if (type === "create") {
       await mastertypeeventsServices.create(values);
       api.success({
-        message: "บันทึกสำเร็จ",
-        description: "เพิ่มข้อมูลทรัพย์สินเรียบร้อยแล้ว",
+        message: successText("events.master.create"),
         placement: "topRight",
       });
       formmanage.resetFields();
@@ -74,8 +74,7 @@ const Page = () => {
     } else {
       await mastertypeeventsServices.update(formmanage.getFieldValue("id"), values);
       api.success({
-        message: "บันทึกสำเร็จ",
-        description: "แก้ไขข้อมูลทรัพย์สินเรียบร้อยแล้ว",
+        message: successText("events.master.update"),
         placement: "topRight",
       });
       formmanage.resetFields();
@@ -91,8 +90,7 @@ const Page = () => {
   const handleDelete = async (id: number) => {
     await mastertypeeventsServices.delete(id);
     api.success({
-      message: "ลบข้อมูลสพเร็จ",
-      description: "ลบข้อมูลเรียบร้อยแล้ว",
+      message: successText("events.master.delete"),
       placement: "topRight",
     });
     formmanage.resetFields();

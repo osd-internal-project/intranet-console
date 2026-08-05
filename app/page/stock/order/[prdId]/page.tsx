@@ -9,6 +9,7 @@ import OrderServices from "../../services/order.service";
 import MasterProductServices from "../../services/stock.service";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 interface OrderFormData {
   oderId?: string;
   prdId: string;
@@ -56,7 +57,7 @@ const ManageOrderPage: React.FC = (): React.ReactElement => {
         setLoading(false);
       }
     } catch (err) {
-      message.error(`error fecth-data 🚀 ${err}`);
+      notifyError(err, "stock.load");
     }
   };
 
@@ -80,13 +81,13 @@ const ManageOrderPage: React.FC = (): React.ReactElement => {
     try {
       const response = await orderServices.createOrder({ ...values, masterProductId: params.prdId as string });
       if (response) {
-        message.success("บันทึกข้อมูลออเดอร์เรียบร้อยแล้ว!");
+        notifySuccess("stock.order.save");
         form.resetFields();
         setLoading(true);
         navigate.push(`${window.location.origin}/page/stock/order`);
       }
     } catch (error) {
-      message.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+      notifyError(error, "stock.order.save");
     } finally {
       setLoading(true);
     }

@@ -8,6 +8,7 @@ import { UsersServices } from "@/app/services/users.service";
 import { NotificationSettingServices } from "../services/notification-setting.service";
 import { TNotificationRecipient } from "@/app/common/notification";
 
+import { notifyError } from "@/app/utils/message";
 interface UserOption {
   userId: string;
   email: string;
@@ -68,14 +69,14 @@ const TypeRecipients: React.FC<{ alertType: string }> = ({ alertType }) => {
       setPicked(undefined);
       fetchData();
     } else {
-      message.error("เพิ่มไม่สำเร็จ");
+      notifyError(undefined, "setting.notification.save");
     }
   };
 
   const handleRemove = async (id: number) => {
     const res = await services.removeRecipient(id);
     if (res) fetchData();
-    else message.error("ลบไม่สำเร็จ");
+    else notifyError(undefined, "setting.notification.save");
   };
 
   return (

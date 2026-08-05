@@ -19,6 +19,7 @@ import { getQuotaLeavePerYear, validateCheckLeaveDay, validateSumTotalLeave } fr
 import { UsersServices } from "@/app/services/users.service";
 import MasterHolidaysService from "../../setting/master-holidays/services/index.service";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 export default function Page() {
   const { id24Axios, tokenAccess } = useId24();
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
@@ -115,7 +116,7 @@ export default function Page() {
       onOk: async () => {
         const res = await DataLeaveService(baseUrlIntranet).approvedDataLeave(values.detailApproved, type, id, user, values.typeLeave);
         if (res) {
-          type === "cancel" ? message.error("cancel success") : message.success("approved success");
+          notifySuccess(type === "cancel" ? "leave.cancel" : "leave.approve");
           setSubmitAction("approved");
           setLoading(true);
           setOpenModalDetail(false);
@@ -147,14 +148,14 @@ export default function Page() {
         try {
           const res = await DataLeaveService(baseUrlIntranet).deleteDataLeave(id);
           if (res) {
-            message.success("Delete success");
+            notifySuccess("leave.delete");
           } else {
-            message.error("Delete failed");
+            notifyError(undefined, "leave.delete");
           }
           setLoading(true);
           setOpenModalDetail(false);
         } catch (error) {
-          message.error("Delete failed");
+          notifyError(error, "leave.delete");
         }
       },
       onCancel() {},
@@ -245,14 +246,14 @@ export default function Page() {
         try {
           const res = await DataLeaveService(baseUrlIntranet).updateDetailLeave(data.id, { ...data, typeName: dataMasterType?.typeName }, user);
           if (res) {
-            message.success("Update success");
+            notifySuccess("leave.update");
           } else {
-            message.error("Update failed");
+            notifyError(undefined, "leave.update");
           }
           setLoading(true);
           setOpenModalDetail(false);
         } catch (error) {
-          message.error("Update failed");
+          notifyError(error, "leave.update");
         }
       },
       onCancel() {},
@@ -280,7 +281,7 @@ export default function Page() {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
     saveAs(blob, `รายงานการลา-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`);
-    message.success("สำเร็จ");
+    notifySuccess("report.export");
   };
 
   return (

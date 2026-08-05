@@ -11,6 +11,7 @@ import TableMasterProductPage from "./components/table-master-product";
 import ManageMasterProductPage from "./components/manage-master-product";
 import { useRouter } from "next/navigation";
 
+import { notifyError } from "@/app/utils/message";
 const StockManagement: React.FC = (): React.ReactElement => {
   const { id24Axios } = useId24();
   const navigate = useRouter();
@@ -47,7 +48,7 @@ const StockManagement: React.FC = (): React.ReactElement => {
       setDataSource({ data, count });
       setLoading(false);
     } catch (err) {
-      message.error(`error fecth-data 🚀 ${err}`);
+      notifyError(err, "stock.load");
     }
   };
 
@@ -90,7 +91,7 @@ const StockManagement: React.FC = (): React.ReactElement => {
         message.info(type === "create" ? "create success" : type === "edit" ? "edit success" : "delete success");
       }
     } catch (err) {
-      message.error(`error manage 🚀 ${err}`);
+      notifyError(err, "stock.manage");
     }
   };
   return (

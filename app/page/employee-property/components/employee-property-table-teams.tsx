@@ -4,12 +4,13 @@ import { UserContext, type UserContectType } from "@/app/config/userContext";
 import employeePropertyService from "@/app/services/employee-property.service";
 import UserServices from "@/app/services/user.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
-import { Button, Form, Input, message, Popover, Select, Table, Image, Tag } from "antd";
+import { Button, Form, Input, Popover, Select, Table, Image, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 import React, { useContext, useEffect, useState } from "react";
 import { saveAs } from "file-saver";
 
+import { notifySuccess } from "@/app/utils/message";
 export interface props {
   reloadKey: number;
   dropdownUser: { value: string; label: string }[];
@@ -182,7 +183,7 @@ const EmployeePropertyTeamsTable: React.FC<props> = ({ reloadKey, dropdownUser }
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
       saveAs(blob, `รายงานอุปกรณ์-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`);
-      message.success("สำเร็จ");
+      notifySuccess("employee.property.create");
     }
   };
 

@@ -16,6 +16,7 @@ import { handleCompress } from "@/app/utils";
 import type { TUpdateUserDto } from "../../users-management/users/common";
 import { UsersServices } from "@/app/services/users.service";
 
+import { notifySuccess } from "@/app/utils/message";
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
@@ -149,7 +150,7 @@ const ShowDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
             await UsersServices(baseUrlUser).uploadFiles(resUpdate.userId, formData);
           });
         }
-        message.success("Update Success");
+        notifySuccess("user.profile.update");
         setImageFiles([]);
         detailForm.resetFields();
         setLoading(true);

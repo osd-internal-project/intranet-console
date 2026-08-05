@@ -29,6 +29,7 @@ import { HouseKeeperStockServices } from "../services/housekeeper.service";
 import data from "@iconify/icons-icon-park-outline/setting-two";
 import Loading from "@/components/Loading";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 type FieldTypeCreate = {
   wrapupDate: string;
   floor: string;
@@ -199,12 +200,12 @@ const CalendarComponent: React.FC = () => {
       return;
     }
     if (resultCreate === 500) {
-      message.error("Fault !!");
+      notifyError(undefined, "housekeeper.event.create");
       setOpenModalCreate(false);
       return;
     } else {
       formCreate.resetFields();
-      message.success("Success !!");
+      notifySuccess("housekeeper.event.create");
       listEvent(dayjs().year(), dayjs().month());
       setOpenModalCreate(false);
     }
@@ -218,13 +219,13 @@ const CalendarComponent: React.FC = () => {
       return;
     }
     if (resultUpdate === 500) {
-      message.error("Fault !!");
+      notifyError(undefined, "housekeeper.event.update");
       setOpenModalEdit(false);
       setOpenModalCreate(false);
       return;
     } else {
       formCreate.resetFields();
-      message.success("Success !!");
+      notifySuccess("housekeeper.event.update");
       listEvent(dayjs().year(), dayjs().month());
       setOpenModalEdit(false);
       setOpenModalCreate(false);

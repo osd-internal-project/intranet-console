@@ -1,9 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Row, Col, Card, Pagination, Modal, message, Input, Image, Carousel } from "antd";
+import { Row, Col, Card, Pagination, Modal, Input, Image, Carousel } from "antd";
 import { ManageinformationNewsServices } from "../services/information.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import { notifyError } from "@/app/utils/message";
 export interface informationNews {
   newsId: Number;
   newsName: String;
@@ -47,7 +48,7 @@ const NewsShow: React.FC = () => {
       }));
       setInformationNews(newsData);
     } catch (error) {
-      message.error("Failed to fetch news data");
+      notifyError(error, "setting.news.load");
     }
   };
 

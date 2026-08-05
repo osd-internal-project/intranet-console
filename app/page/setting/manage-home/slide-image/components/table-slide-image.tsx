@@ -1,5 +1,5 @@
 import React, { useContext, useMemo, useEffect } from "react";
-import { Table, Button, message, Space, Popconfirm, Tooltip, Form, Input, Col } from "antd";
+import { Table, Button, Space, Popconfirm, Tooltip, Form, Input, Col } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import ManageHomeService from "../services/index.service";
 import dayjs from "dayjs";
@@ -14,6 +14,7 @@ import type { TableColumnsType } from "antd";
 import { SlideImageType } from "../common";
 import "../common/style.css";
 
+import { notifyError } from "@/app/utils/message";
 interface RowContextProps {
   setActivatorNodeRef?: (element: HTMLElement | null) => void;
   listeners?: SyntheticListenerMap;
@@ -85,7 +86,7 @@ export const TableSlideImage: React.FC<propss> = ({ slideImage, handleDeleteSlid
       try {
         await intraAuthService.updateTebleSlide(data.fileId, data);
       } catch (error) {
-        message.error("Error updating slide");
+        notifyError(error, "setting.slide.update");
       }
     }
   };

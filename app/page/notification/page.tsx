@@ -1,17 +1,6 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import {
-  Breadcrumb,
-  Button,
-  Card,
-  Col,
-  Divider,
-  Empty,
-  List,
-  Row,
-  Tag,
-  message,
-} from "antd";
+import { Breadcrumb, Button, Card, Col, Divider, Empty, List, Row, Tag } from "antd";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import { UserContectType, UserContext } from "@/app/config/userContext";
@@ -20,6 +9,7 @@ import { loadAppConfig } from "@/app/config/app-config";
 import { NotificationServices } from "@/app/services/notification.service";
 import { TNotification } from "@/app/common/notification";
 
+import { notifySuccess } from "@/app/utils/message";
 /** หน้ารวมการแจ้งเตือนทั้งหมดของผู้ใช้ */
 export default function NotificationPage() {
   const { user } = (useContext(UserContext) as UserContectType) || {
@@ -54,7 +44,7 @@ export default function NotificationPage() {
   const handleMarkAll = async () => {
     if (!user?.userId) return;
     await services.markAllRead(user.userId);
-    message.success("ทำเครื่องหมายอ่านแล้วทั้งหมด");
+    notifySuccess("notification.readall");
     fetchData();
   };
 

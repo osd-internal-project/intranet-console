@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import RolesServices from "../../services/role.service";
-import { Button, Card, Form, Select, Tag, Tree, message } from "antd";
+import { Button, Card, Form, Select, Tag, Tree } from "antd";
 import type { DataNode } from "antd/es/tree";
 
 // import "../../style.css";
@@ -11,6 +11,7 @@ import { useForm } from "antd/es/form/Form";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import { notifyError, notifySuccess } from "@/app/utils/message";
 export interface props {
   userid: string;
 }
@@ -66,16 +67,16 @@ const EditRoleComponent: React.FC<props> = ({ userid }): React.ReactElement => {
       await userServices
         .setUserRolesMap(userid, value.roles)
         .then(() => {
-          message.success(`Success`);
+          notifySuccess("userrole.assign");
           setbuttonLoading(false);
         })
         .catch((err) => {
-          message.error(`ผิดพลาด`);
+          notifyError(undefined, "userrole.assign");
           console.log(err);
           setbuttonLoading(false);
         });
     } else {
-      message.error("ผิดพลาด");
+      notifyError(undefined, "userrole.assign");
     }
   };
 

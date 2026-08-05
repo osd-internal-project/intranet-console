@@ -70,7 +70,7 @@ const TemplateChatBot: React.FC = (): React.ReactElement => {
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, errorMessage]);
-        message.error("Failed to send message");
+        message.error("ส่งข้อความไม่สำเร็จ");
       } finally {
         setLoading(false);
       }

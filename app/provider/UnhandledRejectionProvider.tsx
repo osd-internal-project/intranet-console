@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { message } from "antd";
 import { ApiError } from "@/app/lib/axios/error-interceptor";
+import { notifyError } from "@/app/utils/message";
 
 /**
  * ตาข่ายรองสุดท้ายสำหรับ promise ที่ reject แล้วไม่มีใคร catch
@@ -22,8 +22,8 @@ export default function UnhandledRejectionProvider({
       // สนใจเฉพาะ error ที่มาจาก API เท่านั้น เพื่อไม่ให้ toast เด้งจาก error อื่นที่ไม่เกี่ยวข้อง
       if (!(reason instanceof ApiError)) return;
 
-      console.error("[unhandled api rejection]", reason);
-      message.error(reason.message);
+      // ไม่ทราบว่าเป็นการกระทำใด จึงไม่ส่ง action key — helper จะใช้คำกลาง ๆ ให้
+      notifyError(reason);
       // กัน error ซ้ำไม่ให้ Next.js overlay เด้งทับ toast ใน dev
       event.preventDefault();
     };

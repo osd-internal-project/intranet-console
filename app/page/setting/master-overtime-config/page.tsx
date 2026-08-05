@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Col, Divider, message, Row } from "antd";
+import { Breadcrumb, Col, Divider, Row } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
@@ -9,6 +9,7 @@ import { MasterOvertimeConfigService } from "@/app/services/master-overtime-conf
 import ManageMasterOvertimeConfig from "./components/manage-master-overtime-config";
 import { manageDays } from "./manage-config";
 
+import { notifySuccess } from "@/app/utils/message";
 export default function MasterOvertimeConfig() {
   const [ManageForm] = useForm();
   const { id24Axios } = useId24();
@@ -85,7 +86,7 @@ export default function MasterOvertimeConfig() {
 
     const result = await MasterOvertimeConfigService(baseUrlIntranet).update(base);
     if (result) {
-      message.success("success");
+      notifySuccess("data.save");
     }
   };
 

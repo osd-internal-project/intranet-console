@@ -17,6 +17,7 @@ import {
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifyError } from "@/app/utils/message";
 const baseImageUrl = process.env.NEXT_PUBLIC_API_BASE_URL_INTRANET;
 
 export default function HomePage() {
@@ -79,7 +80,7 @@ export default function HomePage() {
           message.error("ไม่มีไฟล์ให้ดาวน์โหลด");
         }
       } catch (error) {
-        message.error("เกิดข้อผิดพลาดในการดาวน์โหลดไฟล์");
+        notifyError(error, "file.download");
       }
     } else {
       message.error("ไม่มีไฟล์ให้ดาวน์โหลด");

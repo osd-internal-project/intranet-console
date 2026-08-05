@@ -4,12 +4,13 @@ import type { TableProps, FormProps } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManagehandbookFileServices } from "../service/handbook.service";
 import { useForm } from "antd/es/form/Form";
-import { Table, Space, Button, Modal, Form, Input, Tag, message, Popconfirm, Tooltip, Switch } from "antd";
+import { Table, Space, Button, Modal, Form, Input, Tag, Popconfirm, Tooltip, Switch } from "antd";
 import moment from "moment";
 import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import { notifyError, notifySuccess } from "@/app/utils/message";
 export interface handbooktype {
   idhandtype: Number;
   nameType: String;
@@ -71,7 +72,7 @@ const HandBookOption: React.FC = () => {
       sethandbooktype(handbooktype);
       setSubmitLoading(false);
     } catch (error) {
-      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
+      notifyError(error, "car.document.load");
     }
   };
   const fetchDataHandbookfile = async () => {
@@ -83,7 +84,7 @@ const HandBookOption: React.FC = () => {
       }));
       sethandbookFile(handbookFile);
     } catch (error) {
-      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
+      notifyError(error, "car.document.load");
     }
   };
   const fetchDataHandbook = async () => {
@@ -96,7 +97,7 @@ const HandBookOption: React.FC = () => {
       sethandbook(handbook);
       setSubmitLoading(false);
     } catch (error) {
-      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
+      notifyError(error, "car.document.load");
     }
   };
   const newsTypeCreateDatacreate: FormProps<handbooktype>["onFinish"] = async (values) => {
@@ -112,10 +113,10 @@ const HandBookOption: React.FC = () => {
     try {
       const response = await managehandbookFileServices.createhandbooktype(informationNewsCreateData);
       if (response) {
-        message.success("เพิ่มประเภทเอกสารสำเร็จ");
+        notifySuccess("setting.doctype.create");
         form.resetFields();
       } else {
-        message.error("เพิ่มประเภทเอกสารไม่สำเร็จ");
+        notifyError(undefined, "setting.doctype.create");
       }
       setSubmitLoading(false);
       fetchDatahandbooktype();
@@ -123,7 +124,7 @@ const HandBookOption: React.FC = () => {
       fetchDataHandbook();
       setIsmodlaOpencreate(false);
     } catch (error) {
-      message.error("เพิ่มประเภทเอกสารไม่สำเร็จ");
+      notifyError(error, "setting.doctype.create");
       setSubmitLoading(false);
     }
   };
@@ -140,7 +141,7 @@ const HandBookOption: React.FC = () => {
         status: values?.status,
       };
       await managehandbookFileServices.updatehandbooktype(updatenewType);
-      message.success("แก้ไขประเภทเอกสารสำเร็จ");
+      notifySuccess("setting.doctype.update");
       fetchDatahandbooktype();
       fetchDataHandbookfile();
       fetchDataHandbook();
@@ -148,7 +149,7 @@ const HandBookOption: React.FC = () => {
       setSubmitLoading(false);
       setModalEditnewType(false);
     } catch (error) {
-      message.error("แก้ไขประเภทเอกสารไม่สำเร็จ");
+      notifyError(error, "setting.doctype.update");
     }
   };
 
@@ -156,10 +157,10 @@ const HandBookOption: React.FC = () => {
     try {
       await managehandbookFileServices.deletehandbooktype(record.idhandtype);
       sethandbooktype(handbooktype.filter((item) => item.idhandtype !== record.idhandtype));
-      message.success("ลบประเภทเอกสารสำเร็จ");
+      notifySuccess("setting.doctype.delete");
       fetchDatahandbooktype();
     } catch (error) {
-      message.error("ลบประเภทเอกสารไม่สำเร็จ");
+      notifyError(error, "setting.doctype.delete");
     }
   };
 

@@ -1,7 +1,7 @@
 "use client";
 import { loadAppConfig } from "@/app/config/app-config";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
-import { Breadcrumb, Card, Col, Divider, Form, message, Row, TablePaginationConfig } from "antd";
+import { Breadcrumb, Card, Col, Divider, Form, Row, TablePaginationConfig } from "antd";
 import React, { useEffect, useState } from "react";
 // import OrderServices from "../services/order.service";
 import { Dayjs } from "dayjs";
@@ -9,6 +9,7 @@ import { OrderTablePage } from "./components/order-table";
 import MasterProductServices from "../services/stock.service";
 import { ITMasterProduct } from "../common/master-product";
 
+import { notifyError } from "@/app/utils/message";
 const OrderPage: React.FC = (): React.ReactElement => {
   const { id24Axios } = useId24();
 
@@ -44,7 +45,7 @@ const OrderPage: React.FC = (): React.ReactElement => {
       setDataSource({ data, count });
       setLoading(false);
     } catch (err) {
-      message.error(`error fecth-data 🚀 ${err}`);
+      notifyError(err, "stock.load");
     }
   };
 

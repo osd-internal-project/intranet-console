@@ -10,6 +10,7 @@ import ManageRestaurant from "./components/manage-restaurant";
 import type { RcFile, UploadProps } from "antd/es/upload";
 import { handleCompress } from "@/app/utils";
 
+import { successText } from "@/app/utils/message";
 export default function Page() {
   const [api, contextHolder] = notification.useNotification();
   const { id24Axios } = useId24();
@@ -94,8 +95,7 @@ export default function Page() {
       });
       await masterrestaurantServices.create(formData);
       api.success({
-        message: "บันทึกสำเร็จ",
-        description: "เพิ่มข้อมูลทรัพย์สินเรียบร้อยแล้ว",
+        message: successText("events.restaurant.create"),
         placement: "topRight",
       });
       ManageForm.resetFields();
@@ -116,8 +116,7 @@ export default function Page() {
       });
       await masterrestaurantServices.update(ManageForm.getFieldValue("id"), formData);
       api.success({
-        message: "บันทึกสำเร็จ",
-        description: "แก้ไขข้อมูลทรัพย์สินเรียบร้อยแล้ว",
+        message: successText("events.restaurant.update"),
         placement: "topRight",
       });
       ManageForm.resetFields();
@@ -134,8 +133,7 @@ export default function Page() {
   const handleDelete = async (id: number) => {
     await masterrestaurantServices.delete(id);
     api.success({
-      message: "ลบข้อมู,สำเร็จ",
-      description: "ลบข้อมูลเรียบร้อยแล้ว",
+      message: successText("events.restaurant.delete"),
       placement: "topRight",
     });
     ManageForm.resetFields();

@@ -12,6 +12,7 @@ import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import imageCompression from "browser-image-compression";
 import { handleCompress } from "@/app/utils";
+import { notifyError, notifySuccess } from "@/app/utils/message";
 export interface informationNews {
   newsId: Number;
   newsName: String;
@@ -74,7 +75,7 @@ const InfoCreateNews: React.FC<newsImage> = ({}) => {
       }));
       setinformationNews(informationNews);
     } catch (error) {
-      message.error("ไม่สามารถโหลดข้อมูลข่าวสารได้");
+      notifyError(error, "setting.news.load");
     }
   };
 
@@ -90,7 +91,7 @@ const InfoCreateNews: React.FC<newsImage> = ({}) => {
       setnewsTypeOptions(optionsmaResponse);
       setnewsType(maresponse);
     } catch (error) {
-      message.error("ไม่สามารถโหลดข้อมูลข่าวสารได้");
+      notifyError(error, "setting.news.load");
     }
   };
   const fetchDatanewimage = async () => {
@@ -103,7 +104,7 @@ const InfoCreateNews: React.FC<newsImage> = ({}) => {
       setnewsimage(newsImage);
       setSubmitLoading(false);
     } catch (error) {
-      message.error("ไม่สามารถโหลดข้อมูลข่าวสารได้");
+      notifyError(error, "setting.news.load");
     }
   };
   const informationNewsCreate: FormProps<informationNews & newsImage>["onFinish"] = async (values) => {
@@ -135,13 +136,13 @@ const InfoCreateNews: React.FC<newsImage> = ({}) => {
         setAttendFiles([]);
       }
       if (response) {
-        message.success("เพิ่มข่าวสารสำเร็จ");
+        notifySuccess("setting.news.create");
         fetchDatainformationNews();
         fetchDataType();
         setAttendFiles([]);
         form.resetFields();
       } else {
-        message.error("เพิ่มข่าวสารไม่สำเร็จ");
+        notifyError(undefined, "setting.news.create");
         fetchDatainformationNews();
         fetchDataType();
         setAttendFiles([]);
@@ -152,7 +153,7 @@ const InfoCreateNews: React.FC<newsImage> = ({}) => {
       setAttendFiles([]);
       setSubmitLoading(false);
     } catch (error) {
-      message.error("เพิ่มข่าวสารไม่สำเร็จ");
+      notifyError(error, "setting.news.create");
       fetchDatainformationNews();
       fetchDataType();
       setAttendFiles([]);

@@ -18,6 +18,7 @@ import AlertTypesConfig from "./components/alert-types-config";
 import TestSendMail from "./components/test-send-mail";
 import { NotificationSettingServices } from "./services/notification-setting.service";
 
+import { notifyError } from "@/app/utils/message";
 /** หน้าตั้งค่าการแจ้งเตือน (แอดมิน) — ตั้งค่าประเภท + จัดการผู้รับ */
 const NotificationSettingPage: React.FC = () => {
   const { accessRole } = (useContext(UserContext) as UserContectType) || {
@@ -40,7 +41,7 @@ const NotificationSettingPage: React.FC = () => {
         `ยิงทดสอบสำเร็จ — สร้างแจ้งเตือน ${res.created} รายการ, ส่งอีเมล ${res.emailed} ฉบับ`,
       );
     } else {
-      message.error("ยิงทดสอบไม่สำเร็จ (ตรวจว่ามีผู้รับและ service ทำงานอยู่)");
+      notifyError(undefined, "setting.notification.test");
     }
   };
 

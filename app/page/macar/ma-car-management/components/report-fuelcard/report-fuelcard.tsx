@@ -1,6 +1,6 @@
 import { loadAppConfig } from "@/app/config/app-config";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
-import { Form, message, TablePaginationConfig } from "antd";
+import { Form, TablePaginationConfig } from "antd";
 import dayjs from "dayjs";
 import { saveAs } from "file-saver";
 import React, { useEffect, useState } from "react";
@@ -9,6 +9,7 @@ import ReportFuelCardChart from "./components/report-fuelcard-chart";
 import ReportFuelCardChartFilter from "./components/report-fuelcard-chart-filter";
 import ReportFuelCardFilter, { FilterFormValues } from "./components/report-fuelcard-filter";
 import ReportFuelCardTable from "./components/report-fuelcard-table";
+import { notifyError, notifySuccess } from "@/app/utils/message";
 import {
   CarOption,
   FuelChartBucket,
@@ -125,12 +126,12 @@ const ReportFeulCard: React.FC = (): React.ReactElement => {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
         saveAs(blob, `รายงานการเติมน้ำมัน-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`);
-        message.success("ดาวน์โหลดสำเร็จ");
+        notifySuccess("file.download");
       } else {
-        message.error("ไม่สามารถดาวน์โหลดไฟล์ได้");
+        notifyError(undefined, "file.download");
       }
     } catch (error) {
-      message.error(`${error}`);
+      notifyError(error, "report.export");
     } finally {
       setExporting(false);
     }

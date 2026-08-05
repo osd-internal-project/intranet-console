@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import UserServices from "../../services/user.service";
-import { Button, Card, Col, Form, Row, Select, TreeSelect, message } from "antd";
+import { Button, Card, Col, Form, Row, Select, TreeSelect } from "antd";
 import type { DataNode } from "antd/es/tree";
 import { useForm } from "antd/es/form/Form";
 import UserGroupServices from "../../../../../services/usergroup.service";
@@ -10,6 +10,7 @@ import Loading from "@/components/Loading";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifySuccess } from "@/app/utils/message";
 export interface props {
   userid: string;
 }
@@ -96,7 +97,7 @@ const EditAssignGroupComponent: React.FC<props> = ({ userid }): React.ReactEleme
     const resAssignOwnerGroup = await UserServices(baseUrlUser).assignOwnerGroups(userid, value.organizeId, value.groupOwnerId);
     if (resAssign || resAssignOwnerGroup) {
       setLoadTree(true);
-      message.success("สำเร็จ").then(() => setLoadTree(false));
+      notifySuccess("usergroup.assign").then(() => setLoadTree(false));
     }
   };
 

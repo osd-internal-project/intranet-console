@@ -9,6 +9,7 @@ import { MaVehicleTypeGroupServices } from "../../services/ma-vehicle-type-group
 import ManagementVehicleTypeGroupManage from "./components/management-vehicle-type-group-manage";
 import ManagementVehicleTypeGroupTable from "./components/management-vehicle-type-group-table";
 
+import { notifyError } from "@/app/utils/message";
 /** จัดการ "กลุ่มประเภทรถ" (เช่น รถยนต์นั่ง / รถบรรทุก) — ชั้นแม่เหนือประเภทรถ */
 const ManagementVehicleTypeGroup: React.FC = (): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
@@ -73,7 +74,7 @@ const ManagementVehicleTypeGroup: React.FC = (): React.ReactElement => {
       setLoading(true);
       setOpenModal(false);
     } catch (error) {
-      message.error("ดำเนินการกลุ่มประเภทรถไม่สำเร็จ");
+      notifyError(error, "car.typegroup.manage");
     }
   };
 

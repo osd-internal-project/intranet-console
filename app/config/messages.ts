@@ -1,0 +1,190 @@
+/**
+ * คลังข้อความแจ้งเตือนกลางของระบบ (ภาษาไทย)
+ *
+ * แต่ละ key คือ "การกระทำ" ที่ผู้ใช้มองเห็น ไม่ใช่ endpoint
+ * ค่าที่เก็บคือ "คำกริยา + กรรม" เท่านั้น เช่น "จองรถ" — ส่วน "สำเร็จ" / "ไม่สำเร็จ"
+ * ถูกเติมโดย notifySuccess / notifyError ใน app/utils/message.ts เพื่อให้รูปประโยคเหมือนกันทั้งระบบ
+ *
+ * ตั้งชื่อ key แบบ <โมดูล>.<เอนทิตี>.<การกระทำ> ให้ตรงกับโครงสร้าง app/page/
+ */
+export const ACTION_LABEL = {
+  // ---------- จองห้องประชุม ----------
+  "booking.room.create": "จองห้องประชุม",
+  "booking.room.update": "แก้ไขการจองห้องประชุม",
+  "booking.room.delete": "ลบการจองห้องประชุม",
+  "booking.room.load": "โหลดข้อมูลห้องประชุม",
+  "room.update": "แก้ไขข้อมูลห้องประชุม",
+  "refreshment.create": "เพิ่มรายการอาหารว่าง",
+  "refreshment.update": "แก้ไขรายการอาหารว่าง",
+  "refreshment.delete": "ลบรายการอาหารว่าง",
+
+  // ---------- จองรถ / ยานพาหนะ ----------
+  "booking.car.create": "จองรถ",
+  "booking.car.update": "แก้ไขการจองรถ",
+  "booking.car.cancel": "ยกเลิกการจองรถ",
+  "booking.car.return": "คืนรถ",
+  "booking.car.load": "โหลดข้อมูลการจองรถ",
+  "car.create": "เพิ่มรถ",
+  "car.update": "แก้ไขข้อมูลรถ",
+  "car.delete": "ลบรถ",
+  "car.load": "โหลดข้อมูลรถ",
+  "car.image.delete": "ลบรูป",
+  "car.file.upload": "อัปโหลดไฟล์",
+  "car.file.delete": "ลบไฟล์",
+  "car.wrapup.create": "เพิ่มการตรวจสภาพรถ",
+  "car.wrapup.update": "แก้ไขข้อมูลการตรวจสภาพรถ",
+  "car.wrapup.delete": "ลบการตรวจสภาพรถ",
+  "car.wrapup.submit": "บันทึกการตรวจสภาพรถ",
+  "car.wrapup.image.delete": "ลบข้อมูลภาพการตรวจสภาพรถ",
+  "car.wrapup.type.create": "เพิ่มประเภทการตรวจสภาพ",
+  "car.document.load": "เรียกข้อมูลเอกสาร",
+  "car.document.save": "บันทึกเอกสาร",
+  "car.document.void": "ยกเลิกเอกสาร",
+  "car.fuel.save": "บันทึก Fleet Card",
+  "car.type.manage": "ดำเนินการประเภทรถ",
+  "car.typegroup.manage": "ดำเนินการกลุ่มประเภทรถ",
+
+  // ---------- ใบลา ----------
+  "leave.create": "บันทึกใบลา",
+  "leave.update": "แก้ไขใบลา",
+  "leave.delete": "ลบใบลา",
+  "leave.approve": "อนุมัติใบลา",
+  "leave.reject": "ไม่อนุมัติใบลา",
+  "leave.cancel": "ยกเลิกใบลา",
+  "leave.load": "โหลดข้อมูลใบลา",
+
+  // ---------- ทำงานล่วงเวลา ----------
+  "overtime.create": "บันทึกคำขอทำงานล่วงเวลา",
+  "overtime.update": "แก้ไขคำขอทำงานล่วงเวลา",
+  "overtime.delete": "ลบคำขอทำงานล่วงเวลา",
+  "overtime.approve": "อนุมัติคำขอทำงานล่วงเวลา",
+  "overtime.reject": "ไม่อนุมัติคำขอทำงานล่วงเวลา",
+  "overtime.cancel": "ยกเลิกคำขอทำงานล่วงเวลา",
+  "overtime.load": "โหลดข้อมูลทำงานล่วงเวลา",
+
+  // ---------- ผู้ใช้งานและสิทธิ์ ----------
+  "user.create": "เพิ่มผู้ใช้งาน",
+  "user.update": "แก้ไขข้อมูลผู้ใช้งาน",
+  "user.delete": "ลบผู้ใช้งาน",
+  "user.password.change": "เปลี่ยนรหัสผ่าน",
+  "user.profile.update": "แก้ไขข้อมูลส่วนตัว",
+  "usergroup.create": "เพิ่มกลุ่มผู้ใช้งาน",
+  "usergroup.update": "แก้ไขกลุ่มผู้ใช้งาน",
+  "usergroup.delete": "ลบกลุ่มผู้ใช้งาน",
+  "usergroup.assign": "กำหนดกลุ่มผู้ใช้งาน",
+  "userrole.create": "เพิ่มบทบาท",
+  "userrole.update": "แก้ไขบทบาท",
+  "userrole.delete": "ลบบทบาท",
+  "userrole.assign": "กำหนดบทบาท",
+  "userrule.create": "เพิ่มสิทธิ์การใช้งาน",
+  "userrule.update": "แก้ไขสิทธิ์การใช้งาน",
+  "userrule.delete": "ลบสิทธิ์การใช้งาน",
+  "userprofile.rule.create": "เพิ่มกลุ่มสิทธิ์",
+  "userprofile.rule.update": "แก้ไขกลุ่มสิทธิ์",
+  "userprofile.rule.delete": "ลบกลุ่มสิทธิ์",
+  "userorganize.create": "เพิ่มหน่วยงาน",
+  "userorganize.update": "แก้ไขหน่วยงาน",
+  "userorganize.delete": "ลบหน่วยงาน",
+  "usermodule.create": "เพิ่มโมดูล",
+  "usermodule.update": "แก้ไขโมดูล",
+  "usermodule.delete": "ลบโมดูล",
+  "userpermission.assign": "กำหนดสิทธิ์กลุ่มผู้ใช้งาน",
+
+  // ---------- ตั้งค่า: เอกสาร / ข่าวสาร / หน้าแรก ----------
+  "setting.document.create": "เพิ่มเอกสาร",
+  "setting.document.update": "อัปเดตเอกสาร",
+  "setting.document.delete": "ลบเอกสาร",
+  "setting.document.upload": "อัปโหลดเอกสาร",
+  "setting.doctype.create": "เพิ่มประเภทเอกสาร",
+  "setting.doctype.update": "แก้ไขประเภทเอกสาร",
+  "setting.doctype.delete": "ลบประเภทเอกสาร",
+  "setting.news.create": "เพิ่มข่าวสาร",
+  "setting.news.update": "อัปเดตข่าวสาร",
+  "setting.news.delete": "ลบข่าวสาร",
+  "setting.news.load": "โหลดข้อมูลข่าวสาร",
+  "setting.newstype.create": "เพิ่มประเภทข่าวสาร",
+  "setting.newstype.update": "แก้ไขประเภทข่าวสาร",
+  "setting.newstype.delete": "ลบประเภทข่าวสาร",
+  "setting.image.upload": "อัปโหลดรูป",
+  "setting.image.delete": "ลบข้อมูลภาพ",
+  "setting.slide.update": "อัปเดตสไลด์",
+  "setting.file.update": "อัปเดตไฟล์",
+  "setting.file.delete": "ลบไฟล์",
+
+  // ---------- ตั้งค่า: ข้อมูลหลัก ----------
+  "setting.department.create": "เพิ่มแผนก",
+  "setting.department.update": "แก้ไขแผนก",
+  "setting.department.delete": "ลบแผนก",
+  "setting.position.create": "เพิ่มตำแหน่ง",
+  "setting.position.update": "แก้ไขตำแหน่ง",
+  "setting.position.delete": "ลบตำแหน่ง",
+  "setting.typeleave.create": "เพิ่มประเภทการลา",
+  "setting.typeleave.update": "แก้ไขประเภทการลา",
+  "setting.typeleave.delete": "ลบประเภทการลา",
+  "setting.unit.create": "เพิ่มหน่วยนับ",
+  "setting.unit.update": "แก้ไขหน่วยนับ",
+  "setting.unit.delete": "ลบหน่วยนับ",
+  "setting.unit.load": "โหลดข้อมูลหน่วยนับ",
+  "setting.holiday.create": "เพิ่มวันหยุด",
+  "setting.holiday.delete": "ลบวันหยุด",
+  "setting.maintenancetype.create": "เพิ่มประเภทการบำรุงรักษา",
+  "setting.maintenancetype.update": "แก้ไขประเภทการบำรุงรักษา",
+  "setting.maintenancetype.delete": "ลบประเภทการบำรุงรักษา",
+  "setting.emailtemplate.update": "บันทึกเทมเพลตอีเมล",
+  "setting.notification.save": "บันทึกการตั้งค่าแจ้งเตือน",
+  "setting.notification.test": "ยิงทดสอบแจ้งเตือน",
+  "setting.mail.test": "ส่งอีเมลทดสอบ",
+  "setting.organize.create": "เพิ่มผังองค์กร",
+  "setting.organize.update": "แก้ไขผังองค์กร",
+  "setting.organize.delete": "ลบผังองค์กร",
+  "setting.organize.user.add": "เพิ่มบุคคลเข้าตำแหน่ง",
+  "setting.organize.user.remove": "ลบบุคคลออกจากตำแหน่ง",
+
+  // ---------- โมดูลอื่น ----------
+  "maintenance.create": "สร้าง MA",
+  "maintenance.update": "อัปเดต MA",
+  "housekeeper.create": "เพิ่มข้อมูลแม่บ้าน",
+  "housekeeper.update": "แก้ไขข้อมูลแม่บ้าน",
+  "housekeeper.delete": "ลบข้อมูลแม่บ้าน",
+  "housekeeper.event.create": "เพิ่มตารางงาน",
+  "housekeeper.event.update": "แก้ไขตารางงาน",
+  "housekeeper.floor.create": "เพิ่มชั้น",
+  "housekeeper.floor.update": "แก้ไขชั้น",
+  "employee.property.create": "เพิ่มข้อมูลทรัพย์สิน",
+  "employee.property.update": "แก้ไขข้อมูลทรัพย์สิน",
+  "employee.property.delete": "ลบข้อมูลทรัพย์สิน",
+  "employee.profile.create": "บันทึกประวัติพนักงาน",
+  "stock.order.save": "บันทึกข้อมูลออเดอร์",
+  "stock.load": "โหลดข้อมูลคลังสินค้า",
+  "stock.manage": "ดำเนินการข้อมูลคลังสินค้า",
+  "stock.request.update": "อัปเดตคำขอเบิก",
+  "events.task.create": "เพิ่มงาน",
+  "events.task.update": "แก้ไขงาน",
+  "events.task.delete": "ลบงาน",
+  "events.master.create": "เพิ่มประเภทกิจกรรม",
+  "events.master.update": "แก้ไขประเภทกิจกรรม",
+  "events.master.delete": "ลบประเภทกิจกรรม",
+  "events.restaurant.create": "เพิ่มร้านอาหาร",
+  "events.restaurant.update": "แก้ไขร้านอาหาร",
+  "events.restaurant.delete": "ลบร้านอาหาร",
+  "events.create": "สร้าง Events",
+  "events.delete": "ลบ Events",
+  "notification.readall": "ทำเครื่องหมายอ่านแล้วทั้งหมด",
+
+  // ---------- ทั่วไป (ใช้เมื่อไม่ทราบบริบท) ----------
+  "file.download": "ดาวน์โหลดไฟล์",
+  "file.upload": "อัปโหลดไฟล์",
+  "report.export": "ส่งออกไฟล์",
+  "data.load": "โหลดข้อมูล",
+  "data.save": "บันทึกข้อมูล",
+  "data.delete": "ลบข้อมูล",
+} as const;
+
+/** key ที่ใช้ได้ของ ACTION_LABEL */
+export type ActionKey = keyof typeof ACTION_LABEL;
+
+/** ต่อท้ายข้อความ error เมื่อระบบขัดข้อง (5xx) — ผู้ใช้ทำอะไรไม่ได้นอกจากลองใหม่ */
+export const RETRY_HINT = "กรุณาลองใหม่อีกครั้ง";
+
+/** ข้อความเมื่อเชื่อมต่อ backend ไม่ได้เลย */
+export const NETWORK_ERROR = "ไม่สามารถเชื่อมต่อระบบได้";

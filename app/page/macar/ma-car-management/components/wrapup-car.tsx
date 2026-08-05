@@ -39,6 +39,7 @@ import { loadAppConfig } from "@/app/config/app-config";
 import imageCompression from "browser-image-compression";
 import { handleCompress } from "@/app/utils";
 import { macarFileUrl } from "../../common/macar-file";
+import { notifyError, notifySuccess } from "@/app/utils/message";
 export interface MaCarType {
   id: number;
   typeName: string;
@@ -159,7 +160,7 @@ const WrapupCar: React.FC = () => {
       setMaDataOptions(optionsmaResponsema);
       setMaData(maresponse);
     } catch (error) {
-      message.error("ไม่สามารถโหลดข้อมูลได้");
+      notifyError(error, "data.load");
     }
   };
 
@@ -187,7 +188,7 @@ const WrapupCar: React.FC = () => {
       setMaDataTypeOptions(optionsmaResponse);
       setMaDataType(maresponse);
     } catch (error) {
-      message.error("ไม่สามารถโหลดข้อมูลได้");
+      notifyError(error, "data.load");
     }
   };
 
@@ -201,7 +202,7 @@ const WrapupCar: React.FC = () => {
       setMaDataWarpup(MaCarWarpup);
       setSubmitLoading(false);
     } catch (error) {
-      message.error("ไม่สามารถโหลดข้อมูลได้");
+      notifyError(error, "data.load");
     }
   };
 
@@ -238,16 +239,16 @@ const WrapupCar: React.FC = () => {
         );
       }
       if (response) {
-        message.success("เพิ่มการตรวจสภาพรถสำเร็จ");
+        notifySuccess("car.wrapup.create");
       } else {
-        message.error("เพิ่มการตรวจสภาพรถไม่สำเร็จ");
+        notifyError(undefined, "car.wrapup.create");
       }
       setIsmodlaOpencreate(false);
       setAttendFiles([]);
       form.resetFields();
       setSubmitLoading(false);
     } catch (error) {
-      message.error("เพิ่มการตรวจสภาพรถไม่สำเร็จ");
+      notifyError(error, "car.wrapup.create");
       fetchDataWarpup();
       setAttendFiles([]);
       form.resetFields();
@@ -280,7 +281,7 @@ const WrapupCar: React.FC = () => {
           }),
         );
       }
-      message.success("แก้ไขข้อมูลการตรวจสภาพรถสำเร็จ");
+      notifySuccess("car.wrapup.update");
       formchange.resetFields();
       setMaCar([]);
       setAttendFiles([]);
@@ -289,7 +290,7 @@ const WrapupCar: React.FC = () => {
       setIsmodlaOpenupdate(false);
       setSubmitLoading(false);
     } catch (error) {
-      message.error("แก้ไขข้อมูลการตรวจสภาพรถไม่สำเร็จ");
+      notifyError(error, "car.wrapup.update");
       formchange.resetFields();
       setAttendFiles([]);
       setMaCar([]);
@@ -304,22 +305,22 @@ const WrapupCar: React.FC = () => {
       };
 
       await manageCarServices.updateMaCarWarpup(formchange.getFieldValue("carWrapupId"), updateMaCarWarpup);
-      message.success("การตรวจสภาพรถสำเร็จ");
+      notifySuccess("car.wrapup.submit");
       setSubmitLoading(false);
       setIsmodlasubmit(false);
       fetchDataWarpup();
     } catch (error) {
-      message.error("การตรวจสภาพรถไม่สำเร็จ");
+      notifyError(error, "car.wrapup.submit");
     }
   };
 
   const handleDeletemaCarWarpup = async (carWrapupId: string) => {
     try {
       await manageCarServices.deleteMaCarWarpup(carWrapupId);
-      message.success("ลบการตรวจสภาพรถสำเร็จ");
+      notifySuccess("car.wrapup.delete");
       fetchDataWarpup();
     } catch (error) {
-      message.error("ลบการตรวจสภาพรถไม่สำเร็จ");
+      notifyError(error, "car.wrapup.delete");
     }
   };
 
@@ -332,13 +333,13 @@ const WrapupCar: React.FC = () => {
       if (response) {
         const updatedFiles = existingFiles.filter((existingFile) => existingFile.uid !== idwarpupImage);
         setExistingFiles(updatedFiles);
-        message.success("ลบข้อมูลภาพการตรวจสภาพรถสำเร็จ");
+        notifySuccess("car.wrapup.image.delete");
         fetchDataWarpup();
       } else {
-        message.error("ลบข้อมูลภาพการตรวจสภาพรถไม่สำเร็จ");
+        notifyError(undefined, "car.wrapup.image.delete");
       }
     } catch {
-      message.error("ลบข้อมูลภาพการตรวจสภาพรถไม่สำเร็จ");
+      notifyError(undefined, "car.wrapup.image.delete");
     }
   };
   const handleEditMaCarCancelWarpup = () => {

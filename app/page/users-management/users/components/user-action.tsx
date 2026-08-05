@@ -29,6 +29,7 @@ import { FormInstance } from "antd/lib";
 import { intersection } from "lodash";
 import { handleCompress } from "@/app/utils";
 
+import { notifySuccess } from "@/app/utils/message";
 type TabType = {
   label: string;
   key: string;
@@ -103,7 +104,7 @@ export const UserAction: React.FC<Props> = ({
             await UsersServices(baseUrlUser).uploadFiles(resCreate.userId, formData);
           });
         }
-        message.success("Add Success");
+        notifySuccess("user.create");
         setImageFiles([]);
         setManagePage({ ...managePage, loading: true, modalStatus: false });
         createForm.resetFields();
@@ -127,7 +128,7 @@ export const UserAction: React.FC<Props> = ({
               await UsersServices(baseUrlUser).uploadFiles(resUpdate.userId, formData);
             });
           }
-          message.success("Update Success");
+          notifySuccess("user.update");
           setImageFiles([]);
           createForm.resetFields();
           setManagePage({ ...managePage, loading: true, modalStatus: false });

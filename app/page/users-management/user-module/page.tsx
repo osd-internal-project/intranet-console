@@ -1,7 +1,7 @@
 "use client";
 import { use, useEffect, useState } from "react";
 import { UserModuleTable } from "./components/user-module-type-table";
-import { Breadcrumb, Button, Card, Divider, Form, Input, message, Modal, Row, Spin, Switch } from "antd";
+import { Breadcrumb, Button, Card, Divider, Form, Input, Modal, Row, Spin, Switch } from "antd";
 import { Col } from "antd/lib";
 // import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import UserModuleServices from "@/app/services/user-module.service";
@@ -12,6 +12,7 @@ import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 const { TextArea } = Input;
 
 export default function UserModulePage() {
@@ -61,12 +62,12 @@ export default function UserModulePage() {
             await UserModuleServices(baseUrlUser)
               .delete(Number(record?.id))
               .then(() => {
-                message.success("Success");
+                notifySuccess("usermodule.delete");
                 setLoading(true);
               })
               .catch((err: any) => {
                 console.log(err);
-                message.error("Error");
+                notifyError(undefined, "usermodule.delete");
               });
           },
         });
@@ -83,14 +84,14 @@ export default function UserModulePage() {
       await UserModuleServices(baseUrlUser)
         .create(dataForm)
         .then(() => {
-          message.success("Success");
+          notifySuccess("usermodule.create");
           setLoading(true);
           setStateModal(undefined);
           setTitleModal("");
         })
         .catch((err) => {
           console.log(err);
-          message.error("Error");
+          notifyError(undefined, "usermodule.create");
         });
     } else if (stateModal === "edit") {
       if (values) {
@@ -104,14 +105,14 @@ export default function UserModulePage() {
         await UserModuleServices(baseUrlUser)
           .update(data.id, dataForm)
           .then(() => {
-            message.success("Success");
+            notifySuccess("usermodule.update");
             setLoading(true);
             setStateModal(undefined);
             setTitleModal("");
           })
           .catch((err) => {
             console.log(err);
-            message.error("Error");
+            notifyError(undefined, "usermodule.update");
           });
       }
     }

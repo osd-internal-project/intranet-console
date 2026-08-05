@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import MasterHolidaysService from "../services/index.service";
 import { ICreateMasterHolidayDto, IFindAllDayDto, IManagePageDay } from "../common";
 import { HolidayTable } from "./components/holidays-table";
-import { Breadcrumb, Card, Col, Divider, message, Modal, Row } from "antd";
+import { Breadcrumb, Card, Col, Divider, Modal, Row } from "antd";
 import { HolidayActions } from "./components/holidays-action";
 import { useForm } from "antd/es/form/Form";
 import dayjs from "dayjs";
@@ -12,6 +12,7 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifySuccess } from "@/app/utils/message";
 interface THoliday {
   id: number;
   holidaysYear: string;
@@ -58,7 +59,7 @@ export default function MasterdataHolidaysByYear() {
     };
     const result = await masterholidaysService.createMasterHolidays(dataCreate);
     if (result) {
-      message.success(`Add success`);
+      notifySuccess("setting.holiday.create");
       formAction.resetFields();
       setLoading(true);
       setManageStatusDay({ statusModal: false });
@@ -76,7 +77,7 @@ export default function MasterdataHolidaysByYear() {
       onOk: async () => {
         const dataResult = await masterholidaysService.deleteMasterHoliday(value);
         if (dataResult) {
-          message.success(`Delete success`);
+          notifySuccess("setting.holiday.delete");
           setLoading(true);
         }
       },

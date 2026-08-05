@@ -6,12 +6,13 @@ import { loadAppConfig } from "@/app/config/app-config";
 import SlideImageService from "../../home/services/index.service";
 import Calendar from "./components/calendar";
 import OverTimeServices from "@/app/services/overtime.service";
-import { Breadcrumb, Card, Divider, Form, message, Modal, TablePaginationConfig, Tabs, TabsProps } from "antd";
+import { Breadcrumb, Card, Divider, Form, Modal, TablePaginationConfig, Tabs, TabsProps } from "antd";
 import { TableOvertime } from "./components/table";
 import { IOverTimeForm } from "@/app/common/overtime";
 import { ModalOvertimeHistory } from "./components/modal";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { UserContectType, UserContext } from "@/app/config/userContext";
+import { notifySuccess } from "@/app/utils/message";
 export interface THoliday {
   id: number;
   holidaysName: string;
@@ -115,7 +116,7 @@ export default function OverTimeCalendatPage() {
         const data = { userId: user?.userId, fullName: `${user?.firstNameTh} ${user?.lastNameTh}` };
         const res = await OverTimeServices(baseUrlIntra).update(id as string, type, "", data);
         if (res) {
-          type === "cancel" ? message.error("cancel success") : message.success("approved success");
+          notifySuccess(type === "cancel" ? "overtime.cancel" : "overtime.approve");
         }
         setloading(true);
       },

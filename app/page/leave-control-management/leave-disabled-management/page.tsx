@@ -10,6 +10,7 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 const page = () => {
   const [formcreate] = Form.useForm();
   const { id24Axios } = useId24();
@@ -66,7 +67,7 @@ const page = () => {
       setdataUserByTypeId(typeLeaveDisabledUser);
       setLoadingTableUsers(false);
     } catch (error) {
-      message.error(`${error}`);
+      notifyError(error, "data.load");
     }
   };
 
@@ -75,7 +76,7 @@ const page = () => {
       setDataType(typeId);
       setLoading(true);
     } catch (error) {
-      message.error(`${error}`);
+      notifyError(error, "data.load");
     }
   }
 
@@ -101,14 +102,14 @@ const page = () => {
         try {
           const result = await DataLeaveService(baseUrlIntranet).createTypeLeaveDisabled(event);
           if (result) {
-            message.success("Add success");
+            notifySuccess("leave.create");
             formcreate.resetFields();
             setLoading(true);
             setLoadingTableUsers(true);
             setOpenModal(false);
           }
         } catch (error) {
-          message.error("Failed to add data.");
+          notifyError(error, "leave.create");
         } finally {
           setLoading(true);
           setLoadingTableUsers(true);
@@ -133,12 +134,12 @@ const page = () => {
         try {
           const dataResult = await DataLeaveService(baseUrlIntranet).deleteTypeLeaveDisabled(id);
           if (dataResult) {
-            message.success("Delete success");
+            notifySuccess("leave.delete");
             setLoading(true);
             setLoadingTableUsers(true);
           }
         } catch (error) {
-          message.error("Failed to delete data.");
+          notifyError(error, "leave.delete");
         } finally {
           setLoadingTableUsers(true);
           setLoading(true);

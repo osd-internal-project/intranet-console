@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Card, DatePicker, Form, Input, Modal, Popover, Select, Space, Spin, Table, Tag, Tree, message } from "antd";
+import { Button, Card, DatePicker, Form, Input, Modal, Popover, Select, Space, Spin, Table, Tag, Tree } from "antd";
 import RolesServices from "../services/role.service";
 import ProfileRuleServices from "../services/profile.service";
 import { useForm } from "antd/es/form/Form";
@@ -12,6 +12,7 @@ import { dateToEndofDay, dateToStartofDay, dateToStringTh } from "@/app/utils/fo
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 const { confirm } = Modal;
 
 type ProfileList = {
@@ -150,11 +151,11 @@ const RoleComponent: React.FC = (): React.ReactElement => {
     await RolesServices(baseUrlUser)
       .addUserRole(role, profiles)
       .then(() => {
-        message.success(`Add success`);
+        notifySuccess("userrole.create");
         setLoading(true);
         setOpenAddProfileModel(false);
       })
-      .catch((err) => message.error(err));
+      .catch((err) => notifyError(err, "userrole.create"));
     setbuttonLoading(false);
   };
   //Edit
@@ -180,11 +181,11 @@ const RoleComponent: React.FC = (): React.ReactElement => {
     await RolesServices(baseUrlUser)
       .updateUserRole(values.roleId, userRole, values.profiles)
       .then(() => {
-        message.success(`Edit success`);
+        notifySuccess("userrole.update");
         setLoading(true);
         setOpenEditProfileModel(false);
       })
-      .catch((err) => message.error(err));
+      .catch((err) => notifyError(err, "userrole.update"));
     setbuttonLoading(false);
   };
 
@@ -201,12 +202,12 @@ const RoleComponent: React.FC = (): React.ReactElement => {
           await RolesServices(baseUrlUser)
             .deleteUserRole(profileId)
             .then(() => {
-              message.success("Delete success");
+              notifySuccess("userrole.delete");
               setLoading(true);
               setbuttonLoading(false);
             });
         } else {
-          message.error(`Error , Please try again`);
+          notifyError(undefined, "userrole.delete");
           setbuttonLoading(false);
         }
       },
@@ -222,13 +223,13 @@ const RoleComponent: React.FC = (): React.ReactElement => {
   // const onSubmitDelete = async () => {
   //   if (deleteId) {
   //     await userRolesServices.deleteUserRole(deleteId).then(() => {
-  //       message.error("ลบแล้ว");
+  //       notifyError(undefined, "userrole.delete");
   //       setLoading(true);
   //       setDeleteId(null);
   //       setOpenDeleteProfileModel(false);
   //     });
   //   } else {
-  //     message.error(`ผิดพลาด กรุณาลองใหม่`);
+  //     notifyError(undefined, "userrole.delete");
   //     setDeleteId(null);
   //     setOpenDeleteProfileModel(false);
   //   }

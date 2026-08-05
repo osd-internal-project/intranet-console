@@ -28,6 +28,7 @@ import { MaCarBookServices } from "@/app/services/ma-car-book.service";
 import { MaCarType } from "../../common";
 import { numberWithCommas } from "@/app/utils/format";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 interface props {
   dataProvinces: { value: string; label: string }[];
   /** เรียกหลังจองสำเร็จ — ให้หน้าแม่สลับไปแท็บตาราง + refetch */
@@ -210,7 +211,7 @@ const CarBookNew: React.FC<props> = ({ dataProvinces, onBooked }) => {
       };
       const result = await services.createMaCarBook(data);
       if (result) {
-        message.success("จองรถสำเร็จ");
+        notifySuccess("booking.car.create");
         form.resetFields();
         if (user) {
           form.setFieldsValue({
@@ -223,10 +224,10 @@ const CarBookNew: React.FC<props> = ({ dataProvinces, onBooked }) => {
         setSearched(false);
         onBooked();
       } else {
-        message.error("จองรถไม่สำเร็จ");
+        notifyError(undefined, "booking.car.create");
       }
     } catch (error) {
-      message.error("จองรถไม่สำเร็จ");
+      notifyError(error, "booking.car.create");
     } finally {
       setSubmitting(false);
     }

@@ -16,6 +16,7 @@ import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import { handleCompress } from "@/app/utils";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 export interface informationNews {
   [x: string]: any;
   newsId: number;
@@ -88,7 +89,7 @@ const InfoTableNews: React.FC = () => {
       // fetchDatanewimage();
       setSubmitLoading(false);
     } catch (error) {
-      message.error("Failed to fetch news data");
+      notifyError(error, "setting.news.load");
     }
   };
   const detailnews = (record: informationNews) => {
@@ -117,7 +118,7 @@ const InfoTableNews: React.FC = () => {
   //     }));
   //     setnewsimage(newsImage);
   //   } catch (error) {
-  //     message.error("Failed to fetch car data");
+  //     notifyError(error, "car.load");
   //   }
   // };
   const beforeUploadAttendFiles = async (file: RcFile) => {
@@ -157,19 +158,19 @@ const InfoTableNews: React.FC = () => {
         );
       }
       if (response) {
-        message.success("อัปเดตข่าวสารสำเร็จ");
+        notifySuccess("setting.news.update");
         form.resetFields();
         setIsmodlaupdatedata(false);
         setAttendFiles([]);
       } else {
-        message.error("อัปเดตข่าวสารไม่สำเร็จ");
+        notifyError(undefined, "setting.news.update");
       }
       setSubmitLoading(true);
       fetchDatainformationNews();
       // fetchDatanewimage();
       setIsmodlaupdatedata(false);
     } catch (error) {
-      message.error("อัปเดตข่าวสารไม่สำเร็จ");
+      notifyError(error, "setting.news.update");
       setSubmitLoading(true);
     }
   };
@@ -181,16 +182,16 @@ const InfoTableNews: React.FC = () => {
       if (responsefile.every((res) => res)) {
         const response = await manageinformationNewsServices.deleteinformationNews(record.newsId);
         if (response) {
-          message.success("ลบข่าวสารสำเร็จ");
+          notifySuccess("setting.news.delete");
           setSubmitLoading(true);
         } else {
-          message.error("ลบข่าวสารไม่สำเร็จ");
+          notifyError(undefined, "setting.news.delete");
         }
       } else {
-        message.error("ลบรูปภาพไม่สำเร็จ");
+        notifyError(undefined, "setting.image.delete");
       }
     } catch (error) {
-      message.error("ลบข่าวสารไม่สำเร็จ");
+      notifyError(error, "setting.news.delete");
     } finally {
       setSubmitLoading(true);
     }
@@ -208,7 +209,7 @@ const InfoTableNews: React.FC = () => {
       setnewsTypeOptions(optionsmaResponse);
       setnewsType(maresponse);
     } catch (error) {
-      message.error("Failed to fetch car data");
+      notifyError(error, "car.load");
     }
   };
 
@@ -237,13 +238,13 @@ const InfoTableNews: React.FC = () => {
       if (response) {
         const updatedFiles = existingFiles.filter((existingFile) => existingFile.uid !== imageId);
         setExistingFiles(updatedFiles);
-        message.success("ลบข้อมูลภาพสำเร็จ");
+        notifySuccess("setting.image.delete");
         setSubmitLoading(true);
       } else {
-        message.error("ลบข้อมูลภาพไม่สำเร็จ");
+        notifyError(undefined, "setting.image.delete");
       }
     } catch {
-      message.error("ลบข้อมูลภาพไม่สำเร็จ");
+      notifyError(undefined, "setting.image.delete");
     }
   };
 

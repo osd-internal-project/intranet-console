@@ -18,6 +18,7 @@ import imageCompression from "browser-image-compression";
 import dayjs from "dayjs";
 import { handleCompress } from "@/app/utils";
 
+import { notifySuccess } from "@/app/utils/message";
 export default function Page() {
   const [createdataleaveForm] = Form.useForm();
   const router = useRouter();
@@ -136,7 +137,7 @@ export default function Page() {
               await LeaveManagementServices(baseUrlIntranet).uploadFiles(result.id, formData);
             });
           }
-          message.success("Add success");
+          notifySuccess("leave.create");
           setStartDate(undefined);
           setEndDate(undefined);
           setCheckSwitch(false);

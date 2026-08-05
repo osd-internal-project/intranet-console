@@ -13,6 +13,7 @@ import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 interface props {
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -82,7 +83,7 @@ const MaCarBookTable: React.FC<props> = ({
 
   const updatedMaCarBook: FormProps<MaCarBookType>["onFinish"] = async (values) => {
     if (currentMaCarBookId === null) {
-      message.error("No ma selected for update");
+      message.error("กรุณาเลือกรายการที่ต้องการแก้ไข");
       return;
     }
     const carSelected = maCarData.findLast((car: any) => car.carId === values.carId);
@@ -118,11 +119,11 @@ const MaCarBookTable: React.FC<props> = ({
         updatedByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
       };
       await intraAuthService.updateMaCarBook(maCarBookData);
-      message.success("แก้ไขการจองสำเร็จ");
+      notifySuccess("booking.car.update");
       setSubmitLoading(false);
       setModalEditMa(false);
     } catch (error) {
-      message.error("แก้ไขการจองไม่สำเร็จ");
+      notifyError(error, "booking.car.update");
       setSubmitLoading(false);
     }
     setLoading(true);
@@ -142,11 +143,11 @@ const MaCarBookTable: React.FC<props> = ({
       if (dataUpdate) {
         const updataStatusCar = { status: true };
         await intraAuthService.updateMaCar(formCancel.getFieldValue("carId"), updataStatusCar);
-        message.success("ยกเลิกการจองสำเร็จ");
+        notifySuccess("booking.car.cancel");
         setModalCancel(false);
       }
     } catch (error) {
-      message.error("ยกเลิกการจองไม่สำเร็จ");
+      notifyError(error, "booking.car.cancel");
     } finally {
       setSubmitLoading(false);
     }

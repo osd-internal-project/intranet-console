@@ -11,6 +11,7 @@ import { DOC_TYPE_LABEL } from "../../common/doc-status";
 import { MaCarDocumentServices } from "../services/ma-car-document.service";
 import { DateShortTH } from "@/app/utils/time-convertor";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 const { RangePicker } = DatePicker;
 
 interface DocExportPanelProps {
@@ -126,10 +127,10 @@ export default function DocExportPanel({ axios, cars }: DocExportPanelProps) {
 
       const label = `${range[0].format("MMMYY")}-${range[1].format("MMMYY")}`;
       XLSX.writeFile(workbook, `เอกสารรถยนต์-ภาพรวม-${label}.xlsx`);
-      message.success("ส่งออกไฟล์สำเร็จ");
+      notifySuccess("report.export");
     } catch (error) {
       console.error(error);
-      message.error("ส่งออกไฟล์ไม่สำเร็จ");
+      notifyError(error, "report.export");
     } finally {
       setExporting(false);
     }

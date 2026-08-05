@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, message } from "antd";
+import { Breadcrumb, Card, Col, Divider, Form, Modal, Row } from "antd";
 import { CreateMasterHolidays } from "./components/master-holidays-create";
 import { TableMasterHolidays } from "./components/master-holidays-table";
 import MasterHolidaysService from "./services/index.service";
@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifySuccess } from "@/app/utils/message";
 export default function MasterdataHolidays() {
   const { id24Axios } = useId24();
   const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
@@ -52,7 +53,7 @@ export default function MasterdataHolidays() {
       onOk: async () => {
         const result = await masterholidaysService.createMasterHolidaysYear(dataCreate);
         if (result) {
-          message.success(`Add success`);
+          notifySuccess("setting.holiday.create");
           formCreate.resetFields();
           setLoading(true);
           setManageStatusYear({ statusModal: false });

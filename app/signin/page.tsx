@@ -34,14 +34,14 @@ export default function Login(props: Props) {
         callbackUrl: "/page/",
       });
       if (res?.ok === true) {
-        message.success(`LOGIN SUCCESS`);
+        message.success(`เข้าสู่ระบบสำเร็จ`);
         if (values.remember) {
           createCookieLocal("osd-user-remember", values.username);
         }
         router.push("/page/home");
       } else {
         setLoading(false);
-        message.error(`Invalid Login : username or password is incorrect`);
+        message.error(`เข้าสู่ระบบไม่สำเร็จ: ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง`);
       }
     });
   };

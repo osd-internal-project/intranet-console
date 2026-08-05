@@ -1,10 +1,11 @@
 "use client";
-import { Button, Card, DatePicker, Form, message, Rate, Row, Select, Space, Table } from "antd";
+import { Button, Card, DatePicker, Form, Rate, Row, Select, Space, Table } from "antd";
 import React, { useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import dayjs from "dayjs";
 import { HouseKeeperStockServices } from "../services/housekeeper.service";
 
+import { notifySuccess } from "@/app/utils/message";
 type FieldType = {
   duration: string;
   result: string;
@@ -58,7 +59,7 @@ export default function ReportComponent() {
     //   link.href = window.URL.createObjectURL(blob);
     //   link.download = `คะแนนการทำงานแม่บ้าน- ${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`;
     //   link.click();
-    //   return message.success("สำเร็จ");
+    //   return notifySuccess("report.export");
     // }
     // const resReport = await houseKeeperStockServices.getReport(value);
     const processData = (data: TReport[]): ResultItem[] => {

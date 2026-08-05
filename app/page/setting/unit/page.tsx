@@ -1,5 +1,5 @@
 "use client";
-import { Breadcrumb, Card, Col, Divider, Form, message, Row, TablePaginationConfig } from "antd";
+import { Breadcrumb, Card, Col, Divider, Form, Row, TablePaginationConfig } from "antd";
 import React, { useEffect, useState } from "react";
 import FilterUnitPage from "./components/filter-unit";
 import TableUnitPage from "./components/table-unit";
@@ -10,6 +10,7 @@ import { ITUnit, ITUnitCreateInput } from "./common";
 import { Dayjs } from "dayjs";
 import ManageUnit from "./components/manage-unit";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 const UnitPage = () => {
   const { id24Axios } = useId24();
   const baseUrlInventory = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INVENTORY);
@@ -42,7 +43,7 @@ const UnitPage = () => {
       setDataSource({ data, count });
       setLoading(false);
     } catch (err) {
-      message.error(`error fecth-data 🚀 ${err}`);
+      notifyError(err, "setting.unit.load");
     }
   };
 
@@ -87,10 +88,10 @@ const UnitPage = () => {
           pageSize: 10,
           total: 0,
         });
-        message.info(type === "create" ? "create success" : type === "edit" ? "edit success" : "delete success");
+        notifySuccess(type === "create" ? "setting.unit.create" : type === "edit" ? "setting.unit.update" : "setting.unit.delete");
       }
     } catch (err) {
-      message.error(`error manage 🚀 ${err}`);
+      notifyError(err, "data.save");
     }
   };
   return (

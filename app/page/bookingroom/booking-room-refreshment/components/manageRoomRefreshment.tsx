@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Select, Table, Space, Button, Row, Modal, Form, Input, Divider, Tag, message, Popconfirm } from "antd";
+import { Select, Table, Space, Button, Row, Modal, Form, Input, Divider, Tag, Popconfirm } from "antd";
 import type { TableProps, FormProps } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageRefreshmentServices } from "../services/manage-refreshmen.service";
@@ -8,6 +8,7 @@ import { RefreshmenType } from "../common";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 const Refreshment: React.FC<any> = ({
   refreshmentData,
   refreshmentTotal,
@@ -94,9 +95,9 @@ const Refreshment: React.FC<any> = ({
         await fetchData();
       }
 
-      message.success("ลบรายการอาหรว่างสำเร็จ");
+      notifySuccess("refreshment.delete");
     } catch (error) {
-      message.error("ลบรายการอาหรว่างไม่สำเร็จ");
+      notifyError(error, "refreshment.delete");
     }
   };
 
@@ -109,12 +110,12 @@ const Refreshment: React.FC<any> = ({
         id: currentRefreshmentId,
       };
       await manageRefreshmentServices.updateMasterRefreshment(updatedMasterRefreshment);
-      message.success("แก้ไขรายการอาหรว่างสำเร็จ");
+      notifySuccess("refreshment.update");
       handleEditRefreshmentCancel();
       await fetchData();
       setSubmitLoading(false);
     } catch (error) {
-      message.error("แก้ไขรายการอาหรว่างสำเร็จ");
+      notifyError(error, "refreshment.update");
     }
   };
 

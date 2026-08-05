@@ -3,25 +3,7 @@ import { loadAppConfig } from "@/app/config/app-config";
 import { UserContext, type UserContectType } from "@/app/config/userContext";
 import employeePropertyService from "@/app/services/employee-property.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
-import {
-  Button,
-  Form,
-  Input,
-  message,
-  Modal,
-  Popover,
-  Select,
-  Space,
-  Table,
-  Typography,
-  type MenuProps,
-  Image,
-  Upload,
-  Tag,
-  Checkbox,
-  Row,
-  Col,
-} from "antd";
+import { Button, Form, Input, Modal, Popover, Select, Space, Table, Typography, type MenuProps, Image, Upload, Tag, Checkbox, Row, Col } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 import React, { useContext, useEffect, useState, type Dispatch, type SetStateAction } from "react";
@@ -29,6 +11,7 @@ import { saveAs } from "file-saver";
 import type { ITMistakesType } from "@/app/common/mistakes-type";
 import type { UploadFile } from "antd/es/upload/interface";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 export interface props {
   reloadKey: number;
   setReloadKey: Dispatch<SetStateAction<number>>;
@@ -289,11 +272,11 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey, setReloadKey, dropd
   const handleDelete = async (id: number) => {
     try {
       await employeepropertyservice.delete(id);
-      message.success("ลบข้อมูลสำเร็จ");
+      notifySuccess("employee.property.delete");
       setReloadKey((prev) => prev + 1);
       setLoading(true);
     } catch {
-      message.error("ไม่สามารถลบข้อมูลได้");
+      notifyError(undefined, "employee.property.delete");
     } finally {
     }
   };
@@ -308,7 +291,7 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey, setReloadKey, dropd
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
       saveAs(blob, `รายงานอุปกรณ์ของตนเอง-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`);
-      message.success("สำเร็จ");
+      notifySuccess("employee.property.create");
     }
   };
 
@@ -357,13 +340,13 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey, setReloadKey, dropd
                 };
                 delete base.typeId;
                 await employeepropertyservice.createMistakesType(editingRecord!.id, base);
-                message.success("แก้ไขข้อมูลสำเร็จ");
+                notifySuccess("employee.property.update");
                 setLoading(true);
                 setReloadKey((prev) => prev + 1);
                 setOpenModalMistake(false);
                 mistakesForm.resetFields();
               } catch {
-                message.error("เกิดข้อผิดพลาด");
+                notifyError(undefined, "employee.property.update");
               } finally {
                 setLoading(true);
               }
@@ -442,13 +425,13 @@ const EmployeePropertyTable: React.FC<props> = ({ reloadKey, setReloadKey, dropd
               const editingRecord = editForm.getFieldsValue(true) as ITEmployeePropertyCommon;
               try {
                 await employeepropertyservice.update(editingRecord.id, values, editFiles);
-                message.success("แก้ไขข้อมูลสำเร็จ");
+                notifySuccess("employee.property.update");
                 setReloadKey((prev) => prev + 1);
                 setOpenEdit(false);
                 editForm.resetFields();
                 setEditFiles([]);
               } catch {
-                message.error("เกิดข้อผิดพลาด");
+                notifyError(undefined, "employee.property.update");
               }
             }}
           >

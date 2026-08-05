@@ -7,6 +7,7 @@ import { ManagehandbookFileServices } from "../service/handbook.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifyError } from "@/app/utils/message";
 export interface handbookFile {
   [x: string]: any;
   handbookid?: Number | null;
@@ -39,7 +40,7 @@ const HandBookList: React.FC = () => {
       }));
       sethandbookFile(handbookFile);
     } catch (error) {
-      message.error("ไม่สามารถเรียกข้อมูลเอกสารได้");
+      notifyError(error, "car.document.load");
     }
   };
   const handleDownload = async (record: handbookFile) => {
@@ -59,7 +60,7 @@ const HandBookList: React.FC = () => {
           message.error("ไม่มีไฟล์ให้ดาวน์โหลด");
         }
       } catch (error) {
-        message.error("เกิดข้อผิดพลาดในการดาวน์โหลดไฟล์");
+        notifyError(error, "file.download");
       }
     } else {
       message.error("ไม่มีไฟล์ให้ดาวน์โหลด");

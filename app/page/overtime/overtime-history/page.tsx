@@ -1,6 +1,6 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { Breadcrumb, Card, Divider, Form, message, Modal, TablePaginationConfig } from "antd";
+import { Breadcrumb, Card, Divider, Form, Modal, TablePaginationConfig } from "antd";
 import { FilterOverTimeHistory } from "./components/filter";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
@@ -14,6 +14,7 @@ import { saveAs } from "file-saver";
 import dayjs from "dayjs";
 import { ModalOvertimeHistory } from "./components/modal";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 const OvertimeHistory = () => {
   const { id24Axios, tokenAccess } = useId24();
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
@@ -53,7 +54,7 @@ const OvertimeHistory = () => {
       setLoading(false);
     } catch (error) {
       console.error("Error fetching overtime data:", error);
-      message.error("Failed to fetch overtime data. Please try again later.");
+      notifyError(error, "overtime.load");
     } finally {
       setLoading(false);
     }
@@ -67,7 +68,7 @@ const OvertimeHistory = () => {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
     saveAs(blob, `รายงานการดำเนินการMA-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`);
-    message.success("สำเร็จ");
+    notifySuccess("report.export");
   };
 
   const onSearch = async (value: object) => {
@@ -113,11 +114,9 @@ const OvertimeHistory = () => {
         const detailUser = { userId: user?.userId, fullName: `${user?.firstNameTh} ${user?.lastNameTh}` };
         const res = await OverTimeServices(baseUrlIntra).update(values?.overTimeID as string, type, values.approvedDetail as string, detailUser);
         if (res) {
-          type === "cancel"
-            ? message.error("cancel success")
-            : type === "reject"
-            ? message.success("reject success")
-            : message.success("approved success");
+          notifySuccess(
+            type === "cancel" ? "overtime.cancel" : type === "reject" ? "overtime.reject" : "overtime.approve",
+          );
 
           setOpenModal(false);
           setOpenModalApproved({ status: false, type: "create" });
@@ -138,7 +137,7 @@ const OvertimeHistory = () => {
       onOk: async () => {
         const res = await OverTimeServices(baseUrlIntra).delete(id);
         if (res) {
-          message.success("delete success");
+          notifySuccess("overtime.delete");
           setLoading(true);
         }
       },

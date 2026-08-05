@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useAxiosUser } from "@/app/lib/axios/hooks/userAxiosAuth";
 import UserServices from "../../services/user.service";
-import { Button, Card, Form, Select, Spin, Tree, TreeSelect, message } from "antd";
+import { Button, Card, Form, Select, Spin, Tree, TreeSelect } from "antd";
 import type { DataNode, TreeProps } from "antd/es/tree";
 import Title from "antd/es/skeleton/Title";
 
@@ -11,6 +11,7 @@ import { useForm } from "antd/es/form/Form";
 import UserGroupServices from "../../../../../services/usergroup.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import { notifyError, notifySuccess } from "@/app/utils/message";
 export interface props {
   userid: string;
 }
@@ -98,11 +99,11 @@ const EditTreeComponent: React.FC<props> = ({ userid }): React.ReactElement => {
     await userServices
       .setUserGroupMap(userid, value.organizedId, value.ownerGroup, group)
       .then(() => {
-        message.success(`Success`);
+        notifySuccess("usergroup.assign");
         setbuttonLoading(false);
       })
       .catch((err) => {
-        message.error(`ผิดพลาด`);
+        notifyError(undefined, "usergroup.assign");
         console.log(err);
       });
   };

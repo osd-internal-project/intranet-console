@@ -13,6 +13,7 @@ import UnitServices from "@/app/page/setting/unit/services";
 import dayjs from "dayjs";
 import { handleCompress } from "@/app/utils";
 
+import { notifyError } from "@/app/utils/message";
 const StockManagement: React.FC = (): React.ReactElement => {
   const { id24Axios } = useId24();
   const navigate = useRouter();
@@ -60,7 +61,7 @@ const StockManagement: React.FC = (): React.ReactElement => {
         setLoading(false);
       }
     } catch (err) {
-      message.error(`error fecth-data 🚀 ${err}`);
+      notifyError(err, "stock.load");
     }
   };
 
@@ -103,7 +104,7 @@ const StockManagement: React.FC = (): React.ReactElement => {
         navigate.push(`${window.location.origin}/page/stock/stock-management`);
       }
     } catch (err) {
-      message.error(`error manage 🚀 ${err}`);
+      notifyError(err, "stock.manage");
     }
   };
   return user && type ? (

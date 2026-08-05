@@ -1,12 +1,13 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { message } from "antd";
+
 import MacarFileList from "./macar-file-list";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import { MaCarBookServices } from "@/app/services/ma-car-book.service";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 /** รูป 1 รายการของการจอง (maCarBookImage) */
 interface BookImage {
   idCarBookImage: number;
@@ -50,13 +51,13 @@ const BookImageList: React.FC<BookImageListProps> = ({
         idCarBookImage,
       );
     if (result === null) {
-      message.error("ลบรูปไม่สำเร็จ");
+      notifyError(undefined, "car.image.delete");
       return;
     }
     setList((prev) =>
       prev.filter((item) => item.idCarBookImage !== idCarBookImage),
     );
-    message.success("ลบรูปสำเร็จ");
+    notifySuccess("car.image.delete");
   };
 
   return (

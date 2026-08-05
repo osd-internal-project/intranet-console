@@ -1,5 +1,5 @@
 "use client";
-import { Breadcrumb, Button, Card, Checkbox, Col, ConfigProvider, DatePicker, Divider, Form, Input, message, Modal, Row, Select } from "antd";
+import { Breadcrumb, Button, Card, Checkbox, Col, ConfigProvider, DatePicker, Divider, Form, Input, Modal, Row, Select } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "antd/es/form/Form";
@@ -13,6 +13,7 @@ import { OvertimeShowDetail } from "./components/overtime-show-detail";
 import OverTimeServices from "@/app/services/overtime.service";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { MaCarServices } from "@/app/services/ma-car.service";
+import { notifySuccess } from "@/app/utils/message";
 dayjs.locale("th");
 
 export default function OverTimePage() {
@@ -108,7 +109,7 @@ export default function OverTimePage() {
       onOk: async () => {
         const resultCreate: any = await OverTimeServices(baseUrlIntranet).create(res);
         if (resultCreate.status === 200) {
-          message.success("create success");
+          notifySuccess("overtime.create");
           setHeader([]);
           setStartTime(18);
           setEndTime(19);

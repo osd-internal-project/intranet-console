@@ -10,6 +10,7 @@ import { UserContext, type UserContectType } from "@/app/config/userContext";
 import MasterTypeEventsServices from "@/app/services/master-type-events.service";
 import type { ITMasterTypeEvents } from "@/app/common/master-type-events";
 
+import { successText } from "@/app/utils/message";
 export default function Page() {
   const { id24Axios } = useId24();
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
@@ -87,7 +88,7 @@ export default function Page() {
   const handleDelete = async (id: number) => {
     const response = await organizemanagementServices.delete(id);
     if (response) {
-      api.success({ message: "ลบ Events สำเร็จ" });
+      api.success({ message: successText("events.delete") });
       setHandleModal({ open: false, type: "create", data: null });
       FormManage.resetFields();
       setLoading(true);
@@ -101,7 +102,7 @@ export default function Page() {
       updatedBy: `${user?.firstNameTh} ${user?.lastNameTh}`,
     } as organizeManagementTaskCreateInput;
     await organizemanagementServices.create(base);
-    api.success({ message: "สร้าง Events สำเร็จ" });
+    api.success({ message: successText("events.create") });
     setHandleModal({ open: false, type: "create", data: null });
     FormManage.resetFields();
     setLoading(true);

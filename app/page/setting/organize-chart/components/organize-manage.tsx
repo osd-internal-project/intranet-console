@@ -9,6 +9,7 @@ import { OrganizeManageSkeleton } from "./Skeleton";
 import Link from "next/link";
 import { editIcon } from "@/components/icon";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 export interface props {
   propDataManage: (res: { organizeSelect: string | null; loading: boolean }) => void;
   organizeSelect: string | null;
@@ -51,14 +52,14 @@ const OrganizeManage: React.FC<props> = ({ propDataManage, organizeSelect }): Re
     await organizeServices
       .updateOrganize(values.positionId, values)
       .then(() => {
-        message.success(`Edit success`);
+        notifySuccess("setting.organize.update");
         setOpenAddModel(false);
         propDataManage({
           loading: true,
           organizeSelect: values.positionId,
         });
       })
-      .catch((err) => message.error(err));
+      .catch((err) => notifyError(err, "setting.organize.update"));
     setbuttonLoading(false);
   };
 
@@ -80,14 +81,14 @@ const OrganizeManage: React.FC<props> = ({ propDataManage, organizeSelect }): Re
           if (resDelete.status === 500) {
             message.error(resDelete.message);
           } else {
-            message.success("Delete Success");
+            notifySuccess("setting.organize.delete");
             propDataManage({
               loading: true,
               organizeSelect: null,
             });
           }
         } else {
-          message.error(`ผิดพลาด กรุณาลองใหม่`);
+          notifyError(undefined, "setting.organize.delete");
         }
         setbuttonLoading(false);
       },
@@ -102,10 +103,10 @@ const OrganizeManage: React.FC<props> = ({ propDataManage, organizeSelect }): Re
     await organizeServices
       .createOrganize(values)
       .then(() => {
-        message.success(`Add success`);
+        notifySuccess("setting.organize.create");
         setOpenAddModel(false);
       })
-      .catch((err) => message.error(err));
+      .catch((err) => notifyError(err, "setting.organize.create"));
     propDataManage({
       loading: true,
       organizeSelect: null,

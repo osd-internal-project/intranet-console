@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Button, Card, Col, Divider, Form, Input, message, Row, Select, Switch } from "antd";
+import { Button, Card, Col, Divider, Form, Input, Row, Select, Switch } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageemailTemplateServices } from "../service/email-template.service";
 import dynamic from "next/dynamic";
@@ -9,6 +9,7 @@ import "react-quill/dist/quill.snow.css";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifySuccess } from "@/app/utils/message";
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
 });
@@ -52,7 +53,7 @@ export default function addEmailTemplatePage() {
     };
     const onFinish = await manageemailtemplateservices.create(base);
     if (onFinish) {
-      message.success(`create success`);
+      notifySuccess("setting.emailtemplate.update");
       router.push("/page/setting/email-template");
     }
   };

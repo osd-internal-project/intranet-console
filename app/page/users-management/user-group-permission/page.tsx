@@ -1,6 +1,6 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
-import { Breadcrumb, Card, Divider, message, Row, Segmented, Spin, TreeSelectProps } from "antd";
+import { Breadcrumb, Card, Divider, Row, Segmented, Spin, TreeSelectProps } from "antd";
 import { Col, SegmentedProps } from "antd/lib";
 import UserModuleServices from "@/app/services/user-module.service";
 import { useForm } from "antd/es/form/Form";
@@ -11,6 +11,7 @@ import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifySuccess } from "@/app/utils/message";
 export default function UserModulePage() {
   const { user } = (useContext(UserContext) as UserContectType) || {
     user: null,
@@ -87,7 +88,7 @@ export default function UserModulePage() {
         permissionGroupIds: value.permissionGroupId,
       })
       .then((res) => {
-        message.success("Success");
+        notifySuccess("userpermission.assign");
       })
       .catch((res) => console.log(res));
   }

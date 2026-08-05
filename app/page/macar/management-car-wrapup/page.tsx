@@ -2,19 +2,7 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import ManagementCarWrapupManage from "./components/management-car-wrapup-manage";
 import ManagementCarWrapupTable from "./components/management-car-wrapup-table";
-import {
-  Breadcrumb,
-  Button,
-  Card,
-  Col,
-  DatePicker,
-  Divider,
-  Form,
-  message,
-  Row,
-  Select,
-  UploadFile,
-} from "antd";
+import { Breadcrumb, Button, Card, Col, DatePicker, Divider, Form, Row, Select, UploadFile } from "antd";
 import { RcFile } from "antd/lib/upload";
 import dayjs, { Dayjs } from "dayjs";
 import { UserContectType, UserContext } from "@/app/config/userContext";
@@ -24,6 +12,7 @@ import { ManageCarServices } from "../ma-car-management/services/manage-car.serv
 import type { MaCarType, MaCarWrapupImage } from "../common";
 import ExportExcel from "../ma-car-management/export/export-excel";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 export default function ManagementCarWrapup() {
   const { user, accessRole } = (useContext(UserContext) as UserContectType) || {
     user: null,
@@ -95,7 +84,7 @@ export default function ManagementCarWrapup() {
       setDataCarDetail(responseCar);
       setLoading(false);
     } catch (error) {
-      message.error("ไม่สามารถโหลดข้อมูลได้");
+      notifyError(error, "data.load");
     }
   };
 
@@ -152,10 +141,10 @@ export default function ManagementCarWrapup() {
       setSelectedImages((prev) =>
         prev.filter((img) => img.idwarpupImage !== idwarpupImage),
       );
-      message.success("ลบไฟล์สำเร็จ");
+      notifySuccess("car.file.delete");
       setLoading(true);
     } catch {
-      message.error("ลบไฟล์ไม่สำเร็จ");
+      notifyError(undefined, "car.file.delete");
     }
   };
 
@@ -229,12 +218,12 @@ export default function ManagementCarWrapup() {
     }
     if (response) {
       status === "create"
-        ? message.success("เพิ่มการตรวจสภาพรถสำเร็จ")
+        ? notifySuccess("car.wrapup.create")
         : status === "approved"
-          ? message.success("การตรวจสภาพรถสำเร็จ")
-          : message.success("แก้ไขข้อมูลการตรวจสภาพรถสำเร็จ");
+          ? notifySuccess("car.wrapup.submit")
+          : notifySuccess("car.wrapup.update");
     } else {
-      message.error("เพิ่มการตรวจสภาพรถไม่สำเร็จ");
+      notifyError(undefined, "car.wrapup.create");
     }
     setCarMileage(0);
     setCheckType("create");

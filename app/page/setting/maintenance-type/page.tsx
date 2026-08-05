@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Card, Col, Divider, message, Row, Spin } from "antd";
+import { Breadcrumb, Card, Col, Divider, Row, Spin } from "antd";
 import MaTypeCreateComponent from "./components/MaTypeCreate";
 import MaTypeTableComponent from "./components/MaTypeTable";
 import { ITMaType, ITMaTypeForm, ITPagination } from "./common";
@@ -8,6 +8,7 @@ import MaintenanceTypeServices from "../../../services/maintenance-type.service"
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifySuccess } from "@/app/utils/message";
 export default function Page() {
   const { id24Axios } = useId24();
   const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
@@ -36,7 +37,7 @@ export default function Page() {
 
   async function createMaType(form: ITMaTypeForm): Promise<void> {
     await maintenancetypeservices.create(form);
-    message.success("Create Success");
+    notifySuccess("setting.maintenancetype.create");
     setloading(true);
   }
 

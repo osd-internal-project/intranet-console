@@ -11,6 +11,7 @@ import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifyError } from "@/app/utils/message";
 const ManagementCarMasterdataType: React.FC = (): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const [form] = Form.useForm();
@@ -75,7 +76,7 @@ const ManagementCarMasterdataType: React.FC = (): React.ReactElement => {
       setLoading(true);
       setOpenModal(false);
     } catch (error) {
-      message.error("เพิ่มประเภทการตรวจสภาพไม่สำเร็จ");
+      notifyError(error, "car.wrapup.type.create");
     }
   };
 

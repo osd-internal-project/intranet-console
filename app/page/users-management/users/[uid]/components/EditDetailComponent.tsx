@@ -14,6 +14,7 @@ import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import { handleCompress } from "@/app/utils";
 import { validateOnlyNumbers } from "@/app/utils/validatefield";
+import { notifyError, notifySuccess } from "@/app/utils/message";
 export interface props {
   userid: string;
 }
@@ -107,7 +108,7 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
     if (username) {
       const dupilcateUser = await userServices.getDuplicateUsername(userid, username);
       if (dupilcateUser) {
-        message.error("A user with that username already exists");
+        message.error("ชื่อผู้ใช้งานนี้ถูกใช้แล้ว");
         setbuttonLoading(false);
         return false;
       }
@@ -129,7 +130,7 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
       await userServices
         .updateUser(userid, updatdata)
         .then(() => {
-          message.success("Edit Success");
+          notifySuccess("user.update");
           setLoading(true);
           setDisabledEdit(false);
           setbuttonLoading(false);
@@ -178,18 +179,18 @@ const EditDetailComponent: React.FC<props> = ({ userid }): React.ReactElement =>
 
   const changeUserPassword = async (value: any) => {
     if (value.newPassword !== value.rePassword) {
-      message.error("Your password and confirm password must match");
+      message.error("รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน");
     } else {
       if (confirm("Are you sure you want to reset password ?")) {
         await userServices
           .changeUserPassword(userid, value.newPassword)
           .then(() => {
-            message.success("Change password success");
+            notifySuccess("user.password.change");
             repasswordForm.resetFields();
             setOpenChangePassword(false);
           })
           .catch((err) => {
-            message.error("ผิดพลาด");
+            notifyError(undefined, "user.password.change");
             console.log(err);
           });
       }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Select, Table, Space, Button, Row, Modal, Form, Input, Divider, Tag, message, Popconfirm } from "antd";
+import { Select, Table, Space, Button, Row, Modal, Form, Input, Divider, Tag, Popconfirm } from "antd";
 import type { TableProps, FormProps } from "antd";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageRoomServices } from "../services/manage-room.service";
@@ -7,6 +7,7 @@ import { useForm } from "antd/es/form/Form";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 interface MasterRoomType {
   id: string;
   no: string;
@@ -77,9 +78,9 @@ const RoomStatus = () => {
     try {
       await ManageRoomServices(baseUrIntranet).deleteMasterRoom(id);
       setBookingData(bookingData.filter((item) => item.id !== id));
-      message.success("ลบการจองสำเร็จ");
+      notifySuccess("booking.room.delete");
     } catch (error) {
-      message.error("ลบการจองไม่สำเร็จ");
+      notifyError(error, "booking.room.delete");
     }
   };
 
@@ -92,12 +93,12 @@ const RoomStatus = () => {
         id: currentBookingId,
       };
       await ManageRoomServices(baseUrIntranet).updateMasterRoom(updatedMasterRoom);
-      message.success("แก้ไขข้อมูลห้องสำเร็จ");
+      notifySuccess("room.update");
       fetchData();
       handleEditMasterRoomCancel();
       setSubmitLoading(false);
     } catch (error) {
-      message.error("แก้ไขข้อมูลห้องไม่สำเร็จ");
+      notifyError(error, "room.update");
     }
   };
 
@@ -110,7 +111,7 @@ const RoomStatus = () => {
       }));
       setBookingData(BookingRoom);
     } catch (error) {
-      message.error("Failed to fetch room data");
+      notifyError(error, "booking.room.load");
     }
   };
 

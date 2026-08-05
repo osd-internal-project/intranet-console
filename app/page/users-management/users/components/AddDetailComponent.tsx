@@ -10,6 +10,7 @@ import { ITypeOption } from "../common";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import { validateOnlyNumbers } from "@/app/utils/validatefield";
+import { notifyError, notifySuccess } from "@/app/utils/message";
 interface detailType {
   username: string;
   password: string;
@@ -55,7 +56,7 @@ const AddDetailComponent: React.FC = (): React.ReactElement => {
     });
 
     if (dupilcateUser) {
-      message.error("A user with that username already exists");
+      message.error("ชื่อผู้ใช้งานนี้ถูกใช้แล้ว");
       setbuttonLoading(false);
       return false;
     } else {
@@ -72,17 +73,12 @@ const AddDetailComponent: React.FC = (): React.ReactElement => {
       await userServices
         .addUser(form)
         .then((res) => {
-          message.success("Add Success");
+          notifySuccess("user.create");
           router.push(`/page/users-management/users/${res.userId}`);
           setbuttonLoading(false);
         })
         .catch((err) => {
-          const message = err.response?.data?.message;
-          if (message) {
-            message.error(message);
-          } else {
-            message.error("Error , Please try again");
-          }
+          notifyError(err, "user.create");
           setbuttonLoading(false);
         });
     }

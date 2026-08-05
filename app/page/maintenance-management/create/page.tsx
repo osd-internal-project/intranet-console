@@ -1,6 +1,6 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { Breadcrumb, Col, message, Row } from "antd";
+import { Breadcrumb, Col, Row } from "antd";
 import MaTaskCreate from "./components/MaTaskCreate";
 import { ITMaCreateForm, ITMaType } from "../common";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
@@ -11,6 +11,7 @@ import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import { UsersServices } from "@/app/services/users.service";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 export default function MaTaskCreatePage() {
   const { user } = (useContext(UserContext) as UserContectType) || {
     user: null,
@@ -50,11 +51,11 @@ export default function MaTaskCreatePage() {
     await maServices
       .create(form)
       .then((res) => {
-        message.success("สร้าง MA สำเร็จ");
+        notifySuccess("maintenance.create");
         router.push("/page/maintenance-management");
       })
       .catch((err) => {
-        message.error("ไม่สามารถสร้าง MA ได้");
+        notifyError(undefined, "maintenance.create");
       });
     setloading(true);
   }

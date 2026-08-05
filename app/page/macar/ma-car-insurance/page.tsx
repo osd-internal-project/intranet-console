@@ -37,6 +37,7 @@ import DocCharts from "./components/doc-charts";
 import DocExportPanel from "./components/doc-export-panel";
 import DocLogTable from "./components/doc-log-table";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 const FILTER_OPTIONS = [
   { label: "ทั้งหมด", value: "all" },
   { label: "หมดอายุแล้ว", value: "expired" },
@@ -136,7 +137,7 @@ export default function MaCarInsuarace() {
         setSuggestions(suggestionData ?? { vender: [], insuranceType: [] });
       } catch (error) {
         console.error("Failed to fetch data", error);
-        message.error("โหลดข้อมูลไม่สำเร็จ");
+        notifyError(error, "data.load");
       }
     };
     fetchAncillary();
@@ -219,7 +220,7 @@ export default function MaCarInsuarace() {
     }
 
     if (!saved?.documentId) {
-      message.error("บันทึกไม่สำเร็จ");
+      notifyError(undefined, "car.document.save");
       return;
     }
 
@@ -251,10 +252,10 @@ export default function MaCarInsuarace() {
       updatedByName: `${user?.firstNameTh} ${user?.lastNameTh}`,
     });
     if (!result) {
-      message.error("ยกเลิกไม่สำเร็จ");
+      notifyError(undefined, "car.document.void");
       return;
     }
-    message.success("ยกเลิกเอกสารแล้ว");
+    notifySuccess("car.document.void");
     await refreshDrawer();
     reloadAll();
   };
@@ -273,10 +274,10 @@ export default function MaCarInsuarace() {
   const handleDeleteFile = async (id: number) => {
     const result = await documentServices.deleteFile(id);
     if (result === null) {
-      message.error("ลบไฟล์ไม่สำเร็จ");
+      notifyError(undefined, "car.file.delete");
       return;
     }
-    message.success("ลบไฟล์แล้ว");
+    notifySuccess("car.file.delete");
     await refreshDrawer();
     reloadAll();
   };

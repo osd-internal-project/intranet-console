@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Button, Card, Col, Divider, message, Row, Spin, TablePaginationConfig, Tabs } from "antd";
+import { Breadcrumb, Button, Card, Col, Divider, Row, Spin, TablePaginationConfig, Tabs } from "antd";
 import MaCalendarComponent from "./components/MaCalendar";
 import MaFilterComponent from "./components/MaFilter";
 import MaTableComponent from "./components/MaTable";
@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import MasterHolidaysService from "../setting/master-holidays/services/index.service";
+import { notifySuccess } from "@/app/utils/message";
 export default function MaTaskPage() {
   const { id24Axios } = useId24();
   const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
@@ -100,7 +101,7 @@ export default function MaTaskPage() {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
     saveAs(blob, `รายงานการดำเนินการMA-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`);
-    message.success("สำเร็จ");
+    notifySuccess("report.export");
   }
   function searchMa(filter: any): void {
     setSearch({ ...search, ...filter });

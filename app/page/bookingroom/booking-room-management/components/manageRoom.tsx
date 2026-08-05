@@ -28,6 +28,7 @@ import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 dayjs.extend(isBetween);
 
 const ManageRoom: React.FC = () => {
@@ -249,17 +250,17 @@ const ManageRoom: React.FC = () => {
     try {
       await ManageRoomServices(baseUrIntranet).deleteBooking(id);
       setBookingData(bookingData.filter((item) => item.id !== id));
-      message.success("ลบข้อมูลการจองสำเร็จ");
+      notifySuccess("booking.room.delete");
       setSubmitLoading(false);
     } catch (error) {
-      message.error("ลบข้อมูลการจองไม่สำเร็จ");
+      notifyError(error, "booking.room.delete");
     }
   };
 
   const updatedBooking: FormProps<BookingType>["onFinish"] = async (values) => {
     setSubmitLoading(true);
     if (currentBookingId === null) {
-      message.error("No booking selected for update");
+      message.error("กรุณาเลือกการจองที่ต้องการแก้ไข");
       return;
     }
     try {
@@ -315,11 +316,11 @@ const ManageRoom: React.FC = () => {
 
       await ManageRoomServices(baseUrIntranet).updateBooking(updatedBooking);
       fetchData();
-      message.success("แก้ไขการจองสำเร็จ");
+      notifySuccess("booking.room.update");
       setSubmitLoading(false);
       setModalEditBooking(false);
     } catch (error) {
-      message.error("แก้ไขการจองไม่สำเร็จ");
+      notifyError(error, "booking.room.update");
       setSubmitLoading(false);
     }
   };

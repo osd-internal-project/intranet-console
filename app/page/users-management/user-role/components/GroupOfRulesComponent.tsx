@@ -12,6 +12,7 @@ import { dateToEndofDay, dateToStartofDay, dateToStringTh } from "@/app/utils/fo
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 type profileType = {
   profileId: string;
   profileName: string;
@@ -164,11 +165,11 @@ const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
     await ProfileServices(baseUrlUser)
       .addProfileRule(profile, rules)
       .then(() => {
-        message.success(`Add success`);
+        notifySuccess("userprofile.rule.create");
         setLoading(true);
         setOpenAddProfileModel(false);
       })
-      .catch((err) => message.error(err));
+      .catch((err) => notifyError(err, "userprofile.rule.create"));
     setbuttonLoading(false);
     setbuttonConfirm(false);
   };
@@ -199,11 +200,11 @@ const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
     await ProfileServices(baseUrlUser)
       .updateProfileRule(values.profileId, profile, values.rules)
       .then(() => {
-        message.success(`Edit success`);
+        notifySuccess("userprofile.rule.update");
         setLoading(true);
         setOpenEditProfileModel(false);
       })
-      .catch((err) => message.error(err));
+      .catch((err) => notifyError(err, "userprofile.rule.update"));
     setbuttonLoading(false);
   };
 
@@ -222,7 +223,7 @@ const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
           await ProfileServices(baseUrlUser)
             .deleteProfileRule(profileId)
             .then(() => {
-              message.success("Delete success");
+              notifySuccess("userprofile.rule.delete");
               setLoading(true);
               setDeleteId(null);
               setOpenDeleteProfileModel(false);
@@ -230,7 +231,7 @@ const GroupOfRulesComponent: React.FC = (): React.ReactElement => {
             })
             .catch((err) => message.error(err.message));
         } else {
-          message.error(`ผิดพลาด กรุณาลองใหม่`);
+          notifyError(undefined, "userprofile.rule.delete");
           setDeleteId(null);
           setOpenDeleteProfileModel(false);
         }

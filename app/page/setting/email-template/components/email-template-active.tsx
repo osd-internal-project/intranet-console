@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Form, FormInstance, Input, message, Select } from "antd";
+import { Button, Form, FormInstance, Input, Select } from "antd";
 import { TEmailTemplate } from "../common";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { ManageemailTemplateServices } from "../service/email-template.service";
@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifySuccess } from "@/app/utils/message";
 interface props {
   dataSource: TEmailTemplate[];
   setLoading: (value: boolean) => void;
@@ -38,7 +39,7 @@ export const EmailTemplateActive: React.FC<props> = ({ dataSource, setLoading, f
     const result = await manageemailtemplateservices.updateType(data);
     console.log(result);
     if (result.status === "success") {
-      message.success(`create success`);
+      notifySuccess("setting.emailtemplate.update");
       router.push("/page/setting/email-template");
       setLoading(true);
     }

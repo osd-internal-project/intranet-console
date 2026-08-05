@@ -4,12 +4,13 @@ import type { TableProps, FormProps } from "antd";
 import { DeleteIcon, EditIcon } from "@/components/icon";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { useForm } from "antd/es/form/Form";
-import { Table, Space, Button, Modal, Form, Input, Tag, message, Popconfirm, Tooltip, Switch } from "antd";
+import { Table, Space, Button, Modal, Form, Input, Tag, Popconfirm, Tooltip, Switch } from "antd";
 import moment from "moment";
 import { ManageinformationNewsServices } from "../services/information.service";
 import { DeleteOutlined, FormOutlined } from "@ant-design/icons";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import { notifyError, notifySuccess } from "@/app/utils/message";
 export interface newType {
   idType: Number;
   nameType: string;
@@ -45,7 +46,7 @@ const InfoTypeNews: React.FC = () => {
       setnewType(newType);
       setSubmitLoading(false);
     } catch (error) {
-      message.error("ไม่สามารถเรียกข้อมูลได้");
+      notifyError(error, "setting.news.load");
     }
   };
 
@@ -62,15 +63,15 @@ const InfoTypeNews: React.FC = () => {
     try {
       const response = await manageinformationNewsServices.createnewsType(informationNewsCreateData);
       if (response) {
-        message.success("เพิ่มประเภทข่าวสารสำเร็จ");
+        notifySuccess("setting.newstype.create");
         form.resetFields();
         setIsmodlaOpencreate(false);
       } else {
-        message.error("เพิ่มประเภทข่าวสารไม่สำเร็จ");
+        notifyError(undefined, "setting.newstype.create");
       }
       setSubmitLoading(true);
     } catch (error) {
-      message.error("เพิ่มประเภทข่าวสารไม่สำเร็จ");
+      notifyError(error, "setting.newstype.create");
       setSubmitLoading(true);
     }
   };
@@ -85,12 +86,12 @@ const InfoTypeNews: React.FC = () => {
         status: values?.status,
       };
       await manageinformationNewsServices.updatenewsType(updatenewType);
-      message.success("แก้ไขประเภทข่าวสารสำเร็จ");
+      notifySuccess("setting.newstype.update");
       setSubmitLoading(true);
       setModalEditnewType(false);
     } catch (error) {
       setSubmitLoading(true);
-      message.error("แก้ไขประเภทข่าวสารไม่สำเร็จ");
+      notifyError(error, "setting.newstype.update");
     }
   };
 
@@ -98,10 +99,10 @@ const InfoTypeNews: React.FC = () => {
     try {
       await manageinformationNewsServices.deletenewsType(idType);
       setnewType(newType.filter((item) => item.idType !== idType));
-      message.success("ลบประเภทข่าวสารสำเร็จ");
+      notifySuccess("setting.newstype.delete");
       setSubmitLoading(true);
     } catch (error) {
-      message.error("ลบประเภทไม่ข่าวสารสำเร็จ");
+      notifyError(error, "setting.newstype.delete");
     }
   };
 

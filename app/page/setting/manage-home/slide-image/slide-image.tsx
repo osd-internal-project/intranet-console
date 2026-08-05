@@ -12,6 +12,7 @@ import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import { handleCompress } from "@/app/utils";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 export default function SlideImageSetting() {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const { id24Axios } = useId24();
@@ -46,10 +47,10 @@ export default function SlideImageSetting() {
     try {
       await intraAuthService.deleteSlideImage(id);
       setSlideImage(slideImage.filter((item) => item.id !== id));
-      message.success("ลบข้อมูลรูปภาพสำเร็จ");
+      notifySuccess("setting.image.delete");
       setSubmitLoading(false);
     } catch (error) {
-      message.error("ลบข้อมูลรูปภาพไม่สำเร็จ");
+      notifyError(error, "setting.image.delete");
     }
   };
 
@@ -79,10 +80,10 @@ export default function SlideImageSetting() {
         formData.append("createdById", createdById);
         await intraAuthService.uploadImage(formData);
         createSlideImageForm.resetFields();
-        message.success("อัปโหลดรูปสำเร็จ");
+        notifySuccess("setting.image.upload");
       }
     } catch (error) {
-      message.error("การอัปโหลดล้มเหลว");
+      notifyError(error, "setting.image.upload");
     } finally {
       setSubmitLoading(false);
       setModalAddSlide(false);

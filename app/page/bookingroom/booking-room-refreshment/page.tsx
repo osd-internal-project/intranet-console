@@ -1,22 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import {
-  Breadcrumb,
-  Card,
-  Col,
-  Row,
-  TabsProps,
-  Tabs,
-  Button,
-  Modal,
-  message,
-  Form,
-  Input,
-  FormProps,
-  Divider,
-  Select,
-  TablePaginationConfig,
-} from "antd";
+import { Breadcrumb, Card, Col, Row, TabsProps, Tabs, Button, Modal, Form, Input, FormProps, Divider, Select, TablePaginationConfig } from "antd";
 import { RefreshmenType } from "./common";
 import { useForm } from "antd/es/form/Form";
 import ManageRefreshmentComponent from "./components/manageRoomRefreshment";
@@ -24,6 +8,7 @@ import { ManageRefreshmentServices } from "./services/manage-refreshmen.service"
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 
+import { notifyError, notifySuccess } from "@/app/utils/message";
 const ManageBookingRoom = () => {
   const { id24Axios } = useId24();
   const baseUrlIntra = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
@@ -60,7 +45,7 @@ const ManageBookingRoom = () => {
       }));
       setRefreshmentData(Refereshment);
     } catch (error) {
-      message.error("Failed to fetch room data");
+      notifyError(error, "booking.room.load");
     }
   };
 
@@ -93,11 +78,11 @@ const ManageBookingRoom = () => {
   const addRefreshment: FormProps<RefreshmenType>["onFinish"] = async (values) => {
     const response = await ManageRefreshmentServices(baseUrlIntra).createMasterRefreshment(values);
     if (response) {
-      message.success("เพิ่มอาหารว่างสำเร็จ");
+      notifySuccess("refreshment.create");
       form.resetFields();
       setModalAddRefreshment(false);
     } else {
-      message.error("เพิ่มอาหารว่างไม่สำเร็จ");
+      notifyError(undefined, "refreshment.create");
     }
 
     setSubmitLoading(false);

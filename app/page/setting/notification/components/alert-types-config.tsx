@@ -1,22 +1,11 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  Button,
-  Collapse,
-  Divider,
-  Form,
-  InputNumber,
-  Select,
-  Space,
-  Spin,
-  Switch,
-  Tag,
-  message,
-} from "antd";
+import { Button, Collapse, Divider, Form, InputNumber, Select, Space, Spin, Switch, Tag } from "antd";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
 import { NotificationSettingServices } from "../services/notification-setting.service";
 import TypeRecipients from "./type-recipients";
+import { notifyError, notifySuccess } from "@/app/utils/message";
 import {
   TNotificationSetting,
   TNotiCatalogItem,
@@ -80,10 +69,10 @@ const TypeBody: React.FC<{
     const res = await services.updateSetting(def.key, payload);
     setSaving(false);
     if (res) {
-      message.success("บันทึกสำเร็จ");
+      notifySuccess("setting.notification.save");
       onSaved();
     } else {
-      message.error("บันทึกไม่สำเร็จ");
+      notifyError(undefined, "setting.notification.save");
     }
   };
 

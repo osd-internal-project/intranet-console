@@ -427,7 +427,7 @@ const CarBookNew: React.FC<props> = ({ dataProvinces, onBooked }) => {
                       placeholder="รายละเอียดเพิ่มเติม (ถ้ามี)"
                       rows={2}
                       showCount
-                      maxLength={250}
+                      maxLength={1000}
                     />
                   </Form.Item>
                 </Col>

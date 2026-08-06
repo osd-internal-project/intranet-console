@@ -52,12 +52,12 @@ const ManagementCarAvailableTable: React.FC<props> = ({
       title: "ชื่อรถ",
       dataIndex: "carName",
       key: "carName",
-      align: "center",
-      render: (value, record, index) => (
-        <Link href={`/page/macar/ma-car-management/car/${record.carId}`}>
-          <Button type="link">{value}</Button>
-        </Link>
-      ),
+      // align: "center",
+      // render: (value, record, index) => (
+      //   <Link href={`/page/macar/ma-car-management/car/${record.carId}`}>
+      //     <Button type="link">{value}</Button>
+      //   </Link>
+      // ),
     },
     {
       title: "ระดับน้ำมัน",
@@ -114,13 +114,24 @@ const ManagementCarAvailableTable: React.FC<props> = ({
       key: "detail",
     },
     {
+      title: "ข้อมูลรถ",
+      dataIndex: "carName",
+      key: "carName",
+      align: "center",
+      render: (value, record, index) => (
+        <Link href={`/page/macar/ma-car-management/car/${record.carId}`}>
+          <Button type="link">ตรวจสอบ</Button>
+        </Link>
+      ),
+    },
+    {
       title: "จัดการ",
       align: "center",
       render: (_, record) => (
         <Space>
-          <Button type="link" onClick={() => handleOpenModal("edit", record)}>
+          {/* <Button type="link" onClick={() => handleOpenModal("edit", record)}>
             {`แก้ไข`}
-          </Button>
+          </Button> */}
           <Button
             type="link"
             onClick={() => handleOpenFuelCardModal(record)}

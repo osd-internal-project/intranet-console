@@ -1,6 +1,17 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Card, Col, Form, Input, InputNumber, Row, Select, Tag } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Divider,
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  Select,
+  Tag,
+} from "antd";
 import { useForm } from "antd/es/form/Form";
 import dayjs from "dayjs";
 import { MaCarType } from "../../../../common";
@@ -49,9 +60,13 @@ const CarDetailCard: React.FC<CarDetailCardProps> = ({
   vehicleTypeOptions,
   onSaved,
 }): React.ReactElement => {
-  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
+  const { user } = (useContext(UserContext) as UserContectType) || {
+    user: null,
+  };
   const { id24Axios } = useId24();
-  const baseUrIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
+  const baseUrIntranet = id24Axios(
+    loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET,
+  );
   const manageCarServices = ManageCarServices(baseUrIntranet);
 
   const [form] = useForm();
@@ -85,7 +100,9 @@ const CarDetailCard: React.FC<CarDetailCardProps> = ({
         ...values,
         updatedAt: dayjs().toISOString(),
         updatedById: user?.userId,
-        updatedByName: user ? `${user.firstNameTh} ${user.lastNameTh}` : undefined,
+        updatedByName: user
+          ? `${user.firstNameTh} ${user.lastNameTh}`
+          : undefined,
       };
       const result = await manageCarServices.updateMaCar(car.carId, payload);
       if (result) {
@@ -103,57 +120,74 @@ const CarDetailCard: React.FC<CarDetailCardProps> = ({
     }
   };
 
-  const petrol = PETROL_OPTIONS.find((option) => option.value === car.carPetrol);
+  const petrol = PETROL_OPTIONS.find(
+    (option) => option.value === car.carPetrol,
+  );
   const hasFleetCard = car.fuelCardStatus === "active";
 
   return (
-    <Form form={form} layout="vertical" onFinish={handleSave} autoComplete="off">
-      <Card
-        className="border border-gray-200"
-        styles={{ body: { padding: 24 }, header: { borderBottom: "none" } }}
-        title={
-          <div className="flex items-center gap-2">
-            <span className="text-base font-semibold text-gray-800">
-              {car.carName || "รายละเอียดรถ"}
-            </span>
-            <Tag bordered={false} color={car.status ? "green" : "red"} className="!m-0">
+    <Form
+      form={form}
+      layout="vertical"
+      onFinish={handleSave}
+      autoComplete="off"
+    >
+      <div className="mb-4 flex items-center justify-between">
+        <div
+          className="title-page-font"
+          style={{ display: "flex", alignItems: "left" }}
+        >
+          <span style={{ marginRight: "8px" }}>
+            {car.carName || "รายละเอียดรถ"}
+          </span>
+          <span>
+            <Tag
+              bordered={false}
+              color={car.status ? "green" : "red"}
+              className="!m-0"
+            >
               {car.status ? "ใช้งานได้ปกติ" : "ไม่สามารถใช้งานได้"}
             </Tag>
-          </div>
-        }
-        extra={
-          editing ? (
-            <div className="flex gap-2">
-              <Button size="small" type="text" onClick={handleCancel} disabled={saving}>
-                ยกเลิก
-              </Button>
-              <Button
-                size="small"
-                type="primary"
-                htmlType="submit"
-                loading={saving}
-                onClick={() => form.submit()}
-              >
-                ยืนยัน
-              </Button>
-            </div>
-          ) : (
-            <Button size="small" type="text" onClick={handleEdit}>
-              แก้ไข
+          </span>
+        </div>
+        {editing ? (
+          <div className="flex gap-2">
+            <Button
+              size="small"
+              type="text"
+              onClick={handleCancel}
+              disabled={saving}
+            >
+              ยกเลิก
             </Button>
-          )
-        }
-      >
+            <Button
+              size="small"
+              type="primary"
+              htmlType="submit"
+              loading={saving}
+              onClick={() => form.submit()}
+            >
+              ยืนยัน
+            </Button>
+          </div>
+        ) : (
+          <Button size="small" type="text" onClick={handleEdit}>
+            แก้ไข
+          </Button>
+        )}
+      </div>
         {/* สรุปย่อ — เลขไมล์ / ระดับน้ำมัน / Fleet Card แบบเรียบ */}
-        <div className="mb-6 grid grid-cols-2 gap-y-4 sm:grid-cols-3">
-          <div>
+        <div className="mb-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
+          <Card size="small" className="border border-gray-200">
             <div className="text-xs text-gray-400">เลขไมล์ปัจจุบัน</div>
             <div className="text-lg font-semibold text-gray-800">
               {numberWithCommas(car.carMile ?? 0)}
-              <span className="ml-1 text-xs font-normal text-gray-400">กม.</span>
+              <span className="ml-1 text-xs font-normal text-gray-400">
+                กม.
+              </span>
             </div>
-          </div>
-          <div>
+          </Card>
+          <Card size="small" className="border border-gray-200">
             <div className="text-xs text-gray-400">ระดับน้ำมัน</div>
             <div className="pt-1">
               {petrol ? (
@@ -164,8 +198,8 @@ const CarDetailCard: React.FC<CarDetailCardProps> = ({
                 <span className="text-gray-400">-</span>
               )}
             </div>
-          </div>
-          <div>
+          </Card>
+          <Card size="small" className="border border-gray-200">
             <div className="text-xs text-gray-400">Fleet Card คงเหลือ</div>
             <div className="text-lg font-semibold text-gray-800">
               {hasFleetCard ? (
@@ -176,12 +210,19 @@ const CarDetailCard: React.FC<CarDetailCardProps> = ({
                   </span>
                 </>
               ) : (
-                <span className="text-base font-normal text-gray-400">ไม่มี</span>
+                <span className="text-base font-normal text-gray-400">
+                  ไม่มี
+                </span>
               )}
             </div>
-          </div>
+          </Card>
         </div>
 
+      <Card
+        className="border border-gray-200"
+        styles={{ body: { padding: 24 }, header: { borderBottom: "none" } }}
+      >
+      
         {/* ข้อมูลทะเบียน/ตัวรถ */}
         <div className="mb-4 text-xs font-medium uppercase tracking-wide text-gray-400">
           ข้อมูลรถ
@@ -194,7 +235,10 @@ const CarDetailCard: React.FC<CarDetailCardProps> = ({
               className="mb-3"
               rules={[{ required: editing, message: "กรุณากรอกชื่อรถ" }]}
             >
-              <Input disabled={!editing} style={editing ? undefined : readOnlyInputStyle} />
+              <Input
+                disabled={!editing}
+                style={editing ? undefined : readOnlyInputStyle}
+              />
             </Form.Item>
           </Col>
           <Col xs={24} md={6} lg={6}>
@@ -220,7 +264,11 @@ const CarDetailCard: React.FC<CarDetailCardProps> = ({
             </Form.Item>
           </Col>
           <Col xs={24} md={6} lg={6}>
-            <Form.Item label="ลักษณะ/ตัวถัง" name="carCategory" className="mb-3">
+            <Form.Item
+              label="ลักษณะ/ตัวถัง"
+              name="carCategory"
+              className="mb-3"
+            >
               <Input
                 disabled={!editing}
                 placeholder={editing ? "เช่น กระบะ, เก๋ง, ตู้" : undefined}
@@ -274,7 +322,11 @@ const CarDetailCard: React.FC<CarDetailCardProps> = ({
             </Form.Item>
           </Col>
           <Col xs={24} md={6} lg={6}>
-            <Form.Item label="ผู้ถือกรรมสิทธิ์" name="ownerName" className="mb-3">
+            <Form.Item
+              label="ผู้ถือกรรมสิทธิ์"
+              name="ownerName"
+              className="mb-3"
+            >
               <Input
                 disabled={!editing}
                 placeholder={editing ? "เช่น CDN" : undefined}
@@ -302,9 +354,17 @@ const CarDetailCard: React.FC<CarDetailCardProps> = ({
                 disabled={!editing}
                 className="w-full"
                 min={0}
-                formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                parser={(value) => (value ? Number(value.replace(/,/g, "")) : 0)}
-                style={editing ? { width: "100%" } : { ...readOnlyInputStyle, width: "100%" }}
+                formatter={(value) =>
+                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                }
+                parser={(value) =>
+                  value ? Number(value.replace(/,/g, "")) : 0
+                }
+                style={
+                  editing
+                    ? { width: "100%" }
+                    : { ...readOnlyInputStyle, width: "100%" }
+                }
               />
             </Form.Item>
           </Col>
@@ -326,7 +386,10 @@ const CarDetailCard: React.FC<CarDetailCardProps> = ({
                 disabled={!editing}
                 placeholder={editing ? "เลือกระดับน้ำมัน" : undefined}
                 variant={editing ? "outlined" : "borderless"}
-                options={PETROL_OPTIONS.map(({ value, label }) => ({ value, label }))}
+                options={PETROL_OPTIONS.map(({ value, label }) => ({
+                  value,
+                  label,
+                }))}
               />
             </Form.Item>
           </Col>

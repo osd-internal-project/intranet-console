@@ -122,6 +122,28 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return { docs: [], total: 0 };
         });
     },
+     getMaCarFilesByCarId: async (carId: string) => {
+      return await axiosInstance
+        .get(`${baseUrlApiMaCarFiles}/car/${carId}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
+    getMaCarWrapupByCarId: async (carId: string) => {
+      return await axiosInstance
+        .get(`${baseUrlApiMaCarwarpup}/car/${carId}`)
+        .then((res) => {
+          return res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+    },
     findOneMaCarBook: async (body: any) => {
       return await axiosInstance
         .get(`${baseUrlApiMaCarBook}/${body}`)
@@ -178,6 +200,7 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
+    
     updateMaCar: async (carId: string, body: any) => {
       return await axiosInstance
         .patch(`${baseUrlApiMaCar}/${carId}`, body)
@@ -340,7 +363,7 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
           return res.data;
         });
     },
-    uploadFilesDoc: async (carId: number, body: any) => {
+    uploadFilesDoc: async (carId: string, body: any) => {
       return await axiosInstance
         .post(`${baseUrlApiMaCarFiles}/${carId}`, body, {
           headers: {
@@ -350,6 +373,13 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
         .then((res) => {
           return res.data;
         });
+    },
+
+    /** ลบไฟล์แนบของรถ 1 รายการ (backend ลบ object ใน MinIO ให้ด้วย) */
+    deleteFileDoc: async (id: number) => {
+      return await axiosInstance
+        .delete(`${baseUrlApiMaCarFiles}/${id}`)
+        .then((res) => res.data);
     },
   };
 };

@@ -129,9 +129,9 @@ const ManagementCarAvailableTable: React.FC<props> = ({
       align: "center",
       render: (_, record) => (
         <Space>
-          {/* <Button type="link" onClick={() => handleOpenModal("edit", record)}>
+          <Button type="link" onClick={() => handleOpenModal("edit", record)}>
             {`แก้ไข`}
-          </Button> */}
+          </Button>
           <Button
             type="link"
             onClick={() => handleOpenFuelCardModal(record)}
@@ -154,7 +154,7 @@ const ManagementCarAvailableTable: React.FC<props> = ({
       align: "center",
       render: (_, record) => (
         <Button
-          type="primary"
+          type="link"
           onClick={() => handleCloseModalFiles("open", record)}
           disabled={record.maCarFiles.length > 0 ? false : true}
         >

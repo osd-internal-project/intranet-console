@@ -11,6 +11,8 @@ import { dateFormatTime } from "@/app/utils";
 
 export interface CarActivityTimelineProps {
   carId: string;
+  loadActivity: boolean;
+  setLoadActivity: (status: boolean) => void;
 }
 
 /** ป้ายไทยของ action (ให้ตรงกับ ACTION_LABEL ฝั่ง backend) */
@@ -63,13 +65,17 @@ const TYPE_LABEL: Record<string, string> = {
   file: "ไฟล์",
 };
 
-const PAGE_SIZE = 15;
+const PAGE_SIZE = 5;
 
 /**
  * ไทม์ไลน์ประวัติกิจกรรมของรถ 1 คัน — อ่านอย่างเดียว แบ่งหน้าฝั่ง server
  * @param carId รหัสรถ
  */
-const CarActivityTimeline: React.FC<CarActivityTimelineProps> = ({ carId }) => {
+const CarActivityTimeline: React.FC<CarActivityTimelineProps> = ({
+  carId,
+  loadActivity,
+  setLoadActivity,
+}) => {
   const { id24Axios } = useId24();
   const services = ManageCarServices(
     id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET),
@@ -78,30 +84,34 @@ const CarActivityTimeline: React.FC<CarActivityTimelineProps> = ({ carId }) => {
   const [rows, setRows] = useState<TCarActivityLog[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [acloading, setAcLoading] = useState(true);
 
   useEffect(() => {
     let active = true;
     (async () => {
-      setLoading(true);
+      setAcLoading(true);
+
       const res = await services.getCarActivity(
         carId,
         (page - 1) * PAGE_SIZE,
         PAGE_SIZE,
-      );
+      );    console.log("CarActivityTimeline useEffect", { res, page, loadActivity });
+
       if (active) {
         setRows(res.data ?? []);
         setTotal(res.count ?? 0);
-        setLoading(false);
+        setAcLoading(false);
       }
     })();
+      // setLoadActivity(false);
     return () => {
       active = false;
     };
+  
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [carId, page]);
 
-  if (loading) {
+  if (acloading) {
     return (
       <div className="flex justify-center py-8">
         <Spin />

@@ -13,7 +13,7 @@ import {
 import type { TabsProps } from "antd";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { MaCarType } from "../../../common";
+import { MaCarFile, MaCarType } from "../../../common";
 import { ManageCarServices } from "../../services/manage-car.service";
 import { MaVehicleTypeServices } from "../../../ma-car-config/services/ma-vehicle-type.service";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
@@ -23,6 +23,7 @@ import CarDocumentsPanel from "./components/car-documents-panel";
 import CarMaTable from "./components/car-ma-table";
 import CarBookingTable from "./components/car-booking-table";
 import CarInfoPanel from "./components/car-info-panel";
+import CarFilesPanel from "./components/car-files-panel";
 import CarActivityTimeline from "./components/car-activity-timeline";
 
 /** ตรวจว่าเป็นข้อมูลรถจริง (service คืน [] เมื่อ error จึงต้องกันกรณีไม่ใช่ object) */
@@ -48,24 +49,54 @@ export default function CarDetailPage(): React.ReactElement {
   const vehicleTypeServices = MaVehicleTypeServices(baseUrIntranet);
 
   const [car, setCar] = useState<MaCarType | null>(null);
+  const [files, setFiles] = useState<MaCarFile[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [loadActivity, setLoadActivity] = useState<boolean>(false);
+
   const [vehicleTypeOptions, setVehicleTypeOptions] = useState<
     { label: string; value: string }[]
   >([]);
 
-  /** โหลด/รีโหลดข้อมูลรถตาม carId — เรียกซ้ำได้หลังบันทึกแก้ไข */
-  const fetchCar = useCallback(async () => {
-    setLoading(true);
-    const data = await manageCarServices.getMaCarQueryByCarId(carId);
-    setCar(isValidCar(data) ? data : null);
-    setLoading(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [carId]);
+  /**
+   * โหลด/รีโหลดข้อมูลรถตาม carId — เรียกซ้ำได้หลังบันทึกแก้ไข
+   * @param silent true = ไม่ขึ้น Skeleton เพื่อกัน Tabs remount แล้วเด้งกลับแท็บแรก
+   */
+  const fetchCar = useCallback(
+    async (silent = false) => {
+      if (!silent) setLoading(true);
+      const data = await manageCarServices.getMaCarQueryByCarId(carId);
 
+      // console.log("fetchCar", { carId, files, data });
+      // setLoadActivity(true);
+
+      setCar(isValidCar(data) ? data : null);
+      if (!silent) setLoading(false);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [carId],
+  );
+  const fetchCarFiles = useCallback(
+    async (silent = false) => {
+      if (!silent) setLoading(true);
+      const files = await manageCarServices.getMaCarFilesByCarId(carId);
+      setFiles(files);
+      setLoadActivity(true);
+      // console.log("fetchCar", { carId, files, data });
+      if (!silent) setLoading(false);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+
+    [carId],
+  );
   useEffect(() => {
-    fetchCar();
+    void fetchCar();
   }, [fetchCar]);
-
+  useEffect(() => {
+    void fetchCar();
+  }, [fetchCar]);
+  useEffect(() => {
+    void fetchCarFiles();
+  }, [fetchCarFiles]);
   // ตัวเลือกประเภทรถจาก master — โหลดครั้งเดียว เลี้ยง Select ในการ์ดแก้ไข
   useEffect(() => {
     vehicleTypeServices.getMaVehicleTypeQuery().then((res: unknown) => {
@@ -94,11 +125,22 @@ export default function CarDetailPage(): React.ReactElement {
           label: "การจองรถ",
           children: <CarBookingTable carId={car.carId} />,
         },
-        {
-          key: "activity",
-          label: "ประวัติกิจกรรม",
-          children: <CarActivityTimeline carId={car.carId} />,
-        },
+        // {
+        //   key: "activity",
+        //   label: "ประวัติกิจกรรม",
+        //   children: <CarActivityTimeline carId={car.carId} />,
+        // },
+        // {
+        //   key: "files",
+        //   label: `ไฟล์แนบ (${files?.length ?? 0})`,
+        //   children: (
+        //     <CarFilesPanel
+        //       carId={car.carId}
+        //       files={files ?? []}
+        //       onChanged={() => fetchCar(true)}
+        //     />
+        //   ),
+        // },
         {
           key: "info",
           label: "ข้อมูลอื่น ๆ",
@@ -153,20 +195,54 @@ export default function CarDetailPage(): React.ReactElement {
               <CarDetailCard
                 car={car}
                 vehicleTypeOptions={vehicleTypeOptions}
-                onSaved={fetchCar}
+                onSaved={() => fetchCar()}
               />
 
               <Row gutter={[16, 16]}>
                 <Col xs={24} lg={8}>
-                  <CarDocumentsPanel carId={car.carId} />
+                  <Row gutter={[16, 16]}>
+                    <Col span={24}>
+                      <CarDocumentsPanel carId={car.carId} />
+                    </Col>
+                    <Col span={24}>
+                      <Card
+                        title="ประวัติกิจกรรม"
+                        className="shadow-sm border border-gray-200"
+                      >
+                        <CarActivityTimeline
+                          carId={car.carId}
+                          loadActivity={loadActivity}
+                          setLoadActivity={setLoadActivity}
+                        />
+                      </Card>
+                    </Col>
+                  </Row>
                 </Col>
                 <Col xs={24} lg={16}>
-                  <Card
-                    className="shadow-sm border border-gray-200"
-                    styles={{ body: { padding: 16 } }}
-                  >
-                    <Tabs defaultActiveKey="ma" items={tabItems} />
-                  </Card>
+                  <Row gutter={[16, 16]}>
+                    <Col span={24}>
+                      <Card
+                        title="ประวัติตรวจสภาพ / การจอง / ข้อมูลอื่น ๆ"
+                        className="shadow-sm border border-gray-200"
+                        styles={{ body: { padding: 16 } }}
+                      >
+                        <Tabs defaultActiveKey="ma" items={tabItems} />
+                      </Card>
+                    </Col>
+                    <Col span={24}>
+                      <Card
+                        className="shadow-sm border border-gray-200"
+                        styles={{ body: { padding: 16 } }}
+                        title={`ไฟล์แนบ (${files?.length ?? 0})`}
+                      >
+                        <CarFilesPanel
+                          carId={car.carId}
+                          files={files ?? []}
+                          onChanged={() => fetchCarFiles(true)}
+                        />
+                      </Card>
+                    </Col>
+                  </Row>
                 </Col>
               </Row>
             </div>

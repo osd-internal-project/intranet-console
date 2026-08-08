@@ -44,7 +44,12 @@ const MacarFileList: React.FC<MacarFileListProps> = ({
     <div className="flex flex-col gap-2">
       {items.map((item, index) => {
         const inlineUrl = macarFileUrl(item.filePath, item.name, "inline");
-        const downloadUrl = macarFileUrl(item.filePath, item.name, "attachment");
+        console.log("inlineUrl", inlineUrl, item.filePath, item.name);
+        const downloadUrl = macarFileUrl(
+          item.filePath,
+          item.name,
+          "attachment",
+        );
         const isImage = isImageFile(item.name) || isImageFile(item.filePath);
         return (
           <div

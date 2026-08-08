@@ -1,5 +1,7 @@
 import React, { useContext, useState } from "react";
-import BookImageList from "@/app/page/macar/common/book-image-list";
+import BookImageList, {
+  BookImage,
+} from "@/app/page/macar/common/book-image-list";
 import {
   Table,
   Button,
@@ -111,14 +113,20 @@ const MaCarReturn: React.FC<props> = ({
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
 
-  const values = formReturn.getFieldsValue(true);
+  /** รูปภาพของการจองที่กำลังคืน — ดึงจาก API ตาม maCarBook.id (แสดงอย่างเดียว) */
+  const [bookImages, setBookImages] = useState<BookImage[]>([]);
 
   const showModalReturn = async (record: MaCarBookType) => {
     checkStatusReturn(record);
     setCurrentMaId(record.carId);
     setCurrentMaBookId(record.id);
-    const car = await maCarServices.getMaCarById(record.carId);
+    // ดึงข้อมูลรถและรูปภาพการจองพร้อมกัน เพื่อไม่ให้เปิด modal ช้า
+    const [car, images] = await Promise.all([
+      maCarServices.getMaCarById(record.carId),
+      maCarBookServices.getMaCarBookingImages(record.id),
+    ]);
     setSelectedCar(car);
+    setBookImages(images ?? []);
     formReturn.setFieldsValue({
       ...record,
       carName: record.maCar.carName,
@@ -133,6 +141,7 @@ const MaCarReturn: React.FC<props> = ({
 
   const handleModalReturn = () => {
     setModalEditReturn(false);
+    setBookImages([]);
   };
 
   const showModalDetail = (record: MaCarBookType) => {
@@ -522,6 +531,19 @@ const MaCarReturn: React.FC<props> = ({
               </Col>
             </Row>
 
+            <Row gutter={16}>
+              <Col span={24}>
+                <div style={{ marginBottom: "8px", color: "#8c8c8c" }}>
+                  รูปภาพการจอง
+                </div>
+                <BookImageList
+                  images={bookImages}
+                  readOnly
+                  emptyText="ไม่มีรูปภาพการจอง"
+                />
+              </Col>
+            </Row>
+
             {selectedCar?.fuelCardStatus &&
               selectedCar?.fuelCardStatus === "active" &&
               selectedCar?.fuelCardExpiredDate && (
@@ -592,65 +614,59 @@ const MaCarReturn: React.FC<props> = ({
               </Form.Item>
             </Col>
             <Col span={12}>
-              {values.maCarBookImage && values.maCarBookImage.length > 0 ? (
-                <BookImageList
-                  images={formReturn.getFieldsValue(true).maCarBookImage}
-                />
-              ) : (
-                <Form.Item
-                  label={
+              <Form.Item
+                label={
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <CameraOutlined />
+                    <span>อัปโหลดรูปภาพ</span>
+                  </div>
+                }
+                valuePropName="fileList"
+                extra={
+                  <div
+                    style={{
+                      color: "#8c8c8c",
+                      fontSize: "12px",
+                      marginTop: "4px",
+                    }}
+                  >
+                    เฉพาะไฟล์ PNG และ JPEG
+                  </div>
+                }
+              >
+                <Upload
+                  fileList={attendFiles}
+                  onChange={handleChangeAttendFiles}
+                  beforeUpload={beforeUploadAttendFiles}
+                  multiple={false}
+                  // maxCount={10}
+                  onPreview={handlePreview}
+                  listType="picture-card"
+                  style={{ width: "100%" }}
+                >
+                  {attendFiles.length >= 10 ? null : (
                     <div
                       style={{
                         display: "flex",
+                        flexDirection: "column",
                         alignItems: "center",
-                        gap: "8px",
+                        padding: "8px",
                       }}
                     >
-                      <CameraOutlined />
-                      <span>อัปโหลดรูปภาพ</span>
+                      <PlusOutlined
+                        style={{ fontSize: "16px", marginBottom: "8px" }}
+                      />
+                      <div style={{ fontSize: "12px" }}>อัปโหลด</div>
                     </div>
-                  }
-                  valuePropName="fileList"
-                  extra={
-                    <div
-                      style={{
-                        color: "#8c8c8c",
-                        fontSize: "12px",
-                        marginTop: "4px",
-                      }}
-                    >
-                      เฉพาะไฟล์ PNG และ JPEG
-                    </div>
-                  }
-                >
-                  <Upload
-                    fileList={attendFiles}
-                    onChange={handleChangeAttendFiles}
-                    beforeUpload={beforeUploadAttendFiles}
-                    multiple={false}
-                    // maxCount={10}
-                    onPreview={handlePreview}
-                    listType="picture-card"
-                    style={{ width: "100%" }}
-                  >
-                    {attendFiles.length >= 10 ? null : (
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          padding: "8px",
-                        }}
-                      >
-                        <PlusOutlined
-                          style={{ fontSize: "16px", marginBottom: "8px" }}
-                        />
-                        <div style={{ fontSize: "12px" }}>อัปโหลด</div>
-                      </div>
-                    )}
-                  </Upload>
-                </Form.Item>
-              )}
+                  )}
+                </Upload>
+              </Form.Item>
             </Col>
           </Row>
 

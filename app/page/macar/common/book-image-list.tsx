@@ -9,7 +9,7 @@ import { MaCarBookServices } from "@/app/services/ma-car-book.service";
 
 import { notifyError, notifySuccess } from "@/app/utils/message";
 /** รูป 1 รายการของการจอง (maCarBookImage) */
-interface BookImage {
+export interface BookImage {
   idCarBookImage: number;
   filePath?: string;
   fileName?: string;
@@ -18,6 +18,8 @@ interface BookImage {
 export interface BookImageListProps {
   images?: BookImage[];
   emptyText?: string;
+  /** แสดงอย่างเดียว (ดู/ดาวน์โหลดได้ แต่ลบไม่ได้ แม้จะมีสิทธิ์) */
+  readOnly?: boolean;
 }
 
 /**
@@ -27,6 +29,7 @@ export interface BookImageListProps {
 const BookImageList: React.FC<BookImageListProps> = ({
   images,
   emptyText,
+  readOnly = false,
 }): React.ReactElement => {
   const { accessRole } = (useContext(UserContext) as UserContectType) || {
     accessRole: () => false,
@@ -67,7 +70,7 @@ const BookImageList: React.FC<BookImageListProps> = ({
         filePath: image.filePath,
         name: image.fileName,
       }))}
-      onDelete={handleDelete}
+      onDelete={readOnly ? undefined : handleDelete}
       canDelete={canDelete}
       emptyText={emptyText}
     />

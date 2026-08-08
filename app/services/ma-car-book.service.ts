@@ -89,9 +89,10 @@ export const MaCarBookServices = (axiosInstance: AxiosInstance) => {
           return res.data;
         });
     },
+    /** รูปทั้งหมดของการจอง 1 รายการ ตาม maCarBook.id */
     getMaCarBookingImages: async (carBookingId: number) => {
       return await axiosInstance
-        .get(`${baseUrlmaCarBookingImages}/${carBookingId}`)
+        .get(`${baseUrlmaCarBookingImages}/booking/${carBookingId}`)
         .then((res) => {
           return res.data;
         })

@@ -11,7 +11,19 @@ import {
   EditOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
-import { Button, Col, Form, FormInstance, Input, Modal, Row, Space, Tooltip, Card, Tag } from "antd";
+import {
+  Button,
+  Col,
+  Form,
+  FormInstance,
+  Input,
+  Modal,
+  Row,
+  Space,
+  Tooltip,
+  Card,
+  Tag,
+} from "antd";
 import React from "react";
 
 export interface props {
@@ -168,7 +180,10 @@ export const LeaveHistoryDetail: React.FC<props> = ({
               <Row gutter={16}>
                 <Col span={12}>
                   <Form.Item label="ประเภทการลา" name="typeLeave">
-                    <Input disabled className="bg-gray-50 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none" />
+                    <Input
+                      disabled
+                      className="bg-gray-50 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none"
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
@@ -193,7 +208,27 @@ export const LeaveHistoryDetail: React.FC<props> = ({
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="ถึงวันที่" name="endDate">
+                  <Form.Item label="ถึงวันที่" name="startTime">
+                    <Input
+                      disabled
+                      className="bg-gray-50 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none"
+                      prefix={<CalendarOutlined className="text-gray-400" />}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Form.Item label="เวลาเริ่มต้น" name="startDate">
+                    <Input
+                      disabled
+                      className="bg-gray-50 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none"
+                      prefix={<CalendarOutlined className="text-gray-400" />}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="เวลาสิ้นสุด" name="endTime">
                     <Input
                       disabled
                       className="bg-gray-50 cursor-default hover:border-gray-300 focus:border-gray-300 focus:shadow-none"
@@ -217,12 +252,21 @@ export const LeaveHistoryDetail: React.FC<props> = ({
               >
                 <div className="grid grid-cols-1 gap-2">
                   {dataLeaveFiles.map((file: any, index: number) => (
-                    <div key={index} className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                    <div
+                      key={index}
+                      className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+                    >
                       <PaperClipOutlined className="text-blue-500 mr-3" />
                       <div className="flex-1">
                         <Tooltip title="คลิกเพื่อดาวน์โหลด">
-                          <Button type="link" onClick={() => downloadFile(file.id, file.fileName)} className="p-0 h-auto text-left">
-                            <span className="text-blue-600 hover:text-blue-800 font-medium">{file.fileName}</span>
+                          <Button
+                            type="link"
+                            onClick={() => downloadFile(file.id, file.fileName)}
+                            className="p-0 h-auto text-left"
+                          >
+                            <span className="text-blue-600 hover:text-blue-800 font-medium">
+                              {file.fileName}
+                            </span>
                           </Button>
                         </Tooltip>
                       </div>
@@ -246,7 +290,11 @@ export const LeaveHistoryDetail: React.FC<props> = ({
                 <div className="bg-green-50 p-4 rounded-lg">
                   <Row gutter={16}>
                     <Col span={12}>
-                      <Form.Item label="ผู้อนุมัติ" name="userApproved" className="mb-2">
+                      <Form.Item
+                        label="ผู้อนุมัติ"
+                        name="userApproved"
+                        className="mb-2"
+                      >
                         <Input
                           disabled
                           className="bg-gray-50 cursor-default hover:border-green-300 focus:border-green-300 focus:shadow-none border-green-300"
@@ -255,17 +303,26 @@ export const LeaveHistoryDetail: React.FC<props> = ({
                       </Form.Item>
                     </Col>
                     <Col span={12}>
-                      <Form.Item label="วันที่อนุมัติ" name="approvedDate" className="mb-2">
+                      <Form.Item
+                        label="วันที่อนุมัติ"
+                        name="approvedDate"
+                        className="mb-2"
+                      >
                         <Input
                           disabled
                           className="bg-gray-50 cursor-default hover:border-green-300 focus:border-green-300 focus:shadow-none border-green-300"
-                          prefix={<CalendarOutlined className="text-green-500" />}
+                          prefix={
+                            <CalendarOutlined className="text-green-500" />
+                          }
                         />
                       </Form.Item>
                     </Col>
                   </Row>
                   <div className="text-center mt-2">
-                    <Tag color="success" className="px-4 py-1 font-medium rounded-full">
+                    <Tag
+                      color="success"
+                      className="px-4 py-1 font-medium rounded-full"
+                    >
                       <CheckCircleOutlined className="mr-1" />
                       อนุมัติแล้ว
                     </Tag>

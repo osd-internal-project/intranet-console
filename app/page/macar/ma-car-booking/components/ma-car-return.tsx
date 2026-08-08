@@ -12,12 +12,19 @@ import {
   Input,
   Divider,
   message,
+  Image,
   InputNumber,
   Tag,
   Upload,
   Switch,
 } from "antd";
-import type { TableProps, FormProps, UploadProps, UploadFile } from "antd";
+import type {
+  TableProps,
+  FormProps,
+  UploadProps,
+  UploadFile,
+  GetProp,
+} from "antd";
 import dayjs from "dayjs";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
 import { MaCarBookServices } from "../../../../services/ma-car-book.service";
@@ -46,6 +53,17 @@ import { RcFile } from "antd/es/upload";
 import { MaCarServices } from "@/app/services/ma-car.service";
 import { MaCarFuelTransactionServices } from "@/app/services/ma-car-fuel-transaction.service";
 import { numberWithCommas } from "@/app/utils/format";
+
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
+
+const getBase64 = (file: FileType): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
+
 export interface props {
   maCarBookData: MaCarBookType[];
   loading: boolean;
@@ -89,6 +107,9 @@ const MaCarReturn: React.FC<props> = ({
   const [selectedCar, setSelectedCar] = useState<MaCarType | undefined>(
     undefined,
   );
+
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
 
   const values = formReturn.getFieldsValue(true);
 
@@ -137,7 +158,6 @@ const MaCarReturn: React.FC<props> = ({
       phoneNumber: user?.phoneNumber,
       // fuelState:record?.fuelTransaction ?'เติม'
       amount: record?.fuelTransaction?.amount,
-
     });
   };
 
@@ -340,6 +360,14 @@ const MaCarReturn: React.FC<props> = ({
     return setAttendFiles(newFileList);
   };
 
+  const handlePreview = async (file: UploadFile) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj as FileType);
+    }
+
+    setPreviewImage(file.url || (file.preview as string));
+    setPreviewOpen(true);
+  };
   return (
     <>
       {messageHeader}
@@ -601,7 +629,7 @@ const MaCarReturn: React.FC<props> = ({
                     beforeUpload={beforeUploadAttendFiles}
                     multiple={false}
                     // maxCount={10}
-                    onPreview={() => {}}
+                    onPreview={handlePreview}
                     listType="picture-card"
                     style={{ width: "100%" }}
                   >
@@ -685,6 +713,17 @@ const MaCarReturn: React.FC<props> = ({
         style={{ marginTop: "5px" }}
         rowKey={(e: any) => e.id}
       />
+      {previewImage && (
+        <Image
+          wrapperStyle={{ display: "none" }}
+          preview={{
+            visible: previewOpen,
+            onVisibleChange: (visible) => setPreviewOpen(visible),
+            afterOpenChange: (visible) => !visible && setPreviewImage(""),
+          }}
+          src={previewImage}
+        />
+      )}
     </>
   );
 };

@@ -280,11 +280,11 @@ const menuItems: AppMenuItem[] = [
       {
         key: `users-management/user-organization`,
         label: `Organizations`,
-        rule: "admin",
+        rule: ["admin", "hr"],
       },
       {
         key: `users-management/user-group`,
-        label: `Groups`,
+        label: `กลุ่มผู้ใช้งาน (Groups)`,
         rule: "admin",
       }, 
       {
@@ -295,12 +295,12 @@ const menuItems: AppMenuItem[] = [
       {
         key: `users-management/user-role-access`,
         label: `สิทธิ์การเข้าถึง`,
-        rule: "admin",
+        rule: ["admin", "hr"],
       },
       {
         key: `users-management/user-group-permission`,
-        label: `Group Permission`,
-        rule: "admin",
+        label: `สิทธิ์การจัดการข้อมูล`,
+        rule: ["admin", "hr"],
       },
     ],
   },

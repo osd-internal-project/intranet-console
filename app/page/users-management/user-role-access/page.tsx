@@ -28,7 +28,7 @@ export default function UserRoleAccessPage() {
         />
       </Col>
       <Divider orientation="left" orientationMargin="0">
-        <div className="title-page-font">{`สิทธิ์การเข้าถึง (Group Access)`}</div>
+        <div className="title-page-font">{`สิทธิ์การเข้าถึง`}</div>
       </Divider>
       <Col span={24}>
         <div className="grid grid-cols-1 ">

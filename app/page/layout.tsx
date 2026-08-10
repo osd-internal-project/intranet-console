@@ -1,5 +1,11 @@
 "use client";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { usePathname } from "next/navigation";
 import Navigation from "@/components/Navigation";
 import { useRouter } from "next/navigation";
@@ -9,6 +15,7 @@ import { Footer } from "antd/es/layout/layout";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "../config/app-config";
 import { UsersServices } from "../services/users.service";
+import UserMapRoleGroupServices from "../services/user-map-role-group.service";
 import { UserContectType, UserContext } from "../config/userContext";
 
 import Script from "next/script";
@@ -31,16 +38,43 @@ export default function MainLayout({
   const pathname = usePathname();
   const defaultPath = `${window.location.origin}/page/home`;
 
-  useEffect(() => {
-    const sideMenuGroups =
+  /** code สิทธิ์ที่ได้จาก token ของ ID24 */
+  const tokenRoleCodes = useMemo(
+    () =>
       tokenAccess && tokenAccess.userAccess.length > 0
         ? Array.from(
             new Set(tokenAccess?.userAccess.map((item) => item.roles).flat()),
           )
-        : [];
+        : [],
+    [tokenAccess?.userAccess],
+  );
 
-    saveRoles(sideMenuGroups);
-  }, [tokenAccess?.userAccess]);
+  /** code สิทธิ์ที่ได้จากกลุ่มต้นสังกัดของผู้ใช้ (ตั้งค่าที่หน้า "สิทธิ์การเข้าถึง") */
+  const [groupRoleCodes, setGroupRoleCodes] = useState<string[]>([]);
+
+  useEffect(() => {
+    const ownerGroupId = profileDetail?.ownerGroupId;
+    if (!ownerGroupId) {
+      setGroupRoleCodes([]);
+      return;
+    }
+    // service ดัก error ไว้แล้วและคืน [] จึงถอยไปใช้สิทธิ์จาก token เมื่อเรียกไม่สำเร็จ
+    UserMapRoleGroupServices(baseUrlUser)
+      .findRoleCodesByGroupId(ownerGroupId)
+      .then(setGroupRoleCodes);
+    // baseUrlUser ถูกสร้างใหม่ทุก render จึงไม่ใส่ใน deps เพื่อไม่ให้เรียกวน
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profileDetail?.ownerGroupId]);
+
+  // สิทธิ์ที่ใช้จริง = สิทธิ์จาก token รวมกับสิทธิ์ของกลุ่ม (union — กลุ่มเพิ่มสิทธิ์ได้ แต่ตัดของ token ไม่ได้)
+  const mergedRoleCodes = useMemo(
+    () => Array.from(new Set(tokenRoleCodes.concat(groupRoleCodes))),
+    [tokenRoleCodes, groupRoleCodes],
+  );
+
+  useEffect(() => {
+    saveRoles(mergedRoleCodes);
+  }, [mergedRoleCodes]);
 
   const fetchData = useCallback(async () => {
     try {
@@ -85,14 +119,7 @@ export default function MainLayout({
     logout().then(() => login(defaultPath, false));
   };
 
-  const sideMenuGroups =
-    tokenAccess && tokenAccess.userAccess.length > 0
-      ? Array.from(
-          new Set(tokenAccess?.userAccess.map((item) => item.roles).flat()),
-        )
-      : [];
-
-  const menulist = MenuSiderWithModule(sideMenuGroups);
+  const menulist = MenuSiderWithModule(mergedRoleCodes);
   const currentPath = pathname.split("/")[2];
   const currentPathSub = pathname.split("/")[3];
 

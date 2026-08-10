@@ -14,10 +14,23 @@ import {
   IconParty,
 } from "@/components/icon";
 import { FieldTimeOutlined, HomeOutlined } from "@ant-design/icons";
+import { hasRoleCode, RoleCode } from "./user-roles";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
-export const MenuSider: MenuItem[] = [
+/**
+ * รายการเมนูก่อนแปลงเป็นรูปแบบของ antd
+ * ฟิลด์ rule รับได้เฉพาะ code ที่นิยามไว้ใน ROLES เท่านั้น (พิมพ์ผิดจะ build ไม่ผ่าน)
+ */
+interface AppMenuItem {
+  key: string;
+  label: React.ReactNode;
+  icon?: React.ReactNode;
+  rule: RoleCode | RoleCode[];
+  children?: AppMenuItem[];
+}
+
+const menuItems: AppMenuItem[] = [
   {
     key: "home",
     label: "หน้าหลัก",
@@ -273,22 +286,17 @@ export const MenuSider: MenuItem[] = [
         key: `users-management/user-group`,
         label: `Groups`,
         rule: "admin",
+      }, 
+      {
+        key: `users-management/user-rule`,
+        label: `สิทธิ์การใช้งาน (Roles)`,
+        rule: "admin",
+      }, 
+      {
+        key: `users-management/user-role-access`,
+        label: `สิทธิ์การเข้าถึง`,
+        rule: "admin",
       },
-      // {
-      //   key: `users-management/user-role`,
-      //   label: `Roles`,
-      //   rule: "admin",
-      // },
-      // {
-      //   key: `users-management/user-rule`,
-      //   label: `Rules`,
-      //   rule: "admin",
-      // },
-      // {
-      //   key: `users-management/user-module`,
-      //   label: `Module`,
-      //   rule: "admin",
-      // },
       {
         key: `users-management/user-group-permission`,
         label: `Group Permission`,
@@ -367,7 +375,9 @@ export const MenuSider: MenuItem[] = [
       // },
     ],
   },
-].map((item) => {
+];
+
+export const MenuSider: MenuItem[] = menuItems.map((item) => {
   return {
     ...item,
     label: !item.children ? (
@@ -386,14 +396,7 @@ export const MenuSiderWithModule = (modules: string[]) => {
       ...menu,
       children: menu?.children
         ? menu.children
-            .filter((item: any) => {
-              const rule = item.rule;
-              // return !item.rule || modules.includes(item.rule);
-              if (Array.isArray(rule)) {
-                return rule.some((r) => modules.includes(r));
-              }
-              return modules.includes(rule);
-            })
+            .filter((item: any) => hasRoleCode(modules, item.rule))
             .map((item: any) => {
               return {
                 ...item,
@@ -416,20 +419,9 @@ export const MenuSiderWithModule = (modules: string[]) => {
         : null,
     }));
 
-    // original code
-    //  const menu = menuFilterChildren.filter((item: any) => {
-    //   console.log(item.rule);
-
-    //   return !item.rule || modules.includes(item.rule);
-    // });
-
-    const menu = menuFilterChildren.filter((item: any) => {
-      const rule = item.rule;
-      if (Array.isArray(rule)) {
-        return rule.some((r) => modules.includes(r));
-      }
-      return modules.includes(rule);
-    });
+    const menu = menuFilterChildren.filter((item: any) =>
+      hasRoleCode(modules, item.rule),
+    );
 
     return menu;
   } else {

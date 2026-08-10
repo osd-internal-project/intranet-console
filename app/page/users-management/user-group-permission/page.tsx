@@ -1,6 +1,15 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
-import { Breadcrumb, Card, Divider, Row, Segmented, Spin, TreeSelectProps } from "antd";
+import {
+  Breadcrumb,
+  Button,
+  Card,
+  Divider,
+  Row,
+  Segmented,
+  Spin,
+  TreeSelectProps,
+} from "antd";
 import { Col, SegmentedProps } from "antd/lib";
 import UserModuleServices from "@/app/services/user-module.service";
 import { useForm } from "antd/es/form/Form";
@@ -20,15 +29,26 @@ export default function UserModulePage() {
   const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
   const [form] = useForm();
   const [loading, setLoading] = useState<boolean>(true);
-  const [moduleSelected, setModuleSelected] = useState<string | undefined>(undefined);
-  const [userModuleOptions, setUserModuleOptions] = useState<SegmentedProps["options"]>([]);
-  const [groupOptions, setGroupOptions] = useState<TreeSelectProps["treeData"]>([]);
+  const [moduleSelected, setModuleSelected] = useState<string | undefined>(
+    undefined,
+  );
+  const [userModuleOptions, setUserModuleOptions] = useState<
+    {
+      value: string;
+      label: string;
+    }[]
+  >([]);
+  const [groupOptions, setGroupOptions] = useState<TreeSelectProps["treeData"]>(
+    [],
+  );
   useEffect(() => {
     fetchData();
   }, [loading]);
 
   async function fetchData() {
-    const userModules = await UserModuleServices(baseUrlUser).findMany({});
+    const userModules = await UserModuleServices(baseUrlUser).findMany({
+      where: { status: true },
+    });
     if (userModules) {
       const options = userModules.map((module) => ({
         value: module.code,
@@ -46,19 +66,28 @@ export default function UserModulePage() {
     const tree = createTree(groups, null);
     setGroupOptions(tree);
   };
+  /**
+   * แปลงรายการกลุ่มแบบ flat ให้เป็นโครงสร้าง tree ตาม parentGroupId
+   * node แต่ละตัวมีทั้ง `value` (สำหรับ TreeSelect) และ `key` (สำหรับ Tree)
+   * รวมถึง `groupName` ไว้ให้ฝั่งที่ต้องการชื่อแบบ plain text ใช้งาน
+   * @param obj รายการกลุ่มทั้งหมดแบบ flat
+   * @param parentId groupId ของกลุ่มแม่ (null = ระดับบนสุด)
+   * @returns tree ของกลุ่มผู้ใช้งาน
+   */
   const createTree = (obj: any[], parentId: string | null) => {
     const tree: any[] = [];
 
     obj.forEach((item) => {
-      console.log(item);
       if (item.parentGroupId === parentId) {
         const children = createTree(obj, item.groupId);
         if (children.length > 0) {
-          (item.icon = <CarryOutOutlined />), (item.children = children);
+          ((item.icon = <CarryOutOutlined />), (item.children = children));
         }
         tree.push({
           value: item.groupId,
+          key: item.groupId,
           title: item.groupName,
+          groupName: item.groupName,
           children: item.children,
         });
       }
@@ -67,7 +96,9 @@ export default function UserModulePage() {
   };
   async function onSelectGroups(value: string): Promise<void> {
     if (moduleSelected && value) {
-      const permissionGroup = await UserGroupServices(baseUrlUser).getPermissionGroupByGroupIdAndModuleId({
+      const permissionGroup = await UserGroupServices(
+        baseUrlUser,
+      ).getPermissionGroupByGroupIdAndModuleId({
         groupid: value,
         modulecode: moduleSelected,
       });
@@ -80,7 +111,10 @@ export default function UserModulePage() {
     }
   }
 
-  async function onSubmitPermission(value: { groupId: string; permissionGroupId: string[] }): Promise<void> {
+  async function onSubmitPermission(value: {
+    groupId: string;
+    permissionGroupId: string[];
+  }): Promise<void> {
     await UserGroupServices(baseUrlUser)
       .setUserPermissionGroup({
         userGroupId: value.groupId,
@@ -101,7 +135,7 @@ export default function UserModulePage() {
             items={[
               {
                 href: "/page/home",
-                title: <span>หน้าหลัก {user?.userId}</span>,
+                title: <span>หน้าหลัก</span>,
               },
               {
                 title: <span>Group Permission</span>,
@@ -114,17 +148,49 @@ export default function UserModulePage() {
         </Divider>
         <div className="w-full">
           <Card>
-            <div className=" flex w-full gap-2">
-              <div className="flex-none">
-                <Segmented
+            <div className="  w-full gap-2">
+              <div className="mb-2">
+                <div className="font-semibold">สิทธิ์การดำเนินการ</div>
+                <div className="text-gray-500 text-xs">
+                  เลือกระบบที่ต้องการกำหนดสิทธิ์ (การเปลี่ยนระบบจะล้างข้อมูลในฟอร์ม)
+                </div>
+              </div>
+              <div className="inline-flex flex-wrap gap-1 p-1 mb-4 rounded-lg bg-gray-100">
+                {userModuleOptions.map((option) => {
+                  const isSelected = moduleSelected === option.value;
+
+                  return (
+                    <Button
+                      key={option.value}
+                      type="text"
+                      // ปุ่มที่เลือกอยู่กดซ้ำไม่ได้ แต่ยังต้องแสดงสีแบบ active
+                      // จึง override สีของ state disabled ของ antd ด้วย !important
+                      className={
+                        isSelected
+                          ? "font-semibold !bg-[#cde2fb] !border-[#86b6ef] !text-[#184f95] !opacity-100 !cursor-default"
+                          : "font-semibold !text-gray-600"
+                      }
+                      disabled={isSelected}
+                      onClick={() => {
+                        form.resetFields();
+                        setModuleSelected(String(option.value));
+                      }}
+                    >
+                      {option.label}
+                    </Button>
+                  );
+                })}
+
+                {/* <Segmented
                   size="large"
-                  vertical
+                  // vertical
+
                   options={userModuleOptions}
                   onChange={(value) => {
                     form.resetFields();
                     setModuleSelected(String(value));
                   }}
-                />
+                /> */}
               </div>
               {moduleSelected && (
                 <div className="flex-1 w-full">

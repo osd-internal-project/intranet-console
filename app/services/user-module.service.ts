@@ -13,7 +13,7 @@ const UserModuleServices = (axiosInstance: AxiosInstance): TServices => {
   return {
     findMany: async (search: any) => {
       return await axiosInstance
-        .get(`${baseUrl}/many`, {
+        .get(`${baseUrl}/`, {
           params: search,
         })
         .then((res) => {

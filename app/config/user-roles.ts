@@ -165,17 +165,88 @@
 //   maCarAdminConfigEdit = "imac-ac-e",
 //   maCarAdminConfigDelete = "imac-ac-d",
 // }
-export type TUserRoles = {
-  admin?: boolean;
-  hr?: boolean;
-  user?: boolean;
-  maUser?: boolean;
-  account?: boolean;
-};
-export enum UserRoles {
-  admin = "admin",
-  hr = "hr",
-  user = "user",
-  maUser = "ma-user",
-  account = "account",
+/**
+ * นิยามของสิทธิ์ 1 รายการ
+ * - code: ค่าที่อยู่ใน token ของ ID24 (ใช้เทียบสิทธิ์จริง)
+ * - name: ชื่อที่แสดงให้ผู้ใช้เห็น
+ * - description: คำอธิบายขอบเขตของสิทธิ์
+ */
+export interface RoleDefinition {
+  readonly code: string;
+  readonly name: string;
+  readonly description: string;
 }
+
+/**
+ * ศูนย์กลางของสิทธิ์ทั้งหมดในระบบ (single source of truth)
+ * เพิ่ม/แก้สิทธิ์ที่นี่ที่เดียว แล้วเมนู (menu.tsx), ปุ่มต่าง ๆ (accessRole)
+ * และหน้า Roles จะอัปเดตตามทันที
+ */
+export const ROLES = {
+  user: {
+    code: "user",
+    name: "ผู้ใช้งานทั่วไป",
+    description: "ใช้งานระบบทั่วไป เช่น ยื่นใบลา จองรถ และจองห้องประชุม",
+  },
+
+  header: {
+    code: "header",
+    name: "หัวหน้างาน",
+    description: "อนุมัติและตรวจสอบรายการลาและการทำงานล่วงเวลาของทีม",
+  },
+  hr: {
+    code: "hr",
+    name: "ฝ่ายบุคคล",
+    description: "จัดการข้อมูลพนักงาน การลา และการตั้งค่าที่เกี่ยวข้องกับบุคคล",
+  },
+  maUser: {
+    code: "ma-user",
+    name: "ฝ่ายซ่อมบำรุง",
+    description: "จัดการงานบำรุงรักษาทรัพย์สินและข้อมูลรถยนต์",
+  },
+  account: {
+    code: "account",
+    name: "ฝ่ายบัญชี",
+    description: "ดูรายงานและข้อมูลค่าใช้จ่ายของระบบรถ",
+  },
+  admin: {
+    code: "admin",
+    name: "ผู้ดูแลระบบ",
+    description: "เข้าถึงสิทธิ์การจัดการทั้งหมดของระบบ",
+  },
+} as const satisfies Record<string, RoleDefinition>;
+
+/** ชื่อคีย์ของสิทธิ์ เช่น "admin" | "maUser" (ใช้กับ accessRole) */
+export type RoleKey = keyof typeof ROLES;
+
+/** ค่า code ของสิทธิ์ เช่น "admin" | "ma-user" (ใช้กับเมนูและ token) */
+export type RoleCode = (typeof ROLES)[RoleKey]["code"];
+
+/** รายการสิทธิ์ทั้งหมดในรูปแบบ array — ใช้แสดงตารางในหน้า Roles */
+export const ROLE_LIST: readonly RoleDefinition[] = Object.values(ROLES);
+
+/**
+ * ตรวจว่าสิทธิ์ของผู้ใช้ตรงกับสิทธิ์ที่ยอมรับได้อย่างน้อยหนึ่งอย่างหรือไม่
+ * @param userRoleCodes รายการ code สิทธิ์ของผู้ใช้ที่ได้จาก token
+ * @param allowed สิทธิ์ที่ยอมรับได้ (code เดียวหรือหลาย code)
+ * @returns true เมื่อผู้ใช้มีสิทธิ์ใดสิทธิ์หนึ่งในรายการ
+ */
+export const hasRoleCode = (
+  userRoleCodes: string[],
+  allowed: RoleCode | RoleCode[],
+): boolean =>
+  (Array.isArray(allowed) ? allowed : [allowed]).some((code) =>
+    userRoleCodes.includes(code),
+  );
+
+/** แผนที่สิทธิ์ของผู้ใช้ในรูปแบบ { admin: true, hr: true } */
+export type TUserRoles = Partial<Record<RoleKey, boolean>>;
+
+/**
+ * @deprecated ใช้ ROLES แทน — คงไว้เพื่อ backward compatibility ของโค้ดเดิม
+ * รูปแบบ { admin: "admin", maUser: "ma-user", ... }
+ */
+export const UserRoles: { [K in RoleKey]: (typeof ROLES)[K]["code"] } =
+  Object.fromEntries(
+    Object.entries(ROLES).map(([key, role]) => [key, role.code]),
+  ) as { [K in RoleKey]: (typeof ROLES)[K]["code"] };

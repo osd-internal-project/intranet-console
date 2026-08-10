@@ -89,6 +89,7 @@ export const ACTION_LABEL = {
   "usermodule.update": "แก้ไขโมดูล",
   "usermodule.delete": "ลบโมดูล",
   "userpermission.assign": "กำหนดสิทธิ์กลุ่มผู้ใช้งาน",
+  "useraccess.assign": "กำหนดสิทธิ์การเข้าถึง",
 
   // ---------- ตั้งค่า: เอกสาร / ข่าวสาร / หน้าแรก ----------
   "setting.document.create": "เพิ่มเอกสาร",

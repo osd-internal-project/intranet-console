@@ -431,37 +431,40 @@ export const RoleAccessTable: React.FC = () => {
             <Switch checked={onlyAssigned} onChange={setOnlyAssigned} /> */}
           </div>
         </div>
-
-        <Table<GroupRow>
-          size="small"
-          rowKey="key"
-          columns={columns}
-          dataSource={visibleRows}
-          pagination={false}
-          scroll={{ x: "max-content" }}
-          sticky
-          rowClassName={(row) =>
-            dirtyGroupIds.includes(row.groupId) ? "bg-orange-50" : ""
-          }
-          // กางทุกแถวเป็นค่าเริ่มต้น แต่ยังพับ/กางเองได้
-          expandable={{
-            expandedRowKeys: expandedKeys,
-            onExpandedRowsChange: (keys) => setExpandedKeys(keys as string[]),
-          }}
-          locale={{
-            emptyText: (
-              <Empty
-                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                description={
-                  isFiltering
-                    ? "ไม่พบกลุ่มที่ค้นหา"
-                    : "ไม่มีข้อมูลกลุ่มผู้ใช้งาน"
-                }
-              />
-            ),
-          }}
-        />
-
+        <div className="h-[calc(100vh-200px)]  overflow-y-scroll rounded-lg border border-gray-300">
+          <div className="">
+            <Table<GroupRow>
+              size="small"
+              rowKey="key"
+              columns={columns}
+              dataSource={visibleRows}
+              pagination={false}
+              scroll={{ x: "max-content" }}
+              sticky
+              rowClassName={(row) =>
+                dirtyGroupIds.includes(row.groupId) ? "bg-orange-50" : ""
+              }
+              // กางทุกแถวเป็นค่าเริ่มต้น แต่ยังพับ/กางเองได้
+              expandable={{
+                expandedRowKeys: expandedKeys,
+                onExpandedRowsChange: (keys) =>
+                  setExpandedKeys(keys as string[]),
+              }}
+              locale={{
+                emptyText: (
+                  <Empty
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    description={
+                      isFiltering
+                        ? "ไม่พบกลุ่มที่ค้นหา"
+                        : "ไม่มีข้อมูลกลุ่มผู้ใช้งาน"
+                    }
+                  />
+                ),
+              }}
+            />
+          </div>
+        </div>
         {dirtyGroupIds.length > 0 && (
           <div className="sticky bottom-0 z-10 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-orange-200 bg-orange-50 px-4 py-2">
             <span className="text-orange-700">

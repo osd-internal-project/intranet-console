@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, Form, Input, DatePicker, Collapse, message } from "antd";
 import moment from "moment";
 import { Calendar, momentLocalizer, Event as RbcEvent } from "react-big-calendar";
-// import "react-big-calendar/lib/css/react-big-calendar.css";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useForm } from "antd/es/form/Form";
 import { CaretRightOutlined } from "@ant-design/icons";
 import { MaCarBookCalendarType } from "../../common/index";

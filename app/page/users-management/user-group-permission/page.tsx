@@ -19,6 +19,7 @@ import UserGroupServices from "@/app/services/usergroup.service";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
+import { ITUserGroup } from "@/app/common/user-group";
 
 import { notifySuccess } from "@/app/utils/message";
 export default function UserModulePage() {

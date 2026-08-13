@@ -1,395 +1,448 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Button, Card, Col, Form, Input, Modal, Row, SelectProps, Table, message } from "antd";
-import { GroupManageSkeleton } from "./Skeleton";
-import { CarryOutOutlined, ExclamationCircleFilled, EyeOutlined, PlusOutlined } from "@ant-design/icons";
-import UserGroupServices from "../../../../services/usergroup.service";
+"use client";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  Button,
+  Card,
+  Descriptions,
+  Empty,
+  Form,
+  Input,
+  Modal,
+  Space,
+  Table,
+  Tag,
+  Tooltip,
+  message,
+} from "antd";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleFilled,
+  PlusOutlined,
+  TeamOutlined,
+} from "@ant-design/icons";
+import UserGroupServices from "@/app/services/usergroup.service";
 import UserServices from "../../users/services/user.service";
-import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
-
 import { notifyError, notifySuccess } from "@/app/utils/message";
+import { ACTION_LABEL } from "@/app/config/messages";
+import {
+  ITUserGroup,
+  ITUserGroupMember,
+  ITUserGroupUpdate,
+} from "@/app/common/user-group";
+import { GroupManageSkeleton } from "./Skeleton";
+
+/** ความยาวสูงสุดของชื่อกลุ่ม ตาม schema (group_name VarChar(200)) */
+const GROUP_NAME_MAX_LENGTH = 200;
+
 export interface props {
-  propDataManage: (res: { selectOrganize: string | null; groupSelect: string | null; loading: boolean }) => void;
-  groupSelect: string | null;
-  selectOrganize: string | null;
+  readonly groupId: string | null;
+  readonly selectedOrganize: string | null;
+  /** เพิ่มค่าเมื่อข้อมูลกลุ่มถูกแก้ไข เพื่อสั่งโหลดรายละเอียดใหม่ทั้งที่ groupId เท่าเดิม */
+  readonly refreshToken: number;
+  readonly onRefresh: (groupId: string | null) => void;
 }
-type groupDetail = {
-  groupId: string;
-  groupName: string;
-  description: string;
-  headId?: string;
-  parentGroupId: string;
-  userGroupMapPermission: userGroupMapModule[];
-};
-type userGroupMapModule = {
-  leaveGroupId: string;
-  leaveUserId: string;
-  expenseGroupId: string;
-  expenseUserId: string;
-};
-export type ITSelectUsers = {
-  userId: string;
-  firstNameTh: string;
-  lastNameTh: string;
-};
-const GroupManage: React.FC<props> = ({ propDataManage, groupSelect, selectOrganize }): React.ReactElement => {
+
+/**
+ * แปลงวันที่จาก API เป็นรูปแบบไทยแบบสั้น
+ * @param value ค่าวันที่จาก API
+ * @returns ข้อความวันที่ หรือ "-" เมื่อไม่มีค่า
+ */
+function formatDate(value: string | undefined): string {
+  if (!value) {
+    return "-";
+  }
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "-" : date.toLocaleString("th-TH");
+}
+
+/**
+ * แผงจัดการกลุ่มผู้ใช้งานหนึ่งกลุ่ม — ดูรายละเอียด แก้ไข เพิ่มกลุ่มย่อย และลบ
+ * @param props กลุ่มที่เลือกอยู่ องค์กรปัจจุบัน และ callback สั่งโหลดทรีใหม่
+ * @returns element การ์ดรายละเอียดกลุ่ม
+ */
+const GroupManage: React.FC<props> = ({
+  groupId,
+  selectedOrganize,
+  refreshToken,
+  onRefresh,
+}): React.ReactElement => {
   const { id24Axios } = useId24();
   const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
-  const { user, roles } = (useContext(UserContext) as UserContectType) || {
-    user: null,
-    roles: null,
-  };
-  const [addform] = Form.useForm();
-  const [editform] = Form.useForm();
-  const [groupDetail, setGroupDetail] = useState<groupDetail | null>(null);
-  const [openAddModel, setOpenAddModel] = useState<boolean>(false);
-  const [editState, setEditState] = useState<boolean>(false);
-  const [buttonLoading, setbuttonLoading] = useState<boolean>(false);
-  const [showModalUserList, setShowModalUserList] = useState<boolean>(false);
-  const [groupOption, setGroupOption] = useState<SelectProps["options"]>([]);
-  const [userSelect, setUserSelect] = useState<SelectProps["options"]>([]);
-  const [userInGroupSelect, setUserInGroupSelect] = useState<SelectProps["options"]>([]);
+  const [editForm] = Form.useForm<ITUserGroupUpdate>();
+  const [addForm] = Form.useForm();
 
-  const [userGroupIds, setUserGroupIds] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [saving, setSaving] = useState<boolean>(false);
+  const [group, setGroup] = useState<ITUserGroup | null>(null);
+  const [members, setMembers] = useState<ITUserGroupMember[]>([]);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [openAddModal, setOpenAddModal] = useState<boolean>(false);
+  const [openMemberModal, setOpenMemberModal] = useState<boolean>(false);
+
+  const fetchGroup = useCallback(async (): Promise<void> => {
+    setIsEditing(false);
+    setGroup(null);
+    setMembers([]);
+
+    if (!groupId) {
+      return;
+    }
+
+    setLoading(true);
+    const [detail, usersInGroup] = await Promise.all([
+      UserGroupServices(baseUrlUser).getUserGroupByGroupId(groupId),
+      UserServices(baseUrlUser).findUserInOnwerGroupByUserGroupId(groupId),
+    ]);
+
+    // service ทั้งสองตัวคืน [] หรือ error object เมื่อเรียกไม่สำเร็จ จึงต้องตรวจรูปร่างก่อนใช้
+    const detailGroup =
+      detail && !Array.isArray(detail) ? (detail as ITUserGroup) : null;
+    setGroup(detailGroup);
+    setMembers(Array.isArray(usersInGroup) ? usersInGroup : []);
+
+    if (detailGroup) {
+      editForm.setFieldsValue({
+        groupName: detailGroup.groupName,
+        description: detailGroup.description ?? "",
+      });
+    }
+    setLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [groupId, refreshToken]);
 
   useEffect(() => {
-    featchData();
-  }, [groupSelect]);
+    fetchGroup();
+  }, [fetchGroup]);
 
-  const featchData = async () => {
-    setEditState(false);
-    setGroupDetail(null);
-    if (user?.userId) {
-      const groups = await UserGroupServices(baseUrlUser).getUserGroupAll();
-      const tree = createTree(groups, null);
-      setGroupOption(tree);
+  /**
+   * บันทึกการแก้ไขกลุ่ม — ส่งเฉพาะฟิลด์ที่ backend รับจริง
+   * @param values ค่าจากฟอร์มแก้ไข
+   */
+  const onSubmitEdit = async (values: ITUserGroupUpdate): Promise<void> => {
+    if (!group) {
+      return;
     }
-
-    if (groupSelect) {
-      const groupDetail: any = await UserGroupServices(baseUrlUser).getUserGroupByGroupId(groupSelect);
-      editform.setFieldsValue(groupDetail);
-      setGroupDetail(groupDetail);
-      const usersInGroup: any = await UserServices(baseUrlUser).findUserInOnwerGroupByUserGroupId(groupSelect);
-      const userInGroupSelect = usersInGroup.map((user: any) => ({
-        value: user.userId,
-        label: `${user.firstNameTh} ${user.lastNameTh}`,
-      }));
-      setUserInGroupSelect(userInGroupSelect);
-      // const userGroupMapPermission = await UserGroupServices(baseUrlUser).getUserGroupMapPermission({});
-      // setUserGroupIds(userGroupMapPermission.map((item: any) => item.userGroupId));
-      // const usersAll: any = await UserGroupServices(baseUrlUser).getdataUserAll();
-      // const userSelect = usersAll.map((user: any) => ({
-      //   value: user.userId,
-      //   label: `${user.firstNameTh} ${user.lastNameTh}`,
-      // }));
-      // setUserSelect(userSelect);
+    setSaving(true);
+    try {
+      await UserGroupServices(baseUrlUser).updateUserGroup(group.groupId, {
+        groupName: values.groupName,
+        description: values.description ?? "",
+      });
+      notifySuccess("usergroup.update");
+      setIsEditing(false);
+      onRefresh(group.groupId);
+    } catch (error) {
+      notifyError(error, "usergroup.update");
     }
-  };
-  const createTree = (obj: any[], parentId: string | null) => {
-    const tree: any[] = [];
-    obj.forEach((item) => {
-      if (item.parentGroupId === parentId) {
-        const children = createTree(obj, item.groupId);
-        if (children.length > 0) {
-          (item.icon = <CarryOutOutlined />), (item.children = children);
-        }
-        tree.push({
-          value: item.groupId,
-          title: item.groupName,
-          children: item.children,
-        });
-      }
-    });
-    return tree;
+    setSaving(false);
   };
 
-  // async function onChangeSaleGroupSelect(group: string[]): Promise<void> {
-  //   const data = await UserGroupServices(baseUrlUser).findUsersLowerByOwnerGroup(group);
-  //   setSaleUsersFormGroup(data);
-  // }
-
-  // async function onChangeEngineerGroupSelect(group: string[]): Promise<void> {
-  //   const data = await UserGroupServices(baseUrlUser).findUsersLowerByOwnerGroup(group);
-  //   setEngineerUsersFormGroup(data);
-  // }
-
-  // async function onChangeLeaveGroupSelect(group: string[]): Promise<void> {
-  //   const data = await UserGroupServices(baseUrlUser).findUsersLowerByOwnerGroup(group);
-  //   setLeaveUsersFormGroup(data);
-  // }
-
-  // async function onChangeExpenseGroupSelect(group: string[]): Promise<void> {
-  //   const data = await UserGroupServices(baseUrlUser).findUsersLowerByOwnerGroup(group);
-  //   setExpenseUsersFormGroup(data);
-  // }
-  // async function onChangeHeaderGroupSelect(group: string[], type: string): Promise<void> {
-  //   const data = await UserGroupServices(baseUrlUser).findUsersLowerByOwnerGroup(group);
-  //   let lists = headerUsersFormGroup;
-  //   const oldIndex = lists.findIndex((list) => list.type === type);
-  //   if (oldIndex) {
-  //     lists[oldIndex] = { type: type, users: data };
-  //   } else {
-  //     lists.push({ type: type, users: data });
-  //   }
-  //   setHeaderUsersFormGroup(lists);
-  // }
-
-  const onCloseDetail = () => {
-    setGroupDetail(null);
-    propDataManage({
-      selectOrganize: selectOrganize,
-      groupSelect: null,
-      loading: true,
-    });
+  /**
+   * สร้างกลุ่มย่อยภายใต้กลุ่มที่เลือกอยู่
+   * @param values ค่าจากฟอร์มเพิ่มกลุ่มย่อย
+   */
+  const onSubmitAdd = async (values: {
+    groupName: string;
+    description?: string;
+  }): Promise<void> => {
+    if (!group) {
+      return;
+    }
+    setSaving(true);
+    try {
+      await UserGroupServices(baseUrlUser).addUserGroup({
+        groupName: values.groupName,
+        description: values.description ?? "",
+        parentGroupId: group.groupId,
+        organizeId: group.organizedGroupId ?? selectedOrganize,
+      });
+      notifySuccess("usergroup.create");
+      setOpenAddModal(false);
+      addForm.resetFields();
+      onRefresh(group.groupId);
+    } catch (error) {
+      notifyError(error, "usergroup.create");
+    }
+    setSaving(false);
   };
 
-  const onFinishFailed = (errorInfo: any) => {};
-
-  const onFinishEdit = async (values: groupDetail) => {
-    setbuttonLoading(true);
-    await UserGroupServices(baseUrlUser)
-      .updateUserGroup(values.groupId, values)
-      .then(() => {
-        notifySuccess("usergroup.update");
-        setOpenAddModel(false);
-        propDataManage({
-          selectOrganize: selectOrganize,
-          loading: true,
-          groupSelect: values.groupId,
-        });
-      })
-      .catch((err) => notifyError(err, "usergroup.update"));
-    setbuttonLoading(false);
-  };
-
-  const handleDelete = async () => {
-    setbuttonLoading(true);
+  /** ยืนยันแล้วลบกลุ่มที่เลือกอยู่ */
+  const onDelete = (): void => {
+    if (!group) {
+      return;
+    }
     Modal.confirm({
-      title: "Delete this sub group",
+      title: "ลบกลุ่มผู้ใช้งาน",
       icon: <ExclamationCircleFilled />,
-      content: "Are you sure you want to delete this ?",
+      content: `ต้องการลบกลุ่ม "${group.groupName}" ใช่หรือไม่`,
+      okText: "ลบ",
+      cancelText: "ยกเลิก",
       okButtonProps: { danger: true },
-      okText: "Confirm",
       async onOk() {
-        if (groupDetail) {
-          await UserGroupServices(baseUrlUser)
-            .deleteUserGroup(groupDetail.groupId)
-            .then((res) => {
-              if (res.data.status === 401) {
-                message.error(res.data.message);
-              } else {
-                notifySuccess("usergroup.delete");
-                propDataManage({
-                  selectOrganize: selectOrganize,
-                  loading: true,
-                  groupSelect: null,
-                });
-              }
-            });
-        } else {
-          notifyError(undefined, "usergroup.delete");
+        try {
+          const response = await UserGroupServices(baseUrlUser).deleteUserGroup(
+            group.groupId,
+          );
+          // backend คืน HTTP 200 พร้อม status 401 เมื่อลบไม่ได้ (มีกลุ่มย่อยหรือมีผู้ใช้อยู่)
+          // ไม่ใช่ ApiError จึงต้องแสดงเหตุผลจาก backend เอง — notifyError จะกลืนข้อความนี้ทิ้ง
+          if (response?.data?.status === 401) {
+            message.error(
+              `${ACTION_LABEL["usergroup.delete"]}ไม่สำเร็จ: ${response.data.message}`,
+            );
+            return;
+          }
+          notifySuccess("usergroup.delete");
+          onRefresh(null);
+        } catch (error) {
+          notifyError(error, "usergroup.delete");
         }
-        setbuttonLoading(false);
-      },
-      onCancel() {
-        setbuttonLoading(false);
       },
     });
   };
 
-  const onFinishAdd = async (values: any) => {
-    setbuttonLoading(true);
-    const form = {
-      groupName: values.groupName,
-      description: values.description,
-      parentGroupId: groupDetail?.groupId,
-      organizeId: selectOrganize,
-    };
-    await UserGroupServices(baseUrlUser)
-      .addUserGroup(form)
-      .then(() => {
-        notifySuccess("usergroup.create");
-        setOpenAddModel(false);
-      })
-      .catch((err) => notifyError(err, "usergroup.create"));
-    propDataManage({
-      selectOrganize: selectOrganize,
-      loading: true,
-      groupSelect: null,
-    });
-    setbuttonLoading(false);
-  };
-
-  const onClickEdit = async () => {
-    setEditState(!editState);
-  };
-
-  return groupDetail ? (
-    <>
-      <Card className="mx-2 my-2 md:my-0  " style={{ minHeight: " 500px" }}>
-        <div className="grid grid-cols-1 gap-0 space-y-5 ">
-          <Row>
-            <Col span={10}>
-              <div>
-                <div className="flex text-2xl space-x-2  font-semibold  mb-3">
-                  <div>Group Detail</div>
-                  <div>
-                    <Button
-                      size="small"
-                      type="link"
-                      onClick={() => {
-                        setShowModalUserList(true);
-                      }}>
-                      <EyeOutlined />
-                    </Button>
-                  </div>
-                </div>
-                <div className=" text-slate-400">
-                  {!groupDetail.parentGroupId ? `*หากต้องการเพิ่มกลุ่มย่อยภายใต้ชื่อกลุ่มนี้ให้กด Add Sub Group` : ``}
-                </div>
-              </div>
-            </Col>
-            <Col span={14} style={{ justifyContent: "end", display: "flex" }}>
-              <div className=" inline-block space-x-2 ">
-                <Button
-                  size="small"
-                  type="primary"
-                  onClick={() => {
-                    setOpenAddModel(true);
-                  }}>
-                  Add Sub Group
-                </Button>
-
-                {!editState ? (
-                  <>
-                    <Button size="small" type="primary" onClick={onClickEdit} loading={buttonLoading}>
-                      Edit
-                    </Button>
-
-                    <Button
-                      size="small"
-                      type="primary"
-                      danger
-                      onClick={handleDelete}
-                      disabled={!groupDetail.parentGroupId ? true : false}
-                      loading={buttonLoading}>
-                      Delete
-                    </Button>
-                  </>
-                ) : null}
-                <Button size="small" onClick={onCloseDetail}>
-                  Close
-                </Button>
-              </div>
-            </Col>
-          </Row>
-          <Form form={editform} onFinish={onFinishEdit} onFinishFailed={onFinishFailed} name="editForm" layout="vertical" initialValues={groupDetail}>
-            <div>
-              <Form.Item name="groupId" label="Group Id :">
-                <Input className="read-only-input" disabled />
-              </Form.Item>
-              <Form.Item hidden name={`organizeId`}>
-                <Input className="read-only-input" />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item name="groupName" label="Name :" rules={[{ required: true, message: "Please enter sub group name" }]}>
-                <Input disabled={editState === false ? true : false} className={!editState ? "read-only-input" : ""} />
-              </Form.Item>
-            </div>
-            <div>
-              <Form.Item name="description" label="Description :">
-                <Input.TextArea disabled={editState === false ? true : false} className={!editState ? "read-only-input" : ""} />
-              </Form.Item>
-            </div>
-            {!editState && (
-              <div style={{ display: "flex", justifyContent: "end" }}>
-                <div style={{ marginLeft: "20px" }}>
-                  <Button href={`/page/users-management/user-group/${groupDetail.groupId}`} type="link">
-                    {`Set User Permission`}
-                  </Button>
-                </div>
-              </div>
-            )}
-            {editState ? (
-              <div className="flex justify-end space-x-4 ">
-                <Form.Item style={{ marginTop: "20px" }}>
-                  <Button
-                    onClick={() => {
-                      setEditState(false);
-                      editform.resetFields();
-                    }}>
-                    Back
-                  </Button>
-                </Form.Item>
-                <Button type="primary" htmlType="submit" loading={buttonLoading} style={{ marginTop: "20px" }}>
-                  Save Change
-                </Button>
-              </div>
-            ) : (
-              <></>
-            )}
-          </Form>
+  if (!groupId) {
+    return (
+      <Card className="h-full">
+        <div className="flex min-h-[420px] items-center justify-center">
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description="เลือกกลุ่มจากทรีด้านซ้ายเพื่อดูรายละเอียด"
+          />
         </div>
+      </Card>
+    );
+  }
+
+  if (loading) {
+    return <GroupManageSkeleton />;
+  }
+
+  // service คืน [] เมื่อเรียกไม่สำเร็จ — แสดงสถานะให้ผู้ใช้รู้ แทนที่จะค้างที่โครงร่าง
+  if (!group) {
+    return (
+      <Card className="h-full">
+        <div className="flex min-h-[420px] items-center justify-center">
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description="ไม่พบข้อมูลกลุ่มนี้"
+          />
+        </div>
+      </Card>
+    );
+  }
+
+  const isRootGroup = !group.parentGroupId;
+
+  return (
+    <>
+      <Card
+        className="h-full"
+        title={
+          <div className="flex items-center gap-2">
+            <span className="text-lg font-semibold">{group.groupName}</span>
+            {isRootGroup && <Tag color="blue">{"กลุ่มระดับบนสุด"}</Tag>}
+          </div>
+        }
+        extra={
+          !isEditing && (
+            <Space wrap>
+              <Button
+                icon={<PlusOutlined />}
+                onClick={() => setOpenAddModal(true)}
+              >
+                {"เพิ่มกลุ่มย่อย"}
+              </Button>
+              <Button
+                type="primary"
+                icon={<EditOutlined />}
+                onClick={() => setIsEditing(true)}
+              >
+                {"แก้ไข"}
+              </Button>
+              <Tooltip
+                title={
+                  isRootGroup ? "ลบกลุ่มระดับบนสุดไม่ได้" : "ลบกลุ่มนี้"
+                }
+              >
+                {/* ครอบด้วย span เพื่อให้ Tooltip ยังทำงานตอนปุ่มถูก disabled */}
+                <span>
+                  <Button
+                    danger
+                    icon={<DeleteOutlined />}
+                    disabled={isRootGroup}
+                    onClick={onDelete}
+                  >
+                    {"ลบ"}
+                  </Button>
+                </span>
+              </Tooltip>
+            </Space>
+          )
+        }
+      >
+        {isEditing ? (
+          <Form
+            form={editForm}
+            layout="vertical"
+            onFinish={onSubmitEdit}
+            disabled={saving}
+          >
+            <Form.Item
+              name="groupName"
+              label="ชื่อกลุ่ม"
+              rules={[{ required: true, message: "กรุณากรอกชื่อกลุ่ม" }]}
+            >
+              <Input maxLength={GROUP_NAME_MAX_LENGTH} showCount />
+            </Form.Item>
+            <Form.Item name="description" label="คำอธิบาย">
+              <Input.TextArea rows={3} />
+            </Form.Item>
+            <div className="flex justify-end gap-2">
+              <Button
+                onClick={() => {
+                  setIsEditing(false);
+                  editForm.setFieldsValue({
+                    groupName: group.groupName,
+                    description: group.description ?? "",
+                  });
+                }}
+              >
+                {"ยกเลิก"}
+              </Button>
+              <Button type="primary" htmlType="submit" loading={saving}>
+                {"บันทึก"}
+              </Button>
+            </div>
+          </Form>
+        ) : (
+          <div className="grid grid-cols-1 gap-4">
+            <Descriptions bordered size="small" column={1}>
+              <Descriptions.Item label="ชื่อกลุ่ม">
+                {group.groupName}
+              </Descriptions.Item>
+              <Descriptions.Item label="คำอธิบาย">
+                {group.description || "-"}
+              </Descriptions.Item>
+              <Descriptions.Item label="สมาชิกในกลุ่ม">
+                <div className="flex items-center gap-2">
+                  <TeamOutlined className="text-slate-400" />
+                  <span>{`${members.length} คน`}</span>
+                  {members.length > 0 && (
+                    <Button
+                      type="link"
+                      size="small"
+                      className="!px-0"
+                      onClick={() => setOpenMemberModal(true)}
+                    >
+                      {"ดูรายชื่อ"}
+                    </Button>
+                  )}
+                </div>
+              </Descriptions.Item>
+              <Descriptions.Item label="แก้ไขล่าสุด">
+                {formatDate(group.updatedAt)}
+              </Descriptions.Item>
+              <Descriptions.Item label="รหัสกลุ่ม">
+                <span className="font-mono text-xs text-slate-500">
+                  {group.groupId}
+                </span>
+              </Descriptions.Item>
+            </Descriptions>
+
+            <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
+              <div className="mb-2 text-slate-600">
+                {"การกำหนดสิทธิ์ของกลุ่มนี้จัดการที่หน้าอื่น"}
+              </div>
+              <Space wrap>
+                <Button
+                  type="link"
+                  className="!px-0"
+                  href="/page/users-management/user-role-access"
+                >
+                  {"สิทธิ์การเข้าถึงของกลุ่ม"}
+                </Button>
+                <Button
+                  type="link"
+                  href="/page/users-management/user-group-permission"
+                >
+                  {"สิทธิ์การเห็นข้อมูลตามโมดูล"}
+                </Button>
+              </Space>
+            </div>
+          </div>
+        )}
       </Card>
 
       <Modal
-        title="Add Sub Group"
-        open={openAddModel}
+        title="เพิ่มกลุ่มย่อย"
+        open={openAddModal}
+        footer={null}
         onCancel={() => {
-          setOpenAddModel(false);
-          addform.resetFields();
+          setOpenAddModal(false);
+          addForm.resetFields();
         }}
-        footer={[]}>
+      >
         <Form
-          form={addform}
-          initialValues={{ parentName: groupDetail.groupName }}
-          onFinish={onFinishAdd}
-          onFinishFailed={onFinishFailed}
-          labelCol={{ span: 7 }}
-          style={{ marginBottom: "-30px" }}>
-          <Form.Item label="Group Parent" name="parentName" style={{ marginTop: "22px" }}>
-            <Input disabled />
+          form={addForm}
+          layout="vertical"
+          onFinish={onSubmitAdd}
+          disabled={saving}
+        >
+          <Form.Item label="กลุ่มแม่">
+            <Input value={group.groupName} disabled />
           </Form.Item>
-          <Form.Item label="Sub Group Name" name="groupName" rules={[{ required: true, message: "Please enter sub group name" }]}>
-            <Input />
+          <Form.Item
+            name="groupName"
+            label="ชื่อกลุ่มย่อย"
+            rules={[{ required: true, message: "กรุณากรอกชื่อกลุ่มย่อย" }]}
+          >
+            <Input maxLength={GROUP_NAME_MAX_LENGTH} showCount />
           </Form.Item>
-          <Form.Item label="Description" name="description">
-            <Input.TextArea />
+          <Form.Item name="description" label="คำอธิบาย">
+            <Input.TextArea rows={3} />
           </Form.Item>
-          <Row gutter={[8, 8]} style={{ justifyContent: "end", display: "flex" }}>
-            <Col>
-              <Button
-                key="cancel"
-                onClick={() => {
-                  addform.resetFields();
-                  setOpenAddModel(false);
-                }}>
-                Cancel
-              </Button>
-            </Col>
-            <Col>
-              <Form.Item>
-                <Button key="submit" htmlType="submit" type="primary" loading={buttonLoading}>
-                  Add
-                </Button>
-              </Form.Item>
-            </Col>
-          </Row>
+          <div className="flex justify-end gap-2">
+            <Button
+              onClick={() => {
+                setOpenAddModal(false);
+                addForm.resetFields();
+              }}
+            >
+              {"ยกเลิก"}
+            </Button>
+            <Button type="primary" htmlType="submit" loading={saving}>
+              {"เพิ่ม"}
+            </Button>
+          </div>
         </Form>
       </Modal>
+
       <Modal
-        open={showModalUserList}
-        onCancel={() => {
-          setShowModalUserList(false);
-        }}
-        title="รายชื่อ">
-        <Table pagination={false} dataSource={userInGroupSelect} columns={[{ title: "Name", dataIndex: "label", key: "value" }]} />
+        title={`สมาชิกในกลุ่ม ${group.groupName}`}
+        open={openMemberModal}
+        footer={null}
+        onCancel={() => setOpenMemberModal(false)}
+      >
+        <Table<ITUserGroupMember>
+          size="small"
+          rowKey="userId"
+          pagination={false}
+          scroll={{ y: 360 }}
+          dataSource={members}
+          columns={[
+            {
+              title: "ชื่อ-นามสกุล",
+              key: "name",
+              render: (_, member) =>
+                `${member.firstNameTh} ${member.lastNameTh}`,
+            },
+          ]}
+        />
       </Modal>
     </>
-  ) : (
-    <GroupManageSkeleton />
   );
 };
 

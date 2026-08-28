@@ -1,40 +1,11 @@
 import { IOverTimeForm } from "@/app/common/overtime";
-import { dateFormatTimeNoTIme } from "@/app/utils";
-import {
-  CarOutlined,
-  ClockCircleOutlined,
-  PhoneOutlined,
-  TeamOutlined,
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-  StopOutlined,
-  DeleteOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
-import {
-  Badge,
-  Button,
-  Card,
-  Col,
-  DatePicker,
-  Form,
-  Input,
-  InputNumber,
-  Modal,
-  Row,
-  Select,
-  Switch,
-  Table,
-  TablePaginationConfig,
-  TableProps,
-  Tag,
-  Tooltip,
-  Typography,
-} from "antd";
-import TextArea from "antd/es/input/TextArea";
+import { dateFormat, dateFormatTime, dateFormatTimeNoTIme } from "@/app/utils";
+import { CheckCircleOutlined, CloseCircleOutlined, StopOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Button, Col, Form, Input, Modal, Row, Table, TablePaginationConfig, TableProps, Tag, Tooltip } from "antd";
 import dayjs from "dayjs";
 import { intersection } from "lodash";
-import React, { useState } from "react";
+import React from "react";
+import { CalculationDetailCard, PersonalDetailCard, TravelDetailCard, WorkDetailCard } from "./detail-view";
 
 export interface Props {
   dataResource: { data: IOverTimeForm[]; total: number };
@@ -59,8 +30,6 @@ const TableOvertimeHistory: React.FC<Props> = ({
   setOpenModal,
   openModal,
 }): React.ReactElement => {
-  const { Option } = Select;
-  const { Text } = Typography;
   const [formUpdate] = Form.useForm();
   const dataDetail = formUpdate.getFieldsValue(true);
 
@@ -129,6 +98,12 @@ const TableOvertimeHistory: React.FC<Props> = ({
       dataIndex: "fullname",
     },
     {
+      key: "createdAt",
+      title: "วันที่สร้าง",
+      dataIndex: "createdAt",
+      render: (_) => dateFormat(_),
+    },
+    {
       key: "dateStart",
       title: "วันที่ทำ OT",
       dataIndex: "dateStart",
@@ -155,7 +130,7 @@ const TableOvertimeHistory: React.FC<Props> = ({
       key: "typeDate",
       title: "วันที่ทำการ",
       dataIndex: "typeDate",
-      render: (_) => <span>{_ === "normall" ? "วันปกติ" : "วันหยุด"}</span>,
+      render: (_) => <span>{_ === "normal" ? "วันปกติ" : "วันหยุด"}</span>,
     },
     {
       key: "totalTime",
@@ -259,249 +234,20 @@ const TableOvertimeHistory: React.FC<Props> = ({
                 <Input readOnly />
               </Form.Item>
               <Row gutter={24}>
-                {/* Personal Information */}
                 <Col span={24}>
-                  <Card
-                    title={
-                      <div className="flex items-center space-x-2">
-                        <UserOutlined className="text-blue-500" />
-                        <span>ข้อมูลส่วนตัว</span>
-                      </div>
-                    }
-                    className="mb-4 shadow-sm hover:shadow-md transition-shadow duration-300"
-                    headStyle={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", color: "white" }}>
-                    <Row gutter={16}>
-                      <Col span={12}>
-                        <Form.Item label="ชื่อ-นามสกุล" name="fullname">
-                          <Input
-                            prefix={<UserOutlined className="text-gray-400" />}
-                            className="rounded-lg border-gray-200 focus:border-blue-400"
-                            disabled
-                          />
-                        </Form.Item>
-                      </Col>
-                      <Col span={12}>
-                        <Form.Item label="รหัสพนักงาน" name="userId">
-                          <Input className="rounded-lg border-gray-200 focus:border-blue-400" disabled />
-                        </Form.Item>
-                      </Col>
-                    </Row>
-                  </Card>
+                  <PersonalDetailCard data={dataDetail} />
                 </Col>
 
-                {/* Work Schedule Information */}
                 <Col span={24}>
-                  <Card
-                    title={
-                      <div className="flex items-center space-x-2">
-                        <ClockCircleOutlined className="text-green-500" />
-                        <span>ข้อมูลการทำงาน</span>
-                      </div>
-                    }
-                    className="mb-4 shadow-sm hover:shadow-md transition-shadow duration-300"
-                    headStyle={{ background: "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)", color: "white" }}>
-                    <Row gutter={16}>
-                      <Col span={8}>
-                        <Form.Item label="วันที่เริ่ม" name="dateStart">
-                          <DatePicker className="w-full rounded-lg border-gray-200 focus:border-green-400" format="DD/MM/YYYY" disabled />
-                        </Form.Item>
-                      </Col>
-                      <Col span={8}>
-                        <Form.Item label="เวลาเริ่ม" name="startTime">
-                          <Input className="w-full rounded-lg border-gray-200 focus:border-green-400" disabled />
-                        </Form.Item>
-                      </Col>
-                      <Col span={8}>
-                        <Form.Item label="เวลาสิ้นสุด" name="endTime">
-                          <Input className="w-full rounded-lg border-gray-200 focus:border-green-400" disabled />
-                        </Form.Item>
-                      </Col>
-                    </Row>
-
-                    <Row gutter={16}>
-                      <Col span={8}>
-                        <Form.Item label="เวลาพัก (ชั่วโมง)" name="breakTime">
-                          <InputNumber className="w-full rounded-lg" step={0.5} min={0} placeholder="1.5" disabled />
-                        </Form.Item>
-                      </Col>
-                      <Col span={8}>
-                        <Form.Item label="เวลาทำงาน (ชั่วโมง)" name="workingTime">
-                          <InputNumber className="w-full rounded-lg" step={0.5} min={0} placeholder="10.5" disabled />
-                        </Form.Item>
-                      </Col>
-                      <Col span={8}>
-                        <Form.Item label="เวลารวม (ชั่วโมง)" name="totalTime">
-                          <InputNumber className="w-full rounded-lg" step={0.5} min={0} placeholder="12" disabled />
-                        </Form.Item>
-                      </Col>
-                    </Row>
-
-                    <Row gutter={16}>
-                      <Col span={8}>
-                        <Form.Item label="ประเภทการทำงาน" name="partTimeType">
-                          <Select className="rounded-lg" placeholder="เลือกประเภท" disabled>
-                            <Option value="working">ทำงาน</Option>
-                            <Option value="driving">ขับรถ</Option>
-                          </Select>
-                        </Form.Item>
-                      </Col>
-                      <Col span={8}>
-                        <Form.Item label="ประเภทวัน" name="typeDate">
-                          <Select className="rounded-lg" placeholder="เลือกประเภทวัน" disabled>
-                            <Option value="day-off">วันหยุด</Option>
-                            <Option value="working">วันทำการ</Option>
-                          </Select>
-                        </Form.Item>
-                      </Col>
-                      <Col span={8}>
-                        <Form.Item label="ลูกค้า" name="customerName">
-                          <Input
-                            prefix={<TeamOutlined className="text-gray-400" />}
-                            className="rounded-lg border-gray-200 focus:border-green-400"
-                            placeholder="ชื่อลูกค้า"
-                            disabled
-                          />
-                        </Form.Item>
-                      </Col>
-                    </Row>
-
-                    <Form.Item label="รายละเอียดงาน" name="detailWork">
-                      <TextArea
-                        rows={3}
-                        className="rounded-lg border-gray-200 focus:border-green-400"
-                        placeholder="อธิบายรายละเอียดการทำงาน..."
-                        disabled
-                      />
-                    </Form.Item>
-                  </Card>
+                  <WorkDetailCard data={dataDetail} />
                 </Col>
 
-                {/* Travel & Additional Information */}
                 <Col span={24}>
-                  <Card
-                    title={
-                      <div className="flex items-center space-x-2">
-                        <CarOutlined className="text-orange-500" />
-                        <span>ข้อมูลการเดินทางและอื่นๆ</span>
-                      </div>
-                    }
-                    className="mb-4 shadow-sm hover:shadow-md transition-shadow duration-300"
-                    headStyle={{ background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)", color: "white" }}>
-                    <Row gutter={16}>
-                      <Col span={8}>
-                        <Form.Item label="เดินทางต่างจังหวัด" name="checkTravelUpCountry">
-                          <Switch checkedChildren="ใช่" unCheckedChildren="ไม่" disabled />
-                        </Form.Item>
-                      </Col>
-                      <Col span={8}>
-                        <Form.Item label="ค้างคืน" name="checkOvernight">
-                          <Switch checkedChildren="ใช่" unCheckedChildren="ไม่" disabled />
-                        </Form.Item>
-                      </Col>
-                      <Col span={8}>
-                        <Form.Item label="ใช้รถบริษัท" name="checkTravelByCompanyCar">
-                          <Switch checkedChildren="ใช่" unCheckedChildren="ไม่" disabled />
-                        </Form.Item>
-                      </Col>
-                    </Row>
-
-                    <Row gutter={16}>
-                      <Col span={8}>
-                        <Form.Item label="ชื่อรถ" name="carName">
-                          <Input className="rounded-lg border-gray-200 focus:border-orange-400" placeholder="ชื่อรถ" disabled />
-                        </Form.Item>
-                      </Col>
-                      <Col span={8}>
-                        <Form.Item label="รหัสรถ" name="carId">
-                          <Input className="rounded-lg border-gray-200 focus:border-orange-400" placeholder="รหัสรถ" disabled />
-                        </Form.Item>
-                      </Col>
-                      <Col span={8}>
-                        <Form.Item label="เบอร์โทรติดต่อ" name="phoneNumber">
-                          <Input
-                            prefix={<PhoneOutlined className="text-gray-400" />}
-                            className="rounded-lg border-gray-200 focus:border-orange-400"
-                            placeholder="เบอร์โทรศัพท์"
-                            disabled
-                          />
-                        </Form.Item>
-                      </Col>
-                    </Row>
-
-                    <Row gutter={16}>
-                      <Col span={12}>
-                        <Form.Item label="ระยะทาง" name="checkDistance">
-                          <InputNumber className="w-full rounded-lg" placeholder="ระยะทาง (กม.)" min={0} disabled />
-                        </Form.Item>
-                      </Col>
-                      <Col span={12}>
-                        <Form.Item label="หมายเหตุ" name="other">
-                          <TextArea
-                            rows={2}
-                            className="rounded-lg border-gray-200 focus:border-orange-400"
-                            placeholder="หมายเหตุเพิ่มเติม..."
-                            disabled
-                          />
-                        </Form.Item>
-                      </Col>
-                    </Row>
-                  </Card>
+                  <TravelDetailCard data={dataDetail} />
                 </Col>
-                {/* Calculation Details */}
+
                 <Col span={24}>
-                  <Card
-                    title="การคำนวณค่าตอบแทน"
-                    className="shadow-sm hover:shadow-md transition-shadow duration-300"
-                    headStyle={{ background: "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)", color: "#374151" }}>
-                    <div className="space-y-4">
-                      {dataDetail.calculate.map((calc: { date: string; rate: number; timeRate: number; typeRate: string }, index: number) => (
-                        <div key={index} className="p-4 bg-gradient-to-r from-gray-50 to-blue-50/50 rounded-lg border border-gray-100">
-                          <Row gutter={16}>
-                            <Col span={6}>
-                              <div className="text-center">
-                                <Text type="secondary" className="text-xs block">
-                                  ประเภทวัน
-                                </Text>
-                                <Tag color="blue" className="mt-1">
-                                  {calc.date === "normall" ? "วันปกติ" : "วันหยุด"}
-                                </Tag>
-                              </div>
-                            </Col>
-                            <Col span={6}>
-                              <div className="text-center">
-                                <Text type="secondary" className="text-xs block">
-                                  อัตราคูณ
-                                </Text>
-                                <Text strong className="text-lg text-orange-600">
-                                  ×{calc.rate}
-                                </Text>
-                              </div>
-                            </Col>
-                            <Col span={6}>
-                              <div className="text-center">
-                                <Text type="secondary" className="text-xs block">
-                                  ชั่วโมง
-                                </Text>
-                                <Text strong className="text-lg text-green-600">
-                                  {calc.timeRate}
-                                </Text>
-                              </div>
-                            </Col>
-                            <Col span={6}>
-                              <div className="text-center">
-                                <Text type="secondary" className="text-xs block">
-                                  ประเภท
-                                </Text>
-                                <Tag color={calc.typeRate === "overtime" ? "red" : "green"} className="mt-1">
-                                  {calc.typeRate === "overtime" ? "ล่วงเวลา" : "เวลาปกติ"}
-                                </Tag>
-                              </div>
-                            </Col>
-                          </Row>
-                        </div>
-                      ))}
-                    </div>
-                  </Card>
+                  <CalculationDetailCard data={dataDetail} />
                 </Col>
               </Row>
 

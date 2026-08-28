@@ -372,7 +372,7 @@ export const ModalOvertimeHistory: React.FC<props> = ({ formDetail, openModal, h
                                 ประเภทวัน
                               </Text>
                               <Tag color="blue" className="mt-1">
-                                {calc.date === "normall" ? "วันปกติ" : "วันหยุด"}
+                                {calc.date === "normal" ? "วันปกติ" : "วันหยุด"}
                               </Tag>
                             </div>
                           </Col>

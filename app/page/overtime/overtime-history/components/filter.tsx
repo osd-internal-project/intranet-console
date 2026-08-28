@@ -52,7 +52,7 @@ export const FilterOverTimeHistory: React.FC<props> = ({
             optionFilterProp="label"
             placeholder="Select Value"
             options={[
-              { value: "normall", label: "วันปกติ" },
+              { value: "normal", label: "วันปกติ" },
               { value: "dayoff", label: "วันหยุด" },
             ]}
           />

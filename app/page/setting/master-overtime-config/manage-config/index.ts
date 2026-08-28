@@ -23,7 +23,7 @@ export const typeDate = (value: string) => {
   switch (value) {
     case "dayoff":
       return "วันหยุด";
-    case "normall":
+    case "normal":
       return "วันทำงาน";
   }
 };

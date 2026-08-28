@@ -45,7 +45,7 @@ export const TableOvertime: React.FC<props> = ({ dataTable, changePagination, pa
       key: "typeDate",
       title: "วันที่ทำการ",
       dataIndex: "typeDate",
-      render: (_) => <span>{_ === "normall" ? "วันปกติ" : "วันหยุด"}</span>,
+      render: (_) => <span>{_ === "normal" ? "วันปกติ" : "วันหยุด"}</span>,
     },
 
     {

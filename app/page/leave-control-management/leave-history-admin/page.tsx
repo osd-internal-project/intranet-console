@@ -1,14 +1,13 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
 import { TableDetail } from "./components/table-detail";
-import { Breadcrumb, Card, Col, Divider, Form, Modal, Row, TablePaginationConfig, Tabs, message } from "antd";
+import { Breadcrumb, Card, Col, Divider, Form, Modal, Result, Row, TablePaginationConfig, Tabs, message } from "antd";
 import DataLeaveService from "../../../services/leave-management.service";
 import { ITypeDataLeave, type ISelect, type ITypeDataLeaveCreate, type ITypetypeleave } from "../common";
 import { ExclamationCircleFilled } from "@ant-design/icons";
-import { UserContectType, UserContext } from "@/app/config/userContext";
+import { UserContectType, UserContext, useUserAccess } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
-import { intersection } from "lodash";
 import dayjs from "dayjs";
 import saveAs from "file-saver";
 import { TableTotalLeaveDetailPage } from "./components/table-leave-detail";
@@ -21,11 +20,12 @@ import MasterHolidaysService from "../../setting/master-holidays/services/index.
 
 import { notifyError, notifySuccess } from "@/app/utils/message";
 export default function Page() {
-  const { id24Axios, tokenAccess } = useId24();
+  const { id24Axios } = useId24();
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const sideMenuGroups =
-    tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
-  const isHr = intersection(sideMenuGroups, ["hr"]).length > 0;
+  const { roleCodes: sideMenuGroups, accessRole } = useUserAccess();
+  // ต้องตรงกับ rule ของเมนู leave-control-management/leave-history-admin ใน app/config/menu.tsx
+  const canViewPage = accessRole(["admin", "header", "hr"]);
+  const isHr = accessRole(["hr"]);
   const baseUrlIntranet = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const baseUrlReport = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_REPORT);
   const baseUrlUser = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_USER);
@@ -45,8 +45,8 @@ export default function Page() {
   const [formdetailEdit] = Form.useForm();
 
   useEffect(() => {
-    if (loading) loadData();
-  }, [loading, user]);
+    if (loading && canViewPage) loadData();
+  }, [loading, user, canViewPage]);
 
   useEffect(() => {
     masterdata();
@@ -56,10 +56,9 @@ export default function Page() {
     if (user?.userId) {
       const skip = (Number(pagination.current) - 1) * Number(pagination.pageSize);
       const take = Number(pagination.pageSize);
-      const isHr = intersection(sideMenuGroups, ["hr"]).length > 0;
       const { data, count } = isHr
-        ? await DataLeaveService(baseUrlIntranet).getdataLeaveHrfindBygroup(user.userId, params, skip, take)
-        : await DataLeaveService(baseUrlIntranet).getdataLeavefindBygroup(user.userId, params, skip, take);
+        ? await DataLeaveService(baseUrlIntranet).getdataLeaveHrfindBygroup(params, skip, take)
+        : await DataLeaveService(baseUrlIntranet).getdataLeavefindBygroup(params, skip, take);
       setDataLeaveUser({ data, count });
       setLoading(false);
     }
@@ -300,6 +299,11 @@ export default function Page() {
             ]}
           />
         </Col>
+        {!canViewPage ? (
+          <Card style={{ width: "100%", marginTop: "10px" }}>
+            <Result status="403" title="403" subTitle="คุณไม่มีสิทธิ์เข้าถึงหน้านี้" />
+          </Card>
+        ) : (
         <div className="site-card-border-less-wrapper" style={{ width: "100%", marginTop: "10px" }}>
           <Tabs
             onChange={handleReloadData}
@@ -418,6 +422,7 @@ export default function Page() {
             ]}
           />
         </div>
+        )}
       </Row>
     </>
   );

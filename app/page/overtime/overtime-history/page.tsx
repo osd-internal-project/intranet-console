@@ -1,6 +1,6 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { Breadcrumb, Card, Divider, Form, Modal, TablePaginationConfig } from "antd";
+import { Breadcrumb, Card, Divider, Form, Modal, Result, TablePaginationConfig } from "antd";
 import { FilterOverTimeHistory } from "./components/filter";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
 import { loadAppConfig } from "@/app/config/app-config";
@@ -8,18 +8,19 @@ import OverTimeServices from "@/app/services/overtime.service";
 import { IOverTimeForm } from "@/app/common/overtime";
 import TableOvertimeHistory from "./components/table";
 import { ExclamationCircleFilled } from "@ant-design/icons";
-import { UserContectType, UserContext } from "@/app/config/userContext";
-import { intersection } from "lodash";
+import { UserContectType, UserContext, useUserAccess } from "@/app/config/userContext";
 import { saveAs } from "file-saver";
 import dayjs from "dayjs";
 import { ModalOvertimeHistory } from "./components/modal";
 
 import { notifyError, notifySuccess } from "@/app/utils/message";
 const OvertimeHistory = () => {
-  const { id24Axios, tokenAccess } = useId24();
+  const { id24Axios } = useId24();
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
-  const sideMenuGroups =
-    tokenAccess && tokenAccess.userAccess.length > 0 ? Array.from(new Set(tokenAccess?.userAccess.map((item) => item.roles).flat())) : [];
+  const { roleCodes: sideMenuGroups, accessRole } = useUserAccess();
+  // ต้องตรงกับ rule ของเมนู overtime/overtime-history ใน app/config/menu.tsx
+  const canViewPage = accessRole(["header", "admin", "hr"]);
+  const isHr = accessRole(["hr"]);
   const baseUrlIntra = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET);
   const baseUrlReport = id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_REPORT);
   const [filterForm] = Form.useForm();
@@ -37,16 +38,15 @@ const OvertimeHistory = () => {
   const [openModalApproved, setOpenModalApproved] = useState<{ status: boolean; type: string }>({ status: false, type: "create" });
 
   useEffect(() => {
-    if (loading) {
+    if (loading && canViewPage) {
       fecthData();
     }
-  }, [loading]);
+  }, [loading, canViewPage]);
 
   const fecthData = async () => {
     try {
       const skip = (Number(pagination.current) - 1) * Number(pagination.pageSize);
       const take = Number(pagination.pageSize);
-      const isHr = intersection(sideMenuGroups, ["hr"]).length > 0;
       const overtime = isHr
         ? await OverTimeServices(baseUrlIntra).findManyHr(skip, take, params)
         : await OverTimeServices(baseUrlIntra).findMany(skip, take, params);
@@ -67,7 +67,7 @@ const OvertimeHistory = () => {
     const blob = new Blob([response], {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
-    saveAs(blob, `รายงานการดำเนินการMA-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`);
+    saveAs(blob, `รายงานการทำงานล่วงเวลา-${dayjs(new Date()).format("YYYYMMDDHHmmss")}.xlsx`);
     notifySuccess("report.export");
   };
 
@@ -182,6 +182,11 @@ const OvertimeHistory = () => {
       <Divider orientation="left" orientationMargin="0">
         <div className="title-page-font">{`ตารางรายละเอียดการทำงานล่วงเวลา`}</div>
       </Divider>
+      {!canViewPage ? (
+        <Card>
+          <Result status="403" title="403" subTitle="คุณไม่มีสิทธิ์เข้าถึงหน้านี้" />
+        </Card>
+      ) : (
       <div>
         <Card>
           <FilterOverTimeHistory
@@ -205,6 +210,7 @@ const OvertimeHistory = () => {
           />
         </Card>
       </div>
+      )}
       {openModal ? <ModalOvertimeHistory formDetail={formDetail} openModal={openModal} handleOpenModal={handleOpenModal} /> : null}
     </div>
   );

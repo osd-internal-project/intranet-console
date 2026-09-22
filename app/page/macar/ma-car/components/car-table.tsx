@@ -62,6 +62,7 @@ const MaCarBookTable: React.FC<props> = ({
   };
 
   const onModalEdit = (record: any) => {
+    if (!canManageBooking(record)) return;
     showModalEditMaCarBook(record);
     setcarBookApprovedStatus(record.carBookApprovedStatus);
     isSelectDisabled(record.carBookApprovedStatus) ? setEditState(true) : setEditState(false);
@@ -71,14 +72,19 @@ const MaCarBookTable: React.FC<props> = ({
     setModalEditMa(false);
   };
 
+  /** แก้ไข/ยกเลิกได้เฉพาะใบจองของตนเองที่ยังรออนุมัติ — ตารางนี้แสดงใบจองของทุกคน */
+  const canManageBooking = (record: MaCarBookType) =>
+    record.carBookApprovedStatus === "Process" && record.createdById === user?.userId;
+
   const onModalCancel = (record: any) => {
+    if (!canManageBooking(record)) return;
     checkStatus(record);
     setColumnId(record.id);
     formCancel.setFieldsValue({
       remarkCancel: record.remarkCancel,
       carId: record.carId,
     });
-    record.carBookApprovedStatus === "Process" ? setModalCancel(true) : null;
+    setModalCancel(true);
   };
 
   const updatedMaCarBook: FormProps<MaCarBookType>["onFinish"] = async (values) => {
@@ -195,37 +201,37 @@ const MaCarBookTable: React.FC<props> = ({
       align: "center",
       render: (value: string) => (value ? value : "-"),
     },
-    // {
-    //   title: "จัดการ",
-    //   key: "note",
-    //   dataIndex: "note",
-    //   align: "center",
-    //   render: (_, record) => (
-    //     <Space>
-    //       <Tooltip title="แก้ไข">
-    //         <Button
-    //           disabled={record.carBookApprovedStatus !== "Process" ? true : false}
-    //           type="link"
-    //           onClick={() => {
-    //             onModalEdit(record);
-    //           }}>
-    //           {`แก้ไข`}
-    //         </Button>
-    //       </Tooltip>
-    //       <Tooltip title="ยกเลิก">
-    //         <Button
-    //           type="link"
-    //           disabled={record.carBookApprovedStatus !== "Process" ? true : false}
-    //           onClick={() => {
-    //             onModalCancel(record);
-    //           }}
-    //           danger>
-    //           {`ยกเลิก`}
-    //         </Button>
-    //       </Tooltip>
-    //     </Space>
-    //   ),
-    // },
+    {
+      title: "จัดการ",
+      key: "note",
+      dataIndex: "note",
+      align: "center",
+      render: (_, record) => (
+        <Space>
+          <Tooltip title="แก้ไข">
+            <Button
+              disabled={!canManageBooking(record)}
+              type="link"
+              onClick={() => {
+                onModalEdit(record);
+              }}>
+              {`แก้ไข`}
+            </Button>
+          </Tooltip>
+          <Tooltip title="ยกเลิก">
+            <Button
+              type="link"
+              disabled={!canManageBooking(record)}
+              onClick={() => {
+                onModalCancel(record);
+              }}
+              danger>
+              {`ยกเลิก`}
+            </Button>
+          </Tooltip>
+        </Space>
+      ),
+    },
   ];
 
   return (

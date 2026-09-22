@@ -108,7 +108,14 @@ const BookingRoomPage: React.FC = () => {
     {
       key: "2",
       label: "แสดงข้อมูลแบบตาราง",
-      children: <TableComponent bookingFetchData={bookingFetchData} pagination={pagination} changePagination={changePagination} />,
+      children: (
+        <TableComponent
+          bookingFetchData={bookingFetchData}
+          pagination={pagination}
+          changePagination={changePagination}
+          onCancelled={() => setloading(true)}
+        />
+      ),
     },
     {
       key: "4",

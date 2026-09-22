@@ -1,11 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { Table, Tag, Button, Modal, Divider, TablePaginationConfig, Collapse } from "antd";
+import React, { useState, useEffect, useContext } from "react";
+import { Table, Tag, Button, Modal, Divider, TablePaginationConfig, Collapse, Popconfirm } from "antd";
 import type { TableProps } from "antd";
 import { CaretRightOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
+import { UserContectType, UserContext } from "@/app/config/userContext";
+import { useId24 } from "@/components/drivers/id24/Id24Provider";
+import { loadAppConfig } from "@/app/config/app-config";
+import { BookingRoomServices } from "../services/booking-room.service";
+import { notifyError, notifySuccess } from "@/app/utils/message";
 
 interface DataType {
   id: string;
+  userId: string;
   no: number;
   roomName: string;
   roomType: string;
@@ -25,11 +31,36 @@ export interface props {
   bookingFetchData: { data: any[]; count: number };
   pagination: TablePaginationConfig;
   changePagination: (pagination: TablePaginationConfig) => void;
+  onCancelled: () => void;
 }
 
-const BookingTable: React.FC<props> = ({ bookingFetchData, pagination, changePagination }: any): React.ReactElement => {
+const BookingTable: React.FC<props> = ({ bookingFetchData, pagination, changePagination, onCancelled }: any): React.ReactElement => {
   const [modalBookingDetails, setModalBookingDetails] = useState(false);
   const [currentBookingDetails, setCurrentBookingDetails] = useState<DataType | null>(null);
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const { user } = (useContext(UserContext) as UserContectType) || { user: null };
+  const { id24Axios } = useId24();
+  const bookingRoomService = BookingRoomServices(id24Axios(loadAppConfig().NEXT_PUBLIC_API_BASE_URL_INTRANET));
+
+  /** ยกเลิกได้เฉพาะใบจองของตนเองที่ยังรออนุมัติ — ตารางนี้แสดงใบจองของทุกคน */
+  const canCancelBooking = (record: DataType) => record.bookingStatus === "process" && record.userId === user?.userId;
+
+  const handleCancelBooking = async (record: DataType) => {
+    if (!canCancelBooking(record)) return;
+    setCancellingId(record.id);
+    try {
+      await bookingRoomService.updateBookingRoom(record.id, {
+        bookingStatus: "cancel",
+        approveDate: dayjs().toISOString(),
+      });
+      notifySuccess("booking.room.cancel");
+      onCancelled();
+    } catch (error) {
+      notifyError(error, "booking.room.cancel");
+    } finally {
+      setCancellingId(null);
+    }
+  };
 
   const columns: TableProps<DataType>["columns"] = [
     {
@@ -113,6 +144,23 @@ const BookingTable: React.FC<props> = ({ bookingFetchData, pagination, changePag
         <Button type="link" onClick={() => showModalBookingDetails(record)}>
           รายละเอียด
         </Button>
+      ),
+    },
+    {
+      key: "manage",
+      title: "จัดการ",
+      render: (_, record) => (
+        <Popconfirm
+          title="ยกเลิกการจองห้องประชุม"
+          description="คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการจองนี้?"
+          okText="ยกเลิกการจอง"
+          cancelText="ปิด"
+          disabled={!canCancelBooking(record)}
+          onConfirm={() => handleCancelBooking(record)}>
+          <Button type="link" danger disabled={!canCancelBooking(record)} loading={cancellingId === record.id}>
+            ยกเลิก
+          </Button>
+        </Popconfirm>
       ),
     },
   ];

@@ -51,6 +51,13 @@ export const BookingRoomServices = (axiosInstance: AxiosInstance) => {
           return res.data;
         });
     },
+    updateBookingRoom: async (id: string | number, body: any) => {
+      return await axiosInstance
+        .patch(`${baseUrlApiBookingRoom}/${id}`, body)
+        .then((res) => {
+          return res.data;
+        });
+    },
     getMasterRoomQuery: async () => {
       return await axiosInstance
         .get(`${baseUrlApiMasterRoom}`)

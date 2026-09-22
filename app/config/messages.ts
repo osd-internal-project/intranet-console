@@ -11,6 +11,7 @@ export const ACTION_LABEL = {
   // ---------- จองห้องประชุม ----------
   "booking.room.create": "จองห้องประชุม",
   "booking.room.update": "แก้ไขการจองห้องประชุม",
+  "booking.room.cancel": "ยกเลิกการจองห้องประชุม",
   "booking.room.delete": "ลบการจองห้องประชุม",
   "booking.room.load": "โหลดข้อมูลห้องประชุม",
   "room.update": "แก้ไขข้อมูลห้องประชุม",

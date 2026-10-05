@@ -3,10 +3,10 @@ import { Breadcrumb, Card, Col, Divider, Result, Row } from "antd";
 import { RoleAccessTable } from "./components/role-access-table";
 import { useUserAccess } from "@/app/config/userContext";
 
-/** หน้ากำหนดสิทธิ์การเข้าถึงให้กลุ่มผู้ใช้งาน (เฉพาะผู้ดูแลระบบ) */
+/** หน้ากำหนดสิทธิ์การเข้าถึงให้กลุ่มผู้ใช้งาน (ผู้ดูแลระบบและฝ่ายบุคคล) */
 export default function UserRoleAccessPage() {
   const { accessRole } = useUserAccess();
-  const isAdmin = accessRole(["admin"]);
+  const canManage = accessRole(["admin", "hr"]);
 
   return (
     <Row gutter={[8, 8]}>
@@ -33,13 +33,13 @@ export default function UserRoleAccessPage() {
       <Col span={24}>
         <div className="grid grid-cols-1 ">
           <Card>
-            {isAdmin ? (
+            {canManage ? (
               <RoleAccessTable />
             ) : (
               <Result
                 status="403"
                 title="403"
-                subTitle="เฉพาะผู้ดูแลระบบเท่านั้นที่เข้าถึงหน้านี้ได้"
+                subTitle="เฉพาะผู้ดูแลระบบและฝ่ายบุคคลเท่านั้นที่เข้าถึงหน้านี้ได้"
               />
             )}
           </Card>

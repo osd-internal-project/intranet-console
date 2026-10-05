@@ -116,7 +116,7 @@ const menuItems: AppMenuItem[] = [
     key: `overtime`,
     icon: <FieldTimeOutlined />,
     label: `ทำงานล่วงเวลา`,
-    rule: ["user", "admin", "hr"],
+    rule: ["user", "header", "admin", "hr"],
     children: [
       {
         key: `overtime/overtime-calendar`,
@@ -182,7 +182,7 @@ const menuItems: AppMenuItem[] = [
     key: "bookingroom",
     icon: bookingIcon,
     label: "ห้องประชุม",
-    rule: ["user", "admin", "ma-user"],
+    rule: ["user", "admin", "hr", "ma-user"],
     children: [
       {
         key: `bookingroom/booking-room`,

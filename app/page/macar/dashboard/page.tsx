@@ -39,7 +39,7 @@ export default function MacarDashboardPage() {
   const { accessRole } = (useContext(UserContext) as UserContectType) || {
     accessRole: () => false,
   };
-  const isAdmin = accessRole(["admin"]);
+  const canView = accessRole(["admin", "maUser", "account"]);
 
   const { id24Axios } = useId24();
   const services = DashboardServices(
@@ -55,7 +55,7 @@ export default function MacarDashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!isAdmin) return;
+    if (!canView) return;
     let active = true;
     (async () => {
       setLoading(true);
@@ -72,13 +72,13 @@ export default function MacarDashboardPage() {
       active = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [range, isAdmin]);
+  }, [range, canView]);
 
   useEffect(() => {
-    if (!isAdmin) return;
+    if (!canView) return;
     services.getBookingTrend().then(setTrend);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAdmin]);
+  }, [canView]);
 
   const bookerData = useMemo(
     () =>
@@ -133,12 +133,12 @@ export default function MacarDashboardPage() {
         </Divider>
       </Row>
 
-      {!isAdmin ? (
+      {!canView ? (
         <Card>
           <Result
             status="403"
             title="403"
-            subTitle="เฉพาะผู้ดูแลระบบเท่านั้นที่เข้าถึงหน้านี้ได้"
+            subTitle="เฉพาะผู้ดูแลระบบ ฝ่ายซ่อมบำรุง และฝ่ายบัญชีเท่านั้นที่เข้าถึงหน้านี้ได้"
           />
         </Card>
       ) : (

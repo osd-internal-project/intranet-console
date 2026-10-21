@@ -15,6 +15,7 @@ import {
 import { useForm } from "antd/es/form/Form";
 import dayjs from "dayjs";
 import { MaCarType } from "../../../../common";
+import { CarGalleryStrip, CarProfileImage } from "./car-images";
 import { ManageCarServices } from "../../../services/manage-car.service";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { useId24 } from "@/components/drivers/id24/Id24Provider";
@@ -47,6 +48,8 @@ export interface CarDetailCardProps {
   vehicleTypeOptions: { label: string; value: string }[];
   /** เรียกหลังบันทึกสำเร็จ เพื่อให้หน้าหลัก refetch ข้อมูลรถ */
   onSaved: () => void;
+  /** เรียกหลังอัปโหลด/ลบรูปรถ — refetch แบบไม่ขึ้น Skeleton */
+  onImagesChanged: () => void;
 }
 
 /**
@@ -59,6 +62,7 @@ const CarDetailCard: React.FC<CarDetailCardProps> = ({
   car,
   vehicleTypeOptions,
   onSaved,
+  onImagesChanged,
 }): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || {
     user: null,
@@ -132,97 +136,110 @@ const CarDetailCard: React.FC<CarDetailCardProps> = ({
       onFinish={handleSave}
       autoComplete="off"
     >
-      <div className="mb-4 flex items-center justify-between">
-        <div
-          className="title-page-font"
-          style={{ display: "flex", alignItems: "left" }}
-        >
-          <span style={{ marginRight: "8px" }}>
-            {car.carName || "รายละเอียดรถ"}
-          </span>
-          <span>
-            <Tag
-              bordered={false}
-              color={car.status ? "green" : "red"}
-              className="!m-0"
+      <div className="mb-2 flex flex-col gap-4 sm:flex-row">
+        <CarProfileImage
+          carId={car.carId}
+          images={car.maCarImage ?? []}
+          onChanged={onImagesChanged}
+        />
+        <div className="min-w-0 flex-1">
+          <div className="mb-4 flex items-center justify-between">
+            <div
+              className="title-page-font"
+              style={{ display: "flex", alignItems: "left" }}
             >
-              {car.status ? "ใช้งานได้ปกติ" : "ไม่สามารถใช้งานได้"}
-            </Tag>
-          </span>
-        </div>
-        {editing ? (
-          <div className="flex gap-2">
-            <Button
-              size="small"
-              type="text"
-              onClick={handleCancel}
-              disabled={saving}
-            >
-              ยกเลิก
-            </Button>
-            <Button
-              size="small"
-              type="primary"
-              htmlType="submit"
-              loading={saving}
-              onClick={() => form.submit()}
-            >
-              ยืนยัน
-            </Button>
-          </div>
-        ) : (
-          <Button size="small" type="text" onClick={handleEdit}>
-            แก้ไข
-          </Button>
-        )}
-      </div>
-        {/* สรุปย่อ — เลขไมล์ / ระดับน้ำมัน / Fleet Card แบบเรียบ */}
-        <div className="mb-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
-          <Card size="small" className="border border-gray-200">
-            <div className="text-xs text-gray-400">เลขไมล์ปัจจุบัน</div>
-            <div className="text-lg font-semibold text-gray-800">
-              {numberWithCommas(car.carMile ?? 0)}
-              <span className="ml-1 text-xs font-normal text-gray-400">
-                กม.
+              <span style={{ marginRight: "8px" }}>
+                {car.carName || "รายละเอียดรถ"}
+              </span>
+              <span>
+                <Tag
+                  bordered={false}
+                  color={car.status ? "green" : "red"}
+                  className="!m-0"
+                >
+                  {car.status ? "ใช้งานได้ปกติ" : "ไม่สามารถใช้งานได้"}
+                </Tag>
               </span>
             </div>
-          </Card>
-          <Card size="small" className="border border-gray-200">
-            <div className="text-xs text-gray-400">ระดับน้ำมัน</div>
-            <div className="pt-1">
-              {petrol ? (
-                <Tag bordered={false} color={petrol.color} className="!m-0">
-                  {petrol.label}
-                </Tag>
-              ) : (
-                <span className="text-gray-400">-</span>
-              )}
-            </div>
-          </Card>
-          <Card size="small" className="border border-gray-200">
-            <div className="text-xs text-gray-400">Fleet Card คงเหลือ</div>
-            <div className="text-lg font-semibold text-gray-800">
-              {hasFleetCard ? (
-                <>
-                  {numberWithCommas(car.fuelMonthlyRemaining ?? 0)}
-                  <span className="ml-1 text-xs font-normal text-gray-400">
-                    / {numberWithCommas(car.fuelMonthlyLimit ?? 0)}
-                  </span>
-                </>
-              ) : (
-                <span className="text-base font-normal text-gray-400">
-                  ไม่มี
+            {editing ? (
+              <div className="flex gap-2">
+                <Button
+                  size="small"
+                  type="text"
+                  onClick={handleCancel}
+                  disabled={saving}
+                >
+                  ยกเลิก
+                </Button>
+                <Button
+                  size="small"
+                  type="primary"
+                  htmlType="submit"
+                  loading={saving}
+                  onClick={() => form.submit()}
+                >
+                  ยืนยัน
+                </Button>
+              </div>
+            ) : (
+              <Button size="small" type="text" onClick={handleEdit}>
+                แก้ไข
+              </Button>
+            )}
+          </div>
+          {/* สรุปย่อ — เลขไมล์ / ระดับน้ำมัน / Fleet Card แบบเรียบ */}
+          <div className="mb-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
+            <Card size="small" className="border border-gray-200">
+              <div className="text-xs text-gray-400">เลขไมล์ปัจจุบัน</div>
+              <div className="text-lg font-semibold text-gray-800">
+                {numberWithCommas(car.carMile ?? 0)}
+                <span className="ml-1 text-xs font-normal text-gray-400">
+                  กม.
                 </span>
-              )}
-            </div>
-          </Card>
+              </div>
+            </Card>
+            <Card size="small" className="border border-gray-200">
+              <div className="text-xs text-gray-400">ระดับน้ำมัน</div>
+              <div className="pt-1">
+                {petrol ? (
+                  <Tag bordered={false} color={petrol.color} className="!m-0">
+                    {petrol.label}
+                  </Tag>
+                ) : (
+                  <span className="text-gray-400">-</span>
+                )}
+              </div>
+            </Card>
+            <Card size="small" className="border border-gray-200">
+              <div className="text-xs text-gray-400">Fleet Card คงเหลือ</div>
+              <div className="text-lg font-semibold text-gray-800">
+                {hasFleetCard ? (
+                  <>
+                    {numberWithCommas(car.fuelMonthlyRemaining ?? 0)}
+                    <span className="ml-1 text-xs font-normal text-gray-400">
+                      / {numberWithCommas(car.fuelMonthlyLimit ?? 0)}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-base font-normal text-gray-400">
+                    ไม่มี
+                  </span>
+                )}
+              </div>
+            </Card>
+          </div>
         </div>
+      </div>
+      <CarGalleryStrip
+        carId={car.carId}
+        images={car.maCarImage ?? []}
+        onChanged={onImagesChanged}
+      />
 
       <Card
         className="border border-gray-200"
         styles={{ body: { padding: 24 }, header: { borderBottom: "none" } }}
       >
-      
         {/* ข้อมูลทะเบียน/ตัวรถ */}
         <div className="mb-4 text-xs font-medium uppercase tracking-wide text-gray-400">
           ข้อมูลรถ

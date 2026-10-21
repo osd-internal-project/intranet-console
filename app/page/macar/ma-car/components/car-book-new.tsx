@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   Button,
   Col,
+  Image,
   DatePicker,
   Empty,
   Form,
@@ -26,6 +27,7 @@ import { loadAppConfig } from "@/app/config/app-config";
 import { UserContectType, UserContext } from "@/app/config/userContext";
 import { MaCarBookServices } from "@/app/services/ma-car-book.service";
 import { MaCarType } from "../../common";
+import { macarFileUrl } from "../../common/macar-file";
 import { numberWithCommas } from "@/app/utils/format";
 
 import { notifyError, notifySuccess } from "@/app/utils/message";
@@ -122,6 +124,54 @@ const renderCarTooltip = (car: MaCarType): React.ReactNode => {
       />
       <TooltipRow label="รายละเอียด" value={car.detail} />
     </div>
+  );
+};
+
+/**
+ * รูปนำของแถวรถ — มีรูปจะแสดง thumbnail (profile ก่อน) และคลิกเพื่อดูทุกรูปได้ ถ้าไม่มีรูปจะแสดงไอคอนรถ
+ * @param car ข้อมูลรถ (maCarImage มาจาก endpoint รถว่าง)
+ * @param selected แถวนี้ถูกเลือกอยู่หรือไม่
+ */
+const CarThumb: React.FC<{ car: MaCarType; selected: boolean }> = ({
+  car,
+  selected,
+}) => {
+  const images = [...(car.maCarImage ?? [])].sort(
+    (a, b) => Number(b.type === "profile") - Number(a.type === "profile"),
+  );
+  if (images.length === 0) {
+    return (
+      <span
+        className={[
+          "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-sm",
+          selected ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-500",
+        ].join(" ")}
+      >
+        <CarOutlined />
+      </span>
+    );
+  }
+  const urls = images.map((image) => macarFileUrl(image.filePath, image.name));
+  return (
+    // กันคลิกรูป/หน้าต่าง preview (portal แต่ event ยัง bubble ใน React tree) ไปเลือกรถ
+    <span
+      onClick={(e) => e.stopPropagation()}
+      className={[
+        "h-[30px] w-10 shrink-0 overflow-hidden rounded-md border",
+        selected ? "border-blue-500" : "border-gray-200",
+      ].join(" ")}
+    >
+      <Image.PreviewGroup items={urls}>
+        <Image
+          src={urls[0]}
+          alt={car.carName}
+          width={40}
+          height={30}
+          loading="lazy"
+          className="object-cover"
+        />
+      </Image.PreviewGroup>
+    </span>
   );
 };
 
@@ -264,15 +314,8 @@ const CarBookNew: React.FC<props> = ({ dataProvinces, onBooked }) => {
                   : "border-gray-200 hover:border-blue-300 hover:bg-gray-50",
               ].join(" ")}
             >
-              {/* ไอคอนนำ — ช่วยจัดวางให้เป็นระเบียบและบอกสถานะเลือกด้วยสี */}
-              <span
-                className={[
-                  "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-sm",
-                  selected ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-500",
-                ].join(" ")}
-              >
-                <CarOutlined />
-              </span>
+              {/* รูปนำ — thumbnail รถ (คลิกดูรูปทั้งหมด) หรือไอคอนเมื่อไม่มีรูป, สีบอกสถานะเลือก */}
+              <CarThumb car={car} selected={selected} />
 
               {/* ชื่อรถ + ทะเบียน — เป็นตัวระบุหลัก, ชื่อยาวจะย่อด้วย truncate */}
               <span className="font-medium text-sm text-gray-800 truncate min-w-0 flex-1">

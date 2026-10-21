@@ -40,6 +40,8 @@ const ACTION_LABEL: Record<string, string> = {
   "fuel.adjust": "ปรับวงเงินน้ำมัน",
   "file.car-upload": "อัปโหลดไฟล์รถ",
   "file.car-delete": "ลบไฟล์รถ",
+  "file.image-upload": "อัปโหลดรูปรถ",
+  "file.image-delete": "ลบรูปรถ",
   "file.booking-upload": "อัปโหลดรูปการจอง",
   "file.booking-delete": "ลบรูปการจอง",
   "file.wrapup-upload": "อัปโหลดรูปตรวจสภาพ",

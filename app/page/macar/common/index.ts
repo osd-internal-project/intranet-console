@@ -17,6 +17,8 @@ export interface MaCarType {
   maCarName: string;
   maStatus: boolean;
   maCarFiles: MaCarFile[];
+  /** รูปรถ (profile/gallery) — มาพร้อมรถคันเดียวและรายการรถว่างตอนจอง */
+  maCarImage?: MaCarImage[];
 
   fuelCardStatus?: "active" | "inactive";
   fuelCardNumber?: string;
@@ -46,6 +48,17 @@ export interface MaCarFuelTransactionType {
   remaining: number;
   description?: string;
   actionStatus: "use" | "adjust" | "reset";
+}
+export interface MaCarImage {
+  id: number;
+  carId: string;
+  type: "profile" | "gallery";
+  /** ชื่อไฟล์เดิม */
+  name?: string;
+  /** object key ใน MinIO */
+  filePath: string;
+  fileType?: string;
+  createdAt: string;
 }
 export interface MaCarFile {
   id: number;

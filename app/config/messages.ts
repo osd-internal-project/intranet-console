@@ -29,6 +29,7 @@ export const ACTION_LABEL = {
   "car.update": "แก้ไขข้อมูลรถ",
   "car.delete": "ลบรถ",
   "car.load": "โหลดข้อมูลรถ",
+  "car.image.upload": "อัปโหลดรูปรถ",
   "car.image.delete": "ลบรูป",
   "car.file.upload": "อัปโหลดไฟล์",
   "car.file.delete": "ลบไฟล์",

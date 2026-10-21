@@ -196,6 +196,10 @@ export default function CarDetailPage(): React.ReactElement {
                 car={car}
                 vehicleTypeOptions={vehicleTypeOptions}
                 onSaved={() => fetchCar()}
+                onImagesChanged={() => {
+                  void fetchCar(true);
+                  setLoadActivity(true);
+                }}
               />
 
               <Row gutter={[16, 16]}>

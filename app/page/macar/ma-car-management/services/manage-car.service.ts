@@ -41,6 +41,7 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
   const baseUrlApiMaCarwarpup = "/ma-car-wrapup";
   const baseUrlApiMaCarwarpupimage = "/ma-car-wrapup-image";
   const baseUrlApiMaCarFiles = "/ma-car-files";
+  const baseUrlApiMaCarImage = "/ma-car-image";
   const baseUrlApiCarActivity = "/car-activity-log";
 
   return {
@@ -379,6 +380,22 @@ export const ManageCarServices = (axiosInstance: AxiosInstance) => {
     deleteFileDoc: async (id: number) => {
       return await axiosInstance
         .delete(`${baseUrlApiMaCarFiles}/${id}`)
+        .then((res) => res.data);
+    },
+    uploadCarImages: async (
+      carId: string,
+      type: "profile" | "gallery",
+      body: FormData,
+    ) => {
+      return await axiosInstance
+        .post(`${baseUrlApiMaCarImage}/${carId}?type=${type}`, body, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then((res) => res.data);
+    },
+    deleteCarImage: async (id: number) => {
+      return await axiosInstance
+        .delete(`${baseUrlApiMaCarImage}/${id}`)
         .then((res) => res.data);
     },
   };

@@ -1,11 +1,12 @@
 import React, { useContext, useState } from "react";
 import { Table, Button, Row, Col, Space, Modal, Form, Input, message, TablePaginationConfig, Tooltip } from "antd";
-import type { FormProps, TableProps } from "antd";
+import type { FormInstance, FormProps, TableProps } from "antd";
 import dayjs from "dayjs";
 import ShareMaCarBook from "../../common/export-excel";
 import { MaCarServices } from "../../../../services/ma-car.service";
 import { useAxiosIntranet } from "@/app/lib/axios/hooks/userAxiosAuth";
-import { MaCarBookType, MaCarType, dataMaCarbook, ProvincesType, MaCarBookCalendarType } from "../../common/index";
+import { MaCarBookType, MaCarType, dataMaCarbook, MaCarBookFilter } from "../../common/index";
+import ManagementCarFilterPage from "../../ma-car-management/components/management-car-booking/components/management-car-filter";
 import { checkStatus, CheckStatusMaCarBookType, isSelectDisabled, showStatus } from "@/app/utils/validatefield";
 import { dateFormatTime } from "@/app/utils";
 import { CarForm } from "./car-form";
@@ -22,7 +23,11 @@ interface props {
   changePagination: (pagination: TablePaginationConfig) => void;
   maCarData: MaCarType[];
   dataProvinces: { value: string; label: string }[];
-  maFetchCalendar: MaCarBookCalendarType[];
+  filters: MaCarBookFilter;
+  openFilter: boolean;
+  handleOpenFilter: (value: boolean) => void;
+  filterForm: FormInstance;
+  onSearch: (value: MaCarBookFilter) => void;
 }
 
 const MaCarBookTable: React.FC<props> = ({
@@ -33,7 +38,11 @@ const MaCarBookTable: React.FC<props> = ({
   loading,
   maCarData,
   dataProvinces,
-  maFetchCalendar,
+  filters,
+  openFilter,
+  handleOpenFilter,
+  filterForm,
+  onSearch,
 }: any): React.ReactElement => {
   const { user } = (useContext(UserContext) as UserContectType) || { user: null };
   const [form] = Form.useForm();
@@ -264,7 +273,14 @@ const MaCarBookTable: React.FC<props> = ({
       <Row gutter={[8, 8]} className="flex justify-between">
         <Col style={{ justifyContent: "start", display: "flex", alignItems: "center" }}>{showStatus()}</Col>
         <Col>
-          <ShareMaCarBook data={maFetchCalendar} total={maFetchCalendar.length} pagination={pagination} />
+          <Space align="start">
+            <ManagementCarFilterPage handleOpenFilter={handleOpenFilter} openFilter={openFilter} filterForm={filterForm} onSearch={onSearch} />
+            {/* shortcut: ดึงทุกแถวในครั้งเดียว (take=total) — ถ้าข้อมูลหลักหมื่นแถวให้ย้ายไปสร้างไฟล์ที่ backend */}
+            <ShareMaCarBook
+              disabled={!maCarBookData.total}
+              fetchAll={() => intraAuthService.findMaCarBook(0, maCarBookData.total, filters).then((res: dataMaCarbook) => res.docs)}
+            />
+          </Space>
         </Col>
       </Row>
       <div>

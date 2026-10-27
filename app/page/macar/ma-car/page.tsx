@@ -9,6 +9,7 @@ import {
   Tabs,
   Divider,
   TablePaginationConfig,
+  Form,
 } from "antd";
 import { CalendarDays, Plus } from "lucide-react";
 import { MaCarServices } from "../../../services/ma-car.service";
@@ -19,6 +20,7 @@ import {
   dataMaCarbook,
   ProvincesType,
   MaCarBookCalendarType,
+  MaCarBookFilter,
 } from "../common/index";
 
 import CalendarComponent from "./components/car-calendar";
@@ -63,6 +65,9 @@ const MaCar: React.FC = () => {
     pageSize: 10,
     total: 0,
   });
+  const [filterForm] = Form.useForm();
+  const [openFilter, setOpenFilter] = useState<boolean>(false);
+  const [filters, setFilters] = useState<MaCarBookFilter>({});
 
   useEffect(() => {
     if (loading) {
@@ -77,7 +82,7 @@ const MaCar: React.FC = () => {
     const take: number = Number(pagination.pageSize);
     try {
       if (user) {
-        const maCarBook = await intraAuthService.findMaCarBook(skip, take);
+        const maCarBook = await intraAuthService.findMaCarBook(skip, take, filters);
         setMaCarBookData(maCarBook);
         const yearNow = dayjs().format("YYYY");
         const holidayData = await holidayService.getHolidayByYear(yearNow);
@@ -125,6 +130,17 @@ const MaCar: React.FC = () => {
 
   const changePagination = (page: TablePaginationConfig) => {
     setPagination({ ...page });
+    setLoading(true);
+  };
+
+  const onSearch = (value: MaCarBookFilter) => {
+    const { carBookApprovedStatus, carBookStartDate, createdByName } = value || {};
+    setFilters({
+      ...(carBookApprovedStatus && { carBookApprovedStatus }),
+      ...(carBookStartDate && { carBookStartDate }),
+      ...(createdByName && { createdByName }),
+    });
+    setPagination({ current: 1, pageSize: 10, total: 0 });
     setLoading(true);
   };
 
@@ -181,7 +197,11 @@ const MaCar: React.FC = () => {
           setLoading={setLoading}
           maCarData={maCarData}
           dataProvinces={dataProvinces}
-          maFetchCalendar={maFetchCalendar}
+          filters={filters}
+          openFilter={openFilter}
+          handleOpenFilter={setOpenFilter}
+          filterForm={filterForm}
+          onSearch={onSearch}
         />
       ),
     },

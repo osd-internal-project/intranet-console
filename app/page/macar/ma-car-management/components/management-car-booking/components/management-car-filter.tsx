@@ -1,4 +1,3 @@
-import { ExcelIcon } from "@/components/icon";
 import {
   CheckCircleOutlined,
   CheckSquareOutlined,
@@ -117,9 +116,6 @@ const ManagementCarFilterPage: React.FC<props> = ({ handleOpenFilter, openFilter
           Filters
         </Button>
       </Popover>
-      {/* <Button type="default" disabled={dataResource.data.length === 0} onClick={handleExport} icon={<ExcelIcon width="1.5rem" height="1.5rem" />}>
-        {`ดาวน์โหลดไฟล์`}
-      </Button> */}
     </div>
   );
 };

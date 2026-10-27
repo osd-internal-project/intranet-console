@@ -1,5 +1,6 @@
 import { AxiosInstance } from "axios";
 import { Dayjs } from "dayjs";
+import { MaCarBookFilter } from "../page/macar/common";
 
 export const MaCarServices = (axiosInstance: AxiosInstance) => {
   const baseUrlApiMaCarBook = "/ma-car-book";
@@ -43,9 +44,9 @@ export const MaCarServices = (axiosInstance: AxiosInstance) => {
           return [];
         });
     },
-    findMaCarBook: async (skip: number, take: number) => {
+    findMaCarBook: async (skip: number, take: number, filters?: MaCarBookFilter) => {
       return await axiosInstance
-        .get(`${baseUrlApiMaCarBook}/${skip}/${take}`)
+        .get(`${baseUrlApiMaCarBook}/${skip}/${take}`, { params: filters })
         .then((res) => {
           return res.data;
         })

@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
-import { Form } from "antd";
+import { Form, Space } from "antd";
 import type { FormInstance, TablePaginationConfig } from "antd";
-import { dataMaCarbook } from "../../../common";
+import { dataMaCarbook, MaCarBookFilter } from "../../../common";
+import ShareMaCarBook from "../../../common/export-excel";
 import { showStatus } from "@/app/utils/validatefield";
 import { ManageCarServices } from "../../services/manage-car.service";
 import { MaCarServices } from "@/app/services/ma-car.service";
@@ -28,6 +29,7 @@ export interface props {
     carBookStartDate?: Date | string;
     createdByName?: string;
   }) => void;
+  filters: MaCarBookFilter;
 }
 
 const managementCarBooking: React.FC<props> = ({
@@ -40,6 +42,7 @@ const managementCarBooking: React.FC<props> = ({
   openFilter,
   filterForm,
   onSearch,
+  filters,
 }): React.ReactElement => {
   const { id24Axios } = useId24();
   const [form] = Form.useForm();
@@ -174,14 +177,24 @@ const managementCarBooking: React.FC<props> = ({
         }}
       >
         <> {showStatusBox}</>
-        <>
+        <Space align="start">
           <ManagementCarFilterPage
             handleOpenFilter={handleOpenFilter}
             openFilter={openFilter}
             filterForm={filterForm}
             onSearch={onSearch}
           />
-        </>
+          {/* shortcut: ดึงทุกแถวในครั้งเดียว (take=total) — ถ้าข้อมูลหลักหมื่นแถวให้ย้ายไปสร้างไฟล์ที่ backend */}
+          <ShareMaCarBook
+            detailed
+            disabled={!maCarBookData.total}
+            fetchAll={() =>
+              ManageCarServices(baseUrIntranet)
+                .findMaCarBookForApprove(filters, 0, maCarBookData.total)
+                .then((res: dataMaCarbook) => res.docs)
+            }
+          />
+        </Space>
       </div>
       {maCarBookData.docs ? (
         <ManagementCarBookingTable

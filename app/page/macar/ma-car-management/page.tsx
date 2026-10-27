@@ -91,6 +91,7 @@ const ManageMaCar = () => {
           openFilter={openFilter}
           filterForm={filterForm}
           onSearch={onSearch}
+          filters={filters}
         />
       ),
     },

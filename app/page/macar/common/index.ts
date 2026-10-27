@@ -110,6 +110,12 @@ export interface MaCarBookType {
   // docs: dataMaCarbook[];
 }
 
+export interface MaCarBookFilter {
+  carBookApprovedStatus?: string;
+  carBookStartDate?: Date | string;
+  createdByName?: string;
+}
+
 export interface dataMaCarbook {
   docs: MaCarBookType[];
   total: number;

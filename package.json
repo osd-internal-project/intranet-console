@@ -1,6 +1,6 @@
 {
   "name": "osd-intranet-fe",
-  "version": "1.4.04",
+  "version": "1.4.05",
   "private": true,
   "scripts": {
     "dev": "next dev",

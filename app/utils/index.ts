@@ -171,7 +171,11 @@ export async function handleCompress(file: File): Promise<File> {
         `Image: ${(file.size / 1024 / 1024).toFixed(2)}MB → ${(compressedImage.size / 1024 / 1024).toFixed(2)}MB`
       );
 
-      return compressedImage;
+      // library คืน Blob ที่แค่ตั้ง .name — FormData จะส่งชื่อเป็น "blob" ต้องห่อเป็น File จริง
+      return new File([compressedImage], file.name, {
+        type: compressedImage.type || file.type,
+        lastModified: file.lastModified,
+      });
     }
 
     // ============================

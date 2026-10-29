@@ -168,7 +168,7 @@ const BookingRoomPage: React.FC = () => {
       roomName: selectedOption ? selectedOption.label : undefined,
       roomType: values.roomType,
       bookerName: `${user?.firstNameTh} ${user?.lastNameTh}`,
-      bookerPhone: user?.phoneNumber,
+      bookerPhone: user?.phoneNumber ?? "",
       title: values.title,
       bookerDepartment: values.bookerDepartment.toString(),
       bookingStatus: "process",

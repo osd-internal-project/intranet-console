@@ -13,7 +13,7 @@ import { OvertimeShowDetail } from "./components/overtime-show-detail";
 import OverTimeServices from "@/app/services/overtime.service";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { MaCarServices } from "@/app/services/ma-car.service";
-import { notifySuccess } from "@/app/utils/message";
+import { notifyError, notifySuccess } from "@/app/utils/message";
 dayjs.locale("th");
 
 export default function OverTimePage() {
@@ -107,15 +107,19 @@ export default function OverTimePage() {
       icon: <ExclamationCircleFilled />,
       content: "Some descriptions",
       onOk: async () => {
-        const resultCreate: any = await OverTimeServices(baseUrlIntranet).create(res);
-        if (resultCreate.status === 200) {
-          notifySuccess("overtime.create");
-          setHeader([]);
-          setStartTime(18);
-          setEndTime(19);
-          setCarName("");
-          setSelectCar(false);
-          navigate.push(`${window.location.origin}/page/overtime/overtime-calendar`);
+        try {
+          const resultCreate: any = await OverTimeServices(baseUrlIntranet).create(res);
+          if (resultCreate.status === 200) {
+            notifySuccess("overtime.create");
+            setHeader([]);
+            setStartTime(18);
+            setEndTime(19);
+            setCarName("");
+            setSelectCar(false);
+            navigate.push(`${window.location.origin}/page/overtime/overtime-calendar`);
+          }
+        } catch (error) {
+          notifyError(error, "overtime.create");
         }
       },
       onCancel() {
@@ -130,8 +134,8 @@ export default function OverTimePage() {
 
   const handleUseCar = async (value: string) => {
     setCarName("");
-    const data = getCar.find((events: any) => (events.carId = value));
-    setCarName(data.carName);
+    const data = getCar.find((events: any) => events.carId === value);
+    setCarName(data?.carName ?? "");
   };
 
   const TimeOptions = () => {
@@ -238,12 +242,12 @@ export default function OverTimePage() {
                 </div>
                 <div>
                   <Form.Item label={"ชื่อลูกค้า"} name={`customerName`} rules={[{ required: true, message: "กรุณากรอกชื่อลูกค้า" }]}>
-                    <Input />
+                    <Input maxLength={250} />
                   </Form.Item>
                 </div>
                 <div className="  md:col-span-4 ">
                   <Form.Item label={"รายละเอียด"} name={`detailWork`}>
-                    <TextArea />
+                    <TextArea autoSize={{ minRows: 2 }} />
                   </Form.Item>
                 </div>
                 <div className="  md:col-span-2 ">
